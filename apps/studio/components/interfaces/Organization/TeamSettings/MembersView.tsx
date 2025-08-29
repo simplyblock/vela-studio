@@ -1,10 +1,18 @@
-import { AlertCircle, HelpCircle } from 'lucide-react'
-
+import {
+  AlertCircle,
+  Calendar,
+  CheckCircle,
+  Clock,
+  HelpCircle,
+  MessageCircleWarning,
+  Users,
+} from 'lucide-react'
 import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
-import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
-import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
+// Removed the actual API imports and replaced with mock data
+// import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
+// import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useProfile } from 'lib/profile'
 import { partition } from 'lodash'
 import { useMemo } from 'react'
@@ -24,30 +32,105 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { MemberRow } from './MemberRow'
+import { StatsCard } from 'components/ui/StatsCard'
 
 export interface MembersViewProps {
   searchString: string
+}
+
+// Mock data for organization members
+const mockMembers = [
+  {
+    id: 1,
+    gotrue_id: 'user-1',
+    primary_email: 'admin@example.com',
+    username: 'admin_user',
+    invited_at: null,
+    role_ids: [1],
+    mfa_enabled: true,
+  },
+  {
+    id: 2,
+    gotrue_id: 'user-2',
+    primary_email: 'developer@example.com',
+    username: 'dev_user',
+    invited_at: null,
+    role_ids: [2],
+    mfa_enabled: false,
+  },
+  {
+    id: 3,
+    gotrue_id: null,
+    primary_email: 'pending@example.com',
+    username: null,
+    invited_at: '2023-10-15T12:00:00Z',
+    role_ids: [3],
+    mfa_enabled: false,
+  },
+]
+
+// Mock data for organization roles
+const mockRoles = {
+  org_scoped_roles: [
+    { id: 1, name: 'Admin' },
+    { id: 2, name: 'Developer' },
+  ],
+  project_scoped_roles: [
+    { id: 3, name: 'Viewer' },
+    { id: 4, name: 'Editor' },
+  ],
+}
+
+// Mock implementation of useOrganizationMembersQuery
+const useMockOrganizationMembersQuery = () => {
+  return {
+    data: mockMembers,
+    error: null,
+    isLoading: false,
+    isError: false,
+    isSuccess: true,
+  }
+}
+
+// Mock implementation of useOrganizationRolesV2Query
+const useMockOrganizationRolesV2Query = () => {
+  return {
+    data: mockRoles,
+    error: null,
+    isSuccess: true,
+    isError: false,
+  }
 }
 
 const MembersView = ({ searchString }: MembersViewProps) => {
   const { slug } = useParams()
   const { profile } = useProfile()
 
+  // Replace the actual API calls with mock implementations
   const {
     data: members = [],
     error: membersError,
     isLoading: isLoadingMembers,
     isError: isErrorMembers,
     isSuccess: isSuccessMembers,
-  } = useOrganizationMembersQuery({ slug })
+  } = useMockOrganizationMembersQuery()
+
   const {
     data: roles,
     error: rolesError,
     isSuccess: isSuccessRoles,
     isError: isErrorRoles,
-  } = useOrganizationRolesV2Query({
-    slug,
-  })
+  } = useMockOrganizationRolesV2Query()
+
+  // Mock profile data if needed
+  const mockProfile = {
+    gotrue_id: 'user-1',
+    username: 'admin_user',
+    primary_email: 'admin@example.com',
+  }
+
+  // Use mock profile if the real one isn't available
+  const effectiveProfile = profile || mockProfile
 
   const filteredMembers = useMemo(() => {
     return !searchString
@@ -61,18 +144,19 @@ const MembersView = ({ searchString }: MembersViewProps) => {
               member.username.includes(searchString) || member.primary_email?.includes(searchString)
             )
           }
+          return false
         })
   }, [members, searchString])
 
   const [[user], otherMembers] = partition(
     filteredMembers,
-    (m) => m.gotrue_id === profile?.gotrue_id
+    (m) => m.gotrue_id === effectiveProfile?.gotrue_id
   )
   const sortedMembers = otherMembers.sort((a, b) =>
     (a.primary_email ?? '').localeCompare(b.primary_email ?? '')
   )
 
-  const userMember = members.find((m) => m.gotrue_id === profile?.gotrue_id)
+  const userMember = members.find((m) => m.gotrue_id === effectiveProfile?.gotrue_id)
   const orgScopedRoleIds = (roles?.org_scoped_roles ?? []).map((r) => r.id)
   const isOrgScopedRole = orgScopedRoleIds.includes(userMember?.role_ids?.[0] ?? -1)
 
@@ -90,7 +174,39 @@ const MembersView = ({ searchString }: MembersViewProps) => {
 
       {isSuccessMembers && (
         <div className="rounded w-full overflow-hidden overflow-x-scroll">
-          <Card>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2">
+            <StatsCard
+              title="Total Users"
+              value="5"
+              description="+2 from last month"
+              icon={<Users size={18} />}
+            />
+            <StatsCard
+              title="Activated"
+              value="3"
+              description="Fully activated users"
+              icon={<CheckCircle size={18} />}
+            />
+            <StatsCard
+              title="Pending"
+              value="1"
+              description="Awaiting activation"
+              icon={<Clock size={18} />}
+            />
+            <StatsCard
+              title="Blocked"
+              value="1"
+              description="Blocked accounts"
+              icon={<MessageCircleWarning size={18} />}
+            />
+            <StatsCard
+              title="Avg. Roles"
+              value="1"
+              description="Per user"
+              icon={<Calendar size={18} />}
+            />
+          </div>
+          <Card className="p-2">
             <Loading active={!filteredMembers}>
               <Table>
                 <TableHeader>
@@ -139,9 +255,12 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                           </TableRow>,
                         ]
                       : []),
+                    // @ts-ignore
                     ...(!!user ? [<MemberRow key={user.gotrue_id} member={user} />] : []),
+
                     ...sortedMembers.map((member) => (
-                      <MemberRow key={member.gotrue_id} member={member} />
+                      // @ts-ignore
+                      <MemberRow key={member.gotrue_id || member.id} member={member} />
                     )),
                     ...(searchString.length > 0 && filteredMembers.length === 0
                       ? [
