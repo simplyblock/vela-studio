@@ -97,6 +97,7 @@ const Policies = ({
     }
 
     updateTable({
+      orgSlug: slug!,
       projectRef: project?.ref!,
       connectionString: project?.connectionString,
       id: selectedTableToToggleRLS.id,

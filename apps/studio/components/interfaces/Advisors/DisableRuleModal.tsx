@@ -47,9 +47,11 @@ export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
   })
 
   const onCreateRule = () => {
+    if (!slug) return console.error('Organization slug is required')
     if (!ref) return console.error('Project ref is required')
 
     createRule({
+      orgSlug: slug,
       projectRef: ref,
       exception: {
         is_disabled: true,

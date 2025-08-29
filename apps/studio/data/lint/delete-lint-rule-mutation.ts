@@ -6,11 +6,12 @@ import type { ResponseError } from 'types'
 import { lintKeys } from './keys'
 
 export type LintRuleDeleteVariables = {
+  orgSlug: string
   projectRef: string
   ids: string[]
 }
 
-export async function deleteLintRule({ projectRef, ids }: LintRuleDeleteVariables) {
+export async function deleteLintRule({ orgSlug, projectRef, ids }: LintRuleDeleteVariables) {
   const { data, error } = await del('/platform/projects/{ref}/notifications/advisor/exceptions', {
     params: { path: { ref: projectRef }, query: { ids } },
   })
@@ -34,10 +35,10 @@ export const useLintRuleDeleteMutation = ({
     (vars) => deleteLintRule(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { orgSlug, projectRef } = variables
         await Promise.all([
-          queryClient.invalidateQueries(lintKeys.lintRules(projectRef)),
-          queryClient.invalidateQueries(lintKeys.lint(projectRef)),
+          queryClient.invalidateQueries(lintKeys.lintRules(orgSlug, projectRef)),
+          queryClient.invalidateQueries(lintKeys.lint(orgSlug, projectRef)),
         ])
         await onSuccess?.(data, variables, context)
       },

@@ -140,6 +140,7 @@ export const QueuesSettings = () => {
       await Promise.all(
         tablesWithoutRLS.map((x) =>
           updateTable({
+            orgSlug: orgSlug!,
             projectRef: project?.ref,
             connectionString: project?.connectionString,
             id: x.id,

@@ -39,7 +39,7 @@ interface AdvisorRuleItemProps {
 const SIMPLIFIED_INTERFACE = true
 
 export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
 
   const [open, setOpen] = useState(false)
@@ -67,9 +67,10 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
   })
 
   const onDeleteRule = () => {
+    if (!orgSlug) return console.error('Organization slug is required')
     if (!projectRef) return console.error('Project ref is required')
     if (!selectedRuleToDelete) return console.error('No rules selected')
-    deleteRule({ projectRef, ids: [selectedRuleToDelete] })
+    deleteRule({ orgSlug, projectRef, ids: [selectedRuleToDelete] })
   }
 
   if (SIMPLIFIED_INTERFACE) {

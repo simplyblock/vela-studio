@@ -37,7 +37,7 @@ const DocView = () => {
     error: jsonSchemaError,
     isLoading,
     refetch,
-  } = useProjectJsonSchemaQuery({ projectRef })
+  } = useProjectJsonSchemaQuery({ orgSlug, projectRef })
   const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
 
   const refreshDocs = async () => await refetch()

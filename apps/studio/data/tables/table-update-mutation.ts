@@ -12,6 +12,7 @@ import { tableKeys } from './keys'
 export type UpdateTableBody = components['schemas']['UpdateTableBody']
 
 export type TableUpdateVariables = {
+  orgSlug: string
   projectRef: string
   connectionString?: string | null
   id: number
@@ -21,6 +22,7 @@ export type TableUpdateVariables = {
 }
 
 export async function updateTable({
+  orgSlug,
   projectRef,
   connectionString,
   id,
@@ -31,6 +33,7 @@ export async function updateTable({
   const { sql } = pgMeta.tables.update({ id, name, schema }, payload)
 
   const { result } = await executeSql<void>({
+    orgSlug,
     projectRef,
     connectionString,
     sql,
@@ -56,11 +59,11 @@ export const useTableUpdateMutation = ({
     (vars) => updateTable(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, schema, id } = variables
+        const { orgSlug, projectRef, schema, id } = variables
         await Promise.all([
           queryClient.invalidateQueries(tableEditorKeys.tableEditor(projectRef, id)),
           queryClient.invalidateQueries(tableKeys.list(projectRef, schema)),
-          queryClient.invalidateQueries(lintKeys.lint(projectRef)),
+          queryClient.invalidateQueries(lintKeys.lint(orgSlug, projectRef)),
         ])
         await onSuccess?.(data, variables, context)
       },

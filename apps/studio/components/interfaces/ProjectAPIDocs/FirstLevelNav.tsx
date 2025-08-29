@@ -40,7 +40,7 @@ const FirstLevelNav = () => {
     return true
   })
 
-  const { data } = useOpenAPISpecQuery({ projectRef: ref })
+  const { data } = useOpenAPISpecQuery({ orgSlug: slug, projectRef: ref })
   const tables = data?.tables ?? []
   const functions = data?.functions ?? []
 

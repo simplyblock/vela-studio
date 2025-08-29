@@ -1,3 +1,3 @@
 export const docsKeys = {
-  jsonSchema: (projectRef: string | undefined) => ['projects', projectRef, 'docs'] as const,
+  jsonSchema: (orgSlug: string | undefined, projectRef: string | undefined) => ['projects', orgSlug, projectRef, 'docs'] as const,
 }

@@ -8,17 +8,19 @@ import { ResponseError } from 'types'
 import { lintKeys } from './keys'
 
 type ProjectLintsVariables = {
+  orgSlug?: string
   projectRef?: string
 }
 type ProjectLintResponse = components['schemas']['GetProjectLintsResponse']
 export type Lint = ProjectLintResponse[0]
 export type LINT_TYPES = ProjectLintResponse[0]['name']
 
-export async function getProjectLints({ projectRef }: ProjectLintsVariables, signal?: AbortSignal) {
+export async function getProjectLints({ orgSlug, projectRef }: ProjectLintsVariables, signal?: AbortSignal) {
+  if (!orgSlug) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
-  const { data, error } = await get(`/platform/projects/{ref}/run-lints`, {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/run-lints`, {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     signal,
   })
 
@@ -31,17 +33,17 @@ export type ProjectLintsData = Awaited<ReturnType<typeof getProjectLints>>
 export type ProjectLintsError = ResponseError
 
 export const useProjectLintsQuery = <TData = ProjectLintsData>(
-  { projectRef }: ProjectLintsVariables,
+  { orgSlug, projectRef }: ProjectLintsVariables,
   { enabled = true, ...options }: UseQueryOptions<ProjectLintsData, ProjectLintsError, TData> = {}
 ) => {
   const { data: project } = useSelectedProjectQuery()
   const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
 
   return useQuery<ProjectLintsData, ProjectLintsError, TData>(
-    lintKeys.lint(projectRef),
-    ({ signal }) => getProjectLints({ projectRef }, signal),
+    lintKeys.lint(orgSlug, projectRef),
+    ({ signal }) => getProjectLints({ orgSlug, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && isActive,
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined' && isActive,
       ...options,
     }
   )

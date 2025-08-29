@@ -13,8 +13,9 @@ import { useProjectLintsQuery } from 'data/lint/lint-query'
  * @returns {Array} errorLints - Security lints with ERROR level
  */
 export const useLints = () => {
-  const { ref } = useParams()
+  const { slug, ref } = useParams()
   const { data } = useProjectLintsQuery({
+    orgSlug: slug,
     projectRef: ref,
   })
 

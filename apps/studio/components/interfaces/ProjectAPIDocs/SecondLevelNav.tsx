@@ -26,12 +26,12 @@ import { ChevronLeft, Code, ExternalLink } from 'lucide-react'
 import { DocsButton } from 'components/ui/DocsButton'
 
 const SecondLevelNav = () => {
-  const { ref } = useParams()
+  const { slug, ref } = useParams()
   const snap = useAppStateSnapshot()
   const [open, setOpen] = useState(false)
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
 
-  const { data } = useOpenAPISpecQuery({ projectRef: ref })
+  const { data } = useOpenAPISpecQuery({ orgSlug: slug, projectRef: ref })
   const tables = data?.tables ?? []
   const functions = data?.functions ?? []
   const [section, resource] = snap.activeDocsSection

@@ -38,7 +38,7 @@ interface SlowQuery {
 export const AdvisorWidget = () => {
   const { slug, ref: projectRef } = useParams() as { slug: string; ref?: string }
   const [selectedTab, setSelectedTab] = useState<'security' | 'performance'>('security')
-  const { data: lints, isLoading: isLoadingLints } = useProjectLintsQuery({ projectRef })
+  const { data: lints, isLoading: isLoadingLints } = useProjectLintsQuery({ orgSlug: slug, projectRef })
   const { data: slowestQueriesData, isLoading: isLoadingSlowestQueries } = useQueryPerformanceQuery(
     {
       preset: 'slowestExecutionTime',
