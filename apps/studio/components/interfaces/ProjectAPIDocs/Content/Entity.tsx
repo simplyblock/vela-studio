@@ -31,11 +31,11 @@ function getColumnType(type: string, format: string) {
 }
 
 const Entity = ({ language, apikey = '', endpoint = '' }: ContentProps) => {
-  const { ref } = useParams()
+  const { slug, ref } = useParams()
   const snap = useAppStateSnapshot()
   const resource = snap.activeDocsSection[1]
 
-  const { data: jsonSchema, refetch } = useProjectJsonSchemaQuery({ projectRef: ref })
+  const { data: jsonSchema, refetch } = useProjectJsonSchemaQuery({ orgSlug: slug, projectRef: ref })
 
   const definition = jsonSchema?.definitions?.[resource]
   const columns =

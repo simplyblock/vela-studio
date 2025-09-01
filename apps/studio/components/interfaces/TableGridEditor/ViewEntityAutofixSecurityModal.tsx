@@ -9,6 +9,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { ScrollArea, SimpleCodeBlock } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { getPathReferences } from '../../../data/vela/path-references'
 
 interface ViewEntityAutofixSecurityModalProps {
   table: Entity
@@ -22,6 +23,7 @@ export default function ViewEntityAutofixSecurityModal({
   setIsAutofixViewSecurityModalOpen,
 }: ViewEntityAutofixSecurityModalProps) {
   const { data: project } = useSelectedProjectQuery()
+  const { slug: orgSlug } = getPathReferences()
   const queryClient = useQueryClient()
   const { isSuccess, isLoading, data } = useViewDefinitionQuery(
     {
@@ -38,7 +40,7 @@ export default function ViewEntityAutofixSecurityModal({
     onSuccess: async () => {
       toast.success('View security changed successfully')
       setIsAutofixViewSecurityModalOpen(false)
-      await queryClient.invalidateQueries(lintKeys.lint(project?.ref))
+      await queryClient.invalidateQueries(lintKeys.lint(orgSlug, project?.ref))
     },
     onError: (error) => {
       toast.error(`Failed to autofix view security: ${error.message}`)

@@ -103,9 +103,11 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
   const { lint_name, assigned_to, is_disabled } = form.watch()
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (values) => {
+    if (!slug) return console.error('Organization slug is required')
     if (!projectRef) return console.error('Project ref is required')
 
     createRule({
+      orgSlug: slug,
       projectRef,
       exception: {
         ...values,

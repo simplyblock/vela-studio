@@ -163,7 +163,7 @@ export const SQLEditor = () => {
       refetchEntityDefinitions()
 
       // revalidate lint query
-      queryClient.invalidateQueries(lintKeys.lint(ref))
+      queryClient.invalidateQueries(lintKeys.lint(slug, ref))
     },
     onError(error: any, vars) {
       if (id) {

@@ -1,12 +1,12 @@
 # To be run in the root of the turbo monorepo
 # NOTE: It's highly recommended to use the new builder, Buildkit. https://docs.docker.com/build/buildkit/
 ## USAGE:
-# Build:        docker build . -f apps/studio/Dockerfile --target production -t studio:latest
-# Run:          docker run -p 3000:3000 supabase/studio
-# Deploy:       docker push supabase/studio:latest
+# Build:        docker build . -f apps/studio/Dockerfile --target production -t simplyblock/vela-studio:latest
+# Run:          docker run -p 3000:3000 simpylblock/vela-studio
+# Deploy:       docker push simplyblock/vela-studio:latest
 # Clean build:
 #    docker builder prune
-#    docker build . -f apps/studio/Dockerfile --target production -t studio:latest --no-cache
+#    docker build . -f apps/studio/Dockerfile --target production -t simplyblock/vela-studio:latest --no-cache
 
 FROM node:22-slim AS base
 ENV PNPM_HOME="/pnpm"

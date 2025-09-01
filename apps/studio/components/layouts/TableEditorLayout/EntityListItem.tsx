@@ -48,6 +48,7 @@ import {
   TooltipTrigger,
   TreeViewItemVariant,
 } from 'ui'
+import { getPathReferences } from '../../../data/vela/path-references'
 
 export interface EntityListItemProps {
   id: number | string
@@ -73,6 +74,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   onExportCLI,
 }) => {
   const { data: project } = useSelectedProjectQuery()
+  const { slug: orgSlug } = getPathReferences()
   const snap = useTableEditorStateSnapshot()
   const { selectedSchema } = useQuerySchemaState()
 
@@ -85,7 +87,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   const canEdit = isActive && !isLocked
 
   const { data: lints = [] } = useProjectLintsQuery({
-    projectRef: project?.ref,
+    orgSlug: slug, projectRef: project?.ref,
   })
 
   const tableHasLints: boolean = getEntityLintDetails(

@@ -15,7 +15,7 @@ export async function acceptOrganizationInvitation({
   slug,
   token,
 }: OrganizationAcceptInvitationVariables) {
-  const { data, error } = await post('/platform/organizations/{slug}/members/invitations/{token}', {
+  const { data, error } = await post('/platform/organizations/{slug}/members/invitations/tokens/{token}', {
     params: { path: { slug, token } },
   })
 

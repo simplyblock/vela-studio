@@ -82,6 +82,7 @@ export const QueueTab = () => {
   })
 
   const onToggleRLS = async () => {
+    if (!slug) return console.error('Organization slug is required')
     if (!project) return console.error('Project is required')
     if (!queueTable) return toast.error('Unable to toggle RLS: Queue table not found')
     const payload = {
@@ -89,6 +90,7 @@ export const QueueTab = () => {
       rls_enabled: true,
     }
     updateTable({
+      orgSlug: slug,
       projectRef: project?.ref,
       connectionString: project?.connectionString,
       id: queueTable.id,

@@ -16,7 +16,7 @@ export async function getOrganizationInviteByToken(
   if (!slug) throw new Error('slug is required')
   if (!token) throw new Error('token is required')
 
-  const { data, error } = await get('/platform/organizations/{slug}/members/invitations/{token}', {
+  const { data, error } = await get('/platform/organizations/{slug}/members/invitations/tokens/{token}', {
     params: { path: { slug, token } },
     signal,
   })

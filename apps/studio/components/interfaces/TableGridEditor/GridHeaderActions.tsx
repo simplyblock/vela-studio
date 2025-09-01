@@ -58,7 +58,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
   )
 
   // need project lints to get security status for views
-  const { data: lints = [] } = useProjectLintsQuery({ projectRef: project?.ref })
+  const { data: lints = [] } = useProjectLintsQuery({ orgSlug: slug, projectRef: project?.ref })
 
   const isTable = isTableLike(table)
   const isForeignTable = isTableLikeForeignTable(table)
@@ -186,6 +186,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
     }
 
     updateTable({
+      orgSlug: slug!,
       projectRef: project?.ref!,
       connectionString: project?.connectionString,
       id: table.id,

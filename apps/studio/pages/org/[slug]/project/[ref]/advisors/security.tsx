@@ -14,10 +14,12 @@ import { Lint, useProjectLintsQuery } from 'data/lint/lint-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { NextPageWithLayout } from 'types'
 import { LoadingLine } from 'ui'
+import { getPathReferences } from '../../../../../../data/vela/path-references'
 
 const ProjectLints: NextPageWithLayout = () => {
   const { preset, id } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { slug: orgSlug } = getPathReferences()
 
   // need to maintain a list of filters for each tab
   const [filters, setFilters] = useState<{ level: LINTER_LEVELS; filters: string[] }[]>([
@@ -31,6 +33,7 @@ const ProjectLints: NextPageWithLayout = () => {
   const [selectedLint, setSelectedLint] = useState<Lint | null>(null)
 
   const { data, isLoading, isRefetching, refetch } = useProjectLintsQuery({
+    orgSlug,
     projectRef: project?.ref,
   })
 

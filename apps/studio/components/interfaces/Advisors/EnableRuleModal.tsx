@@ -24,7 +24,7 @@ interface EnableRuleModalProps {
 }
 
 export const EnableRuleModal = ({ lint, rule }: EnableRuleModalProps) => {
-  const { ref } = useParams()
+  const { slug, ref } = useParams()
   const router = useRouter()
 
   const [open, setOpen] = useState(false)
@@ -37,8 +37,9 @@ export const EnableRuleModal = ({ lint, rule }: EnableRuleModalProps) => {
   })
 
   const onDeleteRule = () => {
+    if (!slug) return console.error('Organization slug is required')
     if (!ref) return console.error('Project ref is required')
-    deleteRule({ projectRef: ref, ids: [rule.id] })
+    deleteRule({ orgSlug: slug, projectRef: ref, ids: [rule.id] })
   }
 
   return (
