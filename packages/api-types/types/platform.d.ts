@@ -1356,7 +1356,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/members/invitations/{token}': {
+  '/platform/organizations/{slug}/members/invitations/tokens/{token}': {
     parameters: {
       query?: never
       header?: never
