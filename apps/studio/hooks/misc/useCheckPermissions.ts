@@ -38,7 +38,7 @@ export function doPermissionsCheck(
   organizationSlug?: string,
   projectRef?: string
 ) {
-  return true;
+  return true; // FIXME: Reenable the permission check when ready!
 
   if (!permissions || !Array.isArray(permissions)) {
     return false

@@ -35,7 +35,5 @@ yarn-error.log*
 .vercel
 
 /public/dashboard
-# Sentry Auth Token
-.sentryclirc
 
 certificates

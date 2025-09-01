@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import type { AuthMFAVerifyResponse, MFAChallengeAndVerifyParams } from '@supabase/supabase-js'
 import { UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -53,9 +52,6 @@ export const useMfaChallengeAndVerifyMutation = ({
           toast.error(`Failed to sign in: ${data.message}`)
         } else {
           onError(data, variables, context)
-        }
-        if (!WHITELIST_ERRORS.some((error) => data.message.includes(error))) {
-          Sentry.captureMessage('[CRITICAL] Failed to sign in via MFA: ' + data.message)
         }
       },
       ...options,

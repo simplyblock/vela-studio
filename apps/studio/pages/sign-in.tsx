@@ -16,12 +16,12 @@ import SignInWithGoogle from 'components/interfaces/SignIn/SignInWithGoogle'
 const SignInPage: NextPageWithLayout = () => {
   const router = useRouter()
 
-  // useEffect(() => {
-  //   if (!IS_PLATFORM) {
-  //     // on selfhosted instance just redirect to projects page
-  //     router.replace('/organizations') //FIXME: Enable sign-in
-  //   }
-  // }, [router])
+  useEffect(() => {
+    if (!IS_PLATFORM) {
+      // on selfhosted instance just redirect to projects page
+      router.replace('/organizations')
+    }
+  }, [router])
 
   return (
     <>

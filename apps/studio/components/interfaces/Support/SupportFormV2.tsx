@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as Sentry from '@sentry/nextjs'
 import { Book, ChevronRight, ExternalLink, Github, Loader2, Mail, Plus, X } from 'lucide-react'
 import Link from 'next/link'
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
@@ -165,7 +164,6 @@ export const SupportFormV2 = ({
     },
     onError: (error) => {
       toast.error(`Failed to submit support ticket: ${error.message}`)
-      Sentry.captureMessage('Failed to submit Support Form: ' + error.message)
       setIsSubmitting(false)
     },
   })

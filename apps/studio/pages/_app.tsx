@@ -19,7 +19,6 @@ import 'ui/build/css/themes/dark.css'
 import 'ui/build/css/themes/light.css'
 
 import { loader } from '@monaco-editor/react'
-import * as Sentry from '@sentry/nextjs'
 import { Hydrate, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import dayjs from 'dayjs'
@@ -83,11 +82,6 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page)
 
   const errorBoundaryHandler = (error: Error, info: ErrorInfo) => {
-    Sentry.withScope(function (scope) {
-      scope.setTag('globalErrorBoundary', true)
-      Sentry.captureException(error)
-    })
-
     console.error(error.stack)
   }
 

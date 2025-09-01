@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -79,7 +78,6 @@ const SignInMfaPage: NextPageWithLayout = () => {
         }
       })
       .catch((error) => {
-        Sentry.captureException(error)
         console.error('Auth initialization error:', error)
         toast.error('Failed to initialize authentication. Please try again.')
         setLoading(false)

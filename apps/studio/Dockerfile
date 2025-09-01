@@ -45,7 +45,7 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS dev
 COPY --from=turbo /app/out/full ./
 ENTRYPOINT ["docker-entrypoint.sh"]
-EXPOSE 8082
+EXPOSE 3000
 CMD ["pnpm", "dev:studio"]
 
 # Compile Next.js

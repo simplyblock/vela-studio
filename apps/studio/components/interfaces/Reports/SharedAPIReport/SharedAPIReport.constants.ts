@@ -2,7 +2,6 @@ import { get } from 'data/fetchers'
 import { generateRegexpWhere } from '../Reports.constants'
 import { ReportFilterItem } from '../Reports.types'
 import { useQueries, useQueryClient } from '@tanstack/react-query'
-import * as Sentry from '@sentry/nextjs'
 import { useState } from 'react'
 import { useParams } from 'common'
 import { isEqual } from 'lodash'
@@ -204,13 +203,6 @@ const fetchLogs = async ({
   })
 
   if (error || data?.error) {
-    Sentry.captureException({
-      message: 'Shared API Report Error',
-      data: {
-        error,
-        data,
-      },
-    })
     throw error || data?.error
   }
 

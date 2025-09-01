@@ -2683,7 +2683,7 @@ export interface paths {
     patch: operations['PostgrestConfigController_updatePostgRESTConfig']
     trace?: never
   }
-  '/platform/projects/{ref}/config/realtime': {
+  '/platform/organizations/{slug}/projects/{ref}/config/realtime': {
     parameters: {
       query?: never
       header?: never
@@ -17257,6 +17257,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -17286,6 +17287,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }

@@ -245,8 +245,8 @@ services:
 
   ## Protected Dashboard - catch all remaining routes
   - name: dashboard
-    _comment: 'Studio: /* -> http://studio:8082/*'
-    url: http://studio:8082/
+    _comment: 'Studio: /* -> http://studio:3000/*'
+    url: http://studio:3000/
     routes:
       - name: dashboard-all
         strip_path: true

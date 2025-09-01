@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
@@ -28,9 +27,6 @@ export const useAddLoginEvent = ({
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {
-        Sentry.captureException(
-          new Error("Failed to add login event to user's audit log", { cause: data })
-        )
         if (onError === undefined) {
           toast.error(`Failed to add login event: ${data.message}`)
         } else {

@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
@@ -44,9 +43,6 @@ export const useResetPasswordMutation = ({
           toast.error(`Failed to reset password: ${data.message}`)
         } else {
           onError(data, variables, context)
-        }
-        if (!WHITELIST_ERRORS.some((error) => data.message.includes(error))) {
-          Sentry.captureMessage('[CRITICAL] Failed to send reset password email: ' + data.message)
         }
       },
       ...options,

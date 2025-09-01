@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import * as Sentry from '@sentry/nextjs'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
@@ -38,25 +37,6 @@ const GroupsTelemetry = ({ hasAcceptedConsent }: { hasAcceptedConsent: boolean }
   const title = typeof document !== 'undefined' ? document?.title : ''
   const referrer = typeof document !== 'undefined' ? document?.referrer : ''
   useTelemetryCookie({ hasAcceptedConsent, title, referrer })
-
-  useEffect(() => {
-    // don't set the sentry user id if the user hasn't logged in (so that Sentry errors show null user id instead of anonymous id)
-    if (!user?.id) {
-      return
-    }
-
-    const setSentryId = async () => {
-      let sentryUserId = localStorage.getItem(LOCAL_STORAGE_KEYS.SENTRY_USER_ID)
-      if (!sentryUserId) {
-        sentryUserId = await getAnonId(user?.id)
-        localStorage.setItem(LOCAL_STORAGE_KEYS.SENTRY_USER_ID, sentryUserId)
-      }
-      Sentry.setUser({ id: sentryUserId })
-    }
-
-    // if an error happens, continue without setting a sentry id
-    setSentryId().catch((e) => console.error(e))
-  }, [user?.id])
 
   useEffect(() => {
     const isLandingOnProjectRoute =

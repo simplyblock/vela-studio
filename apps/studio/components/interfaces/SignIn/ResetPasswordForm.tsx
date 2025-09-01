@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as Sentry from '@sentry/nextjs'
 import { Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -70,9 +69,6 @@ const ResetPasswordForm = () => {
       await router.push(getReturnToPath('/organizations'))
     } else {
       toast.error(`Failed to save password: ${error.message}`, { id: toastId })
-      if (!WHITELIST_ERRORS.some((e) => error.message.includes(e))) {
-        Sentry.captureMessage('[CRITICAL] Failed to reset password: ' + error.message)
-      }
     }
   }
 

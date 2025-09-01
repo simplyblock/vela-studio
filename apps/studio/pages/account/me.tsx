@@ -1,7 +1,6 @@
 import { AccountConnections } from 'components/interfaces/Account/Preferences/AccountConnections'
 import { AccountDeletion } from 'components/interfaces/Account/Preferences/AccountDeletion'
 import { AccountIdentities } from 'components/interfaces/Account/Preferences/AccountIdentities'
-import { AnalyticsSettings } from 'components/interfaces/Account/Preferences/AnalyticsSettings'
 import { ProfileInformation } from 'components/interfaces/Account/Preferences/ProfileInformation'
 import { ThemeSettings } from 'components/interfaces/Account/Preferences/ThemeSettings'
 import AccountLayout from 'components/layouts/AccountLayout/AccountLayout'
@@ -79,10 +78,6 @@ const ProfileCard = () => {
 
           <section>
             <ThemeSettings />
-          </section>
-
-          <section>
-            <AnalyticsSettings />
           </section>
 
           <section>

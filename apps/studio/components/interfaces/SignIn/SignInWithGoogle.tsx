@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { BASE_PATH } from 'lib/constants'
@@ -55,7 +54,6 @@ const SignInWithGoogle = () => {
       //   else setLastSignInUsed('google')
     } catch (error: any) {
       toast.error(`Failed to sign in via Google: ${error.message}`)
-      Sentry.captureMessage('[CRITICAL] Failed to sign in via Google: ' + error.message)
       setLoading(false)
     }
   }

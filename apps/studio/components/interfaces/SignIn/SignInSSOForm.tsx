@@ -1,6 +1,5 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as Sentry from '@sentry/nextjs'
 import { useQueryClient } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
 import { type SubmitHandler, useForm } from 'react-hook-form'
@@ -69,10 +68,6 @@ export const SignInSSOForm = () => {
       setCaptchaToken(null)
       captchaRef.current?.resetCaptcha()
       toast.error(`Failed to sign in: ${error.message}`, { id: toastId })
-
-      if (!WHITELIST_ERRORS.includes(error.message)) {
-        Sentry.captureMessage('[CRITICAL] Failed to sign in via SSO: ' + error.message)
-      }
     }
   }
 

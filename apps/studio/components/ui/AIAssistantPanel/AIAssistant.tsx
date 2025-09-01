@@ -384,12 +384,6 @@ export const AIAssistant = ({ className }: AIAssistantProps) => {
   return (
     <ErrorBoundary
       message="Something went wrong with the AI Assistant"
-      sentryContext={{
-        component: 'AIAssistant',
-        feature: 'AI Assistant Panel',
-        projectRef: project?.ref,
-        organizationSlug: selectedOrganization?.slug,
-      }}
       actions={[
         {
           label: 'Clear messages and refresh',

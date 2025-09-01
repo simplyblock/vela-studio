@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from '../../../../../lib/api/apiBuilder'
 import { IS_VELA_PLATFORM } from 'lib/constants'
-import { GOTRUE_URL } from '../../../constants'
+import { VELA_PLATFORM_GOTRUE_URL } from '../../../constants'
 
 interface InviteRequest {
   orgSlug?: string
@@ -41,7 +41,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
     email: request.email,
   }
 
-  const response = await fetch(`${GOTRUE_URL}/invite`, {
+  const response = await fetch(`${VELA_PLATFORM_GOTRUE_URL}/invite`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

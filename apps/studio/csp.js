@@ -27,7 +27,6 @@ const SUPABASE_CONTENT_API_URL = process.env.NEXT_PUBLIC_CONTENT_API_URL
   : ''
 
 const isDevOrStaging =
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' ||
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'local' ||
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging'
 
@@ -46,8 +45,6 @@ const STRIPE_SUBDOMAINS_URL = 'https://*.stripe.com'
 const STRIPE_JS_URL = 'https://js.stripe.com'
 const STRIPE_NETWORK_URL = 'https://*.stripe.network'
 const CLOUDFLARE_URL = 'https://www.cloudflare.com'
-const VERCEL_URL = 'https://vercel.com'
-const VERCEL_INSIGHTS_URL = 'https://*.vercel-insights.com'
 const GITHUB_API_URL = 'https://api.github.com'
 const GITHUB_USER_CONTENT_URL = 'https://raw.githubusercontent.com'
 const GITHUB_USER_AVATAR_URL = 'https://avatars.githubusercontent.com'
@@ -56,9 +53,6 @@ const GOOGLE_USER_AVATAR_URL = 'https://lh3.googleusercontent.com'
 // This is a custom domain for Stape, which isused for GTM servers
 const STAPE_URL = 'https://ss.supabase.com'
 
-const VERCEL_LIVE_URL = 'https://vercel.live'
-const SENTRY_URL =
-  'https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io'
 const SUPABASE_ASSETS_URL =
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging'
     ? 'https://frontend-assets.supabase.green'
@@ -67,10 +61,6 @@ const POSTHOG_URL = isDevOrStaging ? 'https://ph.supabase.green' : 'https://ph.s
 
 const USERCENTRICS_URLS = 'https://*.usercentrics.eu'
 const USERCENTRICS_APP_URL = 'https://app.usercentrics.eu'
-
-// used by vercel live preview
-const PUSHER_URL = 'https://*.pusher.com'
-const PUSHER_URL_WS = 'wss://*.pusher.com'
 
 const GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com'
 
@@ -88,7 +78,6 @@ module.exports.getCSP = function getCSP() {
     STRIPE_SUBDOMAINS_URL,
     STRIPE_NETWORK_URL,
     CLOUDFLARE_URL,
-    VERCEL_INSIGHTS_URL,
     GITHUB_API_URL,
     GITHUB_USER_CONTENT_URL,
     SUPABASE_ASSETS_URL,
@@ -126,13 +115,10 @@ module.exports.getCSP = function getCSP() {
       ? [
           SUPABASE_STAGING_PROJECTS_URL,
           SUPABASE_STAGING_PROJECTS_URL_WS,
-          VERCEL_LIVE_URL,
           SUPABASE_DOCS_PROJECT_URL,
           SUPABASE_CONTENT_API_URL,
         ]
       : []),
-    PUSHER_URL_WS,
-    SENTRY_URL,
   ].join(' ')
 
   const imgSrcDirective = [
@@ -140,7 +126,7 @@ module.exports.getCSP = function getCSP() {
     `blob:`,
     `data:`,
     ...IMG_SRC_URLS,
-    ...(isDevOrStaging ? [SUPABASE_STAGING_PROJECTS_URL, VERCEL_URL] : []),
+    ...(isDevOrStaging ? [SUPABASE_STAGING_PROJECTS_URL] : []),
   ].join(' ')
 
   const scriptSrcDirective = [
@@ -148,21 +134,18 @@ module.exports.getCSP = function getCSP() {
     `'unsafe-eval'`,
     `'unsafe-inline'`,
     ...SCRIPT_SRC_URLS,
-    VERCEL_LIVE_URL,
-    PUSHER_URL,
     GOOGLE_MAPS_API_URL,
   ].join(' ')
 
-  const frameSrcDirective = [`frame-src 'self'`, ...FRAME_SRC_URLS, VERCEL_LIVE_URL].join(' ')
+  const frameSrcDirective = [`frame-src 'self'`, ...FRAME_SRC_URLS].join(' ')
 
   const styleSrcDirective = [
     `style-src 'self'`,
     `'unsafe-inline'`,
     ...STYLE_SRC_URLS,
-    VERCEL_LIVE_URL,
   ].join(' ')
 
-  const fontSrcDirective = [`font-src 'self'`, ...FONT_SRC_URLS, VERCEL_LIVE_URL].join(' ')
+  const fontSrcDirective = [`font-src 'self'`, ...FONT_SRC_URLS].join(' ')
 
   const workerSrcDirective = [`worker-src 'self'`, `blob:`, `data:`].join(' ')
 

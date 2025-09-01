@@ -1,6 +1,5 @@
 import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as Sentry from '@sentry/nextjs'
 import type { AuthError } from '@supabase/supabase-js'
 import { useQueryClient } from '@tanstack/react-query'
 import Link from 'next/link'
@@ -98,7 +97,6 @@ export const SignInForm = () => {
         router.push(redirectPath)
       } catch (error: any) {
         toast.error(`Failed to sign in: ${(error as AuthError).message}`, { id: toastId })
-        Sentry.captureMessage('[CRITICAL] Failed to sign in via EP: ' + error.message)
       }
     } else {
       setCaptchaToken(null)
