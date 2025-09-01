@@ -1,8 +1,8 @@
 {
-  "name": "supabase",
+  "name": "vela-studio",
   "description": "The Postgres Development Platform.",
   "version": "0.0.0",
-  "author": "Supabase, Inc.",
+  "author": "Simplyblock, Supabase, Inc.",
   "license": "Apache-2.0",
   "private": true,
   "scripts": {
@@ -60,7 +60,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/supabase/supabase.git"
+    "url": "git+https://github.com/simplyblock/vela-studio.git"
   },
   "pnpm": {
     "overrides": {
