@@ -112,7 +112,8 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
       : true
 
     const ignorePausedState =
-      router.pathname === '/org/[slug]/project/[ref]' || router.pathname.includes('/org/[slug]/project/[ref]/settings')
+      router.pathname === '/org/[slug]/project/[ref]' ||
+      router.pathname.includes('/org/[slug]/project/[ref]/settings')
     const showPausedState = isPaused && !ignorePausedState
 
     useEffect(() => {
@@ -225,7 +226,7 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
                         'xl:relative xl:border-l-0'
                       )}
                     >
-                      <AIAssistant className="w-full h-[100dvh] md:h-full max-h-[100dvh]" />
+                      {/* <AIAssistant className="w-full h-[100dvh] md:h-full max-h-[100dvh]" /> */}
                     </ResizablePanel>
                   </>
                 )}
