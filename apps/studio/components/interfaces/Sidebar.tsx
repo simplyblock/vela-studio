@@ -368,7 +368,7 @@ const OrganizationLinks = () => {
   const disableAccessMfa = org?.organization_requires_mfa && !isUserMFAEnabled
 
   // Get the full current path
-  const currentPath = router.pathname
+  const currentPath = router.asPath
 
   const ProjectSection = [
     {
@@ -417,6 +417,7 @@ const OrganizationLinks = () => {
     // Special case for projects which is the root
     if (key === 'projects') {
       // Check if we're exactly at the org root
+      console.log(`current path: ${currentPath} and slug is: ${slug}`)
       return (
         currentPath === `/org/${slug}` ||
         currentPath === `/org/${slug}/` ||
