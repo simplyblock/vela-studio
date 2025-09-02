@@ -367,7 +367,8 @@ const OrganizationLinks = () => {
   const isUserMFAEnabled = useIsMFAEnabled()
   const disableAccessMfa = org?.organization_requires_mfa && !isUserMFAEnabled
 
-  const activeRoute = router.pathname.split('/')[5]
+  // Get the full current path
+  const currentPath = router.pathname
 
   const ProjectSection = [
     {
@@ -394,12 +395,12 @@ const OrganizationLinks = () => {
     {
       label: 'Metering',
       href: `/org/${slug}/usage`,
-      key: 'metering',
+      key: 'usage', // Changed to match the path
       icon: <ChartArea size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
     {
       label: 'Backups',
-      href: `/org/${slug}/usage`,
+      href: `/org/${slug}/backups`, // Updated to match the key
       key: 'backups',
       icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
@@ -411,6 +412,35 @@ const OrganizationLinks = () => {
     },
   ]
 
+  // Check if a path is active based on URL inclusion
+  const isActive = (key: string, href: string) => {
+    // Special case for projects which is the root
+    if (key === 'projects') {
+      // Check if we're exactly at the org root
+      return (
+        currentPath === `/org/${slug}` ||
+        currentPath === `/org/${slug}/` ||
+        // Fallback: check if path ends with just the org slug
+        currentPath.endsWith(`/org/${slug}`) ||
+        currentPath.endsWith(`/org/${slug}/`)
+      )
+    }
+
+    // For settings, check multiple paths
+    if (key === 'settings') {
+      return (
+        currentPath.includes('/general') ||
+        currentPath.includes('/apps') ||
+        currentPath.includes('/audit') ||
+        currentPath.includes('/documents') ||
+        currentPath.includes('/security')
+      )
+    }
+
+    // For all others, check if the current path includes the key
+    return currentPath.includes(key)
+  }
+
   return (
     <SidebarMenu className="flex flex-col gap-1 items-start">
       <SidebarGroup className="gap-0.5">
@@ -418,11 +448,7 @@ const OrganizationLinks = () => {
           <SideBarNavLink
             key={item.key}
             disabled={disableAccessMfa && item.key === 'team'}
-            active={
-              item.key === 'projects'
-                ? isUndefined(activeRoute)
-                : activeRoute === item.key || router.pathname.includes(item.key)
-            }
+            active={isActive(item.key, item.href)}
             route={{
               label: item.label,
               link: item.href,
@@ -434,25 +460,15 @@ const OrganizationLinks = () => {
       </SidebarGroup>
       <Separator className="w-[calc(100%-1rem)] mx-auto" />
       <SidebarGroup className="gap-0.5">
-        {navMenuItems.map((item, i) => (
+        {navMenuItems.map((item) => (
           <SideBarNavLink
             key={item.key}
             disabled={disableAccessMfa}
-            active={
-              i === 0
-                ? activeRoute === undefined
-                : item.key === 'settings'
-                  ? router.pathname.includes('/general') ||
-                    router.pathname.includes('/apps') ||
-                    router.pathname.includes('/audit') ||
-                    router.pathname.includes('/documents') ||
-                    router.pathname.includes('/security')
-                  : activeRoute === item.key
-            }
+            active={isActive(item.key, item.href)}
             route={{
               label: item.label,
               link: item.href,
-              key: item.label,
+              key: item.key,
               icon: item.icon,
             }}
           />
