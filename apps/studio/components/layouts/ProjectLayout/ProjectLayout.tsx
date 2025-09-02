@@ -101,7 +101,8 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
       : true
 
     const ignorePausedState =
-      router.pathname === '/org/[slug]/project/[ref]' || router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/settings')
+      router.pathname === '/org/[slug]/project/[ref]' ||
+      router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/settings')
     const showPausedState = isPaused && !ignorePausedState
 
     return (
