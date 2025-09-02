@@ -13,6 +13,7 @@ import { OrganizationContextProvider } from './OrganizationContext'
 import { getOrganizationSlug } from 'data/vela/organization-path-slug'
 import { getProjectRef } from 'data/vela/project-path-ref'
 import { RbacSubSideBar } from 'components/interfaces/RbacSidebar'
+
 export interface DefaultLayoutProps {
   headerTitle?: string
 }
