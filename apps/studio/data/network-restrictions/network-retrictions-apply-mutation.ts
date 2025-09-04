@@ -6,20 +6,23 @@ import type { ResponseError } from 'types'
 import { networkRestrictionKeys } from './keys'
 
 export type NetworkRestrictionsApplyVariables = {
+  orgSlug: string
   projectRef: string
   dbAllowedCidrs: string[]
   dbAllowedCidrsV6: string[]
 }
 
 export async function applyNetworkRestrictions({
+  orgSlug,
   projectRef,
   dbAllowedCidrs,
   dbAllowedCidrsV6,
 }: NetworkRestrictionsApplyVariables) {
+  if (!orgSlug) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await post('/v1/projects/{ref}/network-restrictions/apply', {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await post('/platform/organizations/{slug}/projects/{ref}/network-restrictions/apply', {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     body: { dbAllowedCidrs, dbAllowedCidrsV6 },
   })
 
@@ -49,8 +52,8 @@ export const useNetworkRestrictionsApplyMutation = ({
     NetworkRestrictionsApplyVariables
   >((vars) => applyNetworkRestrictions(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef } = variables
-      await queryClient.invalidateQueries(networkRestrictionKeys.list(projectRef))
+      const { orgSlug, projectRef } = variables
+      await queryClient.invalidateQueries(networkRestrictionKeys.list(orgSlug, projectRef))
       await onSuccess?.(data, variables, context)
     },
     async onError(data, variables, context) {

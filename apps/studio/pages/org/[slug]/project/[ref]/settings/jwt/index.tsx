@@ -14,10 +14,10 @@ import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 
 const JWTKeysLegacyPage: NextPageWithLayout = () => {
-  const { ref: projectRef, source } = useParams()
+  const { slug: orgSlug, ref: projectRef, source } = useParams()
   const client = useQueryClient()
 
-  const { data } = useJwtSecretUpdatingStatusQuery({ projectRef })
+  const { data } = useJwtSecretUpdatingStatusQuery({ orgSlug, projectRef })
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
   const jwtSecretUpdateError = data?.jwtSecretUpdateError
 
@@ -32,7 +32,7 @@ const JWTKeysLegacyPage: NextPageWithLayout = () => {
         case Updated:
           client.invalidateQueries(configKeys.api(projectRef))
           client.invalidateQueries(configKeys.settings(projectRef))
-          client.invalidateQueries(configKeys.postgrest(projectRef))
+          client.invalidateQueries(configKeys.postgrest(orgSlug, projectRef))
           toast.success('Successfully updated JWT secret')
           break
         case Failed:

@@ -17,9 +17,9 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN apt-get update -qq && \
   apt-get install -y --no-install-recommends \
   git \
-  python3 \ 
+  python3 \
   ca-certificates \
-  build-essential && \ 
+  build-essential && \
   rm -rf /var/lib/apt/lists/* && \
   update-ca-certificates
 

@@ -8,6 +8,7 @@ import type { ResponseError } from 'types'
 import { databaseExtensionsKeys } from './keys'
 
 export type DatabaseExtensionDisableVariables = {
+  orgSlug: string,
   projectRef: string
   connectionString?: string | null
   id: string
@@ -56,10 +57,10 @@ export const useDatabaseExtensionDisableMutation = ({
     DatabaseExtensionDisableVariables
   >((vars) => disableDatabaseExtension(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef } = variables
+      const { orgSlug, projectRef } = variables
       await Promise.all([
         queryClient.invalidateQueries(databaseExtensionsKeys.list(projectRef)),
-        queryClient.invalidateQueries(configKeys.upgradeEligibility(projectRef)),
+        queryClient.invalidateQueries(configKeys.upgradeEligibility(orgSlug, projectRef)),
       ])
       await onSuccess?.(data, variables, context)
     },

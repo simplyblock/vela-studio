@@ -6,6 +6,7 @@ import { sslEnforcementKeys } from './keys'
 import { handleError, put } from 'data/fetchers'
 
 export type SSLEnforcementUpdateVariables = {
+  orgSlug: string
   projectRef: string
   requestedConfig: { database: boolean }
 }
@@ -17,13 +18,14 @@ export type SSLEnforcementUpdateResponse = {
 }
 
 export async function updateSSLEnforcement({
+  orgSlug,
   projectRef,
   requestedConfig,
 }: SSLEnforcementUpdateVariables) {
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await put(`/v1/projects/{ref}/ssl-enforcement`, {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await put(`/platform/organizations/{slug}/projects/{ref}/ssl-enforcement`, {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     body: { requestedConfig },
   })
 
@@ -47,8 +49,8 @@ export const useSSLEnforcementUpdateMutation = ({
     (vars) => updateSSLEnforcement(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(sslEnforcementKeys.list(projectRef))
+        const { orgSlug, projectRef } = variables
+        await queryClient.invalidateQueries(sslEnforcementKeys.list(orgSlug, projectRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

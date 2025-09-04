@@ -15,7 +15,6 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
-import { useParams } from 'common'
 import { useProjectUpgradingStatusQuery } from 'data/config/project-upgrade-status-query'
 import { invalidateProjectDetailsQuery } from 'data/projects/project-detail-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
@@ -25,7 +24,7 @@ import { DATABASE_UPGRADE_MESSAGES } from './UpgradingState.constants'
 import { getPathReferences } from '../../../../data/vela/path-references'
 
 const UpgradingState = () => {
-  const { slug, ref } = getPathReferences()
+  const { slug: orgSlug, ref: projectRef } = getPathReferences()
   const queryParams = useSearchParams()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
@@ -33,7 +32,8 @@ const UpgradingState = () => {
   const [isExpanded, setIsExpanded] = useState(false)
   const { data } = useProjectUpgradingStatusQuery(
     {
-      projectRef: ref,
+      orgSlug,
+      projectRef,
       projectStatus: project?.status,
       trackingId: queryParams.get('trackingId'),
     },
@@ -62,7 +62,7 @@ const UpgradingState = () => {
   const refetchProjectDetails = async () => {
     setLoading(true)
 
-    if (ref) await invalidateProjectDetailsQuery(queryClient, slug as string, ref)
+    if (projectRef && orgSlug) await invalidateProjectDetailsQuery(queryClient, orgSlug, projectRef)
   }
 
   const subject = 'Upgrade%20failed%20for%20project'
@@ -109,7 +109,7 @@ const UpgradingState = () => {
                 <div className="flex items-center mx-auto space-x-2">
                   <Button asChild type="default">
                     <Link
-                      href={`/support/new?category=Database_unresponsive&ref=${ref}&subject=${subject}&message=${message}`}
+                      href={`/support/new?category=Database_unresponsive&ref=${projectRef}&subject=${subject}&message=${message}`}
                       target="_blank"
                       rel="noreferrer"
                     >

@@ -64,7 +64,7 @@ export const APIKeys = () => {
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
   } = useJwtSecretUpdatingStatusQuery(
-    { projectRef },
+    { orgSlug: slug, projectRef },
     { enabled: !isProjectSettingsLoading && isApiKeysEmpty }
   )
 

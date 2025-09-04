@@ -4,6 +4,7 @@ import { get, handleError } from 'data/fetchers'
 import { configKeys } from './keys'
 
 export type JwtSecretUpdatingStatusVariables = {
+  orgSlug?: string
   projectRef?: string
 }
 
@@ -15,15 +16,14 @@ export type JwtSecretUpdatingStatusResponse = {
 }
 
 export async function getJwtSecretUpdatingStatus(
-  { projectRef }: JwtSecretUpdatingStatusVariables,
+  { orgSlug, projectRef }: JwtSecretUpdatingStatusVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) {
-    throw new Error('projectRef is required')
-  }
+  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await get('/platform/projects/{ref}/config/secrets/update-status', {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/config/secrets/update-status', {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     signal,
   })
 
@@ -45,7 +45,7 @@ export type JwtSecretUpdatingStatusData = Awaited<ReturnType<typeof getJwtSecret
 export type JwtSecretUpdatingStatusError = unknown
 
 export const useJwtSecretUpdatingStatusQuery = <TData = JwtSecretUpdatingStatusData>(
-  { projectRef }: JwtSecretUpdatingStatusVariables,
+  { orgSlug, projectRef }: JwtSecretUpdatingStatusVariables,
   {
     enabled = true,
     ...options
@@ -55,9 +55,9 @@ export const useJwtSecretUpdatingStatusQuery = <TData = JwtSecretUpdatingStatusD
 
   return useQuery<JwtSecretUpdatingStatusData, JwtSecretUpdatingStatusError, TData>(
     configKeys.jwtSecretUpdatingStatus(projectRef),
-    ({ signal }) => getJwtSecretUpdatingStatus({ projectRef }, signal),
+    ({ signal }) => getJwtSecretUpdatingStatus({ orgSlug, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
       refetchInterval(data) {
         if (!data) {
           return false
@@ -70,7 +70,7 @@ export const useJwtSecretUpdatingStatusQuery = <TData = JwtSecretUpdatingStatusD
         return interval
       },
       onSuccess() {
-        client.invalidateQueries(configKeys.postgrest(projectRef))
+        client.invalidateQueries(configKeys.postgrest(orgSlug, projectRef))
       },
       ...options,
     }

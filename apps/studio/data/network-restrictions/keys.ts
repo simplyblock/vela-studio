@@ -1,4 +1,4 @@
 export const networkRestrictionKeys = {
-  list: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'network-restrictions'] as const,
+  list: (orgSlug: string | undefined, projectRef: string | undefined) =>
+    ['projects', orgSlug, projectRef, 'network-restrictions'] as const,
 }

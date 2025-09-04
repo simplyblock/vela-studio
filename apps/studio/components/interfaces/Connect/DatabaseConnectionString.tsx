@@ -1,14 +1,11 @@
 import { HTMLAttributes, ReactNode, useMemo, useState } from 'react'
 
-import { getAddons } from 'components/interfaces/Billing/Subscription/Subscription.utils'
 import AlertError from 'components/ui/AlertError'
 import DatabaseSelector from 'components/ui/DatabaseSelector'
 import { InlineLink } from 'components/ui/InlineLink'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { usePgbouncerConfigQuery } from 'data/database/pgbouncer-config-query'
-import { useSupavisorConfigurationQuery } from 'data/database/supavisor-configuration-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { IS_PLATFORM } from 'lib/constants'
@@ -35,8 +32,6 @@ import {
   CONNECTION_PARAMETERS,
   DATABASE_CONNECTION_TYPES,
   DatabaseConnectionType,
-  IPV4_ADDON_TEXT,
-  PGBOUNCER_ENABLED_BUT_NO_IPV4_ADDON_TEXT,
 } from './Connect.constants'
 import { CodeBlockFileHeader, ConnectionPanel } from './ConnectionPanel'
 import { getConnectionStrings } from './DatabaseSettings.utils'
@@ -79,13 +74,6 @@ export const DatabaseConnectionString = () => {
     isError: isErrorPgbouncerConfig,
     isSuccess: isSuccessPgBouncerConfig,
   } = usePgbouncerConfigQuery({ orgSlug: slug, projectRef })
-  const {
-    data: supavisorConfig,
-    error: supavisorConfigError,
-    isLoading: isLoadingSupavisorConfig,
-    isError: isErrorSupavisorConfig,
-    isSuccess: isSuccessSupavisorConfig,
-  } = useSupavisorConfigurationQuery({ projectRef })
 
   const {
     data: databases,
@@ -95,38 +83,22 @@ export const DatabaseConnectionString = () => {
     isSuccess: isSuccessReadReplicas,
   } = useReadReplicasQuery({ orgSlug: slug, projectRef })
 
-  const poolerError = sharedPoolerPreferred ? pgbouncerError : supavisorConfigError
-  const isLoadingPoolerConfig = !IS_PLATFORM
-    ? false
-    : sharedPoolerPreferred
-      ? isLoadingPgbouncerConfig
-      : isLoadingSupavisorConfig
-  const isErrorPoolerConfig = !IS_PLATFORM
-    ? undefined
-    : sharedPoolerPreferred
-      ? isErrorPgbouncerConfig
-      : isErrorSupavisorConfig
-  const isSuccessPoolerConfig = !IS_PLATFORM
-    ? true
-    : sharedPoolerPreferred
-      ? isSuccessPgBouncerConfig
-      : isSuccessSupavisorConfig
+  const poolerError = pgbouncerError
+  const isLoadingPoolerConfig =isLoadingPgbouncerConfig
+  const isErrorPoolerConfig = isErrorPgbouncerConfig
+  const isSuccessPoolerConfig = isSuccessPgBouncerConfig
 
   const error = poolerError || readReplicasError
   const isLoading = isLoadingPoolerConfig || isLoadingReadReplicas
   const isError = isErrorPoolerConfig || isErrorReadReplicas
   const isSuccess = isSuccessPoolerConfig && isSuccessReadReplicas
 
-  const sharedPoolerConfig = supavisorConfig?.find((x) => x.identifier === state.selectedDatabaseId)
-  const poolingConfiguration = sharedPoolerPreferred ? sharedPoolerConfig : pgbouncerConfig
+  const poolingConfiguration = pgbouncerConfig
 
   const selectedDatabase = (databases ?? []).find(
     (db) => db.identifier === state.selectedDatabaseId
   )
   const isReplicaSelected = selectedDatabase?.identifier !== projectRef
-
-  const { data: addons } = useProjectAddonsQuery({ projectRef })
-  const { ipv4: ipv4Addon } = getAddons(addons?.selected_addons ?? [])
 
   const { mutate: sendEvent } = useSendEventMutation()
 
@@ -151,11 +123,11 @@ export const DatabaseConnectionString = () => {
   const supavisorConnectionStrings = getConnectionStrings({
     connectionInfo,
     poolingInfo: {
-      connectionString: sharedPoolerConfig?.connection_string ?? '',
-      db_host: isReplicaSelected ? connectionInfo.db_host : sharedPoolerConfig?.db_host ?? '',
-      db_name: sharedPoolerConfig?.db_name ?? '',
-      db_port: sharedPoolerConfig?.db_port ?? 0,
-      db_user: sharedPoolerConfig?.db_user ?? '',
+      connectionString: '',
+      db_host: isReplicaSelected ? connectionInfo.db_host : '',
+      db_name: '',
+      db_port: 0,
+      db_user: '',
     },
     metadata: { projectRef },
   })
@@ -191,22 +163,6 @@ export const DatabaseConnectionString = () => {
 
   // [Refactor] See if we can do this in an immutable way, technically not a good practice to do this
   let stepNumber = 0
-
-  const ipv4AddOnUrl = {
-    text: 'IPv4 add-on',
-    url: `/org/${slug}/project/${projectRef}/settings/addons?panel=ipv4`,
-  }
-  const ipv4SettingsUrl = {
-    text: 'IPv4 settings',
-    url: `/org/${slug}/project/${projectRef}/settings/addons?panel=ipv4`,
-  }
-  const poolerSettingsUrl = {
-    text: 'Pooler settings',
-    url: `/org/${slug}/project/${projectRef}/database/settings#connection-pooling`,
-  }
-  const buttonLinks = !ipv4Addon
-    ? [ipv4AddOnUrl, ...(sharedPoolerPreferred ? [poolerSettingsUrl] : [])]
-    : [ipv4SettingsUrl, ...(sharedPoolerPreferred ? [poolerSettingsUrl] : [])]
   const poolerBadge = sharedPoolerPreferred ? 'Shared Pooler' : 'Dedicated Pooler'
 
   return (
@@ -312,17 +268,6 @@ export const DatabaseConnectionString = () => {
                 fileTitle={fileTitle}
                 description="Ideal for applications with persistent, long-lived connections, such as those running on virtual machines or long-standing containers."
                 connectionString={connectionStrings['direct'][selectedTab]}
-                ipv4Status={{
-                  type: !ipv4Addon ? 'error' : 'success',
-                  title: !ipv4Addon ? 'Not IPv4 compatible' : 'IPv4 compatible',
-                  description:
-                    !sharedPoolerPreferred && !ipv4Addon
-                      ? PGBOUNCER_ENABLED_BUT_NO_IPV4_ADDON_TEXT
-                      : sharedPoolerPreferred
-                        ? 'Use Session Pooler if on a IPv4 network or purchase IPv4 add-on'
-                        : IPV4_ADDON_TEXT,
-                  links: buttonLinks,
-                }}
                 parameters={[
                   { ...CONNECTION_PARAMETERS.host, value: connectionInfo.db_host },
                   { ...CONNECTION_PARAMETERS.port, value: connectionInfo.db_port },
@@ -343,20 +288,6 @@ export const DatabaseConnectionString = () => {
                     fileTitle={fileTitle}
                     description="Ideal for stateless applications like serverless functions where each interaction with Postgres is brief and isolated."
                     connectionString={connectionStrings['pooler'][selectedTab]}
-                    ipv4Status={{
-                      type: !sharedPoolerPreferred && !ipv4Addon ? 'error' : 'success',
-                      title:
-                        !sharedPoolerPreferred && !ipv4Addon
-                          ? 'Not IPv4 compatible'
-                          : 'IPv4 compatible',
-                      description:
-                        !sharedPoolerPreferred && !ipv4Addon
-                          ? PGBOUNCER_ENABLED_BUT_NO_IPV4_ADDON_TEXT
-                          : sharedPoolerPreferred
-                            ? 'Transaction pooler connections are IPv4 proxied for free.'
-                            : IPV4_ADDON_TEXT,
-                      links: !sharedPoolerPreferred ? buttonLinks : undefined,
-                    }}
                     notice={['Does not support PREPARE statements']}
                     parameters={[
                       { ...CONNECTION_PARAMETERS.host, value: poolingConfiguration?.db_host ?? '' },
@@ -373,7 +304,7 @@ export const DatabaseConnectionString = () => {
                     ]}
                     onCopyCallback={() => handleCopy(selectedTab, 'transaction_pooler')}
                   >
-                    {!sharedPoolerPreferred && !ipv4Addon && (
+                    {!sharedPoolerPreferred && (
                       <Collapsible_Shadcn_ className="group">
                         <CollapsibleTrigger_Shadcn_
                           asChild
@@ -416,7 +347,7 @@ export const DatabaseConnectionString = () => {
                     )}
                   </ConnectionPanel>
 
-                  {sharedPoolerPreferred && ipv4Addon && (
+                  {sharedPoolerPreferred && (
                     <Admonition
                       type="warning"
                       title="Highly recommended to not use Session Pooler"
@@ -441,20 +372,14 @@ export const DatabaseConnectionString = () => {
                       '6543',
                       '5432'
                     )}
-                    ipv4Status={{
-                      type: 'success',
-                      title: 'IPv4 compatible',
-                      description: 'Session pooler connections are IPv4 proxied for free',
-                      links: undefined,
-                    }}
                     parameters={[
-                      { ...CONNECTION_PARAMETERS.host, value: sharedPoolerConfig?.db_host ?? '' },
+                      { ...CONNECTION_PARAMETERS.host, value: '' },
                       { ...CONNECTION_PARAMETERS.port, value: '5432' },
                       {
                         ...CONNECTION_PARAMETERS.database,
-                        value: sharedPoolerConfig?.db_name ?? '',
+                        value: '',
                       },
-                      { ...CONNECTION_PARAMETERS.user, value: sharedPoolerConfig?.db_user ?? '' },
+                      { ...CONNECTION_PARAMETERS.user, value: '' },
                       { ...CONNECTION_PARAMETERS.pool_mode, value: 'session' },
                     ]}
                     onCopyCallback={() => handleCopy(selectedTab, 'session_pooler')}

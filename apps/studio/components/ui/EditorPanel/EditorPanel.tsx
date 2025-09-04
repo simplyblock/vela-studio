@@ -10,7 +10,6 @@ import {
 } from 'components/interfaces/SQLEditor/SQLEditor.utils'
 import Results from 'components/interfaces/SQLEditor/UtilityPanel/Results'
 import { SqlRunButton } from 'components/interfaces/SQLEditor/UtilityPanel/RunButton'
-import { useSqlTitleGenerateMutation } from 'data/ai/sql-title-mutation'
 import { QueryResponseError, useExecuteSqlMutation } from 'data/sql/execute-sql-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
@@ -92,7 +91,6 @@ export const EditorPanel = ({
   const { data: project } = useSelectedProjectQuery()
   const { profile } = useProfile()
   const snapV2 = useSqlEditorV2StateSnapshot()
-  const { mutateAsync: generateSqlTitle } = useSqlTitleGenerateMutation()
   const { data: org } = useSelectedOrganizationQuery()
 
   const [isSaving, setIsSaving] = useState(false)
@@ -274,12 +272,9 @@ export const EditorPanel = ({
 
                 try {
                   setIsSaving(true)
-                  const { title: name } = await generateSqlTitle({
-                    sql: currentValue,
-                  })
                   const snippet = createSqlSnippetSkeletonV2({
                     id: uuidv4(),
-                    name,
+                    name: 'Unnamed Query',
                     sql: currentValue,
                     owner_id: profile.id,
                     project_id: project.id,

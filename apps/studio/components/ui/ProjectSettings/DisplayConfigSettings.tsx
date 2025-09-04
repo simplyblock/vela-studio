@@ -24,7 +24,7 @@ const DisplayConfigSettings = () => {
     data,
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
-  } = useJwtSecretUpdatingStatusQuery({ projectRef })
+  } = useJwtSecretUpdatingStatusQuery({ orgSlug, projectRef })
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
   const isNotUpdatingJwtSecret =
     jwtSecretUpdateStatus === undefined || jwtSecretUpdateStatus === JwtSecretUpdateStatus.Updated

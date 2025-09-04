@@ -8,7 +8,7 @@ import createClient, {
 import { paths } from './vela-schema'
 import { VELA_PLATFORM_URL } from '../../pages/api/constants'
 import { NextApiRequest } from 'next'
-import type { HttpMethod, MediaType, PathsWithMethod } from 'openapi-typescript-helpers'
+import type { MediaType, PathsWithMethod } from 'openapi-typescript-helpers'
 
 export interface Client<Paths extends {}, Media extends MediaType = MediaType> {
   get: ClientMethod<Paths, 'get', Media>
@@ -64,6 +64,7 @@ const prepareOptions = (
 }
 
 export function getVelaClient(req: NextApiRequest): Client<paths, `${string}/${string}`> {
+  console.log(VELA_PLATFORM_URL)
   return {
     delete<
       Path extends PathsWithMethod<paths, 'delete'>,

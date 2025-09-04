@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import { AlertCircle, AlertTriangle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -79,12 +79,11 @@ const ProjectUpgradeAlert = () => {
   const includedDiskGB = includedDiskGBMeta[diskAttributes?.attributes.type ?? 'gp3']
   const isDiskSizeUpdated = diskAttributes?.attributes.size_gb !== includedDiskGB
 
-  const { data } = useProjectUpgradeEligibilityQuery({ projectRef: ref })
+  const { data } = useProjectUpgradeEligibilityQuery({ orgSlug: slug, projectRef: ref })
   const currentPgVersion = (data?.current_app_version ?? '').split('supabase-postgres-')[1]
   const latestPgVersion = (data?.latest_app_version ?? '').split('supabase-postgres-')[1]
 
   const durationEstimateHours = data?.duration_estimate_hours || 1
-  const legacyAuthCustomRoles = data?.legacy_auth_custom_roles || []
 
   const { mutate: upgradeProject, isLoading: isUpgrading } = useProjectUpgradeMutation({
     onSuccess: (res, variables) => {
@@ -198,48 +197,6 @@ const ProjectUpgradeAlert = () => {
                         involve breaking changes.
                       </p>
 
-                      <div>
-                        <Button size="tiny" type="default" asChild>
-                          <Link
-                            href="https://supabase.com/docs/guides/platform/migrating-and-upgrading-projects#caveats"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            View docs
-                          </Link>
-                        </Button>
-                      </div>
-                    </AlertDescription_Shadcn_>
-                  </Alert_Shadcn_>
-                )}
-                {legacyAuthCustomRoles.length > 0 && (
-                  <Alert_Shadcn_
-                    variant="warning"
-                    title="Custom Postgres roles using md5 authentication have been detected"
-                  >
-                    <AlertTriangle className="h-4 w-4" strokeWidth={2} />
-                    <AlertTitle_Shadcn_>
-                      Custom Postgres roles will not work automatically after upgrade
-                    </AlertTitle_Shadcn_>
-                    <AlertDescription_Shadcn_ className="flex flex-col gap-3">
-                      <p>You must run a series of commands after upgrading.</p>
-                      <p>
-                        This is because new Postgres versions use scram-sha-256 authentication by
-                        default and do not support md5, as it has been deprecated.
-                      </p>
-                      <div>
-                        <p className="mb-1">Run the following commands after the upgrade:</p>
-                        <div className="flex items-baseline gap-2">
-                          <code className="text-xs">
-                            {legacyAuthCustomRoles.map((role) => (
-                              <div key={role} className="pb-1">
-                                ALTER ROLE <span className="text-brand">{role}</span> WITH PASSWORD
-                                '<span className="text-brand">newpassword</span>';
-                              </div>
-                            ))}
-                          </code>
-                        </div>
-                      </div>
                       <div>
                         <Button size="tiny" type="default" asChild>
                           <Link

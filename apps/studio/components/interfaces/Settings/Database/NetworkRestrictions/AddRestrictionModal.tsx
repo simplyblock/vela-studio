@@ -12,6 +12,7 @@ import {
   isValidAddress,
   normalize,
 } from './NetworkRestrictions.utils'
+import { getPathReferences } from '../../../../../data/vela/path-references'
 
 const IPV4_MAX_CIDR_BLOCK_SIZE = 32
 const IPV6_MAX_CIDR_BLOCK_SIZE = 128
@@ -29,8 +30,9 @@ const AddRestrictionModal = ({
 }: AddRestrictionModalProps) => {
   const formId = 'add-restriction-form'
   const { ref } = useParams()
+  const { slug: orgSlug } = getPathReferences()
 
-  const { data } = useNetworkRestrictionsQuery({ projectRef: ref }, { enabled: type !== undefined })
+  const { data } = useNetworkRestrictionsQuery({ orgSlug, projectRef: ref }, { enabled: type !== undefined })
   const ipv4Restrictions = data?.config?.dbAllowedCidrs ?? []
   // @ts-ignore [Joshen] API typing issue
   const ipv6Restrictions = data?.config?.dbAllowedCidrsV6 ?? []
@@ -80,6 +82,7 @@ const AddRestrictionModal = ({
   }
 
   const onSubmit = async (values: any) => {
+    if (!orgSlug) return console.error('Organization slug is required')
     if (!ref) return console.error('Project ref is required')
 
     const address = `${values.ipAddress}/${values.cidrBlockSize}`
@@ -95,13 +98,13 @@ const AddRestrictionModal = ({
     if (hasOverachingRestriction) {
       const dbAllowedCidrs = type === 'IPv4' ? [normalizedAddress] : []
       const dbAllowedCidrsV6 = type === 'IPv6' ? [normalizedAddress] : []
-      applyNetworkRestrictions({ projectRef: ref, dbAllowedCidrs, dbAllowedCidrsV6 })
+      applyNetworkRestrictions({ orgSlug, projectRef: ref, dbAllowedCidrs, dbAllowedCidrsV6 })
     } else {
       const dbAllowedCidrs =
         type === 'IPv4' ? [...ipv4Restrictions, normalizedAddress] : ipv4Restrictions
       const dbAllowedCidrsV6 =
         type === 'IPv6' ? [...ipv6Restrictions, normalizedAddress] : ipv6Restrictions
-      applyNetworkRestrictions({ projectRef: ref, dbAllowedCidrs, dbAllowedCidrsV6 })
+      applyNetworkRestrictions({ orgSlug, projectRef: ref, dbAllowedCidrs, dbAllowedCidrsV6 })
     }
   }
 

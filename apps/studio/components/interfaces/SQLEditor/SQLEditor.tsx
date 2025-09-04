@@ -9,7 +9,6 @@ import { toast } from 'sonner'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import ResizableAIWidget from 'components/ui/AIEditor/ResizableAIWidget'
 import { GridFooter } from 'components/ui/GridFooter'
-import { useSqlTitleGenerateMutation } from 'data/ai/sql-title-mutation'
 import { useEntityDefinitionsQuery } from 'data/database/entity-definitions-query'
 import { constructHeaders, isValidConnString } from 'data/fetchers'
 import { lintKeys } from 'data/lint/keys'
@@ -54,7 +53,6 @@ import { RunQueryWarningModal } from './RunQueryWarningModal'
 import {
   ROWS_PER_PAGE_OPTIONS,
   sqlAiDisclaimerComment,
-  untitledSnippetTitle,
 } from './SQLEditor.constants'
 import { DiffType, IStandaloneCodeEditor, IStandaloneDiffEditor } from './SQLEditor.types'
 import {
@@ -153,7 +151,6 @@ export const SQLEditor = () => {
   const entityDefinitions = includeSchemaMetadata ? data?.map((def) => def.sql.trim()) : undefined
 
   /* React query mutations */
-  const { mutateAsync: generateSqlTitle } = useSqlTitleGenerateMutation()
   const { mutate: sendEvent } = useSendEventMutation()
   const { mutate: execute, isLoading: isExecuting } = useExecuteSqlMutation({
     onSuccess(data, vars) {
@@ -202,20 +199,6 @@ export const SQLEditor = () => {
       }
     },
   })
-
-  const setAiTitle = useCallback(
-    async (id: string, sql: string) => {
-      try {
-        const { title: name } = await generateSqlTitle({ sql })
-        snapV2.renameSnippet({ id, name })
-        const tabId = createTabId('sql', { id })
-        tabs.updateTab(tabId, { label: name })
-      } catch (error) {
-        // [Joshen] No error handler required as this happens in the background and not necessary to ping the user
-      }
-    },
-    [generateSqlTitle, snapV2]
-  )
 
   const prettifyQuery = useCallback(async () => {
     if (isDiffOpen) return
@@ -283,11 +266,6 @@ export const SQLEditor = () => {
           return
         }
 
-        if (!isHipaaProjectDisallowed && snippet?.snippet.name === untitledSnippetTitle) {
-          // Intentionally don't await title gen (lazy)
-          setAiTitle(id, sql)
-        }
-
         if (lineHighlights.length > 0) {
           editor?.deltaDecorations(lineHighlights, [])
           setLineHighlights([])
@@ -332,7 +310,6 @@ export const SQLEditor = () => {
       isHipaaProjectDisallowed,
       execute,
       getImpersonatedRoleState,
-      setAiTitle,
       databaseSelectorState.selectedDatabaseId,
       databases,
       limit,
@@ -416,10 +393,7 @@ export const SQLEditor = () => {
 
       const sql = diffModel.modified.getValue()
 
-      if (selectedDiffType === DiffType.NewSnippet) {
-        const { title } = await generateSqlTitle({ sql })
-        await handleNewQuery(sql, title)
-      } else {
+      if (selectedDiffType !== DiffType.NewSnippet) {
         editorRef.current.executeEdits('apply-ai-edit', [
           {
             text: sql,
@@ -441,7 +415,7 @@ export const SQLEditor = () => {
       setIsAcceptDiffLoading(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sourceSqlDiff, selectedDiffType, handleNewQuery, generateSqlTitle, router, id, snapV2])
+  }, [sourceSqlDiff, selectedDiffType, handleNewQuery, router, id, snapV2])
 
   const discardAiHandler = useCallback(() => {
     sendEvent({
@@ -610,6 +584,7 @@ export const SQLEditor = () => {
 
   useEffect(() => {
     if (isSuccessReadReplicas) {
+      console.log(ref, 'isSuccessReadReplicas')
       const primaryDatabase = databases.find((db) => db.identifier === ref)
       databaseSelectorState.setSelectedDatabaseId(primaryDatabase?.identifier)
     }

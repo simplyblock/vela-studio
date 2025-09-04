@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import { useParams } from 'common'
-import { useSqlTitleGenerateMutation } from 'data/ai/sql-title-mutation'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { getContentById } from 'data/content/content-id-query'
 import {
@@ -12,11 +10,11 @@ import {
 import { Snippet } from 'data/content/sql-folders-query'
 import type { SqlSnippet } from 'data/content/sql-snippets-query'
 import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import { createTabId, useTabsStateSnapshot } from 'state/tabs'
-import { AiIconAnimation, Button, Form, Input, Modal } from 'ui'
+import { Button, Form, Input, Modal } from 'ui'
 import { subscriptionHasHipaaAddon } from '../Billing/Subscription/Subscription.utils'
+import { getPathReferences } from '../../../data/vela/path-references'
 
 export interface RenameQueryModalProps {
   snippet?: SqlSnippet | Snippet
@@ -31,49 +29,22 @@ const RenameQueryModal = ({
   onCancel,
   onComplete,
 }: RenameQueryModalProps) => {
-  const { ref } = useParams()
-  const { data: organization } = useSelectedOrganizationQuery()
+  const { slug: orgSlug, ref } = getPathReferences()
 
   const snapV2 = useSqlEditorV2StateSnapshot()
   const tabsSnap = useTabsStateSnapshot()
   const { data: subscription } = useOrgSubscriptionQuery(
-    { orgSlug: organization?.slug },
+    { orgSlug: orgSlug },
     { enabled: visible }
   )
-  const isSQLSnippet = snippet.type === 'sql'
   const { data: projectSettings } = useProjectSettingsV2Query({ orgSlug, projectRef: ref })
 
-  // Customers on HIPAA plans should not have access to Supabase AI
   const hasHipaaAddon = subscriptionHasHipaaAddon(subscription) && projectSettings?.is_sensitive
 
   const { id, name, description } = snippet
 
   const [nameInput, setNameInput] = useState(name)
   const [descriptionInput, setDescriptionInput] = useState(description)
-
-  const { mutate: titleSql, isLoading: isTitleGenerationLoading } = useSqlTitleGenerateMutation({
-    onSuccess: (data) => {
-      const { title, description } = data
-      setNameInput(title)
-      if (!descriptionInput) setDescriptionInput(description)
-    },
-    onError: (error) => {
-      toast.error(`Failed to rename query: ${error.message}`)
-    },
-  })
-
-  const generateTitle = async () => {
-    if ('content' in snippet && isSQLSnippet) {
-      titleSql({ sql: snippet.content.sql })
-    } else {
-      try {
-        const { content } = await getContentById({ projectRef: ref, id: snippet.id })
-        if ('sql' in content) titleSql({ sql: content.sql })
-      } catch (error) {
-        toast.error('Unable to generate title based on query contents')
-      }
-    }
-  }
 
   const validate = () => {
     const errors: any = {}
@@ -147,23 +118,6 @@ const RenameQueryModal = ({
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
               />
-              <div className="flex w-full justify-end mt-2">
-                {!hasHipaaAddon && (
-                  <Button
-                    type="default"
-                    onClick={() => generateTitle()}
-                    size="tiny"
-                    disabled={isTitleGenerationLoading}
-                  >
-                    <div className="flex items-center gap-1">
-                      <div className="scale-75">
-                        <AiIconAnimation loading={isTitleGenerationLoading} />
-                      </div>
-                      <span>Rename with Supabase AI</span>
-                    </div>
-                  </Button>
-                )}
-              </div>
               <Input.TextArea
                 label="Description"
                 id="description"

@@ -1,13 +1,9 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-import { getAddons } from 'components/interfaces/Billing/Subscription/Subscription.utils'
 import { InfraInstanceSize } from 'components/interfaces/DiskManagement/DiskManagement.types'
 import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
-import { ProjectAddonVariantMeta } from 'data/subscriptions/types'
 import { getCloudProviderArchitecture } from 'lib/cloudprovider-utils'
-import { INSTANCE_MICRO_SPECS } from 'lib/constants'
 import { Button, HoverCard, HoverCardContent, HoverCardTrigger, Separator } from 'ui'
 import { ComputeBadge } from 'ui-patterns/ComputeBadge'
 import ShimmeringLoader from './ShimmeringLoader'
@@ -41,33 +37,6 @@ export const ComputeBadgeWrapper = ({ project }: ComputeBadgeWrapperProps) => {
   // returns hardcoded values for infra
   const cpuArchitecture = getCloudProviderArchitecture(project.cloud_provider)
 
-  // fetches addons
-  const { data: addons, isLoading: isLoadingAddons } = useProjectAddonsQuery(
-    {
-      projectRef: project.ref,
-    },
-    { enabled: open }
-  )
-  const selectedAddons = addons?.selected_addons ?? []
-
-  const { computeInstance } = getAddons(selectedAddons)
-  const computeInstanceMeta = computeInstance?.variant?.meta
-
-  const meta = (
-    computeInstanceMeta === undefined && project.infra_compute_size === 'micro'
-      ? INSTANCE_MICRO_SPECS
-      : computeInstanceMeta
-  ) as ProjectAddonVariantMeta
-
-  const availableCompute = addons?.available_addons.find(
-    (addon) => addon.name === 'Compute Instance'
-  )?.variants
-
-  const highestComputeAvailable = availableCompute?.[availableCompute.length - 1].identifier
-
-  const isHighestCompute =
-    project?.infra_compute_size === highestComputeAvailable?.replace('ci_', '')
-
   const { data, isLoading: isLoadingSubscriptions } = useOrgSubscriptionQuery(
     { orgSlug: project?.organization_slug },
     { enabled: open }
@@ -76,7 +45,7 @@ export const ComputeBadgeWrapper = ({ project }: ComputeBadgeWrapperProps) => {
   const isEligibleForFreeUpgrade =
     data?.plan.id !== 'free' && project?.infra_compute_size === 'nano'
 
-  const isLoading = isLoadingAddons || isLoadingSubscriptions
+  const isLoading = isLoadingSubscriptions
 
   if (!project?.infra_compute_size) return null
 
@@ -110,27 +79,15 @@ export const ComputeBadgeWrapper = ({ project }: ComputeBadgeWrapperProps) => {
             ) : (
               <>
                 <div className="flex flex-col gap-1">
-                  {meta !== undefined ? (
-                    <>
-                      <Row
-                        label="CPU"
-                        stat={`${meta.cpu_cores ?? '?'}-core ${cpuArchitecture} ${meta.cpu_dedicated ? '(Dedicated)' : '(Shared)'}`}
-                      />
-                      <Row label="Memory" stat={`${meta.memory_gb ?? '-'} GB`} />
-                    </>
-                  ) : (
-                    <>
-                      {/* meta is only undefined for nano sized compute */}
-                      <Row label="CPU" stat="Shared" />
-                      <Row label="Memory" stat="Up to 0.5 GB" />
-                    </>
-                  )}
+                  {/* meta is only undefined for nano sized compute */}
+                  <Row label="CPU" stat="Shared" />
+                  <Row label="Memory" stat="Up to 0.5 GB" />
                 </div>
               </>
             )}
           </div>
         </div>
-        {(!isHighestCompute || isEligibleForFreeUpgrade) && (
+        {isEligibleForFreeUpgrade && (
           <>
             <Separator />
             <div className="p-3 px-5 text-sm flex flex-col gap-2 bg-studio">

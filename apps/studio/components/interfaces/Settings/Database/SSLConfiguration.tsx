@@ -28,6 +28,7 @@ const SSLConfiguration = () => {
     isLoading,
     isSuccess,
   } = useSSLEnforcementQuery({
+    orgSlug,
     projectRef: ref,
   })
   const { mutate: updateSSLEnforcement, isLoading: isSubmitting } = useSSLEnforcementUpdateMutation(
@@ -72,9 +73,10 @@ const SSLConfiguration = () => {
   }, [isLoading])
 
   const toggleSSLEnforcement = async () => {
+    if (!orgSlug) return console.error('Organization slug is required')
     if (!ref) return console.error('Project ref is required')
     setIsEnforced(!isEnforced)
-    updateSSLEnforcement({ projectRef: ref, requestedConfig: { database: !isEnforced } })
+    updateSSLEnforcement({ orgSlug, projectRef: ref, requestedConfig: { database: !isEnforced } })
   }
 
   return (

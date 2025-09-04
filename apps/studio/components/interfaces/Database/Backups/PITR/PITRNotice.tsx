@@ -5,14 +5,12 @@ import Link from 'next/link'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { FormPanel } from 'components/ui/Forms/FormPanel'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
 import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { getPITRRetentionDuration } from './PITR.utils'
 
 const PITRNotice = ({}) => {
   const { slug, ref: projectRef } = useParams()
-  const { data: addonsResponse } = useProjectAddonsQuery({ projectRef })
-  const retentionPeriod = getPITRRetentionDuration(addonsResponse?.selected_addons ?? [])
+  const retentionPeriod = getPITRRetentionDuration([])
 
   const { can: canUpdateSubscription } = useAsyncCheckProjectPermissions(
     PermissionAction.BILLING_WRITE,

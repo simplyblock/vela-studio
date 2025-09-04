@@ -9,18 +9,19 @@ import type { ResponseError } from 'types'
 import { configKeys } from './keys'
 
 export type ProjectUpgradeTargetVersion = { postgres_version: string; release_channel: string }
-export type ProjectUpgradeEligibilityVariables = { projectRef?: string }
+export type ProjectUpgradeEligibilityVariables = { orgSlug?: string, projectRef?: string }
 export type ProjectUpgradeEligibilityResponse =
   components['schemas']['ProjectUpgradeEligibilityResponse']
 
 export async function getProjectUpgradeEligibility(
-  { projectRef }: ProjectUpgradeEligibilityVariables,
+  { orgSlug, projectRef }: ProjectUpgradeEligibilityVariables,
   signal?: AbortSignal
 ) {
+  if (!orgSlug) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await get('/v1/projects/{ref}/upgrade/eligibility', {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/upgrade/eligibility', {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     signal,
   })
 
@@ -32,7 +33,7 @@ export type ProjectUpgradeEligibilityData = Awaited<ReturnType<typeof getProject
 export type ProjectUpgradeEligibilityError = ResponseError
 
 export const useProjectUpgradeEligibilityQuery = <TData = ProjectUpgradeEligibilityData>(
-  { projectRef }: ProjectUpgradeEligibilityVariables,
+  { orgSlug, projectRef }: ProjectUpgradeEligibilityVariables,
   {
     enabled = true,
     ...options
@@ -40,8 +41,8 @@ export const useProjectUpgradeEligibilityQuery = <TData = ProjectUpgradeEligibil
 ) => {
   const { data: project } = useProjectByRefQuery(projectRef)
   return useQuery<ProjectUpgradeEligibilityData, ProjectUpgradeEligibilityError, TData>(
-    configKeys.upgradeEligibility(projectRef),
-    ({ signal }) => getProjectUpgradeEligibility({ projectRef }, signal),
+    configKeys.upgradeEligibility(orgSlug, projectRef),
+    ({ signal }) => getProjectUpgradeEligibility({ orgSlug, projectRef }, signal),
     {
       enabled:
         enabled &&

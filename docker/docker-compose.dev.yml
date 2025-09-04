@@ -31,8 +31,12 @@ services:
     depends_on:
       analytics:
         condition: service_healthy
+    volumes:
+      - '../apps:/app/apps'
+      - '../packages:/app/packages'
     environment:
       STUDIO_PG_META_URL: http://meta:8080
+      PLATFORM_PG_META_URL: http://meta:8080
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
       DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORGANIZATION}
@@ -55,10 +59,31 @@ services:
 
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       NEXT_PUBLIC_GOTRUE_URL: ${NEXT_PUBLIC_GOTRUE_URL}
-      NEXT_PUBLIC_IS_PLATFORM: ${NEXT_PUBLIC_IS_PLATFORM}
+      NEXT_PUBLIC_IS_PLATFORM: true
       PUBLIC_PLATFORM: ${PUBLIC_PLATFORM}
-      VELA_PLATFORM_URL: ${VELA_PLATFORM_URL}
-      VELA_PLATFORM_GOTRUE_URL: ${VELA_PLATFORM_GOTRUE_URL}
+
+  controller:
+    container_name: vela-controller
+    build:
+      context: ../vela-controller/
+      dockerfile: containers/Containerfile
+    depends_on:
+      analytics:
+        condition: service_healthy
+    volumes:
+      - ~/.kube/config:/root/.kube/config:ro
+      - ../vela-controller:/app
+    command: 'bash -c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && pip install -e . && uvicorn --host 0.0.0.0 --reload simplyblock.vela.api:app"'
+    healthcheck:
+      test: ['CMD', 'curl', 'http://localhost:8000/health']
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    restart: unless-stopped
+    environment:
+      VELA_ROOT_PATH: '/vela'
+      VELA_JWT_SECRET: ${JWT_SECRET}
+      VELA_POSTGRES_URL: 'postgresql+asyncpg://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}'
 
   kong:
     container_name: vela-kong

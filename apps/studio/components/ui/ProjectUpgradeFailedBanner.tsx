@@ -13,11 +13,11 @@ import { InlineLink } from './InlineLink'
 // [Joshen] Think twice about the category though - it doesn't correspond
 
 export const ProjectUpgradeFailedBanner = () => {
-  const { slug, ref } = useParams()
-  const { data } = useProjectUpgradingStatusQuery({ projectRef: ref }, { enabled: IS_PLATFORM })
+  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data } = useProjectUpgradingStatusQuery({ orgSlug, projectRef }, { enabled: IS_PLATFORM })
   const { status, initiated_at, latest_status_at, error } = data?.databaseUpgradeStatus ?? {}
 
-  const key = `supabase-upgrade-${ref}-${initiated_at}`
+  const key = `supabase-upgrade-${projectRef}-${initiated_at}`
   const isAcknowledged =
     typeof window !== 'undefined' ? localStorage?.getItem(key) === 'true' : false
   const [showMessage, setShowMessage] = useState(!isAcknowledged)
@@ -59,7 +59,7 @@ export const ProjectUpgradeFailedBanner = () => {
           <div className="flex items-center h-full space-x-4">
             <Button asChild type="default">
               <Link
-                href={`/support/new?category=Database_unresponsive&ref=${ref}&subject=${subject}&message=${message}`}
+                href={`/support/new?category=Database_unresponsive&ref=${projectRef}&subject=${subject}&message=${message}`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -81,7 +81,7 @@ export const ProjectUpgradeFailedBanner = () => {
         </div>
         <div>
           You may also view logs related to the failed upgrade in your{' '}
-          <InlineLink href={`/org/${slug}/project/${ref}/logs/pg-upgrade-logs?${timestampFilter}`}>
+          <InlineLink href={`/org/${orgSlug}/project/${projectRef}/logs/pg-upgrade-logs?${timestampFilter}`}>
             project's logs
           </InlineLink>
           .

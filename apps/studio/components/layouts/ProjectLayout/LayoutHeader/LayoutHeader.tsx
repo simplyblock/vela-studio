@@ -3,12 +3,10 @@ import Link from 'next/link'
 import { ReactNode, useMemo, useState } from 'react'
 
 import { useParams } from 'common'
-import { useIsBranching2Enabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { Connect } from 'components/interfaces/Connect/Connect'
 import { LocalDropdown } from 'components/interfaces/LocalDropdown'
 import { UserDropdown } from 'components/interfaces/UserDropdown'
 import { AssistantButton } from 'components/layouts/AppLayout/AssistantButton'
-import { BranchDropdown } from 'components/layouts/AppLayout/BranchDropdown'
 import { InlineEditorButton } from 'components/layouts/AppLayout/InlineEditorButton'
 import { OrganizationDropdown } from 'components/layouts/AppLayout/OrganizationDropdown'
 import { ProjectDropdown } from 'components/layouts/AppLayout/ProjectDropdown'
@@ -26,7 +24,6 @@ import { FeedbackDropdown } from './FeedbackDropdown'
 import { HelpPopover } from './HelpPopover'
 import { HomeIcon } from './HomeIcon'
 import { LocalVersionPopover } from './LocalVersionPopover'
-import MergeRequestButton from './MergeRequestButton'
 import { NotificationsPopoverV2 } from './NotificationsPopoverV2/NotificationsPopover'
 
 const LayoutHeaderDivider = ({ className, ...props }: React.HTMLProps<HTMLSpanElement>) => (
@@ -64,7 +61,6 @@ const LayoutHeader = ({
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const { setMobileMenuOpen } = useAppStateSnapshot()
-  const gitlessBranching = useIsBranching2Enabled()
 
   const [showEditorPanel, setShowEditorPanel] = useState(false)
   useHotKey(
@@ -147,13 +143,6 @@ const LayoutHeader = ({
                         </Link>
                       </div>
                     )}
-
-                    {selectedProject && (
-                      <>
-                        <LayoutHeaderDivider />
-                        {IS_PLATFORM && <BranchDropdown />}
-                      </>
-                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -189,7 +178,6 @@ const LayoutHeader = ({
                     ease: 'easeOut',
                   }}
                 >
-                  {IS_PLATFORM && gitlessBranching && <MergeRequestButton />}
                   <Connect />
                 </motion.div>
               )}

@@ -101,7 +101,6 @@ export const useProjectCreateMutation = ({
 
   return useMutation<ProjectCreateData, ResponseError, ProjectCreateVariables>(
     (vars) => {
-      console.log("TEST")
       return createProject(vars)
     },
     {

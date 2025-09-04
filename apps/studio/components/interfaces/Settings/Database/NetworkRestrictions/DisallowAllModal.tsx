@@ -3,6 +3,7 @@ import { Button, Modal } from 'ui'
 
 import InformationBox from 'components/ui/InformationBox'
 import { useNetworkRestrictionsApplyMutation } from 'data/network-restrictions/network-retrictions-apply-mutation'
+import { getPathReferences } from '../../../../../data/vela/path-references'
 
 interface DisallowAllModalProps {
   visible: boolean
@@ -11,12 +12,14 @@ interface DisallowAllModalProps {
 
 const DisallowAllModal = ({ visible, onClose }: DisallowAllModalProps) => {
   const { ref } = useParams()
+  const { slug: orgSlug } = getPathReferences()
   const { mutate: applyNetworkRestrictions, isLoading: isApplying } =
     useNetworkRestrictionsApplyMutation({ onSuccess: () => onClose() })
 
   const onSubmit = async () => {
     if (!ref) return console.error('Project ref is required')
     await applyNetworkRestrictions({
+      orgSlug,
       projectRef: ref,
       dbAllowedCidrs: [],
       dbAllowedCidrsV6: [],

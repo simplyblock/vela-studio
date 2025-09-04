@@ -2718,7 +2718,7 @@ export interface paths {
     patch: operations['SecretsConfigController_updateConfig']
     trace?: never
   }
-  '/platform/projects/{ref}/config/secrets/update-status': {
+  '/platform/organizations/{slug}/projects/{ref}/config/secrets/update-status': {
     parameters: {
       query?: never
       header?: never

@@ -80,6 +80,13 @@ services:
           - /auth/v1/authorize
     plugins:
       - name: cors
+  - name: vela-controller-apis
+    url: http://controller:8000/vela
+    routes:
+      - name: vela-controller-api
+        strip_path: true
+        paths:
+          - /vela
 
   ## Secure Auth routes
   - name: auth-v1

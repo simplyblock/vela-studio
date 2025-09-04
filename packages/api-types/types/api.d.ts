@@ -1134,7 +1134,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/health': {
+  '/platform/organizations/{slug}/projects/{ref}/health': {
     parameters: {
       query?: never
       header?: never
@@ -1202,7 +1202,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/network-restrictions': {
+  '/platform/organizations/{slug}/projects/{ref}/network-restrictions': {
     parameters: {
       query?: never
       header?: never
@@ -1219,7 +1219,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/network-restrictions/apply': {
+  '/platform/organizations/{slug}/projects/{ref}/network-restrictions/apply': {
     parameters: {
       query?: never
       header?: never
@@ -1420,7 +1420,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/ssl-enforcement': {
+  '/platform/organizations/{slug}/projects/{ref}/ssl-enforcement': {
     parameters: {
       query?: never
       header?: never
@@ -1492,7 +1492,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/upgrade/eligibility': {
+  '/platform/organizations/{slug}/projects/{ref}/upgrade/eligibility': {
     parameters: {
       query?: never
       header?: never
@@ -1509,7 +1509,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/upgrade/status': {
+  '/platform/organizations/{slug}/projects/{ref}/upgrade/status': {
     parameters: {
       query?: never
       header?: never
@@ -6820,6 +6820,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -6962,6 +6963,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -6997,6 +6999,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -7541,6 +7544,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -7576,6 +7580,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -7727,6 +7732,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -7764,6 +7770,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }

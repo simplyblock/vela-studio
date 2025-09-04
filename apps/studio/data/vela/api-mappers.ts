@@ -1,6 +1,7 @@
 import { components } from './vela-schema'
 import { Organization } from '../../types'
 import { Project } from '../projects/project-detail-query'
+import CryptoJS from 'crypto-js'
 
 export type VelaOrganization = components['schemas']['Organization']
 export type VelaProject = components['schemas']['ProjectPublic']
@@ -28,6 +29,10 @@ export function mapOrganization(organization: VelaOrganization): Organization {
 }
 
 export function mapProject(project: VelaProject): Project {
+  const encryptedConnectionString = CryptoJS.AES.encrypt(
+    'postgresql://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/postgres', 'SAMPLE_KEY'
+  ).toString().trim() // FIXME: Encrypted connectionString needs to come from the outside
+
   return {
     id: project.id!,
     name: project.name!,
@@ -42,5 +47,6 @@ export function mapProject(project: VelaProject): Project {
     is_physical_backups_enabled: false,
     restUrl: '',
     subscription_id: '',
+    connectionString: encryptedConnectionString,
   }
 }

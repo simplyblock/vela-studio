@@ -1,5 +1,4 @@
 import { IS_PLATFORM } from 'common'
-import { useBranchCommands } from 'components/interfaces/BranchManagement/Branch.Commands'
 import {
   useQueryTableCommands,
   useSnippetCommands,
@@ -24,7 +23,6 @@ export default function StudioCommandMenu() {
   useProjectSwitchCommand()
   useConfigureOrganizationCommand()
   useQueryTableCommands()
-  useBranchCommands()
   useSnippetCommands()
   useLayoutNavCommands()
   useDocsSearchCommands({

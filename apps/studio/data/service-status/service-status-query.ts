@@ -5,18 +5,20 @@ import type { ResponseError } from 'types'
 import { serviceStatusKeys } from './keys'
 
 export type ProjectServiceStatusVariables = {
+  orgSlug?: string
   projectRef?: string
 }
 
 export async function getProjectServiceStatus(
-  { projectRef }: ProjectServiceStatusVariables,
+  { orgSlug, projectRef }: ProjectServiceStatusVariables,
   signal?: AbortSignal
 ) {
+  if (!orgSlug) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await get(`/v1/projects/{ref}/health`, {
+  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/health`, {
     params: {
-      path: { ref: projectRef },
+      path: { slug: orgSlug, ref: projectRef },
       query: {
         services: ['auth', 'realtime', 'rest', 'storage', 'db'],
       },
@@ -33,17 +35,17 @@ export type ProjectServiceStatus = ProjectServiceStatusData[0]['status']
 export type ProjectServiceStatusError = ResponseError
 
 export const useProjectServiceStatusQuery = <TData = ProjectServiceStatusData>(
-  { projectRef }: ProjectServiceStatusVariables,
+  { orgSlug, projectRef }: ProjectServiceStatusVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ProjectServiceStatusData, ProjectServiceStatusError, TData> = {}
 ) =>
   useQuery<ProjectServiceStatusData, ProjectServiceStatusError, TData>(
-    serviceStatusKeys.serviceStatus(projectRef),
-    ({ signal }) => getProjectServiceStatus({ projectRef }, signal),
+    serviceStatusKeys.serviceStatus(orgSlug, projectRef),
+    ({ signal }) => getProjectServiceStatus({ orgSlug, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
       ...options,
     }
   )

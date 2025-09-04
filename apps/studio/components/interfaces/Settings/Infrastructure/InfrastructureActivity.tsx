@@ -1,11 +1,9 @@
 import dayjs from 'dayjs'
-import { capitalize } from 'lodash'
 import { BarChart2, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { Fragment, useMemo, useState } from 'react'
 
 import { useParams } from 'common'
-import { getAddons } from 'components/interfaces/Billing/Subscription/Subscription.utils'
 import {
   CPUWarnings,
   DiskIOBandwidthWarnings,
@@ -21,35 +19,20 @@ import {
 } from 'components/layouts/Scaffold'
 import DatabaseSelector from 'components/ui/DatabaseSelector'
 import { DateRangePicker } from 'components/ui/DateRangePicker'
-import { DocsButton } from 'components/ui/DocsButton'
 import Panel from 'components/ui/Panel'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { DataPoint } from 'data/analytics/constants'
 import { useInfraMonitoringQuery } from 'data/analytics/infra-monitoring-query'
 import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
 import { useResourceWarningsQuery } from 'data/usage/resource-warnings-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { INSTANCE_MICRO_SPECS, INSTANCE_NANO_SPECS, InstanceSpecs } from 'lib/constants'
 import { TIME_PERIODS_BILLING, TIME_PERIODS_REPORTS } from 'lib/constants/metrics'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
-import { Admonition } from 'ui-patterns/admonition'
 import { INFRA_ACTIVITY_METRICS } from './Infrastructure.constants'
 import { useShowNewReplicaPanel } from './InfrastructureConfiguration/use-show-new-replica'
 
-const NON_DEDICATED_IO_RESOURCES = [
-  'ci_micro',
-  'ci_small',
-  'ci_medium',
-  'ci_large',
-  'ci_xlarge',
-  'ci_2xlarge',
-]
-
 const InfrastructureActivity = () => {
   const { slug, ref: projectRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
   const state = useDatabaseSelectorStateSnapshot()
   const [dateRange, setDateRange] = useState<any>()
@@ -57,32 +40,11 @@ const InfrastructureActivity = () => {
   const { data: subscription, isLoading: isLoadingSubscription } = useOrgSubscriptionQuery({
     orgSlug: organization?.slug,
   })
-  const isFreePlan = organization?.plan?.id === 'free'
 
   const { data: resourceWarnings } = useResourceWarningsQuery()
   const projectResourceWarnings = resourceWarnings?.find((x) => x.project === projectRef)
 
-  const { data: addons } = useProjectAddonsQuery({ projectRef })
-  const selectedAddons = addons?.selected_addons ?? []
-
-  const { showNewReplicaPanel, setShowNewReplicaPanel } = useShowNewReplicaPanel()
-
-  const { computeInstance } = getAddons(selectedAddons)
-  const hasDedicatedIOResources =
-    computeInstance !== undefined &&
-    !NON_DEDICATED_IO_RESOURCES.includes(computeInstance.variant.identifier)
-
-  function getCurrentComputeInstanceSpecs() {
-    if (computeInstance?.variant.meta) {
-      // If user has a compute instance (called addons) return that
-      return computeInstance?.variant.meta as InstanceSpecs
-    } else {
-      // Otherwise, return the default specs
-      return project?.infra_compute_size === 'nano' ? INSTANCE_NANO_SPECS : INSTANCE_MICRO_SPECS
-    }
-  }
-
-  const currentComputeInstanceSpecs = getCurrentComputeInstanceSpecs()
+  const { setShowNewReplicaPanel } = useShowNewReplicaPanel()
 
   const currentBillingCycleSelected = useMemo(() => {
     // Selected by default
@@ -278,74 +240,24 @@ const InfrastructureActivity = () => {
                     <>
                       <DiskIOBandwidthWarnings
                         upgradeUrl={upgradeUrl}
-                        isFreePlan={isFreePlan}
+                        isFreePlan={true}
                         hasLatest={hasLatest}
                         currentBillingCycleSelected={currentBillingCycleSelected}
                         latestIoBudgetConsumption={latestIoBudgetConsumption}
                         highestIoBudgetConsumption={highestIoBudgetConsumption}
                       />
-                      <div className="space-y-1">
-                        <p>Disk IO Bandwidth</p>
-
-                        {currentComputeInstanceSpecs.baseline_disk_io_mbs ===
-                        currentComputeInstanceSpecs.max_disk_io_mbs ? (
-                          <p className="text-sm text-foreground-light">
-                            Your current compute has a baseline and maximum disk throughput of{' '}
-                            {currentComputeInstanceSpecs.max_disk_io_mbs?.toLocaleString()} Mbps.
-                          </p>
-                        ) : (
-                          <p className="text-sm text-foreground-light">
-                            Your current compute can burst above the baseline disk throughput of{' '}
-                            {currentComputeInstanceSpecs.baseline_disk_io_mbs?.toLocaleString()}{' '}
-                            Mbps for short periods of time.
-                          </p>
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-sm mb-2">Overview</p>
-                        <div className="flex items-center justify-between border-b py-1">
-                          <p className="text-xs text-foreground-light">Current compute instance</p>
-                          <p className="text-xs">
-                            {computeInstance?.variant?.name ??
-                              capitalize(project?.infra_compute_size) ??
-                              'Micro'}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-between border-b py-1">
-                          <p className="text-xs text-foreground-light">Baseline IO Bandwidth</p>
-                          <p className="text-xs">
-                            {currentComputeInstanceSpecs.baseline_disk_io_mbs?.toLocaleString()}{' '}
-                            Mbps
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-between border-b py-1">
-                          <p className="text-xs text-foreground-light">
-                            Maximum IO Bandwidth (burst limit)
-                          </p>
-                          <p className="text-xs">
-                            {currentComputeInstanceSpecs.max_disk_io_mbs?.toLocaleString()} Mbps
-                          </p>
-                        </div>
-                        {currentComputeInstanceSpecs.max_disk_io_mbs !==
-                          currentComputeInstanceSpecs?.baseline_disk_io_mbs && (
-                          <div className="flex items-center justify-between py-1">
-                            <p className="text-xs text-foreground-light">Daily burst time limit</p>
-                            <p className="text-xs">30 mins</p>
-                          </div>
-                        )}
-                      </div>
                     </>
                   )}
                   {attribute.key === 'max_cpu_usage' && (
                     <CPUWarnings
-                      isFreePlan={isFreePlan}
+                      isFreePlan={true}
                       upgradeUrl={upgradeUrl}
                       severity={projectResourceWarnings?.cpu_exhaustion}
                     />
                   )}
                   {attribute.key === 'ram_usage' && (
                     <RAMWarnings
-                      isFreePlan={isFreePlan}
+                      isFreePlan={true}
                       upgradeUrl={upgradeUrl}
                       severity={projectResourceWarnings?.memory_and_swap_exhaustion}
                     />
@@ -366,49 +278,13 @@ const InfrastructureActivity = () => {
                       )}
                     </div>
 
-                    {attribute.key === 'ram_usage' && (
-                      <div className="text-sm text-foreground-light">
-                        <p>
-                          Your compute instance has {currentComputeInstanceSpecs.memory_gb} GB of
-                          memory.
-                        </p>
-                        {currentComputeInstanceSpecs.memory_gb === 1 && (
-                          <p>
-                            As your project is running on the smallest compute instance, it is not
-                            unusual for your project to have a base memory usage of ~50%.
-                          </p>
-                        )}
-                      </div>
-                    )}
-
-                    {attribute.key === 'max_cpu_usage' && (
-                      <p className="text-sm text-foreground-light">
-                        Your compute instance has {currentComputeInstanceSpecs.cpu_cores} CPU cores.
-                      </p>
-                    )}
-
                     {attribute.chartDescription.split('\n').map((paragraph, idx) => (
                       <p key={`para-${idx}`} className="text-sm text-foreground-light">
                         {paragraph}
                       </p>
                     ))}
                   </div>
-                  {attribute.key === 'disk_io_consumption' && hasDedicatedIOResources ? (
-                    <>
-                      <Admonition
-                        type="note"
-                        title={`Your compute instance of ${computeInstance.variant.name} comes with dedicated I/O resources`}
-                        description="Your project thus does not rely on I/O balance or burst capacity as larger
-                      add-ons are designed for sustained, high performance with specific IOPS and
-                      throughput limits without needing to burst."
-                      >
-                        <DocsButton
-                          abbrev={false}
-                          href="https://supabase.com/docs/guides/platform/compute-add-ons#disk-throughput-and-iops"
-                        />
-                      </Admonition>
-                    </>
-                  ) : chartMeta[attribute.key].isLoading ? (
+                  {chartMeta[attribute.key].isLoading ? (
                     <div className="space-y-2">
                       <ShimmeringLoader />
                       <ShimmeringLoader className="w-3/4" />

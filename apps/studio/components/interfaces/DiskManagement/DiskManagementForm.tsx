@@ -22,7 +22,6 @@ import { useDiskUtilizationQuery } from 'data/config/disk-utilization-query'
 import { setProjectStatus } from 'data/projects/projects-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useProjectAddonUpdateMutation } from 'data/subscriptions/project-addon-update-mutation'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
 import { AddonVariantId } from 'data/subscriptions/types'
 import { useResourceWarningsQuery } from 'data/usage/resource-warnings-query'
 import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
@@ -51,7 +50,6 @@ import { mapComputeSizeNameToAddonVariantId } from './DiskManagement.utils'
 import { DiskMangementRestartRequiredSection } from './DiskManagementRestartRequiredSection'
 import { DiskManagementReviewAndSubmitDialog } from './DiskManagementReviewAndSubmitDialog'
 import { AutoScaleFields } from './fields/AutoScaleFields'
-import { ComputeSizeField } from './fields/ComputeSizeField'
 import { DiskSizeField } from './fields/DiskSizeField'
 import { IOPSField } from './fields/IOPSField'
 import { StorageTypeField } from './fields/StorageTypeField'
@@ -120,7 +118,6 @@ export function DiskManagementForm() {
       enabled: project != null && isAws,
     }
   )
-  const { isSuccess: isAddonsSuccess } = useProjectAddonsQuery({ projectRef })
   const { isWithinCooldownWindow, isSuccess: isCooldownSuccess } =
     useRemainingDurationForDiskAttributeUpdate({
       projectRef,
@@ -178,7 +175,6 @@ export function DiskManagementForm() {
   }, [modifiedComputeSize, isDialogOpen, project])
 
   const isSuccess =
-    isAddonsSuccess &&
     isDiskAttributesSuccess &&
     isDiskUtilizationSuccess &&
     isReadReplicasSuccess &&
@@ -343,8 +339,6 @@ export function DiskManagementForm() {
               />
             </div>
           ) : null}
-          <Separator />
-          <ComputeSizeField form={form} disabled={disableComputeInputs} />
           <Separator />
           <SpendCapDisabledSection />
           <NoticeBar

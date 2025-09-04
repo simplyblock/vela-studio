@@ -5,7 +5,6 @@ import { fetchPost } from 'data/fetchers'
 import { constructHeaders } from 'lib/api/apiHelpers'
 import apiWrapper from 'lib/api/apiWrapper'
 import { PG_META_URL } from 'lib/constants'
-import { ResponseError } from '../../../../../types'
 
 export default (req: NextApiRequest, res: NextApiResponse) => apiWrapper(req, res, handler)
 
@@ -22,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 type ResponseData =
-  paths['/platform/projects/{ref}/run-lints']['get']['responses']['200']['content']['application/json']
+  paths['/platform/organizations/{slug}/projects/{ref}/run-lints']['get']['responses']['200']['content']['application/json']
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
   const headers = constructHeaders(req.headers)
@@ -33,7 +32,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ResponseData>
       { headers }
     )
     if (response.error) {
-      return res.status(400).json(response.error)
+      return res.status(400).json(response.error.message)
     } else {
       return res.status(200).json(response)
     }

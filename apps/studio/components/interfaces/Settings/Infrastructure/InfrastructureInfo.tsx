@@ -45,6 +45,7 @@ const InfrastructureInfo = () => {
     isError: isErrorUpgradeEligibility,
     isSuccess: isSuccessUpgradeEligibility,
   } = useProjectUpgradeEligibilityQuery({
+    orgSlug,
     projectRef: ref,
   })
 

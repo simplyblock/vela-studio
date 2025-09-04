@@ -1,6 +1,36 @@
-import { getAuthUser } from 'lib/gotrue'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { ResponseError, SupaResponse, User } from 'types'
+import { AuthClient, navigatorLock } from '@supabase/auth-js'
+import { STORAGE_KEY } from 'common'
+import { VELA_PLATFORM_GOTRUE_URL } from '../../pages/api/constants'
+
+const navigatorLockEnabled = !!globalThis?.navigator?.locks
+const gotrueClient = new AuthClient({
+  url: VELA_PLATFORM_GOTRUE_URL,
+  storageKey: STORAGE_KEY,
+  detectSessionInUrl: true,
+  debug: false,
+  lock: navigatorLockEnabled ? navigatorLock : undefined,
+
+  ...('localStorage' in globalThis
+    ? { storage: globalThis.localStorage, userStorage: globalThis.localStorage }
+    : null),
+})
+
+async function getAuthUser(token: String): Promise<any> {
+  try {
+    const {
+      data: { user },
+      error,
+    } = await gotrueClient.getUser(token.replace('Bearer ', ''))
+    if (error) throw error
+
+    return { user, error: null }
+  } catch (err) {
+    console.error(err)
+    return { user: null, error: err }
+  }
+}
 
 /**
  * Use this method on api routes to check if user is authenticated and having required permissions.

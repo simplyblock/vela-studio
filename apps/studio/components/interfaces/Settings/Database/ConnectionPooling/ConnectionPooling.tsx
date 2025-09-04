@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PermissionAction } from '@supabase/shared-types/out/constants'
-import { capitalize } from 'lodash'
 import { Fragment, useEffect, useMemo } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -16,7 +15,6 @@ import Panel from 'components/ui/Panel'
 import { useMaxConnectionsQuery } from 'data/database/max-connections-query'
 import { usePgbouncerConfigQuery } from 'data/database/pgbouncer-config-query'
 import { usePgbouncerConfigurationUpdateMutation } from 'data/database/pgbouncer-config-update-mutation'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
 import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
@@ -34,7 +32,6 @@ import {
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
-import { POOLING_OPTIMIZATIONS } from './ConnectionPooling.constants'
 
 const formId = 'pooling-configuration-form'
 
@@ -73,22 +70,12 @@ export const ConnectionPooling = () => {
     projectRef: project?.ref,
     connectionString: project?.connectionString,
   })
-  const { data: addons, isSuccess: isSuccessAddons } = useProjectAddonsQuery({ projectRef })
 
   const { mutate: updatePoolerConfig, isLoading: isUpdatingPoolerConfig } =
     usePgbouncerConfigurationUpdateMutation()
 
-  const hasIpv4Addon = !!addons?.selected_addons.find((addon) => addon.type === 'ipv4')
-  const computeInstance = addons?.selected_addons.find((addon) => addon.type === 'compute_instance')
-  const computeSize =
-    computeInstance?.variant.name ?? capitalize(project?.infra_compute_size) ?? 'Nano'
-  const poolingOptimizations =
-    POOLING_OPTIMIZATIONS[
-      (computeInstance?.variant.identifier as keyof typeof POOLING_OPTIMIZATIONS) ??
-        (project?.infra_compute_size === 'nano' ? 'ci_nano' : 'ci_micro')
-    ]
-  const defaultPoolSize = poolingOptimizations.poolSize ?? 15
-  const defaultMaxClientConn = poolingOptimizations.maxClientConn ?? 200
+  const defaultPoolSize = 15
+  const defaultMaxClientConn = 200
 
   const form = useForm<z.infer<typeof PoolingConfigurationFormSchema>>({
     resolver: zodResolver(PoolingConfigurationFormSchema),
@@ -169,20 +156,6 @@ export const ConnectionPooling = () => {
           />
         }
       >
-        {isSuccessAddons && !disablePoolModeSelection && !hasIpv4Addon && (
-          <Admonition
-            className="border-x-0 border-t-0 rounded-none"
-            type="default"
-            title="Dedicated Pooler is not IPv4 compatible"
-          >
-            <p className="!m-0">
-              If your network only supports IPv4, consider purchasing the{' '}
-              <InlineLink href={`/org/${slug}/project/${projectRef}/settings/addons?panel=ipv4`}>
-                IPv4 add-on
-              </InlineLink>
-            </p>
-          </Admonition>
-        )}
         <Panel.Content>
           {isLoadingPgbouncerConfig && (
             <div className="flex flex-col gap-y-4">
@@ -230,7 +203,7 @@ export const ConnectionPooling = () => {
                         <p>
                           The maximum number of connections made to the underlying Postgres cluster,
                           per user+db combination. Pool size has a default of {defaultPoolSize}{' '}
-                          based on your compute size of {computeSize}.
+                          based on your compute size.
                         </p>
                       }
                     >
@@ -274,8 +247,8 @@ export const ConnectionPooling = () => {
                         <>
                           <p>
                             The maximum number of concurrent client connections allowed. This value
-                            is fixed at {defaultMaxClientConn} based on your compute size of{' '}
-                            {computeSize} and cannot be changed.
+                            is fixed at {defaultMaxClientConn} based on your compute size and cannot
+                            be changed.
                           </p>
                           <p className="mt-2">
                             Please refer to our{' '}

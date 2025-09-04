@@ -6,10 +6,10 @@ export const configKeys = {
   jwtSecretUpdatingStatus: (projectRef: string | undefined) =>
     ['projects', projectRef, 'jwt-secret-updating-status'] as const,
   storage: (projectRef: string | undefined) => ['projects', projectRef, 'storage'] as const,
-  upgradeEligibility: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'upgrade-eligibility'] as const,
-  upgradeStatus: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'upgrade-status'] as const,
+  upgradeEligibility: (orgSlug: string | undefined, projectRef: string | undefined) =>
+    ['projects', orgSlug, projectRef, 'upgrade-eligibility'] as const,
+  upgradeStatus: (orgSlug: string | undefined, projectRef: string | undefined) =>
+    ['projects', orgSlug, projectRef, 'upgrade-status'] as const,
   diskAttributes: (projectRef: string | undefined) =>
     ['projects', projectRef, 'disk-attributes'] as const,
   diskBreakdown: (projectRef: string | undefined) =>

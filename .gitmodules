@@ -1,0 +1,3 @@
+[submodule "vela-controller"]
+	path = vela-controller
+	url = git@github.com:simplyblock/vela.git

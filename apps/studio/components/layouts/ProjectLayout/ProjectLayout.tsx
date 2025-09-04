@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { forwardRef, Fragment, PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 
 import { useParams } from 'common'
-import { CreateBranchModal } from 'components/interfaces/BranchManagement/CreateBranchModal'
 import ProjectAPIDocs from 'components/interfaces/ProjectAPIDocs/ProjectAPIDocs'
 import { AIAssistant } from 'components/ui/AIAssistantPanel/AIAssistant'
 import { Loading } from 'components/ui/Loading'
@@ -233,7 +232,6 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
-        <CreateBranchModal />
         <ProjectAPIDocs />
         <MobileSheetNav
           open={mobileMenuOpen}

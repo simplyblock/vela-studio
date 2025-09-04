@@ -110,7 +110,7 @@ export const generateDatabaseMenu = (
           rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
           items: [],
         },
-        { name: 'Settings', key: 'settings', url: `/project/${ref}/database/settings`, items: [] },
+        { name: 'Settings', key: 'settings', url: `/org/${slug}/project/${ref}/database/settings`, items: [] },
       ],
     },
     {

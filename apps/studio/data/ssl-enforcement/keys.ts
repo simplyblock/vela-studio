@@ -1,3 +1,3 @@
 export const sslEnforcementKeys = {
-  list: (projectRef: string | undefined) => ['projects', projectRef, 'ssl-enforcement'] as const,
+  list: (orgSlug: string | undefined, projectRef: string | undefined) => ['projects', orgSlug, projectRef, 'ssl-enforcement'] as const,
 }

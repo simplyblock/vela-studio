@@ -22,6 +22,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const headers = constructHeaders(req.headers)
+  console.log(`${PG_META_URL}/types`)
   const response = await fetchGet(`${PG_META_URL}/types`, { headers })
 
   if (response.error) {

@@ -8,8 +8,6 @@ import { getPlatformQueryParams } from '../../../../../../lib/api/platformQueryP
 import { IS_VELA_PLATFORM } from 'lib/constants'
 
 const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log(JSON.stringify(req.body))
-
   if (!IS_VELA_PLATFORM) {
     return res.status(405).send('Not implemented')
   }
@@ -92,7 +90,6 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(response.response.status).send(response.error)
   }
 
-  console.log(JSON.stringify(response.data))
   return res.status(200).json(response.data.map(mapProject))
 }
 

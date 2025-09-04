@@ -5,15 +5,17 @@ import { PROJECT_STATUS } from 'lib/constants'
 import { configKeys } from './keys'
 
 export type ProjectUpgradingStatusVariables = {
+  orgSlug?: string
   projectRef?: string
   projectStatus?: string
   trackingId?: string | null
 }
 
 export async function getProjectUpgradingStatus(
-  { projectRef, trackingId }: ProjectUpgradingStatusVariables,
+  { orgSlug, projectRef, trackingId }: ProjectUpgradingStatusVariables,
   signal?: AbortSignal
 ) {
+  if (!orgSlug) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
   const queryParams: Record<string, string> = {}
@@ -21,8 +23,8 @@ export async function getProjectUpgradingStatus(
     queryParams['tracking_id'] = trackingId
   }
 
-  const { data, error } = await get(`/v1/projects/{ref}/upgrade/status`, {
-    params: { path: { ref: projectRef }, query: queryParams },
+  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/upgrade/status`, {
+    params: { path: { slug: orgSlug, ref: projectRef }, query: queryParams },
     signal,
   })
   if (error) handleError(error)
@@ -34,7 +36,7 @@ export type ProjectUpgradingStatusData = Awaited<ReturnType<typeof getProjectUpg
 export type ProjectUpgradingStatusError = unknown
 
 export const useProjectUpgradingStatusQuery = <TData = ProjectUpgradingStatusData>(
-  { projectRef, projectStatus, trackingId }: ProjectUpgradingStatusVariables,
+  { orgSlug, projectRef, projectStatus, trackingId }: ProjectUpgradingStatusVariables,
   {
     enabled = true,
     ...options
@@ -43,10 +45,10 @@ export const useProjectUpgradingStatusQuery = <TData = ProjectUpgradingStatusDat
   const client = useQueryClient()
 
   return useQuery<ProjectUpgradingStatusData, ProjectUpgradingStatusError, TData>(
-    configKeys.upgradeStatus(projectRef),
-    ({ signal }) => getProjectUpgradingStatus({ projectRef, trackingId }, signal),
+    configKeys.upgradeStatus(orgSlug, projectRef),
+    ({ signal }) => getProjectUpgradingStatus({ orgSlug, projectRef, trackingId }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
       refetchInterval(data) {
         const response = data as unknown as ProjectUpgradingStatusData
         if (!response) return false
@@ -65,7 +67,7 @@ export const useProjectUpgradingStatusQuery = <TData = ProjectUpgradingStatusDat
       onSuccess(data) {
         const response = data as unknown as ProjectUpgradingStatusData
         if (response.databaseUpgradeStatus?.status === DatabaseUpgradeStatus.Upgraded) {
-          client.invalidateQueries(configKeys.upgradeEligibility(projectRef))
+          client.invalidateQueries(configKeys.upgradeEligibility(orgSlug, projectRef))
         }
       },
       ...options,

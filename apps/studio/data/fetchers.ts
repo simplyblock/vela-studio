@@ -73,7 +73,7 @@ export async function constructHeaders(headersInit?: HeadersInit | undefined) {
 function pgMetaGuard(request: Request) {
   // Only check for /platform/pg-meta/ endpoints
   if (request.url.includes('/platform/pg-meta/')) {
-    // If there is no valid `x-connection-encrypted`, pg-meta will necesseraly fail to connect to the target database
+    // If there is no valid `x-connection-encrypted`, pg-meta will necessarily fail to connect to the target database
     // in such case, we save the hops and throw a 421 response instead
     if (!isValidConnString(request.headers.get('x-connection-encrypted'))) {
       const retryAfterHeader = request.headers.get('Retry-After')

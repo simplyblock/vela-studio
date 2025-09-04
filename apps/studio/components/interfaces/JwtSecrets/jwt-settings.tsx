@@ -63,7 +63,7 @@ const schema = object({
 })
 
 const JWTSettings = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
 
   const newJwtSecrets = useFlag('newJwtSecrets')
 
@@ -85,7 +85,7 @@ const JWTSettings = () => {
     'custom_config_gotrue'
   )
 
-  const { data } = useJwtSecretUpdatingStatusQuery({ projectRef })
+  const { data } = useJwtSecretUpdatingStatusQuery({ projectRef, orgSlug })
   const { data: config, isError } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
   const { mutateAsync: updateJwt, isLoading: isSubmittingJwtSecretUpdateRequest } =
     useJwtSecretUpdateMutation()
@@ -206,7 +206,7 @@ const JWTSettings = () => {
                         </p>
 
                         <Button type="default" asChild icon={<ExternalLink className="size-4" />}>
-                          <Link href={`/org/${slug}/project/${projectRef}/settings/api-keys`}>
+                          <Link href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys`}>
                             Go to API keys
                           </Link>
                         </Button>
@@ -317,7 +317,7 @@ const JWTSettings = () => {
                               icon={<ExternalLink className="size-4" />}
                               asChild
                             >
-                              <Link href={`/org/${slug}/project/${projectRef}/settings/api-keys/new`}>
+                              <Link href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}>
                                 Go to API Keys
                               </Link>
                             </Button>
@@ -326,7 +326,7 @@ const JWTSettings = () => {
                               icon={<ExternalLink className="size-4" />}
                               asChild
                             >
-                              <Link href={`/org/${slug}/project/${projectRef}/settings/jwt/signing-keys`}>
+                              <Link href={`/org/${orgSlug}/project/${projectRef}/settings/jwt/signing-keys`}>
                                 Go to JWT Signing Keys
                               </Link>
                             </Button>

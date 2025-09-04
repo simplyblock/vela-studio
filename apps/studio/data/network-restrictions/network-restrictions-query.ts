@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import { networkRestrictionKeys } from './keys'
 
-export type NetworkRestrictionsVariables = { projectRef?: string }
+export type NetworkRestrictionsVariables = { orgSlug?: string, projectRef?: string }
 
 export type NetworkRestrictionsResponse = {
   entitlement: 'disallowed' | 'allowed'
@@ -14,13 +14,14 @@ export type NetworkRestrictionsResponse = {
 }
 
 export async function getNetworkRestrictions(
-  { projectRef }: NetworkRestrictionsVariables,
+  { orgSlug, projectRef }: NetworkRestrictionsVariables,
   signal?: AbortSignal
 ) {
+  if (!orgSlug) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await get('/v1/projects/{ref}/network-restrictions', {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/network-restrictions', {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     signal,
   })
 
@@ -49,14 +50,14 @@ export type NetworkRestrictionsData = Awaited<ReturnType<typeof getNetworkRestri
 export type NetworkRestrictionsError = unknown
 
 export const useNetworkRestrictionsQuery = <TData = NetworkRestrictionsData>(
-  { projectRef }: NetworkRestrictionsVariables,
+  { ogrSlug, projectRef }: NetworkRestrictionsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<NetworkRestrictionsData, NetworkRestrictionsError, TData> = {}
 ) =>
   useQuery<NetworkRestrictionsData, NetworkRestrictionsError, TData>(
-    networkRestrictionKeys.list(projectRef),
-    ({ signal }) => getNetworkRestrictions({ projectRef }, signal),
+    networkRestrictionKeys.list(orgSlug, projectRef),
+    ({ signal }) => getNetworkRestrictions({ orgSlug, projectRef }, signal),
     { enabled: enabled && typeof projectRef !== 'undefined', ...options }
   )

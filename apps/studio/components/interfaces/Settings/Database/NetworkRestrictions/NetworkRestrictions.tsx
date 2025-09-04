@@ -27,6 +27,7 @@ import AddRestrictionModal from './AddRestrictionModal'
 import AllowAllModal from './AllowAllModal'
 import DisallowAllModal from './DisallowAllModal'
 import RemoveRestrictionModal from './RemoveRestrictionModal'
+import { getPathReferences } from '../../../../../data/vela/path-references'
 
 interface AccessButtonProps {
   disabled: boolean
@@ -68,13 +69,14 @@ const DisallowAllAccessButton = ({ disabled, onClick }: AccessButtonProps) => (
 
 const NetworkRestrictions = () => {
   const { ref } = useParams()
+  const { slug: orgSlug } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
   const [isAddingAddress, setIsAddingAddress] = useState<undefined | 'IPv4' | 'IPv6'>()
   const [isAllowingAll, setIsAllowingAll] = useState(false)
   const [isDisallowingAll, setIsDisallowingAll] = useState(false)
   const [selectedRestrictionToRemove, setSelectedRestrictionToRemove] = useState<string>()
 
-  const { data, isLoading } = useNetworkRestrictionsQuery({ projectRef: ref })
+  const { data, isLoading } = useNetworkRestrictionsQuery({ orgSlug, projectRef: ref })
   const { can: canUpdateNetworkRestrictions } = useAsyncCheckProjectPermissions(
     PermissionAction.UPDATE,
     'projects',

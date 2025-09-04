@@ -4,7 +4,6 @@ import { PropsWithChildren } from 'react'
 import { useIsColumnLevelPrivilegesEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { ProductMenu } from 'components/ui/ProductMenu'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { withAuth } from 'hooks/misc/withAuth'
@@ -29,10 +28,9 @@ const DatabaseProductMenu = () => {
     projectRef: project?.ref,
     connectionString: project?.connectionString,
   })
-  const { data: addons } = useProjectAddonsQuery({ projectRef: project?.ref })
 
   const pgNetExtensionExists = (data ?? []).find((ext) => ext.name === 'pg_net') !== undefined
-  const pitrEnabled = addons?.selected_addons.find((addon) => addon.type === 'pitr') !== undefined
+  const pitrEnabled = true
   const columnLevelPrivileges = useIsColumnLevelPrivilegesEnabled()
   const enablePgReplicate = useFlag('enablePgReplicate')
 

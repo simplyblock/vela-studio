@@ -22,13 +22,13 @@ export const DisplayApiSettings = ({
   showNotice?: boolean
   showLegacyText?: boolean
 }) => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
 
   const {
     data: settings,
     isError: isProjectSettingsError,
     isLoading: isProjectSettingsLoading,
-  } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
+  } = useProjectSettingsV2Query({ orgSlug, projectRef })
   const {
     data,
     isError: isJwtSecretUpdateStatusError,
@@ -171,7 +171,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${slug}/project/${projectRef}/settings/api-keys/new`}
+                            href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Secret API keys
@@ -188,7 +188,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${slug}/project/${projectRef}/settings/api-keys/new`}
+                            href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Publishable API keys
@@ -223,9 +223,7 @@ export const DisplayApiSettings = ({
             href="https://github.com/orgs/supabase/discussions/29260"
             buttonText="Read the announcement"
           />
-        ) : (
-          <ToggleLegacyApiKeysPanel />
-        )}
+        ) : null}
       </Panel>
     </>
   )

@@ -2,6 +2,7 @@ import { Button, Modal } from 'ui'
 
 import { useParams } from 'common/hooks'
 import { useNetworkRestrictionsApplyMutation } from 'data/network-restrictions/network-retrictions-apply-mutation'
+import { getPathReferences } from 'data/vela/path-references'
 
 interface AllowAllModalProps {
   visible: boolean
@@ -10,14 +11,17 @@ interface AllowAllModalProps {
 
 const AllowAllModal = ({ visible, onClose }: AllowAllModalProps) => {
   const { ref } = useParams()
+  const { slug: orgSlug } = getPathReferences()
   const { mutate: applyNetworkRestrictions, isLoading: isApplying } =
     useNetworkRestrictionsApplyMutation({
       onSuccess: () => onClose(),
     })
 
   const onSubmit = async () => {
+    if (!orgSlug) return console.error('Organization slug is required')
     if (!ref) return console.error('Project ref is required')
     applyNetworkRestrictions({
+      orgSlug,
       projectRef: ref,
       dbAllowedCidrs: ['0.0.0.0/0'],
       dbAllowedCidrsV6: ['::/0'],

@@ -31,6 +31,7 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref } = req.query
   const client = getVelaClient(req)
 
+  return res.status(200).json([])
 }
 
 const apiHandler = apiBuilder(builder => builder.useAuth().get(handleGetAll))

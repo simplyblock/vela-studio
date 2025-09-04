@@ -1,12 +1,9 @@
 import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronRight } from 'lucide-react'
-import { useMemo } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { useProjectAddonsQuery } from 'data/subscriptions/project-addons-query'
 import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatCurrency } from 'lib/helpers'
 import {
@@ -149,7 +146,6 @@ export const DiskManagementReviewAndSubmitDialog = ({
   buttonSize = 'medium',
 }: DiskSizeMeterProps) => {
   const { data: project } = useSelectedProjectQuery()
-  const { data: org } = useSelectedOrganizationQuery()
 
   const { formState, getValues } = form
 
@@ -163,31 +159,10 @@ export const DiskManagementReviewAndSubmitDialog = ({
     }
   )
 
-  /**
-   * Queries
-   * */
-  const {
-    data: addons,
-    // request deps in Form handle errors and loading
-  } = useProjectAddonsQuery({ projectRef: project?.ref })
-
-  const planId = org?.plan.id ?? 'free'
+  const planId = 'free'
   const isDirty = !!Object.keys(form.formState.dirtyFields).length
   const replicaTooltipText = `Price change includes primary database and ${numReplicas} replica${numReplicas > 1 ? 's' : ''}`
 
-  const availableAddons = useMemo(() => {
-    return addons?.available_addons ?? []
-  }, [addons])
-  const availableOptions = useMemo(() => {
-    return getAvailableComputeOptions(availableAddons, project?.cloud_provider)
-  }, [availableAddons, project?.cloud_provider])
-
-  const computeSizePrice = calculateComputeSizePrice({
-    availableOptions,
-    oldComputeSize: form.formState.defaultValues?.computeSize || 'ci_micro',
-    newComputeSize: form.getValues('computeSize'),
-    plan: org?.plan.id ?? 'free',
-  })
   const diskSizePrice = calculateDiskSizePrice({
     planId: planId,
     oldSize: formState.defaultValues?.totalSize || 0,
@@ -283,23 +258,6 @@ export const DiskManagementReviewAndSubmitDialog = ({
             <TableHeaderRow />
           </TableHeader>
           <TableBody className="[&_td]:py-0 [&_tr]:h-[50px] [&_tr]:border-dotted">
-            {hasComputeChanges && (
-              <TableDataRow
-                attribute="Compute size"
-                defaultValue={mapAddOnVariantIdToComputeSize(
-                  form.formState.defaultValues?.computeSize ?? 'ci_nano'
-                )}
-                newValue={mapAddOnVariantIdToComputeSize(form.getValues('computeSize'))}
-                unit="-"
-                beforePrice={Number(computeSizePrice.oldPrice)}
-                afterPrice={Number(computeSizePrice.newPrice)}
-                upgradeIncluded={
-                  org?.plan.id !== 'free' &&
-                  project?.infra_compute_size === 'nano' &&
-                  form.getValues('computeSize') === 'ci_micro'
-                }
-              />
-            )}
             {hasStorageTypeChanges && (
               <TableDataRow
                 hidePrice

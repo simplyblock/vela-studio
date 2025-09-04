@@ -15,7 +15,6 @@ import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectL
 import { ComputeBadgeWrapper } from 'components/ui/ComputeBadgeWrapper'
 import { InlineLink } from 'components/ui/InlineLink'
 import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBanner'
-import { useBranchesQuery } from 'data/branches/branches-query'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useTablesQuery } from 'data/tables/tables-query'
@@ -92,18 +91,8 @@ const Home: NextPageWithLayout = () => {
     projectRef: project?.ref,
   })
 
-  const { data: branches } = useBranchesQuery({
-    projectRef: project?.parent_project_ref ?? project?.ref,
-  })
-
-  const mainBranch = branches?.find((branch) => branch.is_default)
-  const currentBranch = branches?.find((branch) => branch.project_ref === project?.ref)
-  const isMainBranch = currentBranch?.name === mainBranch?.name
   let projectName = 'Welcome to your project'
-
-  if (currentBranch && !isMainBranch) {
-    projectName = currentBranch?.name
-  } else if (project?.name) {
+  if (project?.name) {
     projectName = project?.name
   }
 
@@ -119,14 +108,6 @@ const Home: NextPageWithLayout = () => {
           <div className="flex flex-col md:flex-row md:items-center gap-6 justify-between w-full">
             <div className="flex flex-col md:flex-row md:items-end gap-3 w-full">
               <div>
-                {!isMainBranch && (
-                  <Link
-                    href={`/org/${slug}/project/${parentProject?.ref}`}
-                    className="text-sm text-foreground-light"
-                  >
-                    {parentProject?.name}
-                  </Link>
-                )}
                 <h1 className="text-3xl">{projectName}</h1>
               </div>
               <div className="flex items-center gap-x-2 mb-1">
