@@ -5211,7 +5211,7 @@ export interface components {
       parent_id?: string | null
       project_id: number
     }
-    CreateUserReponse: {
+    CreateUserResponse: {
       aud?: string
       banned_until?: string
       confirmation_sent_at?: string
@@ -9666,7 +9666,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateUserReponse']
+          'application/json': components['schemas']['CreateUserResponse']
         }
       }
       403: {
