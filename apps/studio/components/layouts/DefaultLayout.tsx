@@ -51,7 +51,7 @@ const DefaultLayout = ({ children, headerTitle }: PropsWithChildren<DefaultLayou
   const router = useRouter()
   const showProductMenu = !!ref && router.pathname !== '/org/[slug]/project/[ref]'
 
-  const isRbacPath = router.pathname.includes('/team')
+  const isRbacPath = router.pathname.includes('/users')
 
   useCheckLatestDeploy()
 
