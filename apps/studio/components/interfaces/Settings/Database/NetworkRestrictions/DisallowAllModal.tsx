@@ -17,6 +17,7 @@ const DisallowAllModal = ({ visible, onClose }: DisallowAllModalProps) => {
     useNetworkRestrictionsApplyMutation({ onSuccess: () => onClose() })
 
   const onSubmit = async () => {
+    if (!orgSlug) return console.error('Organization slug is required')
     if (!ref) return console.error('Project ref is required')
     await applyNetworkRestrictions({
       orgSlug,

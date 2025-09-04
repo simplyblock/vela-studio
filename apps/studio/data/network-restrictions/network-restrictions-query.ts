@@ -50,7 +50,7 @@ export type NetworkRestrictionsData = Awaited<ReturnType<typeof getNetworkRestri
 export type NetworkRestrictionsError = unknown
 
 export const useNetworkRestrictionsQuery = <TData = NetworkRestrictionsData>(
-  { ogrSlug, projectRef }: NetworkRestrictionsVariables,
+  { orgSlug, projectRef }: NetworkRestrictionsVariables,
   {
     enabled = true,
     ...options
