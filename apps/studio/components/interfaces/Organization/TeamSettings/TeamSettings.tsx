@@ -4,6 +4,7 @@ import { useState } from 'react'
 import {
   ScaffoldActionsContainer,
   ScaffoldActionsGroup,
+  ScaffoldContainer,
   ScaffoldContainerLegacy,
   ScaffoldFilterAndContent,
   ScaffoldSectionContent,
@@ -18,8 +19,8 @@ export const TeamSettings = () => {
   const [searchString, setSearchString] = useState('')
 
   return (
-    <ScaffoldContainerLegacy>
-      <ScaffoldTitle>Team</ScaffoldTitle>
+    <ScaffoldContainer>
+      <ScaffoldTitle>Users</ScaffoldTitle>
       <ScaffoldFilterAndContent>
         <ScaffoldActionsContainer className="w-full flex-col md:flex-row gap-2 justify-between">
           <Input
@@ -41,6 +42,6 @@ export const TeamSettings = () => {
           <MembersView searchString={searchString} />
         </ScaffoldSectionContent>
       </ScaffoldFilterAndContent>
-    </ScaffoldContainerLegacy>
+    </ScaffoldContainer>
   )
 }

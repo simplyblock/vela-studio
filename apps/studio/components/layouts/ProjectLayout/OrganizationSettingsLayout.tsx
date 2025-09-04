@@ -15,7 +15,7 @@ function OrganizationSettingsLayout({ children }: PropsWithChildren) {
   // Hide these settings in the new layout on the following paths
   const isHidden = (path: string) => {
     return (
-      path === `/org/${slug}/team` ||
+      path === `/org/${slug}/users` ||
       path === `/org/${slug}/integrations` ||
       path === `/org/${slug}/usage` ||
       path === `/org/${slug}/billing`

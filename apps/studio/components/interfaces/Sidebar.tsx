@@ -379,8 +379,8 @@ const OrganizationLinks = () => {
     },
     {
       label: 'RBAC',
-      href: `/org/${slug}/team`,
-      key: 'team',
+      href: `/org/${slug}/users`,
+      key: 'users',
       icon: <Shield size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
   ]
@@ -448,7 +448,7 @@ const OrganizationLinks = () => {
         {ProjectSection.map((item) => (
           <SideBarNavLink
             key={item.key}
-            disabled={disableAccessMfa && item.key === 'team'}
+            disabled={disableAccessMfa && item.key === 'users'}
             active={isActive(item.key, item.href)}
             route={{
               label: item.label,

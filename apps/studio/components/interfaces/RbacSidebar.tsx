@@ -1,16 +1,7 @@
 // components/interfaces/SubSideBar/RbacSubSideBar.tsx
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { SubSideBar } from './SubSidebar'
-import { 
-  Users, 
-  Shield, 
-  UserCog, 
-  FileText, 
-  LogIn, 
-  Mail, 
-  Lock, 
-  Link as LinkIcon 
-} from 'lucide-react'
+import { Users, Shield, UserCog, FileText, LogIn, Mail, Lock, Link as LinkIcon } from 'lucide-react'
 
 export const RbacSubSideBar = () => {
   const organization = useSelectedOrganizationQuery()
@@ -22,27 +13,27 @@ export const RbacSubSideBar = () => {
       items: [
         {
           label: 'Users',
-          href: `/org/${orgSlug}/team`,
+          href: `/org/${orgSlug}/users`,
           icon: Users,
         },
         {
           label: 'Roles',
-          href: `/org/${orgSlug}/team/roles`,
+          href: `/org/${orgSlug}/users/roles`,
           icon: Shield,
         },
         {
           label: 'Role Assignment',
-          href: `/org/${orgSlug}/team/roleAssignment`,
+          href: `/org/${orgSlug}/users/roleAssignment`,
           icon: UserCog,
         },
-      ]
+      ],
     },
     {
       title: 'Configuration',
       items: [
         {
           label: 'Policies',
-          href: `/org/${orgSlug}/team/policies`,
+          href: `/org/${orgSlug}/users/policies`,
           icon: FileText,
         },
         {
@@ -52,21 +43,21 @@ export const RbacSubSideBar = () => {
         },
         {
           label: 'Emails',
-          href: `/org/${orgSlug}/team/emails`,
+          href: `/org/${orgSlug}/users/emails`,
           icon: Mail,
         },
         {
           label: 'Multi-Factor',
-          href: `/org/${orgSlug}/team/multiFactor`,
+          href: `/org/${orgSlug}/users/multiFactor`,
           icon: Lock,
         },
         {
           label: 'URL Configuration',
-          href: `/org/${orgSlug}/team/urlConfig`,
+          href: `/org/${orgSlug}/users/urlConfig`,
           icon: LinkIcon,
         },
-      ]
-    }
+      ],
+    },
   ]
 
   return <SubSideBar title="Access control" sections={sections} />
