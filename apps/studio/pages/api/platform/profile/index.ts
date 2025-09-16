@@ -2,9 +2,42 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { DEFAULT_PROJECT, DEFAULT_PROJECT_2 } from '../../constants'
 
-const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
+interface ProfileResponse {
+  disabled_features: (
+  | 'organizations:create'
+  | 'organizations:delete'
+  | 'organization_members:create'
+  | 'organization_members:delete'
+  | 'projects:create'
+  | 'projects:transfer'
+  | 'project_auth:all'
+  | 'project_storage:all'
+  | 'project_edge_function:all'
+  | 'profile:update'
+  | 'billing:account_data'
+  | 'billing:credits'
+  | 'billing:invoices'
+  | 'billing:payment_methods'
+  | 'realtime:all'
+  | 'database:replication'
+  | 'database:roles'
+)[]
+  first_name: string
+  free_project_limit: number
+  gotrue_id: string
+  id: number
+  is_alpha_user: boolean
+  last_name: string
+  mobile: string
+  primary_email: string
+  username: string
+  organizations: any[]
+}
+
+
+const handleGet = async (req: NextApiRequest, res: NextApiResponse<ProfileResponse>) => {
   // Platform specific endpoint
-  const response = {
+  const response: ProfileResponse = {
     id: 1,
     primary_email: 'johndoe@supabase.io',
     username: 'johndoe',
@@ -22,6 +55,13 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
         ],
       },
     ],
+    disabled_features: [
+      'database:replication',
+    ],
+    free_project_limit: 0,
+    mobile: '',
+    is_alpha_user: true,
+    gotrue_id: '1234567890',
   }
   return res.status(200).json(response)
 }

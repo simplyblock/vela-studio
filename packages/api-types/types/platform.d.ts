@@ -244,7 +244,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/database/{ref}/backups': {
+  '/platform/organizations/{slug}/projects/{ref}/backups': {
     parameters: {
       query?: never
       header?: never
@@ -3604,7 +3604,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/replication/{ref}/sources': {
+  '/platform/organizations/{slug}/projects/{ref}/replication/sources': {
     parameters: {
       query?: never
       header?: never
@@ -4311,7 +4311,9 @@ export interface paths {
     trace?: never
   }
 }
+
 export type webhooks = Record<string, never>
+
 export interface components {
   schemas: {
     AccessControlPermission: {
@@ -9349,7 +9351,9 @@ export interface components {
   headers: never
   pathItems: never
 }
+
 export type $defs = Record<string, never>
+
 export interface operations {
   GoTrueConfigController_getGoTrueConfig: {
     parameters: {
@@ -9922,6 +9926,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -19900,6 +19905,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -19936,6 +19942,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }

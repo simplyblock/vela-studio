@@ -20,7 +20,7 @@ interface StorageExplorerProps {
 }
 
 const StorageExplorer = ({ bucket }: StorageExplorerProps) => {
-  const { ref } = useParams()
+  const { slug, ref } = useParams()
   const storageExplorerRef = useRef(null)
   const {
     view,
@@ -47,7 +47,7 @@ const StorageExplorer = ({ bucket }: StorageExplorerProps) => {
     setSelectedItemsToDelete,
   } = useStorageExplorerStateSnapshot()
 
-  useProjectStorageConfigQuery({ projectRef: ref }, { enabled: IS_PLATFORM })
+  useProjectStorageConfigQuery({ orgSlug: slug, projectRef: ref })
 
   // This state exists outside of the header because FileExplorerColumn needs to listen to these as well
   // Things like showing results from a search filter is "temporary", hence we use react state to manage

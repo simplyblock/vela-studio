@@ -19,11 +19,13 @@ export const generateDatabaseMenu = (
   const {
     pgNetExtensionExists,
     pitrEnabled,
-    columnLevelPrivileges,
     enablePgReplicate,
     showPgReplicate,
     showRoles,
   } = flags || {}
+
+  // Disable CLP for now
+  const columnLevelPrivileges = false;
 
   return [
     {
@@ -103,13 +105,6 @@ export const generateDatabaseMenu = (
               },
             ]
           : []),
-        {
-          name: 'Policies',
-          key: 'policies',
-          url: `/org/${slug}/project/${ref}/auth/policies`,
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-          items: [],
-        },
         { name: 'Settings', key: 'settings', url: `/org/${slug}/project/${ref}/database/settings`, items: [] },
       ],
     },
@@ -128,50 +123,6 @@ export const generateDatabaseMenu = (
           name: 'Migrations',
           key: 'migrations',
           url: `/org/${slug}/project/${ref}/database/migrations`,
-          items: [],
-        },
-        {
-          name: 'Wrappers',
-          key: 'wrappers',
-          url: `/org/${slug}/project/${ref}/integrations?category=wrapper`,
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-          items: [],
-        },
-        ...(!!pgNetExtensionExists
-          ? [
-              {
-                name: 'Webhooks',
-                key: 'hooks',
-                url: `/org/${slug}/project/${ref}/integrations/webhooks/overview`,
-                rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-                items: [],
-              },
-            ]
-          : []),
-      ],
-    },
-    {
-      title: 'Tools',
-      items: [
-        {
-          name: 'Security Advisor',
-          key: 'security-advisor',
-          url: `/org/${slug}/project/${ref}/advisors/security`,
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-          items: [],
-        },
-        {
-          name: 'Performance Advisor',
-          key: 'performance-advisor',
-          url: `/org/${slug}/project/${ref}/advisors/performance`,
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-          items: [],
-        },
-        {
-          name: 'Query Performance',
-          key: 'query-performance',
-          url: `/org/${slug}/project/${ref}/advisors/query-performance`,
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
           items: [],
         },
       ],

@@ -102,7 +102,7 @@ export function LogsSidebarMenuV2() {
   const enablePgReplicate = useFlag('enablePgReplicate')
   const { data: etlData, isLoading: isETLLoading } = useReplicationSourcesQuery(
     {
-      projectRef: ref,
+      orgSlug: slug, projectRef: ref,
     },
     {
       enabled: enablePgReplicate,

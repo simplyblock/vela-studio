@@ -17,7 +17,7 @@ import AddNewSecretForm from './AddNewSecretForm'
 import EdgeFunctionSecret from './EdgeFunctionSecret'
 
 const EdgeFunctionSecrets = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
   const [searchString, setSearchString] = useState('')
   const [selectedSecret, setSelectedSecret] = useState<ProjectSecret>()
 
@@ -31,7 +31,7 @@ const EdgeFunctionSecrets = () => {
   )
 
   const { data, error, isLoading, isSuccess, isError } = useSecretsQuery({
-    projectRef: projectRef,
+    orgSlug, projectRef,
   })
 
   const { mutate: deleteSecret, isLoading: isDeleting } = useSecretsDeleteMutation({
@@ -144,7 +144,7 @@ const EdgeFunctionSecrets = () => {
         onCancel={() => setSelectedSecret(undefined)}
         onConfirm={() => {
           if (selectedSecret !== undefined) {
-            deleteSecret({ projectRef, secrets: [selectedSecret.name] })
+            deleteSecret({ orgSlug, projectRef, secrets: [selectedSecret.name] })
           }
         }}
       >

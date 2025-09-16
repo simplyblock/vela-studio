@@ -49,7 +49,7 @@ const defaultValues = {
   secrets: [{ name: '', value: '' }],
 }
 const AddNewSecretForm = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
   const [showSecretValue, setShowSecretValue] = useState(false)
   const [duplicateSecretName, setDuplicateSecretName] = useState<string>('')
   const [pendingSecrets, setPendingSecrets] = useState<z.infer<typeof FormSchema> | null>(null)
@@ -65,7 +65,7 @@ const AddNewSecretForm = () => {
   })
 
   const { data: existingSecrets } = useSecretsQuery({
-    projectRef: projectRef,
+    orgSlug, projectRef,
   })
 
   function handlePaste(e: ClipboardEvent) {
@@ -137,12 +137,12 @@ const AddNewSecretForm = () => {
       return
     }
 
-    createSecret({ projectRef, secrets: data.secrets })
+    createSecret({ orgSlug, projectRef, secrets: data.secrets })
   }
 
   const handleConfirmDuplicate = () => {
     if (pendingSecrets) {
-      createSecret({ projectRef, secrets: pendingSecrets.secrets })
+      createSecret({ orgSlug, projectRef, secrets: pendingSecrets.secrets })
       setDuplicateSecretName('')
       setPendingSecrets(null)
     }

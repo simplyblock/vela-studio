@@ -4,16 +4,20 @@ import { get, handleError } from 'data/fetchers'
 import { ResponseError } from 'types'
 import { replicationKeys } from './keys'
 
-type ReplicationSourcesParams = { projectRef?: string }
+type ReplicationSourcesParams = {
+  orgSlug?: string,
+  projectRef?: string
+}
 
 async function fetchReplicationSources(
-  { projectRef }: ReplicationSourcesParams,
+  { orgSlug, projectRef }: ReplicationSourcesParams,
   signal?: AbortSignal
 ) {
+  if (!orgSlug) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await get('/platform/replication/{ref}/sources', {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/replication/sources', {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     signal,
   })
   if (error) {
@@ -26,11 +30,11 @@ async function fetchReplicationSources(
 export type ReplicationSourcesData = Awaited<ReturnType<typeof fetchReplicationSources>>
 
 export const useReplicationSourcesQuery = <TData = ReplicationSourcesData>(
-  { projectRef }: ReplicationSourcesParams,
+  { orgSlug, projectRef }: ReplicationSourcesParams,
   { enabled = true, ...options }: UseQueryOptions<ReplicationSourcesData, ResponseError, TData> = {}
 ) =>
   useQuery<ReplicationSourcesData, ResponseError, TData>(
-    replicationKeys.sources(projectRef),
-    ({ signal }) => fetchReplicationSources({ projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined', ...options }
+    replicationKeys.sources(orgSlug, projectRef),
+    ({ signal }) => fetchReplicationSources({ orgSlug, projectRef }, signal),
+    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

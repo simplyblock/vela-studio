@@ -16,7 +16,7 @@ import { PIPELINE_ERROR_MESSAGES } from './Pipeline.utils'
 export const Destinations = () => {
   const [showNewDestinationPanel, setShowNewDestinationPanel] = useState(false)
   const [filterString, setFilterString] = useState<string>('')
-  const { ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
 
   const {
     data: sourcesData,
@@ -24,7 +24,7 @@ export const Destinations = () => {
     isLoading: isSourcesLoading,
     isError: isSourcesError,
   } = useReplicationSourcesQuery({
-    projectRef,
+    orgSlug, projectRef,
   })
 
   const sourceId = sourcesData?.sources.find((s) => s.name === projectRef)?.id

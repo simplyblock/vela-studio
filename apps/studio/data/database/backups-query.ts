@@ -17,8 +17,8 @@ export async function getBackups({ orgSlug, projectRef }: BackupsVariables, sign
   if (!orgSlug) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
-  const { data, error } = await get(`/platform/database/{ref}/backups`, {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/backups`, {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     signal,
   })
 

@@ -6,15 +6,17 @@ import type { ResponseError } from 'types'
 import { secretsKeys } from './keys'
 
 export type SecretsCreateVariables = {
+  orgSlug?: string
   projectRef?: string
   secrets: { name: string; value: string }[]
 }
 
-export async function createSecrets({ projectRef, secrets }: SecretsCreateVariables) {
+export async function createSecrets({ orgSlug, projectRef, secrets }: SecretsCreateVariables) {
+  if (!orgSlug) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
-  const { data, error } = await post('/v1/projects/{ref}/secrets', {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await post('/platform/organizations/{slug}/projects/{ref}/secrets', {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     body: secrets,
   })
 
@@ -37,8 +39,8 @@ export const useSecretsCreateMutation = ({
     (vars) => createSecrets(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(secretsKeys.list(projectRef))
+        const { orgSlug, projectRef } = variables
+        await queryClient.invalidateQueries(secretsKeys.list(orgSlug, projectRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

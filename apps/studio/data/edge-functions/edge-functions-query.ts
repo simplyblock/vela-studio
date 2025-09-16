@@ -34,11 +34,11 @@ export type EdgeFunctionsData = Awaited<ReturnType<typeof getEdgeFunctions>>
 export type EdgeFunctionsError = ResponseError
 
 export const useEdgeFunctionsQuery = <TData = EdgeFunctionsData>(
-  { projectRef }: EdgeFunctionsVariables,
+  { orgSlug, projectRef }: EdgeFunctionsVariables,
   { enabled = true, ...options }: UseQueryOptions<EdgeFunctionsData, EdgeFunctionsError, TData> = {}
 ) =>
   useQuery<EdgeFunctionsData, EdgeFunctionsError, TData>(
     edgeFunctionsKeys.list(projectRef),
-    ({ signal }) => getEdgeFunctions({ projectRef }, signal),
-    { enabled: IS_PLATFORM && enabled && typeof projectRef !== 'undefined', ...options }
+    ({ signal }) => getEdgeFunctions({ orgSlug, projectRef }, signal),
+    { enabled: IS_PLATFORM && enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

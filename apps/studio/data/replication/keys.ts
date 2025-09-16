@@ -1,5 +1,5 @@
 export const replicationKeys = {
-  sources: (projectRef: string | undefined) => ['projects', projectRef, 'sources'] as const,
+  sources: (orgSlug: string | undefined, projectRef: string | undefined) => ['projects', orgSlug, projectRef, 'sources'] as const,
   destinations: (projectRef: string | undefined) =>
     ['projects', projectRef, 'destinations'] as const,
   destinationById: (projectRef: string | undefined, destinationId: number | undefined) =>

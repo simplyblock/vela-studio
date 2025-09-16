@@ -1392,7 +1392,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/secrets': {
+  '/platform/organizations/{slug}/projects/{ref}/secrets': {
     parameters: {
       query?: never
       header?: never
@@ -7435,6 +7435,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -7470,6 +7471,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -7507,6 +7509,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }

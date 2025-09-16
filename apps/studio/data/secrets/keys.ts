@@ -1,4 +1,4 @@
 export const secretsKeys = {
-  list: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'edge_functions_secrets'] as const,
+  list: (orgSlug: string | undefined, projectRef: string | undefined) =>
+    ['projects', orgSlug, projectRef, 'edge_functions_secrets'] as const,
 }

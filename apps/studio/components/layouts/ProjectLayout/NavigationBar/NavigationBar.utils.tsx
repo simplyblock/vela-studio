@@ -159,12 +159,12 @@ export const generateOtherRoutes = (
             ? `/org/${slug}/project/${ref}/logs`
             : `/org/${slug}/project/${ref}/logs/explorer`),
     },
-    {
-      key: 'reports',
-      label: 'Reports',
-      icon: <Reports size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/reports`),
-    },
+    // {
+    //   key: 'reports',
+    //   label: 'Reports',
+    //   icon: <Reports size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+    //   link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/reports`),
+    // },
 
     // {
     //   key: 'logs',
@@ -183,12 +183,6 @@ export const generateOtherRoutes = (
       label: 'Integrations',
       icon: <Blocks size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/integrations`),
-    },
-        {
-      label: 'project settings',
-      link: `/org/${slug}/general`,
-      key: 'settings',
-      icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
   ]
 }

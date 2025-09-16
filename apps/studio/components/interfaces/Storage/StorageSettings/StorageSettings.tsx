@@ -49,7 +49,7 @@ interface StorageSettingsState {
 }
 
 const StorageSettings = () => {
-  const { ref: projectRef } = useParams()
+  const { slug, ref: projectRef } = useParams()
   const canReadStorageSettings = useCheckPermissions(PermissionAction.STORAGE_ADMIN_READ, '*')
   const canUpdateStorageSettings = useCheckPermissions(PermissionAction.STORAGE_ADMIN_WRITE, '*')
 
@@ -59,7 +59,7 @@ const StorageSettings = () => {
     isLoading,
     isSuccess,
     isError,
-  } = useProjectStorageConfigQuery({ projectRef })
+  } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef })
 
   const { data: organization } = useSelectedOrganizationQuery()
   const isFreeTier = organization?.plan.id === 'free'

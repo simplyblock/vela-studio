@@ -63,7 +63,7 @@ export const S3Connection = () => {
     error: configError,
     isSuccess: isSuccessStorageConfig,
     isError: isErrorStorageConfig,
-  } = useProjectStorageConfigQuery({ projectRef })
+  } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef })
   const { data: storageCreds, isLoading: isLoadingStorageCreds } = useStorageCredentialsQuery(
     { projectRef },
     { enabled: canReadS3Credentials }
@@ -101,7 +101,7 @@ export const S3Connection = () => {
   }
 
   useEffect(() => {
-    form.reset({ s3ConnectionEnabled: config?.features.s3Protocol.enabled })
+    form.reset({ s3ConnectionEnabled: config?.features?.s3Protocol?.enabled })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessStorageConfig])

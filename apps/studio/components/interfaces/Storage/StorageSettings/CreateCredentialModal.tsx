@@ -35,14 +35,14 @@ interface CreateCredentialModalProps {
 }
 
 export const CreateCredentialModal = ({ visible, onOpenChange }: CreateCredentialModalProps) => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
   const isProjectActive = useIsProjectActive()
   const [showSuccess, setShowSuccess] = useState(false)
 
   const canCreateCredentials = useCheckPermissions(PermissionAction.STORAGE_ADMIN_WRITE, '*')
 
-  const { data: config } = useProjectStorageConfigQuery({ projectRef })
-  const isS3ConnectionEnabled = config?.features.s3Protocol.enabled
+  const { data: config } = useProjectStorageConfigQuery({ orgSlug, projectRef })
+  const isS3ConnectionEnabled = config?.features?.s3Protocol?.enabled
   const disableCreation = !isProjectActive || !canCreateCredentials || !isS3ConnectionEnabled
 
   const FormSchema = z.object({

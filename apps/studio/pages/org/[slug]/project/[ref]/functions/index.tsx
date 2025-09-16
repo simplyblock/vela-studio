@@ -18,16 +18,18 @@ import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import { IS_PLATFORM } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
 import { Button, Table, TableHead, TableRow, TableHeader, TableBody, Card } from 'ui'
+import { getPathReferences } from '../../../../../../data/vela/path-references'
 
 const EdgeFunctionsPage: NextPageWithLayout = () => {
   const { ref } = useParams()
+  const { slug: orgSlug } = getPathReferences()
   const {
     data: functions,
     error,
     isLoading,
     isError,
     isSuccess,
-  } = useEdgeFunctionsQuery({ projectRef: ref })
+  } = useEdgeFunctionsQuery({ orgSlug, projectRef: ref })
 
   const hasFunctions = (functions ?? []).length > 0
 

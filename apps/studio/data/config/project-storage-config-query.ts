@@ -7,19 +7,21 @@ import { configKeys } from './keys'
 import { IS_PLATFORM } from 'lib/constants'
 
 export type ProjectStorageConfigVariables = {
+  orgSlug?: string,
   projectRef?: string
 }
 
 export type ProjectStorageConfigResponse = components['schemas']['StorageConfigResponse']
 
 export async function getProjectStorageConfig(
-  { projectRef }: ProjectStorageConfigVariables,
+  { orgSlug, projectRef }: ProjectStorageConfigVariables,
   signal?: AbortSignal
 ) {
+  if (!orgSlug) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await get('/platform/projects/{ref}/config/storage', {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/config/storage', {
+    params: { path: { slug: orgSlug, ref: projectRef } },
     signal,
   })
 
@@ -31,7 +33,7 @@ export type ProjectStorageConfigData = Awaited<ReturnType<typeof getProjectStora
 export type ProjectStorageConfigError = ResponseError
 
 export const useProjectStorageConfigQuery = <TData = ProjectStorageConfigData>(
-  { projectRef }: ProjectStorageConfigVariables,
+  { orgSlug, projectRef }: ProjectStorageConfigVariables,
   {
     enabled = true,
     ...options
@@ -39,6 +41,6 @@ export const useProjectStorageConfigQuery = <TData = ProjectStorageConfigData>(
 ) =>
   useQuery<ProjectStorageConfigData, ProjectStorageConfigError, TData>(
     configKeys.storage(projectRef),
-    ({ signal }) => getProjectStorageConfig({ projectRef }, signal),
-    { enabled: enabled && IS_PLATFORM && typeof projectRef !== 'undefined', ...options }
+    ({ signal }) => getProjectStorageConfig({ orgSlug, projectRef }, signal),
+    { enabled: enabled && IS_PLATFORM && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

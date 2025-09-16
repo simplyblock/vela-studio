@@ -23,6 +23,7 @@ import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 
 import type { NextPageWithLayout } from 'types'
+import { getPathReferences } from '../../../../../../data/vela/path-references'
 
 const EdgeFunctionsReport: NextPageWithLayout = () => {
   return (
@@ -43,8 +44,9 @@ export default EdgeFunctionsReport
 
 const EdgeFunctionsUsage = () => {
   const { ref } = useParams()
+  const { slug: orgSlug } = getPathReferences()
   const { data: functions, isLoading: isLoadingFunctions } = useEdgeFunctionsQuery({
-    projectRef: ref,
+    orgSlug, projectRef: ref,
   })
   const [isOpen, setIsOpen] = useState(false)
   const [functionIds, setFunctionIds] = useState<string[]>([])
