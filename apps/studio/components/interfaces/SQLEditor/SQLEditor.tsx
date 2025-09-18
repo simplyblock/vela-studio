@@ -16,7 +16,6 @@ import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useExecuteSqlMutation } from 'data/sql/execute-sql-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { isError } from 'data/utils/error-check'
-import { useOrgAiOptInLevel } from 'hooks/misc/useOrgOptedIntoAi'
 import { useSchemasForAi } from 'hooks/misc/useSchemasForAi'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
@@ -87,7 +86,6 @@ export const SQLEditor = () => {
   const snapV2 = useSqlEditorV2StateSnapshot()
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
   const databaseSelectorState = useDatabaseSelectorStateSnapshot()
-  const { includeSchemaMetadata, isHipaaProjectDisallowed } = useOrgAiOptInLevel()
   const [selectedSchemas] = useSchemasForAi(project?.ref!)
 
   const {
@@ -146,9 +144,8 @@ export const SQLEditor = () => {
       projectRef: project?.ref,
       connectionString: project?.connectionString,
     },
-    { enabled: isValidConnString(project?.connectionString) && includeSchemaMetadata }
+    { enabled: isValidConnString(project?.connectionString) }
   )
-  const entityDefinitions = includeSchemaMetadata ? data?.map((def) => def.sql.trim()) : undefined
 
   /* React query mutations */
   const { mutate: sendEvent } = useSendEventMutation()
@@ -307,7 +304,6 @@ export const SQLEditor = () => {
       id,
       isExecuting,
       project,
-      isHipaaProjectDisallowed,
       execute,
       getImpersonatedRoleState,
       databaseSelectorState.selectedDatabaseId,
@@ -377,7 +373,7 @@ export const SQLEditor = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entityDefinitions, id, snapV2.results, snapV2.snippets])
+  }, [id, snapV2.results, snapV2.snippets])
 
   const acceptAiHandler = useCallback(async () => {
     try {

@@ -9,24 +9,18 @@ import { organizationKeys } from './keys'
 export type OrganizationUpdateVariables = {
   slug: string
   name?: string
-  billing_email?: string
-  additional_billing_emails?: string[]
   opt_in_tags?: string[]
 }
 
 export async function updateOrganization({
   slug,
   name,
-  billing_email,
   opt_in_tags,
-  additional_billing_emails,
 }: OrganizationUpdateVariables) {
   // @ts-ignore [Joshen] API spec is wrong
   const payload: components['schemas']['UpdateOrganizationBody'] = {}
   if (name) payload.name = name
-  if (billing_email) payload.billing_email = billing_email
   if (opt_in_tags) payload.opt_in_tags = opt_in_tags as any
-  if (additional_billing_emails) payload.additional_billing_emails = additional_billing_emails
 
   const { data, error } = await patch('/platform/organizations/{slug}', {
     params: { path: { slug } },
@@ -67,7 +61,6 @@ export const useOrganizationUpdateMutation = ({
               return {
                 ...org,
                 name: variables.name || org.name,
-                billing_email: variables.billing_email || org.billing_email,
                 opt_in_tags: variables.opt_in_tags || org.opt_in_tags,
               }
             })
@@ -83,7 +76,6 @@ export const useOrganizationUpdateMutation = ({
             if (!prev) return prev
             return {
               ...prev,
-              additional_emails: variables.additional_billing_emails || prev.additional_emails,
             }
           }
         )
@@ -98,7 +90,6 @@ export const useOrganizationUpdateMutation = ({
             return {
               ...prev,
               name: variables.name || prev.name,
-              billing_email: variables.billing_email || prev.billing_email,
               opt_in_tags: variables.opt_in_tags || prev.opt_in_tags,
             }
           }

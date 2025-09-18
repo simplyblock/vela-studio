@@ -5,7 +5,6 @@ import jsonLogic from 'json-logic-js'
 import { ManagedBy } from 'lib/constants/infrastructure'
 
 export interface Organization extends OrganizationBase {
-  managed_by: ManagedBy
   partner_id?: string
   plan: { id: PlanId; name: string }
 }

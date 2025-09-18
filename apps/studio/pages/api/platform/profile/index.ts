@@ -48,7 +48,6 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ProfileRespon
         id: 1,
         name: process.env.DEFAULT_ORGANIZATION_NAME || 'Default Organization',
         slug: 'default-org-slug',
-        billing_email: 'billing@supabase.co',
         projects: [
           { ...DEFAULT_PROJECT, connectionString: '' },
           { ...DEFAULT_PROJECT_2, connectionString: '' },

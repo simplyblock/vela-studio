@@ -4,6 +4,11 @@
     "title": "FastAPI",
     "version": "0.1.0"
   },
+  "servers": [
+    {
+      "url": "/vela"
+    }
+  ],
   "paths": {
     "/health": {
       "get": {
@@ -14,7 +19,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
               }
             }
           }
@@ -25,16 +32,21 @@
       "get": {
         "summary": "Organizations:List",
         "operationId": "organizations:list",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Organization"
                   },
-                  "type": "array",
                   "title": "Response Organizations List Organizations  Get"
                 }
               }
@@ -50,25 +62,41 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
+        }
       },
       "post": {
         "summary": "Organizations:Create",
         "operationId": "organizations:create",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "empty",
+                "full"
+              ],
+              "type": "string",
+              "default": "empty",
+              "title": "Response"
+            }
+          }
+        ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/OrganizationCreate"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "201": {
@@ -144,12 +172,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ]
+        }
       }
     },
     "/organizations/{organization_slug}/": {
@@ -168,6 +191,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
@@ -242,6 +266,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
@@ -369,6 +394,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
@@ -378,6 +404,103 @@
         "responses": {
           "204": {
             "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_slug}/audit": {
+      "get": {
+        "summary": "Organizations:Audits:List",
+        "operationId": "organizations:audits:list",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Organization Slug"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "title": "From"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "title": "To"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationAuditLog"
+                }
+              }
+            }
           },
           "401": {
             "description": "Not authenticated",
@@ -438,6 +561,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
@@ -516,9 +640,24 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
+            }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "empty",
+                "full"
+              ],
+              "type": "string",
+              "default": "empty",
+              "title": "Response"
             }
           }
         ],
@@ -633,6 +772,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
@@ -644,6 +784,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Project Slug"
@@ -718,6 +859,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
@@ -729,6 +871,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Project Slug"
@@ -844,6 +987,7 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Organization Slug"
@@ -855,9 +999,498 @@
             "required": true,
             "schema": {
               "type": "string",
+              "minLength": 1,
               "maxLength": 50,
               "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
               "title": "Project Slug"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_slug}/projects/{project_slug}/pause": {
+      "post": {
+        "summary": "Organizations:Projects:Pause",
+        "operationId": "organizations:projects:pause",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Organization Slug"
+            }
+          },
+          {
+            "name": "project_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Project Slug"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_slug}/projects/{project_slug}/resume": {
+      "post": {
+        "summary": "Organizations:Projects:Resume",
+        "operationId": "organizations:projects:resume",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Organization Slug"
+            }
+          },
+          {
+            "name": "project_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Project Slug"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_slug}/members/": {
+      "get": {
+        "summary": "Organizations:Members:List",
+        "operationId": "organizations:members:list",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Organization Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPublic"
+                  },
+                  "title": "Response Organizations Members List Organizations  Organization Slug  Members  Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Organizations:Members:Add",
+        "operationId": "organizations:members:add",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Organization Slug"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_slug}/members/{user_id}": {
+      "put": {
+        "summary": "Organizations:Members:Update",
+        "operationId": "organizations:members:update",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Organization Slug"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Organizations:Members:Remove",
+        "operationId": "organizations:members:remove",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+              "title": "Organization Slug"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
             }
           }
         ],
@@ -911,6 +1544,127 @@
   },
   "components": {
     "schemas": {
+      "Action": {
+        "properties": {
+          "metadata": {
+            "items": {
+              "$ref": "#/components/schemas/ActionMetadata"
+            },
+            "type": "array",
+            "title": "Metadata"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metadata",
+          "name"
+        ],
+        "title": "Action"
+      },
+      "ActionMetadata": {
+        "properties": {
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "status"
+        ],
+        "title": "ActionMetadata"
+      },
+      "Actor": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "user"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Type"
+          },
+          "metadata": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "email"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "metadata"
+        ],
+        "title": "Actor"
+      },
+      "AuditLog": {
+        "properties": {
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          },
+          "actor": {
+            "$ref": "#/components/schemas/Actor"
+          },
+          "target": {
+            "$ref": "#/components/schemas/Target"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Occurred At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "action",
+          "actor",
+          "target",
+          "occurred_at"
+        ],
+        "title": "AuditLog"
+      },
       "DeploymentParameters": {
         "properties": {
           "database": {
@@ -930,8 +1684,8 @@
           },
           "database_size": {
             "type": "integer",
-            "multipleOf": 1073741824.0,
-            "exclusiveMinimum": 0.0,
+            "multipleOf": 1073741824,
+            "exclusiveMinimum": 0,
             "title": "Database Size"
           },
           "vcpu": {
@@ -940,8 +1694,8 @@
           },
           "memory": {
             "type": "integer",
-            "multipleOf": 1073741824.0,
-            "exclusiveMinimum": 0.0,
+            "multipleOf": 1073741824,
+            "exclusiveMinimum": 0,
             "title": "Memory"
           },
           "iops": {
@@ -966,30 +1720,6 @@
           "database_image_tag"
         ],
         "title": "DeploymentParameters"
-      },
-      "DeploymentStatus": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "pods": {
-            "items": {},
-            "type": "array",
-            "title": "Pods"
-          },
-          "message": {
-            "type": "string",
-            "title": "Message"
-          }
-        },
-        "type": "object",
-        "required": [
-          "status",
-          "pods",
-          "message"
-        ],
-        "title": "DeploymentStatus"
       },
       "HTTPError": {
         "properties": {
@@ -1038,35 +1768,74 @@
             ],
             "title": "Id"
           },
-          "name": {
+          "slug": {
             "type": "string",
             "maxLength": 50,
+            "minLength": 1,
             "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Name"
           },
           "locked": {
             "type": "boolean",
             "title": "Locked",
             "default": false
+          },
+          "require_mfa": {
+            "type": "boolean",
+            "title": "Require Mfa",
+            "default": false
           }
         },
         "type": "object",
         "required": [
+          "slug",
           "name"
         ],
         "title": "Organization"
+      },
+      "OrganizationAuditLog": {
+        "properties": {
+          "result": {
+            "items": {
+              "$ref": "#/components/schemas/AuditLog"
+            },
+            "type": "array",
+            "title": "Result"
+          },
+          "retention_period": {
+            "type": "integer",
+            "title": "Retention Period"
+          }
+        },
+        "type": "object",
+        "required": [
+          "result",
+          "retention_period"
+        ],
+        "title": "OrganizationAuditLog"
       },
       "OrganizationCreate": {
         "properties": {
           "name": {
             "type": "string",
-            "maxLength": 50,
-            "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+            "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Name"
           },
           "locked": {
             "type": "boolean",
             "title": "Locked",
+            "default": false
+          },
+          "require_mfa": {
+            "type": "boolean",
+            "title": "Require Mfa",
             "default": false
           }
         },
@@ -1082,8 +1851,8 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 50,
-                "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$"
               },
               {
                 "type": "null"
@@ -1101,6 +1870,17 @@
               }
             ],
             "title": "Locked"
+          },
+          "require_mfa": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Require Mfa"
           }
         },
         "type": "object",
@@ -1110,8 +1890,8 @@
         "properties": {
           "name": {
             "type": "string",
-            "maxLength": 50,
-            "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+            "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Name"
           },
           "deployment": {
@@ -1127,20 +1907,67 @@
       },
       "ProjectPublic": {
         "properties": {
-          "name": {
+          "organization_id": {
+            "type": "integer",
+            "title": "Organization Id"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "slug": {
             "type": "string",
             "maxLength": 50,
+            "minLength": 1,
             "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Name"
           },
           "status": {
-            "$ref": "#/components/schemas/DeploymentStatus"
+            "type": "string",
+            "title": "Status"
+          },
+          "deployment_status": {
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            ],
+            "type": "array",
+            "maxItems": 2,
+            "minItems": 2,
+            "title": "Deployment Status"
+          },
+          "database_user": {
+            "type": "string",
+            "title": "Database User"
+          },
+          "encrypted_database_connection_string": {
+            "type": "string",
+            "title": "Encrypted Database Connection String"
           }
         },
         "type": "object",
         "required": [
+          "organization_id",
+          "id",
+          "slug",
           "name",
-          "status"
+          "status",
+          "deployment_status",
+          "database_user",
+          "encrypted_database_connection_string"
         ],
         "title": "ProjectPublic"
       },
@@ -1150,8 +1977,8 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 50,
-                "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$"
               },
               {
                 "type": "null"
@@ -1162,6 +1989,105 @@
         },
         "type": "object",
         "title": "ProjectUpdate"
+      },
+      "Status": {
+        "properties": {
+          "service": {
+            "type": "string",
+            "const": "vela",
+            "title": "Service",
+            "default": "vela"
+          }
+        },
+        "type": "object",
+        "title": "Status"
+      },
+      "Target": {
+        "properties": {
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "metadata": {
+            "items": {
+              "$ref": "#/components/schemas/TargetMetadata"
+            },
+            "type": "array",
+            "title": "Metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "description",
+          "metadata"
+        ],
+        "title": "Target"
+      },
+      "TargetMetadata": {
+        "properties": {
+          "organization": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Organization"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50,
+                "minLength": 1,
+                "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project"
+          }
+        },
+        "type": "object",
+        "required": [
+          "organization",
+          "project"
+        ],
+        "title": "TargetMetadata"
+      },
+      "UserPublic": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "UserPublic"
+      },
+      "UserRequest": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "title": "UserRequest"
       },
       "ValidationError": {
         "properties": {

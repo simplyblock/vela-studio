@@ -5840,10 +5840,7 @@ export interface components {
         price: number
         supabase_prod_id: string
       }[]
-      billing_cycle_anchor: number
       /** @enum {string} */
-      billing_partner?: 'fly' | 'aws' | 'aws_marketplace' | 'vercel_marketplace'
-      billing_via_partner: boolean
       cached_egress_enabled: boolean
       current_period_end: number
       current_period_start: number
@@ -6686,9 +6683,6 @@ export interface components {
       }[]
     }
     OrganizationResponse: {
-      billing_email: string | null
-      /** @enum {string|null} */
-      billing_partner: 'fly' | 'aws' | 'aws_marketplace' | 'vercel_marketplace' | 'vela' | null
       id: number
       is_owner: boolean
       name: string
@@ -6705,9 +6699,6 @@ export interface components {
       /** @enum {string|null} */
       restriction_status: 'grace_period' | 'grace_period_over' | 'restricted' | null
       slug: string
-      stripe_customer_id: string | null
-      subscription_id: string | null
-      usage_billing_enabled: boolean
     }
     OrganizationRoleResponse: {
       org_scoped_roles: {

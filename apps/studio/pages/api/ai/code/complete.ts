@@ -5,7 +5,6 @@ import { source } from 'common-tags'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { AiOptInLevel } from 'hooks/misc/useOrgOptedIntoAi'
 import { getModel } from 'lib/ai/model'
-import { getOrgAIDetails } from 'lib/ai/org-ai-details'
 import {
   EDGE_FUNCTION_PROMPT,
   GENERAL_PROMPT,
@@ -47,21 +46,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const accessToken = authorization?.replace('Bearer ', '')
 
     let aiOptInLevel: AiOptInLevel = 'disabled'
-
-    if (!IS_PLATFORM) {
-      aiOptInLevel = 'schema'
-    }
-
-    if (IS_PLATFORM && orgSlug && authorization && projectRef) {
-      // Get organizations and compute opt in level server-side
-      const { aiOptInLevel: orgAIOptInLevel } = await getOrgAIDetails({
-        orgSlug,
-        authorization,
-        projectRef,
-      })
-
-      aiOptInLevel = orgAIOptInLevel
-    }
 
     const { model, error: modelError } = await getModel(projectRef)
 
