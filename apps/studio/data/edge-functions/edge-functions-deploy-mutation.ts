@@ -10,7 +10,8 @@ export type EdgeFunctionsDeployVariables = {
   projectRef: string
   slug: string
   metadata: components['schemas']['FunctionDeployBody']['metadata']
-  files: { name: string; content: string }[]
+  files: { name: string; content: string }[];
+  orgSlug:string;
 }
 
 export async function deployEdgeFunction({
@@ -18,11 +19,12 @@ export async function deployEdgeFunction({
   slug,
   metadata,
   files,
+  orgSlug
 }: EdgeFunctionsDeployVariables) {
   if (!projectRef) throw new Error('projectRef is required')
-
-  const { data, error } = await post(`/v1/projects/{ref}/functions/deploy`, {
-    params: { path: { ref: projectRef }, query: { slug: slug } },
+if (!orgSlug) throw new Error('orgSlug is required')
+  const { data, error } = await post(`/platform/organizations/{slug}/projects/{ref}/functions/deploy`, {
+    params: { path: { slug: orgSlug,ref: projectRef }, query: { slug: slug } }, 
     body: {
       file: files as any,
       metadata,

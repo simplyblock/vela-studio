@@ -65,6 +65,7 @@ export const EdgeFunctionBlock = ({
 
     try {
       await deployFunction({
+        orgSlug:slug as string,
         projectRef: ref,
         slug: functionName,
         metadata: {
@@ -145,6 +146,7 @@ export const EdgeFunctionBlock = ({
                 setShowWarning(false)
                 try {
                   await deployFunction({
+                    orgSlug:slug as string,
                     projectRef: ref,
                     slug: functionName,
                     metadata: {

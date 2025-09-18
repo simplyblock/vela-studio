@@ -21,7 +21,7 @@ import { BASE_PATH } from 'lib/constants'
 import { LogoLoader } from 'ui'
 
 const CodePage = () => {
-  const { ref, functionSlug } = useParams()
+  const { ref,slug, functionSlug } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
 
@@ -102,6 +102,7 @@ const CodePage = () => {
       }
 
       deployFunction({
+        orgSlug:slug as string,
         projectRef: ref,
         slug: selectedFunction.slug,
         metadata: {
