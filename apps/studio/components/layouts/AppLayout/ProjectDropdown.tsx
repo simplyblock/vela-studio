@@ -93,7 +93,7 @@ const ProjectLink = ({
 export const ProjectDropdown = () => {
   const router = useRouter()
   const { ref, slug } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: project,isLoading: isLoadingProject } = useSelectedProjectQuery()
   const { data: allProjects, isLoading: isLoadingProjects } = useProjectsQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
 
@@ -104,13 +104,13 @@ export const ProjectDropdown = () => {
   const projects = allProjects
     ?.filter((x) => x.organization_id === selectedOrganization?.id)
     .sort((a, b) => a.name.localeCompare(b.name))
-  const selectedProject = isBranch
-    ? projects?.find((p) => p.ref === project?.parentRef)
-    : projects?.find((p) => p.ref === ref)
+  // const selectedProject = isBranch
+  //   ? projects?.find((p) => p.ref === project?.parentRef)
+  //   : projects?.find((p) => p.ref === ref)
 
   const [open, setOpen] = useState(false)
 
-  if (isLoadingProjects || !selectedProject) {
+  if (isLoadingProjects || !project || isLoadingProject) {
     return <ShimmeringLoader className="w-[90px]" />
   }
 
@@ -122,7 +122,7 @@ export const ProjectDropdown = () => {
       >
         <Box size={14} strokeWidth={1.5} className="text-foreground-lighter" />
         <span className="text-foreground max-w-32 lg:max-w-none truncate">
-          {selectedProject?.name}
+          {project?.name}
         </span>
       </Link>
       <Popover_Shadcn_ open={open} onOpenChange={setOpen} modal={false}>

@@ -91,7 +91,7 @@ export const PublicationsTableItem = ({
             </Badge>
           ) : (
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Switch
                   size="small"
                   disabled={!canUpdatePublications || isLoading || isProtected}

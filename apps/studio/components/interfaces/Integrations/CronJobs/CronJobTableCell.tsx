@@ -162,7 +162,7 @@ export const CronJobTableCell = ({
   if (col.id === 'active') {
     return (
       <Dialog open={showToggleModal} onOpenChange={setShowToggleModal}>
-        <DialogTrigger className="flex items-center" onClick={(e) => e.stopPropagation()}>
+        <DialogTrigger asChild className="flex items-center" onClick={(e) => e.stopPropagation()}>
           <Switch
             id={`cron-job-active-${jobid}`}
             size="medium"

@@ -143,7 +143,7 @@ const UtilityTabResults = forwardRef<HTMLDivElement, UtilityTabResultsProps>(
               )}
               {formattedError.length > 0 && (
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger asChild>
                     <CopyButton iconOnly type="default" text={formattedError.join('\n')} />
                   </TooltipTrigger>
                   <TooltipContent side="bottom" align="center">

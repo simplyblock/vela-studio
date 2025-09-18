@@ -154,7 +154,7 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
             <Loader2 className="animate-spin" size={16} />
           ) : (
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Switch
                   disabled={disabled}
                   checked={isOn}

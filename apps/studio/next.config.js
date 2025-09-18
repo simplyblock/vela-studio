@@ -384,11 +384,11 @@ const nextConfig = {
                 ? 'max-age=31536000; includeSubDomains; preload'
                 : '',
           },
-          {
-            key: 'Content-Security-Policy',
-            value:
-              process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' ? getCSP() : "frame-ancestors 'none';",
-          },
+            {
+              key: 'Content-Security-Policy',
+              value:
+                process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' ? getCSP() : "frame-ancestors 'none';",
+            },
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
