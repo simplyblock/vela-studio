@@ -3,7 +3,6 @@ import { parseAsBoolean, useQueryState } from 'nuqs'
 import { forwardRef } from 'react'
 
 import { useParams } from 'common'
-import { subscriptionHasHipaaAddon } from 'components/interfaces/Billing/Subscription/Subscription.utils'
 import CopyButton from 'components/ui/CopyButton'
 import { InlineLink, InlineLinkClassName } from 'components/ui/InlineLink'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
@@ -11,7 +10,7 @@ import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-que
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
-import { AiIconAnimation, Button, cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import Results from './Results'
 
 export type UtilityTabResultsProps = {
@@ -35,7 +34,6 @@ const UtilityTabResults = forwardRef<HTMLDivElement, UtilityTabResultsProps>(
 
     // Customers on HIPAA plans should not have access to Supabase AI
     const { data: projectSettings } = useProjectSettingsV2Query({ orgSlug, projectRef: ref })
-    const hasHipaaAddon = subscriptionHasHipaaAddon(subscription) && projectSettings?.is_sensitive
 
     const isTimeout =
       result?.error?.message?.includes('canceling statement due to statement timeout') ||
@@ -150,15 +148,6 @@ const UtilityTabResults = forwardRef<HTMLDivElement, UtilityTabResultsProps>(
                     <span>Copy error</span>
                   </TooltipContent>
                 </Tooltip>
-              )}
-              {!hasHipaaAddon && (
-                <Button
-                  icon={<AiIconAnimation size={16} loading={isDebugging} />}
-                  disabled={!!isDisabled || isDebugging}
-                  onClick={onDebug}
-                >
-                  Debug with Assistant
-                </Button>
               )}
             </div>
           </div>

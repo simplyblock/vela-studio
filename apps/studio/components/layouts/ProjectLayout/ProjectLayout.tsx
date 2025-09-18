@@ -1,19 +1,16 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { forwardRef, Fragment, PropsWithChildren, ReactNode, useEffect, useState } from 'react'
+import { forwardRef, Fragment, PropsWithChildren, ReactNode, useEffect } from 'react'
 
 import { useParams } from 'common'
 import ProjectAPIDocs from 'components/interfaces/ProjectAPIDocs/ProjectAPIDocs'
-import { AIAssistant } from 'components/ui/AIAssistantPanel/AIAssistant'
 import { Loading } from 'components/ui/Loading'
 import { ResourceExhaustionWarningBanner } from 'components/ui/ResourceExhaustionWarningBanner/ResourceExhaustionWarningBanner'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { withAuth } from 'hooks/misc/withAuth'
-import { useHotKey } from 'hooks/ui/useHotKey'
 import { PROJECT_STATUS } from 'lib/constants'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import { useAppStateSnapshot } from 'state/app-state'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { cn, ResizableHandle, ResizablePanel, ResizablePanelGroup } from 'ui'
@@ -86,14 +83,10 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
     ref
   ) => {
     const router = useRouter()
-    const [isClient, setIsClient] = useState(false)
     const { data: selectedOrganization } = useSelectedOrganizationQuery()
     const { data: selectedProject } = useSelectedProjectQuery()
 
     const { mobileMenuOpen, showSidebar, setMobileMenuOpen } = useAppStateSnapshot()
-    const aiSnap = useAiAssistantStateSnapshot()
-
-    useHotKey(() => aiSnap.toggleAssistant(), 'i', [aiSnap])
 
     const editor = useEditorType()
     const forceShowProductMenu = editor === undefined
@@ -113,10 +106,6 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
     const ignorePausedState =
       router.pathname === '/org/[slug]/project/[ref]' || router.pathname.includes('/org/[slug]/project/[ref]/settings')
     const showPausedState = isPaused && !ignorePausedState
-
-    useEffect(() => {
-      setIsClient(true)
-    }, [])
 
     return (
       <>
@@ -210,24 +199,6 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
                     )}
                   </main>
                 </ResizablePanel>
-                {isClient && aiSnap.open && (
-                  <>
-                    <ResizableHandle withHandle />
-                    <ResizablePanel
-                      id="panel-assistant"
-                      minSize={30}
-                      maxSize={50}
-                      className={cn(
-                        'border-l bg fixed z-40 right-0 top-0 bottom-0',
-                        'w-screen h-[100dvh]',
-                        'md:absolute md:h-auto md:w-3/4',
-                        'xl:relative xl:border-l-0'
-                      )}
-                    >
-                      <AIAssistant className="w-full h-[100dvh] md:h-full max-h-[100dvh]" />
-                    </ResizablePanel>
-                  </>
-                )}
               </ResizablePanelGroup>
             </ResizablePanel>
           </ResizablePanelGroup>

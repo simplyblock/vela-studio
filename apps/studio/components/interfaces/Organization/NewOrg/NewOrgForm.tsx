@@ -1,68 +1,33 @@
-import { Elements } from '@stripe/react-stripe-js'
-import type { PaymentIntentResult, PaymentMethod, StripeElementsOptions } from '@stripe/stripe-js'
 import _ from 'lodash'
-import { ExternalLink, HelpCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { parseAsString, useQueryStates } from 'nuqs'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { LOCAL_STORAGE_KEYS } from 'common'
-import SpendCapModal from 'components/interfaces/Billing/SpendCapModal'
 import Panel from 'components/ui/Panel'
 import { useOrganizationCreateMutation } from 'data/organizations/organization-create-mutation'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import { PRICING_TIER_LABELS_ORG, STRIPE_PUBLIC_KEY } from 'lib/constants'
 import {
   Button,
   Input_Shadcn_,
   Label_Shadcn_,
-  Select_Shadcn_,
-  SelectContent_Shadcn_,
-  SelectItem_Shadcn_,
-  SelectTrigger_Shadcn_,
-  SelectValue_Shadcn_,
-  Switch,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { useConfirmPendingSubscriptionCreateMutation } from 'data/subscriptions/org-subscription-confirm-pending-create'
-import { loadStripe } from '@stripe/stripe-js'
 import { useTheme } from 'next-themes'
 import { SetupIntentResponse } from 'data/stripe/setup-intent-mutation'
 import { useProfile } from 'lib/profile'
-import { PaymentConfirmation } from 'components/interfaces/Billing/Payment/PaymentConfirmation'
-import { getStripeElementsAppearanceOptions } from 'components/interfaces/Billing/Payment/Payment.utils'
-import {
-  NewPaymentMethodElement,
-  type PaymentMethodElementRef,
-} from '../BillingSettings/PaymentMethods/NewPaymentMethodElement'
-import { components } from 'api-types'
 import type { CustomerAddress, CustomerTaxId } from 'data/organizations/types'
-
-const ORG_KIND_TYPES = {
-  PERSONAL: 'Personal',
-  EDUCATIONAL: 'Educational',
-  STARTUP: 'Startup',
-  AGENCY: 'Agency',
-  COMPANY: 'Company',
-  UNDISCLOSED: 'N/A',
-}
 const ORG_KIND_DEFAULT = 'PERSONAL'
 
-const ORG_SIZE_TYPES = {
-  '1': '1 - 10',
-  '10': '10 - 49',
-  '50': '50 - 99',
-  '100': '100 - 299',
-  '300': 'More than 300',
-}
 const ORG_SIZE_DEFAULT = '1'
 
 interface NewOrgFormProps {
@@ -91,8 +56,6 @@ const formSchema = z.object({
 
 type FormState = z.infer<typeof formSchema>
 
-const stripePromise = loadStripe(STRIPE_PUBLIC_KEY)
-
 const newMandatoryAddressInput = true
 
 /**
@@ -119,16 +82,6 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
 
   const [isOrgCreationConfirmationModalVisible, setIsOrgCreationConfirmationModalVisible] =
     useState(false)
-
-  const stripeOptionsPaymentMethod: StripeElementsOptions = useMemo(
-    () =>
-      ({
-        clientSecret: setupIntent ? setupIntent.client_secret! : '',
-        appearance: getStripeElementsAppearanceOptions(resolvedTheme),
-        paymentMethodCreation: 'manual',
-      }) as const,
-    [setupIntent, resolvedTheme]
-  )
 
   const [formState, setFormState] = useState<FormState>({
     plan: 'FREE',
@@ -171,23 +124,13 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
   }, [isSuccess])
 
   const [newOrgLoading, setNewOrgLoading] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>()
-
-  const [paymentConfirmationLoading, setPaymentConfirmationLoading] = useState(false)
-  const [showSpendCapHelperModal, setShowSpendCapHelperModal] = useState(false)
-  const [paymentIntentSecret, setPaymentIntentSecret] = useState<string | null>(null)
 
   const { mutate: createOrganization } = useOrganizationCreateMutation({
     onSuccess: async (org) => {
-      if ('pending_payment_intent_secret' in org && org.pending_payment_intent_secret) {
-        setPaymentIntentSecret(org.pending_payment_intent_secret)
-      } else {
-        onOrganizationCreated(org as { slug: string })
-      }
+      onOrganizationCreated(org as { slug: string })
     },
     onError: (data) => {
       toast.error(data.message, { duration: 10_000 })
-      resetPaymentMethod()
       setNewOrgLoading(false)
     },
   })
@@ -199,27 +142,6 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
       }
     },
   })
-
-  const paymentIntentConfirmed = async (paymentIntentConfirmation: PaymentIntentResult) => {
-    // Reset payment intent secret to ensure another attempt works as expected
-    setPaymentIntentSecret('')
-
-    if (paymentIntentConfirmation.paymentIntent?.status === 'succeeded') {
-      await confirmPendingSubscriptionChange({
-        payment_intent_id: paymentIntentConfirmation.paymentIntent.id,
-        name: formState.name,
-        kind: formState.kind,
-        size: formState.size,
-      })
-    } else {
-      // If the payment intent is not successful, we reset the payment method and show an error
-      toast.error(`Could not confirm payment. Please try again or use a different card.`, {
-        duration: 10_000,
-      })
-      resetPaymentMethod()
-      setNewOrgLoading(false)
-    }
-  }
 
   const onOrganizationCreated = (org: { slug: string }) => {
     const prefilledProjectName = user.profile?.username
@@ -239,13 +161,6 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
     const value = name ? name.trim() : ''
     return value.length >= 1
   }
-
-  const stripeOptionsConfirm = useMemo(() => {
-    return {
-      clientSecret: paymentIntentSecret,
-      appearance: getStripeElementsAppearanceOptions(resolvedTheme),
-    } as StripeElementsOptions
-  }, [paymentIntentSecret, resolvedTheme])
 
   async function createOrg(
     paymentMethodId?: string,
@@ -273,35 +188,10 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
     })
   }
 
-  const paymentRef = useRef<PaymentMethodElementRef | null>(null)
-
   const handleSubmit = async () => {
     setNewOrgLoading(true)
 
-    if (formState.plan === 'FREE') {
-      await createOrg()
-    } else if (!paymentMethod) {
-      const result = await paymentRef.current?.createPaymentMethod()
-      if (result) {
-        setPaymentMethod(result.paymentMethod)
-        const customerData = {
-          address: result.address,
-          billing_name: result.customerName,
-          tax_id: result.taxId,
-        }
-
-        createOrg(result.paymentMethod.id, customerData)
-      } else {
-        setNewOrgLoading(false)
-      }
-    } else {
-      createOrg(paymentMethod.id)
-    }
-  }
-
-  const resetPaymentMethod = () => {
-    setPaymentMethod(undefined)
-    return onPaymentMethodReset()
+    await createOrg()
   }
 
   const onSubmitWithOrgCreation = async (event: any) => {
@@ -333,7 +223,7 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
           <div key="panel-footer" className="flex w-full items-center justify-between">
             <Button
               type="default"
-              disabled={newOrgLoading || paymentConfirmationLoading}
+              disabled={newOrgLoading}
               onClick={() => {
                 if (!!lastVisitedOrganization) router.push(`/org/${lastVisitedOrganization}`)
                 else router.push('/organizations')
@@ -462,23 +352,6 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
             })}
         </ul>
       </ConfirmationModal>
-
-      {stripePromise && paymentIntentSecret && paymentMethod && (
-        <Elements stripe={stripePromise} options={stripeOptionsConfirm}>
-          <PaymentConfirmation
-            paymentIntentSecret={paymentIntentSecret}
-            onPaymentIntentConfirm={(paymentIntentConfirmation) =>
-              paymentIntentConfirmed(paymentIntentConfirmation)
-            }
-            onLoadingChange={(loading) => setPaymentConfirmationLoading(loading)}
-            onError={(err) => {
-              toast.error(err.message, { duration: 10_000 })
-              setNewOrgLoading(false)
-              resetPaymentMethod()
-            }}
-          />
-        </Elements>
-      )}
     </form>
   )
 }

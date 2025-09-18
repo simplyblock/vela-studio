@@ -8,7 +8,6 @@ import { IS_PLATFORM } from 'common'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { AiOptInLevel } from 'hooks/misc/useOrgOptedIntoAi'
 import { getModel } from 'lib/ai/model'
-import { getOrgAIDetails } from 'lib/ai/org-ai-details'
 import { getTools } from 'lib/ai/tools'
 import apiWrapper from 'lib/api/apiWrapper'
 import { queryPgMetaSelfHosted } from 'lib/self-hosted'
@@ -94,28 +93,6 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
   let aiOptInLevel: AiOptInLevel = 'disabled'
   let isLimited = false
-
-  if (!IS_PLATFORM) {
-    aiOptInLevel = 'schema'
-  }
-
-  if (IS_PLATFORM && orgSlug && authorization && projectRef) {
-    try {
-      // Get organizations and compute opt in level server-side
-      const { aiOptInLevel: orgAIOptInLevel, isLimited: orgAILimited } = await getOrgAIDetails({
-        orgSlug,
-        authorization,
-        projectRef,
-      })
-
-      aiOptInLevel = orgAIOptInLevel
-      isLimited = orgAILimited
-    } catch (error) {
-      return res
-        .status(400)
-        .json({ error: 'There was an error fetching your organization details' })
-    }
-  }
 
   const { model, error: modelError } = await getModel(projectRef, isLimited) // use project ref as routing key
 
