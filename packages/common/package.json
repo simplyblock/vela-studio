@@ -18,6 +18,7 @@
     "dat.gui": "^0.7.9",
     "flags": "^4.0.0",
     "lodash": "^4.17.21",
+    "next-auth": "^4.24.11",
     "next-themes": "^0.3.0",
     "react-use": "^17.4.0",
     "valtio": "catalog:"

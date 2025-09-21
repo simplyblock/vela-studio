@@ -1,10 +1,9 @@
-import HCaptcha from '@hcaptcha/react-hcaptcha'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import { CheckCircle, Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { parseAsString, useQueryStates } from 'nuqs'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
@@ -51,11 +50,9 @@ const schema = z.object({
 const formId = 'sign-up-form'
 
 export const SignUpForm = () => {
-  const captchaRef = useRef<HCaptcha>(null)
   const [showConditions, setShowConditions] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [passwordHidden, setPasswordHidden] = useState(true)
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const router = useRouter()
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -73,20 +70,11 @@ export const SignUpForm = () => {
       setIsSubmitted(true)
     },
     onError: (error) => {
-      setCaptchaToken(null)
-      captchaRef.current?.resetCaptcha()
       toast.error(`Failed to sign up: ${error.message}`)
     },
   })
 
   const onSubmit: SubmitHandler<z.infer<typeof schema>> = async ({ email, password }) => {
-    // [Joshen] Separate submitting state as there's 2 async processes here
-    let token = captchaToken
-    if (!token) {
-      const captchaResponse = await captchaRef.current?.execute({ async: true })
-      token = captchaResponse?.response ?? null
-    }
-
     const isInsideOAuthFlow = !!searchParams.auth_id
     const redirectUrlBase = `${
       process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
@@ -110,7 +98,7 @@ export const SignUpForm = () => {
     signup({
       email,
       password,
-      hcaptchaToken: token ?? null,
+      hcaptchaToken: null,
       redirectTo,
     })
   }
@@ -202,16 +190,6 @@ export const SignUpForm = () => {
               } transition-all duration-400 overflow-y-hidden`}
             >
               <PasswordConditionsHelper password={password} />
-            </div>
-
-            <div className="self-center">
-              <HCaptcha
-                ref={captchaRef}
-                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
-                size="invisible"
-                onVerify={(token) => setCaptchaToken(token)}
-                onExpire={() => setCaptchaToken(null)}
-              />
             </div>
 
             <Button

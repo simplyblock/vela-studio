@@ -39,10 +39,7 @@ const mergeHeaders = (req: NextApiRequest, headers: HeadersOptions[]) => {
   return newHeader as HeadersOptions
 }
 
-const prepareOptions = (
-  req: NextApiRequest,
-  init: object | object[],
-) => {
+const prepareOptions = (req: NextApiRequest, init: object | object[]) => {
   const origOptions = Array.isArray(init) ? init : [init]
   const origHeaders = origOptions
     .filter((x) => x !== undefined && 'headers' in x)
@@ -64,7 +61,6 @@ const prepareOptions = (
 }
 
 export function getVelaClient(req: NextApiRequest): Client<paths, `${string}/${string}`> {
-  console.log(VELA_PLATFORM_URL)
   return {
     delete<
       Path extends PathsWithMethod<paths, 'delete'>,
@@ -118,7 +114,6 @@ export function getVelaClient(req: NextApiRequest): Client<paths, `${string}/${s
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<paths[Path]['post'], Init, `${string}/${string}`>> {
-
       return velaClient.POST(url, prepareOptions(req, init))
     },
     put<

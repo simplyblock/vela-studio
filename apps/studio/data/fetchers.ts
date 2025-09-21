@@ -2,7 +2,6 @@ import createClient from 'openapi-fetch'
 
 import { IS_PLATFORM } from 'common'
 import { API_URL } from 'lib/constants'
-import { getAccessToken } from 'lib/gotrue'
 import { uuidv4 } from 'lib/helpers'
 import { ResponseError } from 'types'
 import type { paths } from './api' // generated from openapi-typescript
@@ -48,24 +47,17 @@ export async function constructHeaders(headersInit?: HeadersInit | undefined) {
   const requestId = uuidv4()
   const headers = new Headers(headersInit)
 
-  /*if (typeof document !== 'undefined') {
-    const organizationRef = getOrganizationSlug()
-    const projectRef = getProjectRef()
-
-    if (organizationRef !== undefined) {
-      headers.set('X-Vela-Organization-Ref', organizationRef)
-    }
-    if (projectRef !== undefined) {
-      headers.set('X-Vela-Project-Ref', projectRef)
-    }
-  }*/
-
   headers.set('X-Request-Id', requestId)
 
-  if (!headers.has('Authorization')) {
-    const accessToken = await getAccessToken()
-    if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
-  }
+  /*if (!headers.has('Authorization')) {
+    const session = await getSession()
+    if (session) {
+      console.log("FOUND SESSION", session)
+      const accessToken = (session as any).access_token
+      console.log('accessToken', accessToken)
+      if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
+    }
+  }*/
 
   return headers
 }

@@ -24,7 +24,6 @@ const GroupsTelemetry = ({ hasAcceptedConsent }: { hasAcceptedConsent: boolean }
   // IS_PLATFORM never changes within a session, so this won't cause any issues
   if (!IS_PLATFORM) return null
 
-  const user = useUser()
   const router = useRouter()
   const { ref, slug } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()

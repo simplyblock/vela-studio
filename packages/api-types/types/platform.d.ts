@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+  '/platform/service-urls': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['ServiceUrlsController_getServiceUrls']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/auth/{ref}/config': {
     parameters: {
       query?: never
@@ -6052,6 +6068,9 @@ export interface components {
     GitHubBranchResponse: {
       name: string
     }
+    ServiceUrlsResponse: {
+      signInUrl: string
+    }
     GoTrueConfigResponse: {
       API_MAX_REQUEST_DURATION: number | null
       AUDIT_LOG_DISABLE_POSTGRES: boolean | null
@@ -9346,6 +9365,31 @@ export interface components {
 export type $defs = Record<string, never>
 
 export interface operations {
+  ServiceUrlsController_getServiceUrls: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        },
+        content: {
+          'application/json': components['schemas']['ServiceUrlsResponse']
+        }
+      },
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   GoTrueConfigController_getGoTrueConfig: {
     parameters: {
       query?: never

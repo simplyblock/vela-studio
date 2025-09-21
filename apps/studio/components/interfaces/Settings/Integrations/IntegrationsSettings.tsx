@@ -1,13 +1,11 @@
 import Link from 'next/link'
 
-import SidePanelVercelProjectLinker from 'components/interfaces/Organization/IntegrationSettings/SidePanelVercelProjectLinker'
-import { ScaffoldContainer, ScaffoldDivider } from 'components/layouts/Scaffold'
+import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useProjectByRefQuery, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { BASE_PATH } from 'lib/constants'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, WarningIcon } from 'ui'
 import GitHubSection from './GithubIntegration/GithubSection'
-import VercelSection from './VercelIntegration/VercelSection'
 import { useParams } from 'common'
 
 export const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
@@ -48,13 +46,6 @@ const IntegrationSettings = () => {
         </ScaffoldContainer>
       )}
       <GitHubSection />
-      {showVercelIntegration && (
-        <>
-          <ScaffoldDivider />
-          <VercelSection isProjectScoped={true} />
-          <SidePanelVercelProjectLinker />
-        </>
-      )}
     </>
   )
 }

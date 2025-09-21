@@ -23,7 +23,7 @@ services:
           "CMD",
           "node",
           "-e",
-          "fetch('http://studio:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})"
+          "fetch('http://studio:3000/api/healthz').then((r) => {if (r.status !== 200) throw new Error(r.status)})"
         ]
       timeout: 10s
       interval: 5s
@@ -61,6 +61,17 @@ services:
       NEXT_PUBLIC_GOTRUE_URL: ${NEXT_PUBLIC_GOTRUE_URL}
       NEXT_PUBLIC_IS_PLATFORM: true
       PUBLIC_PLATFORM: ${PUBLIC_PLATFORM}
+      VELA_PLATFORM_KEYCLOAK_ISSUER: 'http://localhost:8000/auth/realms/vela'
+      VELA_PLATFORM_KEYCLOAK_CLIENT_ID: frontend
+      VELA_PLATFORM_KEYCLOAK_CLIENT_SECRET: super-long-random-keycloak-secret
+      VELA_PLATFORM_KEYCLOAK_AUTHORIZATION_ENDPOINT: http://localhost:8000/auth/realms/vela/protocol/openid-connect/auth
+      VELA_PLATFORM_KEYCLOAK_TOKEN_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/token
+      VELA_PLATFORM_KEYCLOAK_USERINFO_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/userinfo
+      VELA_PLATFORM_KEYCLOAK_LOGOUT_ENDPOINT: http://auth:8080/auth/protocol/openid-connect/logout
+      VELA_PLATFORM_KEYCLOAK_JWKS_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/certs
+      NEXTAUTH_SECRET: 'super-long-random-nextauth-secret'
+      NEXTAUTH_URL: ${NEXT_PUBLIC_SITE_URL}
+      NEXTAUTH_URL_INTERNAL: 'http://vela-studio:3000'
 
   controller:
     container_name: vela-controller
@@ -82,8 +93,9 @@ services:
     restart: unless-stopped
     environment:
       VELA_ROOT_PATH: '/vela'
-      VELA_JWT_SECRET: ${JWT_SECRET}
+      VELA_JWT_SECRET: 'http://auth:8080/auth/realms/vela/protocol/openid-connect/certs'
       VELA_POSTGRES_URL: 'postgresql+asyncpg://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}'
+      VELA_PGMETA_CRYPTO_KEY: 'secret'
 
   kong:
     container_name: vela-kong
@@ -114,71 +126,31 @@ services:
     entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'
 
   auth:
-    container_name: vela-auth
-    image: supabase/gotrue:v2.177.0
-    restart: unless-stopped
+    container_name: vela-keycloak
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?user=supabase_auth_admin&password=${POSTGRES_PASSWORD}
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_PROXY: edge
+      KC_HOSTNAME: http://localhost:8000/auth
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HEALTH_ENABLED: 'true'
+    command: start-dev --import-realm --verbose
+    volumes:
+      - ./volumes/auth/realm.json:/opt/keycloak/data/import/vela-realm.json:ro
     healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost:9999/health"
-        ]
-      timeout: 5s
-      interval: 5s
-      retries: 3
-    ports:
-      - '9999:9999/tcp'
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/8080' || exit 1"]  # This should do a proper request, but the container doesn't ship curl, wget, or telnet and using bash builtins is nasty
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     depends_on:
       db:
-        # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
-    environment:
-      GOTRUE_API_HOST: 0.0.0.0
-      GOTRUE_API_PORT: 9999
-      API_EXTERNAL_URL: ${API_EXTERNAL_URL}
-
-      GOTRUE_DB_DRIVER: postgres
-      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-
-      GOTRUE_SITE_URL: ${SITE_URL}
-      GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
-      GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP}
-
-      GOTRUE_JWT_ADMIN_ROLES: ''
-      GOTRUE_JWT_AUD: ''
-      GOTRUE_JWT_DEFAULT_GROUP_NAME: ''
-      GOTRUE_JWT_EXP: ${JWT_EXPIRY}
-      GOTRUE_JWT_SECRET: ${JWT_SECRET}
-
-      GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP}
-      GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED: ${ENABLE_ANONYMOUS_USERS}
-      GOTRUE_MAILER_AUTOCONFIRM: true
-
-
-      # Uncomment to bypass nonce check in ID Token flow. Commonly set to true when using Google Sign In on mobile.
-      # GOTRUE_EXTERNAL_SKIP_NONCE_CHECK: true
-
-      # GOTRUE_MAILER_SECURE_EMAIL_CHANGE_ENABLED: true
-      # GOTRUE_SMTP_MAX_FREQUENCY: 1s
-      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL}
-      GOTRUE_SMTP_HOST: ${SMTP_HOST}
-      GOTRUE_SMTP_PORT: ${SMTP_PORT}
-      GOTRUE_SMTP_USER: ''
-      GOTRUE_SMTP_PASS: ''
-      GOTRUE_SMTP_SENDER_NAME: ${SMTP_SENDER_NAME}
-      GOTRUE_MAILER_URLPATHS_INVITE: ${MAILER_URLPATHS_INVITE}
-      GOTRUE_MAILER_URLPATHS_CONFIRMATION: ${MAILER_URLPATHS_CONFIRMATION}
-      GOTRUE_MAILER_URLPATHS_RECOVERY: ${MAILER_URLPATHS_RECOVERY}
-      GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: ${MAILER_URLPATHS_EMAIL_CHANGE}
-
-      GOTRUE_EXTERNAL_PHONE_ENABLED: ${ENABLE_PHONE_SIGNUP}
-      GOTRUE_SMS_AUTOCONFIRM: ${ENABLE_PHONE_AUTOCONFIRM}
 
   rest:
     container_name: vela-rest
@@ -418,7 +390,7 @@ services:
       # Initialize the database settings with JWT_SECRET and JWT_EXP
       - ./volumes/db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:Z
       # PGDATA directory is persisted between restarts
-      - ./volumes/db/data:/var/lib/postgresql/data:Z
+      - db-data:/var/lib/postgresql/data:Z
       # Changes required for internal supabase data such as _analytics
       - ./volumes/db/_supabase.sql:/docker-entrypoint-initdb.d/migrations/97-_supabase.sql:Z
       # Changes required for Analytics support
@@ -548,3 +520,4 @@ services:
 
 volumes:
   db-config:
+  db-data:

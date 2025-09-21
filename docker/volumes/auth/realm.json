@@ -1,0 +1,46 @@
+{
+  "id": "vela",
+  "realm": "vela",
+  "enabled": true,
+  "registrationAllowed": true,
+  "verifyEmail": false,
+  "users": [
+    {
+      "username": "testuser",
+      "enabled": true,
+      "email": "testuser@example.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "testpassword",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "frontend",
+      "secret": "super-long-random-keycloak-secret",
+      "name": "Frontend Application",
+      "enabled": true,
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:8080/*",
+        "http://localhost:8000/api/auth/callback/keycloak"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://localhost:8000"
+      ],
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect"
+    }
+  ]
+}

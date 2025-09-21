@@ -4,7 +4,6 @@ import { FlagValues } from 'flags/react'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 
 import { components } from 'api-types'
-import { useUser } from './auth'
 import { get, post } from './fetchWrappers'
 import { ensurePlatformSuffix } from './helpers'
 
@@ -60,7 +59,7 @@ export const FeatureFlagProvider = ({
     userEmail?: string
   ) => Promise<{ settingKey: string; settingValue: boolean | number | string | null | undefined }[]>
 }>) => {
-  const user = useUser()
+  //const user = useUser()
 
   const [store, setStore] = useState<FeatureFlagContextType>({
     API_URL,
@@ -80,7 +79,7 @@ export const FeatureFlagProvider = ({
       const [flags, flagValues] = await Promise.all([
         getFeatureFlags(API_URL),
         typeof getConfigCatFlags === 'function'
-          ? getConfigCatFlags(user?.email)
+          ? getConfigCatFlags(''/*user?.email*/)
           : Promise.resolve([]),
       ])
 
@@ -115,7 +114,7 @@ export const FeatureFlagProvider = ({
     return () => {
       mounted = false
     }
-  }, [enabled, user?.email])
+  }, [enabled /*, user?.email*/])
 
   return (
     <FeatureFlagContext.Provider value={store}>

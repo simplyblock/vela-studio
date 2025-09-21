@@ -1,22 +1,12 @@
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { VELA_PLATFORM_GOTRUE_URL } from '../../constants'
+import { VELA_PLATFORM_KEYCLOAK_REALM, VELA_PLATFORM_KEYCLOAK_URL } from '../../constants'
 
 interface SignupRequestUi {
   email: string
   password: string
   hcaptchaToken: string
   redirectTo: string
-}
-
-interface SignupRequestAuth {
-  email: string
-  password: string
-  phone?: string
-  data?: { [key: string]: any }
-  channel?: string
-  code_challenge_method: string
-  code_challenge: string
 }
 
 interface SignupResponseAuth {
@@ -57,28 +47,63 @@ interface SignupResponseAuth {
   is_anonymous: boolean
 }
 
+interface KeycloakSignupRequest {
+  username: string
+  email: string
+  firstName?: string
+  lastName?: string
+  enabled: boolean
+  emailVerified: boolean
+  credentials: [
+    {
+      type: 'password'
+      value: string
+      temporary: false
+    },
+  ]
+}
+
 const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const request = req.body as SignupRequestUi
-  const goTrueRequest: SignupRequestAuth = {
+  const signupRequest: KeycloakSignupRequest = {
+    username: request.email,
     email: request.email,
-    password: request.password,
-    code_challenge_method: '',
-    code_challenge: '',
+    emailVerified: true,
+    enabled: true,
+    credentials: [{
+      type: 'password',
+      value: request.password,
+      temporary: false,
+    }],
   }
 
-  const response = await fetch(`${VELA_PLATFORM_GOTRUE_URL}/signup`, {
+  const url = `${VELA_PLATFORM_KEYCLOAK_URL}/admin/realms/${VELA_PLATFORM_KEYCLOAK_REALM}/users`
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(goTrueRequest),
+    body: JSON.stringify(signupRequest),
   })
 
   if (response.status !== 200) {
+    if (response.status === 409) {
+      return res.status(409).json({
+        error: {
+          message: 'User already exists',
+        },
+      })
+    } else if (response.status === 400) {
+      return res.status(400).json({
+        error: {
+          message: 'Invalid request',
+        },
+      })
+    }
     return res.status(response.status).send(response.body)
   }
 
-  const data = await response.json() as SignupResponseAuth
+  const data = await response.json()
   console.log(JSON.stringify(data, null, 2))
   return res.status(200).json(data)
 }

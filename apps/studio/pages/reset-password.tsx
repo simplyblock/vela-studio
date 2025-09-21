@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 import ResetPasswordForm from 'components/interfaces/SignIn/ResetPasswordForm'
 import ForgotPasswordLayout from 'components/layouts/SignInLayout/ForgotPasswordLayout'
 import { withAuth } from 'hooks/misc/withAuth'

@@ -396,15 +396,6 @@ const nextConfig = {
         ],
       },
       {
-        source: '/.well-known/vercel/flags',
-        headers: [
-          {
-            key: 'content-type',
-            value: 'application/json',
-          },
-        ],
-      },
-      {
         source: '/img/:slug*',
         headers: [{ key: 'cache-control', value: 'public, max-age=2592000' }],
       },
@@ -465,6 +456,7 @@ const nextConfig = {
       },
     },
   },
+  serverExternalPackages: ["next-auth", "@auth/core"],
   // Both configs for turbopack and webpack need to exist (and sync) because Nextjs still uses webpack for production building
   webpack(config) {
     config.module?.rules

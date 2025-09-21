@@ -1,7 +1,7 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { handleError, post } from 'data/fetchers'
+import { fetchPost, handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 
 const WHITELIST_ERRORS = [

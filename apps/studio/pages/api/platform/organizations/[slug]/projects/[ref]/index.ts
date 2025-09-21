@@ -53,6 +53,6 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(200).json(mapProject(response.data))
 }
 
-const apiHandler = apiBuilder((builder) => builder.get(handleGet))
+const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet))
 
 export default apiHandler

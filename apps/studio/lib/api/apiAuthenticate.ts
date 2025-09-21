@@ -1,80 +1,91 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { ResponseError, SupaResponse, User } from 'types'
-import { AuthClient, navigatorLock } from '@supabase/auth-js'
-import { STORAGE_KEY } from 'common'
-import { VELA_PLATFORM_GOTRUE_URL } from '../../pages/api/constants'
+import type { SupaResponse, User } from 'types'
+import * as jose from 'jose'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../../pages/api/auth/[...nextauth]'
 
-const navigatorLockEnabled = !!globalThis?.navigator?.locks
-const gotrueClient = new AuthClient({
-  url: VELA_PLATFORM_GOTRUE_URL,
-  storageKey: STORAGE_KEY,
-  detectSessionInUrl: true,
-  debug: false,
-  lock: navigatorLockEnabled ? navigatorLock : undefined,
-
-  ...('localStorage' in globalThis
-    ? { storage: globalThis.localStorage, userStorage: globalThis.localStorage }
-    : null),
-})
-
-async function getAuthUser(token: String): Promise<any> {
-  try {
-    const {
-      data: { user },
-      error,
-    } = await gotrueClient.getUser(token.replace('Bearer ', ''))
-    if (error) throw error
-
-    return { user, error: null }
-  } catch (err) {
-    console.error(err)
-    return { user: null, error: err }
+const authClient = (function () {
+  const issuer = process.env.VELA_PLATFORM_KEYCLOAK_ISSUER
+  if (!issuer) {
+    throw new Error('Missing VELA_PLATFORM_KEYCLOAK_ISSUER env var')
   }
-}
+
+  const jwksUrl = `${issuer}/protocol/openid-connect/certs`
+  const jwks = jose.createRemoteJWKSet(new URL(jwksUrl))
+
+  const verifyAccessToken = async (
+    authorization?: string,
+    required?: { anyRole?: string[]; allScopes?: string[] }
+  ) => {
+    if (!authorization?.startsWith('Bearer')) {
+      throw new Response('Missing or invalid Authorization header', { status: 401 })
+    }
+
+    const token = authorization?.slice('Bearer '.length).trim()
+
+    const { payload } = await jose.jwtVerify(token, jwks, {
+      issuer: issuer,
+      algorithms: ['RS256'],
+    })
+
+    const roles = (payload.realm_access as any)?.roles || []
+
+    const tokenScopes = (payload.scope as string | undefined)?.split(' ') || []
+    if (required?.allScopes && required.allScopes.every((scope) => !tokenScopes.includes(scope))) {
+      throw new Response('Forbidden (insufficient scope)', { status: 403 })
+    }
+    if (required?.anyRole && required.anyRole.some((role) => roles.includes(role))) {
+      throw new Response('Forbidden (insufficient role)', { status: 403 })
+    }
+
+    return {
+      sub: payload.sub?.toString(),
+      email: payload.email as string | undefined,
+      roles,
+      raw: payload,
+    }
+  }
+
+  return {
+    verifyAccessToken,
+  }
+})()
 
 /**
  * Use this method on api routes to check if user is authenticated and having required permissions.
  * This method can only be used from the server side.
  * Member permission is mandatory whenever orgSlug/projectRef query param exists
  * @param {NextApiRequest}    req
- * @param {NextApiResponse}   _res
+ * @param {NextApiResponse}   res
  *
  * @returns {Object<user, error, description>}
  *   user null, with error and description if not authenticated or not enough permissions
  */
 export async function apiAuthenticate(
   req: NextApiRequest,
-  _res: NextApiResponse
+  res: NextApiResponse
 ): Promise<SupaResponse<User>> {
   try {
-    const user = await fetchUser(req)
-    if (!user) {
+    const session = await getServerSession(req, res, authOptions)
+    if (!session || !session.user) {
       return { error: new Error('The user does not exist') }
     }
+    return session.user as User
 
-    return user
+    /*const accessToken = await authClient.verifyAccessToken(req.headers.authorization, {})
+    return {
+      id: accessToken.sub as string,
+      username: accessToken.raw.preferred_username as string,
+      first_name: accessToken.raw.given_name as string,
+      last_name: accessToken.raw.family_name as string,
+      primary_email: accessToken.email as string,
+      mobile: '',
+      gotrue_id: accessToken.sub as string,
+      is_alpha_user: false,
+      free_project_limit: 0,
+    } as User*/
   } catch (error) {
-    return { error: error as ResponseError }
+    console.log('apiAuthenticate::error', error)
+    return { error: error as Error }
   }
-}
-
-/**
- * @returns
- *  user with only id prop or detail object. It depends on requireUserDetail config
- */
-async function fetchUser(req: NextApiRequest): Promise<any> {
-  const token = req.headers.authorization?.replace('Bearer ', '')
-  if (!token) {
-    throw new Error('missing access token')
-  }
-  const { user, error } = await getAuthUser(token)
-  if (error) {
-    throw error
-  }
-
-  if (!user) {
-    throw new Error('The user does not exist')
-  }
-
-  return user
 }

@@ -58,6 +58,7 @@ export function withAuth<T>(
     const isFinishedLoading = !isLoading && !isAALLoading
 
     const redirectToSignIn = useCallback(() => {
+      console.log('redirectToSignIn')
       let pathname = location.pathname
       if (BASE_PATH) {
         pathname = pathname.replace(BASE_PATH, '')
@@ -70,12 +71,11 @@ export function withAuth<T>(
 
       const searchParams = new URLSearchParams(location.search)
       searchParams.set('returnTo', pathname)
-
       // Sign out before redirecting to sign in page incase the user is stuck in a loading state
       signOut().finally(() => {
-        router.push(`/sign-in?${searchParams.toString()}`)
+        location.href = `/sign-in?${searchParams.toString()}`
       })
-    }, [router, signOut])
+    }, [signOut])
 
     useEffect(() => {
       if (!isFinishedLoading) {
