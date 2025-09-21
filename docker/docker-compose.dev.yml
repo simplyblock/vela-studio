@@ -84,6 +84,7 @@ services:
       VELA_ROOT_PATH: '/vela'
       VELA_JWT_SECRET: ${JWT_SECRET}
       VELA_POSTGRES_URL: 'postgresql+asyncpg://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}'
+      VELA_PGMETA_CRYPTO_KEY: SAMPLE_KEY
 
   kong:
     container_name: vela-kong
