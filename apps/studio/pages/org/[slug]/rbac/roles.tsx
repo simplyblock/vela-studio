@@ -1,4 +1,5 @@
-import { TeamSettings } from 'components/interfaces/Organization/TeamSettings/TeamSettings'
+import { Roles } from 'components/interfaces/Organization/TeamSettings/RBAC/Role/Roles'
+import { UserSettings } from 'components/interfaces/Organization/TeamSettings/UserSettings'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import OrganizationLayout from 'components/layouts/OrganizationLayout'
 import OrganizationSettingsLayout from 'components/layouts/ProjectLayout/OrganizationSettingsLayout'
@@ -11,7 +12,7 @@ const OrgTeamSettings: NextPageWithLayout = () => {
   const { isLoading: isLoadingPermissions } = usePermissionsQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
 
-  return selectedOrganization === undefined && isLoadingPermissions ? <Loading /> : <TeamSettings />
+  return selectedOrganization === undefined && isLoadingPermissions ? <Loading /> : <Roles />
 }
 
 OrgTeamSettings.getLayout = (page) => (

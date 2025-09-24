@@ -51,7 +51,7 @@ import {
   cn,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { useGetRolesManagementPermissions } from './TeamSettings.utils'
+import { useGetRolesManagementPermissions } from './UserSettings.utils'
 
 export const InviteMemberButton = () => {
   const { slug } = useParams()

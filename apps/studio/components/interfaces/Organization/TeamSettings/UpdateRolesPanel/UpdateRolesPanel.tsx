@@ -43,7 +43,7 @@ import {
   WarningIcon,
   cn,
 } from 'ui'
-import { useGetRolesManagementPermissions } from '../TeamSettings.utils'
+import { useGetRolesManagementPermissions } from '../UserSettings.utils'
 import { UpdateRolesConfirmationModal } from './UpdateRolesConfirmationModal'
 import {
   ProjectRoleConfiguration,

@@ -1,6 +1,5 @@
 import { Search } from 'lucide-react'
 import { useState } from 'react'
-
 import {
   ScaffoldActionsContainer,
   ScaffoldActionsGroup,
@@ -15,7 +14,7 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import { InviteMemberButton } from './InviteMemberButton'
 import MembersView from './MembersView'
 
-export const TeamSettings = () => {
+export const UserSettings = () => {
   const [searchString, setSearchString] = useState('')
 
   return (

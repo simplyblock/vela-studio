@@ -13,17 +13,17 @@ export const RbacSubSideBar = () => {
       items: [
         {
           label: 'Users',
-          href: `/org/${orgSlug}/users`,
+          href: `/org/${orgSlug}/rbac`,
           icon: Users,
         },
         {
           label: 'Roles',
-          href: `/org/${orgSlug}/users/roles`,
+          href: `/org/${orgSlug}/rbac/roles`,
           icon: Shield,
         },
         {
           label: 'Role Assignment',
-          href: `/org/${orgSlug}/users/roleAssignment`,
+          href: `/org/${orgSlug}/rbac/roleAssignment`,
           icon: UserCog,
         },
       ],
@@ -33,27 +33,27 @@ export const RbacSubSideBar = () => {
       items: [
         {
           label: 'Policies',
-          href: `/org/${orgSlug}/users/policies`,
+          href: `/org/${orgSlug}/rbac/policies`,
           icon: FileText,
         },
         {
           label: 'Sign In / Providers',
-          href: `/org/${orgSlug}/providers`,
+          href: `/org/${orgSlug}/rbac/providers`,
           icon: LogIn,
         },
         {
           label: 'Emails',
-          href: `/org/${orgSlug}/users/emails`,
+          href: `/org/${orgSlug}/rbac/emails`,
           icon: Mail,
         },
         {
           label: 'Multi-Factor',
-          href: `/org/${orgSlug}/users/multiFactor`,
+          href: `/org/${orgSlug}/rbac/multiFactor`,
           icon: Lock,
         },
         {
           label: 'URL Configuration',
-          href: `/org/${orgSlug}/users/urlConfig`,
+          href: `/org/${orgSlug}/rbac/urlConfig`,
           icon: LinkIcon,
         },
       ],

@@ -15,14 +15,14 @@ function OrganizationSettingsLayout({ children }: PropsWithChildren) {
   // Hide these settings in the new layout on the following paths
   const isHidden = (path: string) => {
     return (
-      path === `/org/${slug}/users` ||
-      path === `/org/${slug}/integrations` ||
-      path === `/org/${slug}/usage` ||
-      path === `/org/${slug}/billing`
+      path === `/org/${slug}/general` ||
+      path === `/org/${slug}/security` ||
+      path === `/org/${slug}/sso` ||
+      path === `/org/${slug}/audit`
     )
   }
 
-  if (isHidden(currentPath)) {
+  if (!isHidden(currentPath)) {
     return children
   }
 
