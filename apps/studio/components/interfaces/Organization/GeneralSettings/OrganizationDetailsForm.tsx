@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -11,7 +10,6 @@ import CopyButton from 'components/ui/CopyButton'
 import { FormActions } from 'components/ui/Forms/FormActions'
 import { useOrganizationUpdateMutation } from 'data/organizations/organization-update-mutation'
 import { invalidateOrganizationsQuery } from 'data/organizations/organizations-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import type { ResponseError } from 'types'
 import {
@@ -34,7 +32,8 @@ export const OrganizationDetailsForm = () => {
   const { slug } = useParams()
   const queryClient = useQueryClient()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
-  const canUpdateOrganization = useCheckPermissions(PermissionAction.UPDATE, 'organizations')
+    // FIXME: need permission implemented 
+  const canUpdateOrganization = true
 
   const { mutate: updateOrganization, isLoading: isUpdatingDetails } =
     useOrganizationUpdateMutation()

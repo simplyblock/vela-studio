@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import { ChevronDown } from 'lucide-react'
 import { useRouter } from 'next/router'
@@ -10,7 +9,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useProjectRestartMutation } from 'data/projects/project-restart-mutation'
 import { useProjectRestartServicesMutation } from 'data/projects/project-restart-services-mutation'
 import { setProjectStatus } from 'data/projects/projects-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsAwsK8sCloudProvider, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useFlag } from 'hooks/ui/useFlag'
 import {
@@ -37,10 +35,8 @@ const RestartServerButton = () => {
   const projectRegion = project?.region ?? ''
 
   const projectRestartDisabled = useFlag('disableProjectRestarts')
-  const { can: canRestartProject } = useAsyncCheckProjectPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'reboot'
-  )
+   // FIXME: need permission implemented  
+  const { can: canRestartProject } = {can:true}
 
   const { mutate: restartProject, isLoading: isRestartingProject } = useProjectRestartMutation({
     onSuccess: () => {

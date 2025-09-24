@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { partition } from 'lodash'
 import { ChevronRight, Edit, ExternalLink, Table2, Trash } from 'lucide-react'
 import Link from 'next/link'
@@ -7,7 +6,6 @@ import { useState } from 'react'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import type { FDW } from 'data/fdw/fdws-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { Badge, Sheet, SheetContent, TableCell, TableRow } from 'ui'
 import { INTEGRATIONS } from '../Landing/Integrations.constants'
 import DeleteWrapperModal from './DeleteWrapperModal'
@@ -20,10 +18,8 @@ interface WrapperRowProps {
 
 const WrapperRow = ({ wrapper }: WrapperRowProps) => {
   const { slug, ref, id } = useParams()
-  const { can: canManageWrappers } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'wrappers'
-  )
+    // FIXME: need permission implemented 
+  const { can: canManageWrappers } = {can:true}
 
   const [editWrapperShown, setEditWrapperShown] = useState(false)
   const [isClosingEditWrapper, setIsClosingEditWrapper] = useState(false)

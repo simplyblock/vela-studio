@@ -1,8 +1,5 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-
 import { get, handleError } from 'data/fetchers'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
 
@@ -43,10 +40,8 @@ export const useOrganizationCustomerProfileQuery = <TData = OrganizationCustomer
 ) => {
   // [Joshen] Thinking it makes sense to add this check at the RQ level - prevent
   // unnecessary requests, although this behaviour still needs handling on the UI
-  const canReadCustomerProfile = useCheckPermissions(
-    PermissionAction.BILLING_READ,
-    'stripe.customer'
-  )
+  // FIXME: need permission implemented   
+  const canReadCustomerProfile = true
 
   return useQuery<OrganizationCustomerProfileData, OrganizationCustomerProfileError, TData>(
     organizationKeys.customerProfile(slug),

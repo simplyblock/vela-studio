@@ -15,7 +15,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabasePolicyUpdateMutation } from 'data/database-policies/database-policy-update-mutation'
 import { databasePoliciesKeys } from 'data/database-policies/keys'
 import { QueryResponseError, useExecuteSqlMutation } from 'data/sql/execute-sql-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
@@ -66,11 +65,8 @@ export const PolicyEditorPanel = memo(function ({
   const { ref } = useParams()
   const queryClient = useQueryClient()
   const { data: selectedProject } = useSelectedProjectQuery()
-
-  const { can: canUpdatePolicies } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'tables'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdatePolicies } = {can:true}
 
   // [Joshen] Hyrid form fields, just spit balling to get a decent POC out
   const [using, setUsing] = useState('')

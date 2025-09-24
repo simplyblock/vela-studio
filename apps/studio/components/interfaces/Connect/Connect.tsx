@@ -9,7 +9,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import Panel from 'components/ui/Panel'
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import {
@@ -55,10 +54,8 @@ export const Connect = () => {
   )
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef }, { enabled: showConnect })
-  const { can: canReadAPIKeys } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'service_api_keys'
-  )
+    // FIXME: need permission implemented 
+  const { can: canReadAPIKeys } = {can:true}
 
   const handleParentChange = (value: string) => {
     setSelectedParent(value)

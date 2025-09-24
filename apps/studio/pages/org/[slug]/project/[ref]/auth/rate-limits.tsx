@@ -1,5 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
-
 import RateLimits from 'components/interfaces/Auth/RateLimits/RateLimits'
 import AuthLayout from 'components/layouts/AuthLayout/AuthLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -8,12 +6,12 @@ import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import { DocsButton } from 'components/ui/DocsButton'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
-import { useCheckPermissions, usePermissionsLoaded } from 'hooks/misc/useCheckPermissions'
 import type { NextPageWithLayout } from 'types'
 
 const RateLimitsPage: NextPageWithLayout = () => {
-  const isPermissionsLoaded = usePermissionsLoaded()
-  const canReadAuthSettings = useCheckPermissions(PermissionAction.READ, 'custom_config_gotrue')
+  // FIXME: need permission implemented   
+  const isPermissionsLoaded = true
+  const canReadAuthSettings = true
 
   if (isPermissionsLoaded && !canReadAuthSettings) {
     return <NoPermission isFullPage resourceText="access your project's auth rate limit settings" />

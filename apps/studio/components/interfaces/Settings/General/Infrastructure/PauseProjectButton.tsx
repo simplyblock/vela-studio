@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import { Pause } from 'lucide-react'
 import { useRouter } from 'next/router'
@@ -9,7 +8,6 @@ import { useIsProjectActive } from 'components/layouts/ProjectLayout/ProjectCont
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useProjectPauseMutation } from 'data/projects/project-pause-mutation'
 import { setProjectStatus } from 'data/projects/projects-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useIsAwsK8sCloudProvider, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
@@ -27,10 +25,8 @@ const PauseProjectButton = () => {
 
   const projectRef = project?.ref ?? ''
   const isPaused = project?.status === PROJECT_STATUS.INACTIVE
-  const { can: canPauseProject } = useAsyncCheckProjectPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'queue_jobs.projects.pause'
-  )
+    // FIXME: need permission implemented 
+  const { can: canPauseProject } = {can:true}
 
   const isAwsK8s = useIsAwsK8sCloudProvider()
   const isFreePlan = organization?.plan.id === 'free'

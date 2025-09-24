@@ -5,7 +5,6 @@ import { Lock, Unlock } from 'lucide-react'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { EditorTablePageLink } from 'data/prefetchers/project.$ref.editor.$id'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import { AiIconAnimation, Badge } from 'ui'
 
@@ -34,15 +33,10 @@ const PolicyTableRowHeader = ({
 }: PolicyTableRowHeaderProps) => {
   const { slug, ref } = useParams() as { slug: string; ref: string }
   const aiSnap = useAiAssistantStateSnapshot()
-
-  const { can: canCreatePolicies } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'policies'
-  )
-  const { can: canToggleRLS } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'tables'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreatePolicies } = {can:true}
+  // FIXME: need permission implemented 
+  const { can: canToggleRLS } = {can:true}
 
   const isRealtimeSchema = table.schema === 'realtime'
   const isRealtimeMessagesTable = isRealtimeSchema && table.name === 'messages'

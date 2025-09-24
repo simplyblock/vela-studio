@@ -1,11 +1,8 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { noop } from 'lodash'
 import { useState } from 'react'
 import { toast } from 'sonner'
-
 import AutoTextArea from 'components/to-be-cleaned/forms/AutoTextArea'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { timeout } from 'lib/helpers'
 import { Loader } from 'lucide-react'
@@ -41,12 +38,8 @@ const Description = ({ content, metadata, onChange = noop }: DescrptionProps) =>
 
   const hasChanged = value != contentText
   const animateCss = `transition duration-150`
-
-  const { can: canUpdateDescription } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_QUERY,
-    '*'
-  )
-
+  // FIXME: need permission implemented 
+  const { can: canUpdateDescription } = {can:true}
   const updateDescription = async () => {
     if (isUpdating || !canUpdateDescription) return false
 

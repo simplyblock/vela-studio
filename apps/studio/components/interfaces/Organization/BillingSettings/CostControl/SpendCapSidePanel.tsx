@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -9,7 +8,6 @@ import { useParams } from 'common'
 import Table from 'components/to-be-cleaned/Table'
 import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
 import { useOrgSubscriptionUpdateMutation } from 'data/subscriptions/org-subscription-update-mutation'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { BASE_PATH, PRICING_TIER_PRODUCT_IDS } from 'lib/constants'
 import { pricing } from 'shared-data/pricing'
 import { useOrgSettingsPageStateSnapshot } from 'state/organization-settings'
@@ -42,11 +40,8 @@ const SpendCapSidePanel = () => {
 
   const [showUsageCosts, setShowUsageCosts] = useState(false)
   const [selectedOption, setSelectedOption] = useState<'on' | 'off'>()
-
-  const canUpdateSpendCap = useCheckPermissions(
-    PermissionAction.BILLING_WRITE,
-    'stripe.subscriptions'
-  )
+  // FIXME: need permission implemented 
+  const canUpdateSpendCap = true
 
   const snap = useOrgSettingsPageStateSnapshot()
   const visible = snap.panelKey === 'costControl'

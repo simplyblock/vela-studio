@@ -3,7 +3,6 @@ import { Globe, Trash } from 'lucide-react'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { EmptyListState } from 'components/ui/States'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { Button, Checkbox_Shadcn_ } from 'ui'
 import { ValueContainer } from './ValueContainer'
 
@@ -24,10 +23,8 @@ export const RedirectUrlList = ({
   onSelectRemoveURLs,
   onSelectClearSelection,
 }: RedirectUrlListProps) => {
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+    // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
 
   // [Joshen] One for next time: maybe shift this into a reusable logic since it
   // seems like we can use this in multiple places for future

@@ -11,7 +11,7 @@ import CodeEditor from 'components/ui/CodeEditor/CodeEditor'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
 import { useValidateSpamMutation, ValidateSpamResponse } from 'data/auth/validate-spam-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
+
 import type { FormSchema } from 'types'
 import {
   Button,
@@ -40,11 +40,8 @@ interface TemplateEditorProps {
 
 const TemplateEditor = ({ template }: TemplateEditorProps) => {
   const { ref: projectRef } = useParams()
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
-
+  // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
   // Add a ref to the code editor
   const editorRef = useRef<editor.IStandaloneCodeEditor>()
 

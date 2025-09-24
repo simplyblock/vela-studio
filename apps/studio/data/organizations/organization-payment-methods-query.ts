@@ -1,9 +1,6 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-
 import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
 
@@ -44,10 +41,8 @@ export const useOrganizationPaymentMethodsQuery = <TData = OrganizationPaymentMe
     ...options
   }: UseQueryOptions<OrganizationPaymentMethodsData, OrganizationPaymentMethodsError, TData> = {}
 ) => {
-  const canReadSubscriptions = useCheckPermissions(
-    PermissionAction.BILLING_READ,
-    'stripe.payment_methods'
-  )
+  // FIXME: need permission implemented   
+  const canReadSubscriptions = true
   return useQuery<OrganizationPaymentMethodsData, OrganizationPaymentMethodsError, TData>(
     organizationKeys.paymentMethods(slug),
     ({ signal }) => getOrganizationPaymentMethods({ slug }, signal),

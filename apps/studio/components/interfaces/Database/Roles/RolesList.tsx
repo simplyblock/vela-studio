@@ -1,14 +1,11 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { partition, sortBy } from 'lodash'
 import { Plus, Search, X } from 'lucide-react'
 import { useState } from 'react'
-
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import NoSearchResults from 'components/ui/NoSearchResults'
 import SparkBar from 'components/ui/SparkBar'
 import { useDatabaseRolesQuery } from 'data/database-roles/database-roles-query'
 import { useMaxConnectionsQuery } from 'data/database/max-connections-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Badge, Button, Input, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { CreateRolePanel } from './CreateRolePanel'
@@ -26,11 +23,8 @@ const RolesList = () => {
   const [filterType, setFilterType] = useState<'all' | 'active'>('all')
   const [isCreatingRole, setIsCreatingRole] = useState(false)
   const [selectedRoleToDelete, setSelectedRoleToDelete] = useState<any>()
-
-  const { can: canUpdateRoles } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'roles'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateRoles } = {can:true}
 
   const { data: maxConnData } = useMaxConnectionsQuery({
     projectRef: project?.ref,

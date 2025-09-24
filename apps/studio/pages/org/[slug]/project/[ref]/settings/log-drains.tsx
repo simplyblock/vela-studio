@@ -1,7 +1,5 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useState } from 'react'
 import { toast } from 'sonner'
-
 import { useParams } from 'common'
 import { LogDrainDestinationSheetForm } from 'components/interfaces/LogDrains/LogDrainDestinationSheetForm'
 import { LogDrains } from 'components/interfaces/LogDrains/LogDrains'
@@ -18,16 +16,14 @@ import { DocsButton } from 'components/ui/DocsButton'
 import { useCreateLogDrainMutation } from 'data/log-drains/create-log-drain-mutation'
 import { LogDrainData, useLogDrainsQuery } from 'data/log-drains/log-drains-query'
 import { useUpdateLogDrainMutation } from 'data/log-drains/update-log-drain-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useCurrentOrgPlan } from 'hooks/misc/useCurrentOrgPlan'
 import type { NextPageWithLayout } from 'types'
 import { Alert_Shadcn_, Button } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 
 const LogDrainsSettings: NextPageWithLayout = () => {
-  const { can: canManageLogDrains, isLoading: isLoadingPermissions } =
-    useAsyncCheckProjectPermissions(PermissionAction.ANALYTICS_ADMIN_WRITE, 'logflare')
-
+  // FIXME: need permission implemented   
+  const { can: canManageLogDrains, isLoading: isLoadingPermissions } ={can:true , isLoading:false}
   const [open, setOpen] = useState(false)
   const { ref } = useParams() as { ref: string }
   const [selectedLogDrain, setSelectedLogDrain] = useState<Partial<LogDrainData> | null>(null)

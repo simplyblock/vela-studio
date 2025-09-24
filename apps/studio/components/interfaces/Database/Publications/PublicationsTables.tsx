@@ -2,7 +2,6 @@ import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronLeft, Search } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-
 import { useParams } from 'common'
 import NoSearchResults from 'components/to-be-cleaned/NoSearchResults'
 import AlertError from 'components/ui/AlertError'
@@ -10,7 +9,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { Loading } from 'components/ui/Loading'
 import { useDatabasePublicationsQuery } from 'data/database-publications/database-publications-query'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui'
 import { Admonition } from 'ui-patterns'
@@ -22,9 +20,7 @@ export const PublicationsTables = () => {
   const { data: project } = useSelectedProjectQuery()
   const [filterString, setFilterString] = useState<string>('')
 
-  const { can: canUpdatePublications, isLoading: isLoadingPermissions } =
-    useAsyncCheckProjectPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, 'publications')
-
+  const { can: canUpdatePublications, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
   const { data: publications = [] } = useDatabasePublicationsQuery({
     projectRef: project?.ref,
     connectionString: project?.connectionString,

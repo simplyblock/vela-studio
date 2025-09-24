@@ -23,7 +23,6 @@ import {
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -52,8 +51,8 @@ const AuditLogs = () => {
     users: [], // gotrue_id[]
     projects: [], // project_ref[]
   })
-
-  const canReadAuditLogs = useCheckPermissions(PermissionAction.READ, 'notifications')
+  // FIXME: need permission implemented 
+  const canReadAuditLogs = true
 
   const { data: projects } = useProjectsQuery()
   const { data: organizations } = useOrganizationsQuery()

@@ -1,13 +1,10 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useState } from 'react'
-
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { InlineLink } from 'components/ui/InlineLink'
 import { useClientSecretCreateMutation } from 'data/oauth-secrets/client-secret-create-mutation'
 import { CreatedSecret, useClientSecretsQuery } from 'data/oauth-secrets/client-secrets-query'
 import { OAuthApp } from 'data/oauth/oauth-apps-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { Alert_Shadcn_, AlertTitle_Shadcn_, InfoIcon } from 'ui'
 import { SecretRow } from './SecretRow'
 
@@ -18,7 +15,8 @@ interface Props {
 export const OAuthSecrets = ({ selectedApp }: Props) => {
   const { slug } = useParams()
   const [createdSecret, setCreatedSecret] = useState<CreatedSecret>()
-  const canManageSecrets = useCheckPermissions(PermissionAction.UPDATE, 'oauth_apps')
+    // FIXME: need permission implemented 
+  const canManageSecrets = true
 
   const { id: appId } = selectedApp ?? {}
 

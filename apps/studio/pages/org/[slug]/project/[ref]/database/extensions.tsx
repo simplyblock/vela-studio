@@ -1,18 +1,14 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
-
 import { Extensions } from 'components/interfaces/Database'
 import DatabaseLayout from 'components/layouts/DatabaseLayout/DatabaseLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { ScaffoldContainer, ScaffoldSection } from 'components/layouts/Scaffold'
 import { PageLayout } from 'components/layouts/PageLayout/PageLayout'
 import NoPermission from 'components/ui/NoPermission'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import type { NextPageWithLayout } from 'types'
 
 const DatabaseExtensions: NextPageWithLayout = () => {
-  const { can: canReadExtensions, isSuccess: isPermissionsLoaded } =
-    useAsyncCheckProjectPermissions(PermissionAction.TENANT_SQL_ADMIN_READ, 'extensions')
-
+  // FIXME: need permission implemented   
+  const { can: canReadExtensions, isSuccess: isPermissionsLoaded } ={can:true,isSuccess:true}
   if (isPermissionsLoaded && !canReadExtensions) {
     return <NoPermission isFullPage resourceText="view database extensions" />
   }

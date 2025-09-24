@@ -13,7 +13,7 @@ import { InlineLink } from 'components/ui/InlineLink'
 import NoPermission from 'components/ui/NoPermission'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
+
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -51,15 +51,10 @@ const BasicAuthSettingsForm = () => {
     isLoading,
   } = useAuthConfigQuery({ projectRef })
   const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
-
-  const { can: canReadConfig, isSuccess: isPermissionsLoaded } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'custom_config_gotrue'
-  )
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadConfig, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+    // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
 
   const form = useForm({
     resolver: yupResolver(schema),

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { isEqual } from 'lodash'
 import { ExternalLink, Loader2, Megaphone } from 'lucide-react'
 import Link from 'next/link'
@@ -10,7 +9,6 @@ import { DocsButton } from 'components/ui/DocsButton'
 import NoPermission from 'components/ui/NoPermission'
 import ShimmerLine from 'components/ui/ShimmerLine'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { Button, IconBroadcast, IconDatabaseChanges, IconPresence, cn } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
@@ -33,11 +31,8 @@ const NoResultAlert = ({
   showSendMessage: () => void
 }) => {
   const { slug, ref } = useParams()
-
-  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'service_api_keys'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
 
   return (
     <div className="w-full max-w-md flex items-center flex-col">

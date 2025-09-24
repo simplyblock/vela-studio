@@ -6,7 +6,6 @@ import { useParams } from 'common'
 import CopyButton from 'components/ui/CopyButton'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import { useAPIKeysQuery } from 'data/api-keys/api-keys-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { cn, EyeOffIcon, Input_Shadcn_, Skeleton, WarningIcon } from 'ui'
 
 // to add in later with follow up PR
@@ -26,11 +25,8 @@ export const PublishableAPIKeys = () => {
     () => apiKeysData?.filter(({ type }) => type === 'publishable') ?? [],
     [apiKeysData]
   )
-
-  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = {can:true , isLoading:false}
 
   // The default publisahble key will always be the first one
   const apiKey = publishableApiKeys[0]
@@ -85,11 +81,8 @@ const ApiKeyInput = () => {
     () => apiKeysData?.filter(({ type }) => type === 'publishable') ?? [],
     [apiKeysData]
   )
-
-  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = {can:true , isLoading:false}
   // The default publisahble key will always be the first one
   const apiKey = publishableApiKeys[0]
 

@@ -1,5 +1,4 @@
 import { common, dirname, relative } from '@std/path/posix'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { AlertCircle, CornerDownLeft, Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -14,7 +13,6 @@ import { useEdgeFunctionBodyQuery } from 'data/edge-functions/edge-function-body
 import { useEdgeFunctionQuery } from 'data/edge-functions/edge-function-query'
 import { useEdgeFunctionDeployMutation } from 'data/edge-functions/edge-functions-deploy-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { BASE_PATH } from 'lib/constants'
@@ -27,11 +25,9 @@ const CodePage = () => {
 
   const { mutate: sendEvent } = useSendEventMutation()
   const [showDeployWarning, setShowDeployWarning] = useState(false)
-
-  const { can: canDeployFunction } = useAsyncCheckProjectPermissions(
-    PermissionAction.FUNCTIONS_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented 
+  const { can: canDeployFunction } = {can:true}
+  
 
   const { data: selectedFunction } = useEdgeFunctionQuery({ projectRef: ref, slug: functionSlug })
   const {

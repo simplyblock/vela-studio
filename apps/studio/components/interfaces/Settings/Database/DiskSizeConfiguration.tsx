@@ -12,7 +12,6 @@ import { FormHeader } from 'components/ui/Forms/FormHeader'
 import Panel from 'components/ui/Panel'
 import { useProjectDiskResizeMutation } from 'data/config/project-disk-resize-mutation'
 import { useDatabaseSizeQuery } from 'data/database/database-size-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
@@ -34,16 +33,8 @@ const DiskSizeConfiguration = ({ disabled = false }: DiskSizeConfigurationProps)
     const show = typeof value === 'function' ? value(showIncreaseDiskSizeModal) : value
     setUrlParams({ show_increase_disk_size_modal: show ? 'true' : undefined })
   }
-
-  const { can: canUpdateDiskSizeConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'projects',
-    {
-      resource: {
-        project_id: project?.id,
-      },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateDiskSizeConfig } = {can:true}
 
   const { isLoading: isUpdatingDiskSize } = useProjectDiskResizeMutation({
     onSuccess: (_, variables) => {

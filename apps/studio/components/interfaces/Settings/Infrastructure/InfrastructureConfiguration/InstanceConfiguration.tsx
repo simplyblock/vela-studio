@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import { partition } from 'lodash'
 import { ChevronDown, Globe2, Loader2, Network } from 'lucide-react'
@@ -15,7 +14,6 @@ import {
   ReplicaInitializationStatus,
   useReadReplicasStatusesQuery,
 } from 'data/read-replicas/replicas-status-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { timeout } from 'lib/helpers'
 import Link from 'next/link'
@@ -55,11 +53,8 @@ const InstanceConfigurationUI = () => {
   const [newReplicaRegion, setNewReplicaRegion] = useState<AWS_REGIONS_KEYS>()
   const [selectedReplicaToDrop, setSelectedReplicaToDrop] = useState<Database>()
   const [selectedReplicaToRestart, setSelectedReplicaToRestart] = useState<Database>()
-
-  const { can: canManageReplicas } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'projects'
-  )
+  // FIXME: need permission implemented 
+  const { can: canManageReplicas } = {can:true}
 
   const {
     data: loadBalancers,

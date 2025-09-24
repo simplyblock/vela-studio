@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { groupBy, isEqual, isNull } from 'lodash'
@@ -22,7 +21,6 @@ import {
   useContentUpsertMutation,
 } from 'data/content/content-upsert-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Metric, TIME_PERIODS_REPORTS } from 'lib/constants/metrics'
@@ -81,31 +79,10 @@ const Reports = () => {
 
   const currentReport = userContents?.content.find((report) => report.id === id)
   const currentReportContent = currentReport?.content as Dashboards.Content
-
-  const { can: canReadReport, isLoading: isLoadingPermissions } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'user_content',
-    {
-      resource: {
-        type: 'report',
-        visibility: currentReport?.visibility,
-        owner_id: currentReport?.owner_id,
-      },
-      subject: { id: profile?.id },
-    }
-  )
-  const { can: canUpdateReport } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'user_content',
-    {
-      resource: {
-        type: 'report',
-        visibility: currentReport?.visibility,
-        owner_id: currentReport?.owner_id,
-      },
-      subject: { id: profile?.id },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadReport, isLoading: isLoadingPermissions } ={can:true , isLoading:false}
+   // FIXME: need permission implemented  
+  const { can: canUpdateReport } = {can:true}
 
   function handleDateRangePicker({ period_start, period_end }: any) {
     setStartDate(period_start.date)

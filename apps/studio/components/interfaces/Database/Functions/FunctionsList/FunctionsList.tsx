@@ -12,7 +12,6 @@ import SchemaSelector from 'components/ui/SchemaSelector'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabaseFunctionsQuery } from 'data/database-functions/database-functions-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
@@ -61,11 +60,8 @@ const FunctionsList = ({
     }
     router.push(url)
   }
-
-  const { can: canCreateFunctions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'functions'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateFunctions } = {can:true}
 
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedSchema })
 

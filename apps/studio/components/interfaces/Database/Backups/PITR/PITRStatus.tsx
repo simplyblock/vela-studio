@@ -7,7 +7,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { FormPanel } from 'components/ui/Forms/FormPanel'
 import { useBackupsQuery } from 'data/database/backups-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import type { Timezone } from './PITR.types'
 import { TimezoneSelection } from './TimezoneSelection'
 
@@ -40,11 +39,8 @@ const PITRStatus = ({
     .unix(latestPhysicalBackupDateUnix ?? 0)
     .tz(selectedTimezone?.utc[0])
     .format('DD MMM YYYY, HH:mm:ss')
-
-  const { can: canTriggerPhysicalBackup } = useAsyncCheckProjectPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'queue_job.walg.prepare_restore'
-  )
+  // FIXME: need permission implemented 
+  const { can: canTriggerPhysicalBackup } = {can:true}
 
   return (
     <>

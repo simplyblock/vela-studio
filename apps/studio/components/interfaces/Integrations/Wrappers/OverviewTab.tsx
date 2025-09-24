@@ -1,11 +1,8 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import Link from 'next/link'
 import { useState } from 'react'
-
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Alert_Shadcn_,
@@ -27,11 +24,8 @@ export const WrapperOverviewTab = () => {
   const { data: project } = useSelectedProjectQuery()
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
   const [isClosingCreateWrapper, setisClosingCreateWrapper] = useState(false)
-
-  const { can: canCreateWrapper } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'wrappers'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateWrapper } = {can:true}
 
   const { data } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,

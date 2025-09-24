@@ -1,11 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { ArrowRight, ExternalLink, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-
 import { useParams } from 'common'
 import ReportChart from 'components/interfaces/Reports/ReportChart'
 import ReportHeader from 'components/interfaces/Reports/ReportHeader'
@@ -33,7 +31,6 @@ import { useMaxConnectionsQuery } from 'data/database/max-connections-query'
 import { usePgbouncerConfigQuery } from 'data/database/pgbouncer-config-query'
 import { getReportAttributes, getReportAttributesV2 } from 'data/reports/database-charts'
 import { useDatabaseReport } from 'data/reports/database-report-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
@@ -106,16 +103,8 @@ const DatabaseUsage = () => {
     connectionString: project?.connectionString,
   })
   const { data: poolerConfig } = usePgbouncerConfigQuery({ orgSlug: org?.slug, projectRef: project?.ref })
-
-  const { can: canUpdateDiskSizeConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'projects',
-    {
-      resource: {
-        project_id: project?.id,
-      },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateDiskSizeConfig } = {can:true}
 
   const REPORT_ATTRIBUTES = getReportAttributes(
     org!,

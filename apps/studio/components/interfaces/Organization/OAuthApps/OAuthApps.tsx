@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check, X } from 'lucide-react'
 import { useState } from 'react'
 
@@ -13,7 +12,6 @@ import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { AuthorizedApp, useAuthorizedAppsQuery } from 'data/oauth/authorized-apps-query'
 import { OAuthAppCreateResponse } from 'data/oauth/oauth-app-create-mutation'
 import { OAuthApp, useOAuthAppsQuery } from 'data/oauth/oauth-apps-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { Button, cn } from 'ui'
 import { AuthorizedAppRow } from './AuthorizedAppRow'
 import { DeleteAppModal } from './DeleteAppModal'
@@ -34,8 +32,10 @@ const OAuthApps = () => {
   const [selectedAppToDelete, setSelectedAppToDelete] = useState<OAuthApp>()
   const [selectedAppToRevoke, setSelectedAppToRevoke] = useState<AuthorizedApp>()
 
-  const canReadOAuthApps = useCheckPermissions(PermissionAction.READ, 'approved_oauth_apps')
-  const canCreateOAuthApps = useCheckPermissions(PermissionAction.CREATE, 'approved_oauth_apps')
+    // FIXME: need permission implemented 
+  const canReadOAuthApps = true
+    // FIXME: need permission implemented 
+  const canCreateOAuthApps = true
 
   const {
     data: publishedApps,

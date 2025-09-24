@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { AlertTitle } from '@ui/components/shadcn/ui/alert'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -22,7 +21,6 @@ import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query
 import { useProjectStorageConfigQuery } from 'data/config/project-storage-config-query'
 import { useProjectStorageConfigUpdateUpdateMutation } from 'data/config/project-storage-config-update-mutation'
 import { useStorageCredentialsQuery } from 'data/storage/s3-access-key-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
@@ -53,9 +51,10 @@ export const S3Connection = () => {
   const [openCreateCred, setOpenCreateCred] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [deleteCred, setDeleteCred] = useState<{ id: string; description: string }>()
-
-  const canReadS3Credentials = useCheckPermissions(PermissionAction.STORAGE_ADMIN_READ, '*')
-  const canUpdateStorageSettings = useCheckPermissions(PermissionAction.STORAGE_ADMIN_WRITE, '*')
+  // FIXME: need permission implemented 
+  const canReadS3Credentials = true
+  // FIXME: need permission implemented   
+  const canUpdateStorageSettings = true
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
   const {

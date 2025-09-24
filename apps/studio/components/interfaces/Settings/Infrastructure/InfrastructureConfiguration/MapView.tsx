@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import dayjs from 'dayjs'
 import { partition, uniqBy } from 'lodash'
 import { MoreVertical } from 'lucide-react'
@@ -19,7 +18,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
 import { Database, useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { BASE_PATH } from 'lib/constants'
 import type { AWS_REGIONS_KEYS } from 'shared-data'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
@@ -60,10 +58,8 @@ const MapView = ({
     y: number
     region: { key: string; country?: string; name?: string; region?: string }
   }>()
-  const { can: canManageReplicas } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'projects'
-  )
+  // FIXME: need permission implemented 
+  const { can: canManageReplicas } = {can:true}
   const [, setShowConnect] = useQueryState('showConnect', parseAsBoolean.withDefault(false))
 
   const { data } = useReadReplicasQuery({ orgSlug: slug, projectRef: ref })

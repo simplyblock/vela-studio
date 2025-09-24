@@ -1,6 +1,4 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { snakeCase } from 'lodash'
-
 import { WRAPPERS } from 'components/interfaces/Integrations/Wrappers/Wrappers.constants'
 import {
   getCatalogURI,
@@ -9,7 +7,6 @@ import {
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { FDWCreateVariables, useFDWCreateMutation } from 'data/fdw/fdw-create-mutation'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useS3AccessKeyCreateMutation } from './s3-access-key-create-mutation'
 import { getPathReferences } from '../vela/path-references'
@@ -28,8 +25,8 @@ export const useIcebergWrapperCreateMutation = () => {
   const apiKey = secretKey?.api_key ?? serviceKey?.api_key ?? 'SUPABASE_CLIENT_API_KEY'
 
   const wrapperMeta = WRAPPERS.find((wrapper) => wrapper.name === 'iceberg_wrapper')
-
-  const canCreateCredentials = useCheckPermissions(PermissionAction.STORAGE_ADMIN_WRITE, '*')
+  // FIXME: need permission implemented 
+  const canCreateCredentials = true
 
   const { mutateAsync: createS3AccessKey, isLoading: isCreatingS3AccessKey } =
     useS3AccessKeyCreateMutation()

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import {
   Copy,
   Download,
@@ -21,7 +20,6 @@ import { createSqlSnippetSkeletonV2 } from 'components/interfaces/SQLEditor/SQLE
 import { getContentById } from 'data/content/content-id-query'
 import { useSQLSnippetFolderContentsQuery } from 'data/content/sql-folder-contents-query'
 import { Snippet } from 'data/content/sql-folders-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import useLatest from 'hooks/misc/useLatest'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProfile } from 'lib/profile'
@@ -106,14 +104,8 @@ export const SQLEditorTreeViewItem = ({
   const isEditing = status === 'editing'
   const isSaving = status === 'saving'
 
-  const { can: canCreateSQLSnippet } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'user_content',
-    {
-      resource: { type: 'sql', owner_id: profile?.id },
-      subject: { id: profile?.id },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateSQLSnippet } = {can:true}
 
   const parentId = element.parent === 0 ? undefined : element.parent
 

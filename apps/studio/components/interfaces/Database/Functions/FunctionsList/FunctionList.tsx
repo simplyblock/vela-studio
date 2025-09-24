@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseFunctionsQuery } from 'data/database-functions/database-functions-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   Button,
@@ -53,10 +52,8 @@ const FunctionList = ({
     (func) => func.name.toLocaleLowerCase()
   )
   const projectRef = selectedProject?.ref
-  const { can: canUpdateFunctions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'functions'
-  )
+    // FIXME: need permission implemented 
+  const { can: canUpdateFunctions } = {can:true}
 
   if (_functions.length === 0 && filterString.length === 0) {
     return (

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 
@@ -13,7 +12,6 @@ import NoPermission from 'components/ui/NoPermission'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import SparkBar from 'components/ui/SparkBar'
 import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import UpcomingInvoice from './UpcomingInvoice'
 import { MANAGED_BY } from 'lib/constants/infrastructure'
@@ -23,10 +21,8 @@ const BillingBreakdown = () => {
   const { slug: orgSlug } = useParams()
 
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
-
-  const { isSuccess: isPermissionsLoaded, can: canReadSubscriptions } =
-    useAsyncCheckProjectPermissions(PermissionAction.BILLING_READ, 'stripe.subscriptions')
-
+  // FIXME: need permission implemented 
+  const { isSuccess: isPermissionsLoaded, can: canReadSubscriptions } = {can:true,isSuccess:true}
   const {
     data: subscription,
     error: subscriptionError,

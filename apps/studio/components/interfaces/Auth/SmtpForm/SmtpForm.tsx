@@ -12,7 +12,6 @@ import { ScaffoldContainer, ScaffoldSection } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -52,15 +51,10 @@ const SmtpForm = () => {
 
   const [enableSmtp, setEnableSmtp] = useState(false)
   const [hidden, setHidden] = useState(true)
-
-  const { can: canReadConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'custom_config_gotrue'
-  )
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadConfig } = {can:true}
+   // FIXME: need permission implemented  
+  const { can: canUpdateConfig } = {can:true}
 
   const smtpSchema = yup.object({
     SMTP_ADMIN_EMAIL: yup.string().when('ENABLE_SMTP', {

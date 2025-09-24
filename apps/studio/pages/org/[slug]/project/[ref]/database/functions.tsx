@@ -1,6 +1,4 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useState } from 'react'
-
 import { useIsInlineEditorEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { CreateFunction, DeleteFunction } from 'components/interfaces/Database'
 import FunctionsList from 'components/interfaces/Database/Functions/FunctionsList/FunctionsList'
@@ -11,7 +9,6 @@ import { EditorPanel } from 'components/ui/EditorPanel/EditorPanel'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import NoPermission from 'components/ui/NoPermission'
 import { DatabaseFunction } from 'data/database-functions/database-functions-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import type { NextPageWithLayout } from 'types'
 
 const DatabaseFunctionsPage: NextPageWithLayout = () => {
@@ -25,11 +22,8 @@ const DatabaseFunctionsPage: NextPageWithLayout = () => {
   const [selectedFunctionForEditor, setSelectedFunctionForEditor] = useState<
     DatabaseFunction | undefined
   >()
-
-  const { can: canReadFunctions, isSuccess: isPermissionsLoaded } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_READ,
-    'functions'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadFunctions, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
 
   const createFunction = () => {
     if (isInlineEditorEnabled) {

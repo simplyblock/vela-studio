@@ -1,11 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { compact, debounce, isEqual, noop } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useIsAPIDocsSidePanelEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import APIDocsButton from 'components/ui/APIDocsButton'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   Check,
   ChevronLeft,
@@ -179,7 +177,8 @@ const FileExplorerHeader = ({
 
   const breadcrumbs = columns.map((column) => column.name)
   const backDisabled = columns.length <= 1
-  const canUpdateStorage = useCheckPermissions(PermissionAction.STORAGE_WRITE, '*')
+  // FIXME: need permission implemented   
+  const canUpdateStorage = true
 
   useEffect(() => {
     if (itemSearchString) setSearchString(itemSearchString)

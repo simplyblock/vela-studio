@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 
 import { useParams } from 'common'
 import { useAPIKeysQuery } from 'data/api-keys/api-keys-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface ApiKeysVisibilityState {
   hasApiKeys: boolean
@@ -19,7 +18,8 @@ interface ApiKeysVisibilityState {
  */
 export function useApiKeysVisibility(): ApiKeysVisibilityState {
   const { slug: orgSlug, ref: projectRef } = useParams()
-  const { can: canReadAPIKeys } = useAsyncCheckProjectPermissions(PermissionAction.READ, 'api_keys')
+    // FIXME: need permission implemented 
+  const { can: canReadAPIKeys } = {can:true}
 
   const { data: apiKeysData, isLoading } = useAPIKeysQuery({
     orgSlug,

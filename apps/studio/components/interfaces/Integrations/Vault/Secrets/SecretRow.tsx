@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import dayjs from 'dayjs'
 import { useState } from 'react'
@@ -12,7 +11,6 @@ import {
 
 import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
 import { useVaultSecretDecryptedValueQuery } from 'data/vault/vault-secret-decrypted-value-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Edit3, Eye, EyeOff, Key, Loader, MoreVertical, Trash } from 'lucide-react'
 import type { VaultSecret } from 'types'
@@ -32,11 +30,8 @@ const SecretRow = ({ row, col, onSelectRemove }: SecretRowProps) => {
   const [modal, setModal] = useState<string | null>(null)
   const [revealSecret, setRevealSecret] = useState(false)
   const name = row?.name ?? 'No name provided'
-
-  const { can: canManageSecrets } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'tables'
-  )
+  // FIXME: need permission implemented 
+  const { can: canManageSecrets } = {can:true}
 
   const { data: revealedValue, isFetching } = useVaultSecretDecryptedValueQuery(
     {

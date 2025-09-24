@@ -1,9 +1,7 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import { useState } from 'react'
 
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
@@ -51,10 +49,8 @@ const SchemaSelector = ({
   portal = true,
 }: SchemaSelectorProps) => {
   const [open, setOpen] = useState(false)
-  const { can: canCreateSchemas } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'schemas'
-  )
+  // FIXME: need permission implemented   
+  const { can: canCreateSchemas } = {can:true}
 
   const { data: project } = useSelectedProjectQuery()
   const { slug: orgSlug } = getPathReferences()
