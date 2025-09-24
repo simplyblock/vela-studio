@@ -3,7 +3,6 @@ import { BookOpen, Check, ChevronDown, Clipboard, ExternalLink, X } from 'lucide
 import Link from 'next/link'
 import { ReactNode, useState } from 'react'
 
-import { IS_PLATFORM } from 'common'
 import Table from 'components/to-be-cleaned/Table'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { logConstants } from 'shared-data'
@@ -125,27 +124,25 @@ const LogsQueryPanel = ({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {IS_PLATFORM && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button type="default" iconRight={<ChevronDown />}>
-                    Templates
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side="bottom" align="start">
-                  {templates
-                    .sort((a, b) => a.label!.localeCompare(b.label!))
-                    .map((template) => (
-                      <DropdownMenuItem
-                        key={template.label}
-                        onClick={() => onSelectTemplate(template)}
-                      >
-                        <p>{template.label}</p>
-                      </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button type="default" iconRight={<ChevronDown />}>
+                  Templates
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="bottom" align="start">
+                {templates
+                  .sort((a, b) => a.label!.localeCompare(b.label!))
+                  .map((template) => (
+                    <DropdownMenuItem
+                      key={template.label}
+                      onClick={() => onSelectTemplate(template)}
+                    >
+                      <p>{template.label}</p>
+                    </DropdownMenuItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <LogsDatePicker
               value={selectedDatePickerValue}

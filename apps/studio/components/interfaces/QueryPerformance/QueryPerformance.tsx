@@ -11,7 +11,6 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { DbQueryHook } from 'hooks/analytics/useDbQuery'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { IS_PLATFORM } from 'lib/constants'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import {
   Button,
@@ -264,7 +263,7 @@ export const QueryPerformance = ({
             (db) => db.identifier === state.selectedDatabaseId
           )?.connectionString
 
-          if (IS_PLATFORM && !connectionString) {
+          if (!connectionString) {
             return toast.error('Unable to run query: Connection string is missing')
           }
 

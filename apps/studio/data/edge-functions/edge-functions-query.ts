@@ -1,7 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { edgeFunctionsKeys } from './keys'
 
@@ -40,5 +39,5 @@ export const useEdgeFunctionsQuery = <TData = EdgeFunctionsData>(
   useQuery<EdgeFunctionsData, EdgeFunctionsError, TData>(
     edgeFunctionsKeys.list(projectRef),
     ({ signal }) => getEdgeFunctions({ orgSlug, projectRef }, signal),
-    { enabled: IS_PLATFORM && enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
+    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

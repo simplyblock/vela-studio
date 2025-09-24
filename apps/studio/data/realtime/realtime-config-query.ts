@@ -1,7 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { get, handleError } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { realtimeKeys } from './keys'
 
@@ -53,7 +52,7 @@ export const useRealtimeConfigurationQuery = <TData = RealtimeConfigurationData>
     realtimeKeys.configuration(projectRef),
     ({ signal }) => getRealtimeConfiguration({ projectRef }, signal),
     {
-      enabled: enabled && IS_PLATFORM && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined',
       ...options,
     }
   )

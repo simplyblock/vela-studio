@@ -1,7 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { get, handleError } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import { ResponseError } from 'types'
 import { databaseKeys } from './keys'
 
@@ -47,7 +46,7 @@ export const usePgbouncerConfigQuery = <TData = PgbouncerConfigData>(
     databaseKeys.pgbouncerConfig(orgSlug, projectRef),
     ({ signal }) => getPgbouncerConfig({ orgSlug, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && IS_PLATFORM,
+      enabled: enabled && typeof projectRef !== 'undefined',
       ...options,
     }
   )

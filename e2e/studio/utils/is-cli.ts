@@ -5,7 +5,5 @@ import { env } from '../env.config'
  * false if running in hosted mode.
  */
 export function isCLI(): boolean {
-  // IS_PLATFORM=true = hosted mode
-  // IS_PLATFORM=false = CLI/self-hosted mode
-  return env.IS_PLATFORM === 'false'
+  return false
 }

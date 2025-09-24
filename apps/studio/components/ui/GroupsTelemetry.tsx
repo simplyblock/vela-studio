@@ -7,7 +7,6 @@ import { useSendGroupsIdentifyMutation } from 'data/telemetry/send-groups-identi
 import { useSendGroupsResetMutation } from 'data/telemetry/send-groups-reset-mutation'
 import { usePrevious } from 'hooks/deprecated'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 
 const getAnonId = async (id: string) => {
   const encoder = new TextEncoder()
@@ -20,10 +19,6 @@ const getAnonId = async (id: string) => {
 }
 
 const GroupsTelemetry = ({ hasAcceptedConsent }: { hasAcceptedConsent: boolean }) => {
-  // Although this is "technically" breaking the rules of hooks
-  // IS_PLATFORM never changes within a session, so this won't cause any issues
-  if (!IS_PLATFORM) return null
-
   const router = useRouter()
   const { ref, slug } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()

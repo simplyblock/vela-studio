@@ -1,7 +1,6 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
 import { ResponseError, ResponseFailure } from 'types'
-import { IS_PLATFORM } from '../constants'
 import { apiAuthenticate } from './apiAuthenticate'
 
 export function isResponseOk<T>(response: T | ResponseFailure | undefined): response is T {
@@ -32,7 +31,7 @@ export default async function apiWrapper(
   try {
     const { withAuth } = options || {}
 
-    if (IS_PLATFORM && withAuth) {
+    if (withAuth) {
       const response = await apiAuthenticate(req, res)
       if (!isResponseOk(response)) {
         return res.status(401).json({

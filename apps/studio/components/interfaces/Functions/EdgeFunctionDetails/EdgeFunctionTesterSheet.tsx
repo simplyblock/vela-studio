@@ -13,7 +13,6 @@ import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query
 import { useEdgeFunctionTestMutation } from 'data/edge-functions/edge-function-test-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import { prettifyJSON } from 'lib/helpers'
 import { getRoleImpersonationJWT } from 'lib/role-impersonation'
 import {
@@ -90,7 +89,7 @@ export const EdgeFunctionTesterSheet = ({ visible, onClose }: EdgeFunctionTester
   const { data: apiKeys } = useAPIKeysQuery({ orgSlug, projectRef })
   const { data: config } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
-  const { data: accessToken } = useSessionAccessTokenQuery({ enabled: IS_PLATFORM })
+  const { data: accessToken } = useSessionAccessTokenQuery({ enabled: true })
   const { serviceKey } = getKeys(apiKeys)
 
   const { mutate: sendEvent } = useSendEventMutation()

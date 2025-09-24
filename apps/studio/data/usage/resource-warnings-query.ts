@@ -1,6 +1,5 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
-import { IS_PLATFORM } from 'common'
 import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
@@ -25,7 +24,7 @@ export const useResourceWarningsQuery = <TData = ResourceWarningsData>({
     usageKeys.resourceWarnings(),
     ({ signal }) => getResourceWarnings(signal),
     {
-      enabled: IS_PLATFORM && enabled,
+      enabled,
       staleTime: 1000 * 60 * 60, // default 60 minutes
       ...options,
     }

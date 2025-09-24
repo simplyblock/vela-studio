@@ -6,7 +6,7 @@ import { SessionTimeoutModal } from 'components/interfaces/SignIn/SessionTimeout
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useAuthenticatorAssuranceLevelQuery } from 'data/profile/mfa-authenticator-assurance-level-query'
 import { useAuth, useSignOut } from 'lib/auth'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import { NextPageWithLayout, isNextPageWithLayout } from 'types'
 
 const MAX_TIMEOUT = 10000 // 10 seconds
@@ -25,11 +25,6 @@ export function withAuth<T>(
     useHighestAAL: boolean
   } = { useHighestAAL: true }
 ) {
-  // ignore auth in self-hosted
-  if (!IS_PLATFORM) {
-    return WrappedComponent
-  }
-
   const WithAuthHOC: ComponentType<T> = (props) => {
     const router = useRouter()
     const signOut = useSignOut()

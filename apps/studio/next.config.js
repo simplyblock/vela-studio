@@ -20,74 +20,48 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      ...(process.env.NEXT_PUBLIC_IS_PLATFORM === 'true'
-        ? [
-            {
-              source: '/',
-              has: [
-                {
-                  type: 'query',
-                  key: 'next',
-                  value: 'new-project',
-                },
-              ],
-              destination: '/new/new-project',
-              permanent: false,
-            },
-            {
-              source: '/',
-              destination: '/org',
-              permanent: false,
-            },
-            {
-              source: '/register',
-              destination: '/sign-up',
-              permanent: false,
-            },
-            {
-              source: '/signup',
-              destination: '/sign-up',
-              permanent: false,
-            },
-            {
-              source: '/signin',
-              destination: '/sign-in',
-              permanent: false,
-            },
-            {
-              source: '/login',
-              destination: '/sign-in',
-              permanent: false,
-            },
-            {
-              source: '/log-in',
-              destination: '/sign-in',
-              permanent: false,
-            },
-          ]
-        : [
-            {
-              source: '/',
-              destination: '/organizations',
-              permanent: false,
-            },
-            {
-              source: '/register',
-              destination: '/organizations',
-              permanent: false,
-            },
-
-            {
-              source: '/login',
-              destination: '/organizations',
-              permanent: false,
-            },
-            {
-              source: '/log-in',
-              destination: '/organizations',
-              permanent: false,
-            },
-          ]),
+      {
+        source: '/',
+        has: [
+          {
+            type: 'query',
+            key: 'next',
+            value: 'new-project',
+          },
+        ],
+        destination: '/new/new-project',
+        permanent: false,
+      },
+      {
+        source: '/',
+        destination: '/org',
+        permanent: false,
+      },
+      {
+        source: '/register',
+        destination: '/sign-up',
+        permanent: false,
+      },
+      {
+        source: '/signup',
+        destination: '/sign-up',
+        permanent: false,
+      },
+      {
+        source: '/signin',
+        destination: '/sign-in',
+        permanent: false,
+      },
+      {
+        source: '/login',
+        destination: '/sign-in',
+        permanent: false,
+      },
+      {
+        source: '/log-in',
+        destination: '/sign-in',
+        permanent: false,
+      },
       {
         source: '/org/:slug/project/:ref/auth',
         destination: '/org/:slug/project/:ref/auth/users',
@@ -378,17 +352,9 @@ const nextConfig = {
             value: 'no-sniff',
           },
           {
-            key: 'Strict-Transport-Security',
-            value:
-              process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' && process.env.VERCEL === '1'
-                ? 'max-age=31536000; includeSubDomains; preload'
-                : '',
+            key: 'Content-Security-Policy',
+            value: getCSP(),
           },
-            {
-              key: 'Content-Security-Policy',
-              value:
-                process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' ? getCSP() : "frame-ancestors 'none';",
-            },
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',

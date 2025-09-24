@@ -1,6 +1,5 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 import type { Project } from 'data/projects/project-detail-query'
-import { IS_PLATFORM } from 'lib/constants'
 
 export const generateAdvisorsMenu = (
   slug: string,
@@ -33,7 +32,7 @@ export const generateAdvisorsMenu = (
         },
       ],
     },
-    ...(IS_PLATFORM && features?.advisorRules
+    ...(features?.advisorRules
       ? [
           {
             title: 'Configuration',

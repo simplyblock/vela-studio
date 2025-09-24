@@ -1,6 +1,5 @@
 import createClient from 'openapi-fetch'
 
-import { IS_PLATFORM } from 'common'
 import { API_URL } from 'lib/constants'
 import { uuidv4 } from 'lib/helpers'
 import { ResponseError } from 'types'
@@ -38,9 +37,7 @@ const client = createClient<paths>({
 
 export function isValidConnString(connString?: string | null) {
   // If there is no `connectionString` on platform, pg-meta will necessarily fail to connect to the target database.
-  // This only applies if IS_PLATFORM is true; otherwise (test/local-dev), pg-meta won't need this parameter
-  // and will connect to the locally running DB_URL instead.
-  return IS_PLATFORM ? Boolean(connString) : true
+  return Boolean(connString)
 }
 
 export async function constructHeaders(headersInit?: HeadersInit | undefined) {
