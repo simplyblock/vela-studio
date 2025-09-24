@@ -305,7 +305,7 @@ export const InviteMemberButton = () => {
                                   <ScrollArea
                                     className={cn(
                                       (orgProjects || []).length > 7 &&
-                                        'max-h-[210px] overflow-y-auto'
+                                      'max-h-[210px] overflow-y-auto'
                                     )}
                                   >
                                     {orgProjects.map((project) => {

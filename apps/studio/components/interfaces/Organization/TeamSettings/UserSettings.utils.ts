@@ -45,7 +45,7 @@ export const useGetRolesManagementPermissions = (
 */
   return { rolesAddable, rolesRemovable }
 }
-  
+
 
 export const hasMultipleOwners = (members: OrganizationMember[] = [], roles: Role[] = []) => {
   const membersWhoAreOwners = members.filter((member) => {
