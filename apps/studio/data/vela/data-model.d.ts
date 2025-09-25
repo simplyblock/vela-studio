@@ -9,6 +9,32 @@ export interface DatabaseInformation {
   version: string
 }
 
+export interface CreateBranch {
+  name: string
+  source: {
+    organization_slug?: string
+    project_slug?: string
+    branch_slug: string
+  }
+  cloning: {
+    config: false | {
+      backup_schedules: boolean
+      rls: boolean
+      realtime: boolean
+      rate_limits: boolean
+      other: boolean
+    }
+    data: boolean
+  }
+  resources?: {
+    vcpu: number
+    ram_mb: number
+    iops: number
+    nvme_gb: number
+    storage_gb?: number
+  }
+}
+
 export interface Branch {
   id: number
   name: string
