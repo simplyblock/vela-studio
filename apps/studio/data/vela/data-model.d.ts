@@ -84,6 +84,14 @@ export interface Branch {
       | 'CREATING'
       | 'DELETING'
       | 'UNKNOWN'
+    realtime:
+      | 'ACTIVE_HEALTHY'
+      | 'STOPPED'
+      | 'STARTING'
+      | 'ACTIVE_UNHEALTHY'
+      | 'CREATING'
+      | 'DELETING'
+      | 'UNKNOWN'
   }
   created_at: string
   created_by: string
