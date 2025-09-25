@@ -1,5 +1,4 @@
 import { PostgresTrigger } from '@supabase/postgres-meta'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { includes, noop } from 'lodash'
 import { Edit3, MoreVertical, Trash } from 'lucide-react'
 import Image from 'next/legacy/image'

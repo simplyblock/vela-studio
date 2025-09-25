@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronDown } from 'lucide-react'
 
 import { useParams } from 'common'

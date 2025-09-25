@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
 

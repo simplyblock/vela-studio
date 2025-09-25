@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { OrganizationBase } from 'data/organizations/organizations-query'
 import { PlanId } from 'data/subscriptions/types'
 import jsonLogic from 'json-logic-js'
@@ -70,7 +69,7 @@ export interface Role {
 }
 
 export interface Permission {
-  actions: PermissionAction[]
+  actions: string[]
   condition: jsonLogic.RulesLogic
   organization_slug: string
   resources: string[]

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Code, Monitor } from 'lucide-react'
 import { editor } from 'monaco-editor'
 import { useEffect, useMemo, useRef, useState } from 'react'

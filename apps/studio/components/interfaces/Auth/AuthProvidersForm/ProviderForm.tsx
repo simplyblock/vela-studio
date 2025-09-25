@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check } from 'lucide-react'
 import { useQueryState } from 'nuqs'
 import { useEffect, useState } from 'react'

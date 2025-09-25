@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { isNull, partition } from 'lodash'
 import { AlertCircle, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'

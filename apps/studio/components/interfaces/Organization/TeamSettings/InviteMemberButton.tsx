@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -56,8 +55,7 @@ export const InviteMemberButton = () => {
   const { profile } = useProfile()
   const { data: organization } = useSelectedOrganizationQuery()
   // FIXME: need permission implemented   
-  const { permissions: permissions } = []
-
+  const { permission: permissions } = {permission:[]}
   const { organizationMembersCreate: organizationMembersCreationEnabled } = useIsFeatureEnabled([
     'organization_members:create',
   ])
