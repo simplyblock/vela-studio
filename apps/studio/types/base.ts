@@ -59,7 +59,7 @@ export interface User {
   username: string
   first_name?: string
   last_name?: string
-  gotrue_id: string
+  user_id: string
   is_alpha_user: boolean
   free_project_limit: number
 }
