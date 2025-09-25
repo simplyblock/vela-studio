@@ -39,15 +39,18 @@ const handleUpdate = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 
-// FIXME: Implementation missing
 const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { slug } = req.query
+  const { slug } = getPlatformQueryParams(req, 'slug')
 
-  if (!slug) {
-    return res.status(400).json({
-      error: { message: 'Organization slug is required' },
-    })
-  }
+  const client = getVelaClient(req)
+
+  client.delete("/organizations/{organization_slug}/", {
+    params: {
+      path: {
+        organization_slug: slug
+      }
+    }
+  })
 
   return res.status(200).json({
     id: '',

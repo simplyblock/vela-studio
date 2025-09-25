@@ -1301,7 +1301,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/members/{gotrue_id}': {
+  '/platform/organizations/{slug}/members/{user_id}': {
     parameters: {
       query?: never
       header?: never
@@ -1319,7 +1319,7 @@ export interface paths {
     patch: operations['MembersController_assignMemberRoleV2']
     trace?: never
   }
-  '/platform/organizations/{slug}/members/{gotrue_id}/roles/{role_id}': {
+  '/platform/organizations/{slug}/members/{user_id}/roles/{role_id}': {
     parameters: {
       query?: never
       header?: never
@@ -6531,7 +6531,7 @@ export interface components {
       is_sensitive: boolean
     }
     Member: {
-      gotrue_id: string
+      user_id: string
       is_sso_user: boolean | null
       metadata: {
         [key: string]: unknown
@@ -7277,7 +7277,7 @@ export interface components {
     }
     Profile: {
       first_name: string
-      gotrue_id: string
+      user_id: string
       id: number
       last_name: string
       username: string
@@ -7303,7 +7303,7 @@ export interface components {
       )[]
       first_name: string
       free_project_limit: number
-      gotrue_id: string
+      user_id: string
       id: number
       is_alpha_user: boolean
       last_name: string
@@ -12347,7 +12347,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12375,7 +12375,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12407,7 +12407,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         role_id: number
         /** @description Organization slug */
         slug: string
@@ -12440,7 +12440,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         role_id: number
         /** @description Organization slug */
         slug: string

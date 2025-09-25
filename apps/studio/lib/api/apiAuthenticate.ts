@@ -80,7 +80,7 @@ export async function apiAuthenticate(
       last_name: accessToken.raw.family_name as string,
       primary_email: accessToken.email as string,
       mobile: '',
-      gotrue_id: accessToken.sub as string,
+      user_id: accessToken.sub as string,
       is_alpha_user: false,
       free_project_limit: 0,
     } as User*/

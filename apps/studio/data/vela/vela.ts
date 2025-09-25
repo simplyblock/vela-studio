@@ -10,7 +10,7 @@ import { VELA_PLATFORM_URL } from '../../pages/api/constants'
 import { NextApiRequest } from 'next'
 import type { MediaType, PathsWithMethod } from 'openapi-typescript-helpers'
 
-export interface Client<Paths extends {}, Media extends MediaType = MediaType> {
+export interface Client<Paths extends {} = paths, Media extends MediaType = MediaType> {
   get: ClientMethod<Paths, 'get', Media>
   put: ClientMethod<Paths, 'put', Media>
   post: ClientMethod<Paths, 'post', Media>
