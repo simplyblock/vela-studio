@@ -1,7 +1,7 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
 import { ResponseError, ResponseFailure } from 'types'
-import { apiAuthenticate } from './apiAuthenticate'
+import { getKeycloakManager } from 'common/keycloak'
 
 export function isResponseOk<T>(response: T | ResponseFailure | undefined): response is T {
   if (response === undefined || response === null) {
@@ -32,16 +32,16 @@ export default async function apiWrapper(
     const { withAuth } = options || {}
 
     if (withAuth) {
-      const response = await apiAuthenticate(req, res)
-      if (!isResponseOk(response)) {
+      const session = await getKeycloakManager().getSession(req, res)
+      if (!session || !session.user) {
         return res.status(401).json({
           error: {
-            message: `Unauthorized: ${response.error.message}`,
+            message: `Unauthorized: No valid session found`,
           },
         })
       } else {
         // Attach user information to request parameters
-        ;(req as any).user = response
+        ;(req as any).user = session.user
       }
     }
 
