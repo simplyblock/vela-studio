@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 
@@ -16,7 +15,6 @@ import { useGitHubAuthorizationQuery } from 'data/integrations/github-authorizat
 import { useGitHubConnectionDeleteMutation } from 'data/integrations/github-connection-delete-mutation'
 import { useGitHubConnectionsQuery } from 'data/integrations/github-connections-query'
 import type { IntegrationProjectConnection } from 'data/integrations/integrations.types'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { BASE_PATH } from 'lib/constants'
@@ -44,19 +42,12 @@ const IntegrationSettings = () => {
   const { data: org } = useSelectedOrganizationQuery()
 
   const showVercelIntegration = useIsFeatureEnabled('integrations:vercel')
-
-  const canReadGithubConnection = useCheckPermissions(
-    PermissionAction.READ,
-    'integrations.github_connections'
-  )
-  const canCreateGitHubConnection = useCheckPermissions(
-    PermissionAction.CREATE,
-    'integrations.github_connections'
-  )
-  const canUpdateGitHubConnection = useCheckPermissions(
-    PermissionAction.UPDATE,
-    'integrations.github_connections'
-  )
+  // FIXME: need permission implemented 
+  const canReadGithubConnection = true
+    // FIXME: need permission implemented 
+  const canCreateGitHubConnection = true
+    // FIXME: need permission implemented 
+  const canUpdateGitHubConnection = true
 
   const { data: gitHubAuthorization } = useGitHubAuthorizationQuery()
 

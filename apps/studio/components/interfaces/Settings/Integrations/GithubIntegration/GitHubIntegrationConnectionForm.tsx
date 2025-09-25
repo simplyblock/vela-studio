@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronDown, Loader2, PlusIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -16,7 +15,6 @@ import { useGitHubConnectionDeleteMutation } from 'data/integrations/github-conn
 import { useGitHubConnectionUpdateMutation } from 'data/integrations/github-connection-update-mutation'
 import { useGitHubRepositoriesQuery } from 'data/integrations/github-repositories-query'
 import type { GitHubConnection } from 'data/integrations/integrations.types'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { openInstallGitHubIntegrationWindow } from 'lib/github'
@@ -71,15 +69,10 @@ const GitHubIntegrationConnectionForm = ({
   const [isConfirmingRepoChange, setIsConfirmingRepoChange] = useState(false)
   const [repoComboBoxOpen, setRepoComboboxOpen] = useState(false)
   const isParentProject = !Boolean(selectedProject?.parent_project_ref)
-
-  const { can: canUpdateGitHubConnection } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'integrations.github_connections'
-  )
-  const { can: canCreateGitHubConnection } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'integrations.github_connections'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateGitHubConnection } = {can:true}
+  // FIXME: need permission implemented   
+  const { can: canCreateGitHubConnection } = {can:true}
 
   const { data: gitHubAuthorization } = useGitHubAuthorizationQuery()
 

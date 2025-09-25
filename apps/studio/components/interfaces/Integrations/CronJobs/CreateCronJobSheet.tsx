@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { toString as CronToString } from 'cronstrue'
 import { parseAsString, useQueryState } from 'nuqs'
 import { useEffect, useState } from 'react'
@@ -16,7 +15,6 @@ import { useDatabaseCronJobCreateMutation } from 'data/database-cron-jobs/databa
 import { CronJob } from 'data/database-cron-jobs/database-cron-jobs-infinite-query'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
@@ -219,11 +217,8 @@ export const CreateCronJobSheet = ({
   const { mutate: sendEvent } = useSendEventMutation()
   const { mutate: upsertCronJob, isLoading: isUpserting } = useDatabaseCronJobCreateMutation()
   const isLoading = isLoadingGetCronJob || isUpserting
-
-  const { can: canToggleExtensions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'extensions'
-  )
+  // FIXME: need permission implemented 
+  const { can: canToggleExtensions } = {can:true}
 
   const cronJobValues = parseCronJobCommand(selectedCronJob?.command || '', project?.ref!)
 

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check } from 'lucide-react'
 import { useQueryState } from 'nuqs'
 import { useEffect, useState } from 'react'
@@ -14,7 +13,7 @@ import type { components } from 'data/api'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useCustomDomainsQuery } from 'data/custom-domains/custom-domains-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
+
 import { BASE_PATH } from 'lib/constants'
 import { Button, Form, Input, Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from 'ui'
 import { Admonition } from 'ui-patterns'
@@ -38,10 +37,8 @@ export const ProviderForm = ({ config, provider, isActive }: ProviderFormProps) 
   const [open, setOpen] = useState(false)
   const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
 
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
 
   const shouldDisableField = (field: string): boolean => {
     const shouldDisableSmsFields =

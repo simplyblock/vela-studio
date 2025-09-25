@@ -1,10 +1,7 @@
 import { useState } from 'react'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Columns3, Edit2, MoreVertical, Trash, XCircle } from 'lucide-react'
 import Link from 'next/link'
-
 import type { Bucket } from 'data/storage/buckets-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import EditBucketModal from 'components/interfaces/Storage/EditBucketModal'
 import DeleteBucketModal from 'components/interfaces/Storage/DeleteBucketModal'
 import EmptyBucketModal from 'components/interfaces/Storage/EmptyBucketModal'
@@ -30,10 +27,8 @@ export interface BucketRowProps {
 }
 
 const BucketRow = ({ slug, bucket, projectRef = '', isSelected = false }: BucketRowProps) => {
-  const { can: canUpdateBuckets } = useAsyncCheckProjectPermissions(
-    PermissionAction.STORAGE_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateBuckets } = {can:true}
   const [modal, setModal] = useState<string | null>(null)
   const onClose = () => setModal(null)
 

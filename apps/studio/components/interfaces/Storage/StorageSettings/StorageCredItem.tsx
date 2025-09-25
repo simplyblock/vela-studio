@@ -1,9 +1,7 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { differenceInDays } from 'date-fns'
 import { MoreVertical, TrashIcon } from 'lucide-react'
 
 import CopyButton from 'components/ui/CopyButton'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   Button,
   DropdownMenu,
@@ -25,7 +23,8 @@ export const StorageCredItem = ({
   access_key: string
   onDeleteClick: (id: string) => void
 }) => {
-  const canRemoveAccessKey = useCheckPermissions(PermissionAction.STORAGE_ADMIN_WRITE, '*')
+  // FIXME: need permission implemented   
+  const canRemoveAccessKey = true
 
   function daysSince(date: string) {
     const now = new Date()

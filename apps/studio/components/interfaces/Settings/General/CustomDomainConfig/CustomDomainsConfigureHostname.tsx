@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import * as yup from 'yup'
 
 import { useParams } from 'common'
@@ -9,7 +8,6 @@ import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useCheckCNAMERecordMutation } from 'data/custom-domains/check-cname-mutation'
 import { useCustomDomainCreateMutation } from 'data/custom-domains/custom-domains-create-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Form, Input } from 'ui'
 
@@ -27,16 +25,8 @@ const CustomDomainsConfigureHostname = () => {
 
   const FORM_ID = 'custom-domains-form'
   const endpoint = settings?.app_config?.endpoint
-  const { can: canConfigureCustomDomain } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'projects',
-    {
-      resource: {
-        project_id: project?.id,
-      },
-    }
-  )
-
+    // FIXME: need permission implemented 
+  const { can: canConfigureCustomDomain } = {can:true}
   const onCreateCustomDomain = async (values: yup.InferType<typeof schema>) => {
     if (!ref) return console.error('Project ref is required')
 

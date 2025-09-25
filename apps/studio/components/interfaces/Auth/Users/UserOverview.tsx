@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import dayjs from 'dayjs'
 import { Ban, Check, Copy, Mail, ShieldOff, Trash, X } from 'lucide-react'
 import Link from 'next/link'
@@ -15,7 +14,6 @@ import { useUserSendMagicLinkMutation } from 'data/auth/user-send-magic-link-mut
 import { useUserSendOTPMutation } from 'data/auth/user-send-otp-mutation'
 import { useUserUpdateMutation } from 'data/auth/user-update-mutation'
 import { User } from 'data/auth/users-infinite-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { BASE_PATH } from 'lib/constants'
 import { timeout } from 'lib/helpers'
 import { Button, cn, Separator } from 'ui'
@@ -58,28 +56,18 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
       }
     }
   )
-
-  const { can: canUpdateUser } = useAsyncCheckProjectPermissions(PermissionAction.AUTH_EXECUTE, '*')
-  const { can: canSendMagicLink } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'send_magic_link'
-  )
-  const { can: canSendRecovery } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'send_recovery'
-  )
-  const { can: canSendOtp } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'send_otp'
-  )
-  const { can: canRemoveUser } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_DELETE,
-    'auth.users'
-  )
-  const { can: canRemoveMFAFactors } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_DELETE,
-    'auth.mfa_factors'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateUser } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canSendMagicLink } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canSendRecovery } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canSendOtp } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canRemoveUser } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canRemoveMFAFactors } = {can:true}
 
   const [successAction, setSuccessAction] = useState<
     'send_magic_link' | 'send_recovery' | 'send_otp'

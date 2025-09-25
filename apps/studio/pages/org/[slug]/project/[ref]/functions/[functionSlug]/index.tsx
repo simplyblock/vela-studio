@@ -1,11 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import dayjs, { Dayjs } from 'dayjs'
 import meanBy from 'lodash/meanBy'
 import sumBy from 'lodash/sumBy'
 import { useRouter } from 'next/router'
 import { useMemo, useState } from 'react'
-
 import ReportWidget from 'components/interfaces/Reports/ReportWidget'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import EdgeFunctionDetailsLayout from 'components/layouts/EdgeFunctionsLayout/EdgeFunctionDetailsLayout'
@@ -22,7 +20,6 @@ import {
 } from 'data/analytics/functions-resource-usage-query'
 import { useEdgeFunctionQuery } from 'data/edge-functions/edge-function-query'
 import { useFillTimeseriesSorted } from 'hooks/analytics/useFillTimeseriesSorted'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import type { ChartIntervals, NextPageWithLayout } from 'types'
 import {
   AlertDescription_Shadcn_,
@@ -142,10 +139,7 @@ const PageLayout: NextPageWithLayout = () => {
     endDate.toISOString()
   )
 
-  const { isLoading: permissionsLoading, can: canReadFunction } = useAsyncCheckProjectPermissions(
-    PermissionAction.FUNCTIONS_READ,
-    functionSlug as string
-  )
+  const { isLoading: permissionsLoading, can: canReadFunction } = {can:true , isLoading:false}
   if (!canReadFunction && !permissionsLoading) {
     return <NoPermission isFullPage resourceText="access this edge function" />
   }

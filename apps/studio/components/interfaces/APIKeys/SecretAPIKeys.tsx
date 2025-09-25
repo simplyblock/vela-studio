@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import dayjs from 'dayjs'
 import { useMemo, useRef } from 'react'
 
@@ -6,7 +5,6 @@ import { useParams } from 'common'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import { APIKeysData, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import useLogsQuery from 'hooks/analytics/useLogsQuery'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { Card, CardContent, EyeOffIcon, Skeleton, WarningIcon, cn } from 'ui'
 import {
   Table,
@@ -55,12 +53,8 @@ export const SecretAPIKeys = () => {
     isLoading: isLoadingApiKeys,
     error,
   } = useAPIKeysQuery({ orgSlug, projectRef, reveal: false })
-
-  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    '*'
-  )
-
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
   const lastSeen = useLastSeen(projectRef!)
 
   const secretApiKeys = useMemo(

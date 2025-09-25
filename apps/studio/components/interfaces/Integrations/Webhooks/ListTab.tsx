@@ -1,22 +1,16 @@
 import { PostgresTrigger } from '@supabase/postgres-meta'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useState } from 'react'
 
 import DeleteHookModal from 'components/interfaces/Database/Hooks/DeleteHookModal'
 import { EditHookPanel } from 'components/interfaces/Database/Hooks/EditHookPanel'
 import { HooksList } from 'components/interfaces/Database/Hooks/HooksList/HooksList'
 import NoPermission from 'components/ui/NoPermission'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-
 export const WebhooksListTab = () => {
   const [selectedHook, setSelectedHook] = useState<any>()
   const [showCreateHookForm, setShowCreateHookForm] = useState<boolean>(false)
   const [showDeleteHookForm, setShowDeleteHookForm] = useState<boolean>(false)
 
-  const { can: canReadWebhooks, isSuccess: isPermissionsLoaded } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_READ,
-    'triggers'
-  )
+  const { can: canReadWebhooks, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
 
   const createHook = () => {
     setSelectedHook(undefined)

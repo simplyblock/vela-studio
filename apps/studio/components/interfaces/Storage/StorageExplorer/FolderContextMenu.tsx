@@ -1,9 +1,6 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Clipboard, Download, Edit, Trash2 } from 'lucide-react'
 import { Item, Menu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.css'
-
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import { copyPathToFolder } from './StorageExplorer.utils'
 
@@ -14,7 +11,8 @@ interface FolderContextMenuProps {
 const FolderContextMenu = ({ id = '' }: FolderContextMenuProps) => {
   const { openedFolders, downloadFolder, setSelectedItemToRename, setSelectedItemsToDelete } =
     useStorageExplorerStateSnapshot()
-  const canUpdateFiles = useCheckPermissions(PermissionAction.STORAGE_WRITE, '*')
+  // FIXME: need permission implemented 
+  const canUpdateFiles = true
 
   return (
     <Menu id={id} animation="fade">

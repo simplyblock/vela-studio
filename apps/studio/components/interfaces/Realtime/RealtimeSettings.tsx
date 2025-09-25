@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import Link from 'next/link'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -17,7 +16,6 @@ import {
   REALTIME_DEFAULT_CONFIG,
   useRealtimeConfigurationQuery,
 } from 'data/realtime/realtime-config-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
@@ -41,10 +39,8 @@ export const RealtimeSettings = () => {
   const { slug, ref: projectRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.REALTIME_ADMIN_READ,
-    '*'
-  )
+  // FIXME: need permission implemented   
+  const { can: canUpdateConfig } = {can:true}
 
   const { data: maxConn } = useMaxConnectionsQuery({
     projectRef: project?.ref,

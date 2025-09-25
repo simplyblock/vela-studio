@@ -1,6 +1,4 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Info } from 'lucide-react'
-
 import { useParams } from 'common'
 import { BackupsList } from 'components/interfaces/Database'
 import DatabaseBackupsNav from 'components/interfaces/Database/Backups/DatabaseBackupsNav'
@@ -14,7 +12,6 @@ import InformationBox from 'components/ui/InformationBox'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useBackupsQuery } from 'data/database/backups-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsOrioleDbInAws } from 'hooks/misc/useSelectedProject'
 import type { NextPageWithLayout } from 'types'
 import { Admonition } from 'ui-patterns'
@@ -26,9 +23,8 @@ const DatabaseScheduledBackups: NextPageWithLayout = () => {
 
   const isOrioleDbInAws = useIsOrioleDbInAws()
   const isPitrEnabled = backups?.pitr_enabled
-
-  const { can: canReadScheduledBackups, isSuccess: isPermissionsLoaded } =
-    useAsyncCheckProjectPermissions(PermissionAction.READ, 'back_ups')
+    // FIXME: need permission implemented 
+  const { can: canReadScheduledBackups, isSuccess: isPermissionsLoaded } ={can:true,isSuccess:true}
 
   return (
     <ScaffoldContainer>

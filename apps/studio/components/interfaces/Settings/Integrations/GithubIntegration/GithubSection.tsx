@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useMemo } from 'react'
 
 import { useParams } from 'common'
@@ -11,7 +10,6 @@ import {
 import NoPermission from 'components/ui/NoPermission'
 import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useGitHubConnectionsQuery } from 'data/integrations/github-connections-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { BASE_PATH } from 'lib/constants'
 import { cn } from 'ui'
@@ -31,10 +29,8 @@ const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
 const GitHubSection = () => {
   const { ref: projectRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
-
-  const { can: canReadGitHubConnection, isLoading: isLoadingPermissions } =
-    useAsyncCheckProjectPermissions(PermissionAction.READ, 'integrations.github_connections')
-
+  // FIXME: need permission implemented 
+  const { can: canReadGitHubConnection, isLoading: isLoadingPermissions } = {can:true,isLoading:false}
   const isProPlanAndUp = organization?.plan?.id !== 'free'
   const promptProPlanUpgrade = !isProPlanAndUp
 

@@ -1,7 +1,5 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-
 import { useParams } from 'common'
 import { CreateReportModal } from 'components/interfaces/Reports/CreateReportModal'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -9,7 +7,6 @@ import ReportsLayout from 'components/layouts/ReportsLayout/ReportsLayout'
 import ProductEmptyState from 'components/to-be-cleaned/ProductEmptyState'
 import { Loading } from 'components/ui/Loading'
 import { useContentQuery } from 'data/content/content-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useProfile } from 'lib/profile'
 import type { NextPageWithLayout } from 'types'
 
@@ -36,14 +33,8 @@ export const UserReportPage: NextPageWithLayout = () => {
     }
   )
 
-  const { can: canCreateReport } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'user_content',
-    {
-      resource: { type: 'report', owner_id: profile?.id },
-      subject: { id: profile?.id },
-    }
-  )
+    // FIXME: need permission implemented 
+  const { can: canCreateReport } = {can:true}
 
   return (
     <div className="h-full w-full">

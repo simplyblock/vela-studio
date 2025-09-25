@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Lock, Mail } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -7,7 +6,6 @@ import * as z from 'zod'
 
 import { useParams } from 'common'
 import { useUserCreateMutation } from 'data/auth/user-create-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   Button,
   Checkbox_Shadcn_,
@@ -38,10 +36,8 @@ const CreateUserFormSchema = z.object({
 
 const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
   const { ref: projectRef } = useParams()
-  const { can: canCreateUsers } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'create_user'
-  )
+   // FIXME: need permission implemented  
+  const { can: canCreateUsers } = {can:true}
 
   const { mutate: createUser, isLoading: isCreatingUser } = useUserCreateMutation({
     onSuccess(res) {

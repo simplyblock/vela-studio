@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { ExternalLink, PauseCircle } from 'lucide-react'
@@ -18,7 +17,6 @@ import { PostgresEngine, ReleaseChannel } from 'data/projects/new-project.consta
 import { useProjectPauseStatusQuery } from 'data/projects/project-pause-status-query'
 import { useProjectRestoreMutation } from 'data/projects/project-restore-mutation'
 import { setProjectStatus } from 'data/projects/projects-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useFlag } from 'hooks/ui/useFlag'
@@ -92,10 +90,8 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
     },
   })
 
-  const canResumeProject = useCheckPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'queue_jobs.projects.initialize_or_resume'
-  )
+  // FIXME: need permission implemented 
+  const canResumeProject = true
 
   const onSelectRestore = () => {
     if (!canResumeProject) {

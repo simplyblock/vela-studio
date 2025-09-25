@@ -1,14 +1,11 @@
 import { Transition } from '@headlessui/react'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { get, noop, sum } from 'lodash'
 import { Upload } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useContextMenu } from 'react-contexify'
 import { toast } from 'sonner'
-
 import InfiniteList from 'components/ui/InfiniteList'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { BASE_PATH } from 'lib/constants'
 import { formatBytes } from 'lib/helpers'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
@@ -83,7 +80,8 @@ const FileExplorerColumn = ({
   const fileExplorerColumnRef = useRef<any>(null)
 
   const snap = useStorageExplorerStateSnapshot()
-  const canUpdateStorage = useCheckPermissions(PermissionAction.STORAGE_WRITE, '*')
+  // FIXME: need permission implemented   
+  const canUpdateStorage = true
 
   useEffect(() => {
     if (fileExplorerColumnRef) {

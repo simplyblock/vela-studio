@@ -2,8 +2,7 @@ import { compact, uniqBy } from 'lodash'
 import { Item, Menu, Separator, Submenu } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.css'
 
-import { PermissionAction } from '@supabase/shared-types/out/constants'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+
 import { ChevronRight, ChevronsDown, ChevronsUp, Clipboard, Eye, FolderPlus } from 'lucide-react'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import {
@@ -18,7 +17,8 @@ interface ColumnContextMenuProps {
 }
 
 const ColumnContextMenu = ({ id = '' }: ColumnContextMenuProps) => {
-  const canUpdateFiles = useCheckPermissions(PermissionAction.STORAGE_WRITE, '*')
+  // FIXME: need permission implemented   
+  const canUpdateFiles = true
   const {
     columns,
     selectedItems,

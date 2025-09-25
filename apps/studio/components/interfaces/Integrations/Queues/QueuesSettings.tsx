@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -21,7 +20,6 @@ import {
 } from 'data/database-queues/database-queues-toggle-postgrest-mutation'
 import { useTableUpdateMutation } from 'data/tables/table-update-mutation'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
@@ -41,10 +39,8 @@ import { getPathReferences } from '../../../../data/vela/path-references'
 export const QueuesSettings = () => {
   const { slug: orgSlug } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
-  const { can: canUpdatePostgrestConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_postgrest'
-  )
+    // FIXME: need permission implemented 
+  const { can: canUpdatePostgrestConfig } = {can:true}
   const [isToggling, setIsToggling] = useState(false)
   const [rlsConfirmModalOpen, setRlsConfirmModalOpen] = useState(false)
   const [isUpdatingRls, setIsUpdatingRls] = useState(false)

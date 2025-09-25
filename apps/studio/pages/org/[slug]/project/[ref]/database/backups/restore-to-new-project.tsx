@@ -1,8 +1,6 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronRightIcon, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
-
 import DatabaseBackupsNav from 'components/interfaces/Database/Backups/DatabaseBackupsNav'
 import { PITRForm } from 'components/interfaces/Database/Backups/PITR/pitr-form'
 import { BackupsList } from 'components/interfaces/Database/Backups/RestoreToNewProject/BackupsList'
@@ -23,7 +21,6 @@ import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useDiskAttributesQuery } from 'data/config/disk-attributes-query'
 import { useCloneBackupsQuery } from 'data/projects/clone-query'
 import { useCloneStatusQuery } from 'data/projects/clone-status-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   useIsAwsK8sCloudProvider,
@@ -83,13 +80,10 @@ const RestoreToNewProject = () => {
   } = useCloneBackupsQuery({ projectRef: project?.ref }, { enabled: !isFreePlan })
 
   const isActiveHealthy = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
-
-  const { can: canReadPhysicalBackups, isSuccess: isPermissionsLoaded } =
-    useAsyncCheckProjectPermissions(PermissionAction.READ, 'physical_backups')
-  const { can: canTriggerPhysicalBackups } = useAsyncCheckProjectPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'queue_job.restore.prepare'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadPhysicalBackups, isSuccess: isPermissionsLoaded } ={can:true,isSuccess:true}
+  // FIXME: need permission implemented 
+  const { can: canTriggerPhysicalBackups } = {can:true}
   const PITR_ENABLED = cloneBackups?.pitr_enabled
   const PHYSICAL_BACKUPS_ENABLED = project?.is_physical_backups_enabled
   const dbVersion = getDatabaseMajorVersion(project?.dbVersion ?? '')

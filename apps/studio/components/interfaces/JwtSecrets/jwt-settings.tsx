@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import {
   JwtSecretUpdateError,
   JwtSecretUpdateProgress,
@@ -14,7 +13,6 @@ import { useJwtSecretUpdateMutation } from 'data/config/jwt-secret-update-mutati
 import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating-status-query'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { useLegacyJWTSigningKeyQuery } from 'data/jwt-signing-keys/legacy-jwt-signing-key-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useFlag } from 'hooks/ui/useFlag'
 import { uuidv4 } from 'lib/helpers'
 import {
@@ -71,19 +69,12 @@ const JWTSettings = () => {
   const [showCustomTokenInput, setShowCustomTokenInput] = useState(false)
   const [isCreatingKey, setIsCreatingKey] = useState<boolean>(false)
   const [isRegeneratingKey, setIsGeneratingKey] = useState<boolean>(false)
-
-  const { can: canReadJWTSecret } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'field.jwt_secret'
-  )
-  const { can: canGenerateNewJWTSecret } = useAsyncCheckProjectPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'queue_job.projects.update_jwt'
-  )
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadJWTSecret } = {can:true}
+   // FIXME: need permission implemented  
+  const { can: canGenerateNewJWTSecret } = {can:true}
+   // FIXME: need permission implemented  
+  const { can: canUpdateConfig } ={can:true}
 
   const { data } = useJwtSecretUpdatingStatusQuery({ projectRef, orgSlug })
   const { data: config, isError } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })

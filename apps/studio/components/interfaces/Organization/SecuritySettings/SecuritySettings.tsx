@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -16,7 +15,6 @@ import { useOrganizationMembersQuery } from 'data/organizations/organization-mem
 import { useOrganizationMfaToggleMutation } from 'data/organizations/organization-mfa-mutation'
 import { useOrganizationMfaQuery } from 'data/organizations/organization-mfa-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
 import {
@@ -47,8 +45,10 @@ const SecuritySettings = () => {
   const { profile } = useProfile()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const { data: members } = useOrganizationMembersQuery({ slug })
-  const canReadMfaConfig = useCheckPermissions(PermissionAction.READ, 'organizations')
-  const canUpdateMfaConfig = useCheckPermissions(PermissionAction.UPDATE, 'organizations')
+    // FIXME: need permission implemented 
+  const canReadMfaConfig = true
+   // FIXME: need permission implemented  
+  const canUpdateMfaConfig = true
   const { mutate: sendEvent } = useSendEventMutation()
 
   const isPaidPlan = selectedOrganization?.plan.id !== 'free'

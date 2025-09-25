@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -17,7 +16,6 @@ import {
   ThirdPartyAuthIntegration,
   useThirdPartyAuthIntegrationsQuery,
 } from 'data/third-party-auth/integrations-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { cn } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { AddIntegrationDropdown } from './AddIntegrationDropdown'
@@ -49,10 +47,8 @@ export const ThirdPartyAuthForm = () => {
     useState<ThirdPartyAuthIntegration>()
 
   const { mutateAsync: deleteIntegration } = useDeleteThirdPartyAuthIntegrationMutation()
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+   // FIXME: need permission implemented  
+  const { can: canUpdateConfig } = {can:true}
 
   if (isError) {
     return (

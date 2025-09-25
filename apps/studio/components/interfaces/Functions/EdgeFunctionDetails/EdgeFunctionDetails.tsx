@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import dayjs from 'dayjs'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
@@ -18,7 +17,6 @@ import { useCustomDomainsQuery } from 'data/custom-domains/custom-domains-query'
 import { useEdgeFunctionQuery } from 'data/edge-functions/edge-function-query'
 import { useEdgeFunctionDeleteMutation } from 'data/edge-functions/edge-functions-delete-mutation'
 import { useEdgeFunctionUpdateMutation } from 'data/edge-functions/edge-functions-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   Alert_Shadcn_,
   AlertDescription_Shadcn_,
@@ -59,10 +57,8 @@ export const EdgeFunctionDetails = () => {
   const router = useRouter()
   const { slug, ref: projectRef, functionSlug } = useParams()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const { can: canUpdateEdgeFunction } = useAsyncCheckProjectPermissions(
-    PermissionAction.FUNCTIONS_WRITE,
-    '*'
-  )
+    // FIXME: need permission implemented 
+  const { can: canUpdateEdgeFunction } = {can:true}
 
   const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })

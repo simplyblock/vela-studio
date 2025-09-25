@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import dayjs from 'dayjs'
 import { ArrowDown, ArrowUp, RefreshCw, User } from 'lucide-react'
@@ -23,7 +22,6 @@ import {
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -52,8 +50,8 @@ const AuditLogs = () => {
     users: [], // user_id[]
     projects: [], // project_ref[]
   })
-
-  const canReadAuditLogs = useCheckPermissions(PermissionAction.READ, 'notifications')
+  // FIXME: need permission implemented 
+  const canReadAuditLogs = true
 
   const { data: projects } = useProjectsQuery()
   const { data: organizations } = useOrganizationsQuery()
