@@ -9,12 +9,13 @@ const Command = dynamic(() => import('./command').then((mod) => mod.Command), { 
 
 interface BlockItemProps {
   name: string
+  baseUrl: string
 }
 
-export const BlockItem = ({ name }: BlockItemProps) => {
+export const BlockItem = ({ name, baseUrl }: BlockItemProps) => {
   return (
     <div className="mt-4">
-      <Command name={name} highlight />
+      <Command name={name} baseUrl={baseUrl} highlight />
       <OpenInV0Button name={name} className="w-fit shrink-0 mt-4" />
     </div>
   )

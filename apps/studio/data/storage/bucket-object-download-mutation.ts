@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 
 import { components } from 'data/api'
 import { fetchPost } from 'data/fetchers'
-import { API_URL, IS_PLATFORM } from 'lib/constants'
+import { API_URL } from 'lib/constants'
 import { ResponseError } from 'types'
 
 type DownloadBucketObjectParams = {
@@ -19,7 +19,7 @@ export const downloadBucketObject = async (
   if (!bucketId) throw new Error('bucketId is required')
 
   const response = await fetchPost(
-    `${API_URL}${IS_PLATFORM ? '' : '/platform'}/storage/${projectRef}/buckets/${bucketId}/objects/download`,
+    `${API_URL}/storage/${projectRef}/buckets/${bucketId}/objects/download`,
     { path, options, abortSignal: signal }
   )
 

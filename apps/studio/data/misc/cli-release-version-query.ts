@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { fetchHandler } from 'data/fetchers'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { miscKeys } from './keys'
 
@@ -26,5 +26,5 @@ export const useCLIReleaseVersionQuery = <TData = CLIReleaseVersionData>({
   useQuery<CLIReleaseVersionData, CLIReleaseVersionError, TData>(
     miscKeys.cliReleaseVersion(),
     () => getCLIReleaseVersion(),
-    { enabled: enabled && !IS_PLATFORM, ...options }
+    { enabled, ...options }
   )

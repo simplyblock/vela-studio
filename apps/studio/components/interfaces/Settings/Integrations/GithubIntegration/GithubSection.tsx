@@ -13,7 +13,7 @@ import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useGitHubConnectionsQuery } from 'data/integrations/github-connections-query'
 import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import { cn } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import GitHubIntegrationConnectionForm from './GitHubIntegrationConnectionForm'
@@ -36,7 +36,7 @@ const GitHubSection = () => {
     useAsyncCheckProjectPermissions(PermissionAction.READ, 'integrations.github_connections')
 
   const isProPlanAndUp = organization?.plan?.id !== 'free'
-  const promptProPlanUpgrade = IS_PLATFORM && !isProPlanAndUp
+  const promptProPlanUpgrade = !isProPlanAndUp
 
   const { data: connections } = useGitHubConnectionsQuery(
     { organizationId: organization?.id },

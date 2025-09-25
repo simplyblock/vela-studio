@@ -25,7 +25,7 @@ import {
   useProjectByRefQuery,
   useSelectedProjectQuery,
 } from 'hooks/misc/useSelectedProject'
-import { IS_PLATFORM, PROJECT_STATUS } from 'lib/constants'
+import { PROJECT_STATUS } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
 import {
@@ -157,40 +157,36 @@ const Home: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  {IS_PLATFORM && (
-                    <div className="flex flex-col gap-y-1">
-                      <Link
-                        href={`/org/${slug}/project/${ref}/functions`}
-                        className="transition text-foreground-light hover:text-foreground text-sm"
-                      >
-                        Functions
-                      </Link>
-                      {isLoadingFunctions ? (
-                        <ShimmeringLoader className="w-full h-[32px] w-6 p-0" />
-                      ) : (
-                        <p className="text-2xl tabular-nums">{functionsCount}</p>
-                      )}
-                    </div>
-                  )}
+                  <div className="flex flex-col gap-y-1">
+                    <Link
+                      href={`/org/${slug}/project/${ref}/functions`}
+                      className="transition text-foreground-light hover:text-foreground text-sm"
+                    >
+                      Functions
+                    </Link>
+                    {isLoadingFunctions ? (
+                      <ShimmeringLoader className="w-full h-[32px] w-6 p-0" />
+                    ) : (
+                      <p className="text-2xl tabular-nums">{functionsCount}</p>
+                    )}
+                  </div>
 
-                  {IS_PLATFORM && (
-                    <div className="flex flex-col gap-y-1">
-                      <Link
-                        href={`/org/${slug}/project/${ref}/settings/infrastructure`}
-                        className="transition text-foreground-light hover:text-foreground text-sm"
-                      >
-                        Replicas
-                      </Link>
-                      {isLoadingReplicas ? (
-                        <ShimmeringLoader className="w-full h-[32px] w-6 p-0" />
-                      ) : (
-                        <p className="text-2xl tabular-nums">{replicasCount}</p>
-                      )}
-                    </div>
-                  )}
+                  <div className="flex flex-col gap-y-1">
+                    <Link
+                      href={`/org/${slug}/project/${ref}/settings/infrastructure`}
+                      className="transition text-foreground-light hover:text-foreground text-sm"
+                    >
+                      Replicas
+                    </Link>
+                    {isLoadingReplicas ? (
+                      <ShimmeringLoader className="w-full h-[32px] w-6 p-0" />
+                    ) : (
+                      <p className="text-2xl tabular-nums">{replicasCount}</p>
+                    )}
+                  </div>
                 </div>
               )}
-              {IS_PLATFORM && project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && (
+              {project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && (
                 <div className="ml-6 border-l flex items-center w-[145px] justify-end">
                   <ServiceStatus />
                 </div>

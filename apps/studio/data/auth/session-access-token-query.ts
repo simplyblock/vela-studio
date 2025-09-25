@@ -1,14 +1,22 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { authKeys } from './keys'
-import { getAccessToken } from 'lib/gotrue'
+import { getSession } from 'next-auth/react'
+import { isExpired } from 'common'
+import { Session } from 'common/keycloak'
 
 export async function getSessionAccessToken() {
   // ignore if server-side
   if (typeof window === 'undefined') return ''
 
   try {
-    return await getAccessToken()
+    const session = await getSession()
+    const extendedSession = session as Session | null
+    const aboutToExpire = isExpired(extendedSession?.expires_in ?? 0)
+    if (aboutToExpire) {
+      return undefined
+    }
+    return extendedSession?.access_token
   } catch (e: any) {
     // ignore the error
     return null

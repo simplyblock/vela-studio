@@ -3,7 +3,6 @@ import apiWrapper from './apiWrapper'
 import { apiAuthenticate } from './apiAuthenticate'
 
 vi.mock('lib/constants', () => ({
-  IS_PLATFORM: true,
   API_URL: 'https://api.example.com',
 }))
 

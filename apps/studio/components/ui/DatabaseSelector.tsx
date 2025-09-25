@@ -10,7 +10,6 @@ import { Markdown } from 'components/interfaces/Markdown'
 import { REPLICA_STATUS } from 'components/interfaces/Settings/Infrastructure/InfrastructureConfiguration/InstanceConfiguration.constants'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { formatDatabaseID, formatDatabaseRegion } from 'data/read-replicas/replicas.utils'
-import { IS_PLATFORM } from 'lib/constants'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import {
   Button,
@@ -203,32 +202,30 @@ const DatabaseSelector = ({
                 })}
               </ScrollArea>
             </CommandGroup_Shadcn_>
-            {IS_PLATFORM && (
-              <CommandGroup_Shadcn_ className="border-t">
-                <CommandItem_Shadcn_
-                  className="cursor-pointer w-full"
-                  onSelect={() => {
+            <CommandGroup_Shadcn_ className="border-t">
+              <CommandItem_Shadcn_
+                className="cursor-pointer w-full"
+                onSelect={() => {
+                  setOpen(false)
+                  router.push(`/org/${slug}/project/${projectRef}/settings/infrastructure`)
+                }}
+                onClick={() => setOpen(false)}
+              >
+                <Link
+                  href={`/org/${slug}/project/${projectRef}/settings/infrastructure`}
+                  onClick={() => {
                     setOpen(false)
-                    router.push(`/org/${slug}/project/${projectRef}/settings/infrastructure`)
+                    // [Joshen] This is used in the Connect UI which is available across all pages
+                    setShowConnect(null)
+                    onCreateReplicaClick?.()
                   }}
-                  onClick={() => setOpen(false)}
+                  className="w-full flex items-center gap-2"
                 >
-                  <Link
-                    href={`/org/${slug}/project/${projectRef}/settings/infrastructure`}
-                    onClick={() => {
-                      setOpen(false)
-                      // [Joshen] This is used in the Connect UI which is available across all pages
-                      setShowConnect(null)
-                      onCreateReplicaClick?.()
-                    }}
-                    className="w-full flex items-center gap-2"
-                  >
-                    <Plus size={14} strokeWidth={1.5} />
-                    <p>Create a new read replica</p>
-                  </Link>
-                </CommandItem_Shadcn_>
-              </CommandGroup_Shadcn_>
-            )}
+                  <Plus size={14} strokeWidth={1.5} />
+                  <p>Create a new read replica</p>
+                </Link>
+              </CommandItem_Shadcn_>
+            </CommandGroup_Shadcn_>
           </CommandList_Shadcn_>
         </Command_Shadcn_>
       </PopoverContent_Shadcn_>

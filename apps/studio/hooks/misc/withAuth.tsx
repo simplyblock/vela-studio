@@ -6,7 +6,7 @@ import { SessionTimeoutModal } from 'components/interfaces/SignIn/SessionTimeout
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useAuthenticatorAssuranceLevelQuery } from 'data/profile/mfa-authenticator-assurance-level-query'
 import { useAuth, useSignOut } from 'lib/auth'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import { NextPageWithLayout, isNextPageWithLayout } from 'types'
 
 const MAX_TIMEOUT = 10000 // 10 seconds
@@ -25,11 +25,6 @@ export function withAuth<T>(
     useHighestAAL: boolean
   } = { useHighestAAL: true }
 ) {
-  // ignore auth in self-hosted
-  if (!IS_PLATFORM) {
-    return WrappedComponent
-  }
-
   const WithAuthHOC: ComponentType<T> = (props) => {
     const router = useRouter()
     const signOut = useSignOut()
@@ -58,6 +53,7 @@ export function withAuth<T>(
     const isFinishedLoading = !isLoading && !isAALLoading
 
     const redirectToSignIn = useCallback(() => {
+      console.log('redirectToSignIn')
       let pathname = location.pathname
       if (BASE_PATH) {
         pathname = pathname.replace(BASE_PATH, '')
@@ -70,12 +66,11 @@ export function withAuth<T>(
 
       const searchParams = new URLSearchParams(location.search)
       searchParams.set('returnTo', pathname)
-
       // Sign out before redirecting to sign in page incase the user is stuck in a loading state
       signOut().finally(() => {
-        router.push(`/sign-in?${searchParams.toString()}`)
+        location.href = `/sign-in?${searchParams.toString()}`
       })
-    }, [router, signOut])
+    }, [signOut])
 
     useEffect(() => {
       if (!isFinishedLoading) {

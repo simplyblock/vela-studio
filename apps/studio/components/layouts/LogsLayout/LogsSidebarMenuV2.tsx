@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import { IS_PLATFORM, useParams } from 'common'
+import { useParams } from 'common'
 import {
   useFeaturePreviewModal,
   useUnifiedLogsPreview,
@@ -147,22 +147,12 @@ export function LogsSidebarMenuV2() {
       url: `/org/${slug}/project/${ref}/logs/postgrest-logs`,
       items: [],
     },
-    IS_PLATFORM
-      ? {
-          name: isFreePlan ? 'Pooler' : 'Shared Pooler',
-          key: 'pooler-logs',
-          url: `/org/${slug}/project/${ref}/logs/pooler-logs`,
-          items: [],
-        }
-      : null,
-    !isFreePlan && IS_PLATFORM
-      ? {
-          name: 'Dedicated Pooler',
-          key: 'dedicated-pooler-logs',
-          url: `/org/${slug}/project/${ref}/logs/dedicated-pooler-logs`,
-          items: [],
-        }
-      : null,
+    {
+      name: 'Pooler',
+      key: 'pooler-logs',
+      url: `/org/${slug}/project/${ref}/logs/pooler-logs`,
+      items: [],
+    },
     authEnabled
       ? {
           name: 'Auth',
@@ -209,16 +199,14 @@ export function LogsSidebarMenuV2() {
       : null,
   ].filter((x) => x !== null)
 
-  const OPERATIONAL_COLLECTIONS = IS_PLATFORM
-    ? [
-        {
-          name: 'Postgres Version Upgrade',
-          key: 'pg-upgrade-logs',
-          url: `/org/${slug}/project/${ref}/logs/pg-upgrade-logs`,
-          items: [],
-        },
-      ]
-    : []
+  const OPERATIONAL_COLLECTIONS = [
+    {
+      name: 'Postgres Version Upgrade',
+      key: 'pg-upgrade-logs',
+      url: `/org/${slug}/project/${ref}/logs/pg-upgrade-logs`,
+      items: [],
+    }
+  ]
 
   const filteredLogs = BASE_COLLECTIONS.filter((collection) => {
     return collection?.name.toLowerCase().includes(searchText.toLowerCase())
@@ -229,7 +217,7 @@ export function LogsSidebarMenuV2() {
 
   return (
     <div className="pb-12 relative">
-      {IS_PLATFORM && !unifiedLogsFlagEnabled && (
+      {!unifiedLogsFlagEnabled && (
         <FeaturePreviewSidebarPanel
           className="mx-4 mt-4"
           illustration={<Badge variant="default">Coming soon</Badge>}

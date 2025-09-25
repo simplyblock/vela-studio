@@ -47,7 +47,7 @@ import { listBucketObjects, StorageObject } from 'data/storage/bucket-objects-li
 import { Bucket } from 'data/storage/buckets-query'
 import { moveStorageObject } from 'data/storage/object-move-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { IS_PLATFORM, PROJECT_STATUS } from 'lib/constants'
+import { PROJECT_STATUS } from 'lib/constants'
 import { tryParseJson } from 'lib/helpers'
 import { lookupMime } from 'lib/mime'
 import { Button, SONNER_DEFAULT_DURATION, SonnerProgress } from 'ui'
@@ -1812,7 +1812,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
 
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.endpoint
-  const resumableUploadUrl = `${IS_PLATFORM ? 'https' : protocol}://${endpoint}/storage/v1/upload/resumable`
+  const resumableUploadUrl = `https://${endpoint}/storage/v1/upload/resumable`
 
   // [Joshen] JFYI opting with the useEffect here as the storage explorer state was being loaded
   // before the project details were ready, hence the store kept returning project ref as undefined
@@ -1830,7 +1830,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
           supabaseClient: async () => {
             try {
               const data = await getTemporaryAPIKey({ projectRef: project.ref })
-              const clientEndpoint = `${IS_PLATFORM ? 'https' : protocol}://${endpoint}`
+              const clientEndpoint = `https://${endpoint}`
 
               return createClient(clientEndpoint, data.api_key, {
                 auth: {

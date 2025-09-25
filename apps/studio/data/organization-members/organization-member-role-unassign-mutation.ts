@@ -8,23 +8,23 @@ import { organizationKeys } from './keys'
 
 export type OrganizationMemberUnassignRoleVariables = {
   slug: string
-  gotrueId: string
+  userId: string
   roleId: number
   skipInvalidation?: boolean
 }
 
 export async function unassignOrganizationMemberRole({
   slug,
-  gotrueId,
+  userId,
   roleId,
 }: OrganizationMemberUnassignRoleVariables) {
   const { data, error } = await del(
-    '/platform/organizations/{slug}/members/{gotrue_id}/roles/{role_id}',
+    '/platform/organizations/{slug}/members/{user_id}/roles/{role_id}',
     {
       params: {
         path: {
           slug,
-          gotrue_id: gotrueId,
+          user_id: userId,
           role_id: roleId,
         },
       },

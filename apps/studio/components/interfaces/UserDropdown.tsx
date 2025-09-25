@@ -6,7 +6,6 @@ import { useRouter } from 'next/router'
 import { ProfileImage } from 'components/ui/ProfileImage'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSignOut } from 'lib/auth'
-import { IS_PLATFORM } from 'lib/constants'
 import { useProfile } from 'lib/profile'
 import { useAppStateSnapshot } from 'state/app-state'
 import {
@@ -52,59 +51,55 @@ export function UserDropdown() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent side="bottom" align="end">
-        {IS_PLATFORM && (
-          <>
-            <div className="px-2 py-1 flex flex-col gap-0 text-sm">
-              {profile && (
-                <>
-                  <span
-                    title={profile.username}
-                    className="w-full text-left text-foreground truncate"
-                  >
-                    {profile.username}
-                  </span>
-                  {profile.primary_email !== profile.username && profileShowEmailEnabled && (
-                    <span
-                      title={profile.primary_email}
-                      className="w-full text-left text-foreground-light text-xs truncate"
-                    >
-                      {profile.primary_email}
-                    </span>
-                  )}
-                </>
-              )}
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="flex gap-2" asChild>
-                <Link
-                  href="/account/me"
-                  onClick={() => {
-                    if (router.pathname !== '/account/me') {
-                      appStateSnapshot.setLastRouteBeforeVisitingAccountPage(router.asPath)
-                    }
-                  }}
-                >
-                  <Settings size={14} strokeWidth={1.5} className="text-foreground-lighter" />
-                  Account preferences
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="flex gap-2"
-                onClick={openFeaturePreviewModal}
-                onSelect={openFeaturePreviewModal}
+        <div className="px-2 py-1 flex flex-col gap-0 text-sm">
+          {profile && (
+            <>
+              <span
+                title={profile.username}
+                className="w-full text-left text-foreground truncate"
               >
-                <FlaskConical size={14} strokeWidth={1.5} className="text-foreground-lighter" />
-                Feature previews
-              </DropdownMenuItem>
-              <DropdownMenuItem className="flex gap-2" onClick={() => setCommandMenuOpen(true)}>
-                <Command size={14} strokeWidth={1.5} className="text-foreground-lighter" />
-                Command menu
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </DropdownMenuGroup>
-          </>
-        )}
+                {profile.username}
+              </span>
+              {profile.primary_email !== profile.username && profileShowEmailEnabled && (
+                <span
+                  title={profile.primary_email}
+                  className="w-full text-left text-foreground-light text-xs truncate"
+                >
+                  {profile.primary_email}
+                </span>
+              )}
+            </>
+          )}
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="flex gap-2" asChild>
+            <Link
+              href="/account/me"
+              onClick={() => {
+                if (router.pathname !== '/account/me') {
+                  appStateSnapshot.setLastRouteBeforeVisitingAccountPage(router.asPath)
+                }
+              }}
+            >
+              <Settings size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+              Account preferences
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex gap-2"
+            onClick={openFeaturePreviewModal}
+            onSelect={openFeaturePreviewModal}
+          >
+            <FlaskConical size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+            Feature previews
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex gap-2" onClick={() => setCommandMenuOpen(true)}>
+            <Command size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+            Command menu
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+        </DropdownMenuGroup>
         <DropdownMenuGroup>
           <DropdownMenuLabel>Theme</DropdownMenuLabel>
           <DropdownMenuRadioGroup
@@ -120,20 +115,16 @@ export function UserDropdown() {
             ))}
           </DropdownMenuRadioGroup>
         </DropdownMenuGroup>
-        {IS_PLATFORM && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onSelect={async () => {
-                  await signOut()
-                }}
-              >
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </>
-        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            onSelect={async () => {
+              await signOut()
+            }}
+          >
+            Log out
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )

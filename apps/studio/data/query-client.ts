@@ -1,5 +1,4 @@
-import { QueryClient, onlineManager } from '@tanstack/react-query'
-import { IS_PLATFORM } from 'lib/constants'
+import { QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { ResponseError } from 'types'
 

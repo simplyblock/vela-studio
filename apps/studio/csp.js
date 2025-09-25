@@ -4,9 +4,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 const SUPABASE_URL = process.env.SUPABASE_URL
   ? new URL(process.env.SUPABASE_URL).origin
   : ''
-const GOTRUE_URL = process.env.NEXT_PUBLIC_GOTRUE_URL
-  ? new URL(process.env.NEXT_PUBLIC_GOTRUE_URL).origin
-  : ''
 const SUPABASE_PROJECTS_URL = 'https://*.supabase.co'
 const SUPABASE_PROJECTS_URL_WS = 'wss://*.supabase.co'
 
@@ -77,7 +74,6 @@ module.exports.getCSP = function getCSP() {
   const DEFAULT_SRC_URLS = [
     API_URL,
     SUPABASE_URL,
-    GOTRUE_URL,
     ...SUPABASE_LOCAL_PROJECTS_URL_WS,
     SUPABASE_PROJECTS_URL,
     SUPABASE_PROJECTS_URL_WS,
@@ -134,7 +130,6 @@ module.exports.getCSP = function getCSP() {
   const CONNECT_SRC_URLS = [
     API_URL,
     SUPABASE_URL,
-    GOTRUE_URL,
     SUPABASE_PROJECTS_URL,
     SUPABASE_PROJECTS_URL_WS,
     HCAPTCHA_SUBDOMAINS_URL,
@@ -176,8 +171,7 @@ module.exports.getCSP = function getCSP() {
     `form-action 'self'`,
     `frame-ancestors 'none'`,
     `block-all-mixed-content`,
-    ...(process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' &&
-    process.env.NEXT_PUBLIC_ENVIRONMENT === 'prod'
+    ...(process.env.NEXT_PUBLIC_ENVIRONMENT === 'prod'
       ? [`upgrade-insecure-requests`]
       : []),
   ]

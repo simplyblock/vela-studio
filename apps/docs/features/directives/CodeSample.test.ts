@@ -16,7 +16,6 @@ const transformWithMock = codeSampleRemark({
 let env: NodeJS.Process['env']
 
 vi.mock('~/lib/constants', () => ({
-  IS_PLATFORM: true,
 }))
 
 /**

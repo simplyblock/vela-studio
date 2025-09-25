@@ -1,6 +1,5 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 import type { Project } from 'data/projects/project-detail-query'
-import { IS_PLATFORM } from 'lib/constants'
 
 export const generateRealtimeMenu = (
   slug: string,
@@ -31,7 +30,7 @@ export const generateRealtimeMenu = (
           url: `/org/${slug}/project/${ref}/realtime/policies`,
           items: [],
         },
-        ...(IS_PLATFORM && enableRealtimeSettings
+        ...(enableRealtimeSettings
           ? [
               {
                 name: 'Settings',

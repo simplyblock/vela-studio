@@ -5,7 +5,6 @@ import { useState } from 'react'
 
 import { useParams } from 'common'
 import { SidebarContent } from 'components/interfaces/Sidebar'
-import { IS_PLATFORM } from 'lib/constants'
 import { buttonVariants, cn } from 'ui'
 import { CommandMenuTrigger } from 'ui-patterns'
 import MobileSheetNav from 'ui-patterns/MobileSheetNav/MobileSheetNav'

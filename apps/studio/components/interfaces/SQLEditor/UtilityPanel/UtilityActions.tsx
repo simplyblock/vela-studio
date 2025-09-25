@@ -5,7 +5,6 @@ import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import { RoleImpersonationPopover } from 'components/interfaces/RoleImpersonationSelector'
 import DatabaseSelector from 'components/ui/DatabaseSelector'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import { IS_PLATFORM } from 'lib/constants'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import {
   Button,
@@ -73,7 +72,7 @@ const UtilityActions = ({
 
   return (
     <div className="inline-flex items-center justify-end gap-x-2">
-      {IS_PLATFORM && <SavingIndicator id={id} />}
+      <SavingIndicator id={id} />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -133,32 +132,30 @@ const UtilityActions = ({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {IS_PLATFORM && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              {isFavorite ? (
-                <Button
-                  type="text"
-                  size="tiny"
-                  onClick={removeFavorite}
-                  className="px-1"
-                  icon={<Heart className="fill-brand stroke-none" />}
-                />
-              ) : (
-                <Button
-                  type="text"
-                  size="tiny"
-                  onClick={addFavorite}
-                  className="px-1"
-                  icon={<Heart className="fill-none stroke-foreground-light" />}
-                />
-              )}
-            </TooltipTrigger>
-            <TooltipContent side="bottom">
-              {isFavorite ? 'Remove from' : 'Add to'} favorites
-            </TooltipContent>
-          </Tooltip>
-        )}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {isFavorite ? (
+              <Button
+                type="text"
+                size="tiny"
+                onClick={removeFavorite}
+                className="px-1"
+                icon={<Heart className="fill-brand stroke-none" />}
+              />
+            ) : (
+              <Button
+                type="text"
+                size="tiny"
+                onClick={addFavorite}
+                className="px-1"
+                icon={<Heart className="fill-none stroke-foreground-light" />}
+              />
+            )}
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            {isFavorite ? 'Remove from' : 'Add to'} favorites
+          </TooltipContent>
+        </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
@@ -175,16 +172,14 @@ const UtilityActions = ({
 
       <div className="flex items-center justify-between gap-x-2">
         <div className="flex items-center">
-          {IS_PLATFORM && (
-            <DatabaseSelector
-              selectedDatabaseId={lastSelectedDb.length === 0 ? undefined : lastSelectedDb}
-              variant="connected-on-right"
-              onSelectId={onSelectDatabase}
-            />
-          )}
+          <DatabaseSelector
+            selectedDatabaseId={lastSelectedDb.length === 0 ? undefined : lastSelectedDb}
+            variant="connected-on-right"
+            onSelectId={onSelectDatabase}
+          />
           <RoleImpersonationPopover
             serviceRoleLabel="postgres"
-            variant={IS_PLATFORM ? 'connected-on-both' : 'connected-on-right'}
+            variant={'connected-on-both'}
           />
           <SqlRunButton
             hasSelection={hasSelection}

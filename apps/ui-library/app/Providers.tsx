@@ -8,19 +8,22 @@ import { FrameworkProvider } from '@/context/framework-context'
 import { MobileMenuProvider } from '@/context/mobile-menu-context'
 import { AuthProvider } from 'common'
 import { TooltipProvider } from 'ui'
+import { SessionProvider } from 'next-auth/react'
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
-    <AuthProvider>
-      <JotaiProvider>
-        <NextThemesProvider {...props}>
-          <MobileMenuProvider>
-            <FrameworkProvider>
-              <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
-            </FrameworkProvider>
-          </MobileMenuProvider>
-        </NextThemesProvider>
-      </JotaiProvider>
-    </AuthProvider>
+    <SessionProvider>
+      <AuthProvider>
+        <JotaiProvider>
+          <NextThemesProvider {...props}>
+            <MobileMenuProvider>
+              <FrameworkProvider>
+                <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+              </FrameworkProvider>
+            </MobileMenuProvider>
+          </NextThemesProvider>
+        </JotaiProvider>
+      </AuthProvider>
+    </SessionProvider>
   )
 }

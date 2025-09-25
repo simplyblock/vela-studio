@@ -1,8 +1,6 @@
 import createClient from 'openapi-fetch'
 
-import { IS_PLATFORM } from 'common'
 import { API_URL } from 'lib/constants'
-import { getAccessToken } from 'lib/gotrue'
 import { uuidv4 } from 'lib/helpers'
 import { ResponseError } from 'types'
 import type { paths } from './api' // generated from openapi-typescript
@@ -39,33 +37,24 @@ const client = createClient<paths>({
 
 export function isValidConnString(connString?: string | null) {
   // If there is no `connectionString` on platform, pg-meta will necessarily fail to connect to the target database.
-  // This only applies if IS_PLATFORM is true; otherwise (test/local-dev), pg-meta won't need this parameter
-  // and will connect to the locally running DB_URL instead.
-  return IS_PLATFORM ? Boolean(connString) : true
+  return Boolean(connString)
 }
 
 export async function constructHeaders(headersInit?: HeadersInit | undefined) {
   const requestId = uuidv4()
   const headers = new Headers(headersInit)
 
-  /*if (typeof document !== 'undefined') {
-    const organizationRef = getOrganizationSlug()
-    const projectRef = getProjectRef()
-
-    if (organizationRef !== undefined) {
-      headers.set('X-Vela-Organization-Ref', organizationRef)
-    }
-    if (projectRef !== undefined) {
-      headers.set('X-Vela-Project-Ref', projectRef)
-    }
-  }*/
-
   headers.set('X-Request-Id', requestId)
 
-  if (!headers.has('Authorization')) {
-    const accessToken = await getAccessToken()
-    if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
-  }
+  /*if (!headers.has('Authorization')) {
+    const session = await getSession()
+    if (session) {
+      console.log("FOUND SESSION", session)
+      const accessToken = (session as any).access_token
+      console.log('accessToken', accessToken)
+      if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
+    }
+  }*/
 
   return headers
 }

@@ -1,6 +1,7 @@
 import apiWrapper from './apiWrapper'
 import { NextApiHandler } from 'next/dist/shared/lib/utils'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getKeycloakManager } from 'common/keycloak'
 
 export type ApiHandler = NextApiHandler
 
@@ -91,5 +92,12 @@ export function apiBuilder(builder: (builder: ApiBuilder) => void): ApiHandler {
     return handler(req, res)
   }
 
-  return (req, res) => apiWrapper(req, res, handlerFunction, { withAuth: useAuth })
+  const keycloakManager = getKeycloakManager();
+  return async (req, res) => {
+    const session = await keycloakManager.getSession(req, res)
+    if (session) {
+      req.headers.authorization = `Bearer ${(session as any).access_token}`
+    }
+    return apiWrapper(req, res, handlerFunction, { withAuth: useAuth })
+  }
 }

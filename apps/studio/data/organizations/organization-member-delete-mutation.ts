@@ -7,15 +7,15 @@ import { organizationKeys } from './keys'
 
 export type OrganizationMemberDeleteVariables = {
   slug: string
-  gotrueId: string
+  userId: string
 }
 
 export async function deleteOrganizationMember({
   slug,
-  gotrueId,
+  userId,
 }: OrganizationMemberDeleteVariables) {
-  const { data, error } = await del('/platform/organizations/{slug}/members/{gotrue_id}', {
-    params: { path: { slug, gotrue_id: gotrueId } },
+  const { data, error } = await del('/platform/organizations/{slug}/members/{user_id}', {
+    params: { path: { slug, user_id: userId } },
   })
   if (error) handleError(error)
   return data

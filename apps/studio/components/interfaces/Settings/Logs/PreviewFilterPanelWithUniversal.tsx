@@ -7,7 +7,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'common'
 import DatabaseSelector from 'components/ui/DatabaseSelector'
 import { useLoadBalancersQuery } from 'data/read-replicas/load-balancers-query'
-import { IS_PLATFORM } from 'lib/constants'
 import { Button, Calendar, Tooltip, TooltipContent, TooltipTrigger, cn } from 'ui'
 import type {
   CustomOptionProps,
@@ -133,8 +132,7 @@ const PreviewFilterPanelWithUniversal = ({
 
   const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref })
 
-  const showDatabaseSelector =
-    IS_PLATFORM && LOG_ROUTES_WITH_REPLICA_SUPPORT.includes(router.pathname)
+  const showDatabaseSelector = LOG_ROUTES_WITH_REPLICA_SUPPORT.includes(router.pathname)
 
   const filterProperties = useMemo(() => {
     const tableFilters = FILTER_OPTIONS[table]

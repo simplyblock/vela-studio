@@ -4,9 +4,7 @@ import { source } from 'common-tags'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { z } from 'zod/v4'
 
-import { IS_PLATFORM } from 'common'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { AiOptInLevel } from 'hooks/misc/useOrgOptedIntoAi'
 import { getModel } from 'lib/ai/model'
 import { getTools } from 'lib/ai/tools'
 import apiWrapper from 'lib/api/apiWrapper'
@@ -58,7 +56,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   const authorization = req.headers.authorization
   const accessToken = authorization?.replace('Bearer ', '')
 
-  if (IS_PLATFORM && !accessToken) {
+  if (!accessToken) {
     return res.status(401).json({ error: 'Authorization token is required' })
   }
 
@@ -91,7 +89,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     return msg
   })
 
-  let aiOptInLevel: AiOptInLevel = 'disabled'
+  let aiOptInLevel: any = 'disabled'
   let isLimited = false
 
   const { model, error: modelError } = await getModel(projectRef, isLimited) // use project ref as routing key
@@ -117,7 +115,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
               'Content-Type': 'application/json',
               ...(authorization && { Authorization: authorization }),
             },
-            IS_PLATFORM ? undefined : queryPgMetaSelfHosted
+            undefined
           )
         : { result: [] }
 

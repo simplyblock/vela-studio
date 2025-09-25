@@ -57,7 +57,7 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
 
   const rules = data.exceptions.filter((x) => x.lint_name === lint.name)
   const selectedRuleMeta = data.exceptions.find((x) => x.id === selectedRuleToDelete)
-  const selectedMemberForRule = members.find((x) => x.gotrue_id === selectedRuleMeta?.assigned_to)
+  const selectedMemberForRule = members.find((x) => x.user_id === selectedRuleMeta?.assigned_to)
 
   const { mutate: deleteRule, isLoading: isDeleting } = useLintRuleDeleteMutation({
     onSuccess: () => {
@@ -169,7 +169,7 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
                 </div>
               ) : (
                 rules.map((rule) => {
-                  const member = members.find((x) => x.gotrue_id === rule.assigned_to)
+                  const member = members.find((x) => x.user_id === rule.assigned_to)
                   const ruleText = generateRuleText(rule, member)
                   return (
                     <div key={rule.id} className="px-6 py-3 flex items-center justify-between">

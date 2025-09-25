@@ -10,7 +10,6 @@ import { useQueryAbortMutation } from 'data/sql/abort-query-mutation'
 import { useOngoingQueriesQuery } from 'data/sql/ongoing-queries-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
-import { IS_PLATFORM } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { ResponseError } from 'types'
@@ -54,7 +53,7 @@ export const OngoingQueriesPanel = () => {
       connectionString: database?.connectionString,
     },
     {
-      enabled: !IS_PLATFORM || (IS_PLATFORM && database?.connectionString !== undefined),
+      enabled: database?.connectionString !== undefined,
       staleTime: 5000,
     }
   )
