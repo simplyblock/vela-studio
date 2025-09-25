@@ -1,58 +1,20 @@
 'use client'
 
-import type { AuthError, Session } from '@supabase/supabase-js'
-import {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
-import { clearLocalStorage } from './constants/local-storage'
-import { gotrueClient, type User } from './gotrue'
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { clearLocalStorage } from './constants'
+import { useSession as useAuthSession, signOut as authSignOut, getSession } from 'next-auth/react'
+import { Session } from './keycloak'
+import { AuthError } from '@supabase/auth-js'
+import { router } from 'next/client'
 
-export type { User }
-
-const DEFAULT_SESSION: any = {
-  access_token: undefined,
-  expires_at: 0,
-  expires_in: 0,
-  refresh_token: '',
-  token_type: '',
-  user: {
-    aud: '',
-    app_metadata: {},
-    confirmed_at: '',
-    created_at: '',
-    email: '',
-    email_confirmed_at: '',
-    id: '',
-    identities: [],
-    last_signed_in_at: '',
-    phone: '',
-    role: '',
-    updated_at: '',
-    user_metadata: {},
-  },
-} as unknown as Session
-
-/* Auth Context */
-
-type AuthState =
-  | {
-      session: Session | null
-      error: AuthError | null
-      isLoading: false
-    }
-  | {
-      session: null
-      error: AuthError | null
-      isLoading: true
-    }
-
-export type AuthContext = { refreshSession: () => Promise<Session | null> } & AuthState
+export type AuthState = {
+  session: Session | null
+  error: AuthError | null
+  isLoading: boolean
+}
+export type AuthContext = {
+  refreshSession: () => Promise<Session | null>
+} & AuthState
 
 export const AuthContext = createContext<AuthContext>({
   session: null,
@@ -61,62 +23,83 @@ export const AuthContext = createContext<AuthContext>({
   refreshSession: () => Promise.resolve(null),
 })
 
-export type AuthProviderProps = {
-  alwaysLoggedIn?: boolean
-}
+export type AuthProviderProps = {}
 
-export const AuthProvider = ({
-  alwaysLoggedIn,
-  children,
-}: PropsWithChildren<AuthProviderProps>) => {
+export const AuthProvider = ({ children }: PropsWithChildren<AuthProviderProps>) => {
+  const { status, data: session } = useAuthSession({
+   required: false,
+  })
+
   const [state, setState] = useState<AuthState>({ session: null, error: null, isLoading: true })
 
-  useEffect(() => {
-    let mounted = true
-    gotrueClient.initialize().then(({ error }) => {
-      if (mounted && error !== null) {
-        setState((prev) => ({ ...prev, error }))
-      }
-    })
-
-    return () => {
-      mounted = false
-    }
-  }, [])
-
-  // Keep the session in sync
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = gotrueClient.onAuthStateChange((_event, session) => {
-      setState((prev) => ({
-        session,
-        // If there is a session, we clear the error
-        error: session !== null ? null : prev.error,
-        isLoading: false,
-      }))
-    })
-
-    return subscription.unsubscribe
-  }, [])
-
   // Helper method to refresh the session.
-  // For example after a user updates their profile
+  // For example, after a user updates their profile
   const refreshSession = useCallback(async () => {
-    const {
-      data: { session },
-    } = await gotrueClient.refreshSession()
+    const session = await getSession()
+    const extendedSession = session as Session
 
-    return session
-  }, [])
+    // Force relogin
+    const delta = extendedSession ? (extendedSession.expires_at - new Date().getTime() / 1000 - 30) : 0
+    if (delta < 0) {
+      return null
+    }
+
+    setState({
+      ...state,
+      session: session as Session | null,
+      isLoading: status === 'loading',
+    })
+    return session as Session | null
+  }, [status])
+
+  useEffect(() => {
+    setState({
+      ...state,
+      session: session as Session | null,
+      isLoading: status === 'loading',
+    })
+  }, [status])
+
+  useEffect(() => {
+    console.log('AuthProvider useEffect')
+    if (location.pathname.endsWith('/sign-in')) {
+      return
+    }
+
+    let timeout: number | undefined
+    if (state && state.session) {
+      const expiresAt = state.session.expires_at
+      const delta = (expiresAt - new Date().getTime() / 1000 - 30)
+      if (delta < 0) {
+        console.log('Session expired, refreshing...')
+        let pathname = location.pathname
+        if (pathname.indexOf('://') !== -1) {
+          pathname = pathname.split('://')[1]
+        }
+
+        if (pathname === '/sign-in') {
+          // If the user is already on the sign in page, we don't need to redirect them
+          return
+        }
+
+        const searchParams = new URLSearchParams(location.search)
+        searchParams.set('returnTo', pathname)
+        // Sign out before redirecting to sign in page incase the user is stuck in a loading state
+        signOut().finally(() => {
+          location.href = `/sign-in?${searchParams.toString()}`
+        })
+      } else {
+        timeout = window.setInterval(() => refreshSession(), 10000)
+      }
+    }
+    return () => {
+      if (timeout) window.clearInterval(timeout)
+    }
+  }, [state])
 
   const value = useMemo(() => {
-    if (alwaysLoggedIn) {
-      return { session: DEFAULT_SESSION, error: null, isLoading: false, refreshSession } as const
-    } else {
-      return { ...state, refreshSession } as const
-    }
-  }, [state, refreshSession])
+    return { ...state, refreshSession } as const
+  }, [state, refreshSession, status])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
@@ -125,7 +108,12 @@ export const AuthProvider = ({
 
 export const useAuth = () => useContext(AuthContext)
 
-export const useSession = () => useAuth().session
+export const useSession = (): Session | null => {
+  if (typeof window !== 'undefined') {
+    return useAuth().session
+  }
+  return null
+}
 
 export const useUser = () => useSession()?.user ?? null
 
@@ -133,53 +121,27 @@ export const useIsUserLoading = () => useAuth().isLoading
 
 export const useIsLoggedIn = () => {
   const user = useUser()
-
   return user !== null
 }
 
-export const useAuthError = () => useAuth().error
+export const useAuthError = () => useAuth()?.error
 
 export const useIsMFAEnabled = () => {
   const user = useUser()
-
   return user !== null && user.factors && user.factors.length > 0
 }
 
-export const signOut = async () => await gotrueClient.signOut()
+export const signOut = async () => authSignOut()
 
 export const logOut = async () => {
-  await signOut()
   clearLocalStorage()
+  await signOut()
 }
 
-let currentSession: Session | null = null
-
-gotrueClient.onAuthStateChange((event, session) => {
-  currentSession = session
-})
-
-/**
- * Grabs the currently available access token, or calls getSession.
- */
-export async function getAccessToken() {
-  // ignore if server-side
-  if (typeof window === 'undefined') return undefined
-
-  const aboutToExpire = currentSession?.expires_at
-    ? currentSession.expires_at - Math.ceil(Date.now() / 1000) < 30
-    : false
-
-  if (!currentSession || aboutToExpire) {
-    const {
-      data: { session },
-      error,
-    } = await gotrueClient.getSession()
-    if (error) {
-      throw error
-    }
-
-    return session?.access_token
+export const isExpired = (expiresIn?: number) => {
+  if (!expiresIn) {
+    const session = useSession()
+    expiresIn = session?.expires_in || 0
   }
-
-  return currentSession.access_token
+  return new Date().getTime() / 1000 > expiresIn - 30
 }

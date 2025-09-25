@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { constructHeaders, fetchHandler, handleError } from 'data/fetchers'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import { ResponseError } from 'types'
 import { edgeFunctionsKeys } from './keys'
 
@@ -73,8 +73,7 @@ export const useEdgeFunctionBodyQuery = <TData = EdgeFunctionBodyData>(
     edgeFunctionsKeys.body(projectRef, slug),
     ({ signal }) => getEdgeFunctionBody({ projectRef, slug }, signal),
     {
-      enabled:
-        IS_PLATFORM && enabled && typeof projectRef !== 'undefined' && typeof slug !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof slug !== 'undefined',
       ...options,
     }
   )

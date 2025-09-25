@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { IS_PLATFORM, LOCAL_STORAGE_KEYS, useParams } from 'common'
+import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 
 import {
   LOGS_LARGE_DATE_RANGE_DAYS_THRESHOLD,
@@ -57,7 +57,7 @@ const LOCAL_PLACEHOLDER_QUERY =
 const PLATFORM_PLACEHOLDER_QUERY =
   'select\n  cast(timestamp as datetime) as timestamp,\n  event_message, metadata \nfrom edge_logs \nlimit 5'
 
-const PLACEHOLDER_QUERY = IS_PLATFORM ? PLATFORM_PLACEHOLDER_QUERY : LOCAL_PLACEHOLDER_QUERY
+const PLACEHOLDER_QUERY = PLATFORM_PLACEHOLDER_QUERY
 
 export const LogsExplorerPage: NextPageWithLayout = () => {
   useEditorHints()

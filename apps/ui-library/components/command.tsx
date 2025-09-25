@@ -8,26 +8,16 @@ import { useLocalStorage } from './use-local-storage'
 interface CommandCopyProps {
   name: string
   highlight?: boolean
+  baseUrl: string
 }
 
 type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun'
 
 const LOCAL_STORAGE_KEY = 'package-manager-copy-command'
 
-export function Command({ name, highlight }: CommandCopyProps) {
+export function Command({ name, highlight, baseUrl }: CommandCopyProps) {
   const [value, setValue] = useLocalStorage(LOCAL_STORAGE_KEY, 'npm')
 
-  const getBaseUrl = () => {
-    if (process.env.NEXT_PUBLIC_VERCEL_TARGET_ENV === 'production') {
-      return `https://supabase.com`
-    } else if (process.env.NEXT_PUBLIC_VERCEL_TARGET_ENV === 'preview') {
-      return `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`
-    } else {
-      return 'http://localhost:3004'
-    }
-  }
-
-  const baseUrl = getBaseUrl()
   const componentPath = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/r/${name}.json`
 
   const commands: Record<PackageManager, string> = {

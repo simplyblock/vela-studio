@@ -1,15 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { DEFAULT_ORGANIZATION } from '../../constants'
 import { getVelaClient } from '../../../../data/vela/vela'
 import { mapOrganization } from '../../../../data/vela/api-mappers'
-import { apiBuilder } from '../../../../lib/api/apiBuilder'
-import { IS_VELA_PLATFORM } from 'lib/constants'
+import { apiBuilder } from 'lib/api/apiBuilder'
 
 const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!IS_VELA_PLATFORM) {
-    return res.status(405).send('Not implemented')
-  }
-
   const client = getVelaClient(req)
   const createResponse = await client.post('/organizations/', {
     body: {
@@ -47,12 +41,6 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!IS_VELA_PLATFORM) {
-    // Platform specific endpoint
-    const response = [DEFAULT_ORGANIZATION]
-    return res.status(200).json(response)
-  }
-
   const client = getVelaClient(req)
   const response = await client.get('/organizations/')
 

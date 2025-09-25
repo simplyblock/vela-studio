@@ -1,4 +1,3 @@
-import { IS_PLATFORM } from 'common'
 import {
   useQueryTableCommands,
   useSnippetCommands,
@@ -31,8 +30,8 @@ export default function StudioCommandMenu() {
   useDocsAiCommands({
     options: { orderSection: orderCommandSectionsByPriority, sectionMeta: { priority: 3 } },
   })
-  useSupportCommands()
-  useChangelogCommand({ enabled: IS_PLATFORM })
+  // useSupportCommands() // FIXME: disabled support command menu
+  useChangelogCommand({ enabled: true })
   useThemeSwitcherCommands()
 
   return (

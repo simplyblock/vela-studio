@@ -1,7 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { get, handleError } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { databaseKeys } from './keys'
 
@@ -37,7 +36,7 @@ export const useSupavisorConfigurationQuery = <TData = SupavisorConfigurationDat
     databaseKeys.poolingConfiguration(projectRef),
     ({ signal }) => getSupavisorConfiguration({ projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && IS_PLATFORM,
+      enabled: enabled && typeof projectRef !== 'undefined',
       ...options,
     }
   )

@@ -1,17 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { DEFAULT_PROJECT, DEFAULT_PROJECT_2 } from '../../../../constants'
 import { getVelaClient } from '../../../../../../data/vela/vela'
 import { mapProject } from '../../../../../../data/vela/api-mappers'
 import { ProjectCreateVariables } from '../../../../../../data/projects/project-create-mutation'
 import { apiBuilder } from '../../../../../../lib/api/apiBuilder'
 import { getPlatformQueryParams } from '../../../../../../lib/api/platformQueryParams'
-import { IS_VELA_PLATFORM } from 'lib/constants'
 
 const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!IS_VELA_PLATFORM) {
-    return res.status(405).send('Not implemented')
-  }
-
   const client = getVelaClient(req)
   const { slug } = getPlatformQueryParams(req, 'slug')
   const creationRequest = req.body as ProjectCreateVariables
@@ -69,12 +63,6 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!IS_VELA_PLATFORM) {
-    // Platform specific endpoint
-    const response = [DEFAULT_PROJECT, DEFAULT_PROJECT_2]
-    return res.status(200).json(response)
-  }
-
   const { slug } = getPlatformQueryParams(req, 'slug')
   const client = getVelaClient(req)
 

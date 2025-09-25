@@ -28,7 +28,7 @@ export const SecretRow = ({ secret, appId }: SecretRowProps) => {
   const isLast = secrets.length === 1
 
   const { data: members = [] } = useOrganizationMembersQuery({ slug })
-  const generatedBy = members.find((x) => x.gotrue_id === secret.created_by)
+  const generatedBy = members.find((x) => x.user_ud === secret.created_by)
   const generatedByName = generatedBy?.username ?? generatedBy?.primary_email ?? secret.created_by
 
   const { mutate: deleteSecret, isLoading: isDeleting } = useClientSecretDeleteMutation({

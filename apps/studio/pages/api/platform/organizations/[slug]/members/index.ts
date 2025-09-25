@@ -1,18 +1,27 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getVelaClient } from 'data/vela/vela'
 import { apiBuilder } from '../../../../../../lib/api/apiBuilder'
-import { IS_VELA_PLATFORM } from 'lib/constants'
+import { getPlatformQueryParams } from '../../../../../../lib/api/platformQueryParams'
+import { mapOrganizationMember } from '../../../../../../data/vela/api-mappers'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!IS_VELA_PLATFORM) {
-    return res.status(200).json([])
-  }
-
-  const { slug } = req.query
+  const { slug } = getPlatformQueryParams(req, 'slug')
 
   const client = getVelaClient(req)
 
-  return res.status(200).json([])
+  const response = await client.get("/organizations/{organization_slug}/members/", {
+    params: {
+      path: {
+        organization_slug: slug
+      }
+    }
+  })
+
+  if (response.response.status !== 200 || !response.data) {
+    return res.status(response.response.status).send(response.error)
+  }
+
+  return res.status(200).json(response.data.map(mapOrganizationMember))
 }
 
 const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet))

@@ -1,71 +1,17 @@
-import { useQueryClient } from '@tanstack/react-query'
-import { DocsButton } from 'components/ui/DocsButton'
 import { useFlag } from 'hooks/ui/useFlag'
-import { BASE_PATH } from 'lib/constants'
-import { auth, buildPathWithParams, getAccessToken, getReturnToPath } from 'lib/gotrue'
-import { useTheme } from 'next-themes'
-import Image from 'next/legacy/image'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { PropsWithChildren, useEffect, useState } from 'react'
-import { tweets } from 'shared-data'
+import { PropsWithChildren } from 'react'
 
 type SignInLayoutProps = {
   heading: string
   subheading: string
-  showDisclaimer?: boolean
-  logoLinkToMarketingSite?: boolean
 }
 
 const SignInLayout = ({
   heading,
   subheading,
-  showDisclaimer = true,
-  logoLinkToMarketingSite = false,
   children,
 }: PropsWithChildren<SignInLayoutProps>) => {
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  const { resolvedTheme } = useTheme()
   const ongoingIncident = useFlag('ongoingIncident')
-
-  // This useEffect redirects the user to MFA if they're already halfway signed in
-  useEffect(() => {
-    auth
-      .initialize()
-      .then(async ({ error }) => {
-        if (error) {
-          // if there was a problem signing in via the url, don't redirect
-          return
-        }
-
-        const token = await getAccessToken()
-
-        if (token) {
-          const { data, error } = await auth.mfa.getAuthenticatorAssuranceLevel()
-          if (error) {
-            // if there was a problem signing in via the url, don't redirect
-            return
-          }
-
-          if (data) {
-            // we're already where we need to be
-            if (router.pathname === '/sign-in-mfa') {
-              return
-            }
-            if (data.currentLevel !== data.nextLevel) {
-              const redirectTo = buildPathWithParams('/sign-in-mfa')
-              router.replace(redirectTo)
-              return
-            }
-          }
-
-          await queryClient.resetQueries()
-          router.push(getReturnToPath())
-        }
-      })
-      .catch(() => {}) // catch all errors thrown by auth methods
-  }, [])
 
   return (
     <>
@@ -76,26 +22,6 @@ const SignInLayout = ({
           }`}
         >
           <nav className="relative flex items-center justify-between sm:h-10">
-            <div className="flex items-center flex-grow flex-shrink-0 lg:flex-grow-0">
-              <div className="flex items-center justify-between w-full md:w-auto">
-                <Link href={logoLinkToMarketingSite ? 'https://supabase.com' : '/organizations'}>
-                  <Image
-                    src={
-                      resolvedTheme?.includes('dark')
-                        ? `${BASE_PATH}/img/supabase-dark.svg`
-                        : `${BASE_PATH}/img/supabase-light.svg`
-                    }
-                    alt="Supabase Logo"
-                    height={24}
-                    width={120}
-                  />
-                </Link>
-              </div>
-            </div>
-
-            <div className="items-center hidden space-x-3 md:ml-10 md:flex md:pr-4">
-              <DocsButton abbrev={false} href="https://supabase.com/docs" />
-            </div>
           </nav>
         </div>
 
@@ -109,28 +35,6 @@ const SignInLayout = ({
 
               {children}
             </div>
-
-            {showDisclaimer && (
-              <div className="sm:text-center">
-                <p className="text-xs text-foreground-lighter sm:mx-auto sm:max-w-sm">
-                  By continuing, you agree to Supabase's{' '}
-                  <Link
-                    href="https://supabase.com/terms"
-                    className="underline hover:text-foreground-light"
-                  >
-                    Terms of Service
-                  </Link>{' '}
-                  and{' '}
-                  <Link
-                    href="https://supabase.com/privacy"
-                    className="underline hover:text-foreground-light"
-                  >
-                    Privacy Policy
-                  </Link>
-                  , and to receive periodic emails with updates.
-                </p>
-              </div>
-            )}
           </main>
         </div>
       </div>

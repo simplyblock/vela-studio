@@ -12,7 +12,6 @@ const defaultEnv = {
   // NEXT_ANALYTICS_BACKEND_PROVIDER: 'postgres',
   // SUPABASE_REST_URL: 'http://127.0.0.1:54321/rest/v1/',
   // NEXT_PUBLIC_ENABLE_LOGS: 'false',
-  // NEXT_PUBLIC_IS_PLATFORM: 'false',
   SUPABASE_ANON_KEY: '$ANON_KEY',
   SUPABASE_SERVICE_KEY: '$SERVICE_ROLE_KEY',
   SUPABASE_URL: '$API_URL',
@@ -22,7 +21,6 @@ const defaultEnv = {
   LOGFLARE_URL: 'http://localhost:54329',
   LOGFLARE_API_KEY: 'api-key',
   NEXT_PUBLIC_SITE_URL: 'http://localhost:8082',
-  NEXT_PUBLIC_GOTRUE_URL: '$SUPABASE_PUBLIC_URL/auth/v1',
   NEXT_PUBLIC_HCAPTCHA_SITE_KEY: '10000000-ffff-ffff-ffff-000000000001',
   NEXT_PUBLIC_NODE_ENV: 'test',
 }

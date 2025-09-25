@@ -4,14 +4,14 @@ import { getVelaClient } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
 const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { slug, gotrue_id } = getPlatformQueryParams(req, 'slug', 'gotrue_id')
+  const { slug, user_id } = getPlatformQueryParams(req, 'slug', 'user_id')
   const client = getVelaClient(req)
 
-  const response = await client.delete('/organizations/{organization_slug}/members/{gotrue_id}', {
+  const response = await client.delete('/organizations/{organization_slug}/members/{user_id}', {
     params: {
       path: {
         organization_slug: slug,
-        gotrue_id,
+        user_id,
       },
     },
   })
@@ -24,14 +24,14 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const handlePatch = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { slug, gotrue_id } = getPlatformQueryParams(req, 'slug', 'gotrue_id')
+  const { slug, user_id } = getPlatformQueryParams(req, 'slug', 'user_id')
   const client = getVelaClient(req)
 
-  const response = await client.put('/organizations/{organization_slug}/members/{gotrue_id}', {
+  const response = await client.put('/organizations/{organization_slug}/members/{user_id}', {
     params: {
       path: {
         organization_slug: slug,
-        gotrue_id,
+        user_id,
       },
     },
     body: req.body,

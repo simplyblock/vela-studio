@@ -7,7 +7,7 @@ import Script from 'next/script'
 import { useCallback, useEffect, useRef } from 'react'
 import { useLatest } from 'react-use'
 import { useUser } from './auth'
-import { IS_PLATFORM, LOCAL_STORAGE_KEYS } from './constants'
+import { LOCAL_STORAGE_KEYS } from './constants'
 import { useFeatureFlags } from './feature-flags'
 import { post } from './fetchWrappers'
 import { ensurePlatformSuffix, isBrowser } from './helpers'
@@ -19,7 +19,7 @@ const { TELEMETRY_DATA } = LOCAL_STORAGE_KEYS
 
 // Reexports GoogleTagManager with the right API key set
 export const TelemetryTagManager = () => {
-  const isGTMEnabled = Boolean(IS_PLATFORM && process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID)
+  const isGTMEnabled = Boolean(process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID)
 
   if (!isGTMEnabled) {
     return

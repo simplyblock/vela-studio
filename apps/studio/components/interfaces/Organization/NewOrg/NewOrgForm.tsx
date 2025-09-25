@@ -21,7 +21,6 @@ import {
   TooltipTrigger,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { useConfirmPendingSubscriptionCreateMutation } from 'data/subscriptions/org-subscription-confirm-pending-create'
 import { useTheme } from 'next-themes'
 import { SetupIntentResponse } from 'data/stripe/setup-intent-mutation'
 import { useProfile } from 'lib/profile'
@@ -132,14 +131,6 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
     onError: (data) => {
       toast.error(data.message, { duration: 10_000 })
       setNewOrgLoading(false)
-    },
-  })
-
-  const { mutate: confirmPendingSubscriptionChange } = useConfirmPendingSubscriptionCreateMutation({
-    onSuccess: (data) => {
-      if (data && 'slug' in data) {
-        onOrganizationCreated({ slug: data.slug })
-      }
     },
   })
 

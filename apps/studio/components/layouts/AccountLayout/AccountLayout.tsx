@@ -7,7 +7,6 @@ import { PropsWithChildren, useEffect } from 'react'
 import { LOCAL_STORAGE_KEYS } from 'common'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { withAuth } from 'hooks/misc/withAuth'
-import { IS_PLATFORM } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import { cn, NavMenu, NavMenuItem } from 'ui'
 import {
@@ -53,9 +52,7 @@ const AccountLayout = ({ children, title }: PropsWithChildren<AccountLayoutProps
   const currentPath = router.pathname
 
   useEffect(() => {
-    if (!IS_PLATFORM) {
-      router.push('/organizations')
-    }
+    router.push('/org')
   }, [router])
 
   return (

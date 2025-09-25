@@ -8,7 +8,6 @@ import { getTemporaryAPIKey } from 'data/api-keys/temp-api-keys-query'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import { getRoleImpersonationJWT } from 'lib/role-impersonation'
 import { useRoleImpersonationStateSnapshot } from 'state/role-impersonation-state'
 import { RealtimeConfig } from '../useRealtimeMessages'
@@ -32,7 +31,7 @@ export const RealtimeTokensPopover = ({ config, onChangeConfig }: RealtimeTokens
 
   const { data: postgrestConfig } = useProjectPostgrestConfigQuery(
     { orgSlug, projectRef: config.projectRef },
-    { enabled: IS_PLATFORM }
+    { enabled: true }
   )
 
   const jwtSecret = postgrestConfig?.jwt_secret

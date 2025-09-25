@@ -39,7 +39,6 @@ import {
 import { InlineLink } from 'components/ui/InlineLink'
 import { useProjectStorageConfigQuery } from 'data/config/project-storage-config-query'
 import { useBucketUpdateMutation } from 'data/storage/bucket-update-mutation'
-import { IS_PLATFORM } from 'lib/constants'
 import { Admonition } from 'ui-patterns'
 import { Bucket } from 'data/storage/buckets-query'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
@@ -309,20 +308,18 @@ export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalPro
                             ))}
                           </SelectContent_Shadcn_>
                         </Select_Shadcn_>
-                        {IS_PLATFORM && (
-                          <div className="col-span-12 mt-2">
-                            <p className="text-foreground-light text-sm">
-                              Note: Individual bucket upload will still be capped at the{' '}
-                              <Link
-                                href={`/project/${ref}/settings/storage`}
-                                className="font-bold underline"
-                              >
-                                global upload limit
-                              </Link>{' '}
-                              of {formattedGlobalUploadLimit}
-                            </p>
-                          </div>
-                        )}
+                        <div className="col-span-12 mt-2">
+                          <p className="text-foreground-light text-sm">
+                            Note: Individual bucket upload will still be capped at the{' '}
+                            <Link
+                              href={`/project/${ref}/settings/storage`}
+                              className="font-bold underline"
+                            >
+                              global upload limit
+                            </Link>{' '}
+                            of {formattedGlobalUploadLimit}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>

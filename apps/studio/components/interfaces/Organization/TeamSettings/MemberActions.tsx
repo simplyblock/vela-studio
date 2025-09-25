@@ -47,12 +47,12 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
   const { data: members } = useOrganizationMembersQuery({ slug })
   const { data: allRoles } = useOrganizationRolesV2Query({ slug })
 
-  const memberIsUser = member.gotrue_id == profile?.gotrue_id
+  const memberIsUser = member.user_id == profile?.user_id
   const orgScopedRoles = allRoles?.org_scoped_roles ?? []
   const projectScopedRoles = allRoles?.project_scoped_roles ?? []
   const isPendingInviteAcceptance = !!member.invited_id
 
-  const userMemberData = members?.find((m) => m.gotrue_id === profile?.gotrue_id)
+  const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
     orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
@@ -95,8 +95,8 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
 
   const handleMemberDelete = () => {
     if (!slug) return console.error('slug is required')
-    if (!member.gotrue_id) return console.error('gotrue_id is required')
-    deleteOrganizationMember({ slug, gotrueId: member.gotrue_id })
+    if (!member.user_id) return console.error('user_id is required')
+    deleteOrganizationMember({ slug, userId: member.user_id })
   }
 
   const handleResendInvite = (member: OrganizationMember) => {

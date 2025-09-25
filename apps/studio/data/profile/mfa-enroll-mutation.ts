@@ -1,13 +1,13 @@
 import type { AuthMFAEnrollResponse, MFAEnrollParams } from '@supabase/supabase-js'
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
-import { auth } from 'lib/gotrue'
 import { toast } from 'sonner'
 
 const mfaEnroll = async (params: MFAEnrollParams) => {
-  const { error, data } = await auth.mfa.enroll(params)
+  /*const { error, data } = await auth.mfa.enroll(params)
 
   if (error) throw error
-  return data
+  return data*/
+  return {} as CustomMFAEnrollResponse // FIXME: implement this
 }
 
 type CustomMFAEnrollResponse = NonNullable<AuthMFAEnrollResponse['data']>

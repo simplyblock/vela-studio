@@ -1,15 +1,14 @@
 import { useQueryClient } from '@tanstack/react-query'
 import {
   AuthProvider as AuthProviderInternal,
-  clearLocalStorage,
-  gotrueClient,
+  clearLocalStorage, signOut,
   useAuthError,
 } from 'common'
 import { PropsWithChildren, useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
-import { GOTRUE_ERRORS, IS_PLATFORM } from './constants'
+import { GOTRUE_ERRORS } from './constants'
+import { SessionProvider } from 'next-auth/react'
 
 const AuthErrorToaster = ({ children }: PropsWithChildren) => {
   const error = useAuthError()
@@ -33,9 +32,11 @@ const AuthErrorToaster = ({ children }: PropsWithChildren) => {
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   return (
-    <AuthProviderInternal alwaysLoggedIn={!IS_PLATFORM}>
-      <AuthErrorToaster>{children}</AuthErrorToaster>
-    </AuthProviderInternal>
+    <SessionProvider>
+      <AuthProviderInternal>
+        <AuthErrorToaster>{children}</AuthErrorToaster>
+      </AuthProviderInternal>
+    </SessionProvider>
   )
 }
 
@@ -43,15 +44,12 @@ export { useAuth, useIsLoggedIn, useSession, useUser } from 'common'
 
 export function useSignOut() {
   const queryClient = useQueryClient()
-  const { clearStorage: clearAssistantStorage } = useAiAssistantStateSnapshot()
 
   return useCallback(async () => {
-    const result = await gotrueClient.signOut()
+    const result = await signOut()
     clearLocalStorage()
     // Clear Assistant IndexedDB
-    await clearAssistantStorage()
-    await queryClient.clear()
-
+    queryClient.clear()
     return result
-  }, [queryClient, clearAssistantStorage])
+  }, [queryClient])
 }

@@ -41,7 +41,7 @@ AUTHENTICATION=false
 
 ### CLI Development (NO AUTH)
 
-You'll need to run Studio in development mode with `IS_PLATFORM=false`
+You'll need to run Studio in development mode
 
 ```bash
 STUDIO_URL=http://localhost:8082/
@@ -51,7 +51,7 @@ AUTHENTICATION=false
 
 ### Hosted Development
 
-You'll need to run Studio in development mode with `IS_PLATFORM=true`
+You'll need to run Studio in development mode
 
 ```bash
 STUDIO_URL=http://localhost:8082/

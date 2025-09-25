@@ -11,7 +11,7 @@ import NoPermission from 'components/ui/NoPermission'
 import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useGitHubConnectionsQuery } from 'data/integrations/github-connections-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import { cn } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import GitHubIntegrationConnectionForm from './GitHubIntegrationConnectionForm'
@@ -32,7 +32,7 @@ const GitHubSection = () => {
   // FIXME: need permission implemented 
   const { can: canReadGitHubConnection, isLoading: isLoadingPermissions } = {can:true,isLoading:false}
   const isProPlanAndUp = organization?.plan?.id !== 'free'
-  const promptProPlanUpgrade = IS_PLATFORM && !isProPlanAndUp
+  const promptProPlanUpgrade = !isProPlanAndUp
 
   const { data: connections } = useGitHubConnectionsQuery(
     { organizationId: organization?.id },

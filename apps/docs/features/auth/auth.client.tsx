@@ -5,6 +5,7 @@ import { AuthProvider, LOCAL_STORAGE_KEYS } from 'common'
 import { type PropsWithChildren, useCallback } from 'react'
 import { remove } from '~/lib/storage'
 import { useOnLogout } from '~/lib/userAuth'
+import { SessionProvider } from 'next-auth/react'
 
 /**
  *
@@ -30,9 +31,11 @@ const SignOutHandler = ({ children }: PropsWithChildren) => {
 }
 
 const AuthContainer = ({ children }: PropsWithChildren) => (
-  <AuthProvider>
-    <SignOutHandler>{children}</SignOutHandler>
-  </AuthProvider>
+  <SessionProvider>
+    <AuthProvider>
+      <SignOutHandler>{children}</SignOutHandler>
+    </AuthProvider>
+  </SessionProvider>
 )
 
 export { AuthContainer }

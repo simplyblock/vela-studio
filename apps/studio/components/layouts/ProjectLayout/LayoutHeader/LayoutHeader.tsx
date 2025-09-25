@@ -16,7 +16,6 @@ import { useOrgUsageQuery } from 'data/usage/org-usage-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useHotKey } from 'hooks/ui/useHotKey'
-import { IS_PLATFORM } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import { Badge, cn } from 'ui'
 import { BreadcrumbsView } from './BreadcrumbsView'
@@ -113,7 +112,7 @@ const LayoutHeader = ({
           <div className="flex items-center text-sm">
             <HomeIcon />
             <div className="flex items-center md:pl-2">
-              {showOrgSelection && IS_PLATFORM ? (
+              {showOrgSelection ? (
                 <>
                   <LayoutHeaderDivider className="hidden md:block" />
                   <OrganizationDropdown />
@@ -186,40 +185,21 @@ const LayoutHeader = ({
           </div>
           <div className="flex items-center gap-x-2">
             {customHeaderComponents && customHeaderComponents}
-            {IS_PLATFORM ? (
-              <>
-                <FeedbackDropdown />
+            <FeedbackDropdown />
 
-                <div className="overflow-hidden flex items-center rounded-full border">
-                  <HelpPopover />
-                  <NotificationsPopoverV2 />
-                  <AnimatePresence initial={false}>
-                    {!!projectRef && (
-                      <>
-                        <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
-                        <AssistantButton />
-                      </>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <UserDropdown />
-              </>
-            ) : (
-              <>
-                <LocalVersionPopover />
-                <div className="overflow-hidden flex items-center rounded-full border">
-                  <AnimatePresence initial={false}>
-                    {!!projectRef && (
-                      <>
-                        <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
-                        <AssistantButton />
-                      </>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <LocalDropdown />
-              </>
-            )}
+            <div className="overflow-hidden flex items-center rounded-full border">
+              <HelpPopover />
+              <NotificationsPopoverV2 />
+              <AnimatePresence initial={false}>
+                {!!projectRef && (
+                  <>
+                    <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
+                    <AssistantButton />
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+            <UserDropdown />
           </div>
         </div>
       </header>

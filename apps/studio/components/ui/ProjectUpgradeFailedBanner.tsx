@@ -6,7 +6,6 @@ import { useState } from 'react'
 
 import { useParams } from 'common'
 import { useProjectUpgradingStatusQuery } from 'data/config/project-upgrade-status-query'
-import { IS_PLATFORM } from 'lib/constants'
 import { Alert, Button } from 'ui'
 import { InlineLink } from './InlineLink'
 
@@ -14,7 +13,7 @@ import { InlineLink } from './InlineLink'
 
 export const ProjectUpgradeFailedBanner = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
-  const { data } = useProjectUpgradingStatusQuery({ orgSlug, projectRef }, { enabled: IS_PLATFORM })
+  const { data } = useProjectUpgradingStatusQuery({ orgSlug, projectRef }, { enabled: true })
   const { status, initiated_at, latest_status_at, error } = data?.databaseUpgradeStatus ?? {}
 
   const key = `supabase-upgrade-${projectRef}-${initiated_at}`

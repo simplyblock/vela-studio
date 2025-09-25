@@ -5,7 +5,7 @@ import { Item, Menu, useContextMenu } from 'react-contexify'
 import DataGrid, { Column, RenderRowProps, Row } from 'react-data-grid'
 import { createPortal } from 'react-dom'
 
-import { IS_PLATFORM, useParams } from 'common'
+import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DownloadResultsButton } from 'components/ui/DownloadResultsButton'
 import { useSelectedLog } from 'hooks/analytics/useSelectedLog'
@@ -268,24 +268,22 @@ const LogTable = ({
       )}
 
       <div className="space-x-2">
-        {IS_PLATFORM && (
-          <ButtonTooltip
-            type="default"
-            onClick={onSave}
-            loading={isSaving}
-            disabled={!canCreateLogQuery || !hasEditorValue}
-            tooltip={{
-              content: {
-                side: 'bottom',
-                text: !canCreateLogQuery
-                  ? 'You need additional permissions to save your query'
-                  : undefined,
-              },
-            }}
-          >
-            Save query
-          </ButtonTooltip>
-        )}
+        <ButtonTooltip
+          type="default"
+          onClick={onSave}
+          loading={isSaving}
+          disabled={!canCreateLogQuery || !hasEditorValue}
+          tooltip={{
+            content: {
+              side: 'bottom',
+              text: !canCreateLogQuery
+                ? 'You need additional permissions to save your query'
+                : undefined,
+            },
+          }}
+        >
+          Save query
+        </ButtonTooltip>
         <Button
           title="run-logs-query"
           type={hasEditorValue ? 'primary' : 'alternative'}
