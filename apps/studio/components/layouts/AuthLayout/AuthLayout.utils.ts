@@ -1,5 +1,4 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
-import { IS_PLATFORM } from 'lib/constants'
 
 export const generateAuthMenu = (slug: string, ref: string): ProductMenuGroup[] => {
   return [
@@ -16,7 +15,7 @@ export const generateAuthMenu = (slug: string, ref: string): ProductMenuGroup[] 
           url: `/org/${slug}/project/${ref}/auth/policies`,
           items: [],
         },
-        ...(!IS_PLATFORM // FIXME: Move to organization level
+        ...(false // FIXME: Move to organization level @Ebrahim
           ? [
               {
                 name: 'Sign In / Providers',

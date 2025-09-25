@@ -17,7 +17,7 @@ import { useBucketCreateMutation } from 'data/storage/bucket-create-mutation'
 import { useIcebergWrapperCreateMutation } from 'data/storage/iceberg-wrapper-create-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import {
   Alert_Shadcn_,
   AlertDescription_Shadcn_,
@@ -272,35 +272,33 @@ const CreateBucketModal = () => {
                           description="Compatible with S3 buckets."
                           showIndicator={false}
                         />
-                        {IS_PLATFORM && (
-                          <RadioGroupStackedItem
-                            id="ANALYTICS"
-                            value="ANALYTICS"
-                            label="Analytics bucket"
-                            showIndicator={false}
-                            disabled={!icebergCatalogEnabled}
-                          >
-                            <>
-                              <p className="text-foreground-light text-left">
-                                Stores Iceberg files and is optimized for analytical workloads.
-                              </p>
+                        <RadioGroupStackedItem
+                          id="ANALYTICS"
+                          value="ANALYTICS"
+                          label="Analytics bucket"
+                          showIndicator={false}
+                          disabled={!icebergCatalogEnabled}
+                        >
+                          <>
+                            <p className="text-foreground-light text-left">
+                              Stores Iceberg files and is optimized for analytical workloads.
+                            </p>
 
-                              {icebergCatalogEnabled ? null : (
-                                <div className="w-full flex gap-x-2 py-2 items-center">
-                                  <WarningIcon />
-                                  <span className="text-xs text-left">
-                                    This feature is currently in alpha and not yet enabled for your
-                                    project. Sign up{' '}
-                                    <InlineLink href="https://forms.supabase.com/analytics-buckets">
-                                      here
-                                    </InlineLink>
-                                    .
-                                  </span>
-                                </div>
-                              )}
-                            </>
-                          </RadioGroupStackedItem>
-                        )}
+                            {icebergCatalogEnabled ? null : (
+                              <div className="w-full flex gap-x-2 py-2 items-center">
+                                <WarningIcon />
+                                <span className="text-xs text-left">
+                                  This feature is currently in alpha and not yet enabled for your
+                                  project. Sign up{' '}
+                                  <InlineLink href="https://forms.supabase.com/analytics-buckets">
+                                    here
+                                  </InlineLink>
+                                  .
+                                </span>
+                              </div>
+                            )}
+                          </>
+                        </RadioGroupStackedItem>
                       </RadioGroupStacked>
                     </FormControl_Shadcn_>
                   </FormItemLayout>
@@ -435,20 +433,18 @@ const CreateBucketModal = () => {
                                 ))}
                               </SelectContent_Shadcn_>
                             </Select_Shadcn_>
-                            {IS_PLATFORM && (
-                              <div className="col-span-12">
-                                <p className="text-foreground-light text-sm">
-                                  Note: Individual bucket uploads will still be capped at the{' '}
-                                  <Link
-                                    href={`/project/${ref}/settings/storage`}
-                                    className="font-bold underline"
-                                  >
-                                    global upload limit
-                                  </Link>{' '}
-                                  of {formattedGlobalUploadLimit}
-                                </p>
-                              </div>
-                            )}
+                            <div className="col-span-12">
+                              <p className="text-foreground-light text-sm">
+                                Note: Individual bucket uploads will still be capped at the{' '}
+                                <Link
+                                  href={`/project/${ref}/settings/storage`}
+                                  className="font-bold underline"
+                                >
+                                  global upload limit
+                                </Link>{' '}
+                                of {formattedGlobalUploadLimit}
+                              </p>
+                            </div>
                           </div>
                         )}
                       </div>

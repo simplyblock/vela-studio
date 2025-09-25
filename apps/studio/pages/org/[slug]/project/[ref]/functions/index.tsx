@@ -15,7 +15,6 @@ import AlertError from 'components/ui/AlertError'
 import { DocsButton } from 'components/ui/DocsButton'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
-import { IS_PLATFORM } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
 import { Button, Table, TableHead, TableRow, TableHeader, TableBody, Card } from 'ui'
 import { getPathReferences } from '../../../../../../data/vela/path-references'
@@ -51,48 +50,42 @@ const EdgeFunctionsPage: NextPageWithLayout = () => {
       size="large"
       title="Edge Functions"
       subtitle="Deploy edge functions to handle complex business logic"
-      primaryActions={IS_PLATFORM ? <DeployEdgeFunctionButton /> : undefined}
+      primaryActions={<DeployEdgeFunctionButton />}
       secondaryActions={secondaryActions}
     >
       <ScaffoldContainer size="large">
         <ScaffoldSection isFullWidth>
-          {IS_PLATFORM ? (
+          {isLoading && <GenericSkeletonLoader />}
+          {isError && <AlertError error={error} subject="Failed to retrieve edge functions" />}
+          {isSuccess && (
             <>
-              {isLoading && <GenericSkeletonLoader />}
-              {isError && <AlertError error={error} subject="Failed to retrieve edge functions" />}
-              {isSuccess && (
-                <>
-                  {hasFunctions ? (
-                    <Card>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>URL</TableHead>
-                            <TableHead className="hidden 2xl:table-cell">Created</TableHead>
-                            <TableHead className="lg:table-cell">Last updated</TableHead>
-                            <TableHead className="lg:table-cell">Deployments</TableHead>
-                          </TableRow>
-                        </TableHeader>
+              {hasFunctions ? (
+                <Card>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>URL</TableHead>
+                        <TableHead className="hidden 2xl:table-cell">Created</TableHead>
+                        <TableHead className="lg:table-cell">Last updated</TableHead>
+                        <TableHead className="lg:table-cell">Deployments</TableHead>
+                      </TableRow>
+                    </TableHeader>
 
-                        <TableBody>
-                          <>
-                            {functions.length > 0 &&
-                              functions.map((item) => (
-                                <EdgeFunctionsListItem key={item.id} function={item} />
-                              ))}
-                          </>
-                        </TableBody>
-                      </Table>
-                    </Card>
-                  ) : (
-                    <FunctionsEmptyState />
-                  )}
-                </>
+                    <TableBody>
+                      <>
+                        {functions.length > 0 &&
+                          functions.map((item) => (
+                            <EdgeFunctionsListItem key={item.id} function={item} />
+                          ))}
+                      </>
+                    </TableBody>
+                  </Table>
+                </Card>
+              ) : (
+                <FunctionsEmptyState />
               )}
             </>
-          ) : (
-            <FunctionsEmptyStateLocal />
           )}
         </ScaffoldSection>
       </ScaffoldContainer>

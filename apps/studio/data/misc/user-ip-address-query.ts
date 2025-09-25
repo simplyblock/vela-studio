@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { fetchHandler } from 'data/fetchers'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { miscKeys } from './keys'
 
@@ -24,5 +24,5 @@ export const useUserIPAddressQuery = <TData = UserIPAddressData>({
   useQuery<UserIPAddressData, UserIPAddressError, TData>(
     miscKeys.ipAddress(),
     () => getUserIPAddress(),
-    { enabled: enabled && !IS_PLATFORM, ...options }
+    { enabled, ...options }
   )

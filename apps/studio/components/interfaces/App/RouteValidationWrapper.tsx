@@ -8,7 +8,6 @@ import { useProjectsQuery } from 'data/projects/projects-query'
 import useLatest from 'hooks/misc/useLatest'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import { DEFAULT_HOME } from '../../../pages/api/constants'
 
@@ -89,9 +88,8 @@ const RouteValidationWrapper = ({ children }: PropsWithChildren<{}>) => {
       // Check validity of project that the user is trying to access
       const projects = projectsRef.current ?? []
       const isValidProject = projects.some((project) => project.ref === ref)
-      const isValidBranch = IS_PLATFORM
-        ? projects.some((project) => !!project.preview_branch_refs && project.preview_branch_refs.includes(ref))
-        : true
+      const isValidBranch =
+        projects.some((project) => !!project.preview_branch_refs && project.preview_branch_refs.includes(ref))
 
       if (!isValidProject && !isValidBranch) {
         toast.error('This project does not exist')

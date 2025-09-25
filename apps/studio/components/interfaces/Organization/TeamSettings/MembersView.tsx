@@ -42,7 +42,7 @@ export interface MembersViewProps {
 const mockMembers = [
   {
     id: 1,
-    gotrue_id: 'user-1',
+    user_id: 'user-1',
     primary_email: 'admin@example.com',
     username: 'admin_user',
     invited_at: null,
@@ -51,7 +51,7 @@ const mockMembers = [
   },
   {
     id: 2,
-    gotrue_id: 'user-2',
+    user_id: 'user-2',
     primary_email: 'developer@example.com',
     username: 'dev_user',
     invited_at: null,
@@ -60,7 +60,7 @@ const mockMembers = [
   },
   {
     id: 3,
-    gotrue_id: null,
+    user_id: null,
     primary_email: 'pending@example.com',
     username: null,
     invited_at: '2023-10-15T12:00:00Z',
@@ -124,7 +124,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
 
   // Mock profile data if needed
   const mockProfile = {
-    gotrue_id: 'user-1',
+    user_id: 'user-1',
     username: 'admin_user',
     primary_email: 'admin@example.com',
   }
@@ -139,7 +139,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
           if (member.invited_at) {
             return member.primary_email?.includes(searchString)
           }
-          if (member.gotrue_id) {
+          if (member.user_id) {
             return (
               member.username.includes(searchString) || member.primary_email?.includes(searchString)
             )
@@ -150,13 +150,13 @@ const MembersView = ({ searchString }: MembersViewProps) => {
 
   const [[user], otherMembers] = partition(
     filteredMembers,
-    (m) => m.gotrue_id === effectiveProfile?.gotrue_id
+    (m) => m.user_id === effectiveProfile?.user_id
   )
   const sortedMembers = otherMembers.sort((a, b) =>
     (a.primary_email ?? '').localeCompare(b.primary_email ?? '')
   )
 
-  const userMember = members.find((m) => m.gotrue_id === effectiveProfile?.gotrue_id)
+  const userMember = members.find((m) => m.user_id === effectiveProfile?.user_id)
   const orgScopedRoleIds = (roles?.org_scoped_roles ?? []).map((r) => r.id)
   const isOrgScopedRole = orgScopedRoleIds.includes(userMember?.role_ids?.[0] ?? -1)
 
@@ -256,11 +256,11 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                         ]
                       : []),
                     // @ts-ignore
-                    ...(!!user ? [<MemberRow key={user.gotrue_id} member={user} />] : []),
+                    ...(!!user ? [<MemberRow key={user.user_id} member={user} />] : []),
 
                     ...sortedMembers.map((member) => (
                       // @ts-ignore
-                      <MemberRow key={member.gotrue_id || member.id} member={member} />
+                      <MemberRow key={member.user_id || member.id} member={member} />
                     )),
                     ...(searchString.length > 0 && filteredMembers.length === 0
                       ? [

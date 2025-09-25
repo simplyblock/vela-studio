@@ -188,7 +188,7 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
                       <SelectContent_Shadcn_>
                         <SelectItem_Shadcn_ value="all">All project members</SelectItem_Shadcn_>
                         {members.map((m) => (
-                          <SelectItem_Shadcn_ key={m.gotrue_id} value={m.gotrue_id}>
+                          <SelectItem_Shadcn_ key={m.user_id} value={m.user_id}>
                             {m.username || m.primary_email}
                           </SelectItem_Shadcn_>
                         ))}
@@ -204,7 +204,7 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
                     {generateRuleDescription({
                       name: lint_name,
                       disabled: is_disabled,
-                      member: members.find((x) => x.gotrue_id === assigned_to),
+                      member: members.find((x) => x.user_id === assigned_to),
                     })}
                   </Admonition>
                 </div>

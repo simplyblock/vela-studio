@@ -4,7 +4,6 @@ import jsonLogic from 'json-logic-js'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useProjectDetailQuery } from 'data/projects/project-detail-query'
-import { IS_PLATFORM } from 'lib/constants'
 import type { Permission } from 'types'
 import { useSelectedOrganizationQuery } from './useSelectedOrganization'
 import { useSelectedProjectQuery } from './useSelectedProject'
@@ -178,7 +177,6 @@ export function useCheckProjectPermissions(
   } = useGetProjectPermissions(permissions, organizationSlug, projectRef, isLoggedIn)
 
   if (!isLoggedIn) return false
-  if (!IS_PLATFORM) return true
 
   return doPermissionsCheck(allPermissions, action, resource, data, _organizationSlug, _projectRef)
 }
@@ -193,8 +191,6 @@ export function usePermissionsLoaded() {
     { slug, ref },
     { enabled: !!ref && isLoggedIn }
   )
-
-  if (!IS_PLATFORM) return true
 
   if (ref) {
     return isLoggedIn && isPermissionsFetched && isOrganizationsFetched && isProjectDetailFetched
@@ -230,13 +226,6 @@ export function useAsyncCheckProjectPermissions(
       isLoading: true,
       isSuccess: false,
       can: false,
-    }
-  }
-  if (!IS_PLATFORM) {
-    return {
-      isLoading: false,
-      isSuccess: true,
-      can: true,
     }
   }
 

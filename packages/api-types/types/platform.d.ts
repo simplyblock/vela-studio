@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+  '/platform/service-urls': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['ServiceUrlsController_getServiceUrls']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/auth/{ref}/config': {
     parameters: {
       query?: never
@@ -1285,7 +1301,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/members/{gotrue_id}': {
+  '/platform/organizations/{slug}/members/{user_id}': {
     parameters: {
       query?: never
       header?: never
@@ -1303,7 +1319,7 @@ export interface paths {
     patch: operations['MembersController_assignMemberRoleV2']
     trace?: never
   }
-  '/platform/organizations/{slug}/members/{gotrue_id}/roles/{role_id}': {
+  '/platform/organizations/{slug}/members/{user_id}/roles/{role_id}': {
     parameters: {
       query?: never
       header?: never
@@ -6052,6 +6068,9 @@ export interface components {
     GitHubBranchResponse: {
       name: string
     }
+    ServiceUrlsResponse: {
+      signInUrl: string
+    }
     GoTrueConfigResponse: {
       API_MAX_REQUEST_DURATION: number | null
       AUDIT_LOG_DISABLE_POSTGRES: boolean | null
@@ -6512,7 +6531,7 @@ export interface components {
       is_sensitive: boolean
     }
     Member: {
-      gotrue_id: string
+      user_id: string
       is_sso_user: boolean | null
       metadata: {
         [key: string]: unknown
@@ -7258,7 +7277,7 @@ export interface components {
     }
     Profile: {
       first_name: string
-      gotrue_id: string
+      user_id: string
       id: number
       last_name: string
       username: string
@@ -7284,7 +7303,7 @@ export interface components {
       )[]
       first_name: string
       free_project_limit: number
-      gotrue_id: string
+      user_id: string
       id: number
       is_alpha_user: boolean
       last_name: string
@@ -9346,6 +9365,31 @@ export interface components {
 export type $defs = Record<string, never>
 
 export interface operations {
+  ServiceUrlsController_getServiceUrls: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        },
+        content: {
+          'application/json': components['schemas']['ServiceUrlsResponse']
+        }
+      },
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   GoTrueConfigController_getGoTrueConfig: {
     parameters: {
       query?: never
@@ -12303,7 +12347,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12331,7 +12375,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12363,7 +12407,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         role_id: number
         /** @description Organization slug */
         slug: string
@@ -12396,7 +12440,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         role_id: number
         /** @description Organization slug */
         slug: string

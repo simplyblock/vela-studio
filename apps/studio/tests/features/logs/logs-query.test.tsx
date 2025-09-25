@@ -15,7 +15,6 @@ beforeAll(() => {
 
     return {
       ...mod,
-      IS_PLATFORM: true,
       useIsLoggedIn: vi.fn(),
       useParams: vi.fn(() => ({ ref: 'projectRef' })),
     }

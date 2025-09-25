@@ -12,7 +12,6 @@ import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -54,7 +53,7 @@ export const AdvancedAuthSettingsForm = () => {
   const { mutate: updateAuthConfig } = useAuthConfigUpdateMutation()
 
   const isTeamsEnterprisePlan = organization?.plan.id !== 'free' && organization?.plan.id !== 'pro'
-  const promptTeamsEnterpriseUpgrade = IS_PLATFORM && !isTeamsEnterprisePlan
+  const promptTeamsEnterpriseUpgrade = !isTeamsEnterprisePlan
 
   const requestDurationForm = useForm({
     resolver: zodResolver(

@@ -52,13 +52,13 @@ export interface Project extends ProjectBase {
 }
 
 export interface User {
-  id: number
-  mobile: string | null
+  id: string
+  mobile?: string | null
   primary_email: string
   username: string
-  first_name: string
-  last_name: string
-  gotrue_id: string
+  first_name?: string
+  last_name?: string
+  user_id: string
   is_alpha_user: boolean
   free_project_limit: number
 }

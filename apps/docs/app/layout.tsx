@@ -10,7 +10,7 @@ import { genFaviconData } from 'common/MetaFavicons/app-router'
 
 import { GlobalProviders } from '~/features/app.providers'
 import { TopNavSkeleton } from '~/layouts/MainSkeleton'
-import { BASE_PATH, IS_PRODUCTION } from '~/lib/constants'
+import { BASE_PATH } from '~/lib/constants'
 import { TelemetryTagManager } from 'common'
 
 const metadata: Metadata = {
@@ -21,8 +21,8 @@ const metadata: Metadata = {
   metadataBase: new URL('https://supabase.com'),
   icons: genFaviconData(BASE_PATH),
   robots: {
-    index: IS_PRODUCTION,
-    follow: IS_PRODUCTION,
+    index: true,
+    follow: true,
   },
   openGraph: {
     type: 'article',

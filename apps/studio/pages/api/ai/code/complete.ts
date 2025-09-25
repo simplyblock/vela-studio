@@ -1,9 +1,7 @@
 import pgMeta from '@supabase/pg-meta'
 import { ModelMessage, stepCountIs, generateText, Output } from 'ai'
-import { IS_PLATFORM } from 'common'
 import { source } from 'common-tags'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { AiOptInLevel } from 'hooks/misc/useOrgOptedIntoAi'
 import { getModel } from 'lib/ai/model'
 import {
   EDGE_FUNCTION_PROMPT,
@@ -45,7 +43,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const authorization = req.headers.authorization
     const accessToken = authorization?.replace('Bearer ', '')
 
-    let aiOptInLevel: AiOptInLevel = 'disabled'
+    let aiOptInLevel: any = 'disabled'
 
     const { model, error: modelError } = await getModel(projectRef)
 
@@ -69,7 +67,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
               'Content-Type': 'application/json',
               ...(authorization && { Authorization: authorization }),
             },
-            IS_PLATFORM ? undefined : queryPgMetaSelfHosted
+            undefined
           )
         : { result: [] }
 

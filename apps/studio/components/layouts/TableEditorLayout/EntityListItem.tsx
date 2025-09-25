@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Papa from 'papaparse'
 import { toast } from 'sonner'
 
-import { IS_PLATFORM, useParams } from 'common'
+import { useParams } from 'common'
 import {
   MAX_EXPORT_ROW_COUNT,
   MAX_EXPORT_ROW_COUNT_MESSAGE,
@@ -131,7 +131,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   }
 
   const exportTableAsCSV = async () => {
-    if (IS_PLATFORM && !project?.connectionString) {
+    if (!project?.connectionString) {
       return console.error('Connection string is required')
     }
     const toastId = toast.loading(`Exporting ${entity.name} as CSV...`)
@@ -184,7 +184,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   }
 
   const exportTableAsSQL = async () => {
-    if (IS_PLATFORM && !project?.connectionString) {
+    if (!project?.connectionString) {
       return console.error('Connection string is required')
     }
     const toastId = toast.loading(`Exporting ${entity.name} as SQL...`)

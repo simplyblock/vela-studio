@@ -5,11 +5,6 @@ export const projectKeys = {
   detail: (orgSlug: string | undefined, projectRef: string | undefined) => ['project', orgSlug, projectRef, 'detail'] as const,
   serviceVersions: (projectRef: string | undefined) =>
     ['project', projectRef, 'service-versions'] as const,
-  readonlyStatusList: () => ['projects', 'readonly-statuses'] as const,
-  readonlyStatus: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'readonly-status'] as const,
-  projectTransfer: (projectRef: string | undefined, targetOrganizationSlug: string | undefined) =>
-    ['projects', 'transfer', projectRef, targetOrganizationSlug] as const,
   projectTransferPreview: (
     projectRef: string | undefined,
     targetOrganizationSlug: string | undefined

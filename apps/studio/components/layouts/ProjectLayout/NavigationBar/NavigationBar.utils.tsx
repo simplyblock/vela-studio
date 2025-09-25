@@ -17,7 +17,7 @@ import {
   Storage,
   TableEditor,
 } from 'icons'
-import { IS_PLATFORM, PROJECT_STATUS } from 'lib/constants'
+import { PROJECT_STATUS } from 'lib/constants'
 
 export const generateToolRoutes = (
   slug: string,
@@ -40,9 +40,7 @@ export const generateToolRoutes = (
       key: 'sql',
       label: 'SQL Editor',
       icon: <SqlEditor size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: !IS_PLATFORM
-        ? `/org/${slug}/project/${ref}/sql/1`
-        : ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/sql`),
+      link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/sql`),
     },
   ]
 }
@@ -189,17 +187,11 @@ export const generateOtherRoutes = (
 
 export const generateSettingsRoutes = (slug: string, ref?: string, project?: Project): Route[] => {
   const settingsMenu = generateSettingsMenu(slug, ref as string)
-  return [
-    ...(IS_PLATFORM
-      ? [
-          {
-            key: 'settings',
-            label: 'Project Settings',
-            icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link: ref && `/org/${slug}/project/${ref}/settings/general`,
-            items: settingsMenu,
-          },
-        ]
-      : []),
-  ]
+  return [{
+    key: 'settings',
+    label: 'Project Settings',
+    icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+    link: ref && `/org/${slug}/project/${ref}/settings/general`,
+    items: settingsMenu,
+  }]
 }

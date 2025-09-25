@@ -14,7 +14,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ComponentProps, useEffect } from 'react'
 
-import { IS_PLATFORM } from 'common'
 import { useParams } from 'common/hooks/useParams'
 import { createSqlSnippetSkeletonV2 } from 'components/interfaces/SQLEditor/SQLEditor.utils'
 import { getContentById } from 'data/content/content-id-query'
@@ -388,7 +387,7 @@ export const SQLEditorTreeViewItem = ({
                 />
                 {isFavorite ? 'Remove from' : 'Add to'} favorites
               </ContextMenuItem_Shadcn_>
-              {onSelectDownload !== undefined && IS_PLATFORM && (
+              {onSelectDownload !== undefined && (
                 <ContextMenuItem_Shadcn_
                   className="gap-x-2"
                   onSelect={() => onSelectDownload()}

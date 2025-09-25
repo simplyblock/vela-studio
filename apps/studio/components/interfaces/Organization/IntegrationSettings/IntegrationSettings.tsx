@@ -1,13 +1,10 @@
 import { useCallback } from 'react'
 import { toast } from 'sonner'
 
-import { EmptyIntegrationConnection } from 'components/interfaces/Integrations/VercelGithub/IntegrationPanels'
 import { Markdown } from 'components/interfaces/Markdown'
-import VercelSection from 'components/interfaces/Settings/Integrations/VercelIntegration/VercelSection'
 import {
   ScaffoldContainer,
   ScaffoldContainerLegacy,
-  ScaffoldDivider,
   ScaffoldSection,
   ScaffoldSectionContent,
   ScaffoldSectionDetail,
@@ -27,8 +24,6 @@ import {
 } from 'lib/github'
 import { useRouter } from 'next/router'
 import { useSidePanelsStateSnapshot } from 'state/side-panels'
-import { IntegrationConnectionItem } from '../../Integrations/VercelGithub/IntegrationConnection'
-import SidePanelVercelProjectLinker from './SidePanelVercelProjectLinker'
 import { useParams } from 'common'
 
 const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
@@ -55,7 +50,6 @@ const IntegrationSettings = () => {
   const canUpdateGitHubConnection = true
 
   const { data: gitHubAuthorization } = useGitHubAuthorizationQuery()
-  const { data: connections } = useGitHubConnectionsQuery({ organizationId: org?.id })
 
   const { mutate: deleteGitHubConnection } = useGitHubConnectionDeleteMutation({
     onSuccess: () => {
@@ -121,39 +115,7 @@ The GitHub app will watch for changes in your repository such as file changes, b
               <Markdown content={GitHubContentSectionTop} />
 
               <ul className="flex flex-col gap-y-2">
-                {connections?.map((connection) => (
-                  <IntegrationConnectionItem
-                    key={connection.id}
-                    disabled={!canUpdateGitHubConnection}
-                    connection={{
-                      id: String(connection.id),
-                      added_by: {
-                        id: String(connection.user?.id),
-                        primary_email: connection.user?.primary_email ?? '',
-                        username: connection.user?.username ?? '',
-                      },
-                      foreign_project_id: String(connection.repository.id),
-                      supabase_project_ref: connection.project.ref,
-                      organization_integration_id: 'unused',
-                      inserted_at: connection.inserted_at,
-                      updated_at: connection.updated_at,
-                      metadata: {
-                        name: connection.repository.name,
-                      } as any,
-                    }}
-                    type="GitHub"
-                    onDeleteConnection={onDeleteGitHubConnection}
-                  />
-                ))}
               </ul>
-
-              <EmptyIntegrationConnection
-                onClick={onAddGitHubConnection}
-                showNode={false}
-                disabled={!canCreateGitHubConnection}
-              >
-                Add new project connection
-              </EmptyIntegrationConnection>
 
               {GitHubContentSectionBottom && (
                 <Markdown
@@ -175,13 +137,6 @@ The GitHub app will watch for changes in your repository such as file changes, b
         <ScaffoldTitle>Integrations</ScaffoldTitle>
       </ScaffoldContainerLegacy>
       <GitHubSection />
-      {showVercelIntegration && (
-        <>
-          <ScaffoldDivider />
-          <VercelSection isProjectScoped={false} />
-          <SidePanelVercelProjectLinker />
-        </>
-      )}
     </>
   )
 }

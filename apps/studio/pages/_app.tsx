@@ -45,7 +45,7 @@ import { useRootQueryClient } from 'data/query-client'
 import { customFont, sourceCodePro } from 'fonts'
 import { AuthProvider } from 'lib/auth'
 import { getFlags as getConfigCatFlags } from 'lib/configcat'
-import { API_URL, BASE_PATH, IS_PLATFORM, IS_VELA_PLATFORM } from 'lib/constants'
+import { API_URL, BASE_PATH } from 'lib/constants'
 import { ProfileProvider } from 'lib/profile'
 import { Telemetry } from 'lib/telemetry'
 import { AppPropsWithLayout } from 'types'
@@ -65,9 +65,7 @@ loader.config({
   // use cloudflare or find some way to pull all the files from a CDN via a CLI, rather than tracking individual files
   // The alternative was to import * as monaco from 'monaco-editor' but i couldn't get it working
   paths: {
-    vs: IS_PLATFORM
-      ? 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs'
-      : `${BASE_PATH}/monaco-editor`,
+    vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs'
   },
 })
 
@@ -97,7 +95,7 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
             <AuthProvider>
               <FeatureFlagProvider
                 API_URL={API_URL}
-                enabled={IS_PLATFORM  && !IS_VELA_PLATFORM}
+                enabled={false /* FIXME: disabled hard */}
                 getConfigCatFlags={getConfigCatFlags}
               >
                 <ProfileProvider>

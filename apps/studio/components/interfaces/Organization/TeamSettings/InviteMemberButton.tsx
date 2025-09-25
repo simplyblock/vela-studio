@@ -75,7 +75,7 @@ export const InviteMemberButton = () => {
   const currentPlan = organization?.plan
   const hasAccessToProjectLevelPermissions = useHasAccessToProjectLevelPermissions(slug as string)
 
-  const userMemberData = members?.find((m) => m.gotrue_id === profile?.gotrue_id)
+  const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
     orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
