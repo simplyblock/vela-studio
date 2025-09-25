@@ -102,3 +102,24 @@ export interface ConnectionPoolSettings {
   project_slug?: string
   organization_slug?: string
 }
+
+export interface OrganizationMember {
+  user_id: string
+  mfa_enabled: boolean
+  email: string
+  username: string
+  metadata: Record<string, any> // dictionary<string, any>
+}
+
+export interface OrganizationMemberInvite {
+  user_id: string
+  invited_at: string
+  email: string
+  role_id: string
+}
+
+export interface CreateOrganizationMemberInvite {
+  email: string
+  role_id: string
+  role_scoped_projects?: string[] // list of project references
+}
