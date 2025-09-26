@@ -34,7 +34,6 @@
         "NEXT_PUBLIC_AUTH_NAVIGATOR_LOCK_KEY",
         "NEXT_PUBLIC_AUTH_DETECT_SESSION_IN_URL",
         "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID",
-        "NEXT_PUBLIC_USERCENTRICS_RULESET_ID",
         // These envs are technically passthrough env vars because they're only used on the server side of Nextjs
         "PLATFORM_PG_META_URL",
         "READ_ONLY_URL",
@@ -81,7 +80,6 @@
         "NEXT_PUBLIC_AUTH_DETECT_SESSION_IN_URL",
         "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID",
         "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-        "NEXT_PUBLIC_USERCENTRICS_RULESET_ID"
       ],
       "outputs": [".next/**", "!.next/cache/**", ".contentlayer/**"]
     },
