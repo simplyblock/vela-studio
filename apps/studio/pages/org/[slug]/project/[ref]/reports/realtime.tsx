@@ -14,18 +14,11 @@ import {
   LogsDatePicker,
   DatePickerValue,
 } from 'components/interfaces/Settings/Logs/Logs.DatePickers'
-import {
-  ResponseSpeedChartRenderer,
-  TopApiRoutesRenderer,
-  TotalRequestsChartRenderer,
-} from 'components/interfaces/Reports/renderers/ApiRenderers'
 import ComposedChartHandler from 'components/ui/Charts/ComposedChartHandler'
-import ReportWidget from 'components/interfaces/Reports/ReportWidget'
 import ReportFilterBar from 'components/interfaces/Reports/ReportFilterBar'
 
 import { analyticsKeys } from 'data/analytics/keys'
 import { getRealtimeReportAttributes } from 'data/reports/realtime-charts'
-import { useApiReport } from 'data/reports/api-report-query'
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 import { REPORT_DATERANGE_HELPER_LABELS } from 'components/interfaces/Reports/Reports.constants'
 import ReportStickyNav from 'components/interfaces/Reports/ReportStickyNav'
@@ -65,8 +58,6 @@ const RealtimeUsage = () => {
     showUpgradePrompt,
     setShowUpgradePrompt,
     handleDatePickerChange: handleDatePickerChangeFromHook,
-    isOrgPlanLoading,
-    orgPlan,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
   const queryClient = useQueryClient()
   const {
@@ -87,8 +78,7 @@ const RealtimeUsage = () => {
 
   const state = useDatabaseSelectorStateSnapshot()
 
-  const isFreePlan = !isOrgPlanLoading && orgPlan?.id === 'free'
-  const REALTIME_REPORT_ATTRIBUTES = getRealtimeReportAttributes(isFreePlan)
+  const REALTIME_REPORT_ATTRIBUTES = getRealtimeReportAttributes()
 
   const onRefreshReport = async () => {
     if (!selectedDateRange) return

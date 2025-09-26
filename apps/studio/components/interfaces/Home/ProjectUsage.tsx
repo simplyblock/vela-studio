@@ -15,7 +15,6 @@ import {
   useProjectLogStatsQuery,
 } from 'data/analytics/project-log-stats-query'
 import { useFillTimeseriesSorted } from 'hooks/analytics/useFillTimeseriesSorted'
-import { useCurrentOrgPlan } from 'hooks/misc/useCurrentOrgPlan'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import type { ChartIntervals } from 'types'
@@ -72,8 +71,6 @@ const ProjectUsage = () => {
     'project_auth:all',
     'project_storage:all',
   ])
-
-  const { plan } = useCurrentOrgPlan()
 
   const DEFAULT_INTERVAL: ChartIntervalKey = plan?.id === 'free' ? '1hr' : '1day'
 
@@ -146,10 +143,10 @@ const ProjectUsage = () => {
               }
             >
               {CHART_INTERVALS.map((i) => {
-                const disabled = !i.availableIn?.includes(plan?.id || 'free')
+                const disabled = !i.availableIn?.includes('free')
 
                 if (disabled) {
-                  const retentionDuration = LOG_RETENTION[plan?.id ?? 'free']
+                  const retentionDuration = LOG_RETENTION['free']
                   return (
                     <Tooltip key={i.key}>
                       <TooltipTrigger asChild>

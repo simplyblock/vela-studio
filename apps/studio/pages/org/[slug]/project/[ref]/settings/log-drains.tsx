@@ -16,7 +16,6 @@ import { DocsButton } from 'components/ui/DocsButton'
 import { useCreateLogDrainMutation } from 'data/log-drains/create-log-drain-mutation'
 import { LogDrainData, useLogDrainsQuery } from 'data/log-drains/log-drains-query'
 import { useUpdateLogDrainMutation } from 'data/log-drains/update-log-drain-mutation'
-import { useCurrentOrgPlan } from 'hooks/misc/useCurrentOrgPlan'
 import type { NextPageWithLayout } from 'types'
 import { Alert_Shadcn_, Button } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
@@ -29,11 +28,7 @@ const LogDrainsSettings: NextPageWithLayout = () => {
   const [selectedLogDrain, setSelectedLogDrain] = useState<Partial<LogDrainData> | null>(null)
   const [mode, setMode] = useState<'create' | 'update'>('create')
 
-  const { plan, isLoading: planLoading } = useCurrentOrgPlan()
-
-  const logDrainsEnabled = !planLoading && (plan?.id === 'team' || plan?.id === 'enterprise')
-
-  const { data: logDrains } = useLogDrainsQuery({ ref }, { enabled: logDrainsEnabled })
+  const { data: logDrains } = useLogDrainsQuery({ ref })
 
   const { mutate: createLogDrain, isLoading: createLoading } = useCreateLogDrainMutation({
     onSuccess: () => {
@@ -86,7 +81,7 @@ const LogDrainsSettings: NextPageWithLayout = () => {
 
             {!(logDrains?.length === 0) && (
               <Button
-                disabled={!logDrainsEnabled || !canManageLogDrains}
+                disabled={!canManageLogDrains}
                 onClick={() => {
                   setSelectedLogDrain(null)
                   setMode('create')

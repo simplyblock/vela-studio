@@ -63,8 +63,6 @@ const EdgeFunctionsUsage = () => {
     updateDateRange,
     datePickerValue,
     datePickerHelpers,
-    isOrgPlanLoading,
-    orgPlan,
     showUpgradePrompt,
     setShowUpgradePrompt,
     handleDatePickerChange,

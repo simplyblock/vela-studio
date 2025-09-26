@@ -7,7 +7,6 @@ import {
   ReportsDatetimeHelper,
   REPORT_DATERANGE_HELPER_LABELS,
 } from 'components/interfaces/Reports/Reports.constants'
-import { useCurrentOrgPlan } from 'hooks/misc/useCurrentOrgPlan'
 import { maybeShowUpgradePrompt } from 'components/interfaces/Settings/Logs/Logs.utils'
 
 export const DATERANGE_LIMITS: { [key: string]: number } = {
@@ -46,7 +45,6 @@ export const useReportDateRange = (
     | string
     | ReportsDatetimeHelper = REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES
 ) => {
-  const { plan: orgPlan, isLoading: isOrgPlanLoading } = useCurrentOrgPlan()
   const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
 
   // Get filtered date picker helpers based on organization plan
@@ -77,7 +75,7 @@ export const useReportDateRange = (
     }
 
     // Check if the target helper is available for the current plan
-    if (targetHelper && targetHelper.availableIn?.includes(orgPlan?.id || 'free')) {
+    if (targetHelper && targetHelper.availableIn?.includes('free')) {
       return {
         start: targetHelper.calcFrom(),
         end: targetHelper.calcTo(),
@@ -87,7 +85,7 @@ export const useReportDateRange = (
 
     // Fallback: look for default helper marked in REPORTS_DATEPICKER_HELPERS
     const fallbackHelper = REPORTS_DATEPICKER_HELPERS.find(
-      (helper) => helper.default && helper.availableIn?.includes(orgPlan?.id || 'free')
+      (helper) => helper.default && helper.availableIn?.includes('free')
     )
 
     if (fallbackHelper) {
@@ -100,7 +98,7 @@ export const useReportDateRange = (
 
     // Final fallback: use first available helper
     const firstAvailable = REPORTS_DATEPICKER_HELPERS.find((helper) =>
-      helper.availableIn?.includes(orgPlan?.id || 'free')
+      helper.availableIn?.includes('free')
     )
 
     if (firstAvailable) {
@@ -119,7 +117,7 @@ export const useReportDateRange = (
       end: defaultEnd,
       helper: { isHelper: false },
     }
-  }, [defaultHelper, orgPlan?.id])
+  }, [defaultHelper])
 
   // Get current effective values (from URL or defaults, but don't set URL)
   const timestampStart = useMemo(() => {
@@ -243,7 +241,7 @@ export const useReportDateRange = (
   )
 
   const handleDatePickerChange = (values: DatePickerValue) => {
-    const shouldShowUpgradePrompt = maybeShowUpgradePrompt(values.from, orgPlan?.id)
+    const shouldShowUpgradePrompt = maybeShowUpgradePrompt(values.from, 'free')
     if (shouldShowUpgradePrompt) {
       setShowUpgradePrompt(true)
       return true
@@ -264,8 +262,6 @@ export const useReportDateRange = (
     updateDateRange,
     datePickerValue,
     datePickerHelpers,
-    isOrgPlanLoading,
-    orgPlan,
     showUpgradePrompt,
     setShowUpgradePrompt,
     handleDatePickerChange,

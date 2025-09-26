@@ -15,7 +15,6 @@ import type { MultiAttribute } from 'components/ui/Charts/ComposedChart.utils'
 import LogChartHandler from 'components/ui/Charts/LogChartHandler'
 import Panel from 'components/ui/Panel'
 import { useFillTimeseriesSorted } from 'hooks/analytics/useFillTimeseriesSorted'
-import { useCurrentOrgPlan } from 'hooks/misc/useCurrentOrgPlan'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useChartData } from 'hooks/useChartData'
 import type { UpdateDateRange } from 'pages/org/[slug]/project/[ref]/reports/database'
@@ -41,14 +40,12 @@ const ReportChart = ({
   className?: string
 }) => {
   const { data: org } = useSelectedOrganizationQuery()
-  const { plan: orgPlan } = useCurrentOrgPlan()
-  const orgPlanId = orgPlan?.id
+  const orgPlanId = 'free'
 
   const [isHoveringUpgrade, setIsHoveringUpgrade] = useState(false)
   const isAvailable =
     chart.availableIn === undefined || (orgPlanId && chart.availableIn.includes(orgPlanId))
 
-  const canFetch = orgPlanId !== undefined
   const {
     data,
     isLoading: isLoadingChart,
@@ -60,7 +57,6 @@ const ReportChart = ({
     interval,
     functionIds,
     data: undefined,
-    enabled: canFetch,
     highlightedValue:
       chart.id === 'client-connections' || chart.id === 'pgbouncer-connections'
         ? true

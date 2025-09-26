@@ -68,16 +68,12 @@ const DatabaseUsage = () => {
     updateDateRange,
     datePickerValue,
     datePickerHelpers,
-    isOrgPlanLoading,
-    orgPlan,
     showUpgradePrompt,
     setShowUpgradePrompt,
     handleDatePickerChange,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
 
-  const isTeamsOrEnterprisePlan =
-    !isOrgPlanLoading && (orgPlan?.id === 'team' || orgPlan?.id === 'enterprise')
-  const showChartsV2 = isReportsV2 || isTeamsOrEnterprisePlan
+  const showChartsV2 = isReportsV2
 
   const state = useDatabaseSelectorStateSnapshot()
   const queryClient = useQueryClient()
@@ -254,7 +250,6 @@ const DatabaseUsage = () => {
         }
       >
         {selectedDateRange &&
-          orgPlan?.id &&
           (showChartsV2
             ? REPORT_ATTRIBUTES_V2.filter((chart) => !chart.hide).map((chart) => (
                 <ComposedChartHandler
@@ -274,7 +269,7 @@ const DatabaseUsage = () => {
                 />
               ))
             : REPORT_ATTRIBUTES.filter((chart) => !chart.hide).map((chart, i) =>
-                chart.availableIn?.includes(orgPlan?.id) ? (
+                chart.availableIn?.includes('free') ? (
                   <ComposedChartHandler
                     key={chart.id}
                     {...chart}

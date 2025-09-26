@@ -1,5 +1,4 @@
 import { MoreHorizontal, Pencil, TrashIcon } from 'lucide-react'
-import Link from 'next/link'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -9,7 +8,6 @@ import CardButton from 'components/ui/CardButton'
 import Panel from 'components/ui/Panel'
 import { useDeleteLogDrainMutation } from 'data/log-drains/delete-log-drain-mutation'
 import { LogDrainData, useLogDrainsQuery } from 'data/log-drains/log-drains-query'
-import { useCurrentOrgPlan } from 'hooks/misc/useCurrentOrgPlan'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   Button,
@@ -37,9 +35,6 @@ export function LogDrains({
 }) {
   const { data: org } = useSelectedOrganizationQuery()
 
-  const { isLoading: orgPlanLoading, plan } = useCurrentOrgPlan()
-  const logDrainsEnabled = !orgPlanLoading && (plan?.id === 'team' || plan?.id === 'enterprise')
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedLogDrain, setSelectedLogDrain] = useState<LogDrainData | null>(null)
   const { ref } = useParams()
@@ -52,7 +47,7 @@ export function LogDrains({
   } = useLogDrainsQuery(
     { ref },
     {
-      enabled: logDrainsEnabled,
+      enabled: true,
     }
   )
   const { mutate: deleteLogDrain } = useDeleteLogDrainMutation({
@@ -66,27 +61,6 @@ export function LogDrains({
       toast.error('Failed to delete log drain')
     },
   })
-
-  if (!orgPlanLoading && !logDrainsEnabled) {
-    return (
-      <CardButton
-        title="Upgrade to a Team Plan"
-        description="Upgrade to a Team or Enterprise Plan to use Log Drains"
-      >
-        <Button className="mt-2" asChild>
-          <Link href={`/org/${org?.slug}/billing`}>Upgrade to Team</Link>
-        </Button>
-      </CardButton>
-    )
-  }
-
-  if (isLoading || orgPlanLoading) {
-    return (
-      <div>
-        <GenericSkeletonLoader />
-      </div>
-    )
-  }
 
   if (!isLoading && logDrains?.length === 0) {
     return (
