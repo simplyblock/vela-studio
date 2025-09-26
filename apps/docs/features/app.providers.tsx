@@ -20,7 +20,7 @@ function GlobalProviders({ children }: PropsWithChildren) {
   return (
     <QueryClientProvider>
       <AuthContainer>
-        <FeatureFlagProvider API_URL={API_URL} enabled={featureFlagsEnabled}>
+        <FeatureFlagProvider enabled={featureFlagsEnabled}>
           <PageTelemetry />
           <ScrollRestoration />
           <ThemeProvider defaultTheme="system" enableSystem disableTransitionOnChange>

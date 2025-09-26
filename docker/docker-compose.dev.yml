@@ -51,11 +51,6 @@ services:
 
       LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
       LOGFLARE_URL: http://analytics:4000
-      NEXT_PUBLIC_ENABLE_LOGS: true
-      # Comment to use Big Query backend for analytics
-      NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
-      # Uncomment to use Big Query backend for analytics
-      # NEXT_ANALYTICS_BACKEND_PROVIDER: bigquery
 
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       PUBLIC_PLATFORM: ${PUBLIC_PLATFORM}
@@ -67,6 +62,9 @@ services:
       VELA_PLATFORM_KEYCLOAK_USERINFO_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/userinfo
       VELA_PLATFORM_KEYCLOAK_LOGOUT_ENDPOINT: http://auth:8080/auth/protocol/openid-connect/logout
       VELA_PLATFORM_KEYCLOAK_JWKS_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/certs
+      VELA_PLATFORM_EXT_SIGN_IN_URL: http://localhost:8000/sign-in
+      VELA_PLATFORM_EXT_BASE_URL: http://localhost:8000/
+      VELA_PLATFORM_EXT_API_SERVICE_URL: http://localhost:8000/api
       NEXTAUTH_SECRET: 'super-long-random-nextauth-secret'
       NEXTAUTH_URL: ${NEXT_PUBLIC_SITE_URL}
       NEXTAUTH_URL_INTERNAL: 'http://vela-studio:3000'

@@ -6,6 +6,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import { components } from 'api-types'
 import { get, post } from './fetchWrappers'
 import { ensurePlatformSuffix } from './helpers'
+import { useServiceUrls } from './hooks/useServiceUrls'
 
 type TrackFeatureFlagVariables = components['schemas']['TelemetryFeatureFlagBody']
 export type CallFeatureFlagsResponse = components['schemas']['TelemetryCallFeatureFlagsResponse']
@@ -24,13 +25,11 @@ export async function trackFeatureFlag(API_URL: string, body: TrackFeatureFlagVa
 }
 
 export type FeatureFlagContextType = {
-  API_URL?: string
   configcat: { [key: string]: boolean | number | string | null }
   hasLoaded?: boolean
 }
 
 export const FeatureFlagContext = createContext<FeatureFlagContextType>({
-  API_URL: undefined,
   configcat: {},
   hasLoaded: false,
 })
@@ -48,12 +47,10 @@ function getCookies() {
 }
 
 export const FeatureFlagProvider = ({
-  API_URL,
   enabled = true,
   getConfigCatFlags,
   children,
 }: PropsWithChildren<{
-  API_URL: string
   enabled?: boolean
   getConfigCatFlags?: (
     userEmail?: string
@@ -61,10 +58,11 @@ export const FeatureFlagProvider = ({
 }>) => {
   //const user = useUser()
 
+  const {data: serviceUrls, loading } = useServiceUrls()
+
   const [store, setStore] = useState<FeatureFlagContextType>({
-    API_URL,
     configcat: {},
-    hasLoaded: false,
+    hasLoaded: loading,
   })
 
   useEffect(() => {
@@ -75,9 +73,11 @@ export const FeatureFlagProvider = ({
 
       let flagStore: FeatureFlagContextType = { configcat: {} }
 
+      if (!loading) return
+
       // Run both async operations in parallel
       const [flags, flagValues] = await Promise.all([
-        getFeatureFlags(API_URL),
+        getFeatureFlags(serviceUrls.platformApiServiceUrl),
         typeof getConfigCatFlags === 'function'
           ? getConfigCatFlags(''/*user?.email*/)
           : Promise.resolve([]),
@@ -114,7 +114,7 @@ export const FeatureFlagProvider = ({
     return () => {
       mounted = false
     }
-  }, [enabled /*, user?.email*/])
+  }, [enabled, loading /*, user?.email*/])
 
   return (
     <FeatureFlagContext.Provider value={store}>

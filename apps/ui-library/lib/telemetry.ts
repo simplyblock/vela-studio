@@ -5,15 +5,19 @@ import { useCallback } from 'react'
 
 import { sendTelemetryEvent } from 'common'
 import { TelemetryEvent } from 'common/telemetry-constants'
-import { API_URL } from 'lib/constants'
+import { useServiceUrls } from 'common/hooks/useServiceUrls'
 
 export function useSendTelemetryEvent() {
   const pathname = usePathname()
 
+  const { data: serviceUrls, loading } = useServiceUrls()
+
   return useCallback(
     (event: TelemetryEvent) => {
-      return sendTelemetryEvent(API_URL, event, pathname)
+      if (!loading) return
+
+      return sendTelemetryEvent(serviceUrls.platformApiServiceUrl, event, pathname)
     },
-    [pathname]
+    [pathname, loading]
   )
 }

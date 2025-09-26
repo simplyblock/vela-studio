@@ -1,11 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from '../../../lib/api/apiBuilder'
-
-interface ServiceUrlsResponse {
-  platformBaseUrl: string
-  platformSignInUrl: string
-  platformApiServiceUrl: string
-}
+import { ServiceUrlsResponse } from 'common/hooks/useServiceUrls'
 
 const extPlatformSignInUrl = process.env.VELA_PLATFORM_EXT_SIGN_IN_URL
 if (!extPlatformSignInUrl) throw new Error('Missing VELA_PLATFORM_EXT_SIGN_IN_URL')
