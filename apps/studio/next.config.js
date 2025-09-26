@@ -10,13 +10,7 @@ const nextConfig = {
     webpackBuildWorker: true,
   },
   async rewrites() {
-    return [
-      {
-        source: `/.well-known/vercel/flags`,
-        destination: `https://supabase.com/.well-known/vercel/flags`,
-        basePath: false,
-      },
-    ]
+    return []
   },
   async redirects() {
     return [
@@ -390,18 +384,6 @@ const nextConfig = {
         hostname: 'avatars.githubusercontent.com',
         port: '',
         pathname: '/u/*',
-      },
-      {
-        protocol: 'https',
-        hostname: 'api-frameworks.vercel.sh',
-        port: '',
-        pathname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'vercel.com',
-        port: '',
-        pathname: '**',
       },
     ],
   },
