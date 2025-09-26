@@ -61,7 +61,6 @@ export const AuthProvider = ({ children }: PropsWithChildren<AuthProviderProps>)
   }, [status])
 
   useEffect(() => {
-    console.log('AuthProvider useEffect')
     if (location.pathname.endsWith('/sign-in')) {
       return
     }

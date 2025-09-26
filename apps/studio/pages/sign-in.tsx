@@ -11,7 +11,6 @@ const SignInPage: NextPageWithLayout = () => {
   useEffect(() => {
     setTimeout(async ()=> {
       const session = await getSession()
-      console.log(session)
       if (session) {
         try {
           await logOut()
