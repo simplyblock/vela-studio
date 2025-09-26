@@ -1,4 +1,4 @@
-const PUBLIC_URL = new URL(process.env.SUPABASE_PUBLIC_URL || 'http://localhost')
+const PUBLIC_URL = new URL(process.env.VELA_PLATFORM_EXT_BASE_URL || 'http://localhost')
 
 export const VELA_PLATFORM_URL = process.env.VELA_PLATFORM_URL
 export const VELA_PLATFORM_GOTRUE_URL = process.env.VELA_PLATFORM_GOTRUE_URL

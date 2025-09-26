@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import apiWrapper from 'lib/api/apiWrapper'
 import { NextApiRequest, NextApiResponse } from 'next'
 
+// FIXME: Remove the use of the supabase client
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!)
 
 export default (req: NextApiRequest, res: NextApiResponse) => apiWrapper(req, res, handler)
@@ -24,9 +25,8 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const { data } = supabase.storage.from(id as string).getPublicUrl(path)
 
-  // change the domain name to the SUPABASE_PUBLIC_URL since SUPABASE_URL is not accessible from the client
   const publicUrl = new URL(data.publicUrl)
-  const parsed = new URL(process.env.SUPABASE_PUBLIC_URL!)
+  const parsed = new URL(process.env.VELA_PLATFORM_EXT_BASE_URL!)
   publicUrl.protocol = parsed.protocol
   publicUrl.host = parsed.host
   publicUrl.port = parsed.port
