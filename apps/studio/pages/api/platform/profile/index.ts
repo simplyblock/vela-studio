@@ -46,7 +46,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ProfileRespon
     organizations: [
       {
         id: 1,
-        name: process.env.DEFAULT_ORGANIZATION_NAME || 'Default Organization',
+        name: 'Default Organization',
         slug: 'default-org-slug',
         projects: [
           { ...DEFAULT_PROJECT, connectionString: '' },

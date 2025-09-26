@@ -15,7 +15,7 @@ export const DEFAULT_HOME = '/org'
 export const DEFAULT_PROJECT = {
   id: 1,
   ref: 'default',
-  name: process.env.DEFAULT_PROJECT_NAME || 'Default Project',
+  name: 'Default Project',
   organization_id: 1,
   cloud_provider: 'localhost',
   status: 'ACTIVE_HEALTHY',
@@ -32,14 +32,4 @@ export const DEFAULT_PROJECT_2 = {
   status: 'ACTIVE_HEALTHY',
   region: 'local',
   inserted_at: '2021-08-02T06:40:40.646Z',
-}
-
-export const DEFAULT_ORGANIZATION = {
-  id: 1,
-  name: process.env.DEFAULT_ORGANIZATION_NAME || 'Default Organization',
-  slug: 'default-org-slug',
-  plan: {
-    id: 'enterprise',
-    name: 'Enterprise',
-  },
 }

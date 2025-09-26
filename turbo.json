@@ -41,8 +41,6 @@
         "READ_ONLY_API_KEY",
         "SUPABASE_SERVICE_KEY",
         "SUPABASE_ANON_KEY",
-        "DEFAULT_PROJECT_NAME",
-        "DEFAULT_ORGANIZATION_NAME",
         "OPENAI_API_KEY",
         "AUTH_JWT_SECRET",
         "LOGFLARE_URL",
