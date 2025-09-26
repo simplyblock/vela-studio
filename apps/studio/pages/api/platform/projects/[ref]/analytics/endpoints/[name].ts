@@ -46,6 +46,7 @@ const proxyRequest = async (req: NextApiRequest) => {
 }
 
 const retrieveAnalyticsData = async (name: string, payload: any) => {
+  console.log(payload)
   const search = '?' + new URLSearchParams(payload).toString()
   const apiKey = process.env.LOGFLARE_PRIVATE_ACCESS_TOKEN
   const url = `${PROJECT_ANALYTICS_URL}endpoints/query/${name}${search}`
@@ -56,7 +57,7 @@ const retrieveAnalyticsData = async (name: string, payload: any) => {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
-  }).then((res) => res.json())
+  }).then(async (res) => res.json())
 
   return result
 }

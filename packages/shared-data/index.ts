@@ -5,14 +5,9 @@ import { plans, PricingInformation } from './plans'
 import { pricing } from './pricing'
 import { products, PRODUCT_MODULES } from './products'
 import questions from './questions'
-import type { AWS_REGIONS_KEYS, CloudProvider, Region } from './regions'
-import { AWS_REGIONS, FLY_REGIONS } from './regions'
-import tweets from './tweets'
 
-export type { AWS_REGIONS_KEYS, CloudProvider, PricingInformation, Region }
+export type { PricingInformation }
 export {
-  AWS_REGIONS,
-  FLY_REGIONS,
   config,
   extensions,
   logConstants,
@@ -21,5 +16,4 @@ export {
   products,
   PRODUCT_MODULES,
   questions,
-  tweets,
 }

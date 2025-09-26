@@ -2,21 +2,14 @@ import { DiskManagementPanelForm } from 'components/interfaces/DiskManagement/Di
 import { ConnectionPooling, NetworkRestrictions } from 'components/interfaces/Settings/Database'
 import { DatabaseReadOnlyAlert } from 'components/interfaces/Settings/Database/DatabaseReadOnlyAlert'
 import ResetDbPassword from 'components/interfaces/Settings/Database/DatabaseSettings/ResetDbPassword'
-import DiskSizeConfiguration from 'components/interfaces/Settings/Database/DiskSizeConfiguration'
 import { PoolingModesModal } from 'components/interfaces/Settings/Database/PoolingModesModal'
 import SSLConfiguration from 'components/interfaces/Settings/Database/SSLConfiguration'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import DatabaseLayout from 'components/layouts/DatabaseLayout/DatabaseLayout'
 import { ScaffoldContainer, ScaffoldHeader, ScaffoldTitle } from 'components/layouts/Scaffold'
-import { useIsAwsCloudProvider, useIsAwsK8sCloudProvider } from 'hooks/misc/useSelectedProject'
 import type { NextPageWithLayout } from 'types'
 
 const ProjectSettings: NextPageWithLayout = () => {
-  const isAws = useIsAwsCloudProvider()
-  const isAwsK8s = useIsAwsK8sCloudProvider()
-
-  const showNewDiskManagementUI = isAws || isAwsK8s
-
   return (
     <>
       <ScaffoldContainer>
@@ -33,12 +26,7 @@ const ProjectSettings: NextPageWithLayout = () => {
           </div>
 
           <SSLConfiguration />
-          {showNewDiskManagementUI ? (
-            // This form is hidden if Disk and Compute form is enabled, new form is on ./settings/compute-and-disk
-            <DiskManagementPanelForm />
-          ) : (
-            <DiskSizeConfiguration />
-          )}
+          <DiskManagementPanelForm />
           <NetworkRestrictions />
         </div>
       </ScaffoldContainer>

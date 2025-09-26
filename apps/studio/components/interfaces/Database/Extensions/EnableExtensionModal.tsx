@@ -3,12 +3,11 @@ import { Database, ExternalLinkIcon, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useDatabaseExtensionEnableMutation } from 'data/database-extensions/database-extension-enable-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -20,10 +19,7 @@ import {
   Modal,
   WarningIcon,
 } from 'ui'
-import { Admonition } from 'ui-patterns'
 import { getPathReferences } from '../../../../data/vela/path-references'
-
-const orioleExtCallOuts = ['vector', 'postgis']
 
 interface EnableExtensionModalProps {
   visible: boolean
@@ -34,7 +30,6 @@ interface EnableExtensionModalProps {
 const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionModalProps) => {
   const { data: project } = useSelectedProjectQuery()
   const { slug: orgSlug } = getPathReferences()
-  const isOrioleDb = useIsOrioleDb()
   const [defaultSchema, setDefaultSchema] = useState()
   const [fetchingSchemaInfo, setFetchingSchemaInfo] = useState(false)
 
@@ -141,16 +136,6 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
           return (
             <>
               <Modal.Content className="flex flex-col gap-y-2">
-                {isOrioleDb && orioleExtCallOuts.includes(extension.name) && (
-                  <Admonition type="default" title="Extension is limited by OrioleDB">
-                    <span className="block">
-                      {extension.name} cannot be accelerated by indexes on tables that are using the
-                      OrioleDB access method
-                    </span>
-                    <DocsButton abbrev={false} className="mt-2" href="https://supabase.com/docs" />
-                  </Admonition>
-                )}
-
                 {fetchingSchemaInfo || isSchemasLoading ? (
                   <div className="space-y-2">
                     <ShimmeringLoader />

@@ -68,12 +68,12 @@ const PreviewFilterPanel = ({
   setSelectedDatePickerValue,
 }: PreviewFilterPanelProps) => {
   const router = useRouter()
-  const { ref } = useParams()
+  const { ref, slug } = useParams()
   const [search, setSearch] = useState('')
 
   const logName = router.pathname.split('/').pop()
 
-  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref })
+  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref, orgSlug: slug })
 
   // [Joshen] These are the routes tested that can show replica logs
   const showDatabaseSelector = LOG_ROUTES_WITH_REPLICA_SUPPORT.includes(router.pathname)

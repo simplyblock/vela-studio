@@ -1,7 +1,6 @@
 import { OrganizationBase } from 'data/organizations/organizations-query'
 import { PlanId } from 'data/subscriptions/types'
 import jsonLogic from 'json-logic-js'
-import { ManagedBy } from 'lib/constants/infrastructure'
 
 export interface Organization extends OrganizationBase {
   partner_id?: string

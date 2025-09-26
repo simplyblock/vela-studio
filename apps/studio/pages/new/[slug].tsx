@@ -9,9 +9,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { components } from 'api-types'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
-import {
-  NotOrganizationOwnerWarning,
-} from 'components/interfaces/Organization/NewProject'
+import { NotOrganizationOwnerWarning } from 'components/interfaces/Organization/NewProject'
 import { OrgNotFound } from 'components/interfaces/Organization/OrgNotFound'
 import { AdvancedConfiguration } from 'components/interfaces/ProjectCreation/AdvancedConfiguration'
 import {
@@ -28,7 +26,7 @@ import Panel from 'components/ui/Panel'
 import PasswordStrengthBar from 'components/ui/PasswordStrengthBar'
 import { useAuthorizedAppsQuery } from 'data/oauth/authorized-apps-query'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
-import { DesiredInstanceSize, instanceSizeSpecs } from 'data/projects/new-project.constants'
+import { DesiredInstanceSize } from 'data/projects/new-project.constants'
 import {
   ProjectCreateVariables,
   useProjectCreateMutation,
@@ -40,20 +38,11 @@ import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { withAuth } from 'hooks/misc/withAuth'
 import { useFlag } from 'hooks/ui/useFlag'
-import { getCloudProviderArchitecture } from 'lib/cloudprovider-utils'
-import {
-  DEFAULT_MINIMUM_PASSWORD_STRENGTH,
-  DEFAULT_PROVIDER,
-  MANAGED_BY,
-  PROJECT_STATUS,
-  PROVIDERS,
-} from 'lib/constants'
+import { DEFAULT_MINIMUM_PASSWORD_STRENGTH, PROJECT_STATUS } from 'lib/constants'
 import passwordStrength from 'lib/password-strength'
 import { generateStrongPassword } from 'lib/project'
-import type { CloudProvider } from 'shared-data'
 import type { NextPageWithLayout } from 'types'
 import {
-  Badge,
   Button,
   Form_Shadcn_,
   FormControl_Shadcn_,
@@ -129,10 +118,7 @@ const Wizard: NextPageWithLayout = () => {
   const projectCreationDisabled = useFlag('disableProjectCreationAndUpdate')
   const showPostgresVersionSelector = useFlag('showPostgresVersionSelector')
 
-  const { data: approvedOAuthApps } = useAuthorizedAppsQuery(
-    { slug },
-    { enabled: slug !== '_' }
-  )
+  const { data: approvedOAuthApps } = useAuthorizedAppsQuery({ slug }, { enabled: slug !== '_' })
 
   const hasOAuthApps = approvedOAuthApps && approvedOAuthApps.length > 0
 
@@ -175,7 +161,7 @@ const Wizard: NextPageWithLayout = () => {
         project.organization_id === currentOrg?.id && project.status !== PROJECT_STATUS.INACTIVE
     ) ?? []
 
-  // FIXME: need permission implemented     
+  // FIXME: need permission implemented
   const isAdmin = true
 
   const isInvalidSlug = isOrganizationsSuccess && currentOrg === undefined
@@ -218,7 +204,6 @@ const Wizard: NextPageWithLayout = () => {
       organization: slug,
       projectName: projectName || '',
       postgresVersion: '',
-      cloudProvider: PROVIDERS[DEFAULT_PROVIDER].id,
       dbPass: '',
       dbPassStrength: 0,
       instanceSize: sizes[0],
@@ -273,11 +258,9 @@ const Wizard: NextPageWithLayout = () => {
     if (!currentOrg) return console.error('Unable to retrieve current organization')
 
     const {
-      cloudProvider,
       projectName,
       dbPass,
       postgresVersion,
-      instanceSize,
       dataApi,
       useApiSchema,
       postgresVersionSelection,
@@ -288,7 +271,6 @@ const Wizard: NextPageWithLayout = () => {
 
     const data: ProjectCreateVariables = {
       dbPass,
-      cloudProvider,
       organizationSlug: currentOrg.slug,
       name: projectName,
       // gets ignored due to org billing subscription anyway
@@ -416,7 +398,6 @@ const Wizard: NextPageWithLayout = () => {
                                       className="flex justify-between"
                                     >
                                       <span className="mr-2">{x.name}</span>
-                                      <Badge>{x.plan.name}</Badge>
                                     </SelectItem_Shadcn_>
                                   ))}
                                 </SelectGroup_Shadcn_>
@@ -503,45 +484,6 @@ const Wizard: NextPageWithLayout = () => {
                                 </SelectTrigger_Shadcn_>
                                 <SelectContent_Shadcn_>
                                   <SelectGroup_Shadcn_>
-                                    {sizes
-                                      .filter((option) =>
-                                        instanceSizeSpecs[option].cloud_providers.includes(
-                                          form.getValues('cloudProvider') as CloudProvider
-                                        )
-                                      )
-                                      .map((option) => {
-                                        return (
-                                          <SelectItem_Shadcn_ key={option} value={option}>
-                                            <div className="flex flex-row i gap-2">
-                                              <div className="text-center w-[80px]">
-                                                <Badge
-                                                  variant={option === 'micro' ? 'default' : 'brand'}
-                                                  className="rounded-md w-16 text-center flex justify-center font-mono uppercase"
-                                                >
-                                                  {instanceSizeSpecs[option].label}
-                                                </Badge>
-                                              </div>
-                                              <div className="text-sm">
-                                                <span className="text-foreground">
-                                                  {instanceSizeSpecs[option].ram} RAM /{' '}
-                                                  {instanceSizeSpecs[option].cpu}{' '}
-                                                  {getCloudProviderArchitecture(
-                                                    form.getValues('cloudProvider') as CloudProvider
-                                                  )}{' '}
-                                                  CPU
-                                                </span>
-                                                <p
-                                                  className="text-xs text-foreground-light instance-details"
-                                                  translate="no"
-                                                >
-                                                  ${instanceSizeSpecs[option].priceHourly}/hour (~$
-                                                  {instanceSizeSpecs[option].priceMonthly}/month)
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </SelectItem_Shadcn_>
-                                        )
-                                      })}
                                     <SelectItem_Shadcn_
                                       key={'disabled'}
                                       value={'disabled'}
@@ -619,7 +561,6 @@ const Wizard: NextPageWithLayout = () => {
                             <PostgresVersionSelector
                               field={field}
                               form={form}
-                              cloudProvider={form.getValues('cloudProvider') as CloudProvider}
                               organizationSlug={slug}
                             />
                           )}
@@ -652,9 +593,11 @@ const Wizard: NextPageWithLayout = () => {
                     )}
 
                     <SecurityOptions form={form} />
-                    {/* //FIXME: Hard disabled for now */ false && showAdvancedConfig && (
-                      <AdvancedConfiguration form={form} />
-                    )}
+                    {
+                      /* //FIXME: Hard disabled for now */ false && showAdvancedConfig && (
+                        <AdvancedConfiguration form={form} />
+                      )
+                    }
                   </>
                 )}
               </div>
@@ -704,11 +647,11 @@ const Wizard: NextPageWithLayout = () => {
  * Needs to be in the API in the future [kevin]
  */
 const monthlyInstancePrice = (instance: string | undefined): number => {
-  return instanceSizeSpecs[instance as DesiredInstanceSize]?.priceMonthly || 10
+  return 10
 }
 
 const instanceLabel = (instance: string | undefined): string => {
-  return instanceSizeSpecs[instance as DesiredInstanceSize]?.label || 'Micro'
+  return 'Micro'
 }
 
 const PageLayout = withAuth(({ children }: PropsWithChildren) => {

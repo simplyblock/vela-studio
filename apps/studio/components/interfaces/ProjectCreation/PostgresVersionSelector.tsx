@@ -5,7 +5,6 @@ import { useProjectCreationPostgresVersionsQuery } from 'data/config/project-cre
 import { useProjectUnpausePostgresVersionsQuery } from 'data/config/project-unpause-postgres-versions-query'
 import { PostgresEngine, ReleaseChannel } from 'data/projects/new-project.constants'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import type { CloudProvider } from 'shared-data'
 import {
   Badge,
   SelectContent_Shadcn_,
@@ -24,7 +23,6 @@ interface PostgresVersionDetails {
 }
 
 interface PostgresVersionSelectorProps {
-  cloudProvider: CloudProvider
   dbRegion?: string
   organizationSlug: string | undefined
   field: ControllerRenderProps<any, 'postgresVersionSelection'>
@@ -54,7 +52,6 @@ export const extractPostgresVersionDetails = (value: string): PostgresVersionDet
 }
 
 export const PostgresVersionSelector = ({
-  cloudProvider,
   dbRegion = "",
   organizationSlug,
   field,
@@ -73,7 +70,6 @@ export const PostgresVersionSelector = ({
     isSuccess,
   } = useProjectCreationPostgresVersionsQuery(
     {
-      cloudProvider,
       dbRegion: dbRegionExact,
       organizationSlug,
     },

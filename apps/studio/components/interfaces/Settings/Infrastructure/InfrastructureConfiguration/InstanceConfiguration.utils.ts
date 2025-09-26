@@ -5,13 +5,10 @@ import { Edge, Node, Position } from 'reactflow'
 import type { LoadBalancer } from 'data/read-replicas/load-balancers-query'
 import type { Database } from 'data/read-replicas/replicas-query'
 import {
-  AVAILABLE_REPLICA_REGIONS,
-  AWS_REGIONS_COORDINATES,
   NODE_ROW_HEIGHT,
   NODE_SEP,
   NODE_WIDTH,
 } from './InstanceConfiguration.constants'
-import { AWS_REGIONS, AWS_REGIONS_KEYS } from 'shared-data'
 
 // [Joshen] Just FYI the nodes generation assumes each project only has one load balancer
 // Will need to change if this eventually becomes otherwise
@@ -31,8 +28,7 @@ export const generateNodes = ({
 }): Node[] => {
   const position = { x: 0, y: 0 }
   const regions = groupBy(replicas, (d) => {
-    const region = AVAILABLE_REPLICA_REGIONS.find((region) => d.region.includes(region.region))
-    return region?.key
+    return 'default'
   })
 
   const loadBalancer = loadBalancers.find((x) =>
@@ -50,37 +46,13 @@ export const generateNodes = ({
         }
       : undefined
 
-  // [Joshen] We should be finding from AVAILABLE_REPLICA_REGIONS instead
-  // but because the new regions (zurich, stockholm, ohio, paris) dont have
-  // coordinates yet in AWS_REGIONS_COORDINATES - we'll need to add them in once
-  // they are ready to spin up coordinates for
-  const primaryRegion = Object.keys(AWS_REGIONS)
-    .map((key) => {
-      return {
-        key: key as AWS_REGIONS_KEYS,
-        name: AWS_REGIONS?.[key as AWS_REGIONS_KEYS].displayName,
-        region: AWS_REGIONS?.[key as AWS_REGIONS_KEYS].code,
-        coordinates: AWS_REGIONS_COORDINATES[key],
-      }
-    })
-    .find((region) => primary.region.includes(region.region))
-
-  // [Joshen] Once we have the coordinates for Zurich and Stockholm, we can remove the above
-  // and uncomment below for better simplicity
-  // const primaryRegion = AVAILABLE_REPLICA_REGIONS.find((region) =>
-  //   primary.region.includes(region.region)
-  // )
-
   const primaryNode: Node = {
     position,
     id: primary.identifier,
     type: 'PRIMARY',
     data: {
       id: primary.identifier,
-      region:
-        primary.cloud_provider === 'FLY'
-          ? { name: 'Singapore (sin)', key: 'SOUTHEAST_ASIA' }
-          : primaryRegion ?? { name: primary.region },
+      region: { name: primary.region },
       provider: primary.cloud_provider,
       inserted_at: primary.inserted_at,
       computeSize: primary.size,
@@ -94,17 +66,13 @@ export const generateNodes = ({
   const replicaNodes: Node[] = replicas
     .sort((a, b) => (a.region > b.region ? 1 : -1))
     .map((database) => {
-      const region = AVAILABLE_REPLICA_REGIONS.find((region) =>
-        database.region.includes(region.region)
-      )
-
       return {
         position,
         id: database.identifier,
         type: 'READ_REPLICA',
         data: {
           id: database.identifier,
-          region,
+          region: 'default',
           provider: database.cloud_provider,
           inserted_at: database.inserted_at,
           computeSize: database.size,
@@ -169,7 +137,6 @@ export const addRegionNodes = (nodes: Node[], edges: Edge[]) => {
 
   const nodesByRegion = groupBy(replicaNodes, (node) => node.data.region.key)
   Object.entries(nodesByRegion).map(([key, value]) => {
-    const region = AVAILABLE_REPLICA_REGIONS.find((r) => r.key === key)
     const nodeXPositions = value.map((x) => x.position.x)
     const nodeYPositions = value.map((x) => x.position.y)
 
@@ -183,7 +150,7 @@ export const addRegionNodes = (nodes: Node[], edges: Edge[]) => {
       position: { x: minX - 10, y: minY - 10 },
       width: maxX - minX + NODE_WIDTH / 2,
       type: 'REGION',
-      data: { region, numReplicas: value.length },
+      data: { region: 'default', numReplicas: value.length },
     }
     regionNodes.push(regionNode)
   })

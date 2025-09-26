@@ -14,10 +14,9 @@ import {
   ReplicaInitializationStatus,
   useReadReplicasStatusesQuery,
 } from 'data/read-replicas/replicas-status-query'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { timeout } from 'lib/helpers'
 import Link from 'next/link'
-import { type AWS_REGIONS_KEYS } from 'shared-data'
 import {
   Button,
   DropdownMenu,
@@ -40,7 +39,6 @@ import { useShowNewReplicaPanel } from './use-show-new-replica'
 
 const InstanceConfigurationUI = () => {
   const reactFlow = useReactFlow()
-  const isOrioleDb = useIsOrioleDb()
   const { resolvedTheme } = useTheme()
   const { slug, ref: projectRef } = useParams()
   const numTransition = useRef<number>()
@@ -50,7 +48,6 @@ const InstanceConfigurationUI = () => {
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false)
   const { showNewReplicaPanel, setShowNewReplicaPanel } = useShowNewReplicaPanel()
   const [refetchInterval, setRefetchInterval] = useState<number | boolean>(10000)
-  const [newReplicaRegion, setNewReplicaRegion] = useState<AWS_REGIONS_KEYS>()
   const [selectedReplicaToDrop, setSelectedReplicaToDrop] = useState<Database>()
   const [selectedReplicaToRestart, setSelectedReplicaToRestart] = useState<Database>()
   // FIXME: need permission implemented 
@@ -61,7 +58,7 @@ const InstanceConfigurationUI = () => {
     refetch: refetchLoadBalancers,
     isSuccess: isSuccessLoadBalancers,
   } = useLoadBalancersQuery({
-    projectRef,
+    projectRef, orgSlug: slug
   })
   const {
     data,
@@ -90,7 +87,7 @@ const InstanceConfigurationUI = () => {
           REPLICA_STATUS.ACTIVE_UNHEALTHY,
           REPLICA_STATUS.INIT_READ_REPLICA_FAILED,
         ]
-        const replicasInTransition = res.filter((db) => {
+        const replicasInTransition = res.filter((db: any) => {
           const { status } = db.replicaInitializationStatus || {}
           return (
             !fixedStatues.includes(db.status) || status === ReplicaInitializationStatus.InProgress
@@ -224,7 +221,7 @@ const InstanceConfigurationUI = () => {
               <div className="flex items-center justify-center">
                 <ButtonTooltip
                   type="default"
-                  disabled={!canManageReplicas || isOrioleDb}
+                  disabled={!canManageReplicas}
                   className={cn(replicas.length > 0 ? 'rounded-r-none' : '')}
                   onClick={() => setShowNewReplicaPanel(true)}
                   tooltip={{
@@ -232,9 +229,7 @@ const InstanceConfigurationUI = () => {
                       side: 'bottom',
                       text: !canManageReplicas
                         ? 'You need additional permissions to deploy replicas'
-                        : isOrioleDb
-                          ? 'Read replicas are not supported with OrioleDB'
-                          : undefined,
+                        : undefined,
                     },
                   }}
                 >
@@ -307,7 +302,6 @@ const InstanceConfigurationUI = () => {
             ) : (
               <MapView
                 onSelectDeployNewReplica={(region) => {
-                  setNewReplicaRegion(region)
                   setShowNewReplicaPanel(true)
                 }}
                 onSelectRestartReplica={setSelectedReplicaToRestart}
@@ -320,10 +314,8 @@ const InstanceConfigurationUI = () => {
 
       <DeployNewReplicaPanel
         visible={showNewReplicaPanel}
-        selectedDefaultRegion={newReplicaRegion}
         onSuccess={() => setRefetchInterval(5000)}
         onClose={() => {
-          setNewReplicaRegion(undefined)
           setShowNewReplicaPanel(false)
         }}
       />

@@ -9,7 +9,7 @@ import { useParams } from 'common'
 import { Markdown } from 'components/interfaces/Markdown'
 import { REPLICA_STATUS } from 'components/interfaces/Settings/Infrastructure/InfrastructureConfiguration/InstanceConfiguration.constants'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
-import { formatDatabaseID, formatDatabaseRegion } from 'data/read-replicas/replicas.utils'
+import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import {
   Button,
@@ -62,7 +62,7 @@ const DatabaseSelector = ({
     .sort((database) => (database.identifier === projectRef ? -1 : 0))
 
   const selectedDatabase = databases.find((db) => db.identifier === selectedDatabaseId)
-  const selectedDatabaseRegion = formatDatabaseRegion(selectedDatabase?.region ?? '')
+  const selectedDatabaseRegion = 'default'
   const formattedDatabaseId = formatDatabaseID(selectedDatabaseId ?? '')
 
   const selectedAdditionalOption = additionalOptions.find((x) => x.id === selectedDatabaseId)
@@ -143,7 +143,7 @@ const DatabaseSelector = ({
             <CommandGroup_Shadcn_>
               <ScrollArea className={(databases || []).length > 7 ? 'h-[210px]' : ''}>
                 {sortedDatabases?.map((database) => {
-                  const region = formatDatabaseRegion(database.region)
+                  const region = 'default'
                   const id = formatDatabaseID(database.identifier)
 
                   if (database.status !== 'ACTIVE_HEALTHY') {

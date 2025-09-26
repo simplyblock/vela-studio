@@ -20,11 +20,7 @@ import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import {
-  useIsOrioleDb,
-  useProjectByRefQuery,
-  useSelectedProjectQuery,
-} from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
@@ -44,8 +40,6 @@ import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 const Home: NextPageWithLayout = () => {
   const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
-  const { data: parentProject } = useProjectByRefQuery(project?.parent_project_ref)
-  const isOrioleDb = useIsOrioleDb()
   const snap = useAppStateSnapshot()
   const { ref, enableBranching, slug } = useParams()
 
@@ -112,21 +106,6 @@ const Home: NextPageWithLayout = () => {
                 <h1 className="text-3xl">{projectName}</h1>
               </div>
               <div className="flex items-center gap-x-2 mb-1">
-                {isOrioleDb && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Badge variant="warning">OrioleDB</Badge>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" align="start" className="max-w-80 text-center">
-                      This project is using Postgres with OrioleDB which is currently in preview and
-                      not suitable for production workloads. View our{' '}
-                      <InlineLink href="https://supabase.com/docs/guides/database/orioledb">
-                        documentation
-                      </InlineLink>{' '}
-                      for all limitations.
-                    </TooltipContent>
-                  </Tooltip>
-                )}
                 {showInstanceSize && (
                   <ComputeBadgeWrapper
                     project={{

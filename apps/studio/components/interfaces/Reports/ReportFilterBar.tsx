@@ -98,8 +98,8 @@ const ReportFilterBar = ({
   selectedProduct,
   showDatabaseSelector = true,
 }: ReportFilterBarProps) => {
-  const { ref } = useParams()
-  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref })
+  const { ref, slug } = useParams()
+  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref, orgSlug: slug })
 
   const filterKeys = [
     'request.path',

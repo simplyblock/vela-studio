@@ -21,7 +21,6 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useFlag } from 'hooks/ui/useFlag'
 import { PROJECT_STATUS } from 'lib/constants'
-import { AWS_REGIONS, CloudProvider } from 'shared-data'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -56,7 +55,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const showPostgresVersionSelector = useFlag('showPostgresVersionSelector')
 
-  const region = Object.values(AWS_REGIONS).find((x) => x.code === project?.region)
+  const region = 'default'
 
   const {
     data: pauseStatus,
@@ -273,8 +272,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                         type="unpause"
                         label="Select the version of Postgres to restore to"
                         layout="vertical"
-                        dbRegion={region?.displayName ?? ''}
-                        cloudProvider={(project?.cloud_provider ?? 'AWS') as CloudProvider}
+                        dbRegion="default"
                         organizationSlug={selectedOrganization?.slug}
                       />
                     )}

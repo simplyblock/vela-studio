@@ -12,7 +12,7 @@ import { useProjectUpgradeEligibilityQuery } from 'data/config/project-upgrade-e
 import { useProjectServiceVersionsQuery } from 'data/projects/project-service-versions'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -70,7 +70,6 @@ const InfrastructureInfo = () => {
     !['ga', 'withdrawn'].includes(current_app_version_release_channel)
       ? current_app_version_release_channel
       : undefined
-  const isOrioleDb = useIsOrioleDb()
   const latestPgVersion = (latest_app_version ?? '').split('supabase-postgres-')[1]
 
   const isInactive = project?.status === 'INACTIVE'
@@ -155,18 +154,6 @@ const InfrastructureInfo = () => {
                                 <TooltipContent side="bottom" className="w-44 text-center">
                                   This project uses a {isVisibleReleaseChannel} database version
                                   release
-                                </TooltipContent>
-                              </Tooltip>
-                            ),
-                            isOrioleDb && (
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <Badge variant="default" className="mr-1">
-                                    OrioleDB
-                                  </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom" className="w-44 text-center">
-                                  This project uses OrioleDB
                                 </TooltipContent>
                               </Tooltip>
                             ),

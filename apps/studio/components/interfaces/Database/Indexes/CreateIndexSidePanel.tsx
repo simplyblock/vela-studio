@@ -10,7 +10,7 @@ import { useDatabaseIndexCreateMutation } from 'data/database-indexes/index-crea
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useTableColumnsQuery } from 'data/database/table-columns-query'
 import { useEntityTypesQuery } from 'data/entity-types/entity-types-infinite-query'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   CommandEmpty_Shadcn_,
@@ -47,7 +47,6 @@ interface CreateIndexSidePanelProps {
 const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) => {
   const { slug } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
-  const isOrioleDb = useIsOrioleDb()
 
   const [selectedSchema, setSelectedSchema] = useState('public')
   const [selectedEntity, setSelectedEntity] = useState<string | undefined>(undefined)
@@ -342,7 +341,6 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
                 isReactForm={false}
               >
                 <Select_Shadcn_
-                  disabled={isOrioleDb}
                   value={selectedIndexType}
                   onValueChange={setSelectedIndexType}
                   name="selected-index-type"
@@ -374,17 +372,6 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
                   </SelectContent_Shadcn_>
                 </Select_Shadcn_>
               </FormItemLayout>
-              {isOrioleDb && (
-                <Admonition
-                  type="default"
-                  className="!mt-2"
-                  title="OrioleDB currently only supports the B-tree index type"
-                  description="More index types may be supported when OrioleDB is no longer in preview"
-                >
-                  {/* [Joshen Oriole] Hook up proper docs URL */}
-                  <DocsButton className="mt-2" abbrev={false} href="https://supabase.com/docs" />
-                </Admonition>
-              )}
             </SidePanel.Content>
             <SidePanel.Separator />
             <SidePanel.Content>

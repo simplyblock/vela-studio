@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseExtensionDisableMutation } from 'data/database-extensions/database-extension-disable-mutation'
 import { DatabaseExtension } from 'data/database-extensions/database-extensions-query'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { extensions } from 'shared-data'
 import { Button, Switch, Tooltip, TooltipContent, TooltipTrigger, TableRow, TableCell } from 'ui'
 import { Admonition } from 'ui-patterns'
@@ -23,14 +23,12 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
   const { data: project } = useSelectedProjectQuery()
   const { slug: orgSlug } = getPathReferences()
   const isOn = extension.installed_version !== null
-  const isOrioleDb = useIsOrioleDb()
 
   const [isDisableModalOpen, setIsDisableModalOpen] = useState(false)
   const [showConfirmEnableModal, setShowConfirmEnableModal] = useState(false)
   // FIXME: need permission implemented 
   const { can: canUpdateExtensions } = {can:true}
-  const orioleDbCheck = isOrioleDb && extension.name === 'orioledb'
-  const disabled = !canUpdateExtensions || orioleDbCheck
+  const disabled = !canUpdateExtensions
 
   const extensionMeta = extensions.find((item) => item.name === extension.name)
   const docsUrl = extensionMeta?.link.startsWith('/guides')
@@ -162,9 +160,7 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
                 <TooltipContent side="bottom">
                   {!canUpdateExtensions
                     ? 'You need additional permissions to toggle extensions'
-                    : orioleDbCheck
-                      ? 'Project is using OrioleDB and cannot be disabled'
-                      : null}
+                    : null}
                 </TooltipContent>
               )}
             </Tooltip>

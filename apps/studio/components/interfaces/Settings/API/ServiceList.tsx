@@ -26,7 +26,7 @@ export const ServiceList = () => {
     isError,
     isLoading: isLoadingDatabases,
   } = useReadReplicasQuery({ orgSlug, projectRef })
-  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef })
+  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef, orgSlug })
 
   // Get the API service
   const isCustomDomainActive = customDomainData?.customDomain?.status === 'active'

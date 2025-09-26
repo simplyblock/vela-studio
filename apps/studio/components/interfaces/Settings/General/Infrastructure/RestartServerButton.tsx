@@ -9,7 +9,7 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useProjectRestartMutation } from 'data/projects/project-restart-mutation'
 import { useProjectRestartServicesMutation } from 'data/projects/project-restart-services-mutation'
 import { setProjectStatus } from 'data/projects/projects-query'
-import { useIsAwsK8sCloudProvider, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useFlag } from 'hooks/ui/useFlag'
 import {
   Button,
@@ -28,7 +28,6 @@ const RestartServerButton = () => {
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
   const isProjectActive = useIsProjectActive()
-  const isAwsK8s = useIsAwsK8sCloudProvider()
   const [serviceToRestart, setServiceToRestart] = useState<'project' | 'database'>()
 
   const projectRef = project?.ref ?? ''
@@ -97,8 +96,7 @@ const RestartServerButton = () => {
             project === undefined ||
             !canRestartProject ||
             !isProjectActive ||
-            projectRestartDisabled ||
-            isAwsK8s
+            projectRestartDisabled
           }
           onClick={() => setServiceToRestart('project')}
           tooltip={{
@@ -110,9 +108,7 @@ const RestartServerButton = () => {
                   ? 'You need additional permissions to restart this project'
                   : !isProjectActive
                     ? 'Unable to restart project as project is not active'
-                    : isAwsK8s
-                      ? 'Project restart is not supported for AWS (Revamped) projects'
-                      : undefined,
+                    : undefined,
             },
           }}
         >

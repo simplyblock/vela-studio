@@ -4,7 +4,6 @@ import {
   calculateDiskSizePrice,
 } from 'components/interfaces/DiskManagement/DiskManagement.utils'
 import { DiskType } from 'components/interfaces/DiskManagement/ui/DiskManagement.constants'
-import { instanceSizeSpecs } from 'data/projects/new-project.constants'
 import { PlanId } from 'data/subscriptions/types'
 
 /**
@@ -60,5 +59,5 @@ function getComputeHourlyPrice(computeSize: InfraInstanceSize): number {
     return 0
   }
 
-  return instanceSizeSpecs[computeSize]?.priceHourly
+  return 0 // FIXME calculate
 }

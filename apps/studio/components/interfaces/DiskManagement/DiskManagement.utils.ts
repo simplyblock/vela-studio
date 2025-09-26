@@ -1,6 +1,5 @@
 import { ProjectDetail } from 'data/projects/project-detail-query'
 import { PlanId, ProjectAddonVariantMeta } from 'data/subscriptions/types'
-import { INSTANCE_MICRO_SPECS, INSTANCE_NANO_SPECS } from 'lib/constants'
 import {
   ComputeInstanceAddonVariantId,
   ComputeInstanceSize,
@@ -175,53 +174,6 @@ export function getAvailableComputeOptions(availableAddons: any[], projectCloudP
           meta.supported_cloud_providers.includes(projectCloudProvider)
         )
       }) ?? []
-
-  function hasMicroOptionFromApi() {
-    return (
-      availableAddons.find((addon) => addon.type === 'compute_instance')?.variants ?? []
-    ).some((variant: any) => variant.identifier === 'ci_micro')
-  }
-
-  // Backwards comp until API is deployed
-  if (!hasMicroOptionFromApi) {
-    // Unshift to push to start of array
-    computeOptions.unshift({
-      identifier: 'ci_micro',
-      name: 'Micro',
-      price_description: '$0.01344/hour (~$10/month)',
-      price: 0.01344,
-      price_interval: 'hourly',
-      price_type: 'usage',
-      meta: {
-        cpu_cores: INSTANCE_MICRO_SPECS.cpu_cores,
-        cpu_dedicated: INSTANCE_MICRO_SPECS.cpu_dedicated,
-        memory_gb: INSTANCE_MICRO_SPECS.memory_gb,
-        baseline_disk_io_mbs: INSTANCE_MICRO_SPECS.baseline_disk_io_mbs,
-        max_disk_io_mbs: INSTANCE_MICRO_SPECS.max_disk_io_mbs,
-        connections_direct: INSTANCE_MICRO_SPECS.connections_direct,
-        connections_pooler: INSTANCE_MICRO_SPECS.connections_pooler,
-      } as ProjectAddonVariantMeta,
-    })
-  }
-
-  computeOptions.unshift({
-    identifier: 'ci_nano',
-    name: 'Nano',
-    price_description: '$0/hour (~$0/month)',
-    price: 0,
-    price_interval: 'hourly',
-    price_type: 'usage',
-    // @ts-ignore API types it as Record<string, never>
-    meta: {
-      cpu_cores: INSTANCE_NANO_SPECS.cpu_cores,
-      cpu_dedicated: INSTANCE_NANO_SPECS.cpu_dedicated,
-      memory_gb: INSTANCE_NANO_SPECS.memory_gb,
-      baseline_disk_io_mbs: INSTANCE_NANO_SPECS.baseline_disk_io_mbs,
-      max_disk_io_mbs: INSTANCE_NANO_SPECS.max_disk_io_mbs,
-      connections_direct: INSTANCE_NANO_SPECS.connections_direct,
-      connections_pooler: INSTANCE_NANO_SPECS.connections_pooler,
-    } as ProjectAddonVariantMeta,
-  })
 
   return computeOptions
 }

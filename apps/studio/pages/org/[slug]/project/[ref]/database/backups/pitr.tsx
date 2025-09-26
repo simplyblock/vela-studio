@@ -6,18 +6,16 @@ import DatabaseLayout from 'components/layouts/DatabaseLayout/DatabaseLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { ScaffoldContainer, ScaffoldSection } from 'components/layouts/Scaffold'
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useBackupsQuery } from 'data/database/backups-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useIsOrioleDbInAws, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
 import { Alert_Shadcn_, AlertDescription_Shadcn_, AlertTitle_Shadcn_ } from 'ui'
-import { Admonition } from 'ui-patterns'
 
 const DatabasePhysicalBackups: NextPageWithLayout = () => {
   return (
@@ -47,7 +45,6 @@ const PITR = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
-  const isOrioleDbInAws = useIsOrioleDbInAws()
   const { data: backups, error, isLoading, isError, isSuccess } = useBackupsQuery({ orgSlug, projectRef })
 
   const plan = organization?.plan?.id
@@ -58,18 +55,6 @@ const PITR = () => {
 
   if (isPermissionsLoaded && !canReadPhysicalBackups) {
     return <NoPermission resourceText="view PITR backups" />
-  }
-
-  if (isOrioleDbInAws) {
-    return (
-      <Admonition
-        type="default"
-        title="Database backups are not available for OrioleDB"
-        description="OrioleDB is currently in public alpha and projects created are strictly ephemeral with no database backups"
-      >
-        <DocsButton abbrev={false} className="mt-2" href="https://supabase.com/docs" />
-      </Admonition>
-    )
   }
 
   return (

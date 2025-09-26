@@ -3,7 +3,6 @@ import { toast } from 'sonner'
 
 import type { components } from 'data/api'
 import { handleError, post } from 'data/fetchers'
-import { PROVIDERS } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { projectKeys } from './keys'
 import { DesiredInstanceSize, PostgresEngine, ReleaseChannel } from './new-project.constants'
@@ -19,17 +18,13 @@ const WHITELIST_ERRORS = [
 ]
 
 type CreateProjectBody = components['schemas']['CreateProjectBody']
-type CloudProvider = CreateProjectBody['cloud_provider']
 
 export type ProjectCreateVariables = {
   name: string
   organizationSlug: string
   dbPass: string
-  dbRegion?: string
-  regionSelection?: CreateProjectBody['region_selection']
   dbSql?: string
   dbPricingTierId?: string
-  cloudProvider?: string
   authSiteUrl?: string
   customSupabaseRequest?: object
   dbInstanceSize?: DesiredInstanceSize
@@ -43,10 +38,7 @@ export async function createProject({
   name,
   organizationSlug,
   dbPass,
-  dbRegion,
-  regionSelection,
   dbSql,
-  cloudProvider = PROVIDERS.AWS.id,
   authSiteUrl,
   customSupabaseRequest,
   dbInstanceSize,
@@ -56,12 +48,9 @@ export async function createProject({
   releaseChannel,
 }: ProjectCreateVariables) {
   const body: CreateProjectBody = {
-    cloud_provider: cloudProvider as CloudProvider,
     organization_slug: organizationSlug,
     name,
     db_pass: dbPass,
-    db_region: dbRegion,
-    region_selection: regionSelection,
     db_sql: dbSql,
     auth_site_url: authSiteUrl,
     ...(customSupabaseRequest !== undefined && {

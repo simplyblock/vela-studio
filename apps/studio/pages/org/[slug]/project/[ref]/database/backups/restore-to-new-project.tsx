@@ -17,16 +17,11 @@ import { FormHeader } from 'components/ui/Forms/FormHeader'
 import NoPermission from 'components/ui/NoPermission'
 import Panel from 'components/ui/Panel'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useDiskAttributesQuery } from 'data/config/disk-attributes-query'
 import { useCloneBackupsQuery } from 'data/projects/clone-query'
 import { useCloneStatusQuery } from 'data/projects/clone-status-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import {
-  useIsAwsK8sCloudProvider,
-  useIsOrioleDb,
-  useSelectedProjectQuery,
-} from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { getDatabaseMajorVersion } from 'lib/helpers'
 import type { NextPageWithLayout } from 'types'
@@ -62,9 +57,6 @@ const RestoreToNewProject = () => {
   const { slug } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
-  const isFreePlan = organization?.plan?.id === 'free'
-  const isOrioleDb = useIsOrioleDb()
-  const isAwsK8s = useIsAwsK8sCloudProvider()
 
   const [refetchInterval, setRefetchInterval] = useState<number | false>(false)
   const [selectedBackupId, setSelectedBackupId] = useState<number | null>(null)
@@ -77,7 +69,7 @@ const RestoreToNewProject = () => {
     error,
     isLoading: cloneBackupsLoading,
     isError,
-  } = useCloneBackupsQuery({ projectRef: project?.ref }, { enabled: !isFreePlan })
+  } = useCloneBackupsQuery({ projectRef: project?.ref })
 
   const isActiveHealthy = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
   // FIXME: need permission implemented 
@@ -184,46 +176,6 @@ const RestoreToNewProject = () => {
         </Link>
       )
     }
-  }
-
-  if (organization?.managed_by === 'vercel-marketplace') {
-    return (
-      <Admonition
-        type="default"
-        title="Restore to new project is not available for Vercel Marketplace organizations"
-        description="Restoring project backups to a new project created via Vercel Marketplace is not supported yet."
-      />
-    )
-  }
-
-  if (isFreePlan) {
-    return (
-      <UpgradeToPro
-        buttonText="Upgrade"
-        source="backupsRestoreToNewProject"
-        primaryText="Restore to a new project requires a pro plan or above."
-        secondaryText="To restore to a new project, you need to upgrade to a Pro plan and have physical backups enabled."
-      />
-    )
-  }
-
-  if (isOrioleDb) {
-    return (
-      <Admonition
-        type="default"
-        title="Restoring to new projects are not available for OrioleDB"
-        description="OrioleDB is currently in public alpha and projects created are strictly ephemeral with no database backups"
-      />
-    )
-  }
-
-  if (isAwsK8s) {
-    return (
-      <Admonition
-        type="default"
-        title="Restoring to new projects is temporarily not available for AWS (Revamped) projects"
-      />
-    )
   }
 
   if (!canReadPhysicalBackups) {

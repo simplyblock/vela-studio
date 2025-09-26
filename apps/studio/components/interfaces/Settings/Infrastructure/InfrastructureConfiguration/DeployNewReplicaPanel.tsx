@@ -22,7 +22,6 @@ import {
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatCurrency } from 'lib/helpers'
-import type { AWS_REGIONS_KEYS } from 'shared-data'
 import {
   CollapsibleContent_Shadcn_,
   CollapsibleTrigger_Shadcn_,
@@ -41,7 +40,6 @@ import {
 
 interface DeployNewReplicaPanelProps {
   visible: boolean
-  selectedDefaultRegion?: AWS_REGIONS_KEYS
   onSuccess: () => void
   onClose: () => void
 }
@@ -112,14 +110,12 @@ const DeployNewReplicaPanel = ({
   const isFreePlan = org?.plan.id === 'free'
   const isAWSProvider = project?.cloud_provider === 'AWS'
   const isWalgEnabled = project?.is_physical_backups_enabled
-  const isProWithSpendCapEnabled = org?.plan.id === 'pro' && !org.usage_billing_enabled
   const canDeployReplica =
     !reachedMaxReplicas &&
     currentPgVersion >= 15 &&
     isAWSProvider &&
     !isFreePlan &&
-    isWalgEnabled &&
-    !isProWithSpendCapEnabled
+    isWalgEnabled
 
   const onSubmit = async () => {
     if (!projectRef) return console.error('Project is required')
