@@ -3033,7 +3033,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/load-balancers': {
+  '/platform/organizations/{slug}/projects/{ref}/load-balancers': {
     parameters: {
       query?: never
       header?: never
@@ -18459,6 +18459,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
