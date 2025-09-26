@@ -6,12 +6,6 @@ export const config = {
 
 // [Joshen] Return 404 for all next.js API endpoints EXCEPT the ones we use in hosted:
 const HOSTED_SUPPORTED_API_URLS = [
-  '/ai/sql/generate-v4',
-  '/ai/code/complete',
-  '/ai/sql/cron-v2',
-  '/ai/sql/title-v2',
-  '/ai/onboarding/design',
-  '/ai/feedback/classify',
   '/get-ip-address',
   '/get-utc-time',
   '/get-deployment-commit',

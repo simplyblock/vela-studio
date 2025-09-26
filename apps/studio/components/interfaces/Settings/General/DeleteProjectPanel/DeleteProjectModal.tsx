@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 
 import { LOCAL_STORAGE_KEYS } from 'common'
 import { CANCELLATION_REASONS } from 'components/interfaces/Billing/Billing.constants'
-import { useSendDowngradeFeedbackMutation } from 'data/feedback/exit-survey-send'
 import { useProjectDeleteMutation } from 'data/projects/project-delete-mutation'
 import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
@@ -57,28 +56,13 @@ export const DeleteProjectModal = ({
 
   const { mutate: deleteProject, isLoading: isDeleting } = useProjectDeleteMutation({
     onSuccess: async () => {
-      if (!isFree) {
-        try {
-          await sendExitSurvey({
-            orgSlug: organization?.slug,
-            projectRef,
-            message,
-            reasons: selectedReason.reduce((a, b) => `${a}- ${b}\n`, ''),
-            exitAction: 'delete',
-          })
-        } catch (error) {
-          // [Joshen] In this case we don't raise any errors if the exit survey fails to send since it shouldn't block the user
-        }
-      }
-
       toast.success(`Successfully deleted ${project?.name}`)
 
       if (lastVisitedOrganization) router.push(`/org/${lastVisitedOrganization}`)
       else router.push('/organizations')
     },
   })
-  const { mutateAsync: sendExitSurvey, isLoading: isSending } = useSendDowngradeFeedbackMutation()
-  const isSubmitting = isDeleting || isSending
+  const isSubmitting = isDeleting
 
   async function handleDeleteProject() {
     if (project === undefined) return

@@ -8,7 +8,6 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { getModel } from 'lib/ai/model'
 import { getTools } from 'lib/ai/tools'
 import apiWrapper from 'lib/api/apiWrapper'
-import { queryPgMetaSelfHosted } from 'lib/self-hosted'
 
 import {
   CHAT_PROMPT,

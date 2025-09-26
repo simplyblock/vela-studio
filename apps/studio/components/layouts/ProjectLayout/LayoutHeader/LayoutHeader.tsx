@@ -4,7 +4,6 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import { useParams } from 'common'
 import { Connect } from 'components/interfaces/Connect/Connect'
-import { LocalDropdown } from 'components/interfaces/LocalDropdown'
 import { UserDropdown } from 'components/interfaces/UserDropdown'
 import { AssistantButton } from 'components/layouts/AppLayout/AssistantButton'
 import { InlineEditorButton } from 'components/layouts/AppLayout/InlineEditorButton'
@@ -19,10 +18,8 @@ import { useHotKey } from 'hooks/ui/useHotKey'
 import { useAppStateSnapshot } from 'state/app-state'
 import { Badge, cn } from 'ui'
 import { BreadcrumbsView } from './BreadcrumbsView'
-import { FeedbackDropdown } from './FeedbackDropdown'
 import { HelpPopover } from './HelpPopover'
 import { HomeIcon } from './HomeIcon'
-import { LocalVersionPopover } from './LocalVersionPopover'
 import { NotificationsPopoverV2 } from './NotificationsPopoverV2/NotificationsPopover'
 
 const LayoutHeaderDivider = ({ className, ...props }: React.HTMLProps<HTMLSpanElement>) => (
@@ -57,7 +54,6 @@ const LayoutHeader = ({
   showProductMenu,
 }: LayoutHeaderProps) => {
   const { ref: projectRef, slug } = useParams()
-  const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const { setMobileMenuOpen } = useAppStateSnapshot()
 
@@ -72,8 +68,7 @@ const LayoutHeader = ({
 
   // We only want to query the org usage and check for possible over-ages for plans without usage billing enabled (free or pro with spend cap)
   const { data: orgUsage } = useOrgUsageQuery(
-    { orgSlug: selectedOrganization?.slug },
-    { enabled: selectedOrganization?.usage_billing_enabled === false }
+    { orgSlug: selectedOrganization?.slug }
   )
 
   const exceedingLimits = useMemo(() => {
@@ -185,7 +180,6 @@ const LayoutHeader = ({
           </div>
           <div className="flex items-center gap-x-2">
             {customHeaderComponents && customHeaderComponents}
-            <FeedbackDropdown />
 
             <div className="overflow-hidden flex items-center rounded-full border">
               <HelpPopover />
