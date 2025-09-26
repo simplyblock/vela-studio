@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import '@/styles/globals.css'
-import { FeatureFlagProvider, TelemetryTagManager } from 'common'
+import { FeatureFlagProvider } from 'common'
 import { genFaviconData } from 'common/MetaFavicons/app-router'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from './Providers'
@@ -42,7 +42,6 @@ export default async function Layout({ children }: RootLayoutProps) {
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className={`${inter.className} antialiased`}>
-        <TelemetryTagManager />
         <FeatureFlagProvider>
           <ThemeProvider
             themes={['dark', 'light', 'classic-dark']}

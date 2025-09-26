@@ -17,25 +17,6 @@ import { getSharedTelemetryData } from './telemetry-utils'
 
 const { TELEMETRY_DATA } = LOCAL_STORAGE_KEYS
 
-// Reexports GoogleTagManager with the right API key set
-export const TelemetryTagManager = () => {
-  const isGTMEnabled = Boolean(process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID)
-
-  if (!isGTMEnabled) {
-    return
-  }
-
-  return (
-    <Script
-      id="consent"
-      strategy="afterInteractive"
-      dangerouslySetInnerHTML={{
-        __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src="https://ss.supabase.com/4icgbaujh.js?"+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','60a389s=aWQ9R1RNLVdDVlJMTU43&page=2');`,
-      }}
-    />
-  )
-}
-
 //---
 // PAGE TELEMETRY
 //---
