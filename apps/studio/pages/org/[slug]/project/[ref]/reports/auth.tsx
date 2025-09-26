@@ -17,7 +17,6 @@ import ReportFilterBar from 'components/interfaces/Reports/ReportFilterBar'
 import { REPORT_DATERANGE_HELPER_LABELS } from 'components/interfaces/Reports/Reports.constants'
 import { SharedAPIReport } from 'components/interfaces/Reports/SharedAPIReport/SharedAPIReport'
 import { useSharedAPIReport } from 'components/interfaces/Reports/SharedAPIReport/SharedAPIReport.constants'
-import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 import { getAuthReportAttributes } from 'data/reports/auth-charts'
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 import type { NextPageWithLayout } from 'types'
@@ -47,8 +46,6 @@ const AuthUsage = () => {
     updateDateRange,
     datePickerValue,
     datePickerHelpers,
-    showUpgradePrompt,
-    setShowUpgradePrompt,
     handleDatePickerChange,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
 
@@ -105,13 +102,6 @@ const AuthUsage = () => {
                 onSubmit={handleDatePickerChange}
                 value={datePickerValue}
                 helpers={datePickerHelpers}
-              />
-              <UpgradePrompt
-                show={showUpgradePrompt}
-                setShowUpgradePrompt={setShowUpgradePrompt}
-                title="Report date range"
-                description="Report data can be stored for a maximum of 3 months depending on the plan that your project is on."
-                source="authReportDateRange"
               />
               {selectedDateRange && (
                 <div className="flex items-center gap-x-2 text-xs">

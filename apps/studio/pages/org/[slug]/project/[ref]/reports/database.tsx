@@ -13,7 +13,6 @@ import ReportStickyNav from 'components/interfaces/Reports/ReportStickyNav'
 import ReportWidget from 'components/interfaces/Reports/ReportWidget'
 import DiskSizeConfigurationModal from 'components/interfaces/Settings/Database/DiskSizeConfigurationModal'
 import { LogsDatePicker } from 'components/interfaces/Settings/Logs/Logs.DatePickers'
-import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import ReportsLayout from 'components/layouts/ReportsLayout/ReportsLayout'
 import Table from 'components/to-be-cleaned/Table'
@@ -68,8 +67,6 @@ const DatabaseUsage = () => {
     updateDateRange,
     datePickerValue,
     datePickerHelpers,
-    showUpgradePrompt,
-    setShowUpgradePrompt,
     handleDatePickerChange,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
 
@@ -224,13 +221,6 @@ const DatabaseUsage = () => {
                 onSubmit={handleDatePickerChange}
                 value={datePickerValue}
                 helpers={datePickerHelpers}
-              />
-              <UpgradePrompt
-                show={showUpgradePrompt}
-                setShowUpgradePrompt={setShowUpgradePrompt}
-                title="Report date range"
-                description="Report data can be stored for a maximum of 3 months depending on the plan that your project is on."
-                source="databaseReportDateRange"
               />
               {selectedDateRange && (
                 <div className="flex items-center gap-x-2 text-xs">

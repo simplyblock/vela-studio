@@ -22,7 +22,6 @@ import {
   DatePickerValue,
   LogsDatePicker,
 } from 'components/interfaces/Settings/Logs/Logs.DatePickers'
-import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import ReportsLayout from 'components/layouts/ReportsLayout/ReportsLayout'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
@@ -49,8 +48,6 @@ export const StorageReport: NextPageWithLayout = () => {
     datePickerHelpers,
     datePickerValue,
     handleDatePickerChange: handleDatePickerChangeFromHook,
-    showUpgradePrompt,
-    setShowUpgradePrompt,
     selectedDateRange,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
 
@@ -98,13 +95,6 @@ export const StorageReport: NextPageWithLayout = () => {
                   </p>
                 </div>
               )}
-              <UpgradePrompt
-                show={showUpgradePrompt}
-                setShowUpgradePrompt={setShowUpgradePrompt}
-                title="Report date range"
-                description="Report data can be stored for a maximum of 3 months depending on the plan that your project is on."
-                source="storageReportDateRange"
-              />
             </div>
             <ReportFilterBar
               onRemoveFilters={removeFilters}

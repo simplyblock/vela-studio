@@ -16,7 +16,6 @@ import {
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 import { REPORT_DATERANGE_HELPER_LABELS } from 'components/interfaces/Reports/Reports.constants'
 import ReportStickyNav from 'components/interfaces/Reports/ReportStickyNav'
-import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 
 import type { NextPageWithLayout } from 'types'
 import { SharedAPIReport } from 'components/interfaces/Reports/SharedAPIReport/SharedAPIReport'
@@ -46,8 +45,6 @@ const PostgrestReport = () => {
     selectedDateRange,
     datePickerValue,
     datePickerHelpers,
-    showUpgradePrompt,
-    setShowUpgradePrompt,
     handleDatePickerChange: handleDatePickerChangeFromHook,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
 
@@ -110,13 +107,6 @@ const PostgrestReport = () => {
                 onSubmit={handleDatePickerChange}
                 value={datePickerValue}
                 helpers={datePickerHelpers}
-              />
-              <UpgradePrompt
-                show={showUpgradePrompt}
-                setShowUpgradePrompt={setShowUpgradePrompt}
-                title="Report date range"
-                description="Report data can be stored for a maximum of 3 months depending on the plan that your project is on."
-                source="postgrestReportDateRange"
               />
               {selectedDateRange && (
                 <div className="flex items-center gap-x-2 text-xs">

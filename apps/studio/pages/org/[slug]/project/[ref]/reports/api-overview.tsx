@@ -12,7 +12,6 @@ import {
   TotalRequestsChartRenderer,
 } from 'components/interfaces/Reports/renderers/ApiRenderers'
 import { DatePickerValue } from 'components/interfaces/Settings/Logs/Logs.DatePickers'
-import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import ReportsLayout from 'components/layouts/ReportsLayout/ReportsLayout'
 import { useApiReport } from 'data/reports/api-report-query'
@@ -38,8 +37,6 @@ export const ApiReport: NextPageWithLayout = () => {
     datePickerHelpers,
     datePickerValue,
     handleDatePickerChange: handleDatePickerChangeFromHook,
-    showUpgradePrompt,
-    setShowUpgradePrompt,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
 
   const handleDatepickerChange = (vals: DatePickerValue) => {
@@ -71,13 +68,6 @@ export const ApiReport: NextPageWithLayout = () => {
               initialDatePickerValue={datePickerValue}
               className="w-full"
               showDatabaseSelector={false}
-            />
-            <UpgradePrompt
-              show={showUpgradePrompt}
-              setShowUpgradePrompt={setShowUpgradePrompt}
-              title="Report date range"
-              description="Report data can be stored for a maximum of 3 months depending on the plan that your project is on."
-              source="apiReportDateRange"
             />
           </div>
         }

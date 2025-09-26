@@ -18,12 +18,10 @@ import {
   LogsWarning,
 } from 'components/interfaces/Settings/Logs/Logs.types'
 import {
-  maybeShowUpgradePrompt,
   useEditorHints,
 } from 'components/interfaces/Settings/Logs/Logs.utils'
 import LogsQueryPanel from 'components/interfaces/Settings/Logs/LogsQueryPanel'
 import LogTable from 'components/interfaces/Settings/Logs/LogTable'
-import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import LogsLayout from 'components/layouts/LogsLayout/LogsLayout'
 import CodeEditor from 'components/ui/CodeEditor/CodeEditor'
@@ -37,7 +35,6 @@ import {
 import useLogsQuery from 'hooks/analytics/useLogsQuery'
 import { useLogsUrlState } from 'hooks/analytics/useLogsUrlState'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useUpgradePrompt } from 'hooks/misc/useUpgradePrompt'
 import { uuidv4 } from 'lib/helpers'
 import { useProfile } from 'lib/profile'
 import type { LogSqlSnippets, NextPageWithLayout } from 'types'
@@ -50,9 +47,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from 'ui'
-
-const LOCAL_PLACEHOLDER_QUERY =
-  'select\n  timestamp, event_message, metadata\n  from edge_logs limit 5'
 
 const PLATFORM_PLACEHOLDER_QUERY =
   'select\n  cast(timestamp as datetime) as timestamp,\n  event_message, metadata \nfrom edge_logs \nlimit 5'
@@ -136,10 +130,6 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
     }
     setRecentLogs([...recentLogs, { ...defaults, ...snippet }])
   }
-
-  const { showUpgradePrompt, setShowUpgradePrompt } = useUpgradePrompt(
-    params.iso_timestamp_start as string
-  )
 
   const onSelectTemplate = (template: LogTemplate) => {
     if (editorRef.current && monaco) {
@@ -242,13 +232,7 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
   }
 
   const handleDateChange = ({ to, from }: DatePickerToFrom) => {
-    const shouldShowUpgradePrompt = maybeShowUpgradePrompt(from, organization?.plan?.id)
-
-    if (shouldShowUpgradePrompt) {
-      setShowUpgradePrompt(!showUpgradePrompt)
-    } else {
-      setTimeRange(from || '', to || '')
-    }
+    setTimeRange(from || '', to || '')
   }
 
   useEffect(() => {
@@ -273,16 +257,6 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
     }
     setWarnings(newWarnings)
   }, [editorValue, timestampStart, timestampEnd])
-
-  // Show the prompt on page load based on query params
-  useEffect(() => {
-    if (timestampStart) {
-      const shouldShowUpgradePrompt = maybeShowUpgradePrompt(timestampStart, organization?.plan?.id)
-      if (shouldShowUpgradePrompt) {
-        setShowUpgradePrompt(!showUpgradePrompt)
-      }
-    }
-  }, [timestampStart, organization])
 
   return (
     <div className="w-full h-full mx-auto">
@@ -326,10 +300,6 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
               onSelectedLogChange={setSelectedLog}
               selectedLog={selectedLog}
             />
-
-            <div className="flex flex-row justify-end mt-2">
-              <UpgradePrompt show={showUpgradePrompt} setShowUpgradePrompt={setShowUpgradePrompt} />
-            </div>
           </LoadingOpacity>
         </ResizablePanel>
       </ResizablePanelGroup>

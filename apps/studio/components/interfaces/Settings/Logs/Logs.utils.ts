@@ -249,20 +249,6 @@ const genCrossJoinUnnests = (table: LogsTableName) => {
 export const genSingleLogQuery = (table: LogsTableName, id: string) =>
   `select id, timestamp, event_message, metadata from ${table} where id = '${id}' limit 1`
 
-/**
- * Determine if we should show the user an upgrade prompt while browsing logs
- */
-export const maybeShowUpgradePrompt = (from: string | null | undefined, planId?: PlanId) => {
-  const day = Math.abs(dayjs().diff(dayjs(from), 'day'))
-
-  return (
-    (day > 1 && planId === 'free') ||
-    (day > 7 && planId === 'pro') ||
-    (day > 28 && planId === 'team') ||
-    (day > 90 && planId === 'enterprise')
-  )
-}
-
 export const genCountQuery = (table: LogsTableName, filters: Filters): string => {
   const where = genWhereStatement(table, filters)
   const joins = genCrossJoinUnnests(table)

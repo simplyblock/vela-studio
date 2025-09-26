@@ -19,7 +19,6 @@ import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import { getEdgeFunctionReportAttributes } from 'data/reports/edgefn-charts'
 
 import { REPORT_DATERANGE_HELPER_LABELS } from 'components/interfaces/Reports/Reports.constants'
-import UpgradePrompt from 'components/interfaces/Settings/Logs/UpgradePrompt'
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 
 import type { NextPageWithLayout } from 'types'
@@ -63,8 +62,6 @@ const EdgeFunctionsUsage = () => {
     updateDateRange,
     datePickerValue,
     datePickerHelpers,
-    showUpgradePrompt,
-    setShowUpgradePrompt,
     handleDatePickerChange,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
 
@@ -105,13 +102,6 @@ const EdgeFunctionsUsage = () => {
                 onSubmit={handleDatePickerChange}
                 value={datePickerValue}
                 helpers={datePickerHelpers}
-              />
-              <UpgradePrompt
-                show={showUpgradePrompt}
-                setShowUpgradePrompt={setShowUpgradePrompt}
-                title="Report date range"
-                description="Report data can be stored for a maximum of 3 months depending on the plan that your project is on."
-                source="edgeFunctionsReportDateRange"
               />
               {selectedDateRange && (
                 <div className="flex items-center gap-x-2 text-xs">

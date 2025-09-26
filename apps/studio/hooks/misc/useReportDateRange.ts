@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import dayjs from 'dayjs'
 import { createParser, useQueryState } from 'nuqs'
 import { DatePickerValue } from 'components/interfaces/Settings/Logs/Logs.DatePickers'
@@ -7,7 +7,6 @@ import {
   ReportsDatetimeHelper,
   REPORT_DATERANGE_HELPER_LABELS,
 } from 'components/interfaces/Reports/Reports.constants'
-import { maybeShowUpgradePrompt } from 'components/interfaces/Settings/Logs/Logs.utils'
 
 export const DATERANGE_LIMITS: { [key: string]: number } = {
   free: 1,
@@ -45,7 +44,6 @@ export const useReportDateRange = (
     | string
     | ReportsDatetimeHelper = REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES
 ) => {
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false)
 
   // Get filtered date picker helpers based on organization plan
   const datePickerHelpers: ReportsDatetimeHelper[] = useMemo(
@@ -241,19 +239,13 @@ export const useReportDateRange = (
   )
 
   const handleDatePickerChange = (values: DatePickerValue) => {
-    const shouldShowUpgradePrompt = maybeShowUpgradePrompt(values.from, 'free')
-    if (shouldShowUpgradePrompt) {
-      setShowUpgradePrompt(true)
-      return true
-    } else {
-      if (values.from && values.to) {
-        setTimestampStart(values.from)
-        setTimestampEnd(values.to)
-        setIsHelper(values.isHelper || false)
-        setHelperText(values.text || '')
-      }
-      return false
+    if (values.from && values.to) {
+      setTimestampStart(values.from)
+      setTimestampEnd(values.to)
+      setIsHelper(values.isHelper || false)
+      setHelperText(values.text || '')
     }
+    return false
   }
 
   return {
@@ -262,8 +254,6 @@ export const useReportDateRange = (
     updateDateRange,
     datePickerValue,
     datePickerHelpers,
-    showUpgradePrompt,
-    setShowUpgradePrompt,
     handleDatePickerChange,
   }
 }
