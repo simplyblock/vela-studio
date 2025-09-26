@@ -30,7 +30,7 @@ export const OrganizationCard = ({
         description={
           <div className="flex items-center justify-between text-xs text-foreground-light font-sans">
             <div className="flex items-center gap-x-1.5">
-              <span>{organization.plan.name} Plan</span>
+              <span>Reference: {organization.slug}</span>
               {numProjects > 0 && (
                 <>
                   <span>•</span>

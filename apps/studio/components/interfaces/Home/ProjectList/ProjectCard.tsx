@@ -16,7 +16,6 @@ export interface ProjectCardProps {
   project: ProjectInfo
   rewriteHref?: string
   githubIntegration?: IntegrationProjectConnection
-  vercelIntegration?: IntegrationProjectConnection
   resourceWarnings?: ResourceWarning
 }
 
@@ -24,16 +23,13 @@ const ProjectCard = ({
   project,
   rewriteHref,
   githubIntegration,
-  vercelIntegration,
   resourceWarnings,
 }: ProjectCardProps) => {
   const { slug } = useParams() as { slug: string }
   const { name, ref: projectRef } = project
-  const desc = `${project.cloud_provider} | ${project.region}`
 
   const isBranchingEnabled = project.preview_branch_refs?.length > 0
   const isGithubIntegrated = githubIntegration !== undefined
-  const isVercelIntegrated = vercelIntegration !== undefined
   const githubRepository = githubIntegration?.metadata.name ?? undefined
   const projectStatus = inferProjectStatus(project)
 
@@ -45,18 +41,9 @@ const ProjectCard = ({
         title={
           <div className="w-full justify-between space-y-1.5 px-5">
             <p className="flex-shrink truncate text-sm pr-4">{name}</p>
-            <span className="text-sm lowercase text-foreground-light">{desc}</span>
+            <span className="text-sm lowercase text-foreground-light">Reference: {project.ref}</span>
             <div className="flex items-center gap-x-1.5">
               {project.status !== 'INACTIVE' && <ComputeBadgeWrapper project={project} />}
-              {isVercelIntegrated && (
-                <div className="w-fit p-1 border rounded-md flex items-center text-black dark:text-white">
-                  <InlineSVG
-                    src={`${BASE_PATH}/img/icons/vercel-icon.svg`}
-                    title="Vercel Icon"
-                    className="w-3"
-                  />
-                </div>
-              )}
               {isBranchingEnabled && (
                 <div className="w-fit p-1 border rounded-md flex items-center">
                   <GitBranch size={12} strokeWidth={1.5} />

@@ -194,9 +194,6 @@ const OrganizationProjects = ({
       name: connection.repository.name,
     } as any,
   }))
-  const vercelConnections = integrations
-    ?.filter((integration) => integration.integration.name === 'Vercel')
-    .flatMap((integration) => integration.connections)
 
   if (
     (search.length > 0 || (filterStatus !== undefined && filterStatus.length !== 2)) &&
@@ -232,16 +229,13 @@ const OrganizationProjects = ({
           ) : (
             filteredProjectsByStatus?.map((project) => (
               <ProjectCard
-                key={makeRandomString(5)}
+                key={project.ref}
                 project={project}
                 rewriteHref={rewriteHref ? rewriteHref(project.ref) : undefined}
                 resourceWarnings={resourceWarnings.find(
                   (resourceWarning) => resourceWarning.project === project.ref
                 )}
                 githubIntegration={githubConnections?.find(
-                  (connection) => connection.supabase_project_ref === project.ref
-                )}
-                vercelIntegration={vercelConnections?.find(
                   (connection) => connection.supabase_project_ref === project.ref
                 )}
               />
