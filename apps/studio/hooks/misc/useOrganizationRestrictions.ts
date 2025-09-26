@@ -11,6 +11,7 @@ export type WarningBannerProps = {
   link: string
 }
 
+// FIXME: Reuse this one for resource exceed warnings
 export function useOrganizationRestrictions() {
   const { data: org } = useSelectedOrganizationQuery()
 
