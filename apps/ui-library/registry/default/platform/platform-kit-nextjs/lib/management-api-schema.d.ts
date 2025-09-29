@@ -1923,7 +1923,7 @@ export interface components {
        * @description Postgres engine version. If not provided, the latest version will be used.
        * @enum {string}
        */
-      postgres_engine?: '15' | '17' | '17-oriole'
+      postgres_engine?: '15' | '17'
       secrets?: {
         [key: string]: string
       }
@@ -2097,7 +2097,7 @@ export interface components {
       latest_app_version: string
       target_upgrade_versions: {
         /** @enum {string} */
-        postgres_version: '15' | '17' | '17-oriole'
+        postgres_version: '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         app_version: string
@@ -2739,7 +2739,7 @@ export interface components {
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         /** @enum {string} */
-        postgres_engine: '13' | '14' | '15' | '17' | '17-oriole'
+        postgres_engine: '13' | '14' | '15' | '17'
       }[]
     }
     ListProjectAddonsResponse: {

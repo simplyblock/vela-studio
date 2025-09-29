@@ -4952,7 +4952,7 @@ export interface components {
        * @description Postgres engine version. If not provided, the latest version will be used.
        * @enum {string}
        */
-      postgres_engine?: '13' | '14' | '15' | '17' | '17-oriole'
+      postgres_engine?: '13' | '14' | '15' | '17'
       /** @description Provider region selection. Only one of db_region or region_selection can be specified. */
       region_selection?:
         | {
@@ -6741,7 +6741,7 @@ export interface components {
     OrganizationSlugAvailableVersionsResponse: {
       available_versions: {
         /** @enum {string} */
-        postgres_engine: '15' | '17' | '17-oriole'
+        postgres_engine: '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         version: string
@@ -6750,42 +6750,14 @@ export interface components {
     OrganizationSlugResponse: {
       billing_email: string | null
       /** @enum {string|null} */
-      has_oriole_project: boolean
       id: number
       name: string
       opt_in_tags: string[]
-      plan: {
-        /** @enum {string} */
-        id: 'free' | 'pro' | 'team' | 'enterprise'
-        name: string
-      }
       projects: {
         cloud_provider: string
         disk_volume_size_gb?: number
         engine?: string
         id: number
-        /** @enum {string} */
-        infra_compute_size?:
-          | 'pico'
-          | 'nano'
-          | 'micro'
-          | 'small'
-          | 'medium'
-          | 'large'
-          | 'xlarge'
-          | '2xlarge'
-          | '4xlarge'
-          | '8xlarge'
-          | '12xlarge'
-          | '16xlarge'
-          | '24xlarge'
-          | '24xlarge_optimized_memory'
-          | '24xlarge_optimized_cpu'
-          | '24xlarge_high_memory'
-          | '48xlarge'
-          | '48xlarge_optimized_memory'
-          | '48xlarge_optimized_cpu'
-          | '48xlarge_high_memory'
         inserted_at: string | null
         is_branch_enabled: boolean
         is_physical_backups_enabled: boolean | null
@@ -8282,7 +8254,7 @@ export interface components {
     UnpauseProjectAvailableVersionsResponse: {
       available_versions: {
         /** @enum {string} */
-        postgres_engine: '13' | '14' | '15' | '17' | '17-oriole'
+        postgres_engine: '13' | '14' | '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         version: string
@@ -8293,7 +8265,7 @@ export interface components {
        * @description Postgres engine version. If not provided, the latest version from the given release channel will be used.
        * @enum {string}
        */
-      postgres_engine?: '15' | '17' | '17-oriole'
+      postgres_engine?: '15' | '17'
       /**
        * @description Release channel version. If not provided, GeneralAvailability will be used.
        * @enum {string}

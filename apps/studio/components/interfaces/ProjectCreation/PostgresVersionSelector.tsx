@@ -116,7 +116,6 @@ export const PostgresVersionSelector = ({
             {availableVersions.map((value) => {
               const postgresVersion = value.version
                 .split('supabase-postgres-')[1]
-                .replace('-orioledb', '')
               return (
                 <SelectItem_Shadcn_
                   key={formatValue(value)}
@@ -129,11 +128,6 @@ export const PostgresVersionSelector = ({
                       {value.release_channel !== 'ga' && (
                         <Badge variant="warning" className="mr-1 capitalize">
                           {value.release_channel}
-                        </Badge>
-                      )}
-                      {value.postgres_engine.includes('oriole') && (
-                        <Badge variant="default" className="mr-1">
-                          OrioleDB
                         </Badge>
                       )}
                     </div>

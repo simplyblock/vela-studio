@@ -2021,7 +2021,7 @@ export interface components {
        * @description Postgres engine version. If not provided, the latest version will be used.
        * @enum {string}
        */
-      postgres_engine?: '15' | '17' | '17-oriole'
+      postgres_engine?: '15' | '17'
       region?: string
       /**
        * @description Release channel. If not provided, GA will be used.
@@ -2269,7 +2269,7 @@ export interface components {
     GetProjectAvailableRestoreVersionsResponse: {
       available_versions: {
         /** @enum {string} */
-        postgres_engine: '13' | '14' | '15' | '17' | '17-oriole'
+        postgres_engine: '13' | '14' | '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         version: string
@@ -2629,7 +2629,7 @@ export interface components {
       target_upgrade_versions: {
         app_version: string
         /** @enum {string} */
-        postgres_version: '13' | '14' | '15' | '17' | '17-oriole'
+        postgres_version: '13' | '14' | '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
       }[]

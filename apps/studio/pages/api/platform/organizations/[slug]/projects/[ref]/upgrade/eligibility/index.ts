@@ -19,7 +19,7 @@ interface Response {
   target_upgrade_versions: {
     app_version: string
     /** @enum {string} */
-    postgres_version: '13' | '14' | '15' | '17' | '17-oriole'
+    postgres_version: '13' | '14' | '15' | '17'
     /** @enum {string} */
     release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
   }[]

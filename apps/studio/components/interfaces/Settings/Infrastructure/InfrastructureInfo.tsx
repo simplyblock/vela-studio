@@ -64,7 +64,6 @@ const InfrastructureInfo = () => {
   const isOnLatestVersion = current_app_version === latest_app_version
   const currentPgVersion = (current_app_version ?? '')
     .split('supabase-postgres-')[1]
-    ?.replace('-orioledb', '')
   const isVisibleReleaseChannel =
     current_app_version_release_channel &&
     !['ga', 'withdrawn'].includes(current_app_version_release_channel)
