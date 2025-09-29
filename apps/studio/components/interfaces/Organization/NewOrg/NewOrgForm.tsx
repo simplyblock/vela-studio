@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { parseAsString, useQueryStates } from 'nuqs'
 import { useEffect, useMemo, useState } from 'react'
@@ -16,9 +15,6 @@ import {
   Button,
   Input_Shadcn_,
   Label_Shadcn_,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { SetupIntentResponse } from 'data/stripe/setup-intent-mutation'
