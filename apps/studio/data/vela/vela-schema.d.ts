@@ -93,6 +93,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organizations/{organization_slug}/projects/{project_slug}/branches/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Projects:Branch:List */
+        get: operations["organizations:projects:branch:list"];
+        put?: never;
+        /** Organizations:Projects:Branch:Create */
+        post: operations["organizations:projects:branch:create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_slug}/projects/{project_slug}/branches/{branch}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Projects:Branch:Detail */
+        get: operations["organizations:projects:branch:detail"];
+        /** Organizations:Projects:Branch:Update */
+        put: operations["organizations:projects:branch:update"];
+        post?: never;
+        /** Organizations:Projects:Branch:Delete */
+        delete: operations["organizations:projects:branch:delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/organizations/{organization_slug}/projects/{project_slug}/": {
         parameters: {
             query?: never;
@@ -182,6 +219,149 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organizations/{organization_slug}/roles/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Roles:List */
+        get: operations["organizations:roles:list"];
+        put?: never;
+        /** Organizations:Roles:Create */
+        post: operations["organizations:roles:create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_slug}/roles/{role_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Roles:Detail */
+        get: operations["organizations:roles:detail"];
+        /** Organizations:Roles:Update */
+        put: operations["organizations:roles:update"];
+        post?: never;
+        /** Organizations:Roles:Delete */
+        delete: operations["organizations:roles:delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_slug}/roles/{role_id}/users/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Roles:Users:List */
+        get: operations["organizations:roles:users:list"];
+        put?: never;
+        /** Organizations:Roles:Users:Add */
+        post: operations["organizations:roles:users:add"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_slug}/roles/{role_id}/users/{user_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Organizations:Roles:Users:Delete */
+        delete: operations["organizations:roles:users:delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_slug}/branches/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Projects:Branch:List */
+        get: operations["organizations:projects:branch:list"];
+        put?: never;
+        /** Organizations:Projects:Branch:Create */
+        post: operations["organizations:projects:branch:create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_slug}/branches/{branch}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Projects:Branch:Detail */
+        get: operations["organizations:projects:branch:detail"];
+        /** Organizations:Projects:Branch:Update */
+        put: operations["organizations:projects:branch:update"];
+        post?: never;
+        /** Organizations:Projects:Branch:Delete */
+        delete: operations["organizations:projects:branch:delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user_ref}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get */
+        get: operations["get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add */
+        post: operations["add"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -219,6 +399,35 @@ export interface components {
              * Format: date-time
              */
             occurred_at: string;
+        };
+        /** BranchCreate */
+        BranchCreate: {
+            /** Name */
+            name: string;
+            /** Source */
+            source?: string | null;
+            /**
+             * Config Copy
+             * @default false
+             */
+            config_copy?: boolean;
+            /**
+             * Data Copy
+             * @default false
+             */
+            data_copy?: boolean;
+        };
+        /** BranchPublic */
+        BranchPublic: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+        };
+        /** BranchUpdate */
+        BranchUpdate: {
+            /** Name */
+            name?: string | null;
         };
         /** DeploymentParameters */
         DeploymentParameters: {
@@ -339,6 +548,13 @@ export interface components {
             /** Name */
             name?: string | null;
         };
+        /** Role */
+        Role: {
+            /** Id */
+            id?: number | null;
+            /** Organization Id */
+            organization_id?: number | null;
+        };
         /** Status */
         Status: {
             /**
@@ -362,6 +578,36 @@ export interface components {
             /** Project */
             project: string | null;
         };
+        /** UserCreationResult */
+        UserCreationResult: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Password */
+            password: string;
+        };
+        /** UserID */
+        UserID: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /** UserParameters */
+        UserParameters: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** First Name */
+            first_name: string;
+            /** Last Name */
+            last_name: string;
+        };
         /** UserPublic */
         UserPublic: {
             /**
@@ -369,14 +615,17 @@ export interface components {
              * Format: uuid
              */
             id: string;
-        };
-        /** UserRequest */
-        UserRequest: {
             /**
-             * Id
-             * Format: uuid
+             * Email
+             * Format: email
              */
-            id: string;
+            email: string;
+            /** Email Verified */
+            email_verified: boolean;
+            /** First Name */
+            first_name: string;
+            /** Last Name */
+            last_name: string;
         };
         /** ValidationError */
         ValidationError: {
@@ -875,6 +1124,330 @@ export interface operations {
             };
         };
     };
+    "organizations:projects:branch:list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                project_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BranchPublic"][];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:create": {
+        parameters: {
+            query?: {
+                response?: "empty" | "full";
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+                project_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BranchCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    /** @description URL of the created item */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                project_slug: string;
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BranchPublic"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                project_slug: string;
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BranchUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    /** @description URL of the created item */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                project_slug: string;
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     "organizations:projects:detail": {
         parameters: {
             query?: never;
@@ -1194,7 +1767,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserPublic"][];
+                    "application/json": components["schemas"]["UserID"][];
                 };
             };
             /** @description Not authenticated */
@@ -1246,18 +1819,18 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserRequest"];
+                "application/json": components["schemas"]["UserID"];
             };
         };
         responses: {
             /** @description Successful Response */
             201: {
                 headers: {
+                    /** @description URL of the created item */
+                    Location?: string;
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": unknown;
-                };
+                content?: never;
             };
             /** @description Not authenticated */
             401: {
@@ -1398,6 +1971,868 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Role"][];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:create": {
+        parameters: {
+            query: {
+                response?: "empty" | "full";
+                user_id: string;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    /** @description URL of the created item */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                role_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Role"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                role_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                role_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:users:list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_slug: string;
+                role_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserID"][];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:users:add": {
+        parameters: {
+            query: {
+                user_id: string;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+                role_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:roles:users:delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                role_id: number;
+                user_id: string;
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:list": {
+        parameters: {
+            query: {
+                project_slug: string;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BranchPublic"][];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:create": {
+        parameters: {
+            query: {
+                response?: "empty" | "full";
+                project_slug: string;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BranchCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    /** @description URL of the created item */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:detail": {
+        parameters: {
+            query: {
+                project_slug: string;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BranchPublic"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:update": {
+        parameters: {
+            query: {
+                project_slug: string;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BranchUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    /** @description URL of the created item */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:delete": {
+        parameters: {
+            query: {
+                project_slug: string;
+            };
+            header?: never;
+            path: {
+                organization_slug: string;
+                branch: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserParameters"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserCreationResult"];
                 };
             };
             /** @description Validation Error */

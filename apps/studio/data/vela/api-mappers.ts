@@ -59,11 +59,14 @@ export function mapOrganizationMember(member: VelaMember): OrganizationMember {
   // FIXME: Waiting for API object adjustment
   return {
     user_id: member.id,
-    username: '',
-    primary_email: '',
+    username: member.email,
+    primary_email: member.email,
     mfa_enabled: false,
     is_sso_user: true,
     role_ids: [],
-    metadata: {}
+    metadata: {
+      first_name: member.first_name,
+      last_name: member.last_name
+    }
   }
 }
