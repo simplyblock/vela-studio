@@ -4847,18 +4847,7 @@ export interface components {
         postal_code?: string | null
         state?: string | null
       }
-      billing_name?: string
-      kind?: string
       name: string
-      payment_method?: string
-      size?: string
-      tax_id?: {
-        country?: string
-        type: string
-        value: string
-      }
-      /** @enum {string} */
-      tier: 'tier_free' | 'tier_pro' | 'tier_payg' | 'tier_team' | 'tier_enterprise'
     }
     CreateOrganizationResponse:
       | {
@@ -5314,7 +5303,6 @@ export interface components {
       }
       amount: number
       billing_name?: string
-      hcaptcha_token?: string
       payment_method_id: string
       tax_id?: {
         country: string
@@ -8071,7 +8059,6 @@ export interface components {
       'supabase-postgres': string
     }
     SetupIntentRequest: {
-      hcaptchaToken?: string
     }
     SetupIntentResponse: {
       client_secret: string

@@ -7,14 +7,15 @@ export type EdgeFunctionServiceStatusVariables = {
   projectRef?: string
 }
 
+// FIXME: Implementation missing
 export async function getEdgeFunctionServiceStatus(signal?: AbortSignal) {
   try {
-    const res = await fetch('https://obuldanrptloktxcffvn.supabase.co/functions/v1/health-check', {
+    /*const res = await fetch('https://obuldanrptloktxcffvn.supabase.co/functions/v1/health-check', {
       method: 'GET',
       signal,
     })
-    const response = await res.json()
-    return response as { healthy: boolean }
+    const response = await res.json()*/
+    return { healthy: true }
   } catch (err) {
     return { healthy: false }
   }

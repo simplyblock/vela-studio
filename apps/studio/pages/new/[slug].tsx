@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { debounce } from 'lodash'
-import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { PropsWithChildren, useEffect, useRef, useState } from 'react'
@@ -76,9 +75,6 @@ const FormSchema = z.object({
     .max(64, 'Project name must be no longer than 64 characters.'), // Maximum length check
   postgresVersion: z.string({
     required_error: 'Please enter a Postgres version.',
-  }),
-  cloudProvider: z.string({
-    required_error: 'Please select a cloud provider.',
   }),
   dbPassStrength: z.number(),
   dbPass: z
@@ -214,18 +210,6 @@ const Wizard: NextPageWithLayout = () => {
   })
 
   const { instanceSize } = form.watch()
-
-  // [kevin] This will eventually all be provided by a new API endpoint to preview and validate project creation, this is just for kaizen now
-  const monthlyComputeCosts =
-    // current project costs
-    organizationProjects.reduce(
-      (prev, acc) => prev + monthlyInstancePrice(acc.infra_compute_size),
-      0
-    ) +
-    // selected compute size
-    monthlyInstancePrice(instanceSize) -
-    // compute credits
-    10
 
   // [Refactor] DB Password could be a common component used in multiple pages with repeated logic
   function generatePassword() {
@@ -431,76 +415,51 @@ const Wizard: NextPageWithLayout = () => {
                       />
                     </Panel.Content>
 
-                    {currentOrg?.plan && currentOrg?.plan.id !== 'free' && (
-                      <Panel.Content>
-                        <FormField_Shadcn_
-                          control={form.control}
-                          name="instanceSize"
-                          render={({ field }) => (
-                            <FormItemLayout
-                              layout="horizontal"
-                              label={
-                                <div className="flex flex-col gap-y-4">
-                                  <span>Compute Size</span>
-
-                                  <div className="flex flex-col gap-y-2">
-                                    <Link
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href="https://supabase.com/docs/guides/platform/compute-add-ons"
-                                    >
-                                      <div className="flex items-center space-x-2 opacity-75 hover:opacity-100 transition">
-                                        <p className="text-sm m-0">Compute Add-Ons</p>
-                                        <ExternalLink size={16} strokeWidth={1.5} />
-                                      </div>
-                                    </Link>
-                                    <Link
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href="https://supabase.com/docs/guides/platform/manage-your-usage/compute"
-                                    >
-                                      <div className="flex items-center space-x-2 opacity-75 hover:opacity-100 transition">
-                                        <p className="text-sm m-0">Compute Billing</p>
-                                        <ExternalLink size={16} strokeWidth={1.5} />
-                                      </div>
-                                    </Link>
-                                  </div>
-                                </div>
-                              }
-                              description={
-                                <>
-                                  <p>
-                                    The size for your dedicated database. You can change this later.
-                                  </p>
-                                </>
-                              }
+                    <Panel.Content>
+                      <FormField_Shadcn_
+                        control={form.control}
+                        name="instanceSize"
+                        render={({ field }) => (
+                          <FormItemLayout
+                            layout="horizontal"
+                            label={
+                              <div className="flex flex-col gap-y-4">
+                                <span>Compute Size</span>
+                              </div>
+                            }
+                            description={
+                              <>
+                                <p>
+                                  The default size of your project's databases. You can change this later.
+                                </p>
+                              </>
+                            }
+                          >
+                            <Select_Shadcn_
+                              value={field.value}
+                              onValueChange={(value) => field.onChange(value)}
                             >
-                              <Select_Shadcn_
-                                value={field.value}
-                                onValueChange={(value) => field.onChange(value)}
-                              >
-                                <SelectTrigger_Shadcn_ className="[&_.instance-details]:hidden">
-                                  <SelectValue_Shadcn_ placeholder="Select a compute size" />
-                                </SelectTrigger_Shadcn_>
-                                <SelectContent_Shadcn_>
-                                  <SelectGroup_Shadcn_>
-                                    <SelectItem_Shadcn_
-                                      key={'disabled'}
-                                      value={'disabled'}
-                                      disabled
-                                    >
-                                      <div className="flex items-center justify-center w-full">
-                                        <span>Larger instance sizes available after creation</span>
-                                      </div>
-                                    </SelectItem_Shadcn_>
-                                  </SelectGroup_Shadcn_>
-                                </SelectContent_Shadcn_>
-                              </Select_Shadcn_>
-                            </FormItemLayout>
-                          )}
-                        />
-                      </Panel.Content>
-                    )}
+                              <SelectTrigger_Shadcn_ className="[&_.instance-details]:hidden">
+                                <SelectValue_Shadcn_ placeholder="Select a compute size" />
+                              </SelectTrigger_Shadcn_>
+                              <SelectContent_Shadcn_>
+                                <SelectGroup_Shadcn_>
+                                  <SelectItem_Shadcn_
+                                    key={'disabled'}
+                                    value={'disabled'}
+                                    disabled
+                                  >
+                                    <div className="flex items-center justify-center w-full">
+                                      <span>Larger instance sizes available after creation</span>
+                                    </div>
+                                  </SelectItem_Shadcn_>
+                                </SelectGroup_Shadcn_>
+                              </SelectContent_Shadcn_>
+                            </Select_Shadcn_>
+                          </FormItemLayout>
+                        )}
+                      />
+                    </Panel.Content>
 
                     <Panel.Content>
                       <FormField_Shadcn_
@@ -638,16 +597,6 @@ const Wizard: NextPageWithLayout = () => {
       </form>
     </Form_Shadcn_>
   )
-}
-
-/**
- * When launching new projects, they only get assigned a compute size once successfully launched,
- * this might assume wrong compute size, but only for projects being rapidly launched after one another on non-default compute sizes.
- *
- * Needs to be in the API in the future [kevin]
- */
-const monthlyInstancePrice = (instance: string | undefined): number => {
-  return 10
 }
 
 const instanceLabel = (instance: string | undefined): string => {

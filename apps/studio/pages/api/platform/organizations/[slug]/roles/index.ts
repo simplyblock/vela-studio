@@ -12,7 +12,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
         project_ids: [1, 2],
       },
     ],
-    project_scoped_roles: []
+    project_scoped_roles: [],
   })
 }
 
