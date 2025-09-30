@@ -126,7 +126,7 @@ export const useAuthError = () => useAuth()?.error
 
 export const useIsMFAEnabled = () => {
   const user = useUser()
-  return user !== null && user.factors && user.factors.length > 0
+  return user !== null && user.factors && user.factors.length > 1
 }
 
 export const signOut = async () => authSignOut()
