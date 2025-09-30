@@ -11,7 +11,7 @@ import { APIKeys } from './APIKeys'
 import { GetStartedHero } from './GetStartedHero'
 
 export const NewProjectPanel = () => {
-  const { slug, ref } = useParams() as { slug: string; ref: string }
+  const { slug, ref, branch: branchRef } = useParams() as { slug: string; ref: string, branch: string }
 
   const {
     projectAuthAll: authEnabled,
@@ -198,7 +198,7 @@ export const NewProjectPanel = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button type="default" asChild>
-                        <Link href={`/org/${slug}/project/${ref}/realtime/inspector`}>Explore Realtime</Link>
+                        <Link href={`/org/${slug}/project/${ref}/branch/${branchRef}/realtime/inspector`}>Explore Realtime</Link>
                       </Button>
                       <Button
                         className="translate-y-[1px]"

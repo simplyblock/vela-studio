@@ -18,7 +18,7 @@ const RealtimeLayout = ({ title, children }: PropsWithChildren<RealtimeLayoutPro
   const { data: project } = useSelectedProjectQuery()
   const enableRealtimeSettingsFF = useIsRealtimeSettingsFFEnabled()
   const enableRealtimeSettingsFP = useIsRealtimeSettingsEnabled()
-  const { slug } = useParams() as { slug: string }
+  const { slug: orgRef, branch: branchRef } = useParams() as { slug: string, branch: string }
 
   const enableRealtimeSettings = enableRealtimeSettingsFF && enableRealtimeSettingsFP
 
@@ -32,7 +32,7 @@ const RealtimeLayout = ({ title, children }: PropsWithChildren<RealtimeLayoutPro
       productMenu={
         <ProductMenu
           page={page}
-          menu={generateRealtimeMenu(slug, project!, { enableRealtimeSettings })}
+          menu={generateRealtimeMenu(orgRef, project!, branchRef, { enableRealtimeSettings })}
         />
       }
     >
