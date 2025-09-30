@@ -34,7 +34,7 @@ import { UpgradingState } from './UpgradingState'
 const routesToIgnoreProjectDetailsRequest = [
   '/org/[slug]/project/[ref]/settings/general',
   '/org/[slug]/project/[ref]/database/settings',
-  '/org/[slug]/project/[ref]/storage/settings',
+  '/org/[slug]/project/[ref]/branch/[branch]/storage/settings',
   '/org/[slug]/project/[ref]/settings/infrastructure',
   '/org/[slug]/project/[ref]/settings/addons',
 ]
@@ -100,7 +100,7 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
       ? selectedProject.status === PROJECT_STATUS.ACTIVE_HEALTHY ||
         (selectedProject.status === PROJECT_STATUS.COMING_UP &&
           router.pathname.includes('/org/[slug]/project/[ref]/settings')) ||
-        router.pathname.includes('/org/[slug]/project/[ref]/branches')
+        router.pathname.includes('/org/[slug]/project/[ref]/branch')
       : true
 
     const ignorePausedState =

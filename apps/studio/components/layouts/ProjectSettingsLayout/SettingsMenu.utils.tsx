@@ -9,6 +9,7 @@ export const generateSettingsMenu = (
   slug: string,
   ref?: string,
   project?: Project,
+  branchRef?: string,
   organization?: Organization,
   features?: {
     auth?: boolean
@@ -120,7 +121,7 @@ export const generateSettingsMenu = (
               {
                 name: 'Storage',
                 key: 'storage',
-                url: `/org/${slug}/project/${ref}/storage/settings`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/storage/settings`,
                 items: [],
                 rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
               },

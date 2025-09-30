@@ -39,7 +39,7 @@ const formId = `delete-storage-bucket-form`
 
 export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModalProps) => {
   const router = useRouter()
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const schema = z.object({
@@ -88,7 +88,7 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
         )
 
         toast.success(`Successfully deleted bucket ${bucket.name}`)
-        router.push(`/org/${slug}/project/${projectRef}/storage/buckets`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/buckets`)
         onClose()
       } catch (error) {
         toast.success(

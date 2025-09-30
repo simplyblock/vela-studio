@@ -72,13 +72,13 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/storage',
-        destination: '/org/:slug/project/:ref/storage/buckets',
+        source: '/org/:slug/project/:ref/branch/:branch/storage',
+        destination: '/org/:slug/project/:ref/branch/:branch/storage/buckets',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/storage',
-        destination: '/org/:slug/project/:ref/storage/settings',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/storage',
+        destination: '/org/:slug/project/:ref/branch/:branch/storage/settings',
         permanent: true,
       },
       {
@@ -180,7 +180,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/storage/logs',
+        source: '/org/:slug/project/:ref/branch/:branch/storage/logs',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/storage-logs',
         permanent: true,
       },

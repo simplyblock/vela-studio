@@ -57,7 +57,7 @@ const CHART_INTERVALS: ChartIntervals[] = [
 
 const ProjectUsage = () => {
   const router = useRouter()
-  const { slug, ref: projectRef, branch: branchRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const { projectAuthAll: authEnabled, projectStorageAll: storageEnabled } = useIsFeatureEnabled([
     'project_auth:all',
@@ -102,13 +102,13 @@ const ProjectUsage = () => {
 
     if (_type === 'rest') {
       router.push(
-        `/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}`
+        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}`
       )
       return
     }
 
     router.push(
-      `/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}&f=${JSON.stringify(
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}&f=${JSON.stringify(
         {
           product: {
             [_type]: true,
@@ -158,7 +158,7 @@ const ProjectUsage = () => {
                 </div>
               }
               title="Database"
-              href={`/org/${slug}/project/${projectRef}/editor`}
+              href={`/org/${orgRef}/project/${projectRef}/editor`}
             />
 
             <Loading active={isLoading}>
@@ -184,7 +184,7 @@ const ProjectUsage = () => {
                   </div>
                 }
                 title="Auth"
-                href={`/org/${slug}/project/${projectRef}/auth/users`}
+                href={`/org/${orgRef}/project/${projectRef}/auth/users`}
               />
               <Loading active={isLoading}>
                 <BarChart
@@ -210,7 +210,7 @@ const ProjectUsage = () => {
                   </div>
                 }
                 title="Storage"
-                href={`/org/${slug}/project/${projectRef}/storage/buckets`}
+                href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/buckets`}
               />
 
               <Loading active={isLoading}>

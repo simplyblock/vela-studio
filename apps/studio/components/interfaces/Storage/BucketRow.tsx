@@ -23,10 +23,11 @@ export interface BucketRowProps {
   bucket: Bucket
   slug: string
   projectRef?: string
+  branchRef?: string
   isSelected: boolean
 }
 
-const BucketRow = ({ slug, bucket, projectRef = '', isSelected = false }: BucketRowProps) => {
+const BucketRow = ({ slug: orgRef, branchRef, bucket, projectRef = '', isSelected = false }: BucketRowProps) => {
   // FIXME: need permission implemented 
   const { can: canUpdateBuckets } = {can:true}
   const [modal, setModal] = useState<string | null>(null)
@@ -42,7 +43,7 @@ const BucketRow = ({ slug, bucket, projectRef = '', isSelected = false }: Bucket
     >
       {/* Even though we trim whitespaces from bucket names, there may be some existing buckets with trailing whitespaces. */}
       <Link
-        href={`/org/${slug}/project/${projectRef}/storage/buckets/${encodeURIComponent(bucket.id)}`}
+        href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/buckets/${encodeURIComponent(bucket.id)}`}
         className={'py-1 px-3 grow'}
       >
         <div className="flex items-center justify-between space-x-2 truncate w-full">
