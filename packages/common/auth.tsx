@@ -5,7 +5,6 @@ import { clearLocalStorage } from './constants'
 import { useSession as useAuthSession, signOut as authSignOut, getSession } from 'next-auth/react'
 import { Session } from './keycloak'
 import { AuthError } from '@supabase/auth-js'
-import { router } from 'next/client'
 
 export type AuthState = {
   session: Session | null

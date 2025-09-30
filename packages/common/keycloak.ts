@@ -210,7 +210,12 @@ class ServerKeycloakManager implements KeycloakManager {
     }
   }
 
-  async #adjustJwt(token: JWT, account: Account | null, profile?: Profile): Promise<JWT> {
+  async #adjustJwt(
+    token: JWT,
+    account: Account | null,
+    profile?: Profile,
+    trigger?: 'signIn' | 'signUp' | 'update'
+  ): Promise<JWT> {
     const baseToken = await this.#maybeRefreshToken(token, account)
     if (baseToken.error) {
       throw new Error(baseToken.error)
@@ -218,25 +223,25 @@ class ServerKeycloakManager implements KeycloakManager {
 
     if (baseToken.user) {
       return {
-        ...(baseToken as AuthToken)
+        ...(baseToken as AuthToken),
       }
     }
 
-    const freeProfile = profile as KeycloakProfile
+    const freeProfile = profile as KeycloakProfile & { amr: string[] }
     return {
       ...baseToken,
       user: {
         id: freeProfile.sub,
         email: freeProfile.email,
-        factors: [],
+        factors: trigger === 'signIn' ? (freeProfile.amr ?? []) : (baseToken.factors ?? []),
         user_metadata: {
-          full_name:  freeProfile.name,
+          full_name: freeProfile.name,
           preferred_username: freeProfile.preferred_username,
-          given_name:  freeProfile.given_name,
-          family_name:  freeProfile.family_name,
-          email_verified:  freeProfile.email_verified,
-        }
-      }
+          given_name: freeProfile.given_name,
+          family_name: freeProfile.family_name,
+          email_verified: freeProfile.email_verified,
+        },
+      },
     }
   }
 
@@ -268,8 +273,8 @@ class ServerKeycloakManager implements KeycloakManager {
         },
       },
       callbacks: {
-        jwt: ({ token, account, profile }) => {
-          return this.#adjustJwt(token, account, profile)
+        jwt: ({ token, account, profile, trigger }) => {
+          return this.#adjustJwt(token, account, profile, trigger)
         },
         session: ({ session, token }) => {
           return this.#adjustSession(session, token)
