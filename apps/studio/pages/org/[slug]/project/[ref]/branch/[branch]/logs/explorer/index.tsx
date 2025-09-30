@@ -58,7 +58,7 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
   const monaco = useMonaco()
   const router = useRouter()
   const { profile } = useProfile()
-  const { slug, ref, q, queryId } = useParams()
+  const { slug, ref, q, queryId, branch: branchRef } = useParams()
   const projectRef = ref as string
   const { data: organization } = useSelectedOrganizationQuery()
 
@@ -186,6 +186,7 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
 
   const handleCreateQuery = async (values: any, { setSubmitting }: any) => {
     if (!projectRef) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
     if (!profile) return console.error('Profile is required')
     setSubmitting(true)
 
@@ -207,7 +208,7 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
     upsertContent(
       { projectRef, payload },
       {
-        onSuccess: () => router.push(`/org/${slug}/project/${projectRef}/logs/explorer?queryId=${id}`),
+        onSuccess: () => router.push(`/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/explorer?queryId=${id}`),
       }
     )
   }

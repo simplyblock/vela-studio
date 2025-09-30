@@ -151,47 +151,47 @@ const nextConfig = {
       },
       {
         source: '/org/:slug/project/:ref/database/api-logs',
-        destination: '/org/:slug/project/:ref/logs/edge-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/edge-logs',
         permanent: true,
       },
       {
         source: '/org/:slug/project/:ref/database/postgres-logs',
-        destination: '/org/:slug/project/:ref/logs/postgres-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/postgres-logs',
         permanent: true,
       },
       {
         source: '/org/:slug/project/:ref/database/postgrest-logs',
-        destination: '/org/:slug/project/:ref/logs/postgrest-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/postgrest-logs',
         permanent: true,
       },
       {
         source: '/org/:slug/project/:ref/database/pgbouncer-logs',
-        destination: '/org/:slug/project/:ref/logs/pooler-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/pooler-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/logs/pgbouncer-logs',
-        destination: '/org/:slug/project/:ref/logs/pooler-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/logs/pgbouncer-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/pooler-logs',
         permanent: true,
       },
       {
         source: '/org/:slug/project/:ref/database/realtime-logs',
-        destination: '/org/:slug/project/:ref/logs/realtime-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/realtime-logs',
         permanent: true,
       },
       {
         source: '/org/:slug/project/:ref/storage/logs',
-        destination: '/org/:slug/project/:ref/logs/storage-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/storage-logs',
         permanent: true,
       },
       {
         source: '/org/:slug/project/:ref/auth/logs',
-        destination: '/org/:slug/project/:ref/logs/auth-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/auth-logs',
         permanent: true,
       },
       {
         source: '/org/:slug/project/:ref/logs-explorer',
-        destination: '/org/:slug/project/:ref/logs/explorer',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/explorer',
         permanent: true,
       },
       {

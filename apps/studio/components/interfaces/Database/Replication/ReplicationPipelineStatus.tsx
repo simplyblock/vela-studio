@@ -35,7 +35,7 @@ import { getDisabledStateConfig, getStatusConfig } from './ReplicationPipelineSt
  * Supports both legacy 'error' state and new 'errored' state with retry policies.
  */
 export const ReplicationPipelineStatus = () => {
-  const { slug, ref: projectRef, pipelineId: _pipelineId } = useParams()
+  const { slug, ref: projectRef, pipelineId: _pipelineId, branch: branchRef } = useParams()
   const [filterString, setFilterString] = useState<string>('')
 
   const pipelineId = Number(_pipelineId)
@@ -175,7 +175,7 @@ export const ReplicationPipelineStatus = () => {
             />
           </div>
           <Button asChild type="default">
-            <Link href={`/project/${projectRef}/logs/etl-replication-logs`}>View logs</Link>
+            <Link href={`/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/etl-replication-logs`}>View logs</Link>
           </Button>
           <Button
             type={statusName === 'stopped' ? 'primary' : 'default'}

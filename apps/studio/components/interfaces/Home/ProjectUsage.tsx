@@ -7,7 +7,6 @@ import { useState } from 'react'
 
 import { useParams } from 'common'
 import BarChart from 'components/ui/Charts/BarChart'
-import { InlineLink } from 'components/ui/InlineLink'
 import Panel from 'components/ui/Panel'
 import {
   ProjectLogStatsVariables,
@@ -16,7 +15,6 @@ import {
 } from 'data/analytics/project-log-stats-query'
 import { useFillTimeseriesSorted } from 'hooks/analytics/useFillTimeseriesSorted'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import type { ChartIntervals } from 'types'
 import {
   Button,
@@ -26,14 +24,9 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
   Loading,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from 'ui'
 
 type ChartIntervalKey = ProjectLogStatsVariables['interval']
-
-const LOG_RETENTION = { free: 1, pro: 7, team: 28, enterprise: 90 }
 
 const CHART_INTERVALS: ChartIntervals[] = [
   {
@@ -64,15 +57,14 @@ const CHART_INTERVALS: ChartIntervals[] = [
 
 const ProjectUsage = () => {
   const router = useRouter()
-  const { slug, ref: projectRef } = useParams()
-  const { data: organization } = useSelectedOrganizationQuery()
+  const { slug, ref: projectRef, branch: branchRef } = useParams()
 
   const { projectAuthAll: authEnabled, projectStorageAll: storageEnabled } = useIsFeatureEnabled([
     'project_auth:all',
     'project_storage:all',
   ])
 
-  const DEFAULT_INTERVAL: ChartIntervalKey = plan?.id === 'free' ? '1hr' : '1day'
+  const DEFAULT_INTERVAL: ChartIntervalKey = '1day'
 
   const [interval, setInterval] = useState<ChartIntervalKey>(DEFAULT_INTERVAL)
 
@@ -110,13 +102,13 @@ const ProjectUsage = () => {
 
     if (_type === 'rest') {
       router.push(
-        `/org/${slug}/project/${projectRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}`
+        `/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}`
       )
       return
     }
 
     router.push(
-      `/org/${slug}/project/${projectRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}&f=${JSON.stringify(
+      `/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/edge-logs?its=${selectedStart.toISOString()}&ite=${selectedEnd.toISOString()}&f=${JSON.stringify(
         {
           product: {
             [_type]: true,
@@ -143,46 +135,11 @@ const ProjectUsage = () => {
               }
             >
               {CHART_INTERVALS.map((i) => {
-                const disabled = !i.availableIn?.includes('free')
-
-                if (disabled) {
-                  const retentionDuration = LOG_RETENTION['free']
-                  return (
-                    <Tooltip key={i.key}>
-                      <TooltipTrigger asChild>
-                        <DropdownMenuRadioItem
-                          disabled
-                          value={i.key}
-                          className="!pointer-events-auto"
-                        >
-                          {i.label}
-                        </DropdownMenuRadioItem>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">
-                        <p>
-                          {plan?.name} plan only includes up to {retentionDuration} day
-                          {retentionDuration > 1 ? 's' : ''} of log retention
-                        </p>
-                        <p className="text-foreground-light">
-                          <InlineLink
-                            className="text-foreground-light hover:text-foreground"
-                            href={`/org/${organization?.slug}/billing?panel=subscriptionPlan`}
-                          >
-                            Upgrade your plan
-                          </InlineLink>{' '}
-                          to increase log retention and view statistics for the{' '}
-                          {i.label.toLowerCase()}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  )
-                } else {
-                  return (
-                    <DropdownMenuRadioItem key={i.key} value={i.key}>
-                      {i.label}
-                    </DropdownMenuRadioItem>
-                  )
-                }
+                return (
+                  <DropdownMenuRadioItem key={i.key} value={i.key}>
+                    {i.label}
+                  </DropdownMenuRadioItem>
+                )
               })}
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>

@@ -14,11 +14,11 @@ import type { NextPageWithLayout } from 'types'
 import { Button, Popover, cn } from 'ui'
 
 export const LogsTemplatesPage: NextPageWithLayout = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const isTemplatesEnabled = useIsFeatureEnabled('logs:templates')
 
   if (!isTemplatesEnabled) {
-    return <UnknownInterface urlBack={`/project/${projectRef}/logs/explorer`} />
+    return <UnknownInterface urlBack={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/explorer`} />
   }
 
   return (
@@ -44,7 +44,7 @@ LogsTemplatesPage.getLayout = (page) => (
 export default LogsTemplatesPage
 
 const Template = ({ projectRef, template }: { projectRef?: string; template: LogTemplate }) => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const [showPreview, setShowPreview] = useState(false)
 
   return (
@@ -66,7 +66,7 @@ const Template = ({ projectRef, template }: { projectRef?: string; template: Log
         </div>
       }
       className="h-44"
-      linkHref={`/org/${slug}/project/${projectRef}/logs/explorer?q=${encodeURI(template.searchString)}`}
+      linkHref={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/explorer?q=${encodeURI(template.searchString)}`}
       description={template.description}
       footer={
         <div className="flex flex-row justify-end">

@@ -33,7 +33,7 @@ export const PipelineStatus = ({
   isSuccess,
   requestStatus,
 }: PipelineStatusProps) => {
-  const { ref } = useParams()
+  const { ref, slug, branch: branchRef } = useParams()
 
   // Map backend statuses to UX-friendly display
   const getStatusConfig = () => {
@@ -148,7 +148,7 @@ export const PipelineStatus = ({
               <>
                 {' '}
                 Check the{' '}
-                <InlineLink href={`/project/${ref}/logs/etl-replication-logs`}>logs</InlineLink> for
+                <InlineLink href={`/org/${slug}/project/${ref}/branch/${branchRef}/logs/etl-replication-logs`}>logs</InlineLink> for
                 more information.
               </>
             )}

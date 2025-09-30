@@ -10,13 +10,13 @@ import { NextPageWithLayout } from 'types'
 
 export const LogPage: NextPageWithLayout = () => {
   const router = useRouter()
-  const { ref, slug } = useParams()
+  const { ref, slug, branch: branchRef } = useParams()
 
   const { isEnabled: isUnifiedLogsEnabled } = useUnifiedLogsPreview()
 
   useEffect(() => {
     if (!isUnifiedLogsEnabled && ref) {
-      router.replace(`/org/${slug}/project/${ref}/logs/explorer`)
+      router.replace(`/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUnifiedLogsEnabled, ref])
