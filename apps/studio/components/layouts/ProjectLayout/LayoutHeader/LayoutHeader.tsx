@@ -9,6 +9,7 @@ import { AssistantButton } from 'components/layouts/AppLayout/AssistantButton'
 import { InlineEditorButton } from 'components/layouts/AppLayout/InlineEditorButton'
 import { OrganizationDropdown } from 'components/layouts/AppLayout/OrganizationDropdown'
 import { ProjectDropdown } from 'components/layouts/AppLayout/ProjectDropdown'
+import { BranchDropdown } from 'components/layouts/AppLayout/BranchDropdown'
 import EditorPanel from 'components/ui/EditorPanel/EditorPanel'
 import { getResourcesExceededLimitsOrg } from 'components/ui/OveragesBanner/OveragesBanner.utils'
 import { useOrgUsageQuery } from 'data/usage/org-usage-query'
@@ -55,6 +56,7 @@ const LayoutHeader = ({
 }: LayoutHeaderProps) => {
   const { ref: projectRef, slug } = useParams()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
+  const { data: selectedProject } = useSelectedProjectQuery()
   const { setMobileMenuOpen } = useAppStateSnapshot()
 
   const [showEditorPanel, setShowEditorPanel] = useState(false)
@@ -136,6 +138,13 @@ const LayoutHeader = ({
                           </Badge>
                         </Link>
                       </div>
+                    )}
+
+                    {selectedProject && (
+                      <>
+                        <LayoutHeaderDivider />
+                        <BranchDropdown />
+                      </>
                     )}
                   </motion.div>
                 )}

@@ -51,7 +51,6 @@ const ProjectsPage: NextPageWithLayout = () => {
               search={search}
               filterStatus={filterStatus}
               resetFilterStatus={() => setFilterStatus(['ACTIVE_HEALTHY', 'INACTIVE'])}
-              rewriteHref={(projectRef) => `${slug}/project/${projectRef}`}
             />
           </div>
         </div>

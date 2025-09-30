@@ -1,21 +1,104 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
-import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
 
 export type BranchesVariables = {
+  orgSlug?: string
   projectRef?: string
 }
 
-export type Branch = components['schemas']['BranchResponse']
+interface DatabaseInformation {
+  host: string
+  port: number
+  username: string
+  name: string
+  password?: string // only at creation time
+  encrypted_connection_string: string
+  service_endpoint_uri: string
+  version: string
+}
 
-export async function getBranches({ projectRef }: BranchesVariables, signal?: AbortSignal) {
+export interface Branch {
+  id: number
+  name: string
+  slug: string
+  project_slug: string
+  organization_slug: string
+  database: DatabaseInformation & {
+    has_replicas: boolean
+  }
+  pitr_enabled: boolean
+  assigned_labels: string[]
+  used_resources: {
+    vcpu: number
+    ram_mb: number
+    nvme_gb: number
+    iops: number
+    storage_gb?: number
+  }
+  max_resources: {
+    vcpu: number
+    ram_mb: number
+    nvme_gb: number
+    iops: number
+    storage_gb?: number
+  }
+  api_keys: {
+    anon: string
+    service_role: string
+  }
+  status: {
+    database:
+      | 'ACTIVE_HEALTHY'
+      | 'STOPPED'
+      | 'STARTING'
+      | 'ACTIVE_UNHEALTHY'
+      | 'CREATING'
+      | 'DELETING'
+      | 'UPDATING'
+      | 'RESTARTING'
+      | 'STOPPING'
+      | 'UNKNOWN'
+    storage:
+      | 'ACTIVE_HEALTHY'
+      | 'STOPPED'
+      | 'STARTING'
+      | 'ACTIVE_UNHEALTHY'
+      | 'CREATING'
+      | 'DELETING'
+      | 'UNKNOWN'
+    realtime:
+      | 'ACTIVE_HEALTHY'
+      | 'STOPPED'
+      | 'STARTING'
+      | 'ACTIVE_UNHEALTHY'
+      | 'CREATING'
+      | 'DELETING'
+      | 'UNKNOWN'
+  }
+  created_at: string
+  created_by: string
+  updated_at?: string
+  updated_by?: string
+}
+
+
+export async function getBranches(
+  { orgSlug, projectRef }: BranchesVariables,
+  signal?: AbortSignal
+) {
+  if (!orgSlug) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
-  const { data, error } = await get(`/v1/projects/{ref}/branches`, {
-    params: { path: { ref: projectRef } },
+  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/branches`, {
+    params: {
+      path: {
+        slug: orgSlug,
+        ref: projectRef,
+      },
+    },
     signal,
   })
 
@@ -27,18 +110,18 @@ export async function getBranches({ projectRef }: BranchesVariables, signal?: Ab
     }
   }
 
-  return data
+  return data as unknown as BranchesData
 }
 
-export type BranchesData = Awaited<ReturnType<typeof getBranches>>
+export type BranchesData = Branch[]
 export type BranchesError = ResponseError
 
 export const useBranchesQuery = <TData = BranchesData>(
-  { projectRef }: BranchesVariables,
+  { orgSlug, projectRef }: BranchesVariables,
   { enabled = true, ...options }: UseQueryOptions<BranchesData, BranchesError, TData> = {}
 ) =>
   useQuery<BranchesData, BranchesError, TData>(
-    branchKeys.list(projectRef),
-    ({ signal }) => getBranches({ projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined', ...options }
+    branchKeys.list(orgSlug, projectRef),
+    ({ signal }) => getBranches({ orgSlug, projectRef }, signal),
+    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/v1/branches/{branch_id}': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}': {
     parameters: {
       query?: never
       header?: never
@@ -468,7 +468,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/branches': {
+  '/platform/organizations/{slug}/projects/{ref}/branches': {
     parameters: {
       query?: never
       header?: never
@@ -486,17 +486,13 @@ export interface paths {
      * @description Creates a database branch from the specified project.
      */
     post: operations['v1-create-a-branch']
-    /**
-     * Disables preview branching
-     * @description Disables preview branching for the specified project
-     */
-    delete: operations['v1-disable-preview-branching']
+    delete?: never
     options?: never
     head?: never
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/branches/{name}': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{name}': {
     parameters: {
       query?: never
       header?: never
@@ -1912,26 +1908,13 @@ export interface components {
         | 'RESIZING'
     }
     BranchResponse: {
-      /** Format: date-time */
-      created_at: string
-      git_branch?: string
-      /** Format: uuid */
       id: string
-      is_default: boolean
-      /**
-       * @deprecated
-       * @description This field is deprecated and will not be populated.
-       */
-      latest_check_run_id?: number
+      created_at: string
       name: string
+      is_default: boolean
       parent_project_ref: string
       persistent: boolean
-      /** Format: int32 */
-      pr_number?: number
       project_ref: string
-      /** Format: date-time */
-      review_requested_at?: string
-      /** @enum {string} */
       status:
         | 'CREATING_PROJECT'
         | 'RUNNING_MIGRATIONS'
@@ -1939,8 +1922,6 @@ export interface components {
         | 'MIGRATIONS_FAILED'
         | 'FUNCTIONS_DEPLOYED'
         | 'FUNCTIONS_FAILED'
-      /** Format: date-time */
-      updated_at: string
     }
     BranchUpdateResponse: {
       /** @enum {string} */
@@ -3617,8 +3598,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Branch ID */
-        branch_id: string
+        slug: string
+        ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -3646,8 +3628,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Branch ID */
-        branch_id: string
+        slug: string
+        ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -3675,8 +3658,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Branch ID */
-        branch_id: string
+        slug: string
+        ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -4715,6 +4699,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -4750,6 +4735,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -6769,7 +6755,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
-        slug:string
+        slug: string
       }
       cookie?: never
     }

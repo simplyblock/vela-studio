@@ -23,24 +23,31 @@ export const generateToolRoutes = (
   slug: string,
   ref?: string,
   project?: Project,
+  branchRef?: string,
   features?: {}
 ): Route[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
-  const buildingUrl = `/org/[slug]/project/${ref}`
+  const buildingUrl = `/org/[slug]/project/${ref}/branch/${branchRef}`
 
   return [
     {
       key: 'editor',
       label: 'Table Editor',
       icon: <TableEditor size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/editor`),
+      link:
+        ref &&
+        (isProjectBuilding
+          ? buildingUrl
+          : `/org/${slug}/project/${ref}/branch/${branchRef}/editor`),
       linkElement: <EditorIndexPageLink slug={slug} projectRef={ref} />,
     },
     {
       key: 'sql',
       label: 'SQL Editor',
       icon: <SqlEditor size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/sql`),
+      link:
+        ref &&
+        (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/branch/${branchRef}/sql`),
     },
   ]
 }
@@ -48,11 +55,12 @@ export const generateProductRoutes = (
   slug: string,
   ref?: string,
   project?: Project,
+  branchRef?: string,
   features?: { auth?: boolean; edgeFunctions?: boolean; storage?: boolean; realtime?: boolean }
 ): Route[] => {
   const isProjectActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
-  const buildingUrl = `/org/${slug}/project/${ref}`
+  const buildingUrl = `/org/${slug}/project/${ref}/branch/${branchRef}`
 
   const authEnabled = features?.auth ?? true
   const edgeFunctionsEnabled = features?.edgeFunctions ?? true
@@ -72,8 +80,8 @@ export const generateProductRoutes = (
         (isProjectBuilding
           ? buildingUrl
           : isProjectActive
-            ? `/org/${slug}/project/${ref}/database/schemas`
-            : `/org/${slug}/project/${ref}/database/backups/scheduled`),
+            ? `/org/${slug}/project/${ref}/branch/${branchRef}/database/schemas`
+            : `/org/${slug}/project/${ref}/branch/${branchRef}/database/backups/scheduled`),
       items: databaseMenu,
     },
     ...(authEnabled
@@ -83,7 +91,10 @@ export const generateProductRoutes = (
             label: 'Authentication',
             icon: <Auth size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
             link:
-              ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/auth/users`),
+              ref &&
+              (isProjectBuilding
+                ? buildingUrl
+                : `/org/${slug}/project/${ref}/branch/${branchRef}/auth/users`),
             items: authMenu,
           },
         ]
@@ -96,7 +107,9 @@ export const generateProductRoutes = (
             icon: <Storage size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
             link:
               ref &&
-              (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/storage/buckets`),
+              (isProjectBuilding
+                ? buildingUrl
+                : `/org/${slug}/project/${ref}/branch/${branchRef}/storage/buckets`),
           },
         ]
       : []),
@@ -107,7 +120,10 @@ export const generateProductRoutes = (
             label: 'Edge Functions',
             icon: <EdgeFunctions size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
             link:
-              ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/functions`),
+              ref &&
+              (isProjectBuilding
+                ? buildingUrl
+                : `/org/${slug}/project/${ref}/branch/${branchRef}/functions`),
           },
         ]
       : []),
@@ -119,7 +135,9 @@ export const generateProductRoutes = (
             icon: <Realtime size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
             link:
               ref &&
-              (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/realtime/inspector`),
+              (isProjectBuilding
+                ? buildingUrl
+                : `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/inspector`),
           },
         ]
       : []),
@@ -130,10 +148,11 @@ export const generateOtherRoutes = (
   slug: string,
   ref?: string,
   project?: Project,
+  branchRef?: string,
   features?: { unifiedLogs?: boolean }
 ): Route[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
-  const buildingUrl = `/org/${slug}/project/${ref}`
+  const buildingUrl = `/org/${slug}/project/${ref}/branch/${branchRef}`
 
   const unifiedLogsEnabled = features?.unifiedLogs ?? false
 
@@ -143,7 +162,10 @@ export const generateOtherRoutes = (
       label: 'Advisors',
       icon: <Lightbulb size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
-        ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/advisors/security`),
+        ref &&
+        (isProjectBuilding
+          ? buildingUrl
+          : `/org/${slug}/project/${ref}/branch/${branchRef}/advisors/security`),
     },
     {
       key: 'logs',
@@ -154,8 +176,8 @@ export const generateOtherRoutes = (
         (isProjectBuilding
           ? buildingUrl
           : unifiedLogsEnabled
-            ? `/org/${slug}/project/${ref}/logs`
-            : `/org/${slug}/project/${ref}/logs/explorer`),
+            ? `/org/${slug}/project/${ref}/branch/${branchRef}/logs`
+            : `/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer`),
     },
     // {
     //   key: 'reports',
@@ -174,24 +196,37 @@ export const generateOtherRoutes = (
       key: 'api',
       label: 'API Docs',
       icon: <FileText size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/api`),
+      link:
+        ref &&
+        (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/branch/${branchRef}/api`),
     },
     {
       key: 'integrations',
       label: 'Integrations',
       icon: <Blocks size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/integrations`),
+      link:
+        ref &&
+        (isProjectBuilding
+          ? buildingUrl
+          : `/org/${slug}/project/${ref}/branch/${branchRef}/integrations`),
     },
   ]
 }
 
-export const generateSettingsRoutes = (slug: string, ref?: string, project?: Project): Route[] => {
+export const generateSettingsRoutes = (
+  slug: string,
+  ref?: string,
+  project?: Project,
+  branchRef?: string
+): Route[] => {
   const settingsMenu = generateSettingsMenu(slug, ref as string)
-  return [{
-    key: 'settings',
-    label: 'Project Settings',
-    icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-    link: ref && `/org/${slug}/project/${ref}/settings/general`,
-    items: settingsMenu,
-  }]
+  return [
+    {
+      key: 'settings',
+      label: 'Project Settings',
+      icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link: ref && `/org/${slug}/project/${ref}/branch/${branchRef}/settings/general`,
+      items: settingsMenu,
+    },
+  ]
 }

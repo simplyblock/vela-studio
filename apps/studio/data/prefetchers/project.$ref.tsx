@@ -28,6 +28,7 @@ export function usePrefetchProjectIndexPage() {
 interface ProjectIndexPageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 'prefetcher'> {
   projectRef?: string
   slug: string
+  branchRef?: string
   href?: PrefetchableLinkProps['href']
 }
 
@@ -35,6 +36,7 @@ export function ProjectIndexPageLink({
   href,
   projectRef,
   slug,
+  branchRef,
   children,
   ...props
 }: PropsWithChildren<ProjectIndexPageLinkProps>) {
@@ -42,7 +44,7 @@ export function ProjectIndexPageLink({
 
   return (
     <PrefetchableLink
-      href={href || `/org/${slug}/project/${projectRef}`}
+      href={href || `/org/${slug}/project/${projectRef}/branch/${branchRef}`}
       prefetcher={() => prefetch({ slug, projectRef })}
       {...props}
     >

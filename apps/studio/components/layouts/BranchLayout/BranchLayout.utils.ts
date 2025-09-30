@@ -8,15 +8,9 @@ export const generateBranchMenu = (slug: string, ref: string): ProductMenuGroup[
         {
           name: 'Branches',
           key: 'branches',
-          url: `/org/${slug}/project/${ref}/branches`,
+          url: `/org/${slug}/project/${ref}/branch`,
           items: [],
-        },
-        {
-          name: 'Merge requests',
-          key: 'merge-requests',
-          url: `/org/${slug}/project/${ref}/branches/merge-requests`,
-          items: [],
-        },
+        }
       ],
     },
   ]

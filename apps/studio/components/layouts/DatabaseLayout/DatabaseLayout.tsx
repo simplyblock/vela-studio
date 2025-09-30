@@ -11,6 +11,7 @@ import { useFlag } from 'hooks/ui/useFlag'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateDatabaseMenu } from './DatabaseMenu.utils'
 import { getOrganizationSlug } from '../../../data/vela/organization-path-slug'
+import { useParams } from 'common'
 
 export interface DatabaseLayoutProps {
   title?: string
@@ -18,6 +19,7 @@ export interface DatabaseLayoutProps {
 
 const DatabaseProductMenu = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { branch: branchRef } = useParams()
 
   const router = useRouter()
   const slug = getOrganizationSlug() || 'unknown'
@@ -29,7 +31,6 @@ const DatabaseProductMenu = () => {
     connectionString: project?.connectionString,
   })
 
-  const pgNetExtensionExists = (data ?? []).find((ext) => ext.name === 'pg_net') !== undefined
   const pitrEnabled = true
   const columnLevelPrivileges = useIsColumnLevelPrivilegesEnabled()
   const enablePgReplicate = useFlag('enablePgReplicate')
@@ -44,8 +45,7 @@ const DatabaseProductMenu = () => {
     <>
       <ProductMenu
         page={page}
-        menu={generateDatabaseMenu(slug, project, {
-          pgNetExtensionExists,
+        menu={generateDatabaseMenu(slug, project, branchRef, {
           pitrEnabled,
           columnLevelPrivileges,
           enablePgReplicate,

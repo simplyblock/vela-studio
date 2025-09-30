@@ -6,30 +6,26 @@ import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
 
 export type BranchUpdateVariables = {
-  id: string
+  orgSlug: string
   projectRef: string
-  branchName?: string
-  gitBranch?: string
-  persistent?: boolean
-  requestReview?: boolean
+  branch: string
 }
 
 export async function updateBranch({
-  id,
-  branchName,
-  gitBranch,
-  persistent,
-  requestReview,
+  orgSlug,
+  projectRef,
+  branch,
 }: BranchUpdateVariables) {
-  const { data, error } = await patch('/v1/branches/{branch_id}', {
+  const { data, error } = await patch('/platform/organizations/{slug}/projects/{ref}/branches/{branch}', {
     params: {
-      path: { branch_id: id },
+      path: {
+        slug: orgSlug,
+        ref: projectRef,
+        branch: branch
+      },
     },
     body: {
-      branch_name: branchName,
-      git_branch: gitBranch,
-      persistent,
-      request_review: requestReview,
+      branch_name: branch,
     },
   })
 
@@ -52,8 +48,8 @@ export const useBranchUpdateMutation = ({
     (vars) => updateBranch(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(branchKeys.list(projectRef))
+        const { orgSlug, projectRef } = variables
+        await queryClient.invalidateQueries(branchKeys.list(orgSlug, projectRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

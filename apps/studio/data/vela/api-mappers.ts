@@ -52,6 +52,7 @@ export function mapProject(project: VelaProject): Project {
     restUrl: '',
     subscription_id: '',
     connectionString: encryptedConnectionString,
+    default_branch: 'main'
   }
 }
 

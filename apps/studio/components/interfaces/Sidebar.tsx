@@ -4,14 +4,10 @@ import {
   Blocks,
   Boxes,
   ChartArea,
-  FolderSync,
   HardDrive,
-  MessageCircleQuestionIcon,
   PanelLeftDashed,
-  Receipt,
   Settings,
   Shield,
-  Users,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -231,7 +227,7 @@ const ActiveDot = (errorArray: any[], warningArray: any[]) => {
 
 const ProjectLinks = () => {
   const router = useRouter()
-  const { slug, ref } = useParams() as { slug: string; ref?: string }
+  const { slug, ref, branch: branchRef } = useParams() as { slug: string; ref?: string, branch?: string }
   const { data: project } = useSelectedProjectQuery()
   const snap = useAppStateSnapshot()
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
@@ -251,8 +247,8 @@ const ProjectLinks = () => {
     'realtime:all',
   ])
 
-  const toolRoutes = generateToolRoutes(slug, ref, project)
-  const productRoutes = generateProductRoutes(slug, ref, project, {
+  const toolRoutes = generateToolRoutes(slug, ref, project, branchRef)
+  const productRoutes = generateProductRoutes(slug, ref, project, branchRef, {
     auth: authEnabled,
     edgeFunctions: edgeFunctionsEnabled,
     storage: storageEnabled,
@@ -261,10 +257,10 @@ const ProjectLinks = () => {
 
   const { isEnabled: isUnifiedLogsEnabled } = useUnifiedLogsPreview()
 
-  const otherRoutes = generateOtherRoutes(slug, ref, project, {
+  const otherRoutes = generateOtherRoutes(slug, ref, project, branchRef, {
     unifiedLogs: isUnifiedLogsEnabled,
   })
-  const settingsRoutes = generateSettingsRoutes(slug, ref, project)
+  const settingsRoutes = generateSettingsRoutes(slug, ref, project, branchRef)
 
   return (
     <SidebarMenu>
@@ -276,8 +272,8 @@ const ProjectLinks = () => {
             key: 'HOME',
             label: 'Project overview',
             icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link: `/org/${slug}/project/${ref}`,
-            linkElement: <ProjectIndexPageLink slug={slug} projectRef={ref} />,
+            link: `/org/${slug}/project/${ref}/branch/${branchRef}`,
+            linkElement: <ProjectIndexPageLink slug={slug} projectRef={ref} branchRef={branchRef} />,
           }}
         />
         {toolRoutes.map((route, i) => (
