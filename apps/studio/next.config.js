@@ -150,22 +150,22 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/api-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/api-logs',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/edge-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/postgres-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/postgres-logs',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/postgres-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/postgrest-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/postgrest-logs',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/postgrest-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/pgbouncer-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/pgbouncer-logs',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/pooler-logs',
         permanent: true,
       },
@@ -175,7 +175,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/realtime-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/realtime-logs',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/realtime-logs',
         permanent: true,
       },
@@ -185,12 +185,12 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/auth/logs',
+        source: '/org/:slug/project/:ref/branch/:branch/auth/logs',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/auth-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/logs-explorer',
+        source: '/org/:slug/project/:ref/branch/:branch/logs-explorer',
         destination: '/org/:slug/project/:ref/branch/:branch/logs/explorer',
         permanent: true,
       },
