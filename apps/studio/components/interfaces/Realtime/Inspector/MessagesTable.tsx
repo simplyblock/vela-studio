@@ -30,7 +30,7 @@ const NoResultAlert = ({
   hasChannelSet: boolean
   showSendMessage: () => void
 }) => {
-  const { slug, ref, branch: branchRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   // FIXME: need permission implemented 
   const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
 
@@ -66,7 +66,7 @@ const NoResultAlert = ({
                   Send messages between multiple clients
                 </p>
               </div>
-              <Link href={`/org/${slug}/project/${ref}/branch/${branchRef}/realtime/inspector`} target="_blank" rel="noreferrer">
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/realtime/inspector`} target="_blank" rel="noreferrer">
                 <Button type="default" iconRight={<ExternalLink />}>
                   Open inspector
                 </Button>
@@ -82,7 +82,7 @@ const NoResultAlert = ({
                 <p className="text-foreground">Listen to a table for changes</p>
                 <p className="text-foreground-lighter text-xs">Tables must have realtime enabled</p>
               </div>
-              <Link href={`/org/${slug}/project/${ref}/database/publications`} target="_blank" rel="noreferrer">
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/publications`} target="_blank" rel="noreferrer">
                 <Button type="default" iconRight={<ExternalLink />}>
                   Publications settings
                 </Button>

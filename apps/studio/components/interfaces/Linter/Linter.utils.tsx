@@ -13,7 +13,7 @@ import {
 import Link from 'next/link'
 
 import { LINTER_LEVELS, LintInfo } from 'components/interfaces/Linter/Linter.constants'
-import { LINT_TYPES, Lint } from 'data/lint/lint-query'
+import { Lint, LINT_TYPES } from 'data/lint/lint-query'
 import { Badge, Button } from 'ui'
 
 export const lintInfoMap: LintInfo[] = [
@@ -21,8 +21,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'unindexed_foreign_keys',
     title: 'Unindexed foreign keys',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef, metadata }) =>
-      `/org/${slug}/project/${projectRef}/database/indexes?schema=${metadata?.schema}`,
+    link: ({ slug: orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/indexes?schema=${metadata?.schema}`,
     linkText: 'Create an index',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0001_unindexed_foreign_keys',
@@ -62,8 +62,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'unused_index',
     title: 'Unused Index',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef, metadata }) =>
-      `/org/${slug}/project/${projectRef}/database/indexes?schema=${metadata?.schema}&table=${metadata?.name}`,
+    link: ({ slug: orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/indexes?schema=${metadata?.schema}&table=${metadata?.name}`,
     linkText: 'View index',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0005_unused_index',
@@ -106,8 +106,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'duplicate_index',
     title: 'Duplicate Index',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef, metadata }) =>
-      `/org/${slug}/project/${projectRef}/database/indexes?schema=${metadata?.schema}&table=${metadata?.name}`,
+    link: ({ slug: orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/indexes?schema=${metadata?.schema}&table=${metadata?.name}`,
     linkText: 'View index',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0009_duplicate_index',
@@ -128,8 +128,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'function_search_path_mutable',
     title: 'Function Search Path Mutable',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef, metadata }) =>
-      `/org/${slug}/project/${projectRef}/database/functions?schema=${metadata?.schema}&search=${metadata?.name}`,
+    link: ({ slug: orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/functions?schema=${metadata?.schema}&search=${metadata?.name}`,
     linkText: 'View functions',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0011_function_search_path_mutable',
@@ -139,8 +139,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'rls_disabled_in_public',
     title: 'RLS Disabled in Public',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef, metadata }) =>
-      `/org/${slug}/project/${projectRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
+    link: ({ slug: orgRef, projectRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
     linkText: 'View policies',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0013_rls_disabled_in_public',
@@ -150,8 +150,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'extension_in_public',
     title: 'Extension in Public',
     icon: <Unlock className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef, metadata }) =>
-      `/org/${slug}/project/${projectRef}/database/extensions?filter=${metadata?.name}`,
+    link: ({ slug: orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/extensions?filter=${metadata?.name}`,
     linkText: 'View extension',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0014_extension_in_public',
@@ -222,7 +222,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'ssl_not_enforced',
     title: 'SSL not enforced',
     icon: <Ruler className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef }) => `/org/${slug}/project/${projectRef}/database/settings`,
+    link: ({ slug: orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/ssl-enforcement',
     category: 'security',
@@ -231,7 +232,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'network_restrictions_not_set',
     title: 'No network restrictions',
     icon: <Ruler className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef }) => `/org/${slug}/project/${projectRef}/database/settings`,
+    link: ({ slug: orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/network-restrictions',
     category: 'security',
@@ -240,7 +242,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'password_requirements_min_length',
     title: 'Minimum password length not set or inadequate',
     icon: <Ruler className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef }) => `/org/${slug}/project/${projectRef}/auth/providers?provider=Email`,
+    link: ({ slug, projectRef }) =>
+      `/org/${slug}/project/${projectRef}/auth/providers?provider=Email`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/going-into-prod#security',
     category: 'security',
@@ -249,7 +252,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'pitr_not_enabled',
     title: 'PITR not enabled',
     icon: <Ruler className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef }) => `/org/${slug}/project/${projectRef}/database/backups/pitr`,
+    link: ({ slug: orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/backups#point-in-time-recovery',
     category: 'security',
@@ -258,7 +262,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_leaked_password_protection',
     title: 'Leaked Password Protection Disabled',
     icon: <LockIcon className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef }) => `/org/${slug}/project/${projectRef}/auth/providers?provider=Email`,
+    link: ({ slug, projectRef }) =>
+      `/org/${slug}/project/${projectRef}/auth/providers?provider=Email`,
     linkText: 'View settings',
     docsLink:
       'https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection',
@@ -277,7 +282,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_password_policy_missing',
     title: 'Password Policy Missing',
     icon: <LockIcon className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ slug, projectRef }) => `/org/${slug}/project/${projectRef}/auth/providers?provider=Email`,
+    link: ({ slug, projectRef }) =>
+      `/org/${slug}/project/${projectRef}/auth/providers?provider=Email`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/auth/password-security',
     category: 'security',
@@ -306,11 +312,13 @@ export const LintCTA = ({
   title,
   slug,
   projectRef,
+  branchRef,
   metadata,
 }: {
   title: LINT_TYPES
   slug: string
   projectRef: string
+  branchRef: string
   metadata: Lint['metadata']
 }) => {
   const lintInfo = lintInfoMap.find((item) => item.name === title)
@@ -319,7 +327,7 @@ export const LintCTA = ({
     return null
   }
 
-  const link = lintInfo.link({ slug, projectRef, metadata })
+  const link = lintInfo.link({ slug, projectRef, branchRef, metadata })
   const linkText = lintInfo.linkText
 
   return (

@@ -35,7 +35,7 @@ import { getDisabledStateConfig, getStatusConfig } from './ReplicationPipelineSt
  * Supports both legacy 'error' state and new 'errored' state with retry policies.
  */
 export const ReplicationPipelineStatus = () => {
-  const { slug, ref: projectRef, pipelineId: _pipelineId, branch: branchRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, pipelineId: _pipelineId } = useParams()
   const [filterString, setFilterString] = useState<string>('')
 
   const pipelineId = Number(_pipelineId)
@@ -131,7 +131,7 @@ export const ReplicationPipelineStatus = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-3">
           <Button asChild type="outline" icon={<ChevronLeft />} style={{ padding: '5px' }}>
-            <Link href={`/org/${slug}/project/${projectRef}/database/replication`} />
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/replication`} />
           </Button>
           <div>
             <div className="flex items-center gap-x-3">

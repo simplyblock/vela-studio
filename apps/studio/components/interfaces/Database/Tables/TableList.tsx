@@ -18,7 +18,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
@@ -77,7 +76,7 @@ export const TableList = ({
   onDeleteTable = noop,
 }: TableListProps) => {
   const router = useRouter()
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
 
   const prefetchEditorTablePage = usePrefetchEditorTablePage()
@@ -470,7 +469,7 @@ export const TableList = ({
                               className="whitespace-nowrap hover:border-muted"
                               style={{ paddingTop: 3, paddingBottom: 3 }}
                             >
-                              <Link href={`/org/${slug}/project/${ref}/database/tables/${x.id}`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/tables/${x.id}`}>
                                 {x.columns.length} columns
                               </Link>
                             </Button>
@@ -484,7 +483,7 @@ export const TableList = ({
                                   <DropdownMenuItem
                                     className="flex items-center space-x-2"
                                     onClick={() =>
-                                      router.push(`/org/${slug}/project/${project?.ref}/editor/${x.id}`)
+                                      router.push(`/org/${orgRef}/project/${project?.ref}/editor/${x.id}`)
                                     }
                                     onMouseEnter={() =>
                                       prefetchEditorTablePage({

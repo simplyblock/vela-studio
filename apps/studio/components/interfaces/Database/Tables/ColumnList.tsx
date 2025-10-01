@@ -38,7 +38,7 @@ export const ColumnList = ({
   onEditColumn = noop,
   onDeleteColumn = noop,
 }: ColumnListProps) => {
-  const { slug, id: _id, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id: _id } = useParams()
   const id = _id ? Number(_id) : undefined
 
   const { data: project } = useSelectedProjectQuery()
@@ -71,7 +71,7 @@ export const ColumnList = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button asChild type="outline" icon={<ChevronLeft />} style={{ padding: '5px' }}>
-            <Link href={`/org/${slug}/project/${ref}/database/tables`} />
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/tables`} />
           </Button>
           <Input
             size="small"

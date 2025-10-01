@@ -62,13 +62,13 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database',
-        destination: '/org/:slug/project/:ref/database/tables',
+        source: '/org/:slug/project/:ref/branch/:branch/database',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/tables',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/graphiql',
-        destination: '/org/:slug/project/:ref/api/graphiql',
+        source: '/org/:slug/project/:ref/branch/:branch/database/graphiql',
+        destination: '/org/:slug/project/:ref/branch/:branch/api/graphiql',
         permanent: true,
       },
       {
@@ -82,8 +82,8 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/database',
-        destination: '/org/:slug/project/:ref/database/settings',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/database',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/settings',
         permanent: true,
       },
       {
@@ -241,28 +241,28 @@ const nextConfig = {
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/query-performance',
-        destination: '/org/:slug/project/:ref/advisors/query-performance',
+        source: '/org/:slug/project/:ref/branch/:branch/database/query-performance',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/query-performance',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/auth/column-privileges',
-        destination: '/org/:slug/project/:ref/database/column-privileges',
+        source: '/org/:slug/project/:ref/branch/:branch/auth/column-privileges',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/column-privileges',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/linter',
-        destination: '/org/:slug/project/:ref/database/security-advisor',
+        source: '/org/:slug/project/:ref/branch/:branch/database/linter',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/security-advisor',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/security-advisor',
-        destination: '/org/:slug/project/:ref/advisors/security',
+        source: '/org/:slug/project/:ref/branch/:branch/database/security-advisor',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/security',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/performance-advisor',
-        destination: '/org/:slug/project/:ref/advisors/performance',
+        source: '/org/:slug/project/:ref/branch/:branch/database/performance-advisor',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/performance',
       },
       {
         permanent: true,

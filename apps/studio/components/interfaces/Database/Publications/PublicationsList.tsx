@@ -34,7 +34,7 @@ interface PublicationEvent {
 }
 
 export const PublicationsList = () => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const [filterString, setFilterString] = useState<string>('')
 
@@ -183,7 +183,7 @@ export const PublicationsList = () => {
                     <TableCell>
                       <div className="flex justify-end">
                         <Button asChild type="default" style={{ paddingTop: 3, paddingBottom: 3 }}>
-                          <Link href={`/project/${ref}/database/publications/${x.id}`}>
+                          <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/publications/${x.id}`}>
                             {x.tables === null
                               ? 'All tables'
                               : `${x.tables.length} ${x.tables.length === 1 ? 'table' : 'tables'}`}

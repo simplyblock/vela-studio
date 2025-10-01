@@ -31,45 +31,45 @@ export const generateDatabaseMenu = (
         {
           name: 'Schema Visualizer',
           key: 'schemas',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/schemas`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/schemas`,
           items: [],
         },
         { name: 'Tables', key: 'tables', url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/tables`, items: [] },
         {
           name: 'Functions',
           key: 'functions',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/functions`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/functions`,
           items: [],
         },
         {
           name: 'Triggers',
           key: 'triggers',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/triggers`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/triggers`,
           items: [],
         },
         {
           name: 'Enumerated Types',
           key: 'types',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/types`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/types`,
 
           items: [],
         },
         {
           name: 'Extensions',
           key: 'extensions',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/extensions`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/extensions`,
           items: [],
         },
         {
           name: 'Indexes',
           key: 'indexes',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/indexes`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/indexes`,
           items: [],
         },
         {
           name: 'Publications',
           key: 'publications',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/publications`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/publications`,
           items: [],
         },
         ...(showPgReplicate
@@ -77,7 +77,7 @@ export const generateDatabaseMenu = (
               {
                 name: 'Replication',
                 key: 'replication',
-                url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/replication`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/replication`,
                 label: !enablePgReplicate ? 'Coming soon' : undefined,
                 items: [],
               },
@@ -96,7 +96,7 @@ export const generateDatabaseMenu = (
               {
                 name: 'Column Privileges',
                 key: 'column-privileges',
-                url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/column-privileges`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/column-privileges`,
                 items: [],
                 label: 'ALPHA',
               },
@@ -112,14 +112,14 @@ export const generateDatabaseMenu = (
           name: 'Backups',
           key: 'backups',
           url: pitrEnabled
-            ? `/org/${slug}/project/${ref}/branch/${branchRef}/database/backups/pitr`
-            : `/org/${slug}/project/${ref}/branch/${branchRef}/database/backups/scheduled`,
+            ? `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/backups/pitr`
+            : `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/backups/scheduled`,
           items: [],
         },
         {
           name: 'Migrations',
           key: 'migrations',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/migrations`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/branch/${branchRef}/database/migrations`,
           items: [],
         },
       ],

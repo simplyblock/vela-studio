@@ -69,7 +69,7 @@ const ColumnEditor = ({
   saveChanges = noop,
   updateEditorDirty = noop,
 }: ColumnEditorProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const [errors, setErrors] = useState<Dictionary<any>>({})
@@ -236,7 +236,7 @@ const ColumnEditor = ({
             description={
               <div className="space-y-2">
                 <Button asChild type="default" size="tiny" icon={<Plus strokeWidth={2} />}>
-                  <Link href={`/org/${slug}/project/${ref}/database/types`} target="_blank" rel="noreferrer">
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/types`} target="_blank" rel="noreferrer">
                     Create enum types
                   </Link>
                 </Button>

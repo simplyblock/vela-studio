@@ -273,10 +273,10 @@ const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapp
   const state = useDatabaseSelectorStateSnapshot()
   const { data: selectedProject } = useSelectedProjectQuery()
 
-  const isBranchesPage = router.pathname.includes('/org/[slug]/project/[ref]/branches')
-  const isSettingsPages = router.pathname.includes('/org/[slug]/project/[ref]/settings')
-  const isVaultPage = router.pathname === '/org/[slug]/project/[ref]/settings/vault'
-  const isBackupsPage = router.pathname.includes('/org/[slug]/project/[ref]/database/backups')
+  const isBranchesPage = router.pathname.includes('/org/[slug]/project/[ref]/branch')
+  const isSettingsPages = router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/settings')
+  const isVaultPage = router.pathname === '/org/[slug]/project/[ref]/branch/[branch]/settings/vault'
+  const isBackupsPage = router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/database/backups')
 
   const requiresDbConnection: boolean =
     (!isSettingsPages && !routesToIgnoreDBConnection.includes(router.pathname)) || isVaultPage

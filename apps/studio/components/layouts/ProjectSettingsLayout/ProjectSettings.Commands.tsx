@@ -19,7 +19,7 @@ export function useProjectSettingsGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-project-settings-database',
         name: 'Database Settings',
-        route: `/org/${slug}/project/${ref}/database/settings`,
+        route: `/org/${slug}/project/${ref}/branch/${branchRef}/database/settings`,
         defaultHidden: true,
       },
       {
@@ -97,13 +97,13 @@ export function useProjectSettingsGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-project-settings-network-restrictions',
         name: 'Network restrictions',
-        route: `/org/${slug}/project/${ref}/database/settings#network-restrictions`,
+        route: `/org/${slug}/project/${ref}/branch/${branchRef}/database/settings#network-restrictions`,
         defaultHidden: true,
       },
       {
         id: 'nav-project-settings-banned-ips',
         name: 'Banned IPs',
-        route: `/org/${slug}/project/${ref}/database/settings#banned-ips`,
+        route: `/org/${slug}/project/${ref}/branch/${branchRef}/database/settings#banned-ips`,
         defaultHidden: true,
       },
       {

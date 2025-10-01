@@ -99,7 +99,7 @@ export const generateSettingsMenu = (
         {
           name: 'Database',
           key: 'database',
-          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/database/settings`,
+          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`,
           items: [],
           rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
         },
