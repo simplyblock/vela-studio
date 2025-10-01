@@ -10,7 +10,7 @@ import { NextPageWithLayout } from 'types'
 
 const IntegrationPage: NextPageWithLayout = () => {
   const router = useRouter()
-  const { ref: projectRef, id, pageId, childId, slug: orgRef } = useParams()
+  const { ref: projectRef, id, pageId, childId, slug: orgRef, branch: branchRef } = useParams()
 
   const { installedIntegrations: installedIntegrations, isLoading: isIntegrationsLoading } =
     useInstalledIntegrations()
