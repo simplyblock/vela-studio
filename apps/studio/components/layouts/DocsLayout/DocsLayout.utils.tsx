@@ -15,11 +15,11 @@ export const generateDocsMenu = (
     {
       title: 'Getting Started',
       items: [
-        { name: 'Introduction', key: 'introduction', url: `/org/${orgRef}/project/${projectRef}/api`, items: [] },
+        { name: 'Introduction', key: 'introduction', url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api`, items: [] },
         {
           name: 'Authentication',
           key: 'auth',
-          url: `/org/${orgRef}/project/${projectRef}/api?page=auth`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?page=auth`,
           items: [],
         },
         ...(flags?.authEnabled
@@ -27,7 +27,7 @@ export const generateDocsMenu = (
               {
                 name: 'User Management',
                 key: 'users-management',
-                url: `/org/${orgRef}/project/${projectRef}/api?page=users-management`,
+                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?page=users-management`,
                 items: [],
               },
             ]
@@ -40,14 +40,14 @@ export const generateDocsMenu = (
         {
           name: 'Introduction',
           key: 'tables-intro',
-          url: `/org/${orgRef}/project/${projectRef}/api?page=tables-intro`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?page=tables-intro`,
           items: [],
         },
         ...tables.sort().map((table) => {
           return {
             name: table,
             key: table,
-            url: `/org/${orgRef}/project/${projectRef}/api?resource=${table}`,
+            url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?resource=${table}`,
             items: [],
           }
         }),
@@ -59,11 +59,11 @@ export const generateDocsMenu = (
         {
           name: 'Introduction',
           key: 'rpc-intro',
-          url: `/org/${orgRef}/project/${projectRef}/api?page=rpc-intro`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?page=rpc-intro`,
           items: [],
         },
         ...functions.map((fn) => {
-          return { name: fn, key: fn, url: `/org/${orgRef}/project/${projectRef}/api?rpc=${fn}`, items: [] }
+          return { name: fn, key: fn, url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?rpc=${fn}`, items: [] }
         }),
       ],
     },

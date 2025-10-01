@@ -4,8 +4,8 @@ import { useRegisterCommands } from 'ui-patterns/CommandMenu'
 import { COMMAND_MENU_SECTIONS } from '../App/CommandMenu/CommandMenu.utils'
 
 export function useApiDocsGotoCommands(options?: CommandOptions) {
-  let { slug, ref } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.NAVIGATE,
@@ -13,28 +13,28 @@ export function useApiDocsGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-api',
         name: 'Project API Docs',
-        route: `/org/${slug}/project/${ref}/api`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api`,
         defaultHidden: true,
       },
       {
         id: 'nav-api-auth',
         name: 'Auth Docs',
-        route: `/org/${slug}/project/${ref}/api?page=auth`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?page=auth`,
         defaultHidden: true,
       },
       {
         id: 'nav-api-user-management',
         name: 'User Management Docs',
-        route: `/org/${slug}/project/${ref}/api?page=users-management`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?page=users-management`,
         defaultHidden: true,
       },
       {
         id: 'nav-api-graphql',
         name: 'GraphQL Docs',
-        route: `/org/${slug}/project/${ref}/api/graphiql`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api/graphiql`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }
