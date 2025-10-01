@@ -19,13 +19,13 @@ import {
 import { PROJECT_STATUS } from 'lib/constants'
 
 export const generateToolRoutes = (
-  slug: string,
-  ref?: string,
+  orgRef: string,
+  projectRef?: string,
   project?: Project,
   branchRef?: string,
 ): Route[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
-  const buildingUrl = `/org/[slug]/project/${ref}/branch/${branchRef}`
+  const buildingUrl = `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`
 
   return [
     {
@@ -33,19 +33,19 @@ export const generateToolRoutes = (
       label: 'Table Editor',
       icon: <TableEditor size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
-        ref &&
+        projectRef &&
         (isProjectBuilding
           ? buildingUrl
-          : `/org/${slug}/project/${ref}/branch/${branchRef}/editor`),
-      linkElement: <EditorIndexPageLink slug={slug} projectRef={ref} />,
+          : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`),
+      linkElement: <EditorIndexPageLink orgRef={orgRef} projectRef={projectRef} branchRef={branchRef} />,
     },
     {
       key: 'sql',
       label: 'SQL Editor',
       icon: <SqlEditor size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
-        ref &&
-        (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/branch/${branchRef}/sql`),
+        projectRef &&
+        (isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql`),
     },
   ]
 }

@@ -158,7 +158,7 @@ const ProjectUsage = () => {
                 </div>
               }
               title="Database"
-              href={`/org/${orgRef}/project/${projectRef}/editor`}
+              href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`}
             />
 
             <Loading active={isLoading}>

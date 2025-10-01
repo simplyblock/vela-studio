@@ -45,7 +45,7 @@ export const NewProjectPanel = () => {
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild type="default" icon={<TableEditor strokeWidth={1.5} />}>
-                  <EditorIndexPageLink slug={orgRef} projectRef={projectRef}>Table Editor</EditorIndexPageLink>
+                  <EditorIndexPageLink orgRef={orgRef} projectRef={projectRef} branchRef={branchRef}>Table Editor</EditorIndexPageLink>
                 </Button>
                 <Button asChild type="default" icon={<SqlEditor strokeWidth={1.5} />}>
                   <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new`}>SQL Editor</Link>

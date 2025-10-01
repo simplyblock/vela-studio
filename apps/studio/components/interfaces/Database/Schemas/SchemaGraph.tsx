@@ -31,7 +31,7 @@ import { TableNode } from './SchemaTableNode'
 // [Joshen] Persisting logic: Only save positions to local storage WHEN a node is moved OR when explicitly clicked to reset layout
 
 export const SchemaGraph = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { resolvedTheme } = useTheme()
   const { data: project } = useSelectedProjectQuery()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
@@ -65,7 +65,7 @@ export const SchemaGraph = () => {
     isLoading: isLoadingSchemas,
     isError: isErrorSchemas,
   } = useSchemasQuery({
-    orgSlug: slug,
+    orgSlug: orgRef,
     projectRef: project?.ref,
     connectionString: project?.connectionString,
   })
@@ -85,7 +85,7 @@ export const SchemaGraph = () => {
 
   const schema = (schemas ?? []).find((s) => s.name === selectedSchema)
   const [_, setStoredPositions] = useLocalStorage(
-    LOCAL_STORAGE_KEYS.SCHEMA_VISUALIZER_POSITIONS(ref as string, schema?.id ?? 0),
+    LOCAL_STORAGE_KEYS.SCHEMA_VISUALIZER_POSITIONS(projectRef!, schema?.id ?? 0),
     {}
   )
 
@@ -134,7 +134,7 @@ export const SchemaGraph = () => {
       })
         .then((data) => {
           const a = document.createElement('a')
-          a.setAttribute('download', `supabase-schema-${ref}.svg`)
+          a.setAttribute('download', `supabase-schema-${project}.svg`)
           a.setAttribute('href', data)
           a.click()
           toast.success('Successfully downloaded as SVG')
@@ -159,7 +159,7 @@ export const SchemaGraph = () => {
       })
         .then((data) => {
           const a = document.createElement('a')
-          a.setAttribute('download', `supabase-schema-${ref}.png`)
+          a.setAttribute('download', `supabase-schema-${projectRef}.png`)
           a.setAttribute('href', data)
           a.click()
           toast.success('Successfully downloaded as PNG')
@@ -177,7 +177,7 @@ export const SchemaGraph = () => {
   useEffect(() => {
     if (isSuccessTables && isSuccessSchemas && tables.length > 0) {
       const schema = schemas.find((s) => s.name === selectedSchema) as PostgresSchema
-      getGraphDataFromTables(ref as string, schema, tables).then(({ nodes, edges }) => {
+      getGraphDataFromTables(projectRef!, schema, tables).then(({ nodes, edges }) => {
         reactFlowInstance.setNodes(nodes)
         reactFlowInstance.setEdges(edges)
         setTimeout(() => reactFlowInstance.fitView({})) // it needs to happen during next event tick
@@ -286,7 +286,7 @@ export const SchemaGraph = () => {
               <ProductEmptyState
                 title="No tables created yet"
                 ctaButtonLabel="Create a new table"
-                ctaUrl={`/org/${slug}/project/${ref}/editor?create=table`}
+                ctaUrl={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor?create=table`}
               >
                 <p className="text-sm text-foreground-light">
                   There are no tables found in the schema "{selectedSchema}"

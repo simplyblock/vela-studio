@@ -48,12 +48,12 @@ import {
   TooltipTrigger,
   TreeViewItemVariant,
 } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
 
 export interface EntityListItemProps {
   id: number | string
-  slug: string
+  orgRef: string
   projectRef: string
+  branchRef: string
   isLocked: boolean
   isActive?: boolean
   onExportCLI: () => void
@@ -66,15 +66,15 @@ function isTableLikeEntityListItem(entity: { type?: string }) {
 
 const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   id,
-  slug,
+  orgRef,
   projectRef,
+  branchRef,
   item: entity,
   isLocked,
   isActive: _isActive,
   onExportCLI,
 }) => {
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const snap = useTableEditorStateSnapshot()
   const { selectedSchema } = useQuerySchemaState()
 
@@ -87,7 +87,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   const canEdit = isActive && !isLocked
 
   const { data: lints = [] } = useProjectLintsQuery({
-    orgSlug: slug, projectRef: project?.ref,
+    orgSlug: orgRef, projectRef: project?.ref,
   })
 
   const tableHasLints: boolean = getEntityLintDetails(
@@ -239,8 +239,10 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
     <EditorTablePageLink
       title={entity.name}
       id={String(entity.id)}
-      slug={slug}
-      href={`/org/${slug}/project/${projectRef}/editor/${entity.id}?schema=${entity.schema}`}
+      orgRef={orgRef!}
+      projectRef={projectRef}
+      branchRef={branchRef}
+      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${entity.id}?schema=${entity.schema}`}
       role="button"
       aria-label={`View ${entity.name}`}
       className={cn(
@@ -459,13 +461,13 @@ const EntityTooltipTrigger = ({
   materializedViewHasLints: boolean
   foreignTableHasLints: boolean
 }) => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   let tooltipContent = null
   const accessWarning = 'Data is publicly accessible via API'
   const learnMoreCTA = (
     <InlineLink
-      href={`/project/${ref}/editor/${entity.id}?schema=${entity.schema}&showWarning=true`}
+      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${entity.id}?schema=${entity.schema}&showWarning=true`}
     >
       Learn more
     </InlineLink>

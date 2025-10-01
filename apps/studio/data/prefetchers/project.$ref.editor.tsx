@@ -13,7 +13,7 @@ import { useParams } from 'common'
 export function usePrefetchEditorIndexPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const [entityTypesSort] = useLocalStorage<'alphabetical' | 'grouped-alphabetical'>(
@@ -25,11 +25,11 @@ export function usePrefetchEditorIndexPage() {
     if (!project) return
 
     // Prefetch code
-    router.prefetch(`/org/${slug}/project/${project.ref}/editor`)
+    router.prefetch(`/org/${orgRef}/project/${project.ref}/branch/${branchRef}/editor`)
 
     // Prefetch data
     prefetchSchemas(queryClient, {
-      orgSlug: slug,
+      orgSlug: orgRef,
       projectRef: project.ref,
       connectionString: project.connectionString,
     }).catch(() => {
@@ -48,14 +48,16 @@ export function usePrefetchEditorIndexPage() {
 
 interface EditorIndexPageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 'prefetcher'> {
   projectRef?: string
-  slug: string
+  orgRef: string
+  branchRef?: string
   href?: PrefetchableLinkProps['href']
 }
 
 export function EditorIndexPageLink({
   href,
   projectRef,
-  slug,
+  orgRef,
+  branchRef,
   children,
   ...props
 }: PropsWithChildren<EditorIndexPageLinkProps>) {
@@ -63,7 +65,7 @@ export function EditorIndexPageLink({
 
   return (
     <PrefetchableLink
-      href={href || `/org/${slug}/project/${projectRef}/editor`}
+      href={href || `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`}
       prefetcher={prefetch}
       {...props}
     >

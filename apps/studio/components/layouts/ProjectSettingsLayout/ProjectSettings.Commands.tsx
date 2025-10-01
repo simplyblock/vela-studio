@@ -5,7 +5,7 @@ import { useRegisterCommands } from 'ui-patterns/CommandMenu'
 
 export function useProjectSettingsGotoCommands(options?: CommandOptions) {
   let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  ref ||= '_'
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.NAVIGATE,
@@ -113,6 +113,6 @@ export function useProjectSettingsGotoCommands(options?: CommandOptions) {
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }

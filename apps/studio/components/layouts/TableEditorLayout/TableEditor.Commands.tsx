@@ -9,8 +9,8 @@ import { useRegisterCommands } from 'ui-patterns/CommandMenu'
 
 export function useProjectLevelTableEditorCommands(options?: CommandOptions) {
   const { data: project } = useSelectedProjectQuery()
-  const { slug } = useParams()
-  const ref = project?.ref || '_'
+  const { slug: orgRef, branch: branchRef } = useParams()
+  const projectRef = project?.ref || '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.TABLE,
@@ -18,13 +18,13 @@ export function useProjectLevelTableEditorCommands(options?: CommandOptions) {
       {
         id: 'create-table',
         name: 'Create new table',
-        route: `/org/${slug}/project/${ref}/editor?create=table`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor?create=table`,
         icon: () => <Table2 />,
       },
     ],
     {
       ...options,
-      deps: [ref],
+      deps: [orgRef, projectRef, branchRef],
       enabled: (options?.enabled ?? true) && !!project,
       orderSection: orderCommandSectionsByPriority,
       sectionMeta: { priority: 3 },
@@ -33,8 +33,8 @@ export function useProjectLevelTableEditorCommands(options?: CommandOptions) {
 }
 
 export function useTableEditorGotoCommands(options?: CommandOptions) {
-  let { slug, ref } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.TABLE,
@@ -42,13 +42,13 @@ export function useTableEditorGotoCommands(options?: CommandOptions) {
       {
         id: 'view-tables',
         name: 'View your tables',
-        route: `/org/${slug}/project/${ref}/editor`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`,
         icon: () => <Table2 />,
       },
     ],
     {
       ...options,
-      deps: [ref],
+      deps: [orgRef, projectRef, branchRef],
       orderSection: orderCommandSectionsByPriority,
       sectionMeta: { priority: 3 },
     }
@@ -60,10 +60,10 @@ export function useTableEditorGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-table-editor',
         name: 'Table Editor',
-        route: `/org/${slug}/project/${ref}/editor`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }

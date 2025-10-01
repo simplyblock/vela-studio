@@ -33,7 +33,7 @@ export const TableGridEditor = ({
 }: TableGridEditorProps) => {
   const router = useRouter()
   const appSnap = useAppStateSnapshot()
-  const { slug, ref: projectRef, id } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
 
   const tabs = useTabsStateSnapshot()
 
@@ -57,7 +57,7 @@ export const TableGridEditor = ({
 
   const onTableCreated = useCallback(
     (table: { id: number }) => {
-      router.push(`/org/${slug}/project/${projectRef}/editor/${table.id}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${table.id}`)
     },
     [projectRef, router]
   )
@@ -117,7 +117,7 @@ export const TableGridEditor = ({
                 className="mt-2"
                 onClick={() => appSnap.setDashboardHistory(projectRef, 'editor', undefined)}
               >
-                <Link href={`/org/${slug}/project/${projectRef}/editor/${openTabs[0].split('-')[1]}`}>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${openTabs[0].split('-')[1]}`}>
                   Close tab
                 </Link>
               </Button>
@@ -128,7 +128,7 @@ export const TableGridEditor = ({
                 className="mt-2"
                 onClick={() => appSnap.setDashboardHistory(projectRef, 'editor', undefined)}
               >
-                <Link href={`/org/${slug}/project/${projectRef}/editor`}>Head back</Link>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`}>Head back</Link>
               </Button>
             )}
           </Admonition>

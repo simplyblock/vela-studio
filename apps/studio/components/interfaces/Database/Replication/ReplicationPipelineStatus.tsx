@@ -267,7 +267,7 @@ export const ReplicationPipelineStatus = () => {
                               <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href={`/project/${projectRef}/editor/${table.table_id}`}
+                                href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${table.table_id}`}
                               />
                             </ButtonTooltip>
                           </div>

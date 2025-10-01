@@ -483,7 +483,7 @@ export const TableList = ({
                                   <DropdownMenuItem
                                     className="flex items-center space-x-2"
                                     onClick={() =>
-                                      router.push(`/org/${orgRef}/project/${project?.ref}/editor/${x.id}`)
+                                      router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/editor/${x.id}`)
                                     }
                                     onMouseEnter={() =>
                                       prefetchEditorTablePage({

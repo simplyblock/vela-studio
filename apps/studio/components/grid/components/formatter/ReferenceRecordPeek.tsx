@@ -24,7 +24,7 @@ interface ReferenceRecordPeekProps {
 }
 
 export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPeekProps) => {
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
 
   const router = useRouter()
@@ -95,7 +95,7 @@ export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPee
     return res
   })
 
-  if (!slug || !ref) {
+  if (!orgRef || !projectRef || !branchRef) {
     return router.push(DEFAULT_HOME)
   }
 
@@ -136,9 +136,10 @@ export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPee
       />
       <div className="flex items-center justify-end px-2 py-1">
         <EditorTablePageLink
-          href={`/org/${slug}/project/${ref}/editor/${table.id}?schema=${table.schema}&filter=${column}%3Aeq%3A${value}`}
-          slug={slug}
-          projectRef={ref}
+          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${table.id}?schema=${table.schema}&filter=${column}%3Aeq%3A${value}`}
+          orgRef={orgRef}
+          projectRef={projectRef}
+          branchRef={branchRef}
           id={String(table.id)}
           filters={[{ column, operator: '=', value: String(value) }]}
         >

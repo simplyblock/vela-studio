@@ -32,7 +32,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_users_exposed',
     title: 'Exposed Auth Users',
     icon: <Lock className="text-foreground-muted" size={15} strokeWidth={1.5} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/editor`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`,
     linkText: 'View table',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0002_auth_users_exposed',
@@ -53,7 +54,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'no_primary_key',
     title: 'No Primary Key',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/editor`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`,
     linkText: 'View table',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0004_no_primary_key',
