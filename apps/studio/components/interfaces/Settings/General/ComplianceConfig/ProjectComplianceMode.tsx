@@ -15,7 +15,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Switch, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 
 const ComplianceConfig = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const [isSensitive, setIsSensitive] = useState(false)
   // FIXME: need permission implemented 
@@ -27,7 +27,7 @@ const ComplianceConfig = () => {
     isError,
     isLoading,
     isSuccess,
-  } = useProjectSettingsV2Query({ orgSlug: slug, projectRef: ref })
+  } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef: projectRef })
   const initialIsSensitive = settings?.is_sensitive || false
 
   const { mutate: updateComplianceConfig, isLoading: isSubmitting } =
@@ -42,10 +42,10 @@ const ComplianceConfig = () => {
     })
 
   const toggleIsSensitive = async () => {
-    if (!slug) return console.error('Organization slug is required')
-    if (!ref) return console.error('Project ref is required')
+    if (!orgRef) return console.error('Organization slug is required')
+    if (!projectRef) return console.error('Project ref is required')
     setIsSensitive(!isSensitive)
-    updateComplianceConfig({ orgSlug: slug, projectRef: ref, isSensitive: !isSensitive })
+    updateComplianceConfig({ orgSlug: orgRef, projectRef: projectRef, isSensitive: !isSensitive })
   }
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const ComplianceConfig = () => {
               description={
                 <p className="text-sm text-foreground-light">
                   Enable security warnings in the{' '}
-                  <InlineLink href={`/org/${slug}/project/${ref}/advisors/security`}>
+                  <InlineLink href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security`}>
                     Security Advisor
                   </InlineLink>{' '}
                   to enforce requirements for managing sensitive data

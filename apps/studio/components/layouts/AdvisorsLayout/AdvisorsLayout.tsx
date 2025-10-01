@@ -18,7 +18,7 @@ const AdvisorsLayout = ({ children }: PropsWithChildren<AdvisorsLayoutProps>) =>
   const advisorRules = useIsAdvisorRulesEnabled()
 
   const router = useRouter()
-  const { slug } = useParams() as { slug: string }
+  const { slug: orgRef, branch: branchRef } = useParams() as { slug: string, branch?: string }
   const page = router.pathname.split('/')[6]
 
   return (
@@ -26,7 +26,7 @@ const AdvisorsLayout = ({ children }: PropsWithChildren<AdvisorsLayoutProps>) =>
       isLoading={false}
       product="Advisors"
       productMenu={
-        <ProductMenu page={page} menu={generateAdvisorsMenu(slug, project, { advisorRules })} />
+        <ProductMenu page={page} menu={generateAdvisorsMenu(orgRef, project, branchRef, { advisorRules })} />
       }
     >
       {children}

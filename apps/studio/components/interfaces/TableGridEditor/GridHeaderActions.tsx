@@ -343,7 +343,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     <Button type="default" asChild>
                       <Link
                         target="_blank"
-                        href={`/org/${orgRef}/project/${projectRef}/advisors/security?preset=${matchingViewLint?.level}&id=${matchingViewLint?.cache_key}`}
+                        href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security?preset=${matchingViewLint?.level}&id=${matchingViewLint?.cache_key}`}
                       >
                         Learn more
                       </Link>
@@ -386,7 +386,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     <Button type="default" asChild>
                       <Link
                         target="_blank"
-                        href={`/org/${orgRef}/project/${projectRef}/advisors/security?preset=${matchingMaterializedViewLint?.level}&id=${matchingMaterializedViewLint?.cache_key}`}
+                        href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security?preset=${matchingMaterializedViewLint?.level}&id=${matchingMaterializedViewLint?.cache_key}`}
                       >
                         Learn more
                       </Link>

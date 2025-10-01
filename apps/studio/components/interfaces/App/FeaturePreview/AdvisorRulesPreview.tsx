@@ -6,7 +6,7 @@ import { BASE_PATH } from 'lib/constants'
 import { useIsRealtimeSettingsEnabled } from './FeaturePreviewContext'
 
 export const AdvisorRulesPreview = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const isRealtimeSettingsEnabled = useIsRealtimeSettingsEnabled()
 
   return (
@@ -31,8 +31,8 @@ export const AdvisorRulesPreview = () => {
             <InlineLink
               href={
                 isRealtimeSettingsEnabled
-                  ? `/org/${slug}/project/${ref}/advisors/security`
-                  : `/org/${slug}/project/${ref}/advisors/rules/security`
+                  ? `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security`
+                  : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/security`
               }
             >
               Advisors section.
