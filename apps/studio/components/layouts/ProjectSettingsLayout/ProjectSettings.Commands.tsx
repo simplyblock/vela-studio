@@ -25,7 +25,7 @@ export function useProjectSettingsGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-project-settings-auth',
         name: 'Auth Settings',
-        route: `/org/${orgRef}/project/${projectRef}/auth/providers`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
         defaultHidden: true,
       },
       {

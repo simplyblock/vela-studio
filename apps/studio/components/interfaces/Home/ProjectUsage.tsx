@@ -184,7 +184,7 @@ const ProjectUsage = () => {
                   </div>
                 }
                 title="Auth"
-                href={`/org/${orgRef}/project/${projectRef}/auth/users`}
+                href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/users`}
               />
               <Loading active={isLoading}>
                 <BarChart

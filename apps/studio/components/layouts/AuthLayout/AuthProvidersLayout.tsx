@@ -5,16 +5,16 @@ import { PageLayout } from 'components/layouts/PageLayout/PageLayout'
 import AuthLayout from './AuthLayout'
 
 export const AuthProvidersLayout = ({ children }: PropsWithChildren<{}>) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const navItems = [
     {
       label: 'Supabase Auth',
-      href: `/org/${slug}/project/${ref}/auth/providers`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
     },
     {
       label: 'Third Party Auth',
-      href: `/org/${slug}/project/${ref}/auth/third-party`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/third-party`,
     },
   ]
 

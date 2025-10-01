@@ -91,7 +91,7 @@ export const NewProjectPanel = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button type="default" asChild>
-                        <Link href={`/org/${orgRef}/project/${projectRef}/auth/users`}>Explore Auth</Link>
+                        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/users`}>Explore Auth</Link>
                       </Button>
 
                       <Button

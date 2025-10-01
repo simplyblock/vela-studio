@@ -57,8 +57,8 @@ const nextConfig = {
         permanent: false,
       },
       {
-        source: '/org/:slug/project/:ref/auth',
-        destination: '/org/:slug/project/:ref/auth/users',
+        source: '/org/:slug/project/:ref/branch/:branch/auth',
+        destination: '/org/:slug/project/:ref/branch/:branch/auth/users',
         permanent: true,
       },
       {
@@ -92,8 +92,8 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/auth/settings',
-        destination: '/org/:slug/project/:ref/auth/users',
+        source: '/org/:slug/project/:ref/branch/:branch/auth/settings',
+        destination: '/org/:slug/project/:ref/branch/:branch/auth/users',
         permanent: true,
       },
       {

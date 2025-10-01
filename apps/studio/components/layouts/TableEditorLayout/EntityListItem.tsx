@@ -74,7 +74,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   onExportCLI,
 }) => {
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const snap = useTableEditorStateSnapshot()
   const { selectedSchema } = useQuerySchemaState()
 
@@ -378,7 +378,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
                   <DropdownMenuItem key="view-policies" className="space-x-2" asChild>
                     <Link
                       key="view-policies"
-                      href={`/org/${slug}/project/${projectRef}/auth/policies?schema=${selectedSchema}&search=${entity.id}`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?schema=${selectedSchema}&search=${entity.id}`}
                     >
                       <Lock size={12} />
                       <span>View policies</span>

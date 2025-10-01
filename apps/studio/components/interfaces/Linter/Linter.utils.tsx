@@ -42,7 +42,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_rls_initplan',
     title: 'Auth RLS Initialization Plan',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/auth/policies`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`,
     linkText: 'View policies',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0003_auth_rls_initplan',
@@ -73,8 +74,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'multiple_permissive_policies',
     title: 'Multiple Permissive Policies',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef, metadata }) =>
-      `/org/${orgRef}/project/${projectRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
+    link: ({ orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
     linkText: 'View policies',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0006_multiple_permissive_policies',
@@ -84,8 +85,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'policy_exists_rls_disabled',
     title: 'Policy Exists RLS Disabled',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef, metadata }) =>
-      `/org/${orgRef}/project/${projectRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
+    link: ({ orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
     linkText: 'View policies',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0007_policy_exists_rls_disabled',
@@ -95,8 +96,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'rls_enabled_no_policy',
     title: 'RLS Enabled No Policy',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef, metadata }) =>
-      `/org/${orgRef}/project/${projectRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
+    link: ({ orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
     linkText: 'View table',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0008_rls_enabled_no_policy',
@@ -139,8 +140,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'rls_disabled_in_public',
     title: 'RLS Disabled in Public',
     icon: <Table2 className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef, metadata }) =>
-      `/org/${orgRef}/project/${projectRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
+    link: ({ orgRef, projectRef, branchRef, metadata }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?schema=${metadata?.schema}&search=${metadata?.name}`,
     linkText: 'View policies',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0013_rls_disabled_in_public',
@@ -161,7 +162,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_otp_long_expiry',
     title: 'Auth OTP Long Expiry',
     icon: <Clock className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/auth/providers`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/going-into-prod#security',
     category: 'security',
@@ -170,7 +172,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_otp_short_length',
     title: 'Auth OTP Short Length',
     icon: <Ruler className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/auth/providers`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/going-into-prod#security',
     category: 'security',
@@ -179,7 +182,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'rls_references_user_metadata',
     title: 'RLS references user metadata',
     icon: <User className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/auth/policies`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`,
     linkText: 'View policies',
     docsLink:
       'https://supabase.com/docs/guides/database/database-linter?queryGroups=lint&lint=0015_rls_references_user_metadata',
@@ -242,8 +246,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'password_requirements_min_length',
     title: 'Minimum password length not set or inadequate',
     icon: <Ruler className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) =>
-      `/org/${orgRef}/project/${projectRef}/auth/providers?provider=Email`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers?provider=Email`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/going-into-prod#security',
     category: 'security',
@@ -262,8 +266,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_leaked_password_protection',
     title: 'Leaked Password Protection Disabled',
     icon: <LockIcon className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) =>
-      `/org/${orgRef}/project/${projectRef}/auth/providers?provider=Email`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers?provider=Email`,
     linkText: 'View settings',
     docsLink:
       'https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection',
@@ -273,7 +277,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_insufficient_mfa_options',
     title: 'Insufficient MFA Options',
     icon: <LockIcon className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/auth/mfa`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/mfa`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/auth/auth-mfa',
     category: 'security',
@@ -282,8 +287,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'auth_password_policy_missing',
     title: 'Password Policy Missing',
     icon: <LockIcon className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) =>
-      `/org/${orgRef}/project/${projectRef}/auth/providers?provider=Email`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers?provider=Email`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/auth/password-security',
     category: 'security',
@@ -302,7 +307,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'no_backup_admin',
     title: 'No Backup Admin Detected',
     icon: <LockIcon className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/auth/mfa`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/mfa`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/auth/auth-mfa',
     category: 'security',

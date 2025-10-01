@@ -66,7 +66,7 @@ export const generateProductRoutes = (
   const realtimeEnabled = features?.realtime ?? true
 
   const databaseMenu = generateDatabaseMenu(orgRef, project)
-  const authMenu = generateAuthMenu(orgRef, projectRef!)
+  const authMenu = generateAuthMenu(orgRef, projectRef!, branchRef!)
 
   return [
     {
@@ -217,7 +217,7 @@ export const generateSettingsRoutes = (
   project?: Project,
   branchRef?: string
 ): Route[] => {
-  const settingsMenu = generateSettingsMenu(orgRef, projectRef!, project, branchRef)
+  const settingsMenu = generateSettingsMenu(orgRef, projectRef!, branchRef, project)
   return [
     {
       key: 'settings',

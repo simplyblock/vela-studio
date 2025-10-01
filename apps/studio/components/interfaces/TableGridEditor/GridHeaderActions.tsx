@@ -226,7 +226,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     }}
                   >
                     <Link
-                      href={`/org/${orgRef}/project/${projectRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
                     >
                       Add RLS policy
                     </Link>
@@ -255,7 +255,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     }
                   >
                     <Link
-                      href={`/org/${orgRef}/project/${projectRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
                     >
                       RLS {policies.length > 1 ? 'policies' : 'policy'}
                     </Link>

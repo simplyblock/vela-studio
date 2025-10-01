@@ -73,8 +73,8 @@ export const ResourceExhaustionWarningBanner = () => {
     null: '/org/[slug]/project/[ref]/branch/[branch]/settings/[infra-path]',
     disk_space: '/org/[slug]/project/[ref]/branch/[branch]/settings/compute-and-disk',
     read_only: '/org/[slug]/project/[ref]/branch/[branch]/settings/compute-and-disk',
-    auth_email_rate_limit: '/org/[slug]/project/[ref]/auth/rate-limits',
-    auth_restricted_email_sending: '/org/[slug]/project/[ref]/auth/smtp',
+    auth_email_rate_limit: '/org/[slug]/project/[ref]/branch/[branch]/auth/rate-limits',
+    auth_restricted_email_sending: '/org/[slug]/project/[ref]/branch/[branch]/auth/smtp',
     default: (metric: string) => `/org/[slug]/project/[ref]/branch/[branch]/settings/[infra-path]#${metric}`,
   }
 

@@ -32,7 +32,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 
 export const QueueTab = () => {
-  const { slug, childId: queueName, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, childId: queueName } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const [openRlsPopover, setOpenRlsPopover] = useState(false)
@@ -82,7 +82,7 @@ export const QueueTab = () => {
   })
 
   const onToggleRLS = async () => {
-    if (!slug) return console.error('Organization slug is required')
+    if (!orgRef) return console.error('Organization slug is required')
     if (!project) return console.error('Project is required')
     if (!queueTable) return toast.error('Unable to toggle RLS: Queue table not found')
     const payload = {
@@ -90,7 +90,7 @@ export const QueueTab = () => {
       rls_enabled: true,
     }
     updateTable({
-      orgSlug: slug,
+      orgSlug: orgRef,
       projectRef: project?.ref,
       connectionString: project?.connectionString,
       id: queueTable.id,
@@ -145,8 +145,7 @@ export const QueueTab = () => {
                   }}
                 >
                   <Link
-                    passHref
-                    href={`/org/${slug}/project/${ref}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
+                    href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
                   >
                     Add RLS policy
                   </Link>
@@ -170,8 +169,7 @@ export const QueueTab = () => {
                   }
                 >
                   <Link
-                    passHref
-                    href={`/org/${slug}/project/${ref}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
+                    href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
                   >
                     Auth {queuePolicies.length > 1 ? 'policies' : 'policy'}
                   </Link>

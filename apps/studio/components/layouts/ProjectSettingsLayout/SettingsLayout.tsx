@@ -34,7 +34,7 @@ const SettingsLayout = ({ title, children }: PropsWithChildren<SettingsLayoutPro
     'project_storage:all',
   ])
 
-  const menuRoutes = generateSettingsMenu(orgRef!, projectRef, project, branchRef, {
+  const menuRoutes = generateSettingsMenu(orgRef!, projectRef, branchRef, project, {
     auth: authEnabled,
     edgeFunctions: edgeFunctionsEnabled,
     storage: storageEnabled,

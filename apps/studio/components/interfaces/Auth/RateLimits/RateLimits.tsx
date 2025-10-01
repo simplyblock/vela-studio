@@ -29,7 +29,7 @@ import { isSmtpEnabled } from '../SmtpForm/SmtpForm.utils'
 import { getPathReferences } from '../../../../data/vela/path-references'
 
 const RateLimits = () => {
-  const { slug, ref: projectRef } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   // FIXME: need permission implemented 
   const { can: canUpdateConfig } = {can:true}
    // FIXME: need permission implemented  
@@ -186,7 +186,7 @@ const RateLimits = () => {
                               </p>
                               <div className="mt-3">
                                 <Button asChild type="default" size="tiny">
-                                  <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                     View auth providers
                                   </Link>
                                 </Button>
@@ -203,7 +203,7 @@ const RateLimits = () => {
                               </p>
                               <div className="mt-3">
                                 <Button asChild type="default" size="tiny">
-                                  <Link href={`/org/${slug}/project/${projectRef}/auth/smtp`}>
+                                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/smtp`}>
                                     View SMTP settings
                                   </Link>
                                 </Button>
@@ -250,7 +250,7 @@ const RateLimits = () => {
                           </p>
                           <div className="mt-3">
                             <Button asChild type="default" size="tiny">
-                              <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                 View auth providers
                               </Link>
                             </Button>
@@ -379,7 +379,7 @@ const RateLimits = () => {
                           </p>
                           <div className="mt-3">
                             <Button asChild type="default" size="tiny">
-                              <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                 View auth settings
                               </Link>
                             </Button>
@@ -465,7 +465,7 @@ const RateLimits = () => {
                           </p>
                           <div className="mt-3">
                             <Button asChild type="default" size="tiny">
-                              <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                 View Auth provider settings
                               </Link>
                             </Button>
