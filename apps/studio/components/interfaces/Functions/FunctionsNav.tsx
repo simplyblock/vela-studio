@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 const FunctionsNav = ({ item }: any) => {
   const router = useRouter()
   const activeRoute = router.pathname.split('/')[5]
-  const { slug, ref } = router.query
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = router.query
 
   return (
     <Tabs
@@ -15,7 +15,7 @@ const FunctionsNav = ({ item }: any) => {
       activeId={!activeRoute ? 'overview' : activeRoute}
       onChange={(e: string) => {
         if (item?.slug) {
-          router.push(`/org/${slug}/project/${ref}/functions/${item.slug}/${e === 'overview' ? '' : e}`)
+          router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${item.slug}/${e === 'overview' ? '' : e}`)
         }
       }}
     >

@@ -154,7 +154,7 @@ function isAtBottom({ currentTarget }: UIEvent<HTMLDivElement>): boolean {
 }
 
 export const PreviousRunsTab = () => {
-  const { slug, childId, branch: branchRef } = useParams()
+  const { slug: orgRef, childId, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const jobId = Number(childId)
@@ -295,7 +295,7 @@ export const PreviousRunsTab = () => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`/org/${slug}/project/${project?.ref}/branch/${branchRef}/logs/pgcron-logs/`}
+                    href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/logs/pgcron-logs/`}
                   >
                     View Cron logs
                   </Link>
@@ -305,7 +305,7 @@ export const PreviousRunsTab = () => {
                     <Link
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={`/org/${slug}/project/${project?.ref}/functions/${edgeFunctionSlug}/logs`}
+                      href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/functions/${edgeFunctionSlug}/logs`}
                     >
                       View Edge Function logs
                     </Link>

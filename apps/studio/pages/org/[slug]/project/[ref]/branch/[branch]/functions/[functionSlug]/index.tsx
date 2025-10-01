@@ -62,7 +62,7 @@ const CHART_INTERVALS: ChartIntervals[] = [
 
 const PageLayout: NextPageWithLayout = () => {
   const router = useRouter()
-  const { ref: projectRef, functionSlug, slug } = useParams()
+  const { ref: projectRef, functionSlug, slug: orgRef, branch: branchRef } = useParams()
   const [interval, setInterval] = useState<string>('15min')
   const selectedInterval = CHART_INTERVALS.find((i) => i.key === interval) || CHART_INTERVALS[1]
   const { data: selectedFunction } = useEdgeFunctionQuery({
@@ -257,7 +257,7 @@ const PageLayout: NextPageWithLayout = () => {
                       stackColors={['brand', 'slate', 'yellow', 'red']}
                       onBarClick={() => {
                         router.push(
-                          `/org/${slug}/project/${projectRef}/functions/${functionSlug}/invocations?its=${startDate.toISOString()}`
+                          `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/invocations?its=${startDate.toISOString()}`
                         )
                       }}
                     />

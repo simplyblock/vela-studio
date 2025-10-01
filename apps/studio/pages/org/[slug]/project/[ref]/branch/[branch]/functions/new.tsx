@@ -97,7 +97,7 @@ type FormValues = z.infer<typeof FormSchema>
 
 const NewFunctionPage = () => {
   const router = useRouter()
-  const { slug, ref, template } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, template } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
   const snap = useAiAssistantStateSnapshot()
@@ -129,18 +129,18 @@ const NewFunctionPage = () => {
     onSuccess: () => {
       toast.success('Successfully deployed edge function')
       const functionName = form.getValues('functionName')
-      if (ref && functionName) {
-        router.push(`/org/${slug}/project/${ref}/functions/${functionName}/details`)
+      if (projectRef && functionName) {
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionName}/details`)
       }
     },
   })
 
   const onSubmit = (values: FormValues) => {
-    if (isDeploying || !ref) return
+    if (isDeploying || !projectRef) return
 
     deployFunction({
-      orgSlug:slug as string,
-      projectRef: ref,
+      orgSlug: orgRef!,
+      projectRef,
       slug: values.functionName,
       metadata: {
         entrypoint_path: 'index.ts',
@@ -152,7 +152,7 @@ const NewFunctionPage = () => {
     sendEvent({
       action: 'edge_function_deploy_button_clicked',
       properties: { origin: 'functions_editor' },
-      groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
     })
   }
 
@@ -189,7 +189,7 @@ const NewFunctionPage = () => {
     sendEvent({
       action: 'edge_function_ai_assistant_button_clicked',
       properties: { origin: 'functions_editor_chat' },
-      groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
     })
   }
 
@@ -203,7 +203,7 @@ const NewFunctionPage = () => {
       sendEvent({
         action: 'edge_function_template_clicked',
         properties: { templateName: template.name, origin: 'editor_page' },
-        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
       })
     }
   }
@@ -265,7 +265,7 @@ const NewFunctionPage = () => {
       breadcrumbs={[
         {
           label: 'Edge Functions',
-          href: `/org/${slug}/project/${ref}/functions`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions`,
         },
       ]}
       primaryActions={

@@ -306,8 +306,8 @@ const nextConfig = {
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/settings/functions',
-        destination: '/org/:slug/project/:ref/functions/secrets',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/functions',
+        destination: '/org/:slug/project/:ref/branch/:branch/functions/secrets',
       },
       {
         source: '/org/:slug/invoices',
