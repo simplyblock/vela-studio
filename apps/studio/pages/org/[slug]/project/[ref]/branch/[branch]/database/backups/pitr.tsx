@@ -9,9 +9,7 @@ import AlertError from 'components/ui/AlertError'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useBackupsQuery } from 'data/database/backups-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
@@ -44,11 +42,8 @@ DatabasePhysicalBackups.getLayout = (page) => (
 const PITR = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
-  const { data: organization } = useSelectedOrganizationQuery()
-  const { data: backups, error, isLoading, isError, isSuccess } = useBackupsQuery({ orgSlug, projectRef })
+  const { error, isLoading, isError, isSuccess } = useBackupsQuery({ orgSlug, projectRef })
 
-  const plan = organization?.plan?.id
-  const isEnabled = backups?.pitr_enabled
   const isActiveHealthy = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
   // FIXME: need permission implemented 
   const { can: canReadPhysicalBackups, isSuccess: isPermissionsLoaded } ={can:true,isSuccess:true}
@@ -63,18 +58,7 @@ const PITR = () => {
       {isError && <AlertError error={error} subject="Failed to retrieve PITR backups" />}
       {isSuccess && (
         <>
-          {!isEnabled ? (
-            <UpgradeToPro
-              addon="pitr"
-              source="pitr"
-              primaryText="Point in Time Recovery is a Pro Plan add-on."
-              secondaryText={
-                plan === 'free'
-                  ? 'With PITR, you can roll back to a specific time (to the second!). PITR starts from $100/mo and is available for Pro Plan customers. Note that the Pro Plan already includes daily backups for no extra charge — PITR is an optional upgrade that starts at $100/month.'
-                  : 'Please enable the add-on to enable point in time recovery for your project.'
-              }
-            />
-          ) : !isActiveHealthy ? (
+          {!isActiveHealthy ? (
             <Alert_Shadcn_>
               <AlertCircle />
               <AlertTitle_Shadcn_>
