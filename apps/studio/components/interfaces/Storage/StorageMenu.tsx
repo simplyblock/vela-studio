@@ -139,7 +139,7 @@ const StorageMenu = () => {
                     <BucketRow
                       key={`${idx}_${bucket.id}`}
                       bucket={bucket}
-                      slug={orgRef!}
+                      orgRef={orgRef}
                       projectRef={projectRef}
                       isSelected={isSelected}
                     />

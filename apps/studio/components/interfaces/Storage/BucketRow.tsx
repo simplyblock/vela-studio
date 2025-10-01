@@ -21,13 +21,13 @@ import {
 
 export interface BucketRowProps {
   bucket: Bucket
-  slug: string
+  orgRef?: string
   projectRef?: string
   branchRef?: string
   isSelected: boolean
 }
 
-const BucketRow = ({ slug: orgRef, branchRef, bucket, projectRef = '', isSelected = false }: BucketRowProps) => {
+const BucketRow = ({ orgRef, branchRef, bucket, projectRef = '', isSelected = false }: BucketRowProps) => {
   // FIXME: need permission implemented 
   const { can: canUpdateBuckets } = {can:true}
   const [modal, setModal] = useState<string | null>(null)

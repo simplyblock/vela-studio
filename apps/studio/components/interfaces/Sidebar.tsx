@@ -227,7 +227,7 @@ const ActiveDot = (errorArray: any[], warningArray: any[]) => {
 
 const ProjectLinks = () => {
   const router = useRouter()
-  const { slug, ref, branch: branchRef } = useParams() as { slug: string; ref?: string, branch?: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref?: string, branch?: string }
   const { data: project } = useSelectedProjectQuery()
   const snap = useAppStateSnapshot()
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
@@ -247,8 +247,8 @@ const ProjectLinks = () => {
     'realtime:all',
   ])
 
-  const toolRoutes = generateToolRoutes(slug, ref, project, branchRef)
-  const productRoutes = generateProductRoutes(slug, ref, project, branchRef, {
+  const toolRoutes = generateToolRoutes(orgRef, projectRef, project, branchRef)
+  const productRoutes = generateProductRoutes(orgRef, projectRef, project, branchRef, {
     auth: authEnabled,
     edgeFunctions: edgeFunctionsEnabled,
     storage: storageEnabled,
@@ -257,10 +257,10 @@ const ProjectLinks = () => {
 
   const { isEnabled: isUnifiedLogsEnabled } = useUnifiedLogsPreview()
 
-  const otherRoutes = generateOtherRoutes(slug, ref, project, branchRef, {
+  const otherRoutes = generateOtherRoutes(orgRef, projectRef, project, branchRef, {
     unifiedLogs: isUnifiedLogsEnabled,
   })
-  const settingsRoutes = generateSettingsRoutes(slug, ref, project, branchRef)
+  const settingsRoutes = generateSettingsRoutes(orgRef, projectRef, project, branchRef)
 
   return (
     <SidebarMenu>
@@ -272,8 +272,8 @@ const ProjectLinks = () => {
             key: 'HOME',
             label: 'Project overview',
             icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link: `/org/${slug}/project/${ref}/branch/${branchRef}`,
-            linkElement: <ProjectIndexPageLink slug={slug} projectRef={ref} branchRef={branchRef} />,
+            link: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`,
+            linkElement: <ProjectIndexPageLink slug={orgRef} projectRef={projectRef} branchRef={branchRef} />,
           }}
         />
         {toolRoutes.map((route, i) => (

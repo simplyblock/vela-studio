@@ -3,19 +3,16 @@ import { ArrowUpRight } from 'lucide-react'
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 import type { Project } from 'data/projects/project-detail-query'
 import { PROJECT_STATUS } from 'lib/constants'
-import type { Organization } from 'types'
 
 export const generateSettingsMenu = (
   slug: string,
   ref?: string,
   project?: Project,
   branchRef?: string,
-  organization?: Organization,
   features?: {
     auth?: boolean
     edgeFunctions?: boolean
     storage?: boolean
-    invoices?: boolean
   }
 ): ProductMenuGroup[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
@@ -138,27 +135,6 @@ export const generateSettingsMenu = (
               },
             ]
           : []),
-      ],
-    },
-
-    {
-      title: 'Billing',
-      items: [
-        {
-          name: 'Subscription',
-          key: 'subscription',
-          url: `/org/${slug}/org/${organization?.slug}/billing`,
-          items: [],
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-        },
-
-        {
-          name: 'Usage',
-          key: 'usage',
-          url: `/org/${slug}/org/${organization?.slug}/usage?projectRef=${ref}`,
-          items: [],
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-        },
       ],
     },
   ]
