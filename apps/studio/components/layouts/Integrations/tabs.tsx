@@ -25,7 +25,7 @@ interface IntegrationTabsProps {
 export const IntegrationTabs = ({ scroll, isSticky }: IntegrationTabsProps) => {
   const navRef = useRef(null)
   const { data: project } = useSelectedProjectQuery()
-  const { slug, id, pageId, childId, childLabel } = useParams()
+  const { slug: orgRef, branch: branchRef, id, pageId, childId, childLabel } = useParams()
   const isMobile = useBreakpoint('md')
 
   const { installedIntegrations } = useInstalledIntegrations()
@@ -69,7 +69,7 @@ export const IntegrationTabs = ({ scroll, isSticky }: IntegrationTabsProps) => {
           )}
 
           {tabs.map((tab) => {
-            const tabUrl = `/org/${slug}/project/${project?.ref}/integrations/${integration?.id}/${tab.route}`
+            const tabUrl = `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/${integration?.id}/${tab.route}`
             return (
               <div className="flex items-center gap-2" key={tab.route}>
                 <NavMenuItem active={pageId === tab.route && !childId}>

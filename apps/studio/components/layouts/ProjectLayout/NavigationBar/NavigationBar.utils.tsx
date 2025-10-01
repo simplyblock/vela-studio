@@ -212,18 +212,18 @@ export const generateOtherRoutes = (
 }
 
 export const generateSettingsRoutes = (
-  slug: string,
-  ref?: string,
+  orgRef: string,
+  projectRef?: string,
   project?: Project,
   branchRef?: string
 ): Route[] => {
-  const settingsMenu = generateSettingsMenu(slug, ref as string, project, branchRef)
+  const settingsMenu = generateSettingsMenu(orgRef, projectRef!, project, branchRef)
   return [
     {
       key: 'settings',
       label: 'Project Settings',
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: ref && `/org/${slug}/project/${ref}/branch/${branchRef}/settings/general`,
+      link: projectRef && `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,
       items: settingsMenu,
     },
   ]

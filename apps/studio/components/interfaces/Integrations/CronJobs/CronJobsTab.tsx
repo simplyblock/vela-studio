@@ -27,7 +27,7 @@ const EMPTY_CRON_JOB = { jobname: '', schedule: '', active: true, command: '' }
 
 export const CronjobsTab = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
 
@@ -200,7 +200,7 @@ export const CronjobsTab = () => {
                     {...props}
                     onClick={(e) => {
                       const { jobid, jobname } = props.row
-                      const url = `/org/${slug}/project/${ref}/integrations/cron/jobs/${jobid}?child-label=${encodeURIComponent(jobname || `Job #${jobid}`)}`
+                      const url = `/org/${slug}/project/${ref}/branch/${branchRef}/integrations/cron/jobs/${jobid}?child-label=${encodeURIComponent(jobname || `Job #${jobid}`)}`
 
                       sendEvent({
                         action: 'cron_job_history_clicked',

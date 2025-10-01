@@ -479,7 +479,7 @@ const CreateBucketModal = () => {
                       <p>
                         <span>Supabase will setup a </span>
                         <a
-                          href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/integrations/iceberg_wrapper/overview`}
+                          href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/iceberg_wrapper/overview`}
                           target="_blank"
                           className="underline text-foreground-light"
                         >
@@ -504,7 +504,7 @@ const CreateBucketModal = () => {
                           </a>
                           <span> and </span>
                           <a
-                            href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/integrations/vault/secrets`}
+                            href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/vault/secrets`}
                             target="_blank"
                             className="underline text-foreground-light"
                           >

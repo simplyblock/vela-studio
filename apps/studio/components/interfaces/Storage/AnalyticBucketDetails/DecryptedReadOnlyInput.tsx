@@ -17,7 +17,7 @@ export const DecryptedReadOnlyInput = ({
   descriptionText: string
   label: string
 }) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const [showHidden, setShowHidden] = useState(false)
 
@@ -53,7 +53,7 @@ export const DecryptedReadOnlyInput = ({
               <a
                 target="_blank"
                 rel="noreferrer noopener"
-                href={`/org/${slug}/project/${ref}/integrations/vault/secrets?search=${value}`}
+                href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/vault/secrets?search=${value}`}
               >
                 <ExternalLink
                   size={14}

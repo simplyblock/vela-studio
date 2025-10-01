@@ -7,8 +7,8 @@ import { useParams } from 'common'
 import { orderCommandSectionsByPriority } from 'components/interfaces/App/CommandMenu/ordering'
 
 export function useDatabaseGotoCommands(options?: CommandOptions) {
-  let { ref, slug } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.QUERY,
@@ -16,13 +16,13 @@ export function useDatabaseGotoCommands(options?: CommandOptions) {
       {
         id: 'run-sql',
         name: 'Run SQL',
-        route: `/org/${slug}/project/${ref}/sql/new`,
+        route: `/org/${orgRef}/project/${projectRef}/sql/new`,
         icon: () => <Code />,
       },
     ],
     {
       ...options,
-      deps: [ref],
+      deps: [orgRef, projectRef, branchRef],
       orderSection: orderCommandSectionsByPriority,
       sectionMeta: { priority: 2 },
     }
@@ -35,74 +35,74 @@ export function useDatabaseGotoCommands(options?: CommandOptions) {
         id: 'nav-database-tables',
         name: 'Tables',
         value: 'Database: Tables',
-        route: `/org/${slug}/project/${ref}/database/tables`,
+        route: `/org/${orgRef}/project/${projectRef}/database/tables`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-triggers',
         name: 'Triggers',
         value: 'Database: Triggers',
-        route: `/org/${slug}/project/${ref}/database/triggers`,
+        route: `/org/${orgRef}/project/${projectRef}/database/triggers`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-functions',
         name: 'Functions',
         value: 'Database: Functions',
-        route: `/org/${slug}/project/${ref}/database/functions`,
+        route: `/org/${orgRef}/project/${projectRef}/database/functions`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-extensions',
         name: 'Extensions',
         value: 'Database: Extensions',
-        route: `/org/${slug}/project/${ref}/database/extensions`,
+        route: `/org/${orgRef}/project/${projectRef}/database/extensions`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-roles',
         name: 'Roles',
         value: 'Database: Roles',
-        route: `/org/${slug}/project/${ref}/database/roles`,
+        route: `/org/${orgRef}/project/${projectRef}/database/roles`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-replication',
         name: 'Replication',
         value: 'Database: Replication',
-        route: `/org/${slug}/project/${ref}/database/replication`,
+        route: `/org/${orgRef}/project/${projectRef}/database/replication`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-hooks',
         name: 'Webhooks',
         value: 'Database: Webhooks',
-        route: `/org/${slug}/project/${ref}/integrations/hooks`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/hooks`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-backups',
         name: 'Backups',
         value: 'Database: Backups',
-        route: `/org/${slug}/project/${ref}/database/backups/scheduled`,
+        route: `/org/${orgRef}/project/${projectRef}/database/backups/scheduled`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-wrappers',
         name: 'Wrappers',
         value: 'Database: Wrappers',
-        route: `/org/${slug}/project/${ref}/integrations/wrappers`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/wrappers`,
         defaultHidden: true,
       },
       {
         id: 'nav-database-migrations',
         name: 'Migrations',
         value: 'Database: Migrations',
-        route: `/org/${slug}/project/${ref}/database/migrations`,
+        route: `/org/${orgRef}/project/${projectRef}/database/migrations`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref] }
+    { ...options, deps: [projectRef, orgRef, branchRef] }
   )
 
   useRegisterCommands(
@@ -111,61 +111,61 @@ export function useDatabaseGotoCommands(options?: CommandOptions) {
       {
         id: 'run-schema-visualizer',
         name: 'View your schemas',
-        route: `/org/${slug}/project/${ref}/database/schemas`,
+        route: `/org/${orgRef}/project/${projectRef}/database/schemas`,
         icon: () => <Search />,
       },
       {
         id: 'run-view-database-functions',
         name: 'View and create functions',
-        route: `/org/${slug}/project/${ref}/database/functions`,
+        route: `/org/${orgRef}/project/${projectRef}/database/functions`,
         icon: () => <Database />,
       },
       {
         id: 'run-view-database-triggers',
         name: 'View and create triggers',
-        route: `/org/${slug}/project/${ref}/database/triggers`,
+        route: `/org/${orgRef}/project/${projectRef}/database/triggers`,
         icon: () => <Database />,
       },
       {
         id: 'run-view-database-enumerated-types',
         name: 'View and create enumerated types',
-        route: `/org/${slug}/project/${ref}/database/types`,
+        route: `/org/${orgRef}/project/${projectRef}/database/types`,
         icon: () => <Database />,
       },
       {
         id: 'run-view-database-extensions',
         name: 'View your extensions',
-        route: `/org/${slug}/project/${ref}/database/extensions`,
+        route: `/org/${orgRef}/project/${projectRef}/database/extensions`,
         icon: () => <Blocks />,
       },
       {
         id: 'run-view-database-indexes',
         name: 'View and create indexes',
-        route: `/org/${slug}/project/${ref}/database/indexes`,
+        route: `/org/${orgRef}/project/${projectRef}/database/indexes`,
         icon: () => <Database />,
       },
       {
         id: 'run-view-database-roles',
         name: 'View your roles',
-        route: `/org/${slug}/project/${ref}/database/roles`,
+        route: `/org/${orgRef}/project/${projectRef}/database/roles`,
         icon: () => <Database />,
       },
       {
         id: 'run-view-database-backups',
         name: 'View your backups',
-        route: `/org/${slug}/project/${ref}/database/backups/scheduled`,
+        route: `/org/${orgRef}/project/${projectRef}/database/backups/scheduled`,
         icon: () => <Database />,
       },
       {
         id: 'run-view-database-migrations',
         name: 'View your migrations',
-        route: `/org/${slug}/project/${ref}/database/migrations`,
+        route: `/org/${orgRef}/project/${projectRef}/database/migrations`,
         icon: () => <History />,
       },
     ],
     {
       ...options,
-      deps: [ref, slug],
+      deps: [orgRef, projectRef, branchRef],
       orderSection: orderCommandSectionsByPriority,
       sectionMeta: { priority: 3 },
     }

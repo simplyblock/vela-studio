@@ -18,7 +18,7 @@ interface QueuesRowsProps {
 
 const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
 
   const { data: queueTables } = useTablesQuery({
@@ -47,7 +47,7 @@ const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
       key={queue.queue_name}
       onClick={() => {
         router.push(
-          `/org/${slug}/project/${selectedProject?.ref}/integrations/queues/queues/${queue.queue_name}`
+          `/org/${orgRef}/project/${selectedProject?.ref}/branch/${branchRef}/integrations/queues/queues/${queue.queue_name}`
         )
       }}
     >

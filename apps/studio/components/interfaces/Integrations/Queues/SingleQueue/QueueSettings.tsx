@@ -52,7 +52,7 @@ type Privileges = { select?: boolean; insert?: boolean; update?: boolean; delete
 interface QueueSettingsProps {}
 
 export const QueueSettings = ({}: QueueSettingsProps) => {
-  const { childId: name, slug } = useParams()
+  const { childId: name, slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const [open, setOpen] = useState(false)
@@ -260,7 +260,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
                   You may opt to manage your queues via any Supabase client libraries or PostgREST
                   endpoints by enabling this in the{' '}
                   <Link
-                    href={`/org/${slug}/project/${project?.ref}/integrations/queues/settings`}
+                    href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/settings`}
                     className="underline transition underline-offset-2 decoration-foreground-lighter hover:decoration-foreground"
                   >
                     queues settings
