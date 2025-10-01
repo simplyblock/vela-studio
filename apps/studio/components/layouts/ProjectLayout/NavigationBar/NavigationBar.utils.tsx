@@ -183,14 +183,14 @@ export const generateOtherRoutes = (
     //   key: 'reports',
     //   label: 'Reports',
     //   icon: <Reports size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-    //   link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/reports`),
+    //   link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/branch/${branchRef}/reports`),
     // },
 
     // {
     //   key: 'logs',
     //   label: 'Logs',
     //   icon: <List size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-    //   link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/logs`),
+    //   link: ref && (isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/branch/${branchRef}/logs`),
     // },
     {
       key: 'api',

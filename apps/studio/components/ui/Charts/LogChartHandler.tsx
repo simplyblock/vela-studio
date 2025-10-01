@@ -5,7 +5,7 @@ import { cn, WarningIcon } from 'ui'
 import Panel from 'components/ui/Panel'
 import ComposedChart from './ComposedChart'
 
-import { AnalyticsInterval, DataPoint } from 'data/analytics/constants'
+import { AnalyticsInterval } from 'data/analytics/constants'
 import { InfraMonitoringAttribute } from 'data/analytics/infra-monitoring-query'
 import { useInfraMonitoringQueries } from 'data/analytics/infra-monitoring-queries'
 import { ProjectDailyStatsAttribute } from 'data/analytics/project-daily-stats-query'
@@ -13,7 +13,7 @@ import { useProjectDailyStatsQueries } from 'data/analytics/project-daily-stats-
 import { useChartHighlight } from './useChartHighlight'
 
 import type { ChartData } from './Charts.types'
-import type { UpdateDateRange } from 'pages/org/[slug]/project/[ref]/reports/database'
+import type { UpdateDateRange } from 'pages/org/[slug]/project/[ref]/branch/[branch]/reports/database'
 import type { MultiAttribute } from './ComposedChart.utils'
 
 interface LogChartHandlerProps {

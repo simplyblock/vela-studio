@@ -178,7 +178,7 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
     onSelectResizeReplica,
     onSelectDropReplica,
   } = data
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const dbSelectorState = useDatabaseSelectorStateSnapshot()
   // FIXME: need permission implemented 
   const { can: canManageReplicas } = {can:true}
@@ -186,7 +186,7 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
 
   const { data: databaseStatuses } = useReadReplicasStatusesQuery({ projectRef: ref })
   const { replicaInitializationStatus } =
-    (databaseStatuses ?? []).find((db) => db.identifier === id) || {}
+    (databaseStatuses ?? []).find((db: any) => db.identifier === id) || {}
 
   const {
     status: initStatus,
@@ -355,7 +355,7 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
               className="gap-x-2"
               disabled={status !== REPLICA_STATUS.ACTIVE_HEALTHY}
             >
-              <Link href={`/org/${slug}/project/${ref}/reports/database?db=${id}&chart=replication-lag`}>
+              <Link href={`/org/${slug}/project/${ref}/branch/${branchRef}/reports/database?db=${id}&chart=replication-lag`}>
                 View replication lag
               </Link>
             </DropdownMenuItem>

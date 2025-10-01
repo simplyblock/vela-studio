@@ -4,8 +4,8 @@ import type { CommandOptions } from 'ui-patterns/CommandMenu'
 import { useRegisterCommands } from 'ui-patterns/CommandMenu'
 
 export function useReportsGotoCommands(options?: CommandOptions) {
-  let { slug, ref } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.NAVIGATE,
@@ -13,34 +13,34 @@ export function useReportsGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-reports',
         name: 'Reports',
-        route: `/org/${slug}/project/${ref}/reports`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/reports`,
         defaultHidden: true,
       },
       {
         id: 'nav-reports-api',
         name: 'API Reports',
-        route: `/org/${slug}/project/${ref}/reports/api-overview`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/reports/api-overview`,
         defaultHidden: true,
       },
       {
         id: 'nav-reports-storage',
         name: 'Storage Reports',
-        route: `/org/${slug}/project/${ref}/reports/storage`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/reports/storage`,
         defaultHidden: true,
       },
       {
         id: 'nav-reports-database',
         name: 'Database Reports',
-        route: `/org/${slug}/project/${ref}/reports/database`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/reports/database`,
         defaultHidden: true,
       },
       {
         id: 'nav-reports-query-performance',
         name: 'Query Performance Reports',
-        route: `/org/${slug}/project/${ref}/reports/query-performance`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/reports/query-performance`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref, slug] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }

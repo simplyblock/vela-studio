@@ -32,26 +32,26 @@ import { UpgradingState } from './UpgradingState'
 // [Joshen] This is temporary while we unblock users from managing their project
 // if their project is not responding well for any reason. Eventually needs a bit of an overhaul
 const routesToIgnoreProjectDetailsRequest = [
-  '/org/[slug]/project/[ref]/settings/general',
-  '/org/[slug]/project/[ref]/database/settings',
+  '/org/[slug]/project/[ref]/branch/[branch]/settings/general',
+  '/org/[slug]/project/[ref]/branch/[branch]/database/settings',
   '/org/[slug]/project/[ref]/branch/[branch]/storage/settings',
-  '/org/[slug]/project/[ref]/settings/infrastructure',
-  '/org/[slug]/project/[ref]/settings/addons',
+  '/org/[slug]/project/[ref]/branch/[branch]/settings/infrastructure',
+  '/org/[slug]/project/[ref]/branch/[branch]/settings/addons',
 ]
 
 const routesToIgnoreDBConnection = [
-  '/org/[slug]/project/[ref]/branches',
-  '/org/[slug]/project/[ref]/database/backups/scheduled',
-  '/org/[slug]/project/[ref]/database/backups/pitr',
-  '/org/[slug]/project/[ref]/settings/addons',
+  '/org/[slug]/project/[ref]/branch',
+  '/org/[slug]/project/[ref]/branch/[branch]/database/backups/scheduled',
+  '/org/[slug]/project/[ref]/branch/[branch]/database/backups/pitr',
+  '/org/[slug]/project/[ref]/branch/[branch]/settings/addons',
 ]
 
 const routesToIgnorePostgrestConnection = [
-  '/org/[slug]/project/[ref]/reports',
-  '/org/[slug]/project/[ref]/settings/general',
-  '/org/[slug]/project/[ref]/database/settings',
-  '/org/[slug]/project/[ref]/settings/infrastructure',
-  '/org/[slug]/project/[ref]/settings/addons',
+  '/org/[slug]/project/[ref]/branch/[branch]/reports',
+  '/org/[slug]/project/[ref]/branch/[branch]/settings/general',
+  '/org/[slug]/project/[ref]/branch/[branch]/database/settings',
+  '/org/[slug]/project/[ref]/branch/[branch]/settings/infrastructure',
+  '/org/[slug]/project/[ref]/branch/[branch]/settings/addons',
 ]
 
 export interface ProjectLayoutProps {

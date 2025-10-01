@@ -231,13 +231,13 @@ const nextConfig = {
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/reports/linter',
-        destination: '/org/:slug/project/:ref/database/linter',
+        source: '/org/:slug/project/:ref/branch/:branch/reports/linter',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/linter',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/reports/query-performance',
-        destination: '/org/:slug/project/:ref/advisors/query-performance',
+        source: '/org/:slug/project/:ref/branch/:branch/reports/query-performance',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/query-performance',
       },
       {
         permanent: true,
