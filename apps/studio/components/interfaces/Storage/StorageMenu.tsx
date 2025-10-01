@@ -20,7 +20,7 @@ import BucketRow from './BucketRow'
 
 const StorageMenu = () => {
   const router = useRouter()
-  const { slug, ref, bucketId } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, bucketId } = useParams()
   const { data: projectDetails } = useSelectedProjectQuery()
   const snap = useStorageExplorerStateSnapshot()
   const isBranch = projectDetails?.parent_project_ref !== undefined
@@ -40,7 +40,7 @@ const StorageMenu = () => {
     isLoading,
     isError,
     isSuccess,
-  } = useBucketsQuery({ projectRef: ref })
+  } = useBucketsQuery({ projectRef })
   const sortedBuckets =
     snap.sortBucket === 'alphabetical'
       ? buckets.sort((a, b) =>
@@ -139,8 +139,8 @@ const StorageMenu = () => {
                     <BucketRow
                       key={`${idx}_${bucket.id}`}
                       bucket={bucket}
-                      slug={slug!}
-                      projectRef={ref}
+                      orgRef={orgRef}
+                      projectRef={projectRef}
                       isSelected={isSelected}
                     />
                   )
@@ -151,12 +151,12 @@ const StorageMenu = () => {
 
           <div className="w-full bg-dash-sidebar px-3 py-6 sticky bottom-0 border-t border-border">
             <Menu.Group title={<span className="uppercase font-mono">Configuration</span>} />
-            <Link href={`/org/${slug}/project/${ref}/storage/policies`}>
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/policies`}>
               <Menu.Item rounded active={page === 'policies'}>
                 <p className="truncate">Policies</p>
               </Menu.Item>
             </Link>
-            <Link href={`/org/${slug}/project/${ref}/storage/settings`}>
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/settings`}>
               <Menu.Item rounded active={page === 'settings'}>
                 <p className="truncate">Settings</p>
               </Menu.Item>

@@ -64,7 +64,7 @@ interface ReplicaNodeData extends NodeData {
 }
 
 export const LoadBalancerNode = ({ data }: NodeProps<LoadBalancerData>) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { numDatabases } = data
 
   return (
@@ -92,7 +92,7 @@ export const LoadBalancerNode = ({ data }: NodeProps<LoadBalancerData>) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40" side="bottom" align="end">
               <DropdownMenuItem asChild className="gap-x-2">
-                <Link href={`/org/${slug}/project/${ref}/settings/api?source=loadbalancer`}>View API URL</Link>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api?source=loadbalancer`}>View API URL</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -175,10 +175,9 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
     status,
     inserted_at,
     onSelectRestartReplica,
-    onSelectResizeReplica,
     onSelectDropReplica,
   } = data
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const dbSelectorState = useDatabaseSelectorStateSnapshot()
   // FIXME: need permission implemented 
   const { can: canManageReplicas } = {can:true}
@@ -186,7 +185,7 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
 
   const { data: databaseStatuses } = useReadReplicasStatusesQuery({ projectRef: ref })
   const { replicaInitializationStatus } =
-    (databaseStatuses ?? []).find((db) => db.identifier === id) || {}
+    (databaseStatuses ?? []).find((db: any) => db.identifier === id) || {}
 
   const {
     status: initStatus,
@@ -355,7 +354,7 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
               className="gap-x-2"
               disabled={status !== REPLICA_STATUS.ACTIVE_HEALTHY}
             >
-              <Link href={`/org/${slug}/project/${ref}/reports/database?db=${id}&chart=replication-lag`}>
+              <Link href={`/org/${slug}/project/${ref}/branch/${branchRef}/reports/database?db=${id}&chart=replication-lag`}>
                 View replication lag
               </Link>
             </DropdownMenuItem>

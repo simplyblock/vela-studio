@@ -6,6 +6,7 @@ import UsageSection from './UsageSection/UsageSection'
 export interface SizeAndCountsProps {
   orgSlug: string
   projectRef?: string
+  branchRef?: string
   startDate: string | undefined
   endDate: string | undefined
   subscription: OrgSubscription | undefined
@@ -15,6 +16,7 @@ export interface SizeAndCountsProps {
 const SizeAndCounts = ({
   orgSlug,
   projectRef,
+  branchRef,
   startDate,
   endDate,
   subscription,
@@ -57,6 +59,7 @@ const SizeAndCounts = ({
     <UsageSection
       orgSlug={orgSlug}
       projectRef={projectRef}
+      branchRef={branchRef}
       categoryKey="sizeCount"
       chartMeta={chartMeta}
       subscription={subscription}

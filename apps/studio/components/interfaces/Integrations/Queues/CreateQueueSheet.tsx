@@ -80,7 +80,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   //   'extensions'
   // )
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
@@ -131,7 +131,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
       {
         onSuccess: () => {
           toast.success(`Successfully created queue ${name}`)
-          router.push(`/org/${slug}/project/${project?.ref}/integrations/queues/queues/${name}`)
+          router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/queues/${name}`)
           onClose()
         },
       }

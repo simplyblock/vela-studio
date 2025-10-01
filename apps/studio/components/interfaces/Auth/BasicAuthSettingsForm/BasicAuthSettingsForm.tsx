@@ -1,5 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect } from 'react'
@@ -7,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { boolean, object, string } from 'yup'
 
-import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import { InlineLink } from 'components/ui/InlineLink'
 import NoPermission from 'components/ui/NoPermission'
@@ -42,7 +40,7 @@ const schema = object({
 })
 
 const BasicAuthSettingsForm = () => {
-  const { slug, ref: projectRef } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const {
     data: authConfig,
     error: authConfigError,
@@ -133,7 +131,7 @@ const BasicAuthSettingsForm = () => {
                         the <code className="text-xs">public</code> and{' '}
                         <code className="text-xs">authenticated</code> roles. We strongly advise{' '}
                         <Link
-                          href={`/org/${slug}/project/${projectRef}/auth/policies`}
+                          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`}
                           className="text-foreground underline"
                         >
                           reviewing your RLS policies
@@ -279,7 +277,7 @@ const BasicAuthSettingsForm = () => {
                           to the <code className="text-xs">public</code> and{' '}
                           <code className="text-xs">authenticated</code> roles. We strongly advise{' '}
                           <Link
-                            href={`/org/${slug}/project/${projectRef}/auth/policies`}
+                            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`}
                             className="text-foreground underline"
                           >
                             reviewing your RLS policies
@@ -302,7 +300,7 @@ const BasicAuthSettingsForm = () => {
                       <WarningIcon />
                       <AlertTitle_Shadcn_>
                         We highly recommend{' '}
-                        <InlineLink href={`/project/${projectRef}/auth/protection`}>
+                        <InlineLink href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/protection`}>
                           enabling captcha
                         </InlineLink>{' '}
                         for anonymous sign-ins

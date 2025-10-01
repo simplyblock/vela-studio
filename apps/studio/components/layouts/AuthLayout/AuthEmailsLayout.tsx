@@ -5,16 +5,16 @@ import { PageLayout } from 'components/layouts/PageLayout/PageLayout'
 import AuthLayout from './AuthLayout'
 
 export const AuthEmailsLayout = ({ children }: PropsWithChildren<{}>) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const navItems = [
     {
       label: 'Templates',
-      href: `/org/${slug}/project/${ref}/auth/templates`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/templates`,
     },
     {
       label: 'SMTP Settings',
-      href: `/org/${slug}/project/${ref}/auth/smtp`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/smtp`,
     },
   ]
 

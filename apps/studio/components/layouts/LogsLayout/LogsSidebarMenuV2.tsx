@@ -76,7 +76,7 @@ export function SidebarCollapsible({
 
 export function LogsSidebarMenuV2() {
   const router = useRouter()
-  const { ref, slug } = useParams() as { ref: string, slug: string }
+  const { ref, slug, branch: branchRef } = useParams() as { ref: string, slug: string, branch: string }
 
   const unifiedLogsFlagEnabled = useFlag('unifiedLogs')
   const { selectFeaturePreview } = useFeaturePreviewModal()
@@ -128,32 +128,32 @@ export function LogsSidebarMenuV2() {
     {
       name: 'API Gateway',
       key: 'edge-logs',
-      url: `/org/${slug}/project/${ref}/logs/edge-logs`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/edge-logs`,
       items: [],
     },
     {
       name: 'Postgres',
       key: 'postgres-logs',
-      url: `/org/${slug}/project/${ref}/logs/postgres-logs`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/postgres-logs`,
       items: [],
     },
     {
       name: 'PostgREST',
       key: 'postgrest-logs',
-      url: `/org/${slug}/project/${ref}/logs/postgrest-logs`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/postgrest-logs`,
       items: [],
     },
     {
       name: 'Pooler',
       key: 'pooler-logs',
-      url: `/org/${slug}/project/${ref}/logs/pooler-logs`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/pooler-logs`,
       items: [],
     },
     authEnabled
       ? {
           name: 'Auth',
           key: 'auth-logs',
-          url: `/org/${slug}/project/${ref}/logs/auth-logs`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/auth-logs`,
           items: [],
         }
       : null,
@@ -161,7 +161,7 @@ export function LogsSidebarMenuV2() {
       ? {
           name: 'Storage',
           key: 'storage-logs',
-          url: `/org/${slug}/project/${ref}/logs/storage-logs`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/storage-logs`,
           items: [],
         }
       : null,
@@ -169,27 +169,27 @@ export function LogsSidebarMenuV2() {
       ? {
           name: 'Realtime',
           key: 'realtime-logs',
-          url: `/org/${slug}/project/${ref}/logs/realtime-logs`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/realtime-logs`,
           items: [],
         }
       : null,
     {
       name: 'Edge Functions',
       key: 'edge-functions-logs',
-      url: `/org/${slug}/project/${ref}/logs/edge-functions-logs`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/edge-functions-logs`,
       items: [],
     },
     {
       name: 'Cron',
       key: 'pg_cron',
-      url: `/org/${slug}/project/${ref}/logs/pgcron-logs`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/pgcron-logs`,
       items: [],
     },
     showETLLogs
       ? {
           name: 'ETL Replication',
           key: 'etl_replication_logs',
-          url: `/project/${ref}/logs/etl-replication-logs`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/etl-replication-logs`,
           items: [],
         }
       : null,
@@ -199,7 +199,7 @@ export function LogsSidebarMenuV2() {
     {
       name: 'Postgres Version Upgrade',
       key: 'pg-upgrade-logs',
-      url: `/org/${slug}/project/${ref}/logs/pg-upgrade-logs`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/logs/pg-upgrade-logs`,
       items: [],
     }
   ]
@@ -278,15 +278,15 @@ export function LogsSidebarMenuV2() {
           type="default"
           icon={<Plus className="text-foreground" />}
           className="w-[26px]"
-          onClick={() => router.push(`/org/${slug}/project/${ref}/logs/explorer`)}
+          onClick={() => router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer`)}
         />
       </div>
       {templatesEnabled && (
         <div className="px-2">
           <InnerSideMenuItem
             title="Templates"
-            isActive={isActive(`/org/${slug}/project/${ref}/logs/explorer/templates`)}
-            href={`/org/${slug}/project/${ref}/logs/explorer/templates`}
+            isActive={isActive(`/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer/templates`)}
+            href={`/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer/templates`}
           >
             Templates
           </InnerSideMenuItem>
@@ -342,7 +342,7 @@ export function LogsSidebarMenuV2() {
             description="Create and save your queries to use them in the explorer"
             actions={
               <Button asChild type="default">
-                <Link href={`/org/${slug}/project/${ref}/logs/explorer`}>Create query</Link>
+                <Link href={`/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer`}>Create query</Link>
               </Button>
             }
           />

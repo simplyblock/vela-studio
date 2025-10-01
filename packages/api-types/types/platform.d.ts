@@ -4999,7 +4999,6 @@ export interface components {
       name: string
       organization_id: number
       organization_slug: string
-      preview_branch_refs: string[]
       ref: string
       region: string
       service_key: string
@@ -6490,7 +6489,6 @@ export interface components {
         name: string
         organization_id: number
         organization_slug: string
-        preview_branch_refs: string[]
         ref: string
         region: string
         status: string
@@ -6752,7 +6750,6 @@ export interface components {
         name: string
         organization_id: number
         organization_slug: string
-        preview_branch_refs: string[]
         ref: string
         region: string
         status: string
@@ -7460,6 +7457,8 @@ export interface components {
         | 'RESIZING'
       subscription_id: string
       volumeSizeGb?: number
+      default_branch: string
+      organization_slug: string
     }
     ProjectInfo: {
       cloud_provider: string
@@ -7493,7 +7492,7 @@ export interface components {
       name: string
       organization_id: number
       organization_slug: string
-      preview_branch_refs: string[]
+      default_branch: string
       ref: string
       region: string
       status: string

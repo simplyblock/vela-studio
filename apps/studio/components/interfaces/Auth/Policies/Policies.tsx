@@ -37,7 +37,7 @@ const Policies = ({
   onSelectEditPolicy: onSelectEditPolicyAI,
 }: PoliciesProps) => {
   const router = useRouter()
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
 
   const [selectedTableToToggleRLS, setSelectedTableToToggleRLS] = useState<{
@@ -97,7 +97,7 @@ const Policies = ({
     }
 
     updateTable({
-      orgSlug: slug!,
+      orgSlug: orgRef!,
       projectRef: project?.ref!,
       connectionString: project?.connectionString,
       id: selectedTableToToggleRLS.id,
@@ -125,7 +125,7 @@ const Policies = ({
           ctaButtonLabel="Create a table"
           infoButtonLabel="What is RLS?"
           infoButtonUrl="https://supabase.com/docs/guides/auth/row-level-security"
-          onClickCta={() => router.push(`/org/${slug}/project/${ref}/editor`)}
+          onClickCta={() => router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`)}
         >
           <div className="space-y-4">
             <InformationBox

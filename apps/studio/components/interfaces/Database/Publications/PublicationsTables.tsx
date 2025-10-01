@@ -15,7 +15,7 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import { PublicationsTableItem } from './PublicationsTableItem'
 
 export const PublicationsTables = () => {
-  const { ref, id } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const [filterString, setFilterString] = useState<string>('')
 
@@ -55,7 +55,7 @@ export const PublicationsTables = () => {
               style={{ padding: '5px' }}
               tooltip={{ content: { side: 'bottom', text: 'Go back to publications list' } }}
             >
-              <Link href={`/project/${ref}/database/publications`} />
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/publications`} />
             </ButtonTooltip>
             <div>
               <Input

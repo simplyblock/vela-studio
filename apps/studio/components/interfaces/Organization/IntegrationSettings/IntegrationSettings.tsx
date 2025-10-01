@@ -37,7 +37,7 @@ const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
 }
 
 const IntegrationSettings = () => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const router = useRouter()
   const { data: org } = useSelectedOrganizationQuery()
 
@@ -60,7 +60,7 @@ const IntegrationSettings = () => {
   const sidePanelsStateSnapshot = useSidePanelsStateSnapshot()
 
   const onAddGitHubConnection = useCallback(() => {
-    router.push(`/org/${slug}/project/_/settings/integrations`)
+    router.push(`/org/${orgRef}/project/_/branch/${branchRef}/settings/integrations`)
   }, [sidePanelsStateSnapshot])
 
   const onDeleteGitHubConnection = useCallback(

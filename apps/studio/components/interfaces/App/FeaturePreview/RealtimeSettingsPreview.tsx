@@ -6,7 +6,7 @@ import { BASE_PATH } from 'lib/constants'
 import { useIsRealtimeSettingsEnabled } from './FeaturePreviewContext'
 
 export const RealtimeSettingsPreview = () => {
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const isRealtimeSettingsEnabled = useIsRealtimeSettingsEnabled()
 
   return (
@@ -35,8 +35,8 @@ export const RealtimeSettingsPreview = () => {
             <InlineLink
               href={
                 isRealtimeSettingsEnabled
-                  ? `/org/${slug}/project/${ref}/realtime/settings`
-                  : `/org/${slug}/project/${ref}/realtime/inspector`
+                  ? `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/settings`
+                  : `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/inspector`
               }
             >
               realtime section.

@@ -15,16 +15,16 @@ interface EdgeFunctionsListItemProps {
 
 export const EdgeFunctionsListItem = ({ function: item }: EdgeFunctionsListItemProps) => {
   const router = useRouter()
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
   const [isCopied, setIsCopied] = useState(false)
 
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef: ref })
+  const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
 
   // get the .co or .net TLD from the restUrl
   const restUrl = project?.restUrl
   const restUrlTld = restUrl !== undefined ? new URL(restUrl).hostname.split('.').pop() : 'co'
-  const functionUrl = `https://${ref}.supabase.${restUrlTld}/functions/v1/${item.slug}`
+  const functionUrl = `https://${projectRef}.supabase.${restUrlTld}/functions/v1/${item.slug}`
 
   const endpoint =
     customDomainData?.customDomain?.status === 'active'
@@ -35,7 +35,7 @@ export const EdgeFunctionsListItem = ({ function: item }: EdgeFunctionsListItemP
     <TableRow
       key={item.id}
       onClick={() => {
-        router.push(`/org/${slug}/project/${ref}/functions/${item.slug}`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${item.slug}`)
       }}
       className="cursor-pointer"
     >

@@ -90,7 +90,7 @@ export const SQLEditorTreeViewItem = ({
   ...props
 }: SQLEditorTreeViewItemProps) => {
   const router = useRouter()
-  const { slug, id, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const { className, onClick } = getNodeProps()
@@ -203,7 +203,7 @@ export const SQLEditorTreeViewItem = ({
 
     snapV2.addSnippet({ projectRef, snippet: snippetCopy })
     snapV2.addNeedsSaving(snippetCopy.id!)
-    router.push(`/project/${projectRef}/sql/${snippetCopy.id}`)
+    router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippetCopy.id}`)
   }
 
   return (
@@ -225,11 +225,11 @@ export const SQLEditorTreeViewItem = ({
             onClick={(e) => {
               if (!isBranch) {
                 if (!e.shiftKey) {
-                  router.push(`/org/${slug}/project/${projectRef}/sql/${element.id}`)
+                  router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${element.id}`)
                 } else if (id !== 'new') {
                   onMultiSelect?.(element.id)
                 } else {
-                  router.push(`/org/${slug}/project/${projectRef}/sql/${element.id}`)
+                  router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${element.id}`)
                 }
               } else {
                 // Prevent expanding folder while editing text
@@ -317,7 +317,7 @@ export const SQLEditorTreeViewItem = ({
                 <Link
                   target="_self"
                   rel="noreferrer"
-                  href={`/org/${slug}/project/${projectRef}/sql/${element.id}`}
+                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${element.id}`}
                 >
                   <ExternalLink size={14} />
                   Open in new tab

@@ -10,7 +10,6 @@ import AlertError from 'components/ui/AlertError'
 import { InlineLink } from 'components/ui/InlineLink'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useProjectStorageConfigQuery } from 'data/config/project-storage-config-query'
 import { useProjectStorageConfigUpdateUpdateMutation } from 'data/config/project-storage-config-update-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
@@ -33,8 +32,6 @@ import {
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import {
-  STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_CAPPED,
-  STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_FREE_PLAN,
   STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_UNCAPPED,
   StorageSizeUnits,
 } from './StorageSettings.constants'
@@ -63,8 +60,6 @@ const StorageSettings = () => {
 
   const { data: organization } = useSelectedOrganizationQuery()
   const isFreeTier = organization?.plan.id === 'free'
-  const isSpendCapOn =
-    organization?.plan.id === 'pro' && organization?.usage_billing_enabled === false
 
   const [initialValues, setInitialValues] = useState<StorageSettingsState>({
     fileSizeLimit: 0,
@@ -94,13 +89,7 @@ const StorageSettings = () => {
   }, [isSuccess, config])
 
   const maxBytes = useMemo(() => {
-    if (organization?.plan.id === 'free') {
-      return STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_FREE_PLAN
-    } else if (organization?.usage_billing_enabled) {
-      return STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_UNCAPPED
-    } else {
-      return STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_CAPPED
-    }
+    return STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_UNCAPPED
   }, [organization])
 
   const FormSchema = z
@@ -258,30 +247,6 @@ const StorageSettings = () => {
                   )}
                 />
               </CardContent>
-
-              {isFreeTier && (
-                <CardContent className="pt-0">
-                  <UpgradeToPro
-                    primaryText="Free Plan has a fixed upload file size limit of 50 MB."
-                    secondaryText={`Upgrade to Pro Plan for a configurable upload file size limit of ${formatBytes(
-                      STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_UNCAPPED
-                    )} and unlock image transformations.`}
-                    source="storageSizeLimit"
-                  />
-                </CardContent>
-              )}
-              {isSpendCapOn && (
-                <CardContent className="pt-0">
-                  <UpgradeToPro
-                    buttonText="Disable Spend Cap"
-                    primaryText="Reduced max upload file size limit due to Spend Cap"
-                    secondaryText={`Disable your Spend Cap to allow file uploads of up to ${formatBytes(
-                      STORAGE_FILE_SIZE_LIMIT_MAX_BYTES_UNCAPPED
-                    )}.`}
-                    source="storageSizeLimit"
-                  />
-                </CardContent>
-              )}
 
               {!canUpdateStorageSettings && (
                 <CardContent className="pt-0">

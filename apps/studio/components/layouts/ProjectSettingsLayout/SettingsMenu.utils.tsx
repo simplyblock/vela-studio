@@ -3,22 +3,20 @@ import { ArrowUpRight } from 'lucide-react'
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 import type { Project } from 'data/projects/project-detail-query'
 import { PROJECT_STATUS } from 'lib/constants'
-import type { Organization } from 'types'
 
 export const generateSettingsMenu = (
-  slug: string,
-  ref?: string,
+  orgRef: string,
+  projectRef?: string,
+  branchRef?: string,
   project?: Project,
-  organization?: Organization,
   features?: {
     auth?: boolean
     edgeFunctions?: boolean
     storage?: boolean
-    invoices?: boolean
   }
 ): ProductMenuGroup[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
-  const buildingUrl = `/org/${slug}/project/${ref}`
+  const buildingUrl = `/org/${orgRef}/project/${projectRef}`
 
   const authEnabled = features?.auth ?? true
   const edgeFunctionsEnabled = features?.edgeFunctions ?? true
@@ -31,64 +29,64 @@ export const generateSettingsMenu = (
         {
           name: 'General',
           key: 'general',
-          url: `/org/${slug}/project/${ref}/settings/general`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,
           items: [],
         },
         {
           name: 'Compute and Disk',
           key: 'compute-and-disk',
-          url: `/org/${slug}/project/${ref}/settings/compute-and-disk`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/compute-and-disk`,
           items: [],
         },
         {
           name: 'Infrastructure',
           key: 'infrastructure',
-          url: isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/settings/infrastructure`,
+          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/sbranch/${branchRef}/ettings/infrastructure`,
           items: [],
         },
         // FIXME: Potentially move below
         {
           name: 'Integrations',
           key: 'integrations',
-          url: `/org/${slug}/project/${ref}/settings/integrations`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/branch/${branchRef}/settings/integrations`,
           items: [],
         },
         {
           name: `Log Drains`,
           key: `log-drains`,
-          url: `/project/${ref}/settings/log-drains`,
+          url: `/project/${projectRef}/branch/${branchRef}/settings/log-drains`,
           items: [],
         },
         {
           name: 'Data API',
           key: 'api',
-          url: isProjectBuilding ? buildingUrl : `/project/${ref}/settings/api`,
+          url: isProjectBuilding ? buildingUrl : `/project/${projectRef}/branch/${branchRef}/settings/api`,
           items: [],
         },
         {
           name: 'API Keys',
           key: 'api-keys',
-          url: `/org/${slug}/project/${ref}/settings/api-keys`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api-keys`,
           items: [],
           label: 'NEW',
         },
         {
           name: 'JWT Keys',
           key: 'jwt',
-          url: `/org/${slug}/project/${ref}/settings/jwt`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/jwt`,
           items: [],
           label: 'NEW',
         }, // FIXME: potentially move above
         {
           name: 'Add Ons',
           key: 'addons',
-          url: `/org/${slug}/project/${ref}/settings/addons`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/addons`,
           items: [],
         },
         {
           name: 'Vault',
           key: 'vault',
-          url: isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/integrations/vault/overview`,
+          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/vault/overview`,
           items: [],
           rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
           label: 'Alpha',
@@ -101,7 +99,7 @@ export const generateSettingsMenu = (
         {
           name: 'Database',
           key: 'database',
-          url: isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/database/settings`,
+          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`,
           items: [],
           rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
         },
@@ -110,7 +108,7 @@ export const generateSettingsMenu = (
               {
                 name: 'Authentication',
                 key: 'auth',
-                url: isProjectBuilding ? buildingUrl : `/org/${slug}/project/${ref}/settings/auth`,
+                url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/auth`,
                 items: [],
               },
             ]
@@ -120,7 +118,7 @@ export const generateSettingsMenu = (
               {
                 name: 'Storage',
                 key: 'storage',
-                url: `/org/${slug}/project/${ref}/storage/settings`,
+                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/settings`,
                 items: [],
                 rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
               },
@@ -131,33 +129,12 @@ export const generateSettingsMenu = (
               {
                 name: 'Edge Functions',
                 key: 'functions',
-                url: `/org/${slug}/project/${ref}/functions/secrets`,
+                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/secrets`,
                 items: [],
                 rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
               },
             ]
           : []),
-      ],
-    },
-
-    {
-      title: 'Billing',
-      items: [
-        {
-          name: 'Subscription',
-          key: 'subscription',
-          url: `/org/${slug}/org/${organization?.slug}/billing`,
-          items: [],
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-        },
-
-        {
-          name: 'Usage',
-          key: 'usage',
-          url: `/org/${slug}/org/${organization?.slug}/usage?projectRef=${ref}`,
-          items: [],
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-        },
       ],
     },
   ]

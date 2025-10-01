@@ -9,24 +9,24 @@ type Props = {
 }
 
 function DatabaseBackupsNav({ active }: Props) {
-  const { slug } = getPathReferences()
-  const { ref, cloud_provider } = useSelectedProjectQuery()?.data || {}
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
+  const { ref: projectRef } = useSelectedProjectQuery()?.data || {}
 
   const navMenuItems = [
     {
       enabled: true,
       id: 'scheduled',
       label: 'Scheduled backups',
-      href: `/org/${slug}/project/${ref}/database/backups/scheduled`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
     },
     {
       enabled: true,
       id: 'pitr',
       label: 'Point in time',
-      href: `/org/${slug}/project/${ref}/database/backups/pitr`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
     },
     {
-      enabled: cloud_provider !== 'FLY',
+      enabled: true,
       id: 'rtnp',
       label: (
         <div className="flex items-center gap-1">
@@ -36,7 +36,7 @@ function DatabaseBackupsNav({ active }: Props) {
           </Badge>
         </div>
       ),
-      href: `/org/${slug}/project/${ref}/database/backups/restore-to-new-project`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/restore-to-new-project`,
     },
   ] as const
 

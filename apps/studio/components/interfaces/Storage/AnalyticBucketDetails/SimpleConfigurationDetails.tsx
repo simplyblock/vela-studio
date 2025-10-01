@@ -20,11 +20,11 @@ const wrapperMeta = {
 }
 
 export const SimpleConfigurationDetails = ({ bucketName }: { bucketName: string }) => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef: project?.ref })
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef: project?.ref })
+  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: orgRef, projectRef: project?.ref })
+  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef: project?.ref })
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.storage_endpoint || settings?.app_config?.endpoint
 
@@ -52,7 +52,7 @@ export const SimpleConfigurationDetails = ({ bucketName }: { bucketName: string 
       <Card className="flex flex-col gap-6 p-6 pb-0">
         <p className="text-sm text-foreground-light mb-4">
           To get AWS credentials, you can create them using the{' '}
-          <Link href={`/org/${slug}/project/${project?.ref}/storage/settings`}>
+          <Link href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/storage/settings`}>
             <a className="underline ">S3 Access Keys</a>
           </Link>{' '}
           feature.

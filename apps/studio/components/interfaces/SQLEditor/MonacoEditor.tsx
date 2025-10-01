@@ -49,7 +49,7 @@ const MonacoEditor = ({
 }: MonacoEditorProps) => {
   const router = useRouter()
   const { profile } = useProfile()
-  const { slug, ref, content } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, content } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
   const tabsSnap = useTabsStateSnapshot()
@@ -174,7 +174,7 @@ const MonacoEditor = ({
       if (snippetCheck) {
         debouncedSetSql(id, value)
       } else {
-        if (ref && profile !== undefined && project !== undefined) {
+        if (projectRef && profile !== undefined && project !== undefined) {
           const snippet = createSqlSnippetSkeletonV2({
             id,
             name: untitledSnippetTitle,
@@ -182,9 +182,9 @@ const MonacoEditor = ({
             owner_id: profile?.id,
             project_id: project?.id,
           })
-          snapV2.addSnippet({ projectRef: ref, snippet })
+          snapV2.addSnippet({ projectRef, snippet })
           snapV2.addNeedsSaving(snippet.id)
-          router.push(`/org/${slug}/project/${ref}/sql/${snippet.id}`, undefined, { shallow: true })
+          router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`, undefined, { shallow: true })
         }
       }
     }

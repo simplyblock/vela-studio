@@ -32,7 +32,7 @@ import { INFRA_ACTIVITY_METRICS } from './Infrastructure.constants'
 import { useShowNewReplicaPanel } from './InfrastructureConfiguration/use-show-new-replica'
 
 const InfrastructureActivity = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
   const state = useDatabaseSelectorStateSnapshot()
   const [dateRange, setDateRange] = useState<any>()
@@ -61,9 +61,7 @@ const InfrastructureActivity = () => {
   const upgradeUrl =
     organization === undefined
       ? `/`
-      : organization.plan.id === 'free'
-        ? `/org/${organization?.slug ?? '[slug]'}/billing#subscription`
-        : `/org/${slug}/project/${projectRef}/settings/addons`
+      : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/addons`
 
   const categoryMeta = INFRA_ACTIVITY_METRICS.find((category) => category.key === 'infra')
 

@@ -76,18 +76,18 @@ const formSchema = z
   )
 
 export const PostgrestConfig = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   const [showModal, setShowModal] = useState(false)
 
-  const { data: config, isError, isLoading } = useProjectPostgrestConfigQuery({ orgSlug: slug, projectRef })
+  const { data: config, isError, isLoading } = useProjectPostgrestConfigQuery({ orgSlug: orgRef, projectRef })
   const { data: extensions } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
     connectionString: project?.connectionString,
   })
   const { data: schemas, isLoading: isLoadingSchemas } = useSchemasQuery({
-    orgSlug: slug,
+    orgSlug: orgRef,
     projectRef: project?.ref,
     connectionString: project?.connectionString,
   })
@@ -143,7 +143,7 @@ export const PostgrestConfig = () => {
     if (!projectRef) return console.error('Project ref is required') // is this needed ?
 
     updatePostgrestConfig({
-      orgSlug: slug!,
+      orgSlug: orgRef!,
       projectRef,
       dbSchema: values.dbSchema.join(', '),
       maxRows: values.maxRows,
@@ -314,7 +314,7 @@ export const PostgrestConfig = () => {
                                           schema are still exposed over our GraphQL endpoints.
                                         </p>
                                         <Button asChild type="default" className="mt-2">
-                                          <Link href={`/project/${projectRef}/database/extensions`}>
+                                          <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/extensions`}>
                                             Disable the pg_graphql extension
                                           </Link>
                                         </Button>

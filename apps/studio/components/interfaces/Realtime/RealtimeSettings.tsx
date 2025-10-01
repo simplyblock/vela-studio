@@ -36,7 +36,7 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 const formId = 'realtime-configuration-form'
 
 export const RealtimeSettings = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
   // FIXME: need permission implemented   
@@ -56,7 +56,7 @@ export const RealtimeSettings = () => {
     schema: 'realtime',
   })
 
-  const isUsageBillingEnabled = organization?.usage_billing_enabled
+  const isUsageBillingEnabled = false
 
   // Check if RLS policies exist for realtime.messages table
   const realtimeMessagesPolicies = policies?.filter(
@@ -160,7 +160,7 @@ export const RealtimeSettings = () => {
                                 </p>
 
                                 <Button asChild type="default" className="mt-2">
-                                  <Link href={`/org/${slug}/project/${projectRef}/realtime/policies`}>
+                                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/realtime/policies`}>
                                     Create policy
                                   </Link>
                                 </Button>

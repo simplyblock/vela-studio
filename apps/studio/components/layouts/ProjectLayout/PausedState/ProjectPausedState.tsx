@@ -49,13 +49,11 @@ export const extractPostgresVersionDetails = (value: string): PostgresVersionDet
 }
 
 export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const showPostgresVersionSelector = useFlag('showPostgresVersionSelector')
-
-  const region = 'default'
 
   const {
     data: pauseStatus,
@@ -74,7 +72,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
   const isRestoreDisabled = isSuccess && !pauseStatus.can_restore
 
   const { data: membersExceededLimit } = useFreeProjectLimitCheckQuery(
-    { slug: slug },
+    { slug: orgRef },
     { enabled: isFreePlan }
   )
 
@@ -84,7 +82,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
 
   const { mutate: restoreProject, isLoading: isRestoring } = useProjectRestoreMutation({
     onSuccess: (_, variables) => {
-      setProjectStatus(queryClient, slug as string, variables.ref, PROJECT_STATUS.RESTORING)
+      setProjectStatus(queryClient, orgRef!, variables.ref, PROJECT_STATUS.RESTORING)
       toast.success('Restoring project')
     },
   })
@@ -238,7 +236,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                     </Button>
                   ) : (
                     <Button asChild type="default">
-                      <Link href={`/org/${slug}/project/${ref}/settings/general`}>View project settings</Link>
+                      <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`}>View project settings</Link>
                     </Button>
                   )}
                 </div>

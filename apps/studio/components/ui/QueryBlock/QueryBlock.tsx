@@ -122,7 +122,7 @@ export const QueryBlock = ({
   onDragStart,
   onResults,
 }: QueryBlockProps) => {
-  const { slug: orgSlug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const [chartSettings, setChartSettings] = useState<ChartConfig>(chartConfig)
   const { xKey, yKey, view = 'table' } = chartSettings
@@ -155,7 +155,7 @@ export const QueryBlock = ({
   // [Joshen] This is for when we introduced the concept of parameters into our reports
   // const combinedParameterValues = { ...extParameterValues, ...parameterValues }
 
-  const { database: primaryDatabase } = usePrimaryDatabase({ orgSlug, projectRef: ref })
+  const { database: primaryDatabase } = usePrimaryDatabase({ orgSlug: orgRef, projectRef })
   const postgresConnectionString = primaryDatabase?.connectionString
   const readOnlyConnectionString = primaryDatabase?.connection_string_read_only
 
@@ -203,7 +203,7 @@ export const QueryBlock = ({
       // [Joshen] This is for when we introduced the concept of parameters into our reports
       // const processedSql = processParameterizedSql(sql, combinedParameterValues)
       execute({
-        projectRef: ref,
+        projectRef,
         connectionString: readOnlyConnectionString,
         sql,
       })
@@ -315,7 +315,7 @@ export const QueryBlock = ({
                   side: 'bottom',
                   className: 'max-w-56 text-center',
                   text: isExecuting ? (
-                    <p>{`Query is running. You may cancel ongoing queries via the [SQL Editor](/project/${ref}/sql?viewOngoingQueries=true).`}</p>
+                    <p>{`Query is running. You may cancel ongoing queries via the [SQL Editor](/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql?viewOngoingQueries=true).`}</p>
                   ) : (
                     'Run query'
                   ),
@@ -339,7 +339,7 @@ export const QueryBlock = ({
             if (sql) {
               setShowWarning(undefined)
               execute({
-                projectRef: ref,
+                projectRef,
                 connectionString: postgresConnectionString,
                 sql,
               })

@@ -17,6 +17,7 @@ import { useRoleImpersonationStateSnapshot } from 'state/role-impersonation-stat
 import { TABLE_EDITOR_DEFAULT_ROWS_PER_PAGE } from 'state/table-editor'
 import PrefetchableLink, { PrefetchableLinkProps } from './PrefetchableLink'
 import { getOrganizationSlug } from '../vela/organization-path-slug'
+import { getBranchRef } from '../vela/branch-path-ref'
 
 interface PrefetchEditorTablePageArgs {
   queryClient: QueryClient
@@ -64,7 +65,8 @@ export function prefetchEditorTablePage({
 
 export function usePrefetchEditorTablePage() {
   const router = useRouter()
-  const slug = getOrganizationSlug()
+  const orgRef = getOrganizationSlug()
+  const branchRef = getBranchRef()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
   const roleImpersonationState = useRoleImpersonationStateSnapshot()
@@ -75,7 +77,7 @@ export function usePrefetchEditorTablePage() {
       if (!project || !id || isNaN(id)) return
 
       // Prefetch the code
-      router.prefetch(`/org/${slug}/project/${project.ref}/editor/${id}`)
+      router.prefetch(`/org/${orgRef}/project/${project.ref}/branch/${branchRef}/editor/${id}`)
 
       // Prefetch the data
       prefetchEditorTablePage({
@@ -96,7 +98,8 @@ export function usePrefetchEditorTablePage() {
 
 interface EditorTablePageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 'prefetcher'> {
   projectRef?: string
-  slug: string
+  orgRef: string
+  branchRef?: string
   id?: string
   sorts?: Sort[]
   filters?: Filter[]
@@ -105,7 +108,8 @@ interface EditorTablePageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 
 
 export function EditorTablePageLink({
   projectRef,
-  slug,
+  orgRef,
+  branchRef,
   id,
   sorts,
   filters,
@@ -117,7 +121,7 @@ export function EditorTablePageLink({
 
   return (
     <PrefetchableLink
-      href={href || `/org/${slug}/project/${projectRef}/editor/${id}`}
+      href={href || `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${id}`}
       prefetcher={() => prefetch({ id, sorts, filters })}
       {...props}
     >

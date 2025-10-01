@@ -29,7 +29,7 @@ Future<void> main() async {
 })
 
 export const APIKeys = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const {
     projectConnectionJavascriptExample: javascriptExampleEnabled,
@@ -49,9 +49,9 @@ export const APIKeys = () => {
     data: settings,
     isError: isProjectSettingsError,
     isLoading: isProjectSettingsLoading,
-  } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
+  } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: orgRef, projectRef })
   const { anonKey, serviceKey } = getKeys(apiKeys)
 
   // API keys should not be empty. However it can be populated with a delay on project creation
@@ -62,7 +62,7 @@ export const APIKeys = () => {
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
   } = useJwtSecretUpdatingStatusQuery(
-    { orgSlug: slug, projectRef },
+    { orgSlug: orgRef, projectRef },
     { enabled: !isProjectSettingsLoading && isApiKeysEmpty }
   )
 
@@ -172,7 +172,7 @@ export const APIKeys = () => {
                   for your tables and configured policies. You may also use the service key which
                   can be found{' '}
                   <Link
-                    href={`/org/${slug}/project/${projectRef}/settings/api`}
+                    href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}
                     className="transition text-brand hover:text-brand-600"
                   >
                     here

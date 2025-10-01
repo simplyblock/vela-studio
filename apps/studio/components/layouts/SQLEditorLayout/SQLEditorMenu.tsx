@@ -30,7 +30,7 @@ import { SQLEditorNav } from './SQLEditorNavV2/SQLEditorNav'
 
 export const SQLEditorMenu = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
@@ -57,13 +57,14 @@ export const SQLEditorMenu = () => {
 
   const handleNewQuery = async () => {
     if (!ref) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
     if (!project) return console.error('Project is required')
     if (!profile) return console.error('Profile is required')
     if (!canCreateSQLSnippet) {
       return toast('Your queries will not be saved as you do not have sufficient permissions')
     }
     try {
-      router.push(`/org/${slug}/project/${ref}/sql/new?skip=true`)
+      router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/sql/new?skip=true`)
       setSearch('')
       setShowSearch(false)
     } catch (error: any) {

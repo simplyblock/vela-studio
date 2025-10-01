@@ -11,7 +11,7 @@ import { BASE_PATH } from 'lib/constants'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from 'ui'
 
 export const GitHubStatus = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const parentProjectRef = selectedProject?.parent_project_ref || projectRef
@@ -29,18 +29,16 @@ export const GitHubStatus = () => {
   const githubConnection = connections?.find(
     (connection) => connection.project.ref === parentProjectRef
   )
-  const mainBranch = branches?.find((branch) => branch.is_default)
 
   const isConnected = Boolean(githubConnection)
 
-  const hasGitBranchSync = Boolean(mainBranch?.git_branch?.trim())
   const hasAutomaticBranching = Boolean(githubConnection?.new_branch_per_pr)
 
   return (
     <HoverCard openDelay={300} closeDelay={100}>
       <HoverCardTrigger asChild>
         <Link
-          href={`/org/${slug}/project/${parentProjectRef}/settings/integrations`}
+          href={`/org/${orgRef}/project/${parentProjectRef}/branch/${branchRef}/settings/integrations`}
           className="block w-full transition truncate text-sm text-foreground-light hover:text-foreground"
         >
           <div className="w-full flex items-center justify-between">
@@ -83,15 +81,9 @@ export const GitHubStatus = () => {
         {isConnected ? (
           <div className="flex flex-col gap-2 text-xs text-foreground-light">
             <div className="flex items-center gap-2">
-              {hasGitBranchSync ? (
-                <CheckCircle2 size={12} className="text-brand-600" />
-              ) : (
-                <AlertCircle size={12} className="text-warning-600" />
-              )}
+              <AlertCircle size={12} className="text-warning-600" />
               <span>
-                {hasGitBranchSync
-                  ? `Syncing production (${mainBranch?.git_branch})`
-                  : 'Production sync disabled'}
+                'Production sync disabled'
               </span>
             </div>
             <div className="flex items-center gap-2">

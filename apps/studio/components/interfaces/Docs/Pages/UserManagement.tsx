@@ -16,10 +16,10 @@ interface UserManagementProps {
 
 export default function UserManagement({ selectedLang, showApiKey }: UserManagementProps) {
   const router = useRouter()
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const keyToShow = showApiKey ? showApiKey : 'SUPABASE_KEY'
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
   const protocol = settings?.app_config?.protocol ?? 'https'
   const hostEndpoint = settings?.app_config?.endpoint ?? ''
   const endpoint = `${protocol}://${hostEndpoint ?? ''}`
@@ -164,7 +164,7 @@ export default function UserManagement({ selectedLang, showApiKey }: UserManagem
             Users can log in with Third Party OAuth like Google, Facebook, GitHub, and more. You
             must first enable each of these in the Auth Providers settings{' '}
             <span className="text-green-500">
-              <Link key={'AUTH'} href={`/org/${slug}/project/${router.query.ref}/auth/providers`}>
+              <Link key={'AUTH'} href={`/org/${orgRef}/project/${router.query.ref}/branch/${branchRef}/auth/providers`}>
                 here
               </Link>
             </span>{' '}

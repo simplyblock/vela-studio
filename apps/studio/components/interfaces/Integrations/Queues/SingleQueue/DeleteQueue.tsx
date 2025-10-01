@@ -13,14 +13,14 @@ interface DeleteQueueProps {
 }
 
 const DeleteQueue = ({ queueName, visible, onClose }: DeleteQueueProps) => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
 
   const { mutate: deleteDatabaseQueue, isLoading } = useDatabaseQueueDeleteMutation({
     onSuccess: () => {
       toast.success(`Successfully removed queue ${queueName}`)
-      router.push(`/org/${slug}/project/${project?.ref}/integrations/queues/queues`)
+      router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/queues`)
       onClose()
     },
   })

@@ -11,7 +11,7 @@ interface DeprecatedChartBlockProps {
 }
 
 export const DeprecatedChartBlock = ({ label, attribute, actions }: DeprecatedChartBlockProps) => {
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const metric = METRICS.find((x) => x.key === attribute)
 
   const logsName = metric?.category?.label
@@ -43,7 +43,7 @@ export const DeprecatedChartBlock = ({ label, attribute, actions }: DeprecatedCh
       </p>
       <p className="text-xs text-foreground-lighter">
         You may view the equivalent of this data from the{' '}
-        <InlineLink href={`/org/${slug}/project/${ref}/${getLogsUrl(logsName)}`}>{logsName} Logs</InlineLink>{' '}
+        <InlineLink href={`/org/${slug}/project/${ref}/branch/${branchRef}/${getLogsUrl(logsName)}`}>{logsName} Logs</InlineLink>{' '}
         instead
       </p>
     </ReportBlockContainer>

@@ -40,11 +40,11 @@ export const EdgeFunctionBlock = ({
   showCode: _showCode = false,
   tooltip,
 }: EdgeFunctionBlockProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [isDeployed, setIsDeployed] = useState(false)
   const [showWarning, setShowWarning] = useState(false)
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef: ref })
-  const { data: existingFunction } = useEdgeFunctionQuery({ projectRef: ref, slug: functionName })
+  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
+  const { data: existingFunction } = useEdgeFunctionQuery({ projectRef, slug: functionName })
 
   const { mutate: sendEvent } = useSendEventMutation()
   const { data: org } = useSelectedOrganizationQuery()
@@ -57,7 +57,7 @@ export const EdgeFunctionBlock = ({
   })
 
   const handleDeploy = async () => {
-    if (!code || isDeploying || !ref) return
+    if (!code || isDeploying || !projectRef) return
 
     if (existingFunction) {
       return setShowWarning(true)
@@ -65,8 +65,8 @@ export const EdgeFunctionBlock = ({
 
     try {
       await deployFunction({
-        orgSlug:slug as string,
-        projectRef: ref,
+        orgSlug: orgRef!,
+        projectRef: projectRef,
         slug: functionName,
         metadata: {
           entrypoint_path: 'index.ts',
@@ -78,7 +78,7 @@ export const EdgeFunctionBlock = ({
       sendEvent({
         action: 'edge_function_deploy_button_clicked',
         properties: { origin: 'functions_ai_assistant' },
-        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
       })
     } catch (error) {
       toast.error(
@@ -93,8 +93,8 @@ export const EdgeFunctionBlock = ({
     const restUrl = `https://${endpoint}`
     const restUrlTld = restUrl ? new URL(restUrl).hostname.split('.').pop() : 'co'
     functionUrl =
-      ref && functionName && restUrlTld
-        ? `https://${ref}.supabase.${restUrlTld}/functions/v1/${functionName}`
+      projectRef && functionName && restUrlTld
+        ? `https://${projectRef}.supabase.${restUrlTld}/functions/v1/${functionName}`
         : 'Function URL will be available after deployment'
   }
   return (
@@ -103,13 +103,13 @@ export const EdgeFunctionBlock = ({
       icon={<Code size={16} strokeWidth={1.5} className="text-foreground-muted" />}
       label={label}
       actions={
-        ref && functionName ? (
+        projectRef && functionName ? (
           <>
             <Button
               type="outline"
               size="tiny"
               loading={isDeploying}
-              disabled={!ref}
+              disabled={!projectRef}
               onClick={handleDeploy}
             >
               {isDeploying ? 'Deploying...' : 'Deploy'}
@@ -120,7 +120,7 @@ export const EdgeFunctionBlock = ({
         ) : null
       }
     >
-      {showWarning && ref && functionName && (
+      {showWarning && projectRef && functionName && (
         <Admonition
           type="warning"
           className="mb-0 rounded-none border-0 border-b shrink-0 bg-background-100"
@@ -146,8 +146,8 @@ export const EdgeFunctionBlock = ({
                 setShowWarning(false)
                 try {
                   await deployFunction({
-                    orgSlug:slug as string,
-                    projectRef: ref,
+                    orgSlug: orgRef!,
+                    projectRef: projectRef,
                     slug: functionName,
                     metadata: {
                       entrypoint_path: 'index.ts',
@@ -192,7 +192,7 @@ export const EdgeFunctionBlock = ({
                 The{' '}
                 <Link
                   className="text-foreground"
-                  href={`/org/${slug}/project/${ref}/functions/${functionName}/details`}
+                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionName}/details`}
                 >
                   new function
                 </Link>{' '}

@@ -35,7 +35,7 @@ import { getDisabledStateConfig, getStatusConfig } from './ReplicationPipelineSt
  * Supports both legacy 'error' state and new 'errored' state with retry policies.
  */
 export const ReplicationPipelineStatus = () => {
-  const { slug, ref: projectRef, pipelineId: _pipelineId } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, pipelineId: _pipelineId } = useParams()
   const [filterString, setFilterString] = useState<string>('')
 
   const pipelineId = Number(_pipelineId)
@@ -131,7 +131,7 @@ export const ReplicationPipelineStatus = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-x-3">
           <Button asChild type="outline" icon={<ChevronLeft />} style={{ padding: '5px' }}>
-            <Link href={`/org/${slug}/project/${projectRef}/database/replication`} />
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/replication`} />
           </Button>
           <div>
             <div className="flex items-center gap-x-3">
@@ -175,7 +175,7 @@ export const ReplicationPipelineStatus = () => {
             />
           </div>
           <Button asChild type="default">
-            <Link href={`/project/${projectRef}/logs/etl-replication-logs`}>View logs</Link>
+            <Link href={`/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/etl-replication-logs`}>View logs</Link>
           </Button>
           <Button
             type={statusName === 'stopped' ? 'primary' : 'default'}
@@ -267,7 +267,7 @@ export const ReplicationPipelineStatus = () => {
                               <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href={`/project/${projectRef}/editor/${table.table_id}`}
+                                href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${table.table_id}`}
                               />
                             </ButtonTooltip>
                           </div>

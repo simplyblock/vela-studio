@@ -10,7 +10,7 @@ interface UpgradeDatabaseAlertProps {
 }
 
 export const UpgradeDatabaseAlert = ({ minimumVersion = '15.6' }: UpgradeDatabaseAlertProps) => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
   return (
@@ -27,7 +27,7 @@ export const UpgradeDatabaseAlert = ({ minimumVersion = '15.6' }: UpgradeDatabas
         </p>
       </div>
       <Button color="primary" className="w-fit">
-        <Link href={`/org/${slug}/project/${project?.ref}/settings/infrastructure`}>Upgrade database</Link>
+        <Link href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/infrastructure`}>Upgrade database</Link>
       </Button>
     </Admonition>
   )

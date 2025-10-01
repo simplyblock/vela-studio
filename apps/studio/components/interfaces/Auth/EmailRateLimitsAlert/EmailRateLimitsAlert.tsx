@@ -11,7 +11,7 @@ import {
 } from 'ui'
 
 export function EmailRateLimitsAlert() {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   return (
     <Alert_Shadcn_ variant="warning">
@@ -27,7 +27,7 @@ export function EmailRateLimitsAlert() {
       </AlertDescription_Shadcn_>
       <AlertDescription_Shadcn_ className="mt-2">
         <Button asChild type="default">
-          <Link href={`/org/${slug}/project/${ref}/auth/smtp`}>Set up custom SMTP server</Link>
+          <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/smtp`}>Set up custom SMTP server</Link>
         </Button>
       </AlertDescription_Shadcn_>
     </Alert_Shadcn_>

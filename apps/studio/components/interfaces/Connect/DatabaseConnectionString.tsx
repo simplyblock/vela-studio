@@ -56,7 +56,7 @@ const StepLabel = ({
  * So session mode connection details are always using the shared pooler (Supavisor)
  */
 export const DatabaseConnectionString = () => {
-  const { slug, ref: projectRef } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: org } = useSelectedOrganizationQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
@@ -72,7 +72,7 @@ export const DatabaseConnectionString = () => {
     isLoading: isLoadingPgbouncerConfig,
     isError: isErrorPgbouncerConfig,
     isSuccess: isSuccessPgBouncerConfig,
-  } = usePgbouncerConfigQuery({ orgSlug: slug, projectRef })
+  } = usePgbouncerConfigQuery({ orgSlug: orgRef, projectRef })
 
   const {
     data: databases,
@@ -80,7 +80,7 @@ export const DatabaseConnectionString = () => {
     isLoading: isLoadingReadReplicas,
     isError: isErrorReadReplicas,
     isSuccess: isSuccessReadReplicas,
-  } = useReadReplicasQuery({ orgSlug: slug, projectRef })
+  } = useReadReplicasQuery({ orgSlug: orgRef, projectRef })
 
   const poolerError = pgbouncerError
   const isLoadingPoolerConfig =isLoadingPgbouncerConfig
@@ -446,7 +446,7 @@ export const DatabaseConnectionString = () => {
         <p className="text-sm text-foreground-lighter">
           You may reset your database password in your project's{' '}
           <InlineLink
-            href={`/org/${slug}/project/${projectRef}/database/settings`}
+            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`}
             className="text-foreground-lighter hover:text-foreground"
           >
             Database Settings

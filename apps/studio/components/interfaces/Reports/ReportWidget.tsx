@@ -33,7 +33,7 @@ export interface ReportWidgetRendererProps<T = any> extends ReportWidgetProps<T>
 
 const ReportWidget = (props: ReportWidgetProps) => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const projectRef = ref as string
 
   return (
@@ -65,8 +65,8 @@ const ReportWidget = (props: ReportWidgetProps) => {
                     const isDbQueryType = props.queryType === 'db'
 
                     const pathname = isDbQueryType
-                      ? `/org/${slug}/project/${projectRef}/sql/new`
-                      : `/org/${slug}/project/${projectRef}/logs/explorer`
+                      ? `/org/${slug}/project/${projectRef}/branch/${branchRef}/sql/new`
+                      : `/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/explorer`
 
                     const query: Record<string, string | undefined> = {}
 

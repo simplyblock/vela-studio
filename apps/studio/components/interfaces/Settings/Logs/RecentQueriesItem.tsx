@@ -11,7 +11,7 @@ interface Props {
 
 const RecentQueriesItem: React.FC<Props> = ({ item }) => {
   const router = useRouter()
-  const { slug, ref } = router.query
+  const { slug, ref, branch: branchRef } = router.query
 
   return (
     <Table.tr key={item.sql}>
@@ -25,7 +25,7 @@ const RecentQueriesItem: React.FC<Props> = ({ item }) => {
           type="alternative"
           iconRight={<Play size={10} />}
           onClick={() =>
-            router.push(`/org/${slug}/project/${ref}/logs/explorer?q=${encodeURIComponent(item.sql)}`)
+            router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer?q=${encodeURIComponent(item.sql)}`)
           }
         >
           Run

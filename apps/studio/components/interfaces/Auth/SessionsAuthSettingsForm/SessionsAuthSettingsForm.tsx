@@ -7,10 +7,8 @@ import * as z from 'zod'
 import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -68,10 +66,6 @@ const SessionsAuthSettingsForm = () => {
   const { can: canReadConfig } = {can:true}
    // FIXME: need permission implemented  
   const { can: canUpdateConfig } = {can:true}
-
-  const { data: organization } = useSelectedOrganizationQuery()
-  const isProPlanAndUp = organization?.plan?.id !== 'free'
-  const promptProPlanUpgrade = !isProPlanAndUp
 
   const refreshTokenForm = useForm<z.infer<typeof RefreshTokenSchema>>({
     resolver: zodResolver(RefreshTokenSchema),
@@ -254,15 +248,6 @@ const SessionsAuthSettingsForm = () => {
           >
             <Card>
               <CardContent>
-                {promptProPlanUpgrade && (
-                  <div className="mb-4">
-                    <UpgradeToPro
-                      primaryText="Upgrade to Pro"
-                      secondaryText="Configuring user sessions requires the Pro Plan."
-                    />
-                  </div>
-                )}
-
                 <FormField_Shadcn_
                   control={userSessionsForm.control}
                   name="SESSIONS_SINGLE_PER_USER"
@@ -276,7 +261,7 @@ const SessionsAuthSettingsForm = () => {
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          disabled={!canUpdateConfig || !isProPlanAndUp}
+                          disabled={!canUpdateConfig}
                         />
                       </FormControl_Shadcn_>
                     </FormItemLayout>
@@ -301,7 +286,7 @@ const SessionsAuthSettingsForm = () => {
                               type="number"
                               min={0}
                               {...field}
-                              disabled={!canUpdateConfig || !isProPlanAndUp}
+                              disabled={!canUpdateConfig}
                             />
                           </PrePostTab>
                         </FormControl_Shadcn_>
@@ -327,7 +312,7 @@ const SessionsAuthSettingsForm = () => {
                             <Input_Shadcn_
                               type="number"
                               {...field}
-                              disabled={!canUpdateConfig || !isProPlanAndUp}
+                              disabled={!canUpdateConfig}
                             />
                           </PrePostTab>
                         </FormControl_Shadcn_>

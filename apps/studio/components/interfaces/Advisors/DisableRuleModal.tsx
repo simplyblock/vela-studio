@@ -23,7 +23,7 @@ interface DisableRuleModalProps {
 }
 
 export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const router = useRouter()
   const routeCategory = router.pathname.split('/').pop()
 
@@ -38,7 +38,7 @@ export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
       if (ruleLintMeta) {
         if (!!routeCategory && routeCategory !== ruleLintMeta.category) {
           router.push(
-            `/org/${slug}/project/${ref}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
+            `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
           )
         }
       }
@@ -47,12 +47,12 @@ export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
   })
 
   const onCreateRule = () => {
-    if (!slug) return console.error('Organization slug is required')
-    if (!ref) return console.error('Project ref is required')
+    if (!orgRef) return console.error('Organization slug is required')
+    if (!projectRef) return console.error('Project ref is required')
 
     createRule({
-      orgSlug: slug,
-      projectRef: ref,
+      orgSlug: orgRef,
+      projectRef: projectRef,
       exception: {
         is_disabled: true,
         lint_category: undefined,

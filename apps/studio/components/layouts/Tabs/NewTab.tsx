@@ -29,7 +29,7 @@ import { RecentItems } from './RecentItems'
 
 export function NewTab() {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const editor = useEditorType()
   const { profile } = useProfile()
   const { data: org } = useSelectedOrganizationQuery()
@@ -64,14 +64,14 @@ export function NewTab() {
       description: 'Execute SQL queries',
       bgColor: 'bg-green-500',
       isBeta: false,
-      onClick: () => router.push(`/org/${slug}/project/${ref}/sql/new`),
+      onClick: () => router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new`),
     },
   ]
 
   const actions = editor === 'sql' ? sqlEditorActions : tableEditorActions
 
   const handleNewQuery = async (sql: string, name: string) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
     if (!project) return console.error('Project is required')
     if (!profile) return console.error('Profile is required')
 
@@ -87,7 +87,7 @@ export function NewTab() {
         owner_id: profile?.id,
         project_id: project?.id,
       })
-      snapV2.addSnippet({ projectRef: ref, snippet })
+      snapV2.addSnippet({ projectRef, snippet })
       snapV2.addNeedsSaving(snippet.id)
 
       const tabId = createTabId('sql', { id: snippet.id })
@@ -99,7 +99,7 @@ export function NewTab() {
         metadata: { sqlId: snippet.id },
       })
 
-      router.push(`/org/${slug}/project/${ref}/sql/${snippet.id}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`)
     } catch (error: any) {
       toast.error(`Failed to create new query: ${error.message}`)
     }
@@ -131,7 +131,7 @@ export function NewTab() {
                       sendEvent({
                         action: 'sql_editor_template_clicked',
                         properties: { templateName: item.title },
-                        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                       })
                     }}
                     bgColor="bg-alternative border"
@@ -145,7 +145,7 @@ export function NewTab() {
               </div>
               <div className="flex justify-center mt-5">
                 <Button asChild type="default">
-                  <Link href={`/org/${slug}/project/${ref}/sql/templates`}>View more templates</Link>
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/templates`}>View more templates</Link>
                 </Button>
               </div>
             </TabsContent_Shadcn_>
@@ -158,7 +158,7 @@ export function NewTab() {
                       sendEvent({
                         action: 'sql_editor_quickstart_clicked',
                         properties: { quickstartName: item.title },
-                        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                       })
                     }}
                     bgColor="bg-alternative border"
@@ -172,7 +172,7 @@ export function NewTab() {
               </div>
               <div className="flex justify-center mt-5">
                 <Button asChild type="default">
-                  <Link href={`/org/${slug}/project/${ref}/sql/quickstarts`}>View more templates</Link>
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/quickstarts`}>View more templates</Link>
                 </Button>
               </div>
             </TabsContent_Shadcn_>

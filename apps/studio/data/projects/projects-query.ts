@@ -8,7 +8,6 @@ import type { Organization, ResponseError } from 'types'
 import { projectKeys } from './keys'
 import type { Project } from './project-detail-query'
 import { useSelectedOrganizationQuery } from '../../hooks/misc/useSelectedOrganization'
-import { useOrganizationContext } from '../../components/layouts/OrganizationContext'
 import { getPathReferences } from '../vela/path-references'
 
 export type ProjectsVariables = {

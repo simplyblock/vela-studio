@@ -20,7 +20,7 @@ import { useFlag } from 'hooks/ui/useFlag'
 const ReportsMenu = () => {
   const router = useRouter()
   const { profile } = useProfile()
-  const { slug, ref, id } = useParams()
+  const { slug, ref, id, branch: branchRef } = useParams()
   const pageKey = (id || router.pathname.split('/')[6]) as string
   const authEnabled = useFlag('authreportv2')
   const edgeFnEnabled = useFlag('edgefunctionreport')
@@ -56,7 +56,7 @@ const ReportsMenu = () => {
     onSuccess: () => {
       setDeleteModalOpen(false)
       toast.success('Successfully deleted report')
-      router.push(`/org/${slug}/project/${ref}/reports`)
+      router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/reports`)
     },
     onError: (error) => {
       toast.error(`Failed to delete report: ${error.message}`)
@@ -94,7 +94,7 @@ const ReportsMenu = () => {
       name: r.name,
       description: r.description || '',
       key: r.id || idx + '-report',
-      url: `/org/${slug}/project/${ref}/reports/${r.id}${preservedQueryParams}`,
+      url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/${r.id}${preservedQueryParams}`,
       hasDropdownActions: true,
       report: r,
     }))
@@ -112,28 +112,28 @@ const ReportsMenu = () => {
         {
           name: 'API Gateway',
           key: 'api-overview',
-          url: `/org/${slug}/project/${ref}/reports/api-overview${preservedQueryParams}`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/api-overview${preservedQueryParams}`,
         },
         ...(authEnabled
           ? [
               {
                 name: 'Auth',
                 key: 'auth',
-                url: `/org/${slug}/project/${ref}/reports/auth${preservedQueryParams}`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/auth${preservedQueryParams}`,
               },
             ]
           : []),
         {
           name: 'Database',
           key: 'database',
-          url: `/org/${slug}/project/${ref}/reports/database${preservedQueryParams}`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/database${preservedQueryParams}`,
         },
         ...(edgeFnEnabled
           ? [
               {
                 name: 'Edge Functions',
                 key: 'edge-functions',
-                url: `/org/${slug}/project/${ref}/reports/edge-functions${preservedQueryParams}`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/edge-functions${preservedQueryParams}`,
               },
             ]
           : []),
@@ -142,7 +142,7 @@ const ReportsMenu = () => {
               {
                 name: 'PostgREST',
                 key: 'postgrest',
-                url: `/org/${slug}/project/${ref}/reports/postgrest${preservedQueryParams}`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/postgrest${preservedQueryParams}`,
               },
             ]
           : []),
@@ -151,7 +151,7 @@ const ReportsMenu = () => {
               {
                 name: 'Realtime',
                 key: 'realtime',
-                url: `/org/${slug}/project/${ref}/reports/realtime${preservedQueryParams}`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/realtime${preservedQueryParams}`,
               },
             ]
           : []),
@@ -161,7 +161,7 @@ const ReportsMenu = () => {
               {
                 name: 'Storage',
                 key: 'storage',
-                url: `/org/${slug}/project/${ref}/reports/storage${preservedQueryParams}`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/storage${preservedQueryParams}`,
               },
             ]
           : []),

@@ -72,7 +72,7 @@ const StatusIcon = ({
 }
 
 export const ServiceStatus = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const [open, setOpen] = useState(false)
 
@@ -95,8 +95,8 @@ export const ServiceStatus = () => {
     refetch: refetchServiceStatus,
   } = useProjectServiceStatusQuery(
     {
-      orgSlug: slug,
-      projectRef: ref,
+      orgSlug: orgRef,
+      projectRef,
     },
     {
       refetchInterval: (data) => (data?.some((service) => !service.healthy) ? 5000 : false),
@@ -105,7 +105,7 @@ export const ServiceStatus = () => {
   const { data: edgeFunctionsStatus, refetch: refetchEdgeFunctionServiceStatus } =
     useEdgeFunctionServiceStatusQuery(
       {
-        projectRef: ref,
+        projectRef,
       },
       {
         refetchInterval: (data) => (!data?.healthy ? 5000 : false),
@@ -256,7 +256,7 @@ export const ServiceStatus = () => {
       <PopoverContent_Shadcn_ portal className="p-0 w-56" side="bottom" align="center">
         {services.map((service) => (
           <Link
-            href={`/org/${slug}/project/${ref}${service.logsUrl}`}
+            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}${service.logsUrl}`}
             key={service.name}
             className="transition px-3 py-2 text-xs flex items-center justify-between border-b last:border-none group relative hover:bg-surface-300"
           >

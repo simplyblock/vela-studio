@@ -11,7 +11,7 @@ import { APIKeys } from './APIKeys'
 import { GetStartedHero } from './GetStartedHero'
 
 export const NewProjectPanel = () => {
-  const { slug, ref } = useParams() as { slug: string; ref: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref: string, branch: string }
 
   const {
     projectAuthAll: authEnabled,
@@ -45,10 +45,10 @@ export const NewProjectPanel = () => {
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Button asChild type="default" icon={<TableEditor strokeWidth={1.5} />}>
-                  <EditorIndexPageLink slug={slug} projectRef={ref}>Table Editor</EditorIndexPageLink>
+                  <EditorIndexPageLink orgRef={orgRef} projectRef={projectRef} branchRef={branchRef}>Table Editor</EditorIndexPageLink>
                 </Button>
                 <Button asChild type="default" icon={<SqlEditor strokeWidth={1.5} />}>
-                  <Link href={`/org/${slug}/project/${ref}/sql/new`}>SQL Editor</Link>
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new`}>SQL Editor</Link>
                 </Button>
                 <Button asChild type="default" icon={<ExternalLink />}>
                   <Link
@@ -91,7 +91,7 @@ export const NewProjectPanel = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button type="default" asChild>
-                        <Link href={`/org/${slug}/project/${ref}/auth/users`}>Explore Auth</Link>
+                        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/users`}>Explore Auth</Link>
                       </Button>
 
                       <Button
@@ -127,7 +127,7 @@ export const NewProjectPanel = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button type="default" asChild>
-                        <Link href={`/org/${slug}/project/${ref}/storage/buckets`}>Explore Storage</Link>
+                        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/buckets`}>Explore Storage</Link>
                       </Button>
 
                       <Button
@@ -164,7 +164,7 @@ export const NewProjectPanel = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button type="default" asChild>
-                        <Link href={`/org/${slug}/project/${ref}/functions`}>Explore Functions</Link>
+                        <Link href={`/org/${orgRef}/project/${projectRef}/functions`}>Explore Functions</Link>
                       </Button>
                       <Button
                         className="translate-y-[1px]"
@@ -198,7 +198,7 @@ export const NewProjectPanel = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Button type="default" asChild>
-                        <Link href={`/org/${slug}/project/${ref}/realtime/inspector`}>Explore Realtime</Link>
+                        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/realtime/inspector`}>Explore Realtime</Link>
                       </Button>
                       <Button
                         className="translate-y-[1px]"
@@ -241,7 +241,7 @@ export const NewProjectPanel = () => {
           </div>
           <div className="flex items-center space-x-2">
             <Button asChild type="default">
-              <Link href={`/org/${slug}/project/${ref}/settings/api`}>View API settings</Link>
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}>View API settings</Link>
             </Button>
             <Button asChild className="translate-y-[1px]" type="default" icon={<ExternalLink />}>
               <Link

@@ -67,7 +67,7 @@ const defaultValues = {
  */
 export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetProps) => {
   const router = useRouter()
-  const { slug, ref: projectRef } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
 
   const routeCategory = router.pathname.split('/').pop()
   const { data: organization } = useSelectedOrganizationQuery()
@@ -82,7 +82,7 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
       if (ruleLintMeta) {
         if (!!routeCategory && routeCategory !== ruleLintMeta.category) {
           router.push(
-            `/org/${slug}/project/${projectRef}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
+            `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
           )
         } else {
           // setExpandedLint(ruleLintMeta?.name)
@@ -103,11 +103,11 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
   const { lint_name, assigned_to, is_disabled } = form.watch()
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (values) => {
-    if (!slug) return console.error('Organization slug is required')
+    if (!orgRef) return console.error('Organization slug is required')
     if (!projectRef) return console.error('Project ref is required')
 
     createRule({
-      orgSlug: slug,
+      orgSlug: orgRef,
       projectRef,
       exception: {
         ...values,

@@ -2,7 +2,6 @@ import { useRouter } from 'next/router'
 import { PropsWithChildren } from 'react'
 
 import { useParams } from 'common'
-import { GitHubStatus } from 'components/interfaces/Settings/Integrations/GithubIntegration/GitHubStatus'
 import { ProductMenu } from 'components/ui/ProductMenu'
 import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
@@ -16,10 +15,6 @@ const BranchProductMenu = () => {
   return (
     <>
       <ProductMenu page={page} menu={generateBranchMenu(slug, projectRef)} />
-      <div className="px-6">
-        <h3 className="text-sm font-mono text-foreground-lighter uppercase mb-3">Configure</h3>
-        <GitHubStatus />
-      </div>
     </>
   )
 }

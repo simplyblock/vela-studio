@@ -6,8 +6,6 @@ import type { IntegrationProjectConnection } from 'data/integrations/integration
 import { ProjectIndexPageLink } from 'data/prefetchers/project.$ref'
 import type { ProjectInfo } from 'data/projects/projects-query'
 import type { ResourceWarning } from 'data/usage/resource-warnings-query'
-import { BASE_PATH } from 'lib/constants'
-import InlineSVG from 'react-inlinesvg'
 import { inferProjectStatus } from './ProjectCard.utils'
 import { ProjectCardStatus } from './ProjectCardStatus'
 import { useParams } from 'common'
@@ -21,14 +19,13 @@ export interface ProjectCardProps {
 
 const ProjectCard = ({
   project,
-  rewriteHref,
   githubIntegration,
   resourceWarnings,
 }: ProjectCardProps) => {
   const { slug } = useParams() as { slug: string }
-  const { name, ref: projectRef } = project
+  const { name, ref: projectRef, default_branch } = project
 
-  const isBranchingEnabled = project.preview_branch_refs?.length > 0
+  const isBranchingEnabled = true
   const isGithubIntegrated = githubIntegration !== undefined
   const githubRepository = githubIntegration?.metadata.name ?? undefined
   const projectStatus = inferProjectStatus(project)
@@ -36,7 +33,7 @@ const ProjectCard = ({
   return (
     <li className="list-none">
       <CardButton
-        linkHref={rewriteHref ? rewriteHref : `/org/${slug}/project/${projectRef}`}
+        linkHref={`/org/${slug}/project/${projectRef}/branch/${default_branch}`}
         className="h-44 !px-0 group pt-5 pb-0"
         title={
           <div className="w-full justify-between space-y-1.5 px-5">

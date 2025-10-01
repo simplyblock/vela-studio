@@ -6,6 +6,7 @@ import UsageSection from './UsageSection/UsageSection'
 export interface EgressProps {
   orgSlug: string
   projectRef?: string
+  branchRef?: string
   startDate: string | undefined
   endDate: string | undefined
   subscription: OrgSubscription | undefined
@@ -15,6 +16,7 @@ export interface EgressProps {
 const Egress = ({
   orgSlug,
   projectRef,
+  branchRef,
   subscription,
   startDate,
   endDate,
@@ -57,6 +59,7 @@ const Egress = ({
     <UsageSection
       orgSlug={orgSlug}
       projectRef={projectRef}
+      branchRef={branchRef}
       categoryKey="egress"
       chartMeta={chartMeta}
       subscription={subscription}

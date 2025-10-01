@@ -15,7 +15,7 @@ import { createSqlSnippetSkeletonV2 } from '../SQLEditor.utils'
 
 const SQLTemplates = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
@@ -28,7 +28,7 @@ const SQLTemplates = () => {
   const { mutate: sendEvent } = useSendEventMutation()
 
   const handleNewQuery = async (sql: string, name: string) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
     if (!project) return console.error('Project is required')
     if (!profile) return console.error('Profile is required')
 
@@ -44,10 +44,10 @@ const SQLTemplates = () => {
         owner_id: profile?.id,
         project_id: project?.id,
       })
-      snapV2.addSnippet({ projectRef: ref, snippet })
+      snapV2.addSnippet({ projectRef, snippet })
       snapV2.addNeedsSaving(snippet.id)
 
-      router.push(`/org/${slug}/project/${ref}/sql/${snippet.id}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`)
     } catch (error: any) {
       toast.error(`Failed to create new query: ${error.message}`)
     }
@@ -77,7 +77,7 @@ const SQLTemplates = () => {
                 sendEvent({
                   action: 'sql_editor_template_clicked',
                   properties: { templateName: x.title },
-                  groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                  groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                 })
               }}
             />

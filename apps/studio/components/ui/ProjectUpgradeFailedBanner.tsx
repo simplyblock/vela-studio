@@ -12,7 +12,7 @@ import { InlineLink } from './InlineLink'
 // [Joshen] Think twice about the category though - it doesn't correspond
 
 export const ProjectUpgradeFailedBanner = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef, branch: branchRef } = useParams()
   const { data } = useProjectUpgradingStatusQuery({ orgSlug, projectRef }, { enabled: true })
   const { status, initiated_at, latest_status_at, error } = data?.databaseUpgradeStatus ?? {}
 
@@ -80,7 +80,7 @@ export const ProjectUpgradeFailedBanner = () => {
         </div>
         <div>
           You may also view logs related to the failed upgrade in your{' '}
-          <InlineLink href={`/org/${orgSlug}/project/${projectRef}/logs/pg-upgrade-logs?${timestampFilter}`}>
+          <InlineLink href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/logs/pg-upgrade-logs?${timestampFilter}`}>
             project's logs
           </InlineLink>
           .

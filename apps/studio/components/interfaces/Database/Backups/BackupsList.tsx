@@ -1,13 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { Clock } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useParams } from 'common'
 import Panel from 'components/ui/Panel'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useBackupRestoreMutation } from 'data/database/backup-restore-mutation'
 import { DatabaseBackup, useBackupsQuery } from 'data/database/backups-query'
 import { setProjectStatus } from 'data/projects/projects-query'
@@ -54,18 +52,6 @@ const BackupsList = () => {
     (a, b) => new Date(b.inserted_at).valueOf() - new Date(a.inserted_at).valueOf()
   )
   const isPitrEnabled = backups?.pitr_enabled
-
-  if (planKey === 'FREE') {
-    return (
-      <UpgradeToPro
-        addon="pitr"
-        icon={<Clock size={20} />}
-        primaryText="Free Plan does not include project backups."
-        secondaryText="Upgrade to the Pro Plan for up to 7 days of scheduled backups."
-        source="backups"
-      />
-    )
-  }
 
   if (isPitrEnabled) return null
 

@@ -46,7 +46,7 @@ export const DestinationRow = ({
   isError: isPipelineError,
   isSuccess: isPipelineSuccess,
 }: DestinationRowProps) => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [showDeleteDestinationForm, setShowDeleteDestinationForm] = useState(false)
   const [showEditDestinationPanel, setShowEditDestinationPanel] = useState(false)
 
@@ -133,7 +133,7 @@ export const DestinationRow = ({
           <Table.td>
             <div className="flex items-center justify-end gap-x-2">
               <Button asChild type="default">
-                <Link href={`/org/${slug}/project/${projectRef}/database/replication/${pipeline?.id}`}>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/replication/${pipeline?.id}`}>
                   View status
                 </Link>
               </Button>

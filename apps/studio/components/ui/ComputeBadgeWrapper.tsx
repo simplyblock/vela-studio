@@ -32,7 +32,7 @@ export const ComputeBadgeWrapper = ({ project }: ComputeBadgeWrapperProps) => {
   // once open it will fetch the addons
   const [open, setOpenState] = useState(false)
 
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   // returns hardcoded values for infra
   const cpuArchitecture = getCloudProviderArchitecture(project.cloud_provider)
@@ -105,7 +105,7 @@ export const ComputeBadgeWrapper = ({ project }: ComputeBadgeWrapperProps) => {
               </div>
               <div>
                 <Button asChild type="default" htmlType="button" role="button">
-                  <Link href={`/org/${slug}/project/${project?.ref}/settings/compute-and-disk`}>
+                  <Link href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/compute-and-disk`}>
                     Upgrade compute
                   </Link>
                 </Button>

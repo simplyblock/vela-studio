@@ -37,7 +37,7 @@ const EdgeFunctionDetailsLayout = ({
 }: PropsWithChildren<EdgeFunctionDetailsLayoutProps>) => {
   const router = useRouter()
   const { data: org } = useSelectedOrganizationQuery()
-  const { slug, functionSlug, ref } = useParams()
+  const { slug: orgRef, functionSlug, ref: projectRef, branch: branchRef } = useParams()
   const { mutate: sendEvent } = useSendEventMutation()
 
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
@@ -50,11 +50,11 @@ const EdgeFunctionDetailsLayout = ({
     data: selectedFunction,
     error,
     isError,
-  } = useEdgeFunctionQuery({ projectRef: ref, slug: functionSlug })
+  } = useEdgeFunctionQuery({ projectRef, slug: functionSlug })
 
   const { data: functionFiles = [], error: filesError } = useEdgeFunctionBodyQuery(
     {
-      projectRef: ref,
+      projectRef,
       slug: functionSlug,
     },
     {
@@ -74,7 +74,7 @@ const EdgeFunctionDetailsLayout = ({
   const breadcrumbItems = [
     {
       label: 'Edge Functions',
-      href: `/org/${slug}/project/${ref}/functions`,
+      href: `/org/${orgRef}/project/${projectRef}/functions`,
     },
   ]
 
@@ -82,23 +82,23 @@ const EdgeFunctionDetailsLayout = ({
     ? [
         {
           label: 'Overview',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}`,
         },
         {
           label: 'Invocations',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/invocations`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/invocations`,
         },
         {
           label: 'Logs',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/logs`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/logs`,
         },
         {
           label: 'Code',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/code`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/code`,
         },
         {
           label: 'Details',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/details`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/details`,
         },
       ]
     : []
@@ -131,7 +131,7 @@ const EdgeFunctionDetailsLayout = ({
 
     if (!!functionSlug && isError && error.code === 404 && !cancel) {
       toast('Edge function cannot be found in your project')
-      router.push(`/org/${slug}/project/${ref}/functions`)
+      router.push(`/org/${orgRef}/project/${projectRef}/functions`)
     }
 
     return () => {
@@ -205,7 +205,7 @@ const EdgeFunctionDetailsLayout = ({
                   sendEvent({
                     action: 'edge_function_test_side_panel_opened',
                     groups: {
-                      project: ref ?? 'Unknown',
+                      project: projectRef ?? 'Unknown',
                       organization: org?.slug ?? 'Unknown',
                     },
                   })

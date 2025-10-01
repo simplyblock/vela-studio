@@ -13,14 +13,14 @@ interface PurgeQueueProps {
 }
 
 const PurgeQueue = ({ queueName, visible, onClose }: PurgeQueueProps) => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
 
   const { mutate: purgeDatabaseQueue, isLoading } = useDatabaseQueuePurgeMutation({
     onSuccess: () => {
       toast.success(`Successfully purged queue ${queueName}`)
-      router.push(`/org/${slug}/project/${project?.ref}/integrations/queues`)
+      router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues`)
       onClose()
     },
   })

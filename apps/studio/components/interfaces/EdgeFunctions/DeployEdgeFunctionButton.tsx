@@ -1,7 +1,6 @@
 import { ChevronDown, Code, Terminal } from 'lucide-react'
 import { useRouter } from 'next/router'
 
-import { useParams } from 'common'
 import { TerminalInstructions } from 'components/interfaces/Functions/TerminalInstructions'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
@@ -23,7 +22,7 @@ import { getPathReferences } from '../../../data/vela/path-references'
 
 export const DeployEdgeFunctionButton = () => {
   const router = useRouter()
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: org } = useSelectedOrganizationQuery()
   const snap = useAiAssistantStateSnapshot()
 
@@ -39,11 +38,11 @@ export const DeployEdgeFunctionButton = () => {
       <DropdownMenuContent align="end" className="w-80">
         <DropdownMenuItem
           onSelect={() => {
-            router.push(`/org/${slug}/project/${ref}/functions/new`)
+            router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/new`)
             sendEvent({
               action: 'edge_function_via_editor_button_clicked',
               properties: { origin: 'secondary_action' },
-              groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+              groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
             })
           }}
           className="gap-4"
@@ -63,7 +62,7 @@ export const DeployEdgeFunctionButton = () => {
                 sendEvent({
                   action: 'edge_function_via_cli_button_clicked',
                   properties: { origin: 'secondary_action' },
-                  groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                  groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                 })
               }}
             >
@@ -113,7 +112,7 @@ export const DeployEdgeFunctionButton = () => {
             sendEvent({
               action: 'edge_function_ai_assistant_button_clicked',
               properties: { origin: 'secondary_action' },
-              groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+              groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
             })
           }}
         >

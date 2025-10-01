@@ -4,7 +4,7 @@ import { BASE_PATH } from 'lib/constants'
 import Image from 'next/image'
 
 export const APISidePanelPreview = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   return (
     <div className="space-y-2">
@@ -29,7 +29,7 @@ export const APISidePanelPreview = () => {
           </li>
           <li>
             Move the GraphiQL interface the Database section of the dashboard{' '}
-            <InlineLink href={`/org/${slug}/project/${ref}/database/graphiql`}>here</InlineLink>.
+            <InlineLink href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/graphiql`}>here</InlineLink>.
           </li>
         </ul>
       </div>

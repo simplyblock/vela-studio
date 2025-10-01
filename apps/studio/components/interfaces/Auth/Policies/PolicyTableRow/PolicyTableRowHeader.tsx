@@ -30,7 +30,7 @@ const PolicyTableRowHeader = ({
   onSelectToggleRLS = noop,
   onSelectCreatePolicy,
 }: PolicyTableRowHeaderProps) => {
-  const { slug, ref } = useParams() as { slug: string; ref: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref: string, branch: string }
   const aiSnap = useAiAssistantStateSnapshot()
   // FIXME: need permission implemented 
   const { can: canCreatePolicies } = {can:true}
@@ -45,8 +45,9 @@ const PolicyTableRowHeader = ({
     <div id={table.id.toString()} className="flex w-full items-center justify-between">
       <div className="flex gap-x-4 text-left">
         <EditorTablePageLink
-          slug={slug}
-          projectRef={ref}
+          orgRef={orgRef}
+          projectRef={projectRef}
+          branchRef={branchRef}
           id={String(table.id)}
           className="flex items-center gap-x-2"
         >

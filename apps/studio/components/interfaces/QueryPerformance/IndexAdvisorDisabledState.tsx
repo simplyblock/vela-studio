@@ -11,7 +11,7 @@ import { Markdown } from '../Markdown'
 import { getIndexAdvisorExtensions } from './index-advisor.utils'
 
 export const IndexAdvisorDisabledState = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: extensions } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
@@ -76,7 +76,7 @@ export const IndexAdvisorDisabledState = () => {
         <div className="flex items-center gap-x-2">
           {indexAdvisor === undefined ? (
             <Button asChild type="default">
-              <Link href={`/org/${slug}/project/${ref}/settings/infrastructure`}>Upgrade Postgres version</Link>
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/infrastructure`}>Upgrade Postgres version</Link>
             </Button>
           ) : (
             <Button

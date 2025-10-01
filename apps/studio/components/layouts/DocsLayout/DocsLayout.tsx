@@ -15,12 +15,12 @@ import { generateDocsMenu } from './DocsLayout.utils'
 
 function DocsLayout({ title, children }: { title: string; children: ReactElement }) {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
   const isPaused = selectedProject?.status === PROJECT_STATUS.INACTIVE
 
   const { data, isLoading, error } = useOpenAPISpecQuery(
-    { orgSlug: slug, projectRef: ref },
+    { orgSlug: orgRef!, projectRef: projectRef },
     { enabled: !isPaused }
   )
 
@@ -45,7 +45,6 @@ function DocsLayout({ title, children }: { title: string; children: ReactElement
     )
   }
 
-  const projectRef = selectedProject?.ref ?? 'default'
   const tableNames = (data?.tables ?? []).map((table: any) => table.name)
   const functionNames = (data?.functions ?? []).map((fn: any) => fn.name)
 
@@ -58,7 +57,7 @@ function DocsLayout({ title, children }: { title: string; children: ReactElement
         !hideMenu && (
           <ProductMenu
             page={getPage()}
-            menu={generateDocsMenu(slug!, projectRef, tableNames, functionNames, { authEnabled })}
+            menu={generateDocsMenu(orgRef!, projectRef!, branchRef!, tableNames, functionNames, { authEnabled })}
           />
         )
       }

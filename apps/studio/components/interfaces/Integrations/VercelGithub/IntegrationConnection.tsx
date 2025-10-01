@@ -32,7 +32,7 @@ interface IntegrationConnectionItemProps extends IntegrationConnectionProps {
 const IntegrationConnectionItem = forwardRef<HTMLLIElement, IntegrationConnectionItemProps>(
   ({ disabled, onDeleteConnection, ...props }, ref) => {
     const router = useRouter()
-    const { slug } = useParams()
+    const { slug: orgRef, branch: branchRef } = useParams()
     const { data: org } = useSelectedOrganizationQuery()
 
     const { type, connection } = props
@@ -72,7 +72,7 @@ const IntegrationConnectionItem = forwardRef<HTMLLIElement, IntegrationConnectio
       syncEnvs({ connectionId: connection.id })
     }, [connection, syncEnvs])
 
-    const projectIntegrationUrl = `/org/${slug}/project/[ref]/settings/integrations`
+    const projectIntegrationUrl = `/org/${orgRef}/project/[ref]/branch/${branchRef}/settings/integrations`
 
     return (
       <>

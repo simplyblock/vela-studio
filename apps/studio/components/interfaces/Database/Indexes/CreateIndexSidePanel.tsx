@@ -4,7 +4,6 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import CodeEditor from 'components/ui/CodeEditor/CodeEditor'
-import { DocsButton } from 'components/ui/DocsButton'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useDatabaseIndexCreateMutation } from 'data/database-indexes/index-create-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
@@ -32,7 +31,6 @@ import {
   SidePanel,
   cn,
 } from 'ui'
-import { Admonition } from 'ui-patterns'
 import { MultiSelectOption } from 'ui-patterns/MultiSelectDeprecated'
 import { MultiSelectV2 } from 'ui-patterns/MultiSelectDeprecated/MultiSelectV2'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
@@ -45,7 +43,7 @@ interface CreateIndexSidePanelProps {
 }
 
 const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) => {
-  const { slug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
 
   const [selectedSchema, setSelectedSchema] = useState('public')
@@ -57,7 +55,7 @@ const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) =
   const [searchTerm, setSearchTerm] = useState('')
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug: slug,
+    orgSlug: orgRef,
     projectRef: project?.ref,
     connectionString: project?.connectionString,
   })
@@ -381,7 +379,7 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
                   <Link
                     href={
                       project !== undefined
-                        ? `/org/${slug}/project/${project.ref}/sql/new?content=${generatedSQL}`
+                        ? `/org/${orgRef}/project/${project.ref}/branch/${branchRef}/sql/new?content=${generatedSQL}`
                         : '/'
                     }
                   >

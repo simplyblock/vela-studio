@@ -34,7 +34,7 @@ const FunctionList = ({
   deleteFunction = noop,
 }: FunctionListProps) => {
   const router = useRouter()
-  const { slug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
   const aiSnap = useAiAssistantStateSnapshot()
 
@@ -124,7 +124,7 @@ const FunctionList = ({
                         {isApiDocumentAvailable && (
                           <DropdownMenuItem
                             className="space-x-2"
-                            onClick={() => router.push(`/org/${slug}/project/${projectRef}/api?rpc=${x.name}`)}
+                            onClick={() => router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?rpc=${x.name}`)}
                           >
                             <FileText size={14} />
                             <p>Client API docs</p>

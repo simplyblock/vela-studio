@@ -98,7 +98,7 @@ export type CreateBucketForm = z.infer<typeof FormSchema>
 
 const CreateBucketModal = () => {
   const [visible, setVisible] = useState(false)
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
   const { mutate: sendEvent } = useSendEventMutation()
   const router = useRouter()
@@ -112,7 +112,7 @@ const CreateBucketModal = () => {
   const { mutateAsync: createIcebergWrapper, isLoading: isCreatingIcebergWrapper } =
     useIcebergWrapperCreateMutation()
 
-  const { data } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef: ref })
+  const { data } = useProjectStorageConfigQuery({ orgSlug: orgRef, projectRef })
   const { value, unit } = convertFromBytes(data?.fileSizeLimit ?? 0)
   const formattedGlobalUploadLimit = `${value} ${unit}`
 
@@ -140,7 +140,7 @@ const CreateBucketModal = () => {
   const icebergCatalogEnabled = data?.features?.icebergCatalog?.enabled
 
   const onSubmit: SubmitHandler<CreateBucketForm> = async (values) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
 
     if (values.type === 'ANALYTICS' && !icebergCatalogEnabled) {
       toast.error(
@@ -160,7 +160,7 @@ const CreateBucketModal = () => {
           : undefined
 
       await createBucket({
-        projectRef: ref,
+        projectRef,
         id: values.name,
         type: values.type,
         isPublic: values.public,
@@ -170,7 +170,7 @@ const CreateBucketModal = () => {
       sendEvent({
         action: 'storage_bucket_created',
         properties: { bucketType: values.type },
-        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
       })
 
       if (values.type === 'ANALYTICS' && icebergWrapperExtensionState === 'installed') {
@@ -181,7 +181,7 @@ const CreateBucketModal = () => {
       setShowConfiguration(false)
       setVisible(false)
       toast.success(`Successfully created bucket ${values.name}`)
-      router.push(`/project/${ref}/storage/buckets/${values.name}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/buckets/${values.name}`)
     } catch (error) {
       console.error(error)
       toast.error('Failed to create bucket')
@@ -437,7 +437,7 @@ const CreateBucketModal = () => {
                               <p className="text-foreground-light text-sm">
                                 Note: Individual bucket uploads will still be capped at the{' '}
                                 <Link
-                                  href={`/project/${ref}/settings/storage`}
+                                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/storage`}
                                   className="font-bold underline"
                                 >
                                   global upload limit
@@ -479,7 +479,7 @@ const CreateBucketModal = () => {
                       <p>
                         <span>Supabase will setup a </span>
                         <a
-                          href={`${BASE_PATH}/project/${ref}/integrations/iceberg_wrapper/overview`}
+                          href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/iceberg_wrapper/overview`}
                           target="_blank"
                           className="underline text-foreground-light"
                         >
@@ -490,7 +490,7 @@ const CreateBucketModal = () => {
                           {' '}
                           for easier access to the data. This action will also create{' '}
                           <a
-                            href={`${BASE_PATH}/project/${ref}/storage/access-keys`}
+                            href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/access-keys`}
                             target="_blank"
                             className="underline text-foreground-light"
                           >
@@ -504,7 +504,7 @@ const CreateBucketModal = () => {
                           </a>
                           <span> and </span>
                           <a
-                            href={`${BASE_PATH}/project/${ref}/integrations/vault/secrets`}
+                            href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/vault/secrets`}
                             target="_blank"
                             className="underline text-foreground-light"
                           >

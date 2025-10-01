@@ -46,7 +46,7 @@ export interface GridHeaderActionsProps {
 }
 
 const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
 
@@ -56,7 +56,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
   )
 
   // need project lints to get security status for views
-  const { data: lints = [] } = useProjectLintsQuery({ orgSlug: slug, projectRef: project?.ref })
+  const { data: lints = [] } = useProjectLintsQuery({ orgSlug: orgRef, projectRef: project?.ref })
 
   const isTable = isTableLike(table)
   const isForeignTable = isTableLikeForeignTable(table)
@@ -181,7 +181,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
     }
 
     updateTable({
-      orgSlug: slug!,
+      orgSlug: orgRef!,
       projectRef: project?.ref!,
       connectionString: project?.connectionString,
       id: table.id,
@@ -226,8 +226,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     }}
                   >
                     <Link
-                      passHref
-                      href={`/org/${slug}/project/${projectRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
                     >
                       Add RLS policy
                     </Link>
@@ -256,8 +255,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     }
                   >
                     <Link
-                      passHref
-                      href={`/org/${slug}/project/${projectRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${table.id}&schema=${table.schema}`}
                     >
                       RLS {policies.length > 1 ? 'policies' : 'policy'}
                     </Link>
@@ -345,7 +343,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     <Button type="default" asChild>
                       <Link
                         target="_blank"
-                        href={`/org/${slug}/project/${ref}/advisors/security?preset=${matchingViewLint?.level}&id=${matchingViewLint?.cache_key}`}
+                        href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security?preset=${matchingViewLint?.level}&id=${matchingViewLint?.cache_key}`}
                       >
                         Learn more
                       </Link>
@@ -388,7 +386,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     <Button type="default" asChild>
                       <Link
                         target="_blank"
-                        href={`/org/${slug}/project/${ref}/advisors/security?preset=${matchingMaterializedViewLint?.level}&id=${matchingMaterializedViewLint?.cache_key}`}
+                        href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security?preset=${matchingMaterializedViewLint?.level}&id=${matchingMaterializedViewLint?.cache_key}`}
                       >
                         Learn more
                       </Link>
@@ -473,7 +471,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
           {!isRealtimeEnabled && (
             <p className="text-sm">
               You may also select which events to broadcast to subscribers on the{' '}
-              <Link href={`/org/${slug}/project/${ref}/database/publications`} className="text-brand">
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/publications`} className="text-brand">
                 database publications
               </Link>{' '}
               settings.
