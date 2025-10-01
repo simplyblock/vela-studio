@@ -18,7 +18,7 @@ export const DeleteSnippetsModal = ({
   onClose: () => void
 }) => {
   const router = useRouter()
-  const { ref: projectRef, id } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
   const tabs = useTabsStateSnapshot()
   const snapV2 = useSqlEditorV2StateSnapshot()
 
@@ -28,9 +28,9 @@ export const DeleteSnippetsModal = ({
       if (openedSQLTabs.length > 0) {
         // [Joshen] For simplicity, just opening the first tab for now
         const firstTabId = openedSQLTabs[0].split('sql-')[1]
-        router.push(`/project/${projectRef}/sql/${firstTabId}`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${firstTabId}`)
       } else {
-        router.push(`/project/${projectRef}/sql/new`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new`)
       }
     }
 

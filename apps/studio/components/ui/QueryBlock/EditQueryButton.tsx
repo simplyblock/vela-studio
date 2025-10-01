@@ -37,7 +37,7 @@ export const EditQueryButton = ({
   type = 'text',
 }: EditQueryButtonProps) => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { newQuery } = useNewQuery()
 
   const sqlEditorSnap = useSqlEditorV2StateSnapshot()
@@ -63,7 +63,7 @@ export const EditQueryButton = ({
         icon={<Edit size={14} strokeWidth={1.5} />}
         tooltip={tooltip}
       >
-        <Link href={`/org/${slug}/project/${ref}/sql/${id}`} />
+        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${id}`} />
       </ButtonTooltip>
     )
   }
@@ -89,7 +89,7 @@ export const EditQueryButton = ({
             isInSQLEditor,
             isInNewSnippet,
           },
-          groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+          groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
         })
       }}
       tooltip={tooltip}

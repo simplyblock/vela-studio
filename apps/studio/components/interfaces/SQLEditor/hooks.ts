@@ -17,7 +17,7 @@ import {
 
 export const useNewQuery = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
@@ -25,7 +25,7 @@ export const useNewQuery = () => {
   const { can: canCreateSQLSnippet } = {can:true}
 
   const newQuery = async (sql: string, name: string, shouldRedirect: boolean = true) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
     if (!project) return console.error('Project is required')
     if (!profile) return console.error('Profile is required')
 
@@ -42,10 +42,10 @@ export const useNewQuery = () => {
         owner_id: profile?.id,
         project_id: project?.id,
       })
-      snapV2.addSnippet({ projectRef: ref, snippet })
+      snapV2.addSnippet({ projectRef, snippet })
       snapV2.addNeedsSaving(snippet.id)
       if (shouldRedirect) {
-        router.push(`/org/${slug}/project/${ref}/sql/${snippet.id}`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`)
         return undefined
       } else {
         return snippet.id

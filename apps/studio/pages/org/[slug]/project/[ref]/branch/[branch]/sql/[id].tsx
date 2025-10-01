@@ -19,14 +19,14 @@ import { Admonition } from 'ui-patterns'
 
 const SqlEditor: NextPageWithLayout = () => {
   const router = useRouter()
-  const { id, ref, content, skip, slug } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, content, skip, id } = useParams()
 
   const editor = useEditorType()
   const tabs = useTabsStateSnapshot()
   const appSnap = useAppStateSnapshot()
   const snapV2 = useSqlEditorV2StateSnapshot()
 
-  const allSnippets = useSnippets(ref!)
+  const allSnippets = useSnippets(projectRef!)
   const snippet = allSnippets.find((x) => x.id === id)
 
   const tabId = !!id ? tabs.openTabs.find((x) => x.endsWith(id)) : undefined
@@ -34,7 +34,7 @@ const SqlEditor: NextPageWithLayout = () => {
   // [Refactor] There's an unnecessary request getting triggered when we start typing while on /new
   // the URL ID gets updated and we attempt to fetch content for a snippet that's not been created yet
   const { data, error, isError } = useContentIdQuery(
-    { projectRef: ref, id },
+    { projectRef, id },
     {
       // [Joshen] May need to investigate separately, but occasionally addSnippet doesnt exist in
       // the snapV2 valtio store for some reason hence why the added typeof check here
@@ -49,10 +49,10 @@ const SqlEditor: NextPageWithLayout = () => {
   const invalidId = isError && error.code === 400 && error.message.includes('Invalid uuid')
 
   useEffect(() => {
-    if (ref && data) {
-      snapV2.setSnippet(ref, data as unknown as SnippetWithContent)
+    if (projectRef && data) {
+      snapV2.setSnippet(projectRef, data as unknown as SnippetWithContent)
     }
-  }, [ref, data])
+  }, [projectRef, data])
 
   // Load the last visited snippet when landing on /new
   useEffect(() => {
@@ -63,7 +63,7 @@ const SqlEditor: NextPageWithLayout = () => {
       content === undefined
     ) {
       const snippet = allSnippets.find((snippet) => snippet.id === appSnap.dashboardHistory.sql)
-      if (snippet !== undefined) router.push(`/org/${slug}/project/${ref}/sql/${appSnap.dashboardHistory.sql}`)
+      if (snippet !== undefined) router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${appSnap.dashboardHistory.sql}`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, allSnippets, content])
@@ -105,7 +105,7 @@ const SqlEditor: NextPageWithLayout = () => {
                     router,
                     editor,
                     onClearDashboardHistory: () => {
-                      if (ref) appSnap.setDashboardHistory(ref, 'sql', undefined)
+                      if (projectRef) appSnap.setDashboardHistory(projectRef, 'sql', undefined)
                     },
                   })
                 }}
@@ -114,7 +114,7 @@ const SqlEditor: NextPageWithLayout = () => {
               </Button>
             ) : (
               <Button asChild type="default" className="mt-2">
-                <Link href={`/org/${slug}/project/${ref}/sql`}>Head back</Link>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql`}>Head back</Link>
               </Button>
             )}
           </Admonition>

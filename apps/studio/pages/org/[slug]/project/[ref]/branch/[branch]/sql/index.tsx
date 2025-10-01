@@ -12,7 +12,7 @@ import type { NextPageWithLayout } from 'types'
 
 const TableEditorPage: NextPageWithLayout = () => {
   const router = useRouter()
-  const { ref: projectRef, slug } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const store = useTabsStateSnapshot()
   const appSnap = useAppStateSnapshot()
 
@@ -21,12 +21,12 @@ const TableEditorPage: NextPageWithLayout = () => {
     const lastOpenedTab = appSnap.dashboardHistory.sql
     const lastTabId = store.openTabs.find((id) => store.tabsMap[id]?.type === 'sql')
     if (lastOpenedTab !== undefined) {
-      router.push(`/org/${slug}/project/${projectRef}/sql/${appSnap.dashboardHistory.sql}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${appSnap.dashboardHistory.sql}`)
     } else if (lastTabId) {
       const lastTab = store.tabsMap[lastTabId]
-      if (lastTab) router.push(`/org/${slug}/project/${projectRef}/sql/${lastTab.id.replace('sql-', '')}`)
+      if (lastTab) router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${lastTab.id.replace('sql-', '')}`)
     } else {
-      router.push(`/org/${slug}/project/${projectRef}/sql/new`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

@@ -195,8 +195,8 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/sql/templates',
-        destination: '/org/:slug/project/:ref/sql',
+        source: '/org/:slug/project/:ref/branch/:branch/sql/templates',
+        destination: '/org/:slug/project/:ref/branch/:branch/sql',
         permanent: true,
       },
       {

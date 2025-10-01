@@ -48,7 +48,7 @@ export const NewProjectPanel = () => {
                   <EditorIndexPageLink slug={orgRef} projectRef={projectRef}>Table Editor</EditorIndexPageLink>
                 </Button>
                 <Button asChild type="default" icon={<SqlEditor strokeWidth={1.5} />}>
-                  <Link href={`/org/${orgRef}/project/${projectRef}/sql/new`}>SQL Editor</Link>
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new`}>SQL Editor</Link>
                 </Button>
                 <Button asChild type="default" icon={<ExternalLink />}>
                   <Link

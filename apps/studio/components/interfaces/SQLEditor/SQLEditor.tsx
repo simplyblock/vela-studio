@@ -74,7 +74,7 @@ const DiffEditor = dynamic(
 export const SQLEditor = () => {
   const os = detectOS()
   const router = useRouter()
-  const { slug, ref, id: urlId } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id: urlId } = useParams()
 
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
@@ -132,8 +132,8 @@ export const SQLEditor = () => {
 
   const { data: databases, isSuccess: isSuccessReadReplicas } = useReadReplicasQuery(
     {
-      orgSlug: slug,
-      projectRef: ref,
+      orgSlug: orgRef,
+      projectRef: projectRef,
     },
     { enabled: isValidConnString(project?.connectionString) }
   )
@@ -157,7 +157,7 @@ export const SQLEditor = () => {
       refetchEntityDefinitions()
 
       // revalidate lint query
-      queryClient.invalidateQueries(lintKeys.lint(slug, ref))
+      queryClient.invalidateQueries(lintKeys.lint(orgRef, projectRef))
     },
     onError(error: any, vars) {
       if (id) {
@@ -294,7 +294,7 @@ export const SQLEditor = () => {
 
         sendEvent({
           action: 'sql_editor_query_run_button_clicked',
-          groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+          groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
         })
       }
     },
@@ -314,7 +314,7 @@ export const SQLEditor = () => {
 
   const handleNewQuery = useCallback(
     async (sql: string, name: string) => {
-      if (!ref) return console.error('Project ref is required')
+      if (!projectRef) return console.error('Project ref is required')
       if (!profile) return console.error('Profile is required')
       if (!project) return console.error('Project is required')
 
@@ -326,15 +326,15 @@ export const SQLEditor = () => {
           owner_id: profile.id,
           project_id: project.id,
         })
-        snapV2.addSnippet({ projectRef: ref, snippet })
+        snapV2.addSnippet({ projectRef: projectRef, snippet })
         snapV2.addNeedsSaving(snippet.id!)
-        router.push(`/org/${slug}/project/${ref}/sql/${snippet.id}`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`)
       } catch (error: any) {
         toast.error(`Failed to create new query: ${error.message}`)
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [profile?.id, project?.id, ref, router, snapV2]
+    [profile?.id, project?.id, projectRef, router, snapV2]
   )
 
   const onMount = (editor: IStandaloneCodeEditor) => {
@@ -401,7 +401,7 @@ export const SQLEditor = () => {
       sendEvent({
         action: 'assistant_sql_diff_handler_evaluated',
         properties: { handlerAccepted: true },
-        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
       })
 
       setSelectedDiffType(DiffType.Modification)
@@ -417,7 +417,7 @@ export const SQLEditor = () => {
     sendEvent({
       action: 'assistant_sql_diff_handler_evaluated',
       properties: { handlerAccepted: false },
-      groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
     })
     resetPrompt()
     closeDiff()
@@ -532,7 +532,7 @@ export const SQLEditor = () => {
       setPromptState((prev) => ({ ...prev, isOpen: false }))
     }
     return () => {
-      if (ref) {
+      if (projectRef) {
         const tabId = createTabId('sql', { id })
         tabs.updateTab(tabId, { scrollTop: scrollTopRef.current })
       }
@@ -580,12 +580,12 @@ export const SQLEditor = () => {
 
   useEffect(() => {
     if (isSuccessReadReplicas) {
-      console.log(ref, 'isSuccessReadReplicas')
-      const primaryDatabase = databases.find((db) => db.identifier === ref)
+      console.log(projectRef, 'isSuccessReadReplicas')
+      const primaryDatabase = databases.find((db) => db.identifier === projectRef)
       databaseSelectorState.setSelectedDatabaseId(primaryDatabase?.identifier)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessReadReplicas, databases, ref])
+  }, [isSuccessReadReplicas, databases, projectRef])
 
   useEffect(() => {
     if (snapV2.diffContent !== undefined) {

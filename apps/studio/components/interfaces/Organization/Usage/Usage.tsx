@@ -26,7 +26,7 @@ import SizeAndCounts from './SizeAndCounts'
 import TotalUsage from './TotalUsage'
 
 const Usage = () => {
-  const { slug, projectRef } = useParams()
+  const { slug: orgRef, projectRef, branch: branchRef } = useParams()
   const [dateRange, setDateRange] = useState<any>()
   const [selectedProjectRef, setSelectedProjectRef] = useState<string>()
   // FIXME: need permission implemented 
@@ -40,7 +40,7 @@ const Usage = () => {
     isLoading: isLoadingSubscription,
     isError: isErrorSubscription,
     isSuccess: isSuccessSubscription,
-  } = useOrgSubscriptionQuery({ orgSlug: slug })
+  } = useOrgSubscriptionQuery({ orgSlug: orgRef })
 
   const orgProjects = projects?.filter((project) => project.organization_id === organization?.id)
 
@@ -211,7 +211,7 @@ const Usage = () => {
       )}
 
       <TotalUsage
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
         subscription={subscription}
         startDate={startDate}
@@ -221,7 +221,7 @@ const Usage = () => {
 
       {subscription?.plan.id !== 'free' && (
         <Compute
-          orgSlug={slug as string}
+          orgSlug={orgRef!}
           projectRef={selectedProjectRef}
           subscription={subscription}
           startDate={startDate}
@@ -230,8 +230,9 @@ const Usage = () => {
       )}
 
       <Egress
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
+        branchRef={branchRef}
         subscription={subscription}
         startDate={startDate}
         endDate={endDate}
@@ -239,8 +240,9 @@ const Usage = () => {
       />
 
       <SizeAndCounts
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
+        branchRef={branchRef}
         subscription={subscription}
         startDate={startDate}
         endDate={endDate}
@@ -248,8 +250,9 @@ const Usage = () => {
       />
 
       <Activity
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
+        branchRef={branchRef}
         subscription={subscription}
         startDate={startDate}
         endDate={endDate}

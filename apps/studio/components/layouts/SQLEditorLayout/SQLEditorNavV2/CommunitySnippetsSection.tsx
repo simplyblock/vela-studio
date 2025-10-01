@@ -13,17 +13,17 @@ import { DEFAULT_SECTION_STATE, type SectionState } from './SQLEditorNav.constan
 const OPTIONS = ['templates', 'quickstarts'] as const
 
 export function CommunitySnippetsSection() {
-  const { ref, slug } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const router = useRouter()
 
   const [sectionVisibility, setSectionVisibility] = useLocalStorage<SectionState>(
-    LOCAL_STORAGE_KEYS.SQL_EDITOR_SECTION_STATE(ref ?? ''),
+    LOCAL_STORAGE_KEYS.SQL_EDITOR_SECTION_STATE(projectRef ?? ''),
     DEFAULT_SECTION_STATE
   )
   const { community: showCommunitySnippets } = sectionVisibility
 
   function isPageActive(key: string): boolean {
-    return router.asPath === `/org/${slug}/project/${ref}/sql/${key}`
+    return router.asPath === `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${key}`
   }
 
   return (
@@ -47,7 +47,7 @@ export function CommunitySnippetsSection() {
               title={pageId === 'templates' ? 'Templates' : 'Quickstarts'}
               isActive={active}
               isOpened={false}
-              href={`/org/${slug}/project/${ref}/sql/${pageId}`}
+              href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${pageId}`}
               className="capitalize"
             >
               <BookText size={16} className="text-foreground-muted" />

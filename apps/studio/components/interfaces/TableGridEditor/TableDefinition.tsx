@@ -25,7 +25,7 @@ export interface TableDefinitionProps {
 }
 
 const TableDefinition = ({ entity }: TableDefinitionProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const editorRef = useRef(null)
   const monacoRef = useRef(null)
   const { resolvedTheme } = useTheme()
@@ -102,7 +102,7 @@ const TableDefinition = ({ entity }: TableDefinitionProps) => {
       <div className="flex-grow overflow-y-auto border-t border-muted relative">
         <Button asChild type="default" className="absolute top-2 right-5 z-10">
           <Link
-            href={`/org/${slug}/project/${ref}/sql/new?content=${encodeURIComponent(
+            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new?content=${encodeURIComponent(
               formattedDefinition ?? ''
             )}`}
           >

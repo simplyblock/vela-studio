@@ -6,6 +6,7 @@ import UsageSection from './UsageSection/UsageSection'
 export interface ActivityProps {
   orgSlug: string
   projectRef?: string
+  branchRef?: string
   startDate: string | undefined
   endDate: string | undefined
   subscription: OrgSubscription | undefined
@@ -15,6 +16,7 @@ export interface ActivityProps {
 const Activity = ({
   orgSlug,
   projectRef,
+  branchRef,
   subscription,
   startDate,
   endDate,
@@ -117,6 +119,7 @@ const Activity = ({
     <UsageSection
       orgSlug={orgSlug}
       projectRef={projectRef}
+      branchRef={branchRef}
       categoryKey="activity"
       chartMeta={chartMeta}
       subscription={subscription}

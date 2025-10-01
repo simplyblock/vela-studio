@@ -87,7 +87,7 @@ export const EditorPanel = ({
   initialPrompt = '',
   onChange,
 }: EditorPanelProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { profile } = useProfile()
   const snapV2 = useSqlEditorV2StateSnapshot()
@@ -266,7 +266,7 @@ export const EditorPanel = ({
               loading={isSaving}
               icon={<Save size={16} />}
               onClick={async () => {
-                if (!ref) return console.error('Project ref is required')
+                if (!projectRef) return console.error('Project ref is required')
                 if (!project) return console.error('Project is required')
                 if (!profile) return console.error('Profile is required')
 
@@ -279,12 +279,12 @@ export const EditorPanel = ({
                     owner_id: profile.id,
                     project_id: project.id,
                   })
-                  snapV2.addSnippet({ projectRef: ref, snippet })
+                  snapV2.addSnippet({ projectRef, snippet })
                   snapV2.addNeedsSaving(snippet.id)
                   toast.success(
                     <div>
                       Saved snippet! View it{' '}
-                      <InlineLink href={`org/${slug}/project/${ref}/sql/${snippet.id}`}>here</InlineLink>
+                      <InlineLink href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`}>here</InlineLink>
                     </div>
                   )
                 } catch (error: any) {

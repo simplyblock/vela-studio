@@ -16,7 +16,7 @@ export function useDatabaseGotoCommands(options?: CommandOptions) {
       {
         id: 'run-sql',
         name: 'Run SQL',
-        route: `/org/${orgRef}/project/${projectRef}/sql/new`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new`,
         icon: () => <Code />,
       },
     ],

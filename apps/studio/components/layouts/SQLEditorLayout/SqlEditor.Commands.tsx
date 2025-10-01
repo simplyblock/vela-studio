@@ -37,8 +37,8 @@ import {
 import { getPathReferences } from '../../../data/vela/path-references'
 
 export function useSqlEditorGotoCommands(options?: CommandOptions) {
-  let { slug, ref } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.NAVIGATE,
@@ -46,11 +46,11 @@ export function useSqlEditorGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-sql-editor',
         name: 'SQL Editor',
-        route: `/org/${slug}/project/${ref}/sql`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }
 
@@ -154,7 +154,7 @@ function EmptyState({
   canCreateNew: boolean
 }) {
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   return (
     <div className="p-6">
@@ -164,7 +164,7 @@ function EmptyState({
           <CommandItem_Shadcn_
             id="create-snippet"
             className={generateCommandClassNames(false)}
-            onSelect={() => router.push(`/org/${slug}/project/${projectRef ?? '_'}/sql/new`)}
+            onSelect={() => router.push(`/org/${orgRef}/project/${projectRef ?? '_'}/branch/${branchRef}/sql/new`)}
           >
             {canCreateNew ? 'Create new snippet' : 'Run new SQL'}
           </CommandItem_Shadcn_>
@@ -184,7 +184,7 @@ function SnippetSelector({
   canCreateNew: boolean
 }) {
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   const selectedValue = useCommandFilterState((state) => state.value)
   const selectedSnippet = snippets?.find((snippet) => snippetValue(snippet) === selectedValue)
@@ -205,7 +205,7 @@ function SnippetSelector({
                 id={`${snippet.id}-${snippet.name}`}
                 className={generateCommandClassNames(false)}
                 value={snippetValue(snippet)}
-                onSelect={() => void router.push(`/org/${slug}/project/${projectRef ?? '_'}/sql/${snippet.id}`)}
+                onSelect={() => void router.push(`/org/${orgRef}/project/${projectRef ?? '_'}/branch/${branchRef}/sql/${snippet.id}`)}
               >
                 {snippet.name}
               </CommandItem_Shadcn_>
@@ -219,7 +219,7 @@ function SnippetSelector({
               <CommandItem_Shadcn_
                 id="create-snippet"
                 className={generateCommandClassNames(false)}
-                onSelect={() => router.push(`/org/${slug}/project/${projectRef ?? '_'}/sql/new`)}
+                onSelect={() => router.push(`/org/${orgRef}/project/${projectRef ?? '_'}/branch/${branchRef}/sql/new`)}
                 forceMount={true}
               >
                 Create new snippet
@@ -293,7 +293,7 @@ export function useQueryTableCommands(options?: CommandOptions) {
 function TableSelector() {
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
-  const { slug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: protectedSchemas } = useProtectedSchemas()
   const {
     data: tablesData,
@@ -329,7 +329,7 @@ function TableSelector() {
                   value={escapeAttributeSelector(`${table.schema}.${table.name}`)}
                   onSelect={() => {
                     router.push(
-                      `/org/${slug}/project/${project?.ref ?? '_'}/sql/new?content=${encodeURIComponent(generateSelectStatement(table))}`
+                      `/org/${orgRef}/project/${project?.ref ?? '_'}/branch/${branchRef}/sql/new?content=${encodeURIComponent(generateSelectStatement(table))}`
                     )
                   }}
                 >
