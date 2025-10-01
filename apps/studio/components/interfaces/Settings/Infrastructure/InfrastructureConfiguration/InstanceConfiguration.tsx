@@ -40,7 +40,7 @@ import { useShowNewReplicaPanel } from './use-show-new-replica'
 const InstanceConfigurationUI = () => {
   const reactFlow = useReactFlow()
   const { resolvedTheme } = useTheme()
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const numTransition = useRef<number>()
   const { data: project, isLoading: isLoadingProject } = useSelectedProjectQuery()
 
@@ -58,7 +58,7 @@ const InstanceConfigurationUI = () => {
     refetch: refetchLoadBalancers,
     isSuccess: isSuccessLoadBalancers,
   } = useLoadBalancersQuery({
-    projectRef, orgSlug: slug
+    projectRef, orgSlug: orgRef
   })
   const {
     data,
@@ -68,7 +68,7 @@ const InstanceConfigurationUI = () => {
     isError,
     isSuccess: isSuccessReplicas,
   } = useReadReplicasQuery({
-    orgSlug: slug,
+    orgSlug: orgRef,
     projectRef,
   })
   const [[primary], replicas] = useMemo(
@@ -246,7 +246,7 @@ const InstanceConfigurationUI = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-52 *:space-x-2">
                       <DropdownMenuItem asChild>
-                        <Link href={`/org/${slug}/project/${projectRef}/settings/compute-and-disk`}>
+                        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/compute-and-disk`}>
                           Resize databases
                         </Link>
                       </DropdownMenuItem>
@@ -301,7 +301,7 @@ const InstanceConfigurationUI = () => {
               </ReactFlow>
             ) : (
               <MapView
-                onSelectDeployNewReplica={(region) => {
+                onSelectDeployNewReplica={() => {
                   setShowNewReplicaPanel(true)
                 }}
                 onSelectRestartReplica={setSelectedReplicaToRestart}

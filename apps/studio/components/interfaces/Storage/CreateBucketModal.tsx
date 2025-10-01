@@ -437,7 +437,7 @@ const CreateBucketModal = () => {
                               <p className="text-foreground-light text-sm">
                                 Note: Individual bucket uploads will still be capped at the{' '}
                                 <Link
-                                  href={`/org/${orgRef}/project/${projectRef}/settings/storage`}
+                                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/storage`}
                                   className="font-bold underline"
                                 >
                                   global upload limit

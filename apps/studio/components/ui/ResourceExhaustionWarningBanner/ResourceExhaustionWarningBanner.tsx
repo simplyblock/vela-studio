@@ -70,12 +70,12 @@ export const ResourceExhaustionWarningBanner = () => {
 
   const correctionUrlVariants = {
     undefined: undefined,
-    null: '/org/[slug]/project/[ref]/settings/[infra-path]',
-    disk_space: '/org/[slug]/project/[ref]/settings/compute-and-disk',
-    read_only: '/org/[slug]/project/[ref]/settings/compute-and-disk',
+    null: '/org/[slug]/project/[ref]/branch/[branch]/settings/[infra-path]',
+    disk_space: '/org/[slug]/project/[ref]/branch/[branch]/settings/compute-and-disk',
+    read_only: '/org/[slug]/project/[ref]/branch/[branch]/settings/compute-and-disk',
     auth_email_rate_limit: '/org/[slug]/project/[ref]/auth/rate-limits',
     auth_restricted_email_sending: '/org/[slug]/project/[ref]/auth/smtp',
-    default: (metric: string) => `/org/[slug]/project/[ref]/settings/[infra-path]#${metric}`,
+    default: (metric: string) => `/org/[slug]/project/[ref]/branch/[branch]/settings/[infra-path]#${metric}`,
   }
 
   const getCorrectionUrl = (metric: string | undefined | null) => {

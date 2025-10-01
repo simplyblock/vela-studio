@@ -21,7 +21,6 @@ import {
 } from 'ui'
 import PauseProjectButton from './Infrastructure/PauseProjectButton'
 import RestartServerButton from './Infrastructure/RestartServerButton'
-import { useParams } from 'common'
 
 const General = () => {
   const { data: project } = useSelectedProjectQuery()

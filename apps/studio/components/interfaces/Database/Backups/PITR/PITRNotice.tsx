@@ -7,7 +7,7 @@ import { FormPanel } from 'components/ui/Forms/FormPanel'
 import { getPITRRetentionDuration } from './PITR.utils'
 
 const PITRNotice = ({}) => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const retentionPeriod = getPITRRetentionDuration([])
   // FIXME: need permission implemented 
   const { can: canUpdateSubscription } = {can:true}
@@ -33,7 +33,7 @@ const PITRNotice = ({}) => {
               },
             }}
           >
-            <Link href={`/org/${slug}/project/${projectRef}/settings/addons?panel=pitr`}>
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/addons?panel=pitr`}>
               Increase retention period
             </Link>
           </ButtonTooltip>

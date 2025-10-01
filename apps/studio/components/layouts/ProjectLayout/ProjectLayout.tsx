@@ -99,12 +99,12 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
     const showProductMenu = selectedProject
       ? selectedProject.status === PROJECT_STATUS.ACTIVE_HEALTHY ||
         (selectedProject.status === PROJECT_STATUS.COMING_UP &&
-          router.pathname.includes('/org/[slug]/project/[ref]/settings')) ||
+          router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/settings')) ||
         router.pathname.includes('/org/[slug]/project/[ref]/branch')
       : true
 
     const ignorePausedState =
-      router.pathname === '/org/[slug]/project/[ref]' || router.pathname.includes('/org/[slug]/project/[ref]/settings')
+      router.pathname === '/org/[slug]/project/[ref]' || router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/settings')
     const showPausedState = isPaused && !ignorePausedState
 
     return (

@@ -10,7 +10,7 @@ import type { NextPageWithLayout } from 'types'
 const ProjectBillingUsage: NextPageWithLayout = () => {
   // This component is only used for redirects, as nextjs cant redirect based on hash
   const router = useRouter()
-  const { ref } = useParams()
+  const { ref: projectRef, branch: branchRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
 
   const hash = router.asPath.split('#')[1]
@@ -22,13 +22,13 @@ const ProjectBillingUsage: NextPageWithLayout = () => {
     let redirectUrl
 
     if (['cpu', 'ram', 'disk_io'].includes(hash)) {
-      redirectUrl = `/org/${organization.slug}/project/${ref}/settings/infrastructure#${hash}`
+      redirectUrl = `/org/${organization.slug}/project/${projectRef}/branch/${branchRef}/settings/infrastructure#${hash}`
     } else {
-      redirectUrl = `/org/${organization.slug}/usage?projectRef=${ref}`
+      redirectUrl = `/org/${organization.slug}/usage?projectRef=${projectRef}`
     }
 
     router.push(redirectUrl)
-  }, [hash, route, organization, ref, router])
+  }, [hash, route, organization, projectRef, branchRef, router])
 
   return null
 }

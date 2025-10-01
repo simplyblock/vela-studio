@@ -165,7 +165,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}
+                            href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Secret API keys
@@ -182,7 +182,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}
+                            href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Publishable API keys

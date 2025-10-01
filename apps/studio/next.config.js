@@ -87,8 +87,8 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings',
-        destination: '/org/:slug/project/:ref/settings/general',
+        source: '/org/:slug/project/:ref/branch/:branch/settings',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/general',
         permanent: true,
       },
       {
@@ -97,7 +97,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -109,7 +109,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -117,11 +117,11 @@ const nextConfig = {
             value: 'pitr',
           },
         ],
-        destination: '/org/:slug/project/:ref/settings/addons?panel=pitr',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/addons?panel=pitr',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -129,11 +129,11 @@ const nextConfig = {
             value: 'computeInstance',
           },
         ],
-        destination: '/org/:slug/project/:ref/settings/compute-and-disk',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/compute-and-disk',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -141,11 +141,11 @@ const nextConfig = {
             value: 'customDomain',
           },
         ],
-        destination: '/org/:slug/project/:ref/settings/addons?panel=customDomain',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/addons?panel=customDomain',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         destination: '/org/_/billing',
         permanent: true,
       },
@@ -205,27 +205,27 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/free',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/free',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/pro',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/pro',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/team',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/team',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/enterprise',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/enterprise',
         destination: '/org/_/billing',
         permanent: true,
       },
@@ -301,8 +301,8 @@ const nextConfig = {
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/settings/warehouse',
-        destination: '/org/:slug/project/:ref/settings/general',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/warehouse',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/general',
       },
       {
         permanent: true,

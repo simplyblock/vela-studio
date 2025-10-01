@@ -5,17 +5,17 @@ import { PropsWithChildren } from 'react'
 import { useParams } from 'common'
 
 const ApiKeysLayout = ({ children }: PropsWithChildren) => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const navigationItems = [
     {
       label: 'Legacy API Keys',
-      href: `/org/${slug}/project/${projectRef}/settings/api-keys`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api-keys`,
       id: 'legacy-keys',
     },
     {
       label: 'API Keys',
-      href: `/org/${slug}/project/${projectRef}/settings/api-keys/new`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`,
       id: 'new-keys',
     },
   ]

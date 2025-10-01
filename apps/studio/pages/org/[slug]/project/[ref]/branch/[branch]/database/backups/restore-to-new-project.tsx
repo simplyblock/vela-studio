@@ -54,7 +54,7 @@ RestoreToNewProjectPage.getLayout = (page) => (
 )
 
 const RestoreToNewProject = () => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
 
@@ -195,7 +195,7 @@ const RestoreToNewProject = () => {
         <Markdown
           className="max-w-full"
           content={`Restore to new project is only available for Postgres 15 and above.  
-            Go to [infrastructure settings](/org/${slug}/project/${project?.ref}/settings/infrastructure)
+            Go to [infrastructure settings](/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/infrastructure)
             to upgrade your database version.
           `}
         />

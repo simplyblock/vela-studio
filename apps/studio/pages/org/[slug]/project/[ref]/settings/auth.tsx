@@ -7,7 +7,7 @@ import Link from 'next/link'
 import type { NextPageWithLayout } from 'types'
 
 const ProjectSettings: NextPageWithLayout = () => {
-  const { ref, slug } = useParams() as { ref: string, slug: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { ref: string, slug: string, branch: string }
 
   return (
     <ProductEmptyState title="Authentication settings have moved">
@@ -16,77 +16,77 @@ const ProjectSettings: NextPageWithLayout = () => {
           All settings are now under configuration within the Authentication page.
         </p>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/providers`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/providers`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           General user signup
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/providers`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/providers`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Password settings in email provider
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/sessions`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/sessions`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           User sessions
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/sessions`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/sessions`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Refresh tokens
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/protection`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/protection`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Bot and abuse protection
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/smtp`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/smtp`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           SMTP settings
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/settings/jwt`}
+          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/jwt`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Access token expiry
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/mfa`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/mfa`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Multifactor authentication
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/third-party`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/third-party`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Third party authentication
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/advanced`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/advanced`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Max request duration
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${slug}/project/${ref}/auth/advanced`}
+          href={`/org/${orgRef}/project/${projectRef}/auth/advanced`}
           className="py-2 hover:text-foreground flex items-center justify-between"
         >
           Max direct database connections

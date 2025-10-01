@@ -241,7 +241,7 @@ export const NewProjectPanel = () => {
           </div>
           <div className="flex items-center space-x-2">
             <Button asChild type="default">
-              <Link href={`/org/${orgRef}/project/${projectRef}/settings/api`}>View API settings</Link>
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}>View API settings</Link>
             </Button>
             <Button asChild className="translate-y-[1px]" type="default" icon={<ExternalLink />}>
               <Link

@@ -7,8 +7,8 @@ import { PROJECT_STATUS } from 'lib/constants'
 export const generateSettingsMenu = (
   orgRef: string,
   projectRef?: string,
-  project?: Project,
   branchRef?: string,
+  project?: Project,
   features?: {
     auth?: boolean
     edgeFunctions?: boolean
@@ -29,58 +29,58 @@ export const generateSettingsMenu = (
         {
           name: 'General',
           key: 'general',
-          url: `/org/${orgRef}/project/${projectRef}/settings/general`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,
           items: [],
         },
         {
           name: 'Compute and Disk',
           key: 'compute-and-disk',
-          url: `/org/${orgRef}/project/${projectRef}/settings/compute-and-disk`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/compute-and-disk`,
           items: [],
         },
         {
           name: 'Infrastructure',
           key: 'infrastructure',
-          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/settings/infrastructure`,
+          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/sbranch/${branchRef}/ettings/infrastructure`,
           items: [],
         },
         // FIXME: Potentially move below
         {
           name: 'Integrations',
           key: 'integrations',
-          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/integrations`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/branch/${branchRef}/settings/integrations`,
           items: [],
         },
         {
           name: `Log Drains`,
           key: `log-drains`,
-          url: `/project/${projectRef}/settings/log-drains`,
+          url: `/project/${projectRef}/branch/${branchRef}/settings/log-drains`,
           items: [],
         },
         {
           name: 'Data API',
           key: 'api',
-          url: isProjectBuilding ? buildingUrl : `/project/${projectRef}/settings/api`,
+          url: isProjectBuilding ? buildingUrl : `/project/${projectRef}/branch/${branchRef}/settings/api`,
           items: [],
         },
         {
           name: 'API Keys',
           key: 'api-keys',
-          url: `/org/${orgRef}/project/${projectRef}/settings/api-keys`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api-keys`,
           items: [],
           label: 'NEW',
         },
         {
           name: 'JWT Keys',
           key: 'jwt',
-          url: `/org/${orgRef}/project/${projectRef}/settings/jwt`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/jwt`,
           items: [],
           label: 'NEW',
         }, // FIXME: potentially move above
         {
           name: 'Add Ons',
           key: 'addons',
-          url: `/org/${orgRef}/project/${projectRef}/settings/addons`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/addons`,
           items: [],
         },
         {
@@ -108,7 +108,7 @@ export const generateSettingsMenu = (
               {
                 name: 'Authentication',
                 key: 'auth',
-                url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/settings/auth`,
+                url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/auth`,
                 items: [],
               },
             ]

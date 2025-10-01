@@ -197,7 +197,7 @@ const JWTSettings = () => {
                         </p>
 
                         <Button type="default" asChild icon={<ExternalLink className="size-4" />}>
-                          <Link href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys`}>
+                          <Link href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys`}>
                             Go to API keys
                           </Link>
                         </Button>
@@ -308,7 +308,7 @@ const JWTSettings = () => {
                               icon={<ExternalLink className="size-4" />}
                               asChild
                             >
-                              <Link href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}>
+                              <Link href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}>
                                 Go to API Keys
                               </Link>
                             </Button>
@@ -317,7 +317,7 @@ const JWTSettings = () => {
                               icon={<ExternalLink className="size-4" />}
                               asChild
                             >
-                              <Link href={`/org/${orgSlug}/project/${projectRef}/settings/jwt/signing-keys`}>
+                              <Link href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/jwt/signing-keys`}>
                                 Go to JWT Signing Keys
                               </Link>
                             </Button>

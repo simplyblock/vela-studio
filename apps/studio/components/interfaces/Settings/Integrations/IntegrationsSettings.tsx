@@ -19,7 +19,7 @@ export const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' 
 }
 
 const IntegrationSettings = () => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: parentProject } = useProjectByRefQuery(project?.parent_project_ref)
   const isBranch = project?.parent_project_ref !== undefined
@@ -37,7 +37,7 @@ const IntegrationSettings = () => {
             </AlertTitle_Shadcn_>
             <AlertDescription_Shadcn_>
               To adjust your project's integration settings, you may return to your{' '}
-              <Link href={`/org/${slug}/project/${parentProject?.ref}/settings/general`} className="text-brand">
+              <Link href={`/org/${orgRef}/project/${parentProject?.ref}/branch/${branchRef}/settings/general`} className="text-brand">
                 main branch
               </Link>
               .

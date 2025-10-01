@@ -21,8 +21,9 @@ import { PricingMetric } from 'data/analytics/org-daily-stats-query'
 import Panel from 'components/ui/Panel'
 
 export interface DiskUsageProps {
-  slug: string
+  orgRef: string
   projectRef?: string
+  branchRef?: string
   attribute: CategoryAttribute
   subscription?: OrgSubscription
   usage?: OrgUsageResponse
@@ -31,8 +32,9 @@ export interface DiskUsageProps {
 }
 
 const DiskUsage = ({
-  slug,
+  orgRef,
   projectRef,
+  branchRef,
   attribute,
   subscription,
   usage,
@@ -46,7 +48,7 @@ const DiskUsage = ({
     error,
   } = useOrgProjectsQuery(
     {
-      orgSlug: slug,
+      orgSlug: orgRef,
     },
     {
       enabled: currentBillingCycleSelected,
@@ -185,7 +187,7 @@ const DiskUsage = ({
                           {project.name}
                         </span>
                         <Button asChild type="default" size={'tiny'}>
-                          <Link href={`/org/${slug}/project/${project.ref}/settings/compute-and-disk`}>
+                          <Link href={`/org/${orgRef}/project/${project.ref}/branch/${branchRef}/settings/compute-and-disk`}>
                             Manage Disk
                           </Link>
                         </Button>

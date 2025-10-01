@@ -22,11 +22,11 @@ export function useApiKeysCommands() {
   const setIsOpen = useSetCommandMenuOpen()
   const setPage = useSetPage()
 
-  const { slug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
-  const ref = project?.ref || '_'
+  const projectRef = project?.ref || '_'
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef: project?.ref, reveal: true })
+  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: orgRef, projectRef: project?.ref, reveal: true })
   const { anonKey, serviceKey, publishableKey, allSecretKeys } = getKeys(apiKeys)
 
   const commands = useMemo(
@@ -102,7 +102,7 @@ export function useApiKeysCommands() {
         !(anonKey || serviceKey) && {
           id: 'api-keys-project-settings',
           name: 'See API keys in Project Settings',
-          route: `/org/${slug}/project/${ref}/settings/api`,
+          route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`,
           icon: () => <Key />,
         },
       ].filter(Boolean) as ICommand[],

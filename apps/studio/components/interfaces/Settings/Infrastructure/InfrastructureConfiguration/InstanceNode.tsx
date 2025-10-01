@@ -64,7 +64,7 @@ interface ReplicaNodeData extends NodeData {
 }
 
 export const LoadBalancerNode = ({ data }: NodeProps<LoadBalancerData>) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { numDatabases } = data
 
   return (
@@ -92,7 +92,7 @@ export const LoadBalancerNode = ({ data }: NodeProps<LoadBalancerData>) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-40" side="bottom" align="end">
               <DropdownMenuItem asChild className="gap-x-2">
-                <Link href={`/org/${slug}/project/${ref}/settings/api?source=loadbalancer`}>View API URL</Link>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api?source=loadbalancer`}>View API URL</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -175,7 +175,6 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
     status,
     inserted_at,
     onSelectRestartReplica,
-    onSelectResizeReplica,
     onSelectDropReplica,
   } = data
   const { slug, ref, branch: branchRef } = useParams()

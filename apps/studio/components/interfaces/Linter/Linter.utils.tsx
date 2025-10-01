@@ -292,7 +292,8 @@ export const lintInfoMap: LintInfo[] = [
     name: 'leaked_service_key',
     title: 'Leaked Service Key Detected',
     icon: <LockIcon className="text-foreground-muted" size={15} strokeWidth={1} />,
-    link: ({ orgRef, projectRef }) => `/org/${orgRef}/project/${projectRef}/settings/api`,
+    link: ({ orgRef, projectRef, branchRef }) =>
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/api/api-keys#the-servicerole-key',
     category: 'security',

@@ -5,17 +5,17 @@ import { PropsWithChildren } from 'react'
 import { useParams } from 'common'
 
 const JWTKeysLayout = ({ children }: PropsWithChildren) => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const navigationItems = [
     {
       label: 'Legacy JWT Secret',
-      href: `/org/${slug}/project/${projectRef}/settings/jwt`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/jwt`,
       id: 'legacy-jwt-keys',
     },
     {
       label: 'JWT Signing Keys',
-      href: `/org/${slug}/project/${projectRef}/settings/jwt/signing-keys`,
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/jwt/signing-keys`,
       id: 'signing-keys',
     },
   ]

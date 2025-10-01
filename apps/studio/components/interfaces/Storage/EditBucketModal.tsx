@@ -64,10 +64,10 @@ const BucketSchema = z.object({
 const formId = 'edit-storage-bucket-form'
 
 export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const { mutate: updateBucket, isLoading: isUpdating } = useBucketUpdateMutation()
-  const { data } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef: ref })
+  const { data } = useProjectStorageConfigQuery({ orgSlug: orgRef, projectRef: projectRef })
   const { value, unit } = convertFromBytes(data?.fileSizeLimit ?? 0)
   const formattedGlobalUploadLimit = `${value} ${unit}`
 
@@ -103,11 +103,11 @@ export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalPro
 
   const onSubmit: SubmitHandler<z.infer<typeof BucketSchema>> = async (values) => {
     if (bucket === undefined) return console.error('Bucket is required')
-    if (ref === undefined) return console.error('Project ref is required')
+    if (projectRef === undefined) return console.error('Project ref is required')
 
     updateBucket(
       {
-        projectRef: ref,
+        projectRef: projectRef,
         id: bucket.id,
         isPublic: values.public,
         file_size_limit: values.has_file_size_limit
@@ -312,7 +312,7 @@ export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalPro
                           <p className="text-foreground-light text-sm">
                             Note: Individual bucket upload will still be capped at the{' '}
                             <Link
-                              href={`/project/${ref}/settings/storage`}
+                              href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/storage`}
                               className="font-bold underline"
                             >
                               global upload limit
