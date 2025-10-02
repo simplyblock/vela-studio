@@ -9,10 +9,10 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const client = getVelaClient(req)
 
-  const response = await client.get("/organizations/{organization_slug}/members/", {
+  const response = await client.get("/organizations/{organization_id}/members/", {
     params: {
       path: {
-        organization_slug: slug
+        organization_id: slug
       }
     }
   })

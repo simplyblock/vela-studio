@@ -10,10 +10,10 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
   const creationRequest = req.body as ProjectCreateVariables
 
-  const createResponse = await client.post('/organizations/{organization_slug}/projects/', {
+  const createResponse = await client.post('/organizations/{organization_id}/projects/', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
       },
     },
     body: { // FIXME: get correct values from the UI (after implemented in new/[slug].tsx
@@ -45,12 +45,12 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const projectRef = location.slice(0, -1).split('/').pop()
   const readResponse = await client.get(
-    '/organizations/{organization_slug}/projects/{project_slug}/',
+    '/organizations/{organization_id}/projects/{project_id}/',
     {
       params: {
         path: {
-          organization_slug: slug,
-          project_slug: projectRef!,
+          organization_id: slug,
+          project_id: projectRef!,
         },
       },
     }
@@ -66,10 +66,10 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
   const client = getVelaClient(req)
 
-  const response = await client.get('/organizations/{organization_slug}/projects/', {
+  const response = await client.get('/organizations/{organization_id}/projects/', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
       },
     },
   })

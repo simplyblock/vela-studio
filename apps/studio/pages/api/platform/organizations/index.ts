@@ -24,10 +24,10 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const slug = location.slice(0, -1).split('/').pop()
-  const readResponse = await client.get('/organizations/{organization_slug}/', {
+  const readResponse = await client.get('/organizations/{organization_id}/', {
     params: {
       path: {
-        organization_slug: slug!,
+        organization_id: slug!,
       },
     },
   })

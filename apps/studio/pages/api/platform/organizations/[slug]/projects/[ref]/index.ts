@@ -8,11 +8,11 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref } = getPlatformQueryParams(req, "slug", "ref")
   const client = getVelaClient(req)
 
-  const response = await client.get('/organizations/{organization_slug}/projects/{project_slug}/', {
+  const response = await client.get('/organizations/{organization_id}/projects/{project_id}/', {
     params: {
       path: {
-        organization_slug: slug,
-        project_slug: ref,
+        organization_id: slug,
+        project_id: ref,
       },
     },
   })

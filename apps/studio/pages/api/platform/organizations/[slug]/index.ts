@@ -7,10 +7,10 @@ import { mapOrganization } from '../../../../../data/vela/api-mappers'
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
   const client = getVelaClient(req)
-  const response = await client.get('/organizations/{organization_slug}/', {
+  const response = await client.get('/organizations/{organization_id}/', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
       },
     },
   })
@@ -25,10 +25,10 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 const handleUpdate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
   const client = getVelaClient(req)
-  const createResponse = await client.put('/organizations/{organization_slug}/', {
+  const createResponse = await client.put('/organizations/{organization_id}/', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
       },
     },
     body: {},
@@ -44,10 +44,10 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const client = getVelaClient(req)
 
-  client.delete("/organizations/{organization_slug}/", {
+  client.delete("/organizations/{organization_id}/", {
     params: {
       path: {
-        organization_slug: slug
+        organization_id: slug
       }
     }
   })

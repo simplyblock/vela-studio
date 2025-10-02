@@ -11,10 +11,10 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
   const client = getVelaClient(req)
 
-  const result = await client.getOrFail(res, '/organizations/{organization_slug}/members/', {
+  const result = await client.getOrFail(res, '/organizations/{organization_id}/members/', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
       },
     },
   })
@@ -80,10 +80,10 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Add user to an organization
-  return client.proxyPost(res, '/organizations/{organization_slug}/members/', {
+  return client.proxyPost(res, '/organizations/{organization_id}/members/', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
       },
     },
     body: {

@@ -7,10 +7,10 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, user_id } = getPlatformQueryParams(req, 'slug', 'user_id')
   const client = getVelaClient(req)
 
-  const response = await client.delete('/organizations/{organization_slug}/members/{user_id}', {
+  const response = await client.delete('/organizations/{organization_id}/members/{user_id}', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
         user_id,
       },
     },
@@ -27,10 +27,10 @@ const handlePatch = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, user_id } = getPlatformQueryParams(req, 'slug', 'user_id')
   const client = getVelaClient(req)
 
-  const response = await client.put('/organizations/{organization_slug}/members/{user_id}', {
+  const response = await client.put('/organizations/{organization_id}/members/{user_id}', {
     params: {
       path: {
-        organization_slug: slug,
+        organization_id: slug,
         user_id,
       },
     },

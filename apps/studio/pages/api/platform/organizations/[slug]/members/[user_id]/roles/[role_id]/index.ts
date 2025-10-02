@@ -8,11 +8,11 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const client = getVelaClient(req)
 
   const response = await client.put(
-    '/organizations/{organization_slug}/members/{user_id}/roles/{role_id}',
+    '/organizations/{organization_id}/members/{user_id}/roles/{role_id}',
     {
       params: {
         path: {
-          organization_slug: slug,
+          organization_id: slug,
           user_id,
           role_id,
         },
@@ -32,11 +32,11 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   const client = getVelaClient(req)
 
   const response = await client.delete(
-    '/organizations/{organization_slug}/members/{user_id}/roles/{role_id}',
+    '/organizations/{organization_id}/members/{user_id}/roles/{role_id}',
     {
       params: {
         path: {
-          organization_slug: slug,
+          organization_id: slug,
           user_id,
           role_id,
         },
