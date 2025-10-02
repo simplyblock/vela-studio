@@ -21,11 +21,10 @@ interface DatabaseInformation {
 }
 
 export interface Branch {
-  id: number
+  id: string
   name: string
-  slug: string
-  project_slug: string
-  organization_slug: string
+  project_id: string
+  organization_id: string
   database: DatabaseInformation & {
     has_replicas: boolean
   }

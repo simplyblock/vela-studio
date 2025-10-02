@@ -26,7 +26,6 @@ import {
   ScrollArea,
   cn,
 } from 'ui'
-import { setProjectCookie } from '../../../data/vela/vela'
 
 // [Fran] the idea is to let users change projects without losing the current page,
 // but at the same time we need to redirect correctly between urls that might be
@@ -76,7 +75,6 @@ const ProjectLink = ({
       value={`${project.name.replaceAll('"', '')}-${project.ref}`}
       className="cursor-pointer w-full"
       onSelect={() => {
-        setProjectCookie(project.id)
         router.push(href)
         setOpen(false)
       }}

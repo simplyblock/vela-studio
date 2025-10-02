@@ -141,6 +141,7 @@ export const handleError = (
   error: unknown,
   options: HandleErrorOptions = { alwaysCapture: false }
 ): never => {
+  console.log(error)
   if (error && typeof error === 'object') {
     const errorMessage =
       'msg' in error && typeof error.msg === 'string'

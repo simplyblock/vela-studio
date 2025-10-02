@@ -148,13 +148,14 @@ export function maybeHandleError(
 
   if (response.error) {
     const status = response.response.status
-    res.status(status).json(response.error)
+    const data = response.data
+    res.status(status).json({ message: data ? data : response.error })
     return true
   }
 
   if (response.response.status <= 200 && response.response.status >= 299) {
     const status = response.response.status
-    res.status(status).json(response.data)
+    res.status(status).json({ message: response.data ?? 'Unknown error' })
     return true
   }
   return false
@@ -363,52 +364,4 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       return velaClient.TRACE(url, prepareOptions(req, init))
     },
   }
-}
-
-export function setOrganizationCookie(organizationId: number) {
-  if (typeof document === 'undefined') return
-  document.cookie = `x-vela-organization-id=${organizationId}`
-}
-
-export function getOrganizationCookie(req?: NextApiRequest): number {
-  let cookie: string | undefined = undefined
-  if (typeof document !== 'undefined') {
-    const entry = document.cookie
-      .split(';')
-      .find((c) => c.trim().startsWith('x-vela-organization-id='))
-    if (entry) cookie = entry.split('=')[1]
-  }
-  if (req) {
-    cookie = req.cookies['x-vela-organization-id']
-  }
-  if (!cookie) return -1
-  return parseInt(cookie)
-}
-
-export function deleteOrganizationCookie() {
-  if (typeof document === 'undefined') return
-  document.cookie = `x-vela-organization-id=`
-}
-
-export function setProjectCookie(projectId: number) {
-  if (typeof document === 'undefined') return
-  document.cookie = `x-vela-project-id=${projectId}`
-}
-
-export function getProjectCookie(req?: NextApiRequest): number {
-  let cookie: string | undefined = undefined
-  if (typeof document !== 'undefined') {
-    const entry = document.cookie.split(';').find((c) => c.trim().startsWith('x-vela-project-id='))
-    if (entry) cookie = entry.split('=')[1]
-  }
-  if (req) {
-    cookie = req.cookies['x-vela-project-id']
-  }
-  if (!cookie) return -1
-  return parseInt(cookie)
-}
-
-export function deleteProjectCookie() {
-  if (typeof document === 'undefined') return
-  document.cookie = `x-vela-project-id=`
 }

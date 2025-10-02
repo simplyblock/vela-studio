@@ -1,124 +1,61 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
+import { Branch } from 'api-types/types'
+import { getVelaClient } from 'data/vela/vela'
+import { mapProjectBranch } from 'data/vela/api-mappers'
 
-interface DatabaseInformation {
-  host: string
-  port: number
-  username: string
-  name: string
-  password?: string // only at creation time
-  encrypted_connection_string: string
-  service_endpoint_uri: string
-  version: string
+const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { slug, ref } = getPlatformQueryParams(req, 'slug', 'ref')
+  const client = getVelaClient(req)
+
+  const { data, success } = await client.postOrFail(
+    res,
+    '/organizations/{organization_id}/projects/{project_id}/branches/',
+    {
+      params: {
+        path: {
+          organization_id: slug,
+          project_id: ref,
+        },
+        query: {
+          response: 'full'
+        }
+      },
+      body: {
+        name: req.body.branch_name,
+        source: req.body.source,
+      },
+    }
+  )
+
+  if (!success) return
+
+  return res.json(mapProjectBranch(data!, slug, ref))
 }
 
-interface Branch {
-  id: number
-  name: string
-  slug: string
-  project_slug: string
-  organization_slug: string
-  database: DatabaseInformation & {
-    has_replicas: boolean
-  }
-  pitr_enabled: boolean
-  assigned_labels: string[]
-  used_resources: {
-    vcpu: number
-    ram_mb: number
-    nvme_gb: number
-    iops: number
-    storage_gb?: number
-  }
-  max_resources: {
-    vcpu: number
-    ram_mb: number
-    nvme_gb: number
-    iops: number
-    storage_gb?: number
-  }
-  api_keys: {
-    anon: string
-    service_role: string
-  }
-  status: {
-    database:
-      | 'ACTIVE_HEALTHY'
-      | 'STOPPED'
-      | 'STARTING'
-      | 'ACTIVE_UNHEALTHY'
-      | 'CREATING'
-      | 'DELETING'
-      | 'UPDATING'
-      | 'RESTARTING'
-      | 'STOPPING'
-      | 'UNKNOWN'
-    storage:
-      | 'ACTIVE_HEALTHY'
-      | 'STOPPED'
-      | 'STARTING'
-      | 'ACTIVE_UNHEALTHY'
-      | 'CREATING'
-      | 'DELETING'
-      | 'UNKNOWN'
-    realtime:
-      | 'ACTIVE_HEALTHY'
-      | 'STOPPED'
-      | 'STARTING'
-      | 'ACTIVE_UNHEALTHY'
-      | 'CREATING'
-      | 'DELETING'
-      | 'UNKNOWN'
-  }
-  created_at: string
-  created_by: string
-  updated_at?: string
-  updated_by?: string
-}
-
-const handleGet = (req: NextApiRequest, res: NextApiResponse<Branch[]>) => {
+const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch[]>) => {
   const { slug, ref } = getPlatformQueryParams(req, 'slug', 'ref')
 
-  return res.status(200).json([
+  const client = getVelaClient(req)
+  const { data, success } = await client.getOrFail(
+    res,
+    '/organizations/{organization_id}/projects/{project_id}/branches/',
     {
-      id: 1,
-      created_at: '2022-01-01T00:00:00Z',
-      created_by: 'me',
-      name: 'main',
-      slug: 'main',
-      project_slug: ref,
-      organization_slug: slug,
-      status: {
-        database: 'ACTIVE_HEALTHY',
-        realtime: 'STOPPED',
-        storage: 'STOPPED',
+      params: {
+        path: {
+          organization_id: slug,
+          project_id: ref,
+        },
       },
-      database: {} as any,
-      pitr_enabled: true,
-      assigned_labels: [],
-      used_resources: {
-        vcpu: 0,
-        ram_mb: 0,
-        nvme_gb: 0,
-        iops: 0,
-        storage_gb: undefined,
-      },
-      max_resources: {
-        vcpu: 0,
-        ram_mb: 0,
-        nvme_gb: 0,
-        iops: 0,
-        storage_gb: undefined,
-      },
-      api_keys: {
-        anon: '',
-        service_role: '',
-      },
-    },
-  ])
+    }
+  )
+
+  if (!success) return
+
+  return res.json(data?.map((branch) => mapProjectBranch(branch, slug, ref)) ?? [])
 }
 
-const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet))
+const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet).post(handleCreate))
 
 export default apiHandler

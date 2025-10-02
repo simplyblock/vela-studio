@@ -23,7 +23,6 @@ import {
   ScrollArea,
   cn,
 } from 'ui'
-import { setOrganizationCookie } from '../../../data/vela/vela'
 
 export const OrganizationDropdown = () => {
   const router = useRouter()
@@ -77,7 +76,6 @@ export const OrganizationDropdown = () => {
               <CommandGroup_Shadcn_>
                 <ScrollArea className={(organizations || []).length > 7 ? 'h-[210px]' : ''}>
                   {organizations?.map((org) => {
-                    setOrganizationCookie(org.id)
                     const href = !!routeSlug
                       ? router.pathname.replace('[slug]', org.slug)
                       : `/org/${org.slug}`

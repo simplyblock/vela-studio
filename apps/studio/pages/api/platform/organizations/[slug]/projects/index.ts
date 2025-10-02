@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getVelaClient } from '../../../../../../data/vela/vela'
-import { mapProject } from '../../../../../../data/vela/api-mappers'
-import { ProjectCreateVariables } from '../../../../../../data/projects/project-create-mutation'
-import { apiBuilder } from '../../../../../../lib/api/apiBuilder'
-import { getPlatformQueryParams } from '../../../../../../lib/api/platformQueryParams'
+import { getVelaClient, maybeHandleError } from 'data/vela/vela'
+import { mapProject } from 'data/vela/api-mappers'
+import { ProjectCreateVariables } from 'data/projects/project-create-mutation'
+import { apiBuilder } from 'lib/api/apiBuilder'
+import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
 const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
   const client = getVelaClient(req)
@@ -34,32 +34,32 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
   if (createResponse.response.status !== 201) {
     return res
       .status(createResponse.response.status)
-      .setHeader('Content-Type', createResponse.error?.detail ? 'application/json' : 'text/plain')
-      .send(createResponse.error?.detail || createResponse.error)
+      .send({ message: createResponse.error?.detail ?? 'Unknown error' })
   }
 
   const location = createResponse.response.headers.get('location')
   if (!location) {
-    return res.status(500).send('No location header')
+    return res.status(500).send({ message: 'No location header' })
   }
 
-  const projectRef = location.slice(0, -1).split('/').pop()
+  const projectId = location.slice(0, -1).split('/').pop()
   const readResponse = await client.get(
     '/organizations/{organization_id}/projects/{project_id}/',
     {
       params: {
         path: {
           organization_id: slug,
-          project_id: projectRef!,
+          project_id: projectId!,
         },
       },
     }
   )
 
-  if (readResponse.response.status !== 200 || !readResponse.data) {
-    return res.status(readResponse.response.status).send(readResponse.error)
+  if (maybeHandleError(res, readResponse)) {
+    return
   }
-  return res.status(200).json(mapProject(readResponse.data))
+
+  return res.status(200).json(mapProject(readResponse.data!))
 }
 
 const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {

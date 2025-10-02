@@ -4,10 +4,12 @@ import { Project } from '../projects/project-detail-query'
 import fs from 'node:fs'
 import CryptoJS from 'crypto-js'
 import { OrganizationMember } from '../organizations/organization-members-query'
+import { Branch } from 'api-types/types'
 
 export type VelaOrganization = components['schemas']['Organization']
 export type VelaProject = components['schemas']['ProjectPublic']
 export type VelaMember = components['schemas']['UserPublic']
+export type VelaBranch = components['schemas']['BranchPublic']
 
 const isDocker = fs.existsSync('/.dockerenv')
 if (isDocker) console.log('Running in Docker, using fake encrypted connection string')
@@ -69,5 +71,42 @@ export function mapOrganizationMember(member: VelaMember): OrganizationMember {
       first_name: member.first_name,
       last_name: member.last_name
     }
+  }
+}
+
+export function mapProjectBranch(branch: VelaBranch, organizationId: string, projectId: string): Branch {
+  return {
+    id: branch.id,
+    created_at: '2022-01-01T00:00:00Z',
+    created_by: 'me',
+    name: branch.name,
+    project_id: projectId,
+    organization_id: organizationId,
+    status: {
+      database: 'ACTIVE_HEALTHY',
+      realtime: 'STOPPED',
+      storage: 'STOPPED',
+    },
+    database: {} as any,
+    pitr_enabled: true,
+    assigned_labels: [],
+    used_resources: {
+      vcpu: 0,
+      ram_bytes: 0,
+      nvme_bytes: 0,
+      iops: 0,
+      storage_bytes: undefined,
+    },
+    max_resources: {
+      vcpu: 0,
+      ram_bytes: 0,
+      nvme_bytes: 0,
+      iops: 0,
+      storage_bytes: undefined,
+    },
+    api_keys: {
+      anon: '',
+      service_role: '',
+    },
   }
 }

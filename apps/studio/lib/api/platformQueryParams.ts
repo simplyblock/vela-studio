@@ -3,6 +3,7 @@ import { NextApiRequest } from 'next'
 export interface PlatformQueryParams {
   slug?: string
   ref?: string
+  branch?: string
   user_id?: string
   role_id?: string
 }

@@ -81,15 +81,22 @@ export function apiBuilder(builder: (builder: ApiBuilder) => void): ApiHandler {
       return res
         .status(405)
         .setHeader('Allow', methods)
-        .json({ data: null, error: { message: `Method ${method} not allowed` } })
+        .json({ message: `Method ${method} not allowed` })
     }
 
     const handler = handlers[method as keyof typeof handlers]
     if (!handler) {
-      return res.status(500).json({ data: null, error: { message: 'Internal server error' } })
+      return res.status(500).json({ message: 'Internal server error' })
     }
 
-    return handler(req, res)
+    try {
+      return await handler(req, res)
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message })
+      }
+      return res.status(500).json({ message: error ? error : 'Unknown internal server error' })
+    }
   }
 
   const keycloakManager = getKeycloakManager();

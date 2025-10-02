@@ -35,7 +35,7 @@ const BranchLink = ({
   setOpen: (value: boolean) => void
 }) => {
   const router = useRouter()
-  const href = `/org/${branch.organization_slug}/project/${branch.project_slug}/branch/${branch.name}`
+  const href = `/org/${branch.organization_id}/project/${branch.project_id}/branch/${branch.id}`
 
   return (
     <Link href={href}>
@@ -62,7 +62,7 @@ const BranchLink = ({
 
 export const BranchDropdown = () => {
   const router = useRouter()
-  const { slug: orgSlug, ref } = useParams()
+  const { slug: orgSlug, ref, branch: branchRef } = useParams()
   const snap = useAppStateSnapshot()
   const { data: projectDetails } = useSelectedProjectQuery()
 
@@ -77,8 +77,7 @@ export const BranchDropdown = () => {
     isSuccess,
   } = useBranchesQuery({ orgSlug, projectRef }, { enabled: Boolean(projectDetails) })
 
-  const isBranchingEnabled = projectDetails?.is_branch_enabled === true
-  const selectedBranch = branches?.find((branch) => branch.name === ref)
+  const selectedBranch = branches?.find((branch) => branch.id === branchRef)
 
   const mainBranch = branches?.find((branch) => branch.name === 'main')
   const restOfBranches = branches
@@ -110,16 +109,12 @@ export const BranchDropdown = () => {
             className="flex items-center gap-2 flex-shrink-0 text-sm"
           >
             <span className="text-foreground max-w-32 lg:max-w-none truncate">
-              {isBranchingEnabled ? selectedBranch?.name : 'main'}
+              {selectedBranch?.name ?? 'main'}
             </span>
-            {isBranchingEnabled ? (
-              selectedBranch?.name === 'main' ? (
-                <Badge variant="warning">Production</Badge>
-              ) : (
-                <Badge variant="brand">Persistent</Badge>
-              )
-            ) : (
+            {selectedBranch?.name === 'main' ? (
               <Badge variant="warning">Production</Badge>
+            ) : (
+              <Badge variant="brand">Persistent</Badge>
             )}
           </Link>
           <Popover_Shadcn_ open={open} onOpenChange={setOpen} modal={false}>
@@ -133,11 +128,9 @@ export const BranchDropdown = () => {
             </PopoverTrigger_Shadcn_>
             <PopoverContent_Shadcn_ className="p-0" side="bottom" align="start">
               <Command_Shadcn_>
-                {isBranchingEnabled && <CommandInput_Shadcn_ placeholder="Find branch..." />}
+                {<CommandInput_Shadcn_ placeholder="Find branch..." />}
                 <CommandList_Shadcn_>
-                  {isBranchingEnabled && (
-                    <CommandEmpty_Shadcn_>No branches found</CommandEmpty_Shadcn_>
-                  )}
+                  <CommandEmpty_Shadcn_>No branches found</CommandEmpty_Shadcn_>
 
                   <CommandGroup_Shadcn_>
                     <ScrollArea className="max-h-[210px] overflow-y-auto">

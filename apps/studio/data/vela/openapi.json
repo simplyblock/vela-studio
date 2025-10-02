@@ -101,6 +101,21 @@
         "responses": {
           "201": {
             "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Organization"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Organizations Create Organizations  Post"
+                }
+              }
+            },
             "headers": {
               "Location": {
                 "description": "URL of the created item",
@@ -710,6 +725,21 @@
         "responses": {
           "201": {
             "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ProjectPublic"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Organizations Projects Create Organizations  Organization Id  Projects  Post"
+                }
+              }
+            },
             "headers": {
               "Location": {
                 "description": "URL of the created item",
@@ -969,6 +999,21 @@
         "responses": {
           "201": {
             "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BranchPublic"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Organizations Projects Branch Create Organizations  Organization Id  Projects  Project Id  Branches  Post"
+                }
+              }
+            },
             "headers": {
               "Location": {
                 "description": "URL of the created item",
@@ -2618,6 +2663,21 @@
         "responses": {
           "201": {
             "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Role"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Organizations Roles Create Organizations  Organization Id  Roles  Post"
+                }
+              }
+            },
             "headers": {
               "Location": {
                 "description": "URL of the created item",
@@ -3269,785 +3329,6 @@
         "responses": {
           "204": {
             "description": "Successful Response"
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/branches/": {
-      "get": {
-        "summary": "Organizations:Projects:Branch:List",
-        "operationId": "organizations:projects:branch:list",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BranchPublic"
-                  },
-                  "title": "Response Organizations Projects Branch List Organizations  Organization Id  Branches  Get"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Organizations:Projects:Branch:Create",
-        "operationId": "organizations:projects:branch:create",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "response",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "enum": [
-                "empty",
-                "full"
-              ],
-              "type": "string",
-              "default": "empty",
-              "title": "Response"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BranchCreate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Successful Response",
-            "headers": {
-              "Location": {
-                "description": "URL of the created item",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "links": {
-              "detail": {
-                "operationId": "organizations:projects:branch:detail",
-                "parameters": {
-                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
-                }
-              },
-              "update": {
-                "operationId": "organizations:projects:branch:update",
-                "parameters": {
-                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
-                }
-              },
-              "delete": {
-                "operationId": "organizations:projects:branch:delete",
-                "parameters": {
-                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/branches/{branch_id}/": {
-      "get": {
-        "summary": "Organizations:Projects:Branch:Detail",
-        "operationId": "organizations:projects:branch:detail",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "branch_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Branch Id"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BranchResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Organizations:Projects:Branch:Update",
-        "operationId": "organizations:projects:branch:update",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "branch_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Branch Id"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BranchUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": {
-            "description": "Successful Response",
-            "headers": {
-              "Location": {
-                "description": "URL of the created item",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "links": {
-              "detail": {
-                "operationId": "organizations:projects:branch:detail",
-                "parameters": {
-                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
-                }
-              },
-              "update": {
-                "operationId": "organizations:projects:branch:update",
-                "parameters": {
-                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
-                }
-              },
-              "delete": {
-                "operationId": "organizations:projects:branch:delete",
-                "parameters": {
-                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Organizations:Projects:Branch:Delete",
-        "operationId": "organizations:projects:branch:delete",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "branch_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Branch Id"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Successful Response"
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/branches/{branch_id}/resize": {
-      "post": {
-        "summary": "Organizations:Projects:Branch:Resize",
-        "operationId": "organizations:projects:branch:resize",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "branch_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Branch Id"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResizeParameters"
-              }
-            }
-          }
-        },
-        "responses": {
-          "202": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
           },
           "401": {
             "description": "Not authenticated",

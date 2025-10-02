@@ -1261,10 +1261,6 @@ export interface BranchCreateButtonClickedEvent {
      * The type of branch created, e.g. preview, persistent
      */
     branchType: 'preview' | 'persistent'
-    /**
-     * Whether the branch was created with a git branch association
-     */
-    gitlessBranching: boolean
   }
   groups: TelemetryGroups
 }

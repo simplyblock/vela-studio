@@ -1914,7 +1914,8 @@ export interface components {
       is_default: boolean
       parent_project_ref: string
       persistent: boolean
-      project_ref: string
+      project_id: string
+      organization_id: string
       status:
         | 'CREATING_PROJECT'
         | 'RUNNING_MIGRATIONS'
@@ -1973,6 +1974,7 @@ export interface components {
     }
     CreateBranchBody: {
       branch_name: string
+      source: string
       /** @enum {string} */
       desired_instance_size?:
         | 'pico'
