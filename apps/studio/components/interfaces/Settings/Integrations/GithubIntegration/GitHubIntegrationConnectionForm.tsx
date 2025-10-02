@@ -42,6 +42,7 @@ import {
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { getPathReferences } from '../../../../../data/vela/path-references'
 
 const GITHUB_ICON = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 96" className="w-6">
@@ -63,6 +64,7 @@ const GitHubIntegrationConnectionForm = ({
   disabled = false,
   connection,
 }: GitHubIntegrationConnectionFormProps) => {
+  const { slug: orgRef } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const [isConfirmingBranchChange, setIsConfirmingBranchChange] = useState(false)
@@ -132,7 +134,7 @@ const GitHubIntegrationConnectionForm = ({
     [githubReposData]
   )
 
-  const prodBranch = existingBranches?.find((branch) => branch.is_default)
+  const prodBranch = existingBranches?.find((branch) => branch.name === 'main')
 
   // Combined GitHub Settings Form
   const GitHubSettingsSchema = z
@@ -239,14 +241,13 @@ const GitHubIntegrationConnectionForm = ({
       createBranch({
         projectRef: selectedProject.ref,
         branchName: 'main',
-        gitBranch: data.branchName,
-        is_default: true,
+        orgSlug: orgRef!
       })
     } else {
       updateBranch({
-        id: prodBranch.id,
+        orgSlug: orgRef!,
         projectRef: selectedProject.ref,
-        gitBranch: data.branchName,
+        branch: data.branchName,
       })
     }
   }
@@ -257,9 +258,7 @@ const GitHubIntegrationConnectionForm = ({
   ) => {
     if (!selectedProject?.ref || !selectedOrganization?.id) return
 
-    const originalBranchName = prodBranch?.git_branch
-
-    if (originalBranchName && data.branchName !== originalBranchName && data.enableProductionSync) {
+    if (data.enableProductionSync) {
       setIsConfirmingBranchChange(true)
       return
     }
@@ -286,10 +285,9 @@ const GitHubIntegrationConnectionForm = ({
 
     if (prodBranch?.id) {
       updateBranch({
-        id: prodBranch.id,
+        orgSlug: orgRef!,
         projectRef: selectedProject.ref,
-        gitBranch: data.enableProductionSync ? data.branchName : '',
-        branchName: data.branchName || 'main',
+        branch: data.branchName || 'main',
       })
     }
 
@@ -349,12 +347,9 @@ const GitHubIntegrationConnectionForm = ({
 
   useEffect(() => {
     if (connection) {
-      const hasGitBranch = Boolean(prodBranch?.git_branch?.trim())
-
       githubSettingsForm.reset({
         repositoryId: connection.repository.id.toString(),
-        enableProductionSync: hasGitBranch,
-        branchName: prodBranch?.git_branch || 'main',
+        branchName: 'main',
         new_branch_per_pr: connection.new_branch_per_pr,
         supabaseDirectory: connection.workdir || '',
         supabaseChangesOnly: connection.supabase_changes_only,

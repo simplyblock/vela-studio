@@ -113,31 +113,31 @@
               "detail": {
                 "operationId": "organizations:detail",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:update",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:delete",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "create_project": {
                 "operationId": "organizations:projects:create",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "list_projects": {
                 "operationId": "organizations:projects:list",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               }
             }
@@ -175,7 +175,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/": {
+    "/organizations/{organization_id}/": {
       "get": {
         "summary": "Organizations:Detail",
         "operationId": "organizations:detail",
@@ -186,15 +186,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           }
         ],
@@ -261,15 +267,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           }
         ],
@@ -298,31 +310,31 @@
               "detail": {
                 "operationId": "organizations:detail",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:update",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:delete",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "create_project": {
                 "operationId": "organizations:projects:create",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               },
               "list_projects": {
                 "operationId": "organizations:projects:list",
                 "parameters": {
-                  "organization_slug": "$response.header.Location#regex:/organizations/(.+)/"
+                  "organization_id": "$response.header.Location#regex:/organizations/(.+)/"
                 }
               }
             }
@@ -389,15 +401,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           }
         ],
@@ -448,7 +466,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/audit": {
+    "/organizations/{organization_id}/audit": {
       "get": {
         "summary": "Organizations:Audits:List",
         "operationId": "organizations:audits:list",
@@ -459,15 +477,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -545,7 +569,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/projects/": {
+    "/organizations/{organization_id}/projects/": {
       "get": {
         "summary": "Organizations:Projects:List",
         "operationId": "organizations:projects:list",
@@ -556,15 +580,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           }
         ],
@@ -578,7 +608,7 @@
                   "items": {
                     "$ref": "#/components/schemas/ProjectPublic"
                   },
-                  "title": "Response Organizations Projects List Organizations  Organization Slug  Projects  Get"
+                  "title": "Response Organizations Projects List Organizations  Organization Id  Projects  Get"
                 }
               }
             }
@@ -635,15 +665,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -686,19 +722,19 @@
               "detail": {
                 "operationId": "organizations:projects:detail",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:projects:update",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:projects:delete",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/"
                 }
               }
             }
@@ -756,7 +792,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/projects/{project_slug}/branches/": {
+    "/organizations/{organization_id}/projects/{project_id}/branches/": {
       "get": {
         "summary": "Organizations:Projects:Branch:List",
         "operationId": "organizations:projects:branch:list",
@@ -767,27 +803,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -801,7 +849,7 @@
                   "items": {
                     "$ref": "#/components/schemas/BranchPublic"
                   },
-                  "title": "Response Organizations Projects Branch List Organizations  Organization Slug  Projects  Project Slug  Branches  Get"
+                  "title": "Response Organizations Projects Branch List Organizations  Organization Id  Projects  Project Id  Branches  Get"
                 }
               }
             }
@@ -858,27 +906,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           },
           {
@@ -921,22 +981,22 @@
               "detail": {
                 "operationId": "organizations:projects:branch:detail",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:projects:branch:update",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:projects:branch:delete",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               }
             }
@@ -994,7 +1054,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/projects/{project_slug}/branches/{branch}/": {
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/": {
       "get": {
         "summary": "Organizations:Projects:Branch:Detail",
         "operationId": "organizations:projects:branch:detail",
@@ -1005,39 +1065,57 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           },
           {
-            "name": "branch",
+            "name": "branch_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Branch"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
             }
           }
         ],
@@ -1047,7 +1125,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BranchPublic"
+                  "$ref": "#/components/schemas/BranchResponse"
                 }
               }
             }
@@ -1104,39 +1182,57 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           },
           {
-            "name": "branch",
+            "name": "branch_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Branch"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
             }
           }
         ],
@@ -1165,22 +1261,22 @@
               "detail": {
                 "operationId": "organizations:projects:branch:detail",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:projects:branch:update",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:projects:branch:delete",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               }
             }
@@ -1247,39 +1343,57 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           },
           {
-            "name": "branch",
+            "name": "branch_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Branch"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
             }
           }
         ],
@@ -1330,7 +1444,134 @@
         }
       }
     },
-    "/organizations/{organization_slug}/projects/{project_slug}/": {
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/resize": {
+      "post": {
+        "summary": "Organizations:Projects:Branch:Resize",
+        "operationId": "organizations:projects:branch:resize",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResizeParameters"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/projects/{project_id}/": {
       "get": {
         "summary": "Organizations:Projects:Detail",
         "operationId": "organizations:projects:detail",
@@ -1341,27 +1582,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -1428,27 +1681,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -1477,19 +1742,19 @@
               "detail": {
                 "operationId": "organizations:projects:detail",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:projects:update",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:projects:delete",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/"
                 }
               }
             }
@@ -1556,27 +1821,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -1627,7 +1904,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/projects/{project_slug}/pause": {
+    "/organizations/{organization_id}/projects/{project_id}/pause": {
       "post": {
         "summary": "Organizations:Projects:Pause",
         "operationId": "organizations:projects:pause",
@@ -1638,27 +1915,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -1709,7 +1998,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/projects/{project_slug}/resume": {
+    "/organizations/{organization_id}/projects/{project_id}/resume": {
       "post": {
         "summary": "Organizations:Projects:Resume",
         "operationId": "organizations:projects:resume",
@@ -1720,27 +2009,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -1791,7 +2092,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/members/": {
+    "/organizations/{organization_id}/members/": {
       "get": {
         "summary": "Organizations:Members:List",
         "operationId": "organizations:members:list",
@@ -1802,15 +2103,35 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "shallow",
+                "deep"
+              ],
+              "type": "string",
+              "default": "shallow",
+              "title": "Response"
             }
           }
         ],
@@ -1822,9 +2143,17 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserID"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "$ref": "#/components/schemas/UserPublic"
+                      }
+                    ]
                   },
-                  "title": "Response Organizations Members List Organizations  Organization Slug  Members  Get"
+                  "title": "Response Organizations Members List Organizations  Organization Id  Members  Get"
                 }
               }
             }
@@ -1881,15 +2210,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           }
         ],
@@ -1972,7 +2307,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/members/{user_id}": {
+    "/organizations/{organization_id}/members/{user_id}": {
       "put": {
         "summary": "Organizations:Members:Update",
         "operationId": "organizations:members:update",
@@ -1983,15 +2318,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2061,15 +2402,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2130,7 +2477,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/roles/": {
+    "/organizations/{organization_id}/roles/": {
       "get": {
         "summary": "Organizations:Roles:List",
         "operationId": "organizations:roles:list",
@@ -2141,15 +2488,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           }
         ],
@@ -2163,7 +2516,7 @@
                   "items": {
                     "$ref": "#/components/schemas/Role"
                   },
-                  "title": "Response Organizations Roles List Organizations  Organization Slug  Roles  Get"
+                  "title": "Response Organizations Roles List Organizations  Organization Id  Roles  Get"
                 }
               }
             }
@@ -2220,15 +2573,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2331,7 +2690,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/roles/{role_id}/": {
+    "/organizations/{organization_id}/roles/{role_id}/": {
       "get": {
         "summary": "Organizations:Roles:Detail",
         "operationId": "organizations:roles:detail",
@@ -2342,15 +2701,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2358,7 +2723,16 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
               "title": "Role Id"
             }
           }
@@ -2426,15 +2800,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2442,7 +2822,16 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
               "title": "Role Id"
             }
           }
@@ -2503,15 +2892,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2519,7 +2914,16 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
               "title": "Role Id"
             }
           }
@@ -2571,7 +2975,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/roles/{role_id}/users/": {
+    "/organizations/{organization_id}/roles/{role_id}/users/": {
       "get": {
         "summary": "Organizations:Roles:Users:List",
         "operationId": "organizations:roles:users:list",
@@ -2582,15 +2986,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2598,8 +3008,31 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
               "title": "Role Id"
+            }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "shallow",
+                "deep"
+              ],
+              "type": "string",
+              "default": "shallow",
+              "title": "Response"
             }
           }
         ],
@@ -2611,9 +3044,17 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserID"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "$ref": "#/components/schemas/UserPublic"
+                      }
+                    ]
                   },
-                  "title": "Response Organizations Roles Users List Organizations  Organization Slug  Roles  Role Id  Users  Get"
+                  "title": "Response Organizations Roles Users List Organizations  Organization Id  Roles  Role Id  Users  Get"
                 }
               }
             }
@@ -2670,15 +3111,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2686,7 +3133,16 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
               "title": "Role Id"
             }
           },
@@ -2753,7 +3209,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/roles/{role_id}/users/{user_id}/": {
+    "/organizations/{organization_id}/roles/{role_id}/users/{user_id}/": {
       "delete": {
         "summary": "Organizations:Roles:Users:Delete",
         "operationId": "organizations:roles:users:delete",
@@ -2768,7 +3224,16 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
               "title": "Role Id"
             }
           },
@@ -2783,15 +3248,21 @@
             }
           },
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           }
         ],
@@ -2842,7 +3313,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/branches/": {
+    "/organizations/{organization_id}/branches/": {
       "get": {
         "summary": "Organizations:Projects:Branch:List",
         "operationId": "organizations:projects:branch:list",
@@ -2853,27 +3324,39 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -2887,7 +3370,7 @@
                   "items": {
                     "$ref": "#/components/schemas/BranchPublic"
                   },
-                  "title": "Response Organizations Projects Branch List Organizations  Organization Slug  Branches  Get"
+                  "title": "Response Organizations Projects Branch List Organizations  Organization Id  Branches  Get"
                 }
               }
             }
@@ -2944,15 +3427,21 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -2970,15 +3459,21 @@
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -3007,22 +3502,22 @@
               "detail": {
                 "operationId": "organizations:projects:branch:detail",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:projects:branch:update",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:projects:branch:delete",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               }
             }
@@ -3080,7 +3575,7 @@
         }
       }
     },
-    "/organizations/{organization_slug}/branches/{branch}/": {
+    "/organizations/{organization_id}/branches/{branch_id}/": {
       "get": {
         "summary": "Organizations:Projects:Branch:Detail",
         "operationId": "organizations:projects:branch:detail",
@@ -3091,39 +3586,57 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "branch",
+            "name": "branch_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Branch"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -3133,7 +3646,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BranchPublic"
+                  "$ref": "#/components/schemas/BranchResponse"
                 }
               }
             }
@@ -3190,39 +3703,57 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "branch",
+            "name": "branch_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Branch"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
@@ -3251,22 +3782,22 @@
               "detail": {
                 "operationId": "organizations:projects:branch:detail",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "update": {
                 "operationId": "organizations:projects:branch:update",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               },
               "delete": {
                 "operationId": "organizations:projects:branch:delete",
                 "parameters": {
-                  "project_slug": "$response.header.Location#regex:/projects/(.+)/",
-                  "branch": "$response.header.Location#regex:/branches/(.+)/"
+                  "project_id": "$response.header.Location#regex:/projects/(.+)/",
+                  "branch_id": "$response.header.Location#regex:/branches/(.+)/"
                 }
               }
             }
@@ -3333,45 +3864,190 @@
         ],
         "parameters": [
           {
-            "name": "organization_slug",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Organization Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
             }
           },
           {
-            "name": "branch",
+            "name": "branch_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Branch"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
             }
           },
           {
-            "name": "project_slug",
+            "name": "project_id",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 50,
-              "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-              "title": "Project Slug"
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
             }
           }
         ],
         "responses": {
           "204": {
             "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/branches/{branch_id}/resize": {
+      "post": {
+        "summary": "Organizations:Projects:Branch:Resize",
+        "operationId": "organizations:projects:branch:resize",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResizeParameters"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
           },
           "401": {
             "description": "Not authenticated",
@@ -3456,6 +4132,26 @@
               }
             }
           },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
           "422": {
             "description": "Validation Error",
             "content": {
@@ -3484,12 +4180,33 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserCreationResult"
+                  "prefixItems": [
+                    {
+                      "$ref": "#/components/schemas/UserCreationResult"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "type": "array",
+                  "maxItems": 2,
+                  "minItems": 2,
+                  "title": "Response Add Users  Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
                 }
               }
             }
@@ -3645,18 +4362,17 @@
             "title": "Name"
           },
           "source": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 50,
-                "minLength": 1,
-                "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Source"
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
           },
           "config_copy": {
             "type": "boolean",
@@ -3671,15 +4387,71 @@
         },
         "type": "object",
         "required": [
-          "name"
+          "name",
+          "source"
         ],
         "title": "BranchCreate"
+      },
+      "BranchDetailResources": {
+        "properties": {
+          "vcpu": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "minimum": 1.0,
+            "title": "Vcpu",
+            "description": "Number of virtual CPUs provisioned (matches Branch.vcpu constraints)."
+          },
+          "ram_bytes": {
+            "type": "integer",
+            "multipleOf": 1024.0,
+            "minimum": 1024.0,
+            "title": "Ram Bytes",
+            "description": "Guest memory expressed in bytes (mirrors Branch.memory)."
+          },
+          "nvme_bytes": {
+            "type": "integer",
+            "minimum": 1073741824.0,
+            "title": "Nvme Bytes",
+            "description": "Provisioned NVMe volume capacity in bytes (derived from Branch.database_size)."
+          },
+          "iops": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "minimum": 1.0,
+            "title": "Iops",
+            "description": "Configured storage IOPS budget (matches Branch.iops constraints)."
+          },
+          "storage_bytes": {
+            "type": "integer",
+            "minimum": 1073741824.0,
+            "title": "Storage Bytes",
+            "description": "Database storage capacity in bytes (mirrors Branch.database_size)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "vcpu",
+          "ram_bytes",
+          "nvme_bytes",
+          "iops",
+          "storage_bytes"
+        ],
+        "title": "BranchDetailResources"
       },
       "BranchPublic": {
         "properties": {
           "id": {
-            "type": "integer",
-            "title": "Id"
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
           },
           "name": {
             "type": "string",
@@ -3695,6 +4467,42 @@
           "name"
         ],
         "title": "BranchPublic"
+      },
+      "BranchResponse": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+            "title": "Name"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "rest_endpoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rest Endpoint"
+          },
+          "resources": {
+            "$ref": "#/components/schemas/BranchDetailResources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "id",
+          "resources"
+        ],
+        "title": "BranchResponse"
       },
       "BranchUpdate": {
         "properties": {
@@ -3814,22 +4622,17 @@
       "Organization": {
         "properties": {
           "id": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Id"
-          },
-          "slug": {
             "type": "string",
-            "maxLength": 50,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-            "title": "Slug"
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
           },
           "name": {
             "type": "string",
@@ -3850,7 +4653,6 @@
         },
         "type": "object",
         "required": [
-          "slug",
           "name"
         ],
         "title": "Organization"
@@ -3964,19 +4766,30 @@
       "ProjectPublic": {
         "properties": {
           "organization_id": {
-            "type": "integer",
-            "title": "Organization Id"
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
           },
           "id": {
-            "type": "integer",
-            "title": "Id"
-          },
-          "slug": {
             "type": "string",
-            "maxLength": 50,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-            "title": "Slug"
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
           },
           "name": {
             "type": "string",
@@ -4018,7 +4831,6 @@
         "required": [
           "organization_id",
           "id",
-          "slug",
           "name",
           "status",
           "deployment_status",
@@ -4046,18 +4858,39 @@
         "type": "object",
         "title": "ProjectUpdate"
       },
-      "Role": {
+      "ResizeParameters": {
         "properties": {
-          "id": {
+          "database_size": {
             "anyOf": [
               {
-                "type": "integer"
+                "type": "integer",
+                "multipleOf": 1073741824.0,
+                "exclusiveMinimum": 0.0
               },
               {
                 "type": "null"
               }
             ],
-            "title": "Id"
+            "title": "Database Size"
+          }
+        },
+        "type": "object",
+        "title": "ResizeParameters"
+      },
+      "Role": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
           },
           "organization_id": {
             "anyOf": [

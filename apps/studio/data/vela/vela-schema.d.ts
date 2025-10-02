@@ -39,7 +39,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/": {
+    "/organizations/{organization_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -58,7 +58,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/audit": {
+    "/organizations/{organization_id}/audit": {
         parameters: {
             query?: never;
             header?: never;
@@ -75,7 +75,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/projects/": {
+    "/organizations/{organization_id}/projects/": {
         parameters: {
             query?: never;
             header?: never;
@@ -93,7 +93,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/projects/{project_slug}/branches/": {
+    "/organizations/{organization_id}/projects/{project_id}/branches/": {
         parameters: {
             query?: never;
             header?: never;
@@ -111,7 +111,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/projects/{project_slug}/branches/{branch}/": {
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -130,7 +130,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/projects/{project_slug}/": {
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/resize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Organizations:Projects:Branch:Resize */
+        post: operations["organizations:projects:branch:resize"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -149,7 +166,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/projects/{project_slug}/pause": {
+    "/organizations/{organization_id}/projects/{project_id}/pause": {
         parameters: {
             query?: never;
             header?: never;
@@ -166,7 +183,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/projects/{project_slug}/resume": {
+    "/organizations/{organization_id}/projects/{project_id}/resume": {
         parameters: {
             query?: never;
             header?: never;
@@ -183,7 +200,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/members/": {
+    "/organizations/{organization_id}/members/": {
         parameters: {
             query?: never;
             header?: never;
@@ -201,7 +218,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/members/{user_id}": {
+    "/organizations/{organization_id}/members/{user_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -219,7 +236,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/roles/": {
+    "/organizations/{organization_id}/roles/": {
         parameters: {
             query?: never;
             header?: never;
@@ -237,7 +254,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/roles/{role_id}/": {
+    "/organizations/{organization_id}/roles/{role_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -256,7 +273,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/roles/{role_id}/users/": {
+    "/organizations/{organization_id}/roles/{role_id}/users/": {
         parameters: {
             query?: never;
             header?: never;
@@ -274,7 +291,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/roles/{role_id}/users/{user_id}/": {
+    "/organizations/{organization_id}/roles/{role_id}/users/{user_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -291,7 +308,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/branches/": {
+    "/organizations/{organization_id}/branches/": {
         parameters: {
             query?: never;
             header?: never;
@@ -309,7 +326,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_slug}/branches/{branch}/": {
+    "/organizations/{organization_id}/branches/{branch_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -323,6 +340,23 @@ export interface paths {
         post?: never;
         /** Organizations:Projects:Branch:Delete */
         delete: operations["organizations:projects:branch:delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/branches/{branch_id}/resize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Organizations:Projects:Branch:Resize */
+        post: operations["organizations:projects:branch:resize"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -404,8 +438,12 @@ export interface components {
         BranchCreate: {
             /** Name */
             name: string;
-            /** Source */
-            source?: string | null;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            source: string;
             /**
              * Config Copy
              * @default false
@@ -417,12 +455,54 @@ export interface components {
              */
             data_copy?: boolean;
         };
+        /** BranchDetailResources */
+        BranchDetailResources: {
+            /**
+             * Vcpu
+             * @description Number of virtual CPUs provisioned (matches Branch.vcpu constraints).
+             */
+            vcpu: number;
+            /**
+             * Ram Bytes
+             * @description Guest memory expressed in bytes (mirrors Branch.memory).
+             */
+            ram_bytes: number;
+            /**
+             * Nvme Bytes
+             * @description Provisioned NVMe volume capacity in bytes (derived from Branch.database_size).
+             */
+            nvme_bytes: number;
+            /**
+             * Iops
+             * @description Configured storage IOPS budget (matches Branch.iops constraints).
+             */
+            iops: number;
+            /**
+             * Storage Bytes
+             * @description Database storage capacity in bytes (mirrors Branch.database_size).
+             */
+            storage_bytes: number;
+        };
         /** BranchPublic */
         BranchPublic: {
-            /** Id */
-            id: number;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            id: string;
             /** Name */
             name: string;
+        };
+        /** BranchResponse */
+        BranchResponse: {
+            /** Name */
+            name: string;
+            /** Id */
+            id: string;
+            /** Rest Endpoint */
+            rest_endpoint?: string | null;
+            resources: components["schemas"]["BranchDetailResources"];
         };
         /** BranchUpdate */
         BranchUpdate: {
@@ -465,10 +545,12 @@ export interface components {
         };
         /** Organization */
         Organization: {
-            /** Id */
-            id?: number | null;
-            /** Slug */
-            slug: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            id?: string;
             /** Name */
             name: string;
             /**
@@ -521,12 +603,18 @@ export interface components {
         };
         /** ProjectPublic */
         ProjectPublic: {
-            /** Organization Id */
-            organization_id: number;
-            /** Id */
-            id: number;
-            /** Slug */
-            slug: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            organization_id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            id: string;
             /** Name */
             name: string;
             /** Status */
@@ -548,10 +636,19 @@ export interface components {
             /** Name */
             name?: string | null;
         };
+        /** ResizeParameters */
+        ResizeParameters: {
+            /** Database Size */
+            database_size?: number | null;
+        };
         /** Role */
         Role: {
-            /** Id */
-            id?: number | null;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            id?: string;
             /** Organization Id */
             organization_id?: number | null;
         };
@@ -752,7 +849,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -810,7 +907,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -881,7 +978,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -940,7 +1037,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -998,7 +1095,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -1058,7 +1155,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -1129,8 +1226,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
+                organization_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -1190,8 +1287,8 @@ export interface operations {
             };
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
+                organization_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -1262,9 +1359,9 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
-                branch: string;
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -1276,7 +1373,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BranchPublic"];
+                    "application/json": components["schemas"]["BranchResponse"];
                 };
             };
             /** @description Not authenticated */
@@ -1322,9 +1419,9 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
-                branch: string;
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -1395,9 +1492,9 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
-                branch: string;
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -1448,13 +1545,77 @@ export interface operations {
             };
         };
     };
+    "organizations:projects:branch:resize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResizeParameters"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     "organizations:projects:detail": {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
+                organization_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -1512,8 +1673,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
+                organization_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -1584,8 +1745,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
+                organization_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -1641,8 +1802,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
+                organization_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -1698,8 +1859,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                project_slug: string;
+                organization_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -1752,10 +1913,12 @@ export interface operations {
     };
     "organizations:members:list": {
         parameters: {
-            query?: never;
+            query?: {
+                response?: "shallow" | "deep";
+            };
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -1767,7 +1930,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserID"][];
+                    "application/json": (string | components["schemas"]["UserPublic"])[];
                 };
             };
             /** @description Not authenticated */
@@ -1813,7 +1976,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -1875,7 +2038,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
                 user_id: string;
             };
             cookie?: never;
@@ -1932,7 +2095,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
                 user_id: string;
             };
             cookie?: never;
@@ -1989,7 +2152,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -2050,7 +2213,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -2108,8 +2271,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                role_id: number;
+                organization_id: string;
+                role_id: string;
             };
             cookie?: never;
         };
@@ -2167,8 +2330,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                role_id: number;
+                organization_id: string;
+                role_id: string;
             };
             cookie?: never;
         };
@@ -2224,8 +2387,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                organization_slug: string;
-                role_id: number;
+                organization_id: string;
+                role_id: string;
             };
             cookie?: never;
         };
@@ -2278,11 +2441,13 @@ export interface operations {
     };
     "organizations:roles:users:list": {
         parameters: {
-            query?: never;
+            query?: {
+                response?: "shallow" | "deep";
+            };
             header?: never;
             path: {
-                organization_slug: string;
-                role_id: number;
+                organization_id: string;
+                role_id: string;
             };
             cookie?: never;
         };
@@ -2294,7 +2459,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserID"][];
+                    "application/json": (string | components["schemas"]["UserPublic"])[];
                 };
             };
             /** @description Not authenticated */
@@ -2342,8 +2507,8 @@ export interface operations {
             };
             header?: never;
             path: {
-                organization_slug: string;
-                role_id: number;
+                organization_id: string;
+                role_id: string;
             };
             cookie?: never;
         };
@@ -2401,9 +2566,9 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                role_id: number;
+                role_id: string;
                 user_id: string;
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -2457,11 +2622,11 @@ export interface operations {
     "organizations:projects:branch:list": {
         parameters: {
             query: {
-                project_slug: string;
+                project_id: string;
             };
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -2518,11 +2683,11 @@ export interface operations {
         parameters: {
             query: {
                 response?: "empty" | "full";
-                project_slug: string;
+                project_id: string;
             };
             header?: never;
             path: {
-                organization_slug: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -2591,12 +2756,12 @@ export interface operations {
     "organizations:projects:branch:detail": {
         parameters: {
             query: {
-                project_slug: string;
+                project_id: string;
             };
             header?: never;
             path: {
-                organization_slug: string;
-                branch: string;
+                organization_id: string;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -2608,7 +2773,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BranchPublic"];
+                    "application/json": components["schemas"]["BranchResponse"];
                 };
             };
             /** @description Not authenticated */
@@ -2652,12 +2817,12 @@ export interface operations {
     "organizations:projects:branch:update": {
         parameters: {
             query: {
-                project_slug: string;
+                project_id: string;
             };
             header?: never;
             path: {
-                organization_slug: string;
-                branch: string;
+                organization_id: string;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -2726,12 +2891,12 @@ export interface operations {
     "organizations:projects:branch:delete": {
         parameters: {
             query: {
-                project_slug: string;
+                project_id: string;
             };
             header?: never;
             path: {
-                organization_slug: string;
-                branch: string;
+                organization_id: string;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -2743,6 +2908,71 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:resize": {
+        parameters: {
+            query: {
+                project_id: string;
+            };
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResizeParameters"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
             };
             /** @description Not authenticated */
             401: {
@@ -2802,6 +3032,24 @@ export interface operations {
                     "application/json": components["schemas"]["UserPublic"];
                 };
             };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
             /** @description Validation Error */
             422: {
                 headers: {
@@ -2827,12 +3075,24 @@ export interface operations {
         };
         responses: {
             /** @description Successful Response */
-            200: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserCreationResult"];
+                    "application/json": [
+                        components["schemas"]["UserCreationResult"],
+                        number
+                    ];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
                 };
             };
             /** @description Validation Error */

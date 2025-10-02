@@ -5,7 +5,6 @@ import { DeployEdgeFunctionButton } from 'components/interfaces/EdgeFunctions/De
 import { EdgeFunctionsListItem } from 'components/interfaces/Functions/EdgeFunctionsListItem'
 import {
   FunctionsEmptyState,
-  FunctionsEmptyStateLocal,
 } from 'components/interfaces/Functions/FunctionsEmptyState'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import EdgeFunctionsLayout from 'components/layouts/EdgeFunctionsLayout/EdgeFunctionsLayout'
@@ -17,7 +16,7 @@ import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import type { NextPageWithLayout } from 'types'
 import { Button, Table, TableHead, TableRow, TableHeader, TableBody, Card } from 'ui'
-import { getPathReferences } from '../../../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const EdgeFunctionsPage: NextPageWithLayout = () => {
   const { ref } = useParams()

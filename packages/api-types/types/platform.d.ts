@@ -6687,7 +6687,7 @@ export interface components {
       }[]
     }
     OrganizationResponse: {
-      id: number
+      id: string
       is_owner: boolean
       name: string
       opt_in_tags: string[]
@@ -7404,7 +7404,7 @@ export interface components {
       connectionString?: string | null
       db_host: string
       dbVersion?: string
-      id: number
+      id: string
       /** @enum {string} */
       infra_compute_size?:
         | 'pico'
@@ -7433,7 +7433,7 @@ export interface components {
       lastDatabaseResizeAt?: string
       maxDatabasePreprovisionGb?: number
       name: string
-      organization_id: number
+      organization_id: string
       parent_project_ref?: string
       ref: string
       region: string
@@ -7458,12 +7458,11 @@ export interface components {
       subscription_id: string
       volumeSizeGb?: number
       default_branch: string
-      organization_slug: string
     }
     ProjectInfo: {
       cloud_provider: string
       disk_volume_size_gb?: number
-      id: number
+      id: string
       /** @enum {string} */
       infra_compute_size?:
         | 'pico'
@@ -7490,7 +7489,7 @@ export interface components {
       is_branch_enabled: boolean
       is_physical_backups_enabled: boolean | null
       name: string
-      organization_id: number
+      organization_id: string
       organization_slug: string
       default_branch: string
       ref: string
@@ -10617,7 +10616,7 @@ export interface operations {
   GitHubConnectionsController_listOrganizationGitHubConnections: {
     parameters: {
       query: {
-        organization_id: number
+        organization_id: string
       }
       header?: never
       path?: never

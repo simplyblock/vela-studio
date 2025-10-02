@@ -7,7 +7,7 @@ import type { ResponseError } from 'types'
 import { integrationKeys } from './keys'
 
 type GitHubConnectionCreateVariables = {
-  organizationId: number
+  organizationId: string
   connection: components['schemas']['CreateGitHubConnectionBody']
 }
 

@@ -22,7 +22,7 @@ import { REPORT_DATERANGE_HELPER_LABELS } from 'components/interfaces/Reports/Re
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 
 import type { NextPageWithLayout } from 'types'
-import { getPathReferences } from '../../../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const EdgeFunctionsReport: NextPageWithLayout = () => {
   return (

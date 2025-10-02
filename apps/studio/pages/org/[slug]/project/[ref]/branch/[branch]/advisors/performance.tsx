@@ -14,7 +14,7 @@ import { Lint, useProjectLintsQuery } from 'data/lint/lint-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { NextPageWithLayout } from 'types'
 import { LoadingLine } from 'ui'
-import { getPathReferences } from '../../../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const ProjectLints: NextPageWithLayout = () => {
   const { preset, id } = useParams()
