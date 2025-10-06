@@ -1,4 +1,3 @@
-import { DEFAULT_PLATFORM_APPLICATION_NAME } from '@supabase/pg-meta/src/constants'
 import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
@@ -6,32 +5,30 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { databaseExtensionsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseExtension = components['schemas']['PostgresExtension']
 
 export type DatabaseExtensionsVariables = {
-  projectRef?: string
+  branch?: Branch
   connectionString?: string | null
 }
 
 export async function getDatabaseExtensions(
-  { projectRef, connectionString }: DatabaseExtensionsVariables,
+  { branch }: DatabaseExtensionsVariables,
   signal?: AbortSignal,
   headersInit?: HeadersInit
 ) {
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('branch is required')
 
   let headers = new Headers(headersInit)
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
 
-  const { data, error } = await get('/platform/pg-meta/{ref}/extensions', {
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/extensions', {
     params: {
-      header: {
-        'x-connection-encrypted': connectionString!,
-        'x-pg-application-name': DEFAULT_PLATFORM_APPLICATION_NAME,
-      },
       path: {
-        ref: projectRef,
+        slug: branch.organization_id,
+        ref: branch.project_id,
+        branch: branch.id
       },
     },
     headers,
@@ -46,7 +43,7 @@ export type DatabaseExtensionsData = Awaited<ReturnType<typeof getDatabaseExtens
 export type DatabaseExtensionsError = ResponseError
 
 export const useDatabaseExtensionsQuery = <TData = DatabaseExtensionsData>(
-  { projectRef, connectionString }: DatabaseExtensionsVariables,
+  { branch }: DatabaseExtensionsVariables,
   {
     enabled = true,
     ...options
@@ -56,10 +53,10 @@ export const useDatabaseExtensionsQuery = <TData = DatabaseExtensionsData>(
   const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
 
   return useQuery<DatabaseExtensionsData, DatabaseExtensionsError, TData>(
-    databaseExtensionsKeys.list(projectRef),
-    ({ signal }) => getDatabaseExtensions({ projectRef, connectionString }, signal),
+    databaseExtensionsKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getDatabaseExtensions({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && isActive,
+      enabled: enabled && typeof branch !== 'undefined' && isActive,
       ...options,
     }
   )

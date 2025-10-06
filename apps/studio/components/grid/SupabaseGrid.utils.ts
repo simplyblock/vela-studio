@@ -11,6 +11,7 @@ import { FilterOperatorOptions } from './components/header/filter/Filter.constan
 import { STORAGE_KEY_PREFIX } from './constants'
 import type { Sort, SupaColumn, SupaTable } from './types'
 import { formatClipboardValue } from './utils/common'
+import { Branch } from 'api-types/types'
 
 export function formatSortURLParams(tableName: string, sort?: string[]): Sort[] {
   if (Array.isArray(sort)) {
@@ -123,11 +124,11 @@ export function getStorageKey(prefix: string, ref: string) {
 }
 
 export function loadTableEditorStateFromLocalStorage(
-  projectRef: string,
+  branch: Branch,
   tableName: string,
   schema?: string | null
 ): SavedState | undefined {
-  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, projectRef)
+  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branch.id)
   const jsonStr = localStorage.getItem(storageKey)
   if (!jsonStr) return
   const json = JSON.parse(jsonStr)
@@ -177,23 +178,23 @@ export const saveTableEditorStateToLocalStorageDebounced = AwesomeDebouncePromis
 )
 
 export function useLoadTableEditorStateFromLocalStorageIntoUrl({
-  projectRef,
+  branch,
   table,
 }: {
-  projectRef: string | undefined
+  branch?: Branch
   table: Entity | undefined
 }) {
   const [_, setParams] = useUrlState({
     arrayKeys: ['sort', 'filter'],
   })
   useEffect(() => {
-    if (!projectRef || !table) {
+    if (!branch || !table) {
       return
     }
 
     const searchParams = new URLSearchParams(window.location.search)
 
-    const savedState = loadTableEditorStateFromLocalStorage(projectRef, table.name, table.schema)
+    const savedState = loadTableEditorStateFromLocalStorage(branch, table.name, table.schema)
 
     // If no sort params are set, use saved state
 
@@ -210,7 +211,7 @@ export function useLoadTableEditorStateFromLocalStorageIntoUrl({
     if (params) {
       setParams((prevParams) => ({ ...prevParams, ...params }))
     }
-  }, [projectRef, table])
+  }, [branch, table])
 }
 
 export const handleCopyCell = (

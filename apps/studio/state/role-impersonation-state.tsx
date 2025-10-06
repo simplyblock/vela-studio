@@ -73,8 +73,7 @@ export const RoleImpersonationStateContextProvider = ({ children }: PropsWithChi
     const event = { user_id: claims.sub, claims, authentication_method: 'password' }
 
     const result = await executeSql({
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       sql: `select ${schema}.${functionName}('${JSON.stringify(event)}'::jsonb) as event;`,
       queryKey: ['customize-access-token', project?.ref],
     })

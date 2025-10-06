@@ -1,4 +1,7 @@
 export const databaseRoleKeys = {
-  databaseRoles: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'database-roles'] as const,
+  databaseRoles: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'database-roles'] as const,
 }

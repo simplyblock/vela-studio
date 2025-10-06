@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type GetViewDefinitionArgs = {
   id?: number
@@ -30,19 +31,17 @@ export const getViewDefinitionSql = ({ id }: GetViewDefinitionArgs) => {
 }
 
 export type ViewDefinitionVariables = GetViewDefinitionArgs & {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export async function getViewDefinition(
-  { projectRef, connectionString, id }: ViewDefinitionVariables,
+  { branch, id }: ViewDefinitionVariables,
   signal?: AbortSignal
 ) {
   const sql = getViewDefinitionSql({ id })
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['view-definition', id],
     },
@@ -56,18 +55,17 @@ export type ViewDefinitionData = string
 export type ViewDefinitionError = ExecuteSqlError
 
 export const useViewDefinitionQuery = <TData = ViewDefinitionData>(
-  { projectRef, connectionString, id }: ViewDefinitionVariables,
+  { branch, id }: ViewDefinitionVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ViewDefinitionData, ViewDefinitionError, TData> = {}
 ) =>
   useQuery<ViewDefinitionData, ViewDefinitionError, TData>(
-    databaseKeys.viewDefinition(projectRef, id),
-    ({ signal }) => getViewDefinition({ projectRef, connectionString, id }, signal),
+    databaseKeys.viewDefinition(branch?.organization_id, branch?.project_id, branch?.id, id),
+    ({ signal }) => getViewDefinition({ branch, id }, signal),
     {
-      enabled:
-        enabled && typeof projectRef !== 'undefined' && typeof id !== 'undefined' && !isNaN(id),
+      enabled: enabled && typeof branch !== 'undefined' && typeof id !== 'undefined' && !isNaN(id),
       ...options,
     }
   )

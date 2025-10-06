@@ -78,8 +78,7 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
   const { isSchemaLocked } = useIsProtectedSchema({ schema: schema, excludedSchemas: ['realtime'] })
 
   const { data: policies } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const {
@@ -89,8 +88,7 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
     isError,
     error,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: schema,
   })
 

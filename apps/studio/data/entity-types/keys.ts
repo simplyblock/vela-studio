@@ -1,6 +1,8 @@
 export const entityTypeKeys = {
   list: (
-    projectRef: string | undefined,
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
     params?: {
       schemas?: string[]
       search?: string
@@ -8,5 +10,6 @@ export const entityTypeKeys = {
       limit?: number
       filterTypes?: string[]
     }
-  ) => ['projects', projectRef, 'entity-types', ...(params ? [params] : [])] as const,
+  ) =>
+    ['branches', orgId, projectId, branchId, 'entity-types', ...(params ? [params] : [])] as const,
 }

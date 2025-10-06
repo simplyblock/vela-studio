@@ -30,8 +30,7 @@ export const WrapperOverviewTab = () => {
   const { can: canCreateWrapper } = {can:true}
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const wrapperMeta = WRAPPERS.find((w) => w.name === id)

@@ -13,8 +13,7 @@ export function useIndexAdvisorStatus() {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const { hypopg, indexAdvisor } = getIndexAdvisorExtensions(extensions ?? [])

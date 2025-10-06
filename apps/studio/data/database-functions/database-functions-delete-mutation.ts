@@ -7,23 +7,18 @@ import { databaseKeys } from 'data/database/keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { DatabaseFunction } from './database-functions-query'
+import { Branch } from 'api-types/types'
 
 export type DatabaseFunctionDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   func: DatabaseFunction
 }
 
-export async function deleteDatabaseFunction({
-  projectRef,
-  connectionString,
-  func,
-}: DatabaseFunctionDeleteVariables) {
+export async function deleteDatabaseFunction({ branch, func }: DatabaseFunctionDeleteVariables) {
   const { sql, zod } = pgMeta.functions.remove(func)
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['functions', 'delete', func.id.toString()],
   })
@@ -47,8 +42,10 @@ export const useDatabaseFunctionDeleteMutation = ({
     (vars) => deleteDatabaseFunction(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseKeys.databaseFunctions(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseKeys.databaseFunctions(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

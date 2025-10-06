@@ -4,10 +4,10 @@ import { toast } from 'sonner'
 import { Query } from '@supabase/pg-meta/src/query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
+import { Branch } from 'api-types/types'
 
 export type GetCellValueVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: { schema: string; name: string }
   column: string
   pkMatch: { [key: string]: any }
@@ -25,15 +25,9 @@ export function getCellValueSql({
     .toSql()
 }
 
-export async function getCellValue({
-  projectRef,
-  connectionString,
-  table,
-  column,
-  pkMatch,
-}: GetCellValueVariables) {
+export async function getCellValue({ branch, table, column, pkMatch }: GetCellValueVariables) {
   const sql = getCellValueSql({ table, column, pkMatch })
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result?.[0][column]
 }
 

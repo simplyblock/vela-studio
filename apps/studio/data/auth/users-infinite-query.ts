@@ -5,12 +5,12 @@ import { executeSql, ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { authKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type Filter = 'verified' | 'unverified' | 'anonymous'
 
 export type UsersVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   page?: number
   keywords?: string
   filter?: Filter
@@ -88,19 +88,24 @@ export type UsersData = { result: User[] }
 export type UsersError = ExecuteSqlError
 
 export const useUsersInfiniteQuery = <TData = UsersData>(
-  { projectRef, connectionString, keywords, filter, providers, sort, order }: UsersVariables,
+  { branch, keywords, filter, providers, sort, order }: UsersVariables,
   { enabled = true, ...options }: UseInfiniteQueryOptions<UsersData, UsersError, TData> = {}
 ) => {
   const { data: project } = useSelectedProjectQuery()
   const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
 
   return useInfiniteQuery<UsersData, UsersError, TData>(
-    authKeys.usersInfinite(projectRef, { keywords, filter, providers, sort, order }),
+    authKeys.usersInfinite(branch?.organization_id, branch?.project_id, branch?.id, {
+      keywords,
+      filter,
+      providers,
+      sort,
+      order,
+    }),
     ({ signal, pageParam }) => {
       return executeSql(
         {
-          projectRef,
-          connectionString,
+          branch,
           sql: getUsersSQL({
             page: pageParam,
             verified: filter,
@@ -109,13 +114,13 @@ export const useUsersInfiniteQuery = <TData = UsersData>(
             sort: sort ?? 'created_at',
             order: order ?? 'desc',
           }),
-          queryKey: authKeys.usersInfinite(projectRef),
+          queryKey: authKeys.usersInfinite(branch?.organization_id, branch?.project_id, branch?.id),
         },
         signal
       )
     },
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && isActive,
+      enabled: enabled && typeof branch !== 'undefined' && isActive,
       getNextPageParam(lastPage, pages) {
         const page = pages.length
         const hasNextPage = lastPage.result.length >= USERS_PAGE_LIMIT

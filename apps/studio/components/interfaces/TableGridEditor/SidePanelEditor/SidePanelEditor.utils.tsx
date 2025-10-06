@@ -28,8 +28,8 @@ import {
   RetrieveTableResult,
 } from 'data/tables/table-retrieve-query'
 import {
-  UpdateTableBody,
   updateTable as updateTableMutation,
+  UpdateTableBody,
 } from 'data/tables/table-update-mutation'
 import { getTables } from 'data/tables/tables-query'
 import { timeout, tryParseJson } from 'lib/helpers'
@@ -41,6 +41,7 @@ import type { ForeignKey } from './ForeignKeySelector/ForeignKeySelector.types'
 import type { ColumnField, CreateColumnPayload, UpdateColumnPayload } from './SidePanelEditor.types'
 import { checkIfRelationChanged } from './TableEditor/ForeignKeysManagement/ForeignKeysManagement.utils'
 import type { ImportContent } from './TableEditor/TableEditor.types'
+import { Branch } from 'api-types/types'
 
 const BATCH_SIZE = 1000
 const CHUNK_SIZE = 1024 * 1024 * 0.1 // 0.1MB
@@ -50,8 +51,7 @@ const CHUNK_SIZE = 1024 * 1024 * 0.1 // 0.1MB
  * from the pg-meta library in the future
  */
 export const addPrimaryKey = async (
-  projectRef: string,
-  connectionString: string | undefined | null,
+  branch: Branch,
   schema: string,
   table: string,
   columns: string[]
@@ -59,24 +59,21 @@ export const addPrimaryKey = async (
   const primaryKeyColumns = columns.join('","')
   const query = `ALTER TABLE "${schema}"."${table}" ADD PRIMARY KEY ("${primaryKeyColumns}")`
   return await executeSql({
-    projectRef: projectRef,
-    connectionString: connectionString,
+    branch,
     sql: query,
     queryKey: ['primary-keys'],
   })
 }
 
 export const dropConstraint = async (
-  projectRef: string,
-  connectionString: string | undefined | null,
+  branch: Branch,
   schema: string,
   table: string,
   name: string
 ) => {
   const query = `ALTER TABLE "${schema}"."${table}" DROP CONSTRAINT "${name}"`
   return await executeSql({
-    projectRef: projectRef,
-    connectionString: connectionString,
+    branch,
     sql: query,
     queryKey: ['drop-constraint'],
   })
@@ -126,20 +123,17 @@ export const getAddForeignKeySQL = ({
 }
 
 export const addForeignKey = async ({
-  projectRef,
-  connectionString,
+  branch,
   table,
   foreignKeys,
 }: {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: { schema: string; name: string }
   foreignKeys: ForeignKey[]
 }) => {
   const query = getAddForeignKeySQL({ table, foreignKeys })
   return await executeSql({
-    projectRef: projectRef,
-    connectionString: connectionString,
+    branch,
     sql: query,
     queryKey: ['foreign-keys'],
   })
@@ -167,33 +161,28 @@ DROP CONSTRAINT IF EXISTS "${relation.name}"
 }
 
 export const removeForeignKey = async ({
-  projectRef,
-  connectionString,
+  branch,
   table,
   foreignKeys,
 }: {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: { schema: string; name: string }
   foreignKeys: ForeignKey[]
 }) => {
   const query = getRemoveForeignKeySQL({ table, foreignKeys })
   return await executeSql({
-    projectRef: projectRef,
-    connectionString: connectionString,
+    branch,
     sql: query,
     queryKey: ['foreign-keys'],
   })
 }
 
 export const updateForeignKey = async ({
-  projectRef,
-  connectionString,
+  branch,
   table,
   foreignKeys,
 }: {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: { schema: string; name: string }
   foreignKeys: ForeignKey[]
 }) => {
@@ -204,8 +193,7 @@ export const updateForeignKey = async ({
     .replace(/\s+/g, ' ')
     .trim()
   return await executeSql({
-    projectRef: projectRef,
-    connectionString: connectionString,
+    branch,
     sql: query,
     queryKey: ['foreign-keys'],
   })
@@ -216,8 +204,7 @@ export const updateForeignKey = async ({
  * dashboard and hence do not sit within their own stores
  */
 export const createColumn = async ({
-  projectRef,
-  connectionString,
+  branch,
   payload,
   selectedTable,
   primaryKey,
@@ -225,8 +212,7 @@ export const createColumn = async ({
   skipSuccessMessage = false,
   toastId: _toastId,
 }: {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   payload: CreateColumnPayload
   selectedTable: RetrieveTableResult
   primaryKey?: Constraint
@@ -239,8 +225,7 @@ export const createColumn = async ({
     // Once pg-meta supports composite keys, we can remove this logic
     const { isPrimaryKey, ...formattedPayload } = payload
     await createDatabaseColumn({
-      projectRef: projectRef,
-      connectionString: connectionString,
+      branch,
       payload: formattedPayload,
     })
 
@@ -251,30 +236,17 @@ export const createColumn = async ({
       const existingPrimaryKeys = selectedTable.primary_keys.map((x) => x.name)
 
       if (existingPrimaryKeys.length > 0 && primaryKey !== undefined) {
-        await dropConstraint(
-          projectRef,
-          connectionString,
-          payload.schema,
-          payload.table,
-          primaryKey.name
-        )
+        await dropConstraint(branch, payload.schema, payload.table, primaryKey.name)
       }
 
       const primaryKeyColumns = existingPrimaryKeys.concat([formattedPayload.name])
-      await addPrimaryKey(
-        projectRef,
-        connectionString,
-        payload.schema,
-        payload.table,
-        primaryKeyColumns
-      )
+      await addPrimaryKey(branch, payload.schema, payload.table, primaryKeyColumns)
     }
 
     // Then add the foreign key constraints here
     if (foreignKeyRelations.length > 0) {
       await addForeignKey({
-        projectRef,
-        connectionString,
+        branch,
         table: { schema: payload.schema, name: payload.table },
         foreignKeys: foreignKeyRelations,
       })
@@ -291,8 +263,7 @@ export const createColumn = async ({
 }
 
 export const updateColumn = async ({
-  projectRef,
-  connectionString,
+  branch,
   originalColumn,
   payload,
   selectedTable,
@@ -302,8 +273,7 @@ export const updateColumn = async ({
   skipPKCreation,
   skipSuccessMessage = false,
 }: {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   originalColumn: RetrievedTableColumn
   payload: UpdateColumnPayload
   selectedTable: RetrieveTableResult
@@ -316,8 +286,7 @@ export const updateColumn = async ({
   try {
     const { isPrimaryKey, ...formattedPayload } = payload
     await updateDatabaseColumn({
-      projectRef,
-      connectionString,
+      branch,
       originalColumn,
       payload: formattedPayload,
     })
@@ -327,13 +296,7 @@ export const updateColumn = async ({
 
       // Primary key is getting updated for the column
       if (existingPrimaryKeys.length > 0 && primaryKey !== undefined) {
-        await dropConstraint(
-          projectRef,
-          connectionString,
-          originalColumn.schema,
-          originalColumn.table,
-          primaryKey.name
-        )
+        await dropConstraint(branch, originalColumn.schema, originalColumn.table, primaryKey.name)
       }
 
       const columnName = formattedPayload.name ?? originalColumn.name
@@ -342,21 +305,14 @@ export const updateColumn = async ({
         : existingPrimaryKeys.filter((x) => x !== columnName)
 
       if (primaryKeyColumns.length) {
-        await addPrimaryKey(
-          projectRef,
-          connectionString,
-          originalColumn.schema,
-          originalColumn.table,
-          primaryKeyColumns
-        )
+        await addPrimaryKey(branch, originalColumn.schema, originalColumn.table, primaryKeyColumns)
       }
     }
 
     // Then update foreign keys
     if (foreignKeyRelations.length > 0) {
       await updateForeignKeys({
-        projectRef,
-        connectionString,
+        branch,
         table: { schema: originalColumn.schema, name: originalColumn.table },
         foreignKeys: foreignKeyRelations,
         existingForeignKeyRelations,
@@ -370,9 +326,7 @@ export const updateColumn = async ({
 }
 
 export const duplicateTable = async (
-  orgRef: string,
-  projectRef: string,
-  connectionString: string | undefined | null,
+  branch: Branch,
   payload: { name: string; comment?: string },
   metadata: {
     duplicateTable: RetrieveTableResult
@@ -389,8 +343,7 @@ export const duplicateTable = async (
   // The following query will copy the structure of the table along with indexes, constraints and
   // triggers. However, foreign key constraints are not duplicated over - has to be done separately
   await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: [
       `CREATE TABLE "${sourceTableSchema}"."${duplicatedTableName}" (LIKE "${sourceTableSchema}"."${sourceTableName}" INCLUDING ALL);`,
       payload.comment !== undefined
@@ -398,13 +351,14 @@ export const duplicateTable = async (
         : '',
     ].join('\n'),
   })
-  await queryClient.invalidateQueries(tableKeys.list(projectRef, sourceTableSchema))
+  await queryClient.invalidateQueries(
+    tableKeys.list(branch.organization_id, branch.project_id, branch.id, sourceTableSchema)
+  )
 
   // Duplicate foreign key constraints over
   if (foreignKeyRelations.length > 0) {
     await addForeignKey({
-      projectRef,
-      connectionString,
+      branch,
       table: { ...duplicateTable, name: payload.name },
       foreignKeys: foreignKeyRelations,
     })
@@ -413,8 +367,7 @@ export const duplicateTable = async (
   // Duplicate rows if needed
   if (isDuplicateRows) {
     await executeSql({
-      projectRef,
-      connectionString,
+      branch,
       sql: `INSERT INTO "${sourceTableSchema}"."${duplicatedTableName}" SELECT * FROM "${sourceTableSchema}"."${sourceTableName}";`,
     })
 
@@ -423,26 +376,27 @@ export const duplicateTable = async (
     const identityColumns = columns.filter((column) => column.identity_generation !== null)
     identityColumns.map(async (column) => {
       await executeSql({
-        projectRef,
-        connectionString,
+        branch,
         sql: `SELECT setval('"${sourceTableSchema}"."${duplicatedTableName}_${column.name}_seq"', (SELECT MAX("${column.name}") FROM "${sourceTableSchema}"."${sourceTableName}"));`,
       })
     })
   }
 
   const tables = await queryClient.fetchQuery({
-    queryKey: tableKeys.list(projectRef, sourceTableSchema),
-    queryFn: ({ signal }) =>
-      getTables({ projectRef, connectionString, schema: sourceTableSchema }, signal),
+    queryKey: tableKeys.list(
+      branch.organization_id,
+      branch.project_id,
+      branch.id,
+      sourceTableSchema
+    ),
+    queryFn: ({ signal }) => getTables({ branch, schema: sourceTableSchema }, signal),
   })
 
   const duplicatedTable = find(tables, { schema: sourceTableSchema, name: duplicatedTableName })!
 
   if (isRLSEnabled) {
     await updateTableMutation({
-      orgSlug: orgRef,
-      projectRef,
-      connectionString,
+      branch,
       id: duplicatedTable?.id!,
       name: duplicatedTable?.name!,
       schema: duplicatedTable?.schema!,
@@ -454,9 +408,7 @@ export const duplicateTable = async (
 }
 
 export const createTable = async ({
-  orgRef,
-  projectRef,
-  connectionString,
+  branch,
   toastId,
   payload,
   columns = [],
@@ -464,9 +416,7 @@ export const createTable = async ({
   isRLSEnabled,
   importContent,
 }: {
-  orgRef: string
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   toastId: string | number
   payload: {
     name: string
@@ -482,18 +432,20 @@ export const createTable = async ({
 
   // Create the table first. Error may be thrown.
   await createTableMutation({
-    projectRef: projectRef,
-    connectionString: connectionString,
+    branch,
     payload: payload,
   })
 
   const table = await queryClient.fetchQuery({
-    queryKey: tableKeys.retrieve(projectRef, payload.name, payload.schema),
+    queryKey: tableKeys.retrieve(
+      branch.organization_id,
+      branch.project_id,
+      branch.id,
+      payload.name,
+      payload.schema
+    ),
     queryFn: ({ signal }) =>
-      getTable(
-        { projectRef, connectionString, name: payload.name, schema: payload.schema },
-        signal
-      ),
+      getTable({ branch, name: payload.name, schema: payload.schema }, signal),
   })
 
   // If we face any errors during this process after the actual table creation
@@ -504,9 +456,7 @@ export const createTable = async ({
     // Toggle RLS if configured to be
     if (isRLSEnabled) {
       await updateTableMutation({
-        orgSlug: orgRef,
-        projectRef,
-        connectionString,
+        branch,
         id: table.id,
         name: table.name,
         schema: table.schema,
@@ -526,8 +476,7 @@ export const createTable = async ({
         isPrimaryKey: false,
       })
       await createDatabaseColumn({
-        projectRef,
-        connectionString,
+        branch,
         payload: columnPayload,
       })
     }
@@ -537,14 +486,13 @@ export const createTable = async ({
       .filter((column) => column.isPrimaryKey)
       .map((column) => column.name)
     if (primaryKeyColumns.length > 0) {
-      await addPrimaryKey(projectRef, connectionString, table.schema, table.name, primaryKeyColumns)
+      await addPrimaryKey(branch, table.schema, table.name, primaryKeyColumns)
     }
 
     // Then add the foreign key constraints here
     if (foreignKeyRelations.length > 0) {
       await addForeignKey({
-        projectRef,
-        connectionString,
+        branch,
         table: { schema: table.schema, name: table.name },
         foreignKeys: foreignKeyRelations,
       })
@@ -555,8 +503,7 @@ export const createTable = async ({
       if (importContent.file && importContent.rowCount > 0) {
         // Via a CSV file
         const { error }: any = await insertRowsViaSpreadsheet(
-          projectRef,
-          connectionString,
+          branch,
           importContent.file,
           table,
           importContent.selectedHeaders,
@@ -583,8 +530,7 @@ export const createTable = async ({
         const identityColumns = columns.filter((column) => column.isIdentity)
         for (const column of identityColumns) {
           await executeSql({
-            projectRef,
-            connectionString,
+            branch,
             sql: `SELECT setval('${table.name}_${column.name}_seq', (SELECT MAX("${column.name}") FROM "${table.name}"));`,
           })
         }
@@ -599,8 +545,7 @@ export const createTable = async ({
       } else {
         // Via text copy and paste
         await insertTableRows(
-          projectRef,
-          connectionString,
+          branch,
           table,
           importContent.rows,
           importContent.selectedHeaders,
@@ -627,8 +572,7 @@ export const createTable = async ({
         const identityColumns = columns.filter((column) => column.isIdentity)
         for (const column of identityColumns) {
           await executeSql({
-            projectRef,
-            connectionString,
+            branch,
             sql: `SELECT setval('${table.name}_${column.name}_seq', (SELECT MAX("${column.name}") FROM "${table.name}"));`,
           })
         }
@@ -637,8 +581,7 @@ export const createTable = async ({
 
     await prefetchEditorTablePage({
       queryClient,
-      projectRef,
-      connectionString,
+      branch,
       id: table.id,
     })
 
@@ -646,8 +589,7 @@ export const createTable = async ({
     return table
   } catch (error) {
     deleteTableMutation({
-      projectRef,
-      connectionString,
+      branch,
       id: table.id,
       name: table.name,
       schema: table.schema,
@@ -657,9 +599,7 @@ export const createTable = async ({
 }
 
 export const updateTable = async ({
-  orgRef,
-  projectRef,
-  connectionString,
+  branch,
   toastId,
   table,
   payload,
@@ -668,9 +608,7 @@ export const updateTable = async ({
   existingForeignKeyRelations,
   primaryKey,
 }: {
-  orgRef: string
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   toastId: string | number
   table: RetrieveTableResult
   payload: UpdateTableBody
@@ -695,15 +633,13 @@ export const updateTable = async ({
     // an additional check when removing PK if the column in the PK was removed
     // So doing this one step earlier, lets us skip that additional check.
     if (primaryKey !== undefined) {
-      await dropConstraint(projectRef, connectionString, table.schema, table.name, primaryKey.name)
+      await dropConstraint(branch, table.schema, table.name, primaryKey.name)
     }
   }
 
   // Update the table
   await updateTableMutation({
-    orgSlug: orgRef,
-    projectRef,
-    connectionString,
+    branch,
     id: table.id,
     name: table.name,
     schema: table.schema,
@@ -712,15 +648,16 @@ export const updateTable = async ({
 
   const updatedTable = await queryClient.fetchQuery({
     queryKey: tableKeys.retrieve(
-      projectRef,
+      branch.organization_id,
+      branch.project_id,
+      branch.id,
       payload.name ?? table.name,
       payload.schema ?? table.schema
     ),
     queryFn: ({ signal }) =>
       getTable(
         {
-          projectRef,
-          connectionString,
+          branch,
           name: payload.name ?? table.name,
           schema: payload.schema ?? table.schema,
         },
@@ -736,8 +673,7 @@ export const updateTable = async ({
   for (const column of columnsToRemove) {
     toast.loading(`Removing column ${column.name} from ${updatedTable.name}`, { id: toastId })
     await deleteDatabaseColumn({
-      projectRef,
-      connectionString,
+      branch,
       column,
     })
   }
@@ -754,8 +690,7 @@ export const updateTable = async ({
         isPrimaryKey: false,
       })
       const { error } = await createColumn({
-        projectRef: projectRef,
-        connectionString: connectionString,
+        branch,
         payload: columnPayload,
         selectedTable: updatedTable,
         skipSuccessMessage: true,
@@ -770,8 +705,7 @@ export const updateTable = async ({
           toast.loading(`Updating column ${column.name} from ${updatedTable.name}`, { id: toastId })
 
           const res = await updateColumn({
-            projectRef: projectRef,
-            connectionString: connectionString,
+            branch,
             originalColumn: originalColumn,
             payload: columnPayload,
             selectedTable: updatedTable,
@@ -789,40 +723,49 @@ export const updateTable = async ({
 
   // Then add back the primary keys again
   if (isPrimaryKeyUpdated && primaryKeyColumns.length > 0) {
-    await addPrimaryKey(
-      projectRef,
-      connectionString,
-      updatedTable.schema,
-      updatedTable.name,
-      primaryKeyColumns
-    )
+    await addPrimaryKey(branch, updatedTable.schema, updatedTable.name, primaryKeyColumns)
   }
 
   // Foreign keys will get updated here accordingly
   await updateForeignKeys({
-    projectRef,
-    connectionString,
+    branch,
     table: updatedTable,
     foreignKeys: foreignKeyRelations,
     existingForeignKeyRelations,
   })
 
   await Promise.all([
-    queryClient.invalidateQueries(tableEditorKeys.tableEditor(projectRef, table.id)),
-    queryClient.invalidateQueries(databaseKeys.foreignKeyConstraints(projectRef, table.schema)),
-    queryClient.invalidateQueries(databaseKeys.tableDefinition(projectRef, table.id)),
-    queryClient.invalidateQueries(entityTypeKeys.list(projectRef)),
-    queryClient.invalidateQueries(tableKeys.list(projectRef, table.schema, true)),
+    queryClient.invalidateQueries(
+      tableEditorKeys.tableEditor(branch.organization_id, branch.project_id, branch.id, table.id)
+    ),
+    queryClient.invalidateQueries(
+      databaseKeys.foreignKeyConstraints(
+        branch.organization_id,
+        branch.project_id,
+        branch.id,
+        table.schema
+      )
+    ),
+    queryClient.invalidateQueries(
+      databaseKeys.tableDefinition(branch.organization_id, branch.project_id, branch.id, table.id)
+    ),
+    queryClient.invalidateQueries(
+      entityTypeKeys.list(branch.organization_id, branch.project_id, branch.id)
+    ),
+    queryClient.invalidateQueries(
+      tableKeys.list(branch.organization_id, branch.project_id, branch.id, table.schema, true)
+    ),
   ])
 
   // We need to invalidate tableRowsAndCount after tableEditor
   // to ensure the query sent is correct
-  await queryClient.invalidateQueries(tableRowKeys.tableRowsAndCount(projectRef, table.id))
+  await queryClient.invalidateQueries(
+    tableRowKeys.tableRowsAndCount(branch.organization_id, branch.project_id, branch.id, table.id)
+  )
 
   return {
     table: await prefetchTableEditor(queryClient, {
-      projectRef,
-      connectionString,
+      branch,
       id: table.id,
     }),
     hasError,
@@ -871,8 +814,7 @@ export const formatRowsForInsert = ({
 }
 
 export const insertRowsViaSpreadsheet = async (
-  projectRef: string,
-  connectionString: string | undefined | null,
+  branch: Branch,
   file: any,
   table: RetrieveTableResult,
   selectedHeaders: string[],
@@ -900,7 +842,7 @@ export const insertRowsViaSpreadsheet = async (
 
         const insertQuery = new Query().from(table.name, table.schema).insert(formattedData).toSql()
         try {
-          await executeSql({ projectRef, connectionString, sql: insertQuery })
+          await executeSql({ branch, sql: insertQuery })
         } catch (error) {
           console.warn(error)
           insertError = error
@@ -923,8 +865,7 @@ export const insertRowsViaSpreadsheet = async (
 }
 
 export const insertTableRows = async (
-  projectRef: string,
-  connectionString: string | undefined | null,
+  branch: Branch,
   table: RetrieveTableResult,
   rows: any,
   selectedHeaders: string[],
@@ -946,7 +887,7 @@ export const insertTableRows = async (
         new Promise(async (resolve, reject) => {
           const insertQuery = new Query().from(table.name, table.schema).insert(batch).toSql()
           try {
-            await executeSql({ projectRef, connectionString, sql: insertQuery })
+            await executeSql({ branch, sql: insertQuery })
           } catch (error) {
             insertError = error
             reject(error)
@@ -971,14 +912,12 @@ export const insertTableRows = async (
 }
 
 const updateForeignKeys = async ({
-  projectRef,
-  connectionString,
+  branch,
   table,
   foreignKeys,
   existingForeignKeyRelations,
 }: {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: { schema: string; name: string }
   foreignKeys: ForeignKey[]
   existingForeignKeyRelations: ForeignKeyConstraint[]
@@ -987,8 +926,7 @@ const updateForeignKeys = async ({
   const relationsToAdd = foreignKeys.filter((x) => typeof x.id === 'string')
   if (relationsToAdd.length > 0) {
     await addForeignKey({
-      projectRef,
-      connectionString,
+      branch,
       table,
       foreignKeys: relationsToAdd,
     })
@@ -997,8 +935,7 @@ const updateForeignKeys = async ({
   const relationsToRemove = foreignKeys.filter((x) => x.toRemove)
   if (relationsToRemove.length > 0) {
     await removeForeignKey({
-      projectRef,
-      connectionString,
+      branch,
       table,
       foreignKeys: relationsToRemove,
     })
@@ -1013,8 +950,7 @@ const updateForeignKeys = async ({
   })
   if (relationsToUpdate.length > 0) {
     await updateForeignKey({
-      projectRef,
-      connectionString,
+      branch,
       table,
       foreignKeys: relationsToUpdate,
     })

@@ -1,10 +1,10 @@
-import type { PostgresTrigger } from '@supabase/postgres-meta'
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import pgMeta from '@supabase/pg-meta'
 import type { ResponseError } from 'types'
 import { databaseTriggerKeys } from './keys'
 import { executeSql } from 'data/sql/execute-sql-query'
+import { Branch } from 'api-types/types'
 
 export type DatabaseTriggerDeleteVariables = {
   trigger: {
@@ -13,20 +13,14 @@ export type DatabaseTriggerDeleteVariables = {
     schema: string
     table: string
   }
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
 }
 
-export async function deleteDatabaseTrigger({
-  trigger,
-  projectRef,
-  connectionString,
-}: DatabaseTriggerDeleteVariables) {
+export async function deleteDatabaseTrigger({ trigger, branch }: DatabaseTriggerDeleteVariables) {
   const { sql } = pgMeta.triggers.remove(trigger)
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['trigger', 'delete', trigger.id],
   })
@@ -50,8 +44,10 @@ export const useDatabaseTriggerDeleteMutation = ({
     (vars) => deleteDatabaseTrigger(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseTriggerKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseTriggerKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

@@ -2,6 +2,7 @@ import { QueryClient, useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type GetForeignKeyConstraintsVariables = {
   schema?: string
@@ -95,20 +96,18 @@ WHERE
 }
 
 export type ForeignKeyConstraintsVariables = GetForeignKeyConstraintsVariables & {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export async function getForeignKeyConstraints(
-  { projectRef, connectionString, schema }: ForeignKeyConstraintsVariables,
+  { branch, schema }: ForeignKeyConstraintsVariables,
   signal?: AbortSignal
 ) {
   const sql = getForeignKeyConstraintsSql({ schema })
 
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['foreign-key-constraints', schema],
     },
@@ -128,26 +127,37 @@ export type ForeignKeyConstraintsData = Awaited<ReturnType<typeof getForeignKeyC
 export type ForeignKeyConstraintsError = ExecuteSqlError
 
 export const useForeignKeyConstraintsQuery = <TData = ForeignKeyConstraintsData>(
-  { projectRef, connectionString, schema }: ForeignKeyConstraintsVariables,
+  { branch, schema }: ForeignKeyConstraintsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ForeignKeyConstraintsData, ForeignKeyConstraintsError, TData> = {}
 ) =>
   useQuery<ForeignKeyConstraintsData, ForeignKeyConstraintsError, TData>(
-    databaseKeys.foreignKeyConstraints(projectRef, schema),
-    ({ signal }) => getForeignKeyConstraints({ projectRef, connectionString, schema }, signal),
+    databaseKeys.foreignKeyConstraints(
+      branch?.organization_id,
+      branch?.project_id,
+      branch?.id,
+      schema
+    ),
+    ({ signal }) => getForeignKeyConstraints({ branch, schema }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof schema !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined' && typeof schema !== 'undefined',
       ...options,
     }
   )
 
 export function prefetchForeignKeyConstraints(
   client: QueryClient,
-  { projectRef, connectionString, schema }: ForeignKeyConstraintsVariables
+  { branch, schema }: ForeignKeyConstraintsVariables
 ) {
-  return client.fetchQuery(databaseKeys.foreignKeyConstraints(projectRef, schema), ({ signal }) =>
-    getForeignKeyConstraints({ projectRef, connectionString, schema }, signal)
+  return client.fetchQuery(
+    databaseKeys.foreignKeyConstraints(
+      branch?.organization_id,
+      branch?.project_id,
+      branch?.id,
+      schema
+    ),
+    ({ signal }) => getForeignKeyConstraints({ branch, schema }, signal)
   )
 }

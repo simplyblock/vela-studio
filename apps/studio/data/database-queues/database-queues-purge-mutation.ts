@@ -4,21 +4,16 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueuePurgeVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   queueName: string
 }
 
-export async function purgeDatabaseQueue({
-  projectRef,
-  connectionString,
-  queueName,
-}: DatabaseQueuePurgeVariables) {
+export async function purgeDatabaseQueue({ branch, queueName }: DatabaseQueuePurgeVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `select * from pgmq.purge_queue('${queueName}');`,
     queryKey: databaseQueuesKeys.purge(queueName),
   })
@@ -42,9 +37,14 @@ export const useDatabaseQueuePurgeMutation = ({
     (vars) => purgeDatabaseQueue(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, queueName } = variables
+        const { branch, queueName } = variables
         await queryClient.invalidateQueries(
-          databaseQueuesKeys.getMessagesInfinite(projectRef, queueName)
+          databaseQueuesKeys.getMessagesInfinite(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            queueName
+          )
         )
         await onSuccess?.(data, variables, context)
       },

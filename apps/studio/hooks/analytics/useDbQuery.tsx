@@ -44,6 +44,7 @@ const useDbQuery = ({
   const state = useDatabaseSelectorStateSnapshot()
 
   const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef: project?.ref })
+  // FIXME: How to handle this now?
   const connectionString = (databases || []).find(
     (db) => db.identifier === state.selectedDatabaseId
   )?.connectionString
@@ -62,8 +63,7 @@ const useDbQuery = ({
     ({ signal }) => {
       return executeSql(
         {
-          projectRef: project?.ref,
-          connectionString: connectionString || branch?.database.encrypted_connection_string,
+          branch,
           sql: resolvedSql,
         },
         signal

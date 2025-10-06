@@ -5,20 +5,16 @@ import type { ResponseError } from 'types'
 import pgMeta from '@supabase/pg-meta'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { privilegeKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type ColumnPrivilegesRevoke = components['schemas']['RevokeColumnPrivilegesBody']
 
 export type ColumnPrivilegesRevokeVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   revokes: ColumnPrivilegesRevoke
 }
 
-export async function revokeColumnPrivileges({
-  projectRef,
-  connectionString,
-  revokes,
-}: ColumnPrivilegesRevokeVariables) {
+export async function revokeColumnPrivileges({ branch, revokes }: ColumnPrivilegesRevokeVariables) {
   const { sql } = pgMeta.columnPrivileges.revoke(
     revokes.map((r) => ({
       columnId: r.column_id,
@@ -28,8 +24,7 @@ export async function revokeColumnPrivileges({
   )
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['column-privileges', 'revoke'],
   })
@@ -53,10 +48,16 @@ export const useColumnPrivilegesRevokeMutation = ({
     (vars) => revokeColumnPrivileges(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { branch } = variables
 
         await Promise.all([
-          queryClient.invalidateQueries(privilegeKeys.columnPrivilegesList(projectRef)),
+          queryClient.invalidateQueries(
+            privilegeKeys.columnPrivilegesList(
+              branch?.organization_id,
+              branch?.project_id,
+              branch?.id
+            )
+          ),
         ])
 
         await onSuccess?.(data, variables, context)

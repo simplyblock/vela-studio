@@ -62,8 +62,7 @@ export const CreateWrapperSheet = ({
   )
 
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const wrappersExtension = extensions?.find((ext) => ext.name === 'wrappers')

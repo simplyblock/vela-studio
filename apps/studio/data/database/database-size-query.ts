@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export const getDatabaseSizeSql = () => {
   const sql = /* SQL */ `
@@ -11,20 +12,15 @@ select sum(pg_database_size(pg_database.datname))::bigint as db_size from pg_dat
 }
 
 export type DatabaseSizeVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
-export async function getDatabaseSize(
-  { projectRef, connectionString }: DatabaseSizeVariables,
-  signal?: AbortSignal
-) {
+export async function getDatabaseSize({ branch }: DatabaseSizeVariables, signal?: AbortSignal) {
   const sql = getDatabaseSizeSql()
 
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['database-size'],
     },
@@ -43,14 +39,14 @@ export type DatabaseSizeData = Awaited<ReturnType<typeof getDatabaseSize>>
 export type DatabaseSizeError = ExecuteSqlError
 
 export const useDatabaseSizeQuery = <TData = DatabaseSizeData>(
-  { projectRef, connectionString }: DatabaseSizeVariables,
+  { branch }: DatabaseSizeVariables,
   { enabled = true, ...options }: UseQueryOptions<DatabaseSizeData, DatabaseSizeError, TData> = {}
 ) =>
   useQuery<DatabaseSizeData, DatabaseSizeError, TData>(
-    databaseKeys.databaseSize(projectRef),
-    ({ signal }) => getDatabaseSize({ projectRef, connectionString }, signal),
+    databaseKeys.databaseSize(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getDatabaseSize({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

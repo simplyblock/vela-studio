@@ -24,8 +24,7 @@ export const RealtimePolicies = () => {
     isError,
     error,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'realtime',
   })
 

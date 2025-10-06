@@ -79,8 +79,7 @@ export const SchemaGraph = () => {
     isLoading: isLoadingTables,
     isError: isErrorTables,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: selectedSchema,
     includeColumns: true,
   })

@@ -210,8 +210,7 @@ export const CreateCronJobSheet = ({
   const [showEnableExtensionModal, setShowEnableExtensionModal] = useState(false)
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const pgNetExtension = (data ?? []).find((ext) => ext.name === 'pg_net')
   const pgNetExtensionInstalled = pgNetExtension?.installed_version != undefined

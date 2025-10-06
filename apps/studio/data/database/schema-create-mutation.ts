@@ -5,20 +5,17 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { invalidateSchemasQuery } from './schemas-query'
+import { Branch } from 'api-types/types'
 
 export type SchemaCreateVariables = {
   name: string
-  orgSlug?: string
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
-export async function createSchema({ name, orgSlug, projectRef, connectionString }: SchemaCreateVariables) {
+export async function createSchema({ name, branch }: SchemaCreateVariables) {
   const sql = pgMeta.schemas.create({ name, owner: 'postgres' }).sql
   const { result } = await executeSql({
-    orgSlug,
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['schema', 'create'],
   })
@@ -40,8 +37,13 @@ export const useSchemaCreateMutation = ({
     (vars) => createSchema(vars),
     {
       async onSuccess(data, variables, context) {
-        const { orgSlug, projectRef } = variables
-        await invalidateSchemasQuery(queryClient, orgSlug, projectRef)
+        const { branch } = variables
+        await invalidateSchemasQuery(
+          queryClient,
+          branch?.organization_id,
+          branch?.project_id,
+          branch?.id
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

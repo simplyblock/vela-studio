@@ -110,8 +110,7 @@ export const TriggerSheet = ({ selectedTrigger, open, setOpen }: TriggerSheetPro
   )
 
   const { data = [], isSuccess: isSuccessTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { data: protectedSchemas, isSuccess: isSuccessProtectedSchemas } = useProtectedSchemas()
   const isSuccess = isSuccessTables && isSuccessProtectedSchemas

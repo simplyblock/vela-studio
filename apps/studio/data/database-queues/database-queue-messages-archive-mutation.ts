@@ -4,23 +4,21 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueueMessageArchiveVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   queryName: string
   messageId: number
 }
 
 export async function archiveDatabaseQueueMessage({
-  projectRef,
-  connectionString,
+  branch,
   queryName,
   messageId,
 }: DatabaseQueueMessageArchiveVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `SELECT * FROM pgmq.archive('${queryName}', ${messageId})`,
     queryKey: databaseQueuesKeys.create(),
   })
@@ -50,9 +48,14 @@ export const useDatabaseQueueMessageArchiveMutation = ({
     DatabaseQueueMessageArchiveVariables
   >((vars) => archiveDatabaseQueueMessage(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef, queryName } = variables
+      const { branch, queryName } = variables
       await queryClient.invalidateQueries(
-        databaseQueuesKeys.getMessagesInfinite(projectRef, queryName)
+        databaseQueuesKeys.getMessagesInfinite(
+          branch?.organization_id,
+          branch?.project_id,
+          branch?.id,
+          queryName
+        )
       )
       await onSuccess?.(data, variables, context)
     },

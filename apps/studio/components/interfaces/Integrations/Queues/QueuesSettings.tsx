@@ -57,8 +57,7 @@ export const QueuesSettings = () => {
   const { enable } = form.watch()
 
   const { data: queueTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const tablesWithoutRLS =

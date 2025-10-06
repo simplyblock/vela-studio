@@ -40,8 +40,7 @@ const TriggerList = ({
   const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: triggers } = useDatabaseTriggersQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const filteredTriggers = (triggers ?? []).filter((x) =>
     includes(x.name.toLowerCase(), filterString.toLowerCase())

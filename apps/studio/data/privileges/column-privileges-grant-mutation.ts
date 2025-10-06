@@ -5,20 +5,16 @@ import type { ResponseError } from 'types'
 import { privilegeKeys } from './keys'
 import pgMeta from '@supabase/pg-meta'
 import { executeSql } from 'data/sql/execute-sql-query'
+import { Branch } from 'api-types/types'
 
 export type ColumnPrivilegesGrant = components['schemas']['GrantColumnPrivilegesBody']
 
 export type ColumnPrivilegesGrantVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   grants: ColumnPrivilegesGrant
 }
 
-export async function grantColumnPrivileges({
-  projectRef,
-  connectionString,
-  grants,
-}: ColumnPrivilegesGrantVariables) {
+export async function grantColumnPrivileges({ branch, grants }: ColumnPrivilegesGrantVariables) {
   const { sql } = pgMeta.columnPrivileges.grant(
     grants.map((g) => ({
       columnId: g.column_id,
@@ -29,8 +25,7 @@ export async function grantColumnPrivileges({
   )
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['column-privileges', 'grant'],
   })
@@ -54,10 +49,16 @@ export const useColumnPrivilegesGrantMutation = ({
     (vars) => grantColumnPrivileges(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { branch } = variables
 
         await Promise.all([
-          queryClient.invalidateQueries(privilegeKeys.columnPrivilegesList(projectRef)),
+          queryClient.invalidateQueries(
+            privilegeKeys.columnPrivilegesList(
+              branch?.organization_id,
+              branch?.project_id,
+              branch?.id
+            )
+          ),
         ])
 
         await onSuccess?.(data, variables, context)

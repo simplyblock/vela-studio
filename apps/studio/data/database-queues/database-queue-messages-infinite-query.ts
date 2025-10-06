@@ -1,4 +1,4 @@
-import { UseInfiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query'
 import { QUEUE_MESSAGE_TYPE } from 'components/interfaces/Integrations/Queues/SingleQueue/Queue.utils'
 import { executeSql } from 'data/sql/execute-sql-query'
 import dayjs from 'dayjs'
@@ -6,10 +6,10 @@ import { DATE_FORMAT } from 'lib/constants'
 import { last } from 'lodash'
 import { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueueVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   queueName: string
   status: QUEUE_MESSAGE_TYPE[]
 }
@@ -26,13 +26,12 @@ export type PostgresQueueMessage = {
 export const QUEUE_MESSAGES_PAGE_SIZE = 30
 
 export async function getDatabaseQueue({
-  projectRef,
-  connectionString,
+  branch,
   queueName,
   afterTimestamp,
   status,
 }: DatabaseQueueVariables & { afterTimestamp: string }) {
-  if (!projectRef) throw new Error('Project ref is required')
+  if (!branch) throw new Error('Branch is required')
 
   if (status.length === 0) {
     return []
@@ -64,8 +63,7 @@ export async function getDatabaseQueue({
   }
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `${query} order by enqueued_at LIMIT ${QUEUE_MESSAGES_PAGE_SIZE}`,
   })
   return result as DatabaseQueueData
@@ -75,18 +73,23 @@ export type DatabaseQueueData = PostgresQueueMessage[]
 export type DatabaseQueueError = ResponseError
 
 export const useQueueMessagesInfiniteQuery = <TData = DatabaseQueueData>(
-  { projectRef, connectionString, queueName, status }: DatabaseQueueVariables,
+  { branch, queueName, status }: DatabaseQueueVariables,
   {
     enabled = true,
     ...options
   }: UseInfiniteQueryOptions<DatabaseQueueData, DatabaseQueueError, TData> = {}
 ) =>
   useInfiniteQuery<DatabaseQueueData, DatabaseQueueError, TData>(
-    databaseQueuesKeys.getMessagesInfinite(projectRef, queueName, { status }),
+    databaseQueuesKeys.getMessagesInfinite(
+      branch?.organization_id,
+      branch?.project_id,
+      branch?.id,
+      queueName,
+      { status }
+    ),
     ({ pageParam }) => {
       return getDatabaseQueue({
-        projectRef,
-        connectionString,
+        branch,
         queueName,
         afterTimestamp: pageParam,
         status,
@@ -94,7 +97,7 @@ export const useQueueMessagesInfiniteQuery = <TData = DatabaseQueueData>(
     },
     {
       staleTime: 0,
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
 
       getNextPageParam(lastPage) {
         const hasNextPage = lastPage.length <= QUEUE_MESSAGES_PAGE_SIZE

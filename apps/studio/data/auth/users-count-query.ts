@@ -3,10 +3,10 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { authKeys } from './keys'
 import { Filter } from './users-infinite-query'
+import { Branch } from 'api-types/types'
 
 type UsersCountVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   keywords?: string
   filter?: Filter
   providers?: string[]
@@ -62,15 +62,14 @@ const getUsersCountSql = ({
 }
 
 export async function getUsersCount(
-  { projectRef, connectionString, keywords, filter, providers }: UsersCountVariables,
+  { branch, keywords, filter, providers }: UsersCountVariables,
   signal?: AbortSignal
 ) {
   const sql = getUsersCountSql({ filter, keywords, providers })
 
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['users-count'],
     },
@@ -90,15 +89,18 @@ export type UsersCountData = Awaited<ReturnType<typeof getUsersCount>>
 export type UsersCountError = ExecuteSqlError
 
 export const useUsersCountQuery = <TData = UsersCountData>(
-  { projectRef, connectionString, keywords, filter, providers }: UsersCountVariables,
+  { branch, keywords, filter, providers }: UsersCountVariables,
   { enabled = true, ...options }: UseQueryOptions<UsersCountData, UsersCountError, TData> = {}
 ) =>
   useQuery<UsersCountData, UsersCountError, TData>(
-    authKeys.usersCount(projectRef, { keywords, filter, providers }),
-    ({ signal }) =>
-      getUsersCount({ projectRef, connectionString, keywords, filter, providers }, signal),
+    authKeys.usersCount(branch?.organization_id, branch?.project_id, branch?.id, {
+      keywords,
+      filter,
+      providers,
+    }),
+    ({ signal }) => getUsersCount({ branch, keywords, filter, providers }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

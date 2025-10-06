@@ -7,8 +7,7 @@ export const useIcebergWrapperExtension = () => {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data: extensionsData, isLoading: isExtensionsLoading } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const integration = INTEGRATIONS.find((i) => i.id === 'iceberg_wrapper')

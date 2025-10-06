@@ -141,8 +141,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   }
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const pgPartmanExtension = (data ?? []).find((ext) => ext.name === 'pg_partman')

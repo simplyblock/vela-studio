@@ -45,16 +45,14 @@ export const QueueTab = () => {
   const [selectedTypes, setSelectedTypes] = useState<QUEUE_MESSAGE_TYPE[]>([])
 
   const { data: tables, isLoading: isLoadingTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = tables?.find((x) => x.name === `q_${queueName}`)
   const isRlsEnabled = queueTable?.rls_enabled ?? false
 
   const { data: policies } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const queuePolicies = (policies ?? []).filter((policy) => policy.table === `q_${queueName}`)

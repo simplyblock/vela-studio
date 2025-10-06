@@ -40,9 +40,8 @@ export const ForeignKeyFormatter = (props: Props) => {
       r.source_column_name === column.name
   )
   const { data: tables } = useTablesQuery({
-    projectRef: project?.ref,
+    branch,
     includeColumns: true,
-    connectionString: branch?.database.encrypted_connection_string,
     schema: relationship?.target_table_schema,
   })
   const targetTable = tables?.find(

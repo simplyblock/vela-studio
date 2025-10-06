@@ -6,28 +6,22 @@ import { configKeys } from 'data/config/keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseExtensionsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseExtensionDisableVariables = {
-  orgSlug: string,
-  projectRef: string
-  connectionString?: string | null
+  branch?: Branch
   id: string
   cascade?: boolean
 }
 
 export async function disableDatabaseExtension({
-  projectRef,
-  connectionString,
+  branch,
   id,
   cascade,
 }: DatabaseExtensionDisableVariables) {
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
   const { sql } = pgMeta.extensions.remove(id, { cascade })
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['extension', 'delete', id],
   })
@@ -57,10 +51,14 @@ export const useDatabaseExtensionDisableMutation = ({
     DatabaseExtensionDisableVariables
   >((vars) => disableDatabaseExtension(vars), {
     async onSuccess(data, variables, context) {
-      const { orgSlug, projectRef } = variables
+      const { branch } = variables
       await Promise.all([
-        queryClient.invalidateQueries(databaseExtensionsKeys.list(projectRef)),
-        queryClient.invalidateQueries(configKeys.upgradeEligibility(orgSlug, projectRef)),
+        queryClient.invalidateQueries(
+          databaseExtensionsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
+        queryClient.invalidateQueries(
+          configKeys.upgradeEligibility(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
       ])
       await onSuccess?.(data, variables, context)
     },

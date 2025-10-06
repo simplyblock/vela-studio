@@ -98,8 +98,7 @@ export const TableList = ({
     isSuccess: isSuccessTables,
   } = useTablesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schema: selectedSchema,
       sortByProperty: 'name',
       includeColumns: true,
@@ -121,8 +120,7 @@ export const TableList = ({
     isSuccess: isSuccessViews,
   } = useViewsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schema: selectedSchema,
     },
     {
@@ -142,8 +140,7 @@ export const TableList = ({
     isSuccess: isSuccessMaterializedViews,
   } = useMaterializedViewsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schema: selectedSchema,
     },
     {
@@ -165,8 +162,7 @@ export const TableList = ({
     isSuccess: isSuccessForeignTables,
   } = useForeignTablesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schema: selectedSchema,
     },
     {
@@ -181,8 +177,7 @@ export const TableList = ({
   )
 
   const { data: publications } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'

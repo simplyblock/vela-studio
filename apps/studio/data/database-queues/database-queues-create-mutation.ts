@@ -5,10 +5,10 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
 import { tableKeys } from 'data/tables/keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueueCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   name: string
   type: 'basic' | 'partitioned' | 'unlogged'
   enableRls: boolean
@@ -19,8 +19,7 @@ export type DatabaseQueueCreateVariables = {
 }
 
 export async function createDatabaseQueue({
-  projectRef,
-  connectionString,
+  branch,
   name,
   type,
   enableRls,
@@ -36,8 +35,7 @@ export async function createDatabaseQueue({
         : `SELECT pgmq.create('${name}');`
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `${query} ${enableRls ? `alter table pgmq."q_${name}" enable row level security;` : ''}`.trim(),
     queryKey: databaseQueuesKeys.create(),
   })
@@ -61,9 +59,13 @@ export const useDatabaseQueueCreateMutation = ({
     (vars) => createDatabaseQueue(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseQueuesKeys.list(projectRef))
-        queryClient.invalidateQueries(tableKeys.list(projectRef, 'pgmq'))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseQueuesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
+        queryClient.invalidateQueries(
+          tableKeys.list(branch?.organization_id, branch?.project_id, branch?.id, 'pgmq')
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

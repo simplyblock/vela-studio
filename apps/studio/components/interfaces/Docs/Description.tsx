@@ -56,8 +56,7 @@ const Description = ({ content, metadata, onChange = noop }: DescrptionProps) =>
     if (query) {
       try {
         await executeSql({
-          projectRef: project?.ref,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           sql: query,
         })
         // [Joshen] Temp fix, immediately refreshing the docs fetches stale state

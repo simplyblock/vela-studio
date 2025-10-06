@@ -13,7 +13,7 @@ import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import PolicyRow from './PolicyRow'
 import PolicyTableRowHeader from './PolicyTableRowHeader'
 import { getPathReferences } from '../../../../../data/vela/path-references'
-import { useBranchQuery } from '../../../../../data/branches/branch-query'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 export interface PolicyTableRowProps {
   table: {
@@ -43,8 +43,8 @@ export const PolicyTableRow = ({
   onSelectDeletePolicy = noop,
 }: PolicyTableRowProps) => {
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
-  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
+  const { slug: orgRef } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
 
   // [Joshen] Changes here are so that warnings are more accurate and granular instead of purely relying if RLS is disabled or enabled
   // The following scenarios are technically okay if the table has RLS disabled, in which it won't be publicly readable / writable
@@ -70,8 +70,7 @@ export const PolicyTableRow = ({
     !isRLSEnabled && isTableExposedThroughAPI && hasAnonAuthenticatedRolesAccess
 
   const { data, error, isLoading, isError, isSuccess } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const policies = (data ?? [])
     .filter((policy) => policy.schema === table.schema && policy.table === table.name)

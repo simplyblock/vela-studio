@@ -4,22 +4,17 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseCronJobsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseCronJobCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   query: string
   searchTerm?: string
 }
 
-export async function createDatabaseCronJob({
-  projectRef,
-  connectionString,
-  query,
-}: DatabaseCronJobCreateVariables) {
+export async function createDatabaseCronJob({ branch, query }: DatabaseCronJobCreateVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: query,
     queryKey: databaseCronJobsKeys.create(),
   })
@@ -43,9 +38,14 @@ export const useDatabaseCronJobCreateMutation = ({
     (vars) => createDatabaseCronJob(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, searchTerm } = variables
+        const { branch, searchTerm } = variables
         await queryClient.invalidateQueries(
-          databaseCronJobsKeys.listInfinite(projectRef, searchTerm)
+          databaseCronJobsKeys.listInfinite(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            searchTerm
+          )
         )
         await onSuccess?.(data, variables, context)
       },

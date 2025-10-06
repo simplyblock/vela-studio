@@ -5,19 +5,14 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { quoteLiteral } from 'lib/pg-format'
 import type { ResponseError, VaultSecret } from 'types'
 import { vaultSecretsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type VaultSecretUpdateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   id: string
 } & Partial<VaultSecret>
 
-export async function updateVaultSecret({
-  projectRef,
-  connectionString,
-  id,
-  ...payload
-}: VaultSecretUpdateVariables) {
+export async function updateVaultSecret({ branch, id, ...payload }: VaultSecretUpdateVariables) {
   const { name, description, secret } = payload
   const sql = /* SQL */ `
 select vault.update_secret(
@@ -28,7 +23,7 @@ select vault.update_secret(
 )
 `
 
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -48,10 +43,19 @@ export const useVaultSecretUpdateMutation = ({
     (vars) => updateVaultSecret(vars),
     {
       async onSuccess(data, variables, context) {
-        const { id, projectRef } = variables
+        const { id, branch } = variables
         await Promise.all([
-          queryClient.removeQueries(vaultSecretsKeys.getDecryptedValue(projectRef, id)),
-          queryClient.invalidateQueries(vaultSecretsKeys.list(projectRef)),
+          queryClient.removeQueries(
+            vaultSecretsKeys.getDecryptedValue(
+              branch?.organization_id,
+              branch?.project_id,
+              branch?.id,
+              id
+            )
+          ),
+          queryClient.invalidateQueries(
+            vaultSecretsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+          ),
         ])
         await onSuccess?.(data, variables, context)
       },

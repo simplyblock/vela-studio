@@ -6,11 +6,10 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
 import { databaseKeys } from 'data/database/keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueueExposePostgrestVariables = {
-  orgSlug: string
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   enable: boolean
 }
 
@@ -219,15 +218,13 @@ const HIDE_QUEUES_FROM_POSTGREST_SQL = minify(/* SQL */ `
 `)
 
 export async function toggleQueuesExposurePostgrest({
-  projectRef,
-  connectionString,
+  branch,
   enable,
 }: DatabaseQueueExposePostgrestVariables) {
   const sql = enable ? EXPOSE_QUEUES_TO_POSTGREST_SQL : HIDE_QUEUES_FROM_POSTGREST_SQL
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['toggle-queues-exposure'],
   })
@@ -257,10 +254,18 @@ export const useDatabaseQueueToggleExposeMutation = ({
     DatabaseQueueExposePostgrestVariables
   >((vars) => toggleQueuesExposurePostgrest(vars), {
     async onSuccess(data, variables, context) {
-      const { orgSlug, projectRef } = variables
-      await queryClient.invalidateQueries(databaseQueuesKeys.exposePostgrestStatus(projectRef))
+      const { branch } = variables
+      await queryClient.invalidateQueries(
+        databaseQueuesKeys.exposePostgrestStatus(
+          branch?.organization_id,
+          branch?.project_id,
+          branch?.id
+        )
+      )
       // [Joshen] Schemas can be invalidated without waiting
-      queryClient.invalidateQueries(databaseKeys.schemas(orgSlug, projectRef))
+      queryClient.invalidateQueries(
+        databaseKeys.schemas(branch?.organization_id, branch?.project_id, branch?.id)
+      )
       await onSuccess?.(data, variables, context)
     },
     async onError(data, variables, context) {

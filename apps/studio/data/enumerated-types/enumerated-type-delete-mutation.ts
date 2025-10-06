@@ -4,22 +4,21 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { enumeratedTypesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type EnumeratedTypeDeleteVariables = {
-  projectRef: string
-  connectionString: string | null
+  branch: Branch
   name: string
   schema: string
 }
 
 export async function deleteEnumeratedType({
-  projectRef,
-  connectionString,
+  branch,
   name,
   schema,
 }: EnumeratedTypeDeleteVariables) {
   const sql = `drop type if exists ${schema}."${name}"`
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -39,8 +38,10 @@ export const useEnumeratedTypeDeleteMutation = ({
     (vars) => deleteEnumeratedType(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(enumeratedTypesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          enumeratedTypesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

@@ -69,8 +69,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
         }
         try {
           const res = await executeSql({
-            projectRef: project?.ref,
-            connectionString: branch?.database.encrypted_connection_string,
+            branch,
             sql: `select * from pg_available_extension_versions where name = '${extension.name}'`,
           })
           if (!cancel) setDefaultSchema(res.result[0].schema)

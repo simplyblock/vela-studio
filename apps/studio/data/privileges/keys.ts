@@ -1,6 +1,12 @@
 export const privilegeKeys = {
-  tablePrivilegesList: (projectRef: string | undefined) =>
-    [projectRef, 'database', 'table-privileges'] as const,
-  columnPrivilegesList: (projectRef: string | undefined) =>
-    [projectRef, 'database', 'column-privileges'] as const,
+  tablePrivilegesList: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => [orgId, projectId, branchId, 'database', 'table-privileges'] as const,
+  columnPrivilegesList: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => [orgId, projectId, branchId, 'database', 'column-privileges'] as const,
 }

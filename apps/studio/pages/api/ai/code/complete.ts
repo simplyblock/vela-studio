@@ -13,7 +13,6 @@ import {
 } from 'lib/ai/prompts'
 import { getTools } from 'lib/ai/tools'
 import apiWrapper from 'lib/api/apiWrapper'
-import { queryPgMetaSelfHosted } from 'lib/self-hosted'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { z } from 'zod/v4'
 
@@ -54,22 +53,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     // Get a list of all schemas to add to context
     const pgMetaSchemasList = pgMeta.schemas.list()
 
-    const { result: schemas } =
+    /*const { result: schemas } =
       aiOptInLevel !== 'disabled'
         ? await executeSql(
             {
-              projectRef,
-              connectionString,
+              branch,
               sql: pgMetaSchemasList.sql,
-            },
-            undefined,
-            {
-              'Content-Type': 'application/json',
-              ...(authorization && { Authorization: authorization }),
             },
             undefined
           )
-        : { result: [] }
+        : { result: [] }*/
+    const schemas: any[] = [] // FIXME: Maybe?
 
     const schemasString =
       schemas?.length > 0

@@ -1,41 +1,39 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { PostgresMaterializedView } from '@supabase/postgres-meta'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { materializedViewKeys } from './keys'
-import { DEFAULT_PLATFORM_APPLICATION_NAME } from '@supabase/pg-meta/src/constants'
+import { Branch } from 'api-types/types'
 
 export type MaterializedViewsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   schema?: string
 }
 
 export async function getMaterializedViews(
-  { projectRef, connectionString, schema }: MaterializedViewsVariables,
+  { branch, schema }: MaterializedViewsVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('branch is required')
 
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
-  const { data, error } = await get('/platform/pg-meta/{ref}/materialized-views', {
-    params: {
-      header: {
-        'x-connection-encrypted': connectionString!,
-        'x-pg-application-name': DEFAULT_PLATFORM_APPLICATION_NAME,
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/materialized-views',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+          branch: branch.id,
+        },
+        query: {
+          included_schemas: schema || '',
+          include_columns: true,
+        } as any,
       },
-      path: { ref: projectRef },
-      query: {
-        included_schemas: schema || '',
-        include_columns: true,
-      } as any,
-    },
-    headers,
-    signal,
-  })
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data as PostgresMaterializedView[]
@@ -45,7 +43,7 @@ export type MaterializedViewsData = Awaited<ReturnType<typeof getMaterializedVie
 export type MaterializedViewsError = ResponseError
 
 export const useMaterializedViewsQuery = <TData = MaterializedViewsData>(
-  { projectRef, connectionString, schema }: MaterializedViewsVariables,
+  { branch, schema }: MaterializedViewsVariables,
   {
     enabled = true,
     ...options
@@ -53,11 +51,16 @@ export const useMaterializedViewsQuery = <TData = MaterializedViewsData>(
 ) =>
   useQuery<MaterializedViewsData, MaterializedViewsError, TData>(
     schema
-      ? materializedViewKeys.listBySchema(projectRef, schema)
-      : materializedViewKeys.list(projectRef),
-    ({ signal }) => getMaterializedViews({ projectRef, connectionString, schema }, signal),
+      ? materializedViewKeys.listBySchema(
+          branch?.organization_id,
+          branch?.project_id,
+          branch?.id,
+          schema
+        )
+      : materializedViewKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getMaterializedViews({ branch, schema }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       // We're using a staleTime of 0 here because the only way to create a
       // materialized view is via SQL, which we don't know about
       staleTime: 0,

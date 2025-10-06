@@ -23,8 +23,7 @@ export const PublicationsTables = () => {
 
   const { can: canUpdatePublications, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
   const { data: publications = [] } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const selectedPublication = publications.find((pub) => pub.id === Number(id))
 
@@ -35,8 +34,7 @@ export const PublicationsTables = () => {
     isError,
     error,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const tables = useMemo(() => {

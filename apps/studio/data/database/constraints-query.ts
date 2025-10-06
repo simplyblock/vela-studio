@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type GetTableConstraintsVariables = {
   id?: number
@@ -50,38 +51,34 @@ inner join table_info ti
 }
 
 export type TableConstraintsVariables = GetTableConstraintsVariables & {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type TableConstraintsData = Constraint[]
 export type TableConstraintsError = ExecuteSqlError
 
 export async function getTableConstraints(
-  { projectRef, connectionString, id }: TableConstraintsVariables,
+  { branch, id }: TableConstraintsVariables,
   signal?: AbortSignal
 ) {
   const sql = getTableConstraintsSql({ id })
-  const { result } = await executeSql(
-    { projectRef, connectionString, sql, queryKey: ['table-constraints', id] },
-    signal
-  )
+  const { result } = await executeSql({ branch, sql, queryKey: ['table-constraints', id] }, signal)
 
   return (result as TableConstraintsData) ?? []
 }
 
 export const useTableConstraintsQuery = <TData = TableConstraintsData>(
-  { projectRef, connectionString, id }: TableConstraintsVariables,
+  { branch, id }: TableConstraintsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<TableConstraintsData, TableConstraintsError, TData> = {}
 ) =>
   useQuery<TableConstraintsData, TableConstraintsError, TData>(
-    databaseKeys.tableConstraints(projectRef, id),
-    ({ signal }) => getTableConstraints({ projectRef, connectionString, id }, signal),
+    databaseKeys.tableConstraints(branch?.organization_id, branch?.project_id, branch?.id, id),
+    ({ signal }) => getTableConstraints({ branch, id }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof id !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined' && typeof id !== 'undefined',
       ...options,
     }
   )

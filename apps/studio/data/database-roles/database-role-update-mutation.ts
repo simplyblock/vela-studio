@@ -5,26 +5,20 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { invalidateRolesQuery } from './database-roles-query'
+import { Branch } from 'api-types/types'
 
 type UpdateRoleBody = Parameters<typeof pgMeta.roles.update>[1]
 
 export type DatabaseRoleUpdateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   id: number
   payload: UpdateRoleBody
 }
 
-export async function updateDatabaseRole({
-  projectRef,
-  connectionString,
-  id,
-  payload,
-}: DatabaseRoleUpdateVariables) {
+export async function updateDatabaseRole({ branch, id, payload }: DatabaseRoleUpdateVariables) {
   const sql = pgMeta.roles.update({ id }, payload).sql
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['roles', 'update'],
   })
@@ -47,8 +41,13 @@ export const useDatabaseRoleUpdateMutation = ({
     (vars) => updateDatabaseRole(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await invalidateRolesQuery(queryClient, projectRef)
+        const { branch } = variables
+        await invalidateRolesQuery(
+          queryClient,
+          branch?.organization_id,
+          branch?.project_id,
+          branch?.id
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

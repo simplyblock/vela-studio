@@ -193,8 +193,7 @@ export const CreateHookSheet = ({
       toast.success(`Successfully created ${values.hookType}.`)
       if (statements.length > 0) {
         executeSql({
-          projectRef,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           sql: statements.join('\n'),
         })
       }

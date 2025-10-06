@@ -7,14 +7,14 @@ import type { ResponseError } from 'types'
 import { databaseTriggerKeys } from './keys'
 import { PostgresTrigger } from '@supabase/postgres-meta'
 import { PGTrigger, PGTriggerCreate } from '@supabase/pg-meta/src/pg-meta-triggers'
+import { Branch } from 'api-types/types'
 
 // [Joshen] Writing this query within FE as the PATCH endpoint from pg-meta only supports updating
 // trigger name and enabled mode. So we'll delete and create the trigger, within a single transaction
 // Copying the SQL from https://github.com/supabase/postgres-meta/blob/master/src/lib/PostgresMetaTriggers.ts
 
 export type DatabaseTriggerUpdateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   originalTrigger: PostgresTrigger
   updatedTrigger: PGTriggerCreate & Pick<PGTrigger, 'enabled_mode'>
 }
@@ -36,15 +36,13 @@ COMMIT;
 }
 
 export async function updateDatabaseTrigger({
-  projectRef,
-  connectionString,
+  branch,
   originalTrigger,
   updatedTrigger,
 }: DatabaseTriggerUpdateVariables) {
   const sql = getDatabaseTriggerUpdateSQL({ originalTrigger, updatedTrigger })
   await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['trigger', 'update', originalTrigger.id],
   })
@@ -67,8 +65,10 @@ export const useDatabaseTriggerUpdateMutation = ({
     (vars) => updateDatabaseTrigger(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseTriggerKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseTriggerKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

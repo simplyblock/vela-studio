@@ -73,8 +73,7 @@ export async function createIndexes({
 
   try {
     await executeSql({
-      projectRef,
-      connectionString,
+      branch,
       sql: indexStatements.join(';\n') + ';',
     })
 

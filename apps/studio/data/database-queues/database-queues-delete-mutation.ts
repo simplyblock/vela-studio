@@ -4,21 +4,16 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueueDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   queueName: string
 }
 
-export async function deleteDatabaseQueue({
-  projectRef,
-  connectionString,
-  queueName,
-}: DatabaseQueueDeleteVariables) {
+export async function deleteDatabaseQueue({ branch, queueName }: DatabaseQueueDeleteVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `select * from pgmq.drop_queue('${queueName}');`,
     queryKey: databaseQueuesKeys.delete(queueName),
   })
@@ -42,8 +37,10 @@ export const useDatabaseQueueDeleteMutation = ({
     (vars) => deleteDatabaseQueue(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseQueuesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseQueuesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

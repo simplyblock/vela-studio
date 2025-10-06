@@ -1,41 +1,39 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { PostgresView } from '@supabase/postgres-meta'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { foreignTableKeys } from './keys'
-import { DEFAULT_PLATFORM_APPLICATION_NAME } from '@supabase/pg-meta/src/constants'
+import { Branch } from 'api-types/types'
 
 export type ForeignTablesVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   schema?: string
 }
 
 export async function getForeignTables(
-  { projectRef, connectionString, schema }: ForeignTablesVariables,
+  { branch, schema }: ForeignTablesVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('branch is required')
 
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
-  const { data, error } = await get('/platform/pg-meta/{ref}/foreign-tables', {
-    params: {
-      header: {
-        'x-connection-encrypted': connectionString!,
-        'x-pg-application-name': DEFAULT_PLATFORM_APPLICATION_NAME,
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/foreign-tables',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+          branch: branch.id,
+        },
+        query: {
+          included_schemas: schema || '',
+          include_columns: true,
+        } as any,
       },
-      path: { ref: projectRef },
-      query: {
-        included_schemas: schema || '',
-        include_columns: true,
-      } as any,
-    },
-    headers,
-    signal,
-  })
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data as PostgresView[]
@@ -45,14 +43,16 @@ export type ForeignTablesData = Awaited<ReturnType<typeof getForeignTables>>
 export type ForeignTablesError = ResponseError
 
 export const useForeignTablesQuery = <TData = ForeignTablesData>(
-  { projectRef, connectionString, schema }: ForeignTablesVariables,
+  { branch, schema }: ForeignTablesVariables,
   { enabled = true, ...options }: UseQueryOptions<ForeignTablesData, ForeignTablesError, TData> = {}
 ) =>
   useQuery<ForeignTablesData, ForeignTablesError, TData>(
-    schema ? foreignTableKeys.listBySchema(projectRef, schema) : foreignTableKeys.list(projectRef),
-    ({ signal }) => getForeignTables({ projectRef, connectionString, schema }, signal),
+    schema
+      ? foreignTableKeys.listBySchema(branch?.organization_id, branch?.project_id, branch?.id, schema)
+      : foreignTableKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getForeignTables({ branch, schema }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

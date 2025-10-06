@@ -57,8 +57,7 @@ export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: extensionsData } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const { data, isLoading: isFDWsLoading } = useFDWsQuery({

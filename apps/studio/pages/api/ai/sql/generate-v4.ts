@@ -101,22 +101,17 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     // Get a list of all schemas to add to context
     const pgMetaSchemasList = pgMeta.schemas.list()
 
-    const { result: schemas } =
+    /*const { result: schemas } =
       aiOptInLevel !== 'disabled'
         ? await executeSql(
             {
-              projectRef,
-              connectionString,
+              branch,
               sql: pgMetaSchemasList.sql,
-            },
-            undefined,
-            {
-              'Content-Type': 'application/json',
-              ...(authorization && { Authorization: authorization }),
             },
             undefined
           )
-        : { result: [] }
+        : { result: [] }*/
+    const schemas: any[] = [] // FIXME: Maybe?
 
     const schemasString =
       schemas?.length > 0

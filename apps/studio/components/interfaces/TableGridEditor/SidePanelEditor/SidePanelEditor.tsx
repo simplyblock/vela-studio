@@ -97,8 +97,7 @@ const SidePanelEditor = ({
     },
   })
   const { data: publications } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { mutateAsync: createPublication } = useDatabasePublicationCreateMutation()
   const { mutateAsync: updatePublication } = useDatabasePublicationUpdateMutation({

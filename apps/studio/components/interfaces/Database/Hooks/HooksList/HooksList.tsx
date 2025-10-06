@@ -36,8 +36,7 @@ export const HooksList = ({
     isError,
     error,
   } = useDatabaseHooksQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const [filterString, setFilterString] = useState<string>('')
 

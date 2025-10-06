@@ -1729,7 +1729,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/column-privileges': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/column-privileges': {
     parameters: {
       query?: never
       header?: never
@@ -1748,7 +1748,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/columns': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/columns': {
     parameters: {
       query?: never
       header?: never
@@ -1768,7 +1768,7 @@ export interface paths {
     patch: operations['ColumnsController_updateColumn']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/extensions': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/extensions': {
     parameters: {
       query?: never
       header?: never
@@ -1787,7 +1787,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/foreign-tables': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/foreign-tables': {
     parameters: {
       query?: never
       header?: never
@@ -1824,7 +1824,7 @@ export interface paths {
     patch: operations['FunctionsController_updateFunction']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/materialized-views': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/materialized-views': {
     parameters: {
       query?: never
       header?: never
@@ -1841,7 +1841,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/policies': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/policies': {
     parameters: {
       query?: never
       header?: never
@@ -1861,7 +1861,7 @@ export interface paths {
     patch: operations['PoliciesController_updatePolicy']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/publications': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/publications': {
     parameters: {
       query?: never
       header?: never
@@ -1881,7 +1881,7 @@ export interface paths {
     patch: operations['PublicationsController_updatePublication']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/query': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/query': {
     parameters: {
       query?: never
       header?: never
@@ -1952,7 +1952,7 @@ export interface paths {
     patch: operations['SchemasController_updateSchema']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/tables': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/tables': {
     parameters: {
       query?: never
       header?: never
@@ -1972,7 +1972,7 @@ export interface paths {
     patch: operations['TablesController_updateTable']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/triggers': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/triggers': {
     parameters: {
       query?: never
       header?: never
@@ -1992,7 +1992,7 @@ export interface paths {
     patch: operations['TriggersController_updateTrigger']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/types': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/types': {
     parameters: {
       query?: never
       header?: never
@@ -2009,7 +2009,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/views': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/views': {
     parameters: {
       query?: never
       header?: never
@@ -13552,14 +13552,11 @@ export interface operations {
   ColumnPrivilegesController_getColumnPrivileges: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13591,14 +13588,11 @@ export interface operations {
   ColumnPrivilegesController_grantColumnPrivileges: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13634,14 +13628,11 @@ export interface operations {
   ColumnPrivilegesController_revokeColumnPrivileges: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13680,14 +13671,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13719,14 +13707,11 @@ export interface operations {
   ColumnsController_createColumn: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13766,14 +13751,11 @@ export interface operations {
         cascade?: boolean
         id: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13807,14 +13789,11 @@ export interface operations {
       query: {
         id: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13850,14 +13829,11 @@ export interface operations {
   ExtensionsController_getExtensions: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13889,14 +13865,11 @@ export interface operations {
   ExtensionsController_createExtension: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13934,14 +13907,11 @@ export interface operations {
       query: {
         id: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13978,14 +13948,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14196,14 +14163,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14238,14 +14202,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14277,14 +14238,11 @@ export interface operations {
   PoliciesController_createPolicy: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14322,14 +14280,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14363,14 +14318,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14406,14 +14358,11 @@ export interface operations {
   PublicationsController_getPublications: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14445,14 +14394,11 @@ export interface operations {
   PublicationsController_createPublication: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14490,14 +14436,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14531,14 +14474,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14574,14 +14514,11 @@ export interface operations {
   QueryController_runQuery: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14855,14 +14792,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14894,14 +14828,11 @@ export interface operations {
   TablesController_createTable: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14941,14 +14872,11 @@ export interface operations {
         cascade?: boolean
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14982,14 +14910,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15028,14 +14953,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15067,14 +14989,11 @@ export interface operations {
   TriggersController_createTrigger: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15112,14 +15031,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15153,14 +15069,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15199,14 +15112,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15246,14 +15156,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }

@@ -10,25 +10,23 @@ import { tableEditorKeys } from 'data/table-editor/keys'
 import { tableRowKeys } from 'data/table-rows/keys'
 import { viewKeys } from 'data/views/keys'
 import type { ResponseError } from 'types'
+import { Branch } from 'api-types/types'
 
 export type DatabaseColumnDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   column: Pick<PGColumn, 'id' | 'name' | 'schema' | 'table' | 'table_id'>
   cascade?: boolean
 }
 
 export async function deleteDatabaseColumn({
-  projectRef,
-  connectionString,
+  branch,
   column,
   cascade = false,
 }: DatabaseColumnDeleteVariables) {
   const { sql } = pgMeta.columns.remove(column, { cascade })
 
   const { result } = await executeSql<void>({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['column', 'delete', column.id],
   })
@@ -51,24 +49,57 @@ export const useDatabaseColumnDeleteMutation = ({
     (vars) => deleteDatabaseColumn(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, column } = variables
+        const { branch, column } = variables
         await Promise.all([
           // refetch all entities in the sidebar because deleting a column may regenerate a view (and change its id)
-          queryClient.invalidateQueries(entityTypeKeys.list(projectRef)),
           queryClient.invalidateQueries(
-            databaseKeys.foreignKeyConstraints(projectRef, column.schema)
+            entityTypeKeys.list(branch.organization_id, branch.project_id, branch.id)
           ),
-          queryClient.invalidateQueries(tableEditorKeys.tableEditor(projectRef, column.table_id)),
-          queryClient.invalidateQueries(databaseKeys.tableDefinition(projectRef, column.table_id)),
+          queryClient.invalidateQueries(
+            databaseKeys.foreignKeyConstraints(
+              branch.organization_id,
+              branch.project_id,
+              branch.id,
+              column.schema
+            )
+          ),
+          queryClient.invalidateQueries(
+            tableEditorKeys.tableEditor(
+              branch.organization_id,
+              branch.project_id,
+              branch.id,
+              column.table_id
+            )
+          ),
+          queryClient.invalidateQueries(
+            databaseKeys.tableDefinition(
+              branch.organization_id,
+              branch.project_id,
+              branch.id,
+              column.table_id
+            )
+          ),
           // invalidate all views from this schema, not sure if this is needed since you can't actually delete a column
           // which has a view dependent on it
-          queryClient.invalidateQueries(viewKeys.listBySchema(projectRef, column.schema)),
+          queryClient.invalidateQueries(
+            viewKeys.listBySchema(
+              branch.organization_id,
+              branch.project_id,
+              branch.id,
+              column.schema
+            )
+          ),
         ])
 
         // We need to invalidate tableRowsAndCount after tableEditor
         // to ensure the query sent is correct
         await queryClient.invalidateQueries(
-          tableRowKeys.tableRowsAndCount(projectRef, column.table_id)
+          tableRowKeys.tableRowsAndCount(
+            branch.organization_id,
+            branch.project_id,
+            branch.id,
+            column.table_id
+          )
         )
 
         await onSuccess?.(data, variables, context)

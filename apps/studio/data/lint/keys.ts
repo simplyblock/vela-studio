@@ -1,4 +1,9 @@
 export const lintKeys = {
-  lint: (orgSlug: string | undefined, projectRef: string | undefined) => ['projects', orgSlug, projectRef, 'lint'] as const,
-  lintRules: (orgSlug: string | undefined, projectRef: string | undefined) => ['projects', orgSlug, projectRef, 'lint-rules'] as const,
+  lint: (orgId: string | undefined, projectId: string | undefined, branchId: string | undefined) =>
+    ['branches', orgId, projectId, branchId, 'lint'] as const,
+  lintRules: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'lint-rules'] as const,
 }

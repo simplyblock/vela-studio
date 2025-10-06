@@ -53,8 +53,7 @@ export const RealtimeSettings = () => {
   })
 
   const { data: policies, isSuccess: isSuccessPolicies } = useDatabasePoliciesQuery({
-    projectRef,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'realtime',
   })
 

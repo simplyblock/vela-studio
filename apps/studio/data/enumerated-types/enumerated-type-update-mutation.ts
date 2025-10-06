@@ -5,10 +5,10 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { wrapWithTransaction } from 'data/sql/utils/transaction'
 import type { ResponseError } from 'types'
 import { enumeratedTypesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type EnumeratedTypeUpdateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   schema: string
   name: { original: string; updated: string }
   description?: string
@@ -16,8 +16,7 @@ export type EnumeratedTypeUpdateVariables = {
 }
 
 export async function updateEnumeratedType({
-  projectRef,
-  connectionString,
+  branch,
   schema,
   name,
   description,
@@ -55,7 +54,7 @@ export async function updateEnumeratedType({
   }
 
   const sql = wrapWithTransaction(statements.join(' '))
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -75,8 +74,10 @@ export const useEnumeratedTypeUpdateMutation = ({
     (vars) => updateEnumeratedType(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(enumeratedTypesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          enumeratedTypesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

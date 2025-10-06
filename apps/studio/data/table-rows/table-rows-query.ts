@@ -20,6 +20,7 @@ import { ExecuteSqlError, executeSql } from '../sql/execute-sql-query'
 import { tableRowKeys } from './keys'
 import { THRESHOLD_COUNT } from './table-rows-count-query'
 import { formatFilterValue } from './utils'
+import { Branch } from 'api-types/types'
 
 export interface GetTableRowsArgs {
   table?: SupaTable
@@ -118,27 +119,20 @@ export const getAllTableRowsSql = ({
 // the CSV to their machine via a direct command line connection (e.g., pg_dump), which will be much more
 // reliable for large data extraction.
 export const fetchAllTableRows = async ({
-  projectRef,
-  connectionString,
+  branch,
   table,
   filters = [],
   sorts = [],
   roleImpersonationState,
   progressCallback,
 }: {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: SupaTable
   filters?: Filter[]
   sorts?: Sort[]
   roleImpersonationState?: RoleImpersonationState
   progressCallback?: (value: number) => void
 }) => {
-  if (!connectionString) {
-    console.error('Connection string is required')
-    return []
-  }
-
   const rows: any[] = []
   const queryChains = getAllTableRowsSql({ table, sorts, filters })
 
@@ -157,7 +151,7 @@ export const fetchAllTableRows = async ({
 
     try {
       const { result } = await executeWithRetry(async () =>
-        executeSql({ projectRef, connectionString, sql: query })
+        executeSql({ branch, sql: query })
       )
       rows.push(...result)
       progressCallback?.(rows.length)
@@ -179,8 +173,7 @@ export type TableRows = { rows: SupaRow[] }
 
 export type TableRowsVariables = Omit<GetTableRowsArgs, 'table'> & {
   queryClient: QueryClient
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   tableId?: number
 }
 
@@ -190,8 +183,7 @@ export type TableRowsError = ExecuteSqlError
 export async function getTableRows(
   {
     queryClient,
-    projectRef,
-    connectionString,
+    branch,
     tableId,
     roleImpersonationState,
     filters,
@@ -202,8 +194,7 @@ export async function getTableRows(
   signal?: AbortSignal
 ) {
   const entity = await prefetchTableEditor(queryClient, {
-    projectRef,
-    connectionString,
+    branch,
     id: tableId,
   })
   if (!entity) {
@@ -220,8 +211,7 @@ export async function getTableRows(
   try {
     const { result } = await executeSql(
       {
-        projectRef,
-        connectionString,
+        branch,
         sql,
         queryKey: ['table-rows', table?.id],
         isRoleImpersonationEnabled: isRoleImpersonationEnabled(roleImpersonationState?.role),
@@ -242,19 +232,19 @@ export async function getTableRows(
 }
 
 export const useTableRowsQuery = <TData = TableRowsData>(
-  { projectRef, connectionString, tableId, ...args }: Omit<TableRowsVariables, 'queryClient'>,
+  { branch, tableId, ...args }: Omit<TableRowsVariables, 'queryClient'>,
   { enabled = true, ...options }: UseQueryOptions<TableRowsData, TableRowsError, TData> = {}
 ) => {
   const queryClient = useQueryClient()
   return useQuery<TableRowsData, TableRowsError, TData>(
-    tableRowKeys.tableRows(projectRef, {
+    tableRowKeys.tableRows(branch?.organization_id, branch?.project_id, branch?.id, {
       table: { id: tableId },
       ...args,
     }),
     ({ signal }) =>
-      getTableRows({ queryClient, projectRef, connectionString, tableId, ...args }, signal),
+      getTableRows({ queryClient, branch, tableId, ...args }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof tableId !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined' && typeof tableId !== 'undefined',
       ...options,
     }
   )
@@ -262,14 +252,14 @@ export const useTableRowsQuery = <TData = TableRowsData>(
 
 export function prefetchTableRows(
   client: QueryClient,
-  { projectRef, connectionString, tableId, ...args }: Omit<TableRowsVariables, 'queryClient'>
+  { branch, tableId, ...args }: Omit<TableRowsVariables, 'queryClient'>
 ) {
   return client.fetchQuery(
-    tableRowKeys.tableRows(projectRef, {
+    tableRowKeys.tableRows(branch?.organization_id, branch?.project_id, branch?.id, {
       table: { id: tableId },
       ...args,
     }),
     ({ signal }) =>
-      getTableRows({ queryClient: client, projectRef, connectionString, tableId, ...args }, signal)
+      getTableRows({ queryClient: client, branch, tableId, ...args }, signal)
   )
 }

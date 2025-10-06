@@ -49,8 +49,7 @@ export const OngoingQueriesPanel = () => {
     refetch,
   } = useOngoingQueriesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: database?.connectionString,
+      branch
     },
     {
       enabled: database?.connectionString !== undefined,

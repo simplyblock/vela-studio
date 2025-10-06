@@ -32,8 +32,7 @@ export const useInstalledIntegrations = () => {
     isLoading: isExtensionsLoading,
     isSuccess: isSuccessExtensions,
   } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const {

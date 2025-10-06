@@ -47,8 +47,7 @@ export const PublicationsList = () => {
     isSuccess,
     isError,
   } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { mutate: updatePublications } = useDatabasePublicationUpdateMutation({
     onSuccess: () => {

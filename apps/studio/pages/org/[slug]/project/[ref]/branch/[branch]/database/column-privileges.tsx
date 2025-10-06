@@ -51,8 +51,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
 
   const { data: tableList, isLoading: isLoadingTables } = useTablesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
     },
     {
       onSuccess(data) {
@@ -108,8 +107,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
     isError: isErrorColumnPrivileges,
     error: errorColumnPrivileges,
   } = useColumnPrivilegesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const columnPrivileges = useMemo(

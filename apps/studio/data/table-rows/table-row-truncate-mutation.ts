@@ -5,10 +5,10 @@ import { Query } from '@supabase/pg-meta/src/query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { tableRowKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type TableRowTruncateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: { id: number; name: string; schema?: string }
 }
 
@@ -18,16 +18,11 @@ export function getTableRowTruncateSql({ table }: Pick<TableRowTruncateVariables
   return queryChains.toSql()
 }
 
-export async function truncateTableRow({
-  projectRef,
-  connectionString,
-  table,
-}: TableRowTruncateVariables) {
+export async function truncateTableRow({ branch, table }: TableRowTruncateVariables) {
   const sql = getTableRowTruncateSql({ table })
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
   })
 
@@ -50,8 +45,15 @@ export const useTableRowTruncateMutation = ({
     (vars) => truncateTableRow(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, table } = variables
-        await queryClient.invalidateQueries(tableRowKeys.tableRowsAndCount(projectRef, table.id))
+        const { branch, table } = variables
+        await queryClient.invalidateQueries(
+          tableRowKeys.tableRowsAndCount(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            table.id
+          )
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

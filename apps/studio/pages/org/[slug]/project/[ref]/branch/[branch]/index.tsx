@@ -70,8 +70,7 @@ const Home: NextPageWithLayout = () => {
   }, [enableBranching])
 
   const { data: tablesData, isLoading: isLoadingTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'public',
   })
   const { data: functionsData, isLoading: isLoadingFunctions } = useEdgeFunctionsQuery({

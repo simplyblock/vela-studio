@@ -82,8 +82,7 @@ const ColumnEditor = ({
   )
 
   const { data: types } = useEnumeratedTypesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { data: protectedSchemas } = useProtectedSchemas({ excludeSchemas: ['extensions'] })
   const enumTypes = (types ?? []).filter(

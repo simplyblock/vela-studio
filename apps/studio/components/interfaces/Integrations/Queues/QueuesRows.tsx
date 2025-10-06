@@ -24,8 +24,7 @@ const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: queueTables } = useTablesQuery({
-    projectRef: selectedProject?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = queueTables?.find((x) => x.name === `q_${queue.queue_name}`)

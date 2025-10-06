@@ -87,16 +87,14 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
 
   const projectRef = project?.ref
   const { data } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const policies = (data ?? []).filter(
     (policy) => policy.schema === table.schema && policy.table === table.name
   )
 
   const { data: publications } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'

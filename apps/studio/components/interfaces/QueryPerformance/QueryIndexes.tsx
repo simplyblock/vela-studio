@@ -58,8 +58,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
   })
 
   const { data: extensions, isLoading: isLoadingExtensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const { isIndexAdvisorEnabled } = useIndexAdvisorStatus()

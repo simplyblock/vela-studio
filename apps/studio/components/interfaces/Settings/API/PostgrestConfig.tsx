@@ -85,8 +85,7 @@ export const PostgrestConfig = () => {
 
   const { data: config, isError, isLoading } = useProjectPostgrestConfigQuery({ orgSlug: orgRef, projectRef })
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { data: schemas, isLoading: isLoadingSchemas } = useSchemasQuery({
     orgSlug: orgRef,

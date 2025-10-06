@@ -100,8 +100,7 @@ const TableEditor = ({
   }, [snap, params, setParams])
 
   const { data: types } = useEnumeratedTypesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { data: protectedSchemas } = useProtectedSchemas({ excludeSchemas: ['extensions'] })
   const enumTypes = (types ?? []).filter(
@@ -109,8 +108,7 @@ const TableEditor = ({
   )
 
   const { data: publications } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'

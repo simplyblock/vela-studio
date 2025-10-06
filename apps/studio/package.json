@@ -74,6 +74,7 @@
     "ai": "^5.0.0",
     "ai-commands": "workspace:*",
     "awesome-debounce-promise": "^2.1.0",
+    "cacheables": "^2.0.0",
     "common": "workspace:*",
     "common-tags": "^1.8.2",
     "config": "workspace:*",

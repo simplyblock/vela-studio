@@ -40,8 +40,7 @@ const StoragePolicies = () => {
     refetch,
     isLoading: isLoadingPolicies,
   } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'storage',
   })
   const policies = policiesData ?? []

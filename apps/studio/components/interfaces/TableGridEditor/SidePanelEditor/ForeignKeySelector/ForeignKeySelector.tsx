@@ -74,8 +74,7 @@ export const ForeignKeySelector = ({
     connectionString: branch?.database.encrypted_connection_string,
   })
   const { data: tables } = useTablesQuery<PostgresTable[] | undefined>({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: fk.schema,
     includeColumns: true,
   })

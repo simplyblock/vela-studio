@@ -5,23 +5,18 @@ import type { ResponseError } from 'types'
 import { databaseTriggerKeys } from './keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { PGTriggerCreate } from '@supabase/pg-meta/src/pg-meta-triggers'
+import { Branch } from 'api-types/types'
 
 export type DatabaseTriggerCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   payload: PGTriggerCreate
 }
 
-export async function createDatabaseTrigger({
-  projectRef,
-  connectionString,
-  payload,
-}: DatabaseTriggerCreateVariables) {
+export async function createDatabaseTrigger({ branch, payload }: DatabaseTriggerCreateVariables) {
   const { sql } = pgMeta.triggers.create(payload)
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['trigger', 'create'],
   })
@@ -45,8 +40,10 @@ export const useDatabaseTriggerCreateMutation = ({
     (vars) => createDatabaseTrigger(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseTriggerKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseTriggerKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

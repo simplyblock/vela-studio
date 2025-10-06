@@ -23,14 +23,12 @@ export const IntegrationOverviewTab = ({
 }: PropsWithChildren<IntegrationOverviewTabProps>) => {
   const { id } = useParams()
   const router = useRouter()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const integration = INTEGRATIONS.find((i) => i.id === id)
 
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   if (!integration) {

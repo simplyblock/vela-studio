@@ -34,8 +34,7 @@ export const EnableIndexAdvisorButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { hypopg, indexAdvisor } = getIndexAdvisorExtensions(extensions)
 

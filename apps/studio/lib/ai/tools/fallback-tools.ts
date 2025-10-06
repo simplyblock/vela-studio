@@ -6,17 +6,15 @@ import { getDatabaseFunctions } from 'data/database-functions/database-functions
 import { getDatabasePolicies } from 'data/database-policies/database-policies-query'
 import { getEntityDefinitionsSql } from 'data/database/entity-definitions-query'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { queryPgMetaSelfHosted } from 'lib/self-hosted'
+import { Branch } from 'api-types/types'
 
 export const getFallbackTools = ({
-  projectRef,
-  connectionString,
+  branch,
   cookie,
   authorization,
   includeSchemaMetadata,
 }: {
-  projectRef: string
-  connectionString: string
+  branch: Branch
   cookie?: string
   authorization?: string
   includeSchemaMetadata: boolean
@@ -38,12 +36,9 @@ export const getFallbackTools = ({
           const result = includeSchemaMetadata
             ? await executeSql(
                 {
-                  projectRef,
-                  connectionString,
+                  branch,
                   sql: getEntityDefinitionsSql({ schemas }),
                 },
-                undefined,
-                headers,
                 undefined
               )
             : { result: [] }
@@ -87,12 +82,10 @@ export const getFallbackTools = ({
         const data = includeSchemaMetadata
           ? await getDatabasePolicies(
               {
-                projectRef,
-                connectionString,
+                branch,
                 schema: schemas?.join(','),
               },
               undefined,
-              headers
             )
           : []
 
@@ -360,8 +353,7 @@ export const getFallbackTools = ({
           const data = includeSchemaMetadata
             ? await getDatabaseFunctions(
                 {
-                  projectRef,
-                  connectionString,
+                  branch,
                 },
                 undefined,
                 headers

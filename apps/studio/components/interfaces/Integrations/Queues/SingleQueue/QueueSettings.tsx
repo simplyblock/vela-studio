@@ -75,8 +75,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
     .sort((a, b) => a.name.localeCompare(b.name))
 
   const { data: queueTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = queueTables?.find((x) => x.name === `q_${name}`)

@@ -89,8 +89,7 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { mutate: createDatabaseTrigger } = useDatabaseTriggerCreateMutation({

@@ -7,10 +7,10 @@ import { RoleImpersonationState, wrapWithRoleImpersonation } from 'lib/role-impe
 import { isRoleImpersonationEnabled } from 'state/role-impersonation-state'
 import type { ResponseError } from 'types'
 import { tableRowKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type TableRowUpdateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: { id: number; name: string; schema?: string }
   configuration: { identifiers: any }
   payload: any
@@ -37,8 +37,7 @@ export function getTableRowUpdateSql({
 }
 
 export async function updateTableRow({
-  projectRef,
-  connectionString,
+  branch,
   table,
   payload,
   configuration,
@@ -52,8 +51,7 @@ export async function updateTableRow({
   )
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     isRoleImpersonationEnabled: isRoleImpersonationEnabled(roleImpersonationState?.role),
     queryKey: ['table-row-update', table.id],
@@ -78,9 +76,11 @@ export const useTableRowUpdateMutation = ({
     (vars) => updateTableRow(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, table } = variables
+        const { branch, table } = variables
         await queryClient.invalidateQueries(
-          tableRowKeys.tableRows(projectRef, { table: { id: table.id } })
+          tableRowKeys.tableRows(branch?.organization_id, branch?.project_id, branch?.id, {
+            table: { id: table.id },
+          })
         )
         await onSuccess?.(data, variables, context)
       },

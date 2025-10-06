@@ -1,4 +1,8 @@
 export const databasePoliciesKeys = {
-  list: (projectRef: string | undefined, schema?: string) =>
-    ['projects', projectRef, 'database-policies', schema].filter(Boolean),
+  list: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    schema?: string
+  ) => ['branches', orgId, projectId, branchId, 'database-policies', schema].filter(Boolean),
 }

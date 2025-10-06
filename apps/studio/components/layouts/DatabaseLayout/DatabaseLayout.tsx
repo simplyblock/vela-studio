@@ -29,8 +29,7 @@ const DatabaseProductMenu = () => {
   const page = router.pathname.split('/')[6]
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const pitrEnabled = true

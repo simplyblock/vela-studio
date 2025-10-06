@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
+import { executeSql, ExecuteSqlError } from './execute-sql-query'
 import { sqlKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type OngoingQuery = {
   pid: number
@@ -17,18 +18,18 @@ select pid, query, query_start from pg_stat_activity where state = 'active' and 
 }
 
 export type OngoingQueriesVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
-export async function getOngoingQueries(
-  { projectRef, connectionString }: OngoingQueriesVariables,
-  signal?: AbortSignal
-) {
+export async function getOngoingQueries({ branch }: OngoingQueriesVariables, signal?: AbortSignal) {
   const sql = getOngoingQueriesSql().trim()
 
   const { result } = await executeSql(
-    { projectRef, connectionString, sql, queryKey: ['ongoing-queries'] },
+    {
+      branch,
+      sql,
+      queryKey: ['ongoing-queries'],
+    },
     signal
   )
 
@@ -39,17 +40,17 @@ export type OngoingQueriesData = Awaited<ReturnType<typeof getOngoingQueries>>
 export type OngoingQueriesError = ExecuteSqlError
 
 export const useOngoingQueriesQuery = <TData = OngoingQueriesData>(
-  { projectRef, connectionString }: OngoingQueriesVariables,
+  { branch }: OngoingQueriesVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<OngoingQueriesData, OngoingQueriesError, TData> = {}
 ) =>
   useQuery<OngoingQueriesData, OngoingQueriesError, TData>(
-    sqlKeys.ongoingQueries(projectRef),
-    ({ signal }) => getOngoingQueries({ projectRef, connectionString }, signal),
+    sqlKeys.ongoingQueries(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getOngoingQueries({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )
