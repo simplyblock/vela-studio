@@ -98,7 +98,7 @@ const RestoreToNewProject = () => {
       refetchInterval,
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
-        const hasTransientState = data?.clones.some((c) => c.status === 'IN_PROGRESS')
+        const hasTransientState = data?.clones?.some((c) => c.status === 'IN_PROGRESS') || false
         if (!hasTransientState) setRefetchInterval(false)
       },
       enabled: PHYSICAL_BACKUPS_ENABLED || PITR_ENABLED,
