@@ -16,16 +16,18 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
         organization_id: slug,
       },
     },
-    body: { // FIXME: get correct values from the UI (after implemented in new/[slug].tsx
+    body: {
+      // FIXME: get correct values from the UI (after implemented in new/[slug].tsx
       name: creationRequest.name,
       deployment: {
         database: '',
         database_user: '',
         database_password: '',
         database_size: 107374182400,
+        storage_size: 107374182400,
         vcpu: 32,
         memory: 68719476736,
-        iops: 1_000_000,
+        iops: 1000000,
         database_image_tag: '15.1.0.147',
       },
     },

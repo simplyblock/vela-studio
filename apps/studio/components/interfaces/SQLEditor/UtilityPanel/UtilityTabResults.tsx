@@ -25,15 +25,10 @@ const UtilityTabResults = forwardRef<HTMLDivElement, UtilityTabResultsProps>(
   ({ id, isExecuting, isDisabled, isDebugging, onDebug }) => {
     const { slug: orgSlug, ref } = useParams()
     const state = useDatabaseSelectorStateSnapshot()
-    const { data: organization } = useSelectedOrganizationQuery()
     const snapV2 = useSqlEditorV2StateSnapshot()
     const [, setShowConnect] = useQueryState('showConnect', parseAsBoolean.withDefault(false))
 
     const result = snapV2.results[id]?.[0]
-    const { data: subscription } = useOrgSubscriptionQuery({ orgSlug: organization?.slug })
-
-    // Customers on HIPAA plans should not have access to Supabase AI
-    const { data: projectSettings } = useProjectSettingsV2Query({ orgSlug, projectRef: ref })
 
     const isTimeout =
       result?.error?.message?.includes('canceling statement due to statement timeout') ||

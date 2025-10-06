@@ -9,6 +9,7 @@ import type { ResourceWarning } from 'data/usage/resource-warnings-query'
 import { inferProjectStatus } from './ProjectCard.utils'
 import { ProjectCardStatus } from './ProjectCardStatus'
 import { useParams } from 'common'
+import { useBranchesQuery } from '../../../../data/branches/branches-query'
 
 export interface ProjectCardProps {
   project: ProjectInfo
@@ -22,18 +23,23 @@ const ProjectCard = ({
   githubIntegration,
   resourceWarnings,
 }: ProjectCardProps) => {
-  const { slug } = useParams() as { slug: string }
+  const { slug: orgRef } = useParams() as { slug: string }
   const { name, ref: projectRef, default_branch } = project
+
+  const { data: branches } = useBranchesQuery({orgSlug: orgRef, projectRef})
+  const mainBranch = branches?.find(branch => branch.name === default_branch)
 
   const isBranchingEnabled = true
   const isGithubIntegrated = githubIntegration !== undefined
   const githubRepository = githubIntegration?.metadata.name ?? undefined
   const projectStatus = inferProjectStatus(project)
 
+  if (!mainBranch) console.error('No main branch found for project', project)
+
   return (
     <li className="list-none">
       <CardButton
-        linkHref={`/org/${slug}/project/${projectRef}/branch/${default_branch}`}
+        linkHref={`/org/${orgRef}/project/${projectRef}/branch/${mainBranch?.id}`}
         className="h-44 !px-0 group pt-5 pb-0"
         title={
           <div className="w-full justify-between space-y-1.5 px-5">
@@ -60,7 +66,7 @@ const ProjectCard = ({
         footer={
           <ProjectCardStatus projectStatus={projectStatus} resourceWarnings={resourceWarnings} />
         }
-        containerElement={<ProjectIndexPageLink slug={slug} projectRef={projectRef} />}
+        containerElement={<ProjectIndexPageLink slug={orgRef} projectRef={projectRef} />}
       />
     </li>
   )

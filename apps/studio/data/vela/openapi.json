@@ -2397,10 +2397,10 @@
         }
       }
     },
-    "/organizations/{organization_id}/projects/{project_id}/pause": {
+    "/organizations/{organization_id}/projects/{project_id}/suspend": {
       "post": {
-        "summary": "Organizations:Projects:Pause",
-        "operationId": "organizations:projects:pause",
+        "summary": "Organizations:Projects:Suspend",
+        "operationId": "organizations:projects:suspend",
         "security": [
           {
             "HTTPBearer": []
@@ -4206,8 +4206,12 @@
           "api_keys": {
             "$ref": "#/components/schemas/BranchApiKeys"
           },
-          "status": {
+          "service_health": {
             "$ref": "#/components/schemas/BranchStatus"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
           },
           "ptir_enabled": {
             "type": "boolean",
@@ -4257,6 +4261,7 @@
           "assigned_labels",
           "used_resources",
           "api_keys",
+          "service_health",
           "status",
           "ptir_enabled",
           "created_at",
@@ -4313,13 +4318,47 @@
               "UNKNOWN"
             ],
             "title": "Realtime"
+          },
+          "meta": {
+            "type": "string",
+            "enum": [
+              "ACTIVE_HEALTHY",
+              "STOPPED",
+              "STARTING",
+              "ACTIVE_UNHEALTHY",
+              "CREATING",
+              "DELETING",
+              "UPDATING",
+              "RESTARTING",
+              "STOPPING",
+              "UNKNOWN"
+            ],
+            "title": "Meta"
+          },
+          "rest": {
+            "type": "string",
+            "enum": [
+              "ACTIVE_HEALTHY",
+              "STOPPED",
+              "STARTING",
+              "ACTIVE_UNHEALTHY",
+              "CREATING",
+              "DELETING",
+              "UPDATING",
+              "RESTARTING",
+              "STOPPING",
+              "UNKNOWN"
+            ],
+            "title": "Rest"
           }
         },
         "type": "object",
         "required": [
           "database",
           "storage",
-          "realtime"
+          "realtime",
+          "meta",
+          "rest"
         ],
         "title": "BranchStatus"
       },
@@ -4414,6 +4453,13 @@
             "exclusiveMinimum": 0.0,
             "title": "Database Size"
           },
+          "storage_size": {
+            "type": "integer",
+            "multipleOf": 1073741824.0,
+            "maximum": 9.223372036854776e+18,
+            "exclusiveMinimum": 0.0,
+            "title": "Storage Size"
+          },
           "vcpu": {
             "type": "integer",
             "maximum": 2147483647.0,
@@ -4445,6 +4491,7 @@
           "database_user",
           "database_password",
           "database_size",
+          "storage_size",
           "vcpu",
           "memory",
           "iops",
@@ -4664,9 +4711,32 @@
             "pattern": "^[^\\x00]*$",
             "title": "Name"
           },
-          "status": {
-            "type": "string",
-            "title": "Status"
+          "branch_status": {
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "Stopped",
+                "Provisioning",
+                "Starting",
+                "Running",
+                "Paused",
+                "Stopping",
+                "Terminating",
+                "CrashLoopBackOff",
+                "Migrating",
+                "Unknown",
+                "ErrorUnschedulable",
+                "ErrImagePull",
+                "ImagePullBackOff",
+                "ErrorPvcNotFound",
+                "DataVolumeError",
+                "WaitingForVolumeBinding",
+                "WaitingForReceiver",
+                "UNKNOWN"
+              ]
+            },
+            "type": "object",
+            "title": "Branch Status"
           }
         },
         "type": "object",
@@ -4674,7 +4744,7 @@
           "organization_id",
           "id",
           "name",
-          "status"
+          "branch_status"
         ],
         "title": "ProjectPublic"
       },
@@ -4711,9 +4781,26 @@
               }
             ],
             "title": "Database Size"
+          },
+          "storage_size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "multipleOf": 1073741824.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Size"
           }
         },
         "type": "object",
+        "required": [
+          "database_size",
+          "storage_size"
+        ],
         "title": "ResizeParameters"
       },
       "ResourceUsageDefinition": {
@@ -4807,7 +4894,7 @@
               }
             ],
             "title": "Storage Bytes",
-            "description": "Database storage capacity in bytes (mirrors Branch.database_size)."
+            "description": "Storage capacity in bytes to be used for Storage API (mirrors Branch.storage_size)."
           }
         },
         "type": "object",

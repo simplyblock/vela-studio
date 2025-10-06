@@ -28,7 +28,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!success) return
 
-  return res.json(mapProjectBranch(data!, slug, ref))
+  return res.json(mapProjectBranch(data!))
 }
 
 const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -69,7 +69,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch>) => {
 
   if (!success) return
 
-  return res.json(mapProjectBranch(data!, slug, ref))
+  return res.json(mapProjectBranch(data!))
 }
 
 const apiHandler = apiBuilder((builder) =>

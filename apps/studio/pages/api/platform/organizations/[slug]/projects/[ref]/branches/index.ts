@@ -31,7 +31,7 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!success) return
 
-  return res.json(mapProjectBranch(data!, slug, ref))
+  return res.json(mapProjectBranch(data!))
 }
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch[]>) => {
@@ -53,7 +53,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch[]>) =>
 
   if (!success) return
 
-  return res.json(data?.map((branch) => mapProjectBranch(branch, slug, ref)) ?? [])
+  return res.json(data?.map((branch) => mapProjectBranch(branch)) ?? [])
 }
 
 const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet).post(handleCreate))

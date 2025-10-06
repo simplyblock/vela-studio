@@ -234,7 +234,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/{organization_id}/projects/{project_id}/pause": {
+    "/organizations/{organization_id}/projects/{project_id}/suspend": {
         parameters: {
             query?: never;
             header?: never;
@@ -243,8 +243,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Organizations:Projects:Pause */
-        post: operations["organizations:projects:pause"];
+        /** Organizations:Projects:Suspend */
+        post: operations["organizations:projects:suspend"];
         delete?: never;
         options?: never;
         head?: never;
@@ -504,7 +504,9 @@ export interface components {
             assigned_labels: string[];
             used_resources: components["schemas"]["ResourceUsageDefinition"];
             api_keys: components["schemas"]["BranchApiKeys"];
-            status: components["schemas"]["BranchStatus"];
+            service_health: components["schemas"]["BranchStatus"];
+            /** Status */
+            status: string;
             /** Ptir Enabled */
             ptir_enabled: boolean;
             /**
@@ -536,6 +538,16 @@ export interface components {
              * @enum {string}
              */
             realtime: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            /**
+             * Meta
+             * @enum {string}
+             */
+            meta: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            /**
+             * Rest
+             * @enum {string}
+             */
+            rest: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
         };
         /** BranchUpdate */
         BranchUpdate: {
@@ -571,6 +583,8 @@ export interface components {
             database_password: string;
             /** Database Size */
             database_size: number;
+            /** Storage Size */
+            storage_size: number;
             /** Vcpu */
             vcpu: number;
             /** Memory */
@@ -669,8 +683,10 @@ export interface components {
             id: string;
             /** Name */
             name: string;
-            /** Status */
-            status: string;
+            /** Branch Status */
+            branch_status: {
+                [key: string]: "Stopped" | "Provisioning" | "Starting" | "Running" | "Paused" | "Stopping" | "Terminating" | "CrashLoopBackOff" | "Migrating" | "Unknown" | "ErrorUnschedulable" | "ErrImagePull" | "ImagePullBackOff" | "ErrorPvcNotFound" | "DataVolumeError" | "WaitingForVolumeBinding" | "WaitingForReceiver" | "UNKNOWN";
+            };
         };
         /** ProjectUpdate */
         ProjectUpdate: {
@@ -680,7 +696,9 @@ export interface components {
         /** ResizeParameters */
         ResizeParameters: {
             /** Database Size */
-            database_size?: number | null;
+            database_size: number | null;
+            /** Storage Size */
+            storage_size: number | null;
         };
         /** ResourceUsageDefinition */
         ResourceUsageDefinition: {
@@ -734,7 +752,7 @@ export interface components {
             iops: number;
             /**
              * Storage Bytes
-             * @description Database storage capacity in bytes (mirrors Branch.database_size).
+             * @description Storage capacity in bytes to be used for Storage API (mirrors Branch.storage_size).
              */
             storage_bytes?: number | null;
         };
@@ -2132,7 +2150,7 @@ export interface operations {
             };
         };
     };
-    "organizations:projects:pause": {
+    "organizations:projects:suspend": {
         parameters: {
             query?: never;
             header?: never;

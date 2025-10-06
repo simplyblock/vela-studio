@@ -12,7 +12,6 @@ import { useOrganizationCreateInvitationMutation } from 'data/organization-membe
 import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useHasAccessToProjectLevelPermissions } from 'data/subscriptions/org-subscription-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
@@ -73,7 +72,6 @@ export const InviteMemberButton = () => {
     .sort((a, b) => a.name.localeCompare(b.name))
 
   const currentPlan = organization?.plan
-  const hasAccessToProjectLevelPermissions = useHasAccessToProjectLevelPermissions(slug as string)
 
   const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
@@ -195,25 +193,23 @@ export const InviteMemberButton = () => {
             onSubmit={form.handleSubmit(onInviteMember)}
           >
             <DialogSection className="flex flex-col gap-y-4 pb-2">
-              {hasAccessToProjectLevelPermissions && (
-                <FormField_Shadcn_
-                  name="applyToOrg"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItemLayout
-                      layout="flex"
-                      label="Apply role to all projects in the organization"
-                    >
-                      <FormControl_Shadcn_>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(value) => form.setValue('applyToOrg', value)}
-                        />
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-              )}
+              <FormField_Shadcn_
+                name="applyToOrg"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItemLayout
+                    layout="flex"
+                    label="Apply role to all projects in the organization"
+                  >
+                    <FormControl_Shadcn_>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(value) => form.setValue('applyToOrg', value)}
+                      />
+                    </FormControl_Shadcn_>
+                  </FormItemLayout>
+                )}
+              />
               <FormField_Shadcn_
                 name="role"
                 control={form.control}

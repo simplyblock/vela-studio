@@ -7,7 +7,6 @@ interface DiskIOBandwidthWarningsProps {
   isFreePlan: boolean
   hasLatest: boolean
   upgradeUrl: string
-  currentBillingCycleSelected: boolean
   latestIoBudgetConsumption: number
   highestIoBudgetConsumption: number
 }
@@ -15,7 +14,6 @@ interface DiskIOBandwidthWarningsProps {
 const DiskIOBandwidthWarnings = ({
   isFreePlan,
   hasLatest,
-  currentBillingCycleSelected,
   upgradeUrl,
   latestIoBudgetConsumption,
   highestIoBudgetConsumption,
@@ -67,7 +65,7 @@ const DiskIOBandwidthWarnings = ({
     )
   }
 
-  if (currentBillingCycleSelected && highestIoBudgetConsumption >= 100) {
+  if (highestIoBudgetConsumption >= 100) {
     return (
       <Admonition
         type="warning"
@@ -90,7 +88,7 @@ const DiskIOBandwidthWarnings = ({
     )
   }
 
-  if (currentBillingCycleSelected && highestIoBudgetConsumption >= 80) {
+  if (highestIoBudgetConsumption >= 80) {
     return (
       <Admonition
         type="warning"

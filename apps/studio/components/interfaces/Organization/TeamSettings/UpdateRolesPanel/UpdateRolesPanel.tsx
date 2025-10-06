@@ -9,7 +9,6 @@ import { useOrganizationRolesV2Query } from 'data/organization-members/organizat
 import { OrganizationMember } from 'data/organizations/organization-members-query'
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useHasAccessToProjectLevelPermissions } from 'data/subscriptions/org-subscription-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   AlertDescription_Shadcn_,
@@ -59,7 +58,6 @@ interface UpdateRolesPanelProps {
 export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelProps) => {
   const { slug } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
-  const isOptedIntoProjectLevelPermissions = useHasAccessToProjectLevelPermissions(slug as string)
 
   const { data: projects } = useProjectsQuery()
   const { data: permissions } = usePermissionsQuery()
@@ -151,7 +149,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
         setProjectsRoleConfiguration(originalConfiguration)
       } else {
         setProjectsRoleConfiguration(
-          orgProjects.map((p) => {
+          orgProjects.map((p: any) => {
             return { ref: p.ref, projectId: p.id, roleId: roleIdToApply }
           })
         )
@@ -189,16 +187,14 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
             </SheetHeader>
 
             <SheetSection className="h-full overflow-auto flex flex-col gap-y-4">
-              {isOptedIntoProjectLevelPermissions && (
-                <div className="flex items-center gap-x-4">
-                  <Switch
-                    disabled={cannotAddAnyRoles}
-                    checked={isApplyingRoleToAllProjects}
-                    onCheckedChange={onToggleApplyToAllProjects}
-                  />
-                  <p className="text-sm">Apply roles to all projects in the organization</p>
-                </div>
-              )}
+              <div className="flex items-center gap-x-4">
+                <Switch
+                  disabled={cannotAddAnyRoles}
+                  checked={isApplyingRoleToAllProjects}
+                  onCheckedChange={onToggleApplyToAllProjects}
+                />
+                <p className="text-sm">Apply roles to all projects in the organization</p>
+              </div>
 
               {projectsRoleConfiguration.length === 0 && (
                 <Alert_Shadcn_>
