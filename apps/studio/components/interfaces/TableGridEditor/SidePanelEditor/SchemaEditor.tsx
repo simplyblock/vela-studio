@@ -5,6 +5,7 @@ import { Input, SidePanel } from 'ui'
 import { useSchemaCreateMutation } from 'data/database/schema-create-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface SchemaEditorProps {
   visible: boolean
@@ -14,6 +15,7 @@ interface SchemaEditorProps {
 
 const SchemaEditor = ({ visible, onSuccess, closePanel }: SchemaEditorProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
 
   const [errors, setErrors] = useState<{ name?: string }>({ name: undefined })
@@ -36,11 +38,12 @@ const SchemaEditor = ({ visible, onSuccess, closePanel }: SchemaEditorProps) => 
     }
 
     if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
     try {
       await createSchema({
         orgSlug,
         projectRef: project.ref,
-        connectionString: project.connectionString,
+        connectionString: branch.database.encrypted_connection_string,
         name,
       })
       onSuccess(name)

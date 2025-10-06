@@ -23,6 +23,7 @@ import {
 } from './Wrappers.utils'
 import WrapperTableEditor from './WrapperTableEditor'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export interface EditWrapperSheetProps {
   wrapper: FDW
@@ -43,11 +44,12 @@ export const EditWrapperSheet = ({
 }: EditWrapperSheetProps) => {
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
 
   const { data: secrets, isLoading: isSecretsLoading } = useVaultSecretsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { mutate: updateFDW, isLoading: isSaving } = useFDWUpdateMutation({
@@ -103,7 +105,7 @@ export const EditWrapperSheet = ({
 
     updateFDW({
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       wrapper,
       wrapperMeta,
       formState: { ...values, server_name: `${wrapper_name}_server` },
@@ -168,7 +170,7 @@ export const EditWrapperSheet = ({
                     if (secret !== undefined) {
                       const value = await getDecryptedValue({
                         projectRef: project?.ref,
-                        connectionString: project?.connectionString,
+                        connectionString: branch?.database.encrypted_connection_string,
                         id: secret.id,
                       })
                       return { [option.name]: value[0]?.decrypted_secret ?? '' }

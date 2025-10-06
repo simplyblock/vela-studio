@@ -10,6 +10,7 @@ import type { ForeignKey } from '../ForeignKeySelector/ForeignKeySelector.types'
 import type { ColumnField } from '../SidePanelEditor.types'
 import { ForeignKeyRow } from '../TableEditor/ForeignKeysManagement/ForeignKeyRow'
 import { checkIfRelationChanged } from '../TableEditor/ForeignKeysManagement/ForeignKeysManagement.utils'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface ColumnForeignKeyProps {
   column: ColumnField
@@ -31,16 +32,17 @@ const ColumnForeignKey = ({
   const [selectedFk, setSelectedFk] = useState<ForeignKey>()
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data } = useForeignKeyConstraintsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: column.schema,
   })
 
   const id = _id ? Number(_id) : undefined
   const { data: table } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
   const formattedColumnsForFkSelector = (table?.columns ?? []).map((c) => {

@@ -3,29 +3,30 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
+import { Branch } from './branches-query'
 
 export type BranchVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
-  branch?: string
+  branchRef?: string
 }
 
 export async function getBranch(
-  { orgSlug, projectRef, branch }: BranchVariables,
+  { orgRef, projectRef, branchRef }: BranchVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+  if (!orgRef) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
-  if (!branch) throw new Error('Branch id is required')
+  if (!branchRef) throw new Error('Branch id is required')
 
   const { data, error } = await get(
     `/platform/organizations/{slug}/projects/{ref}/branches/{branch}`,
     {
       params: {
         path: {
-          slug: orgSlug,
+          slug: orgRef,
           ref: projectRef,
-          branch,
+          branch: branchRef,
         },
       },
       signal,
@@ -33,25 +34,25 @@ export async function getBranch(
   )
 
   if (error) handleError(error)
-  return data
+  return data as unknown as BranchData
 }
 
-export type BranchData = Awaited<ReturnType<typeof getBranch>>
+export type BranchData = Branch
 export type BranchError = ResponseError
 
 export const useBranchQuery = <TData = BranchData>(
-  { orgSlug, projectRef, branch }: BranchVariables,
+  { orgRef, projectRef, branchRef }: BranchVariables,
   { enabled = true, ...options }: UseQueryOptions<BranchData, BranchError, TData> = {}
 ) =>
   useQuery<BranchData, BranchError, TData>(
-    branchKeys.detail(projectRef, branch),
-    ({ signal }) => getBranch({ orgSlug, projectRef, branch }, signal),
+    branchKeys.detail(projectRef, branchRef),
+    ({ signal }) => getBranch({ orgRef, projectRef, branchRef }, signal),
     {
       enabled:
         enabled &&
-        typeof branch !== 'undefined' &&
+        typeof branchRef !== 'undefined' &&
         typeof projectRef !== 'undefined' &&
-        typeof orgSlug !== 'undefined',
+        typeof orgRef !== 'undefined',
       ...options,
     }
   )

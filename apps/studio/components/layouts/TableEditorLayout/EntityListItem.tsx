@@ -48,6 +48,7 @@ import {
   TooltipTrigger,
   TreeViewItemVariant,
 } from 'ui'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export interface EntityListItemProps {
   id: number | string
@@ -75,6 +76,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   onExportCLI,
 }) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useTableEditorStateSnapshot()
   const { selectedSchema } = useQuerySchemaState()
 
@@ -131,7 +133,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   }
 
   const exportTableAsCSV = async () => {
-    if (!project?.connectionString) {
+    if (!branch?.database.encrypted_connection_string) {
       return console.error('Connection string is required')
     }
     const toastId = toast.loading(`Exporting ${entity.name} as CSV...`)
@@ -140,7 +142,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
       const table = await getTableEditor({
         id: entity.id,
         projectRef,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
       })
       if (isTableLike(table) && table.live_rows_estimate > MAX_EXPORT_ROW_COUNT) {
         return toast.error(
@@ -157,7 +159,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
 
       const rows = await fetchAllTableRows({
         projectRef,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         table: supaTable,
       })
       const formattedRows = rows.map((row) => {
@@ -184,7 +186,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   }
 
   const exportTableAsSQL = async () => {
-    if (!project?.connectionString) {
+    if (!branch?.database.encrypted_connection_string) {
       return console.error('Connection string is required')
     }
     const toastId = toast.loading(`Exporting ${entity.name} as SQL...`)
@@ -193,7 +195,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
       const table = await getTableEditor({
         id: entity.id,
         projectRef,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
       })
 
       if (isTableLike(table) && table.live_rows_estimate > MAX_EXPORT_ROW_COUNT) {
@@ -211,7 +213,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
 
       const rows = await fetchAllTableRows({
         projectRef,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         table: supaTable,
       })
       const formattedRows = rows.map((row) => {
@@ -329,7 +331,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
                     const tableDefinition = await getTableDefinition({
                       id: entity.id,
                       projectRef: project?.ref,
-                      connectionString: project?.connectionString,
+                      connectionString: branch?.database.encrypted_connection_string,
                     })
                     if (!tableDefinition) {
                       return toast.error('Failed to get table schema', { id: toastId })

@@ -9,13 +9,15 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
 import { Markdown } from '../Markdown'
 import { getIndexAdvisorExtensions } from './index-advisor.utils'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export const IndexAdvisorDisabledState = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: extensions } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { hypopg, indexAdvisor } = getIndexAdvisorExtensions(extensions)
 
@@ -29,7 +31,7 @@ export const IndexAdvisorDisabledState = () => {
       if (hypopg?.installed_version === null) {
         await enableExtension({
           projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           name: hypopg.name,
           schema: hypopg?.schema ?? 'extensions',
           version: hypopg.default_version,
@@ -38,7 +40,7 @@ export const IndexAdvisorDisabledState = () => {
       if (indexAdvisor?.installed_version === null) {
         await enableExtension({
           projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           name: indexAdvisor.name,
           schema: indexAdvisor?.schema ?? 'extensions',
           version: indexAdvisor.default_version,

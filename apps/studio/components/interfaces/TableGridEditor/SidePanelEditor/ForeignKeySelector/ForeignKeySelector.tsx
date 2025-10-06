@@ -26,6 +26,7 @@ import { FOREIGN_KEY_CASCADE_OPTIONS } from './ForeignKeySelector.constants'
 import type { ForeignKey } from './ForeignKeySelector.types'
 import { generateCascadeActionDescription } from './ForeignKeySelector.utils'
 import { getPathReferences } from '../../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 const EMPTY_STATE: ForeignKey = {
   id: undefined,
@@ -58,6 +59,7 @@ export const ForeignKeySelector = ({
   onSaveRelation,
 }: ForeignKeySelectorProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
   const { selectedSchema } = useQuerySchemaState()
 
@@ -69,11 +71,11 @@ export const ForeignKeySelector = ({
   const { data: schemas } = useSchemasQuery({
     orgSlug,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { data: tables } = useTablesQuery<PostgresTable[] | undefined>({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: fk.schema,
     includeColumns: true,
   })

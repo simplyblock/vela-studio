@@ -33,6 +33,8 @@ import {
   Select_Shadcn_,
 } from 'ui'
 import { MultiSelectV2 } from 'ui-patterns/MultiSelectDeprecated/MultiSelectV2'
+import { useParams } from 'common'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface PolicyDetailsV2Props {
   schema: string
@@ -59,14 +61,16 @@ export const PolicyDetailsV2 = ({
   onUpdateCommand,
   authContext,
 }: PolicyDetailsV2Props) => {
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const [open, setOpen] = useState(false)
     // FIXME: need permission implemented 
   const { can: canUpdatePolicies } = {can:true}
 
   const { data: tables, isSuccess: isSuccessTables } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: schema,
     sortByProperty: 'name',
     includeColumns: true,
@@ -74,7 +78,7 @@ export const PolicyDetailsV2 = ({
 
   const { data: dbRoles } = useDatabaseRolesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const formattedRoles = (dbRoles ?? [])
     .map((role) => {

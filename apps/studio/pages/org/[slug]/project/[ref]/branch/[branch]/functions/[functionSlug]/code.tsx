@@ -17,11 +17,13 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { BASE_PATH } from 'lib/constants'
 import { LogoLoader } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../../../../../data/branches/selected-branch-query'
 
 const CodePage = () => {
   const { ref,slug, functionSlug } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: sendEvent } = useSendEventMutation()
   const [showDeployWarning, setShowDeployWarning] = useState(false)
@@ -220,7 +222,7 @@ const CodePage = () => {
             aiEndpoint={`${BASE_PATH}/api/ai/code/complete`}
             aiMetadata={{
               projectRef: project?.ref,
-              connectionString: project?.connectionString,
+              connectionString: branch?.database.encrypted_connection_string,
               orgSlug: org?.slug,
             }}
           />

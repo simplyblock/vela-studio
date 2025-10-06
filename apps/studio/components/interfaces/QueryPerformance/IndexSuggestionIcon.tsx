@@ -17,6 +17,7 @@ import { IndexImprovementText } from './IndexImprovementText'
 import { QueryPanelScoreSection } from './QueryPanel'
 import { useIndexInvalidation } from './hooks/useIndexInvalidation'
 import { createIndexes } from './index-advisor.utils'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 interface IndexSuggestionIconProps {
   indexAdvisorResult: GetIndexAdvisorResultResponse
@@ -28,6 +29,7 @@ export const IndexSuggestionIcon = ({
   onClickIcon,
 }: IndexSuggestionIconProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [isCreatingIndex, setIsCreatingIndex] = useState(false)
   const [isHoverCardOpen, setIsHoverCardOpen] = useState(false)
 
@@ -41,7 +43,7 @@ export const IndexSuggestionIcon = ({
     try {
       await createIndexes({
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         indexStatements: indexAdvisorResult.index_statements,
         onSuccess: () => {
           // Handle UI-specific logic

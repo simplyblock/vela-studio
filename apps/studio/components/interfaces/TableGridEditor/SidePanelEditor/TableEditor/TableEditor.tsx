@@ -43,6 +43,7 @@ import {
   generateTableFieldFromPostgresTable,
   validateFields,
 } from './TableEditor.utils'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 export interface TableEditorProps {
   table?: PostgresTable
@@ -81,8 +82,9 @@ const TableEditor = ({
   updateEditorDirty = noop,
 }: TableEditorProps) => {
   const snap = useTableEditorStateSnapshot()
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { selectedSchema } = useQuerySchemaState()
   const isNewRecord = isUndefined(table)
   const { realtimeAll: realtimeEnabled, tableEditorEnableRlsToggle: enableRlsToggle } =
@@ -99,7 +101,7 @@ const TableEditor = ({
 
   const { data: types } = useEnumeratedTypesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { data: protectedSchemas } = useProtectedSchemas({ excludeSchemas: ['extensions'] })
   const enumTypes = (types ?? []).filter(
@@ -108,7 +110,7 @@ const TableEditor = ({
 
   const { data: publications } = useDatabasePublicationsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'
@@ -129,7 +131,7 @@ const TableEditor = ({
 
   const { data: constraints } = useTableConstraintsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id: table?.id,
   })
   const primaryKey = (constraints ?? []).find(
@@ -139,7 +141,7 @@ const TableEditor = ({
   const { data: foreignKeyMeta, isSuccess: isSuccessForeignKeyMeta } =
     useForeignKeyConstraintsQuery({
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       schema: table?.schema,
     })
   const foreignKeys = (foreignKeyMeta ?? []).filter(

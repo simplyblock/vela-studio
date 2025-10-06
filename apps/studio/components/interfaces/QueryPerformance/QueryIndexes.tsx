@@ -28,6 +28,7 @@ import { IndexImprovementText } from './IndexImprovementText'
 import { QueryPanelContainer, QueryPanelScoreSection, QueryPanelSection } from './QueryPanel'
 import { useIndexInvalidation } from './hooks/useIndexInvalidation'
 import { calculateImprovement, createIndexes, hasIndexRecommendations } from './index-advisor.utils'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 interface QueryIndexesProps {
   selectedRow: any
@@ -40,6 +41,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
   // [Joshen] TODO implement this logic once the linter rules are in
   const isLinterWarning = false
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [showStartupCosts, setShowStartupCosts] = useState(false)
   const [isExecuting, setIsExecuting] = useState(false)
 
@@ -51,13 +53,13 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     error,
   } = useGetIndexesFromSelectQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     query: selectedRow?.['query'],
   })
 
   const { data: extensions, isLoading: isLoadingExtensions } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { isIndexAdvisorEnabled } = useIndexAdvisorStatus()
@@ -72,7 +74,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
   } = useGetIndexAdvisorResult(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       query: selectedRow?.['query'],
     },
     { enabled: isIndexAdvisorEnabled }
@@ -101,7 +103,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     try {
       await createIndexes({
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         indexStatements: index_statements,
         onSuccess: () => refetch(),
       })

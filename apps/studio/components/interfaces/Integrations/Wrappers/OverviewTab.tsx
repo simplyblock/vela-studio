@@ -18,10 +18,12 @@ import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
 import { CreateWrapperSheet } from './CreateWrapperSheet'
 import { WRAPPERS } from './Wrappers.constants'
 import { WrapperTable } from './WrapperTable'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export const WrapperOverviewTab = () => {
   const { id, slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
   const [isClosingCreateWrapper, setisClosingCreateWrapper] = useState(false)
   // FIXME: need permission implemented 
@@ -29,7 +31,7 @@ export const WrapperOverviewTab = () => {
 
   const { data } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const wrapperMeta = WRAPPERS.find((w) => w.name === id)

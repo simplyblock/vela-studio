@@ -31,9 +31,13 @@ import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import CreateEnumeratedTypeSidePanel from './CreateEnumeratedTypeSidePanel'
 import DeleteEnumeratedTypeModal from './DeleteEnumeratedTypeModal'
 import EditEnumeratedTypeSidePanel from './EditEnumeratedTypeSidePanel'
+import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useParams } from 'common'
 
 const EnumeratedTypes = () => {
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const [search, setSearch] = useState('')
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
   const [showCreateTypePanel, setShowCreateTypePanel] = useState(false)
@@ -42,7 +46,7 @@ const EnumeratedTypes = () => {
 
   const { data, error, isLoading, isError, isSuccess } = useEnumeratedTypesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const enumeratedTypes = (data ?? []).filter((type) => type.enums.length > 0)
   const filteredEnumeratedTypes =

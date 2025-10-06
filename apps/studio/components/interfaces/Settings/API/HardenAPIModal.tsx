@@ -27,6 +27,7 @@ import {
   WarningIcon,
 } from 'ui'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface HardenAPIModalProps {
   visible: boolean
@@ -35,12 +36,13 @@ interface HardenAPIModalProps {
 
 export const HardenAPIModal = ({ visible, onClose }: HardenAPIModalProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
 
   const { data: schemas } = useSchemasQuery({
     orgSlug,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { data: config } = useProjectPostgrestConfigQuery({ orgSlug, projectRef: project?.ref })
 
@@ -64,12 +66,13 @@ export const HardenAPIModal = ({ visible, onClose }: HardenAPIModalProps) => {
     })
 
   const onSelectCreateAndExposeAPISchema = () => {
-    if (project === undefined) return console.error('Project is required')
-    if (config === undefined) return console.error('Postgrest config is required')
+    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
+    if (!config) return console.error('Postgrest config is required')
     createAndExposeAPISchema({
       orgSlug: orgSlug!,
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       existingPostgrestConfig: {
         max_rows: config.max_rows,
         db_pool: config.db_pool,

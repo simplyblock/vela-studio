@@ -32,13 +32,6 @@ export function mapOrganization(organization: VelaOrganization): Organization {
 }
 
 export function mapProject(project: VelaProject): Project {
-  let encryptedConnectionString = project.encrypted_database_connection_string!
-  if (isDocker) {
-    encryptedConnectionString = CryptoJS.AES.encrypt(
-      'postgresql://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/postgres', 'SAMPLE_KEY'
-    ).toString().trim() // FIXME: Encrypted connectionString needs to come from the outside
-  }
-
   return {
     id: project.id!,
     name: project.name!,
@@ -53,8 +46,7 @@ export function mapProject(project: VelaProject): Project {
     is_physical_backups_enabled: false,
     restUrl: '',
     subscription_id: '',
-    connectionString: encryptedConnectionString,
-    default_branch: 'main'
+    default_branch: 'main',
   }
 }
 
@@ -69,44 +61,63 @@ export function mapOrganizationMember(member: VelaMember): OrganizationMember {
     role_ids: [],
     metadata: {
       first_name: member.first_name,
-      last_name: member.last_name
-    }
+      last_name: member.last_name,
+    },
   }
 }
 
-export function mapProjectBranch(branch: VelaBranch, organizationId: string, projectId: string): Branch {
+export function mapProjectBranch(branch: VelaBranch): Branch {
+  let encryptedConnectionString = branch.database.encrypted_connection_string
+  if (isDocker) {
+    encryptedConnectionString = CryptoJS.AES.encrypt(
+      'postgresql://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/postgres',
+      'SAMPLE_KEY'
+    )
+      .toString()
+      .trim() // FIXME: Encrypted connectionString needs to come from the outside
+  }
+
   return {
     id: branch.id,
-    created_at: '2022-01-01T00:00:00Z',
-    created_by: 'me',
+    created_at: branch.created_at,
+    created_by: branch.created_by,
     name: branch.name,
-    project_id: projectId,
-    organization_id: organizationId,
+    project_id: branch.project_id,
+    organization_id: branch.organization_id,
     status: {
-      database: 'ACTIVE_HEALTHY',
-      realtime: 'STOPPED',
-      storage: 'STOPPED',
+      database: branch.status.database,
+      realtime: branch.status.realtime,
+      storage: branch.status.storage,
     },
-    database: {} as any,
-    pitr_enabled: true,
-    assigned_labels: [],
+    database: {
+      host: branch.database.host,
+      port: branch.database.port,
+      name: branch.database.name,
+      version: branch.database.version,
+      username: branch.database.username,
+      has_replicas: branch.database.has_replicas,
+      service_endpoint_uri: branch.database.service_endpoint_uri,
+      encrypted_connection_string: encryptedConnectionString,
+    },
+    pitr_enabled: branch.ptir_enabled,
+    assigned_labels: branch.assigned_labels,
     used_resources: {
-      vcpu: 0,
-      ram_bytes: 0,
-      nvme_bytes: 0,
-      iops: 0,
-      storage_bytes: undefined,
+      vcpu: branch.used_resources.vcpu,
+      ram_bytes: branch.used_resources.ram_bytes,
+      nvme_bytes: branch.used_resources.nvme_bytes,
+      iops: branch.used_resources.iops,
+      storage_bytes: branch.used_resources.storage_bytes ?? undefined,
     },
     max_resources: {
-      vcpu: 0,
-      ram_bytes: 0,
-      nvme_bytes: 0,
-      iops: 0,
-      storage_bytes: undefined,
+      vcpu: branch.max_resources.vcpu,
+      ram_bytes: branch.max_resources.ram_bytes,
+      nvme_bytes: branch.max_resources.nvme_bytes,
+      iops: branch.max_resources.iops,
+      storage_bytes: branch.max_resources.storage_bytes ?? undefined,
     },
     api_keys: {
-      anon: '',
-      service_role: '',
+      anon: branch.api_keys.anon,
+      service_role: branch.api_keys.service_role,
     },
   }
 }

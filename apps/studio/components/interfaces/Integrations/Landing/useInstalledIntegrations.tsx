@@ -8,10 +8,12 @@ import { EMPTY_ARR } from 'lib/void'
 import { wrapperMetaComparator } from '../Wrappers/Wrappers.utils'
 import { INTEGRATIONS } from './Integrations.constants'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export const useInstalledIntegrations = () => {
-  const { data: project } = useSelectedProjectQuery()
   const { slug: orgSlug } = getPathReferences()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     data,
@@ -21,7 +23,7 @@ export const useInstalledIntegrations = () => {
     isSuccess: isSuccessFDWs,
   } = useFDWsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const {
     data: extensions,
@@ -31,7 +33,7 @@ export const useInstalledIntegrations = () => {
     isSuccess: isSuccessExtensions,
   } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const {
@@ -43,7 +45,7 @@ export const useInstalledIntegrations = () => {
   } = useSchemasQuery({
     orgSlug: orgSlug,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const isHooksEnabled = schemas?.some((schema) => schema.name === 'supabase_functions')

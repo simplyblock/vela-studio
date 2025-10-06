@@ -63,6 +63,7 @@ import {
 } from './SQLEditor.utils'
 import { useAddDefinitions } from './useAddDefinitions'
 import UtilityPanel from './UtilityPanel/UtilityPanel'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 // Load the monaco editor client-side only (does not behave well server-side)
 const MonacoEditor = dynamic(() => import('./MonacoEditor'), { ssr: false })
@@ -77,8 +78,9 @@ export const SQLEditor = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, id: urlId } = useParams()
 
   const { profile } = useProfile()
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const queryClient = useQueryClient()
   const tabs = useTabsStateSnapshot()
@@ -135,16 +137,16 @@ export const SQLEditor = () => {
       orgSlug: orgRef,
       projectRef: projectRef,
     },
-    { enabled: isValidConnString(project?.connectionString) }
+    { enabled: isValidConnString(branch?.database.encrypted_connection_string) }
   )
 
   const { data, refetch: refetchEntityDefinitions } = useEntityDefinitionsQuery(
     {
       schemas: selectedSchemas,
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
-    { enabled: isValidConnString(project?.connectionString) }
+    { enabled: isValidConnString(branch?.database.encrypted_connection_string) }
   )
 
   /* React query mutations */
@@ -444,7 +446,7 @@ export const SQLEditor = () => {
           },
           body: JSON.stringify({
             projectRef: project?.ref,
-            connectionString: project?.connectionString,
+            connectionString: branch?.database.encrypted_connection_string,
             language: 'sql',
             orgSlug: org?.slug,
             ...(options?.body ?? {}),
@@ -480,7 +482,7 @@ export const SQLEditor = () => {
     },
     [
       org?.slug,
-      project?.connectionString,
+      branch?.database.encrypted_connection_string,
       project?.ref,
       setPromptState,
       setSelectedDiffType,

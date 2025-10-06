@@ -31,6 +31,7 @@ import {
   parseCronJobCommand,
 } from './CronJobs.utils'
 import CronJobsEmptyState from './CronJobsEmptyState'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 const cronJobColumns = [
   {
@@ -156,12 +157,13 @@ function isAtBottom({ currentTarget }: UIEvent<HTMLDivElement>): boolean {
 export const PreviousRunsTab = () => {
   const { slug: orgRef, childId, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const jobId = Number(childId)
 
   const { data: job, isLoading: isLoadingCronJobs } = useCronJobQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id: jobId,
   })
 
@@ -174,7 +176,7 @@ export const PreviousRunsTab = () => {
   } = useCronJobRunsInfiniteQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       jobId: jobId,
     },
     { enabled: !!jobId, staleTime: 30000 }

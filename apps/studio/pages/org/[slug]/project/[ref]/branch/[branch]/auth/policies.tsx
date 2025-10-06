@@ -21,6 +21,7 @@ import { useUrlState } from 'hooks/ui/useUrlState'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import type { NextPageWithLayout } from 'types'
 import { Input } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
 
 /**
  * Filter tables by table name and policy name
@@ -64,6 +65,7 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
   }>()
   const { schema = 'public', search: searchString = '' } = params
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const isInlineEditorEnabled = useIsInlineEditorEnabled()
 
   const [selectedTable, setSelectedTable] = useState<string>()
@@ -77,7 +79,7 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
 
   const { data: policies } = useDatabasePoliciesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const {
@@ -88,7 +90,7 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
     error,
   } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: schema,
   })
 

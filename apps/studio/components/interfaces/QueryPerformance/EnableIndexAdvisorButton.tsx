@@ -23,9 +23,11 @@ import {
   TooltipTrigger,
 } from 'ui'
 import { getIndexAdvisorExtensions } from './index-advisor.utils'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export const EnableIndexAdvisorButton = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { isIndexAdvisorAvailable, isIndexAdvisorEnabled } = useIndexAdvisorStatus()
 
@@ -33,7 +35,7 @@ export const EnableIndexAdvisorButton = () => {
 
   const { data: extensions } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { hypopg, indexAdvisor } = getIndexAdvisorExtensions(extensions)
 
@@ -48,7 +50,7 @@ export const EnableIndexAdvisorButton = () => {
       if (hypopg?.installed_version === null) {
         await enableExtension({
           projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           name: hypopg.name,
           schema: hypopg?.schema ?? 'extensions',
           version: hypopg.default_version,
@@ -59,7 +61,7 @@ export const EnableIndexAdvisorButton = () => {
       if (indexAdvisor?.installed_version === null) {
         await enableExtension({
           projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           name: indexAdvisor.name,
           schema: indexAdvisor?.schema ?? 'extensions',
           version: indexAdvisor.default_version,

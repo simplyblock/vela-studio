@@ -12,6 +12,7 @@ import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateDatabaseMenu } from './DatabaseMenu.utils'
 import { getOrganizationSlug } from '../../../data/vela/organization-path-slug'
 import { useParams } from 'common'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export interface DatabaseLayoutProps {
   title?: string
@@ -19,6 +20,7 @@ export interface DatabaseLayoutProps {
 
 const DatabaseProductMenu = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { branch: branchRef } = useParams()
 
   const router = useRouter()
@@ -28,7 +30,7 @@ const DatabaseProductMenu = () => {
 
   const { data } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const pitrEnabled = true

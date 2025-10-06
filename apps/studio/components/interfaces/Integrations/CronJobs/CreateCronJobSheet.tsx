@@ -50,6 +50,7 @@ import { HTTPHeaderFieldsSection } from './HttpHeaderFieldsSection'
 import { HttpRequestSection } from './HttpRequestSection'
 import { SqlFunctionSection } from './SqlFunctionSection'
 import { SqlSnippetSection } from './SqlSnippetSection'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export interface CreateCronJobSheetProps {
   selectedCronJob?: Pick<CronJob, 'jobname' | 'schedule' | 'active' | 'command'>
@@ -199,8 +200,9 @@ export const CreateCronJobSheet = ({
   setIsClosing,
   onClose,
 }: CreateCronJobSheetProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [searchQuery] = useQueryState('search', parseAsString.withDefault(''))
   const [isLoadingGetCronJob, setIsLoadingGetCronJob] = useState(false)
 
@@ -209,7 +211,7 @@ export const CreateCronJobSheet = ({
 
   const { data } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const pgNetExtension = (data ?? []).find((ext) => ext.name === 'pg_net')
   const pgNetExtensionInstalled = pgNetExtension?.installed_version != undefined
@@ -302,13 +304,14 @@ export const CreateCronJobSheet = ({
 
   const onSubmit: SubmitHandler<CreateCronJobForm> = async ({ name, schedule, values }) => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     if (!isEditing) {
       try {
         setIsLoadingGetCronJob(true)
         const checkExistingJob = await getDatabaseCronJob({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           name,
         })
         const nameExists = !!checkExistingJob
@@ -332,7 +335,7 @@ export const CreateCronJobSheet = ({
     upsertCronJob(
       {
         projectRef: project!.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch.database.encrypted_connection_string,
         query,
         searchTerm: searchQuery,
       },

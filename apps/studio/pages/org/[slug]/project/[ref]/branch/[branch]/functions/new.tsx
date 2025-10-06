@@ -41,6 +41,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
 
 // Array of adjectives and nouns for random function name generation
 const ADJECTIVES = [
@@ -99,6 +100,7 @@ const NewFunctionPage = () => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef, template } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: org } = useSelectedOrganizationQuery()
   const snap = useAiAssistantStateSnapshot()
   const { mutate: sendEvent } = useSendEventMutation()
@@ -337,7 +339,7 @@ const NewFunctionPage = () => {
         aiEndpoint={`${BASE_PATH}/api/ai/code/complete`}
         aiMetadata={{
           projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           orgSlug: org?.slug,
         }}
       />

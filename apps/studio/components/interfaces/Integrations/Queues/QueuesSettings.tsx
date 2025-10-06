@@ -33,13 +33,15 @@ import { Admonition } from 'ui-patterns'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 // [Joshen] Not convinced with the UI and layout but getting the functionality out first
 
 export const QueuesSettings = () => {
   const { slug: orgSlug } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
-    // FIXME: need permission implemented 
+  const { data: branch } = useSelectedBranchQuery()
+    // FIXME: need permission implemented
   const { can: canUpdatePostgrestConfig } = {can:true}
   const [isToggling, setIsToggling] = useState(false)
   const [rlsConfirmModalOpen, setRlsConfirmModalOpen] = useState(false)
@@ -56,7 +58,7 @@ export const QueuesSettings = () => {
 
   const { data: queueTables } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: 'pgmq',
   })
   const tablesWithoutRLS =
@@ -73,7 +75,7 @@ export const QueuesSettings = () => {
     isLoading,
   } = useQueuesExposePostgrestStatusQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const schemas = config?.db_schema.replace(/ /g, '').split(',') ?? []
 
@@ -138,7 +140,7 @@ export const QueuesSettings = () => {
           updateTable({
             orgSlug: orgSlug!,
             projectRef: project?.ref,
-            connectionString: project?.connectionString,
+            connectionString: branch?.database.encrypted_connection_string,
             id: x.id,
             name: x.name,
             schema: x.schema,
@@ -158,6 +160,7 @@ export const QueuesSettings = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!orgSlug) return console.error('Organization context is required')
     if (configError) {
       return toast.error(
@@ -169,7 +172,7 @@ export const QueuesSettings = () => {
     toggleExposeQueuePostgrest({
       orgSlug: orgSlug,
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       enable: values.enable,
     })
   }

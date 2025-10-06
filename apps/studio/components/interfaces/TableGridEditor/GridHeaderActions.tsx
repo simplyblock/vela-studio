@@ -40,6 +40,7 @@ import ConfirmModal from 'ui-patterns/Dialogs/ConfirmDialog'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { RoleImpersonationPopover } from '../RoleImpersonationSelector'
 import ViewEntityAutofixSecurityModal from './ViewEntityAutofixSecurityModal'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export interface GridHeaderActionsProps {
   table: Entity
@@ -47,8 +48,9 @@ export interface GridHeaderActionsProps {
 
 const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
   const { slug: orgRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [showWarning, setShowWarning] = useQueryState(
     'showWarning',
@@ -86,7 +88,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
   const projectRef = project?.ref
   const { data } = useDatabasePoliciesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const policies = (data ?? []).filter(
     (policy) => policy.schema === table.schema && policy.table === table.name
@@ -94,7 +96,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
 
   const { data: publications } = useDatabasePublicationsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'
@@ -165,7 +167,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
 
     updatePublications({
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       id: realtimePublication.id,
       tables,
     })
@@ -183,7 +185,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
     updateTable({
       orgSlug: orgRef!,
       projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       id: table.id,
       name: table.name,
       schema: table.schema,

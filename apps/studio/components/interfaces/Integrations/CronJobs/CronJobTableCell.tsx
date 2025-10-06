@@ -42,6 +42,7 @@ import {
 } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
 import { getNextRun } from './CronJobs.utils'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface CronJobTableCellProps {
   col: any
@@ -57,6 +58,7 @@ export const CronJobTableCell = ({
   onSelectDelete,
 }: CronJobTableCellProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [searchQuery] = useQueryState('search', parseAsString.withDefault(''))
 
   const [showToggleModal, setShowToggleModal] = useState(false)
@@ -93,7 +95,7 @@ export const CronJobTableCell = ({
   const onRunCronJob = () => {
     runCronJob({
       projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       jobId: jobid,
     })
   }
@@ -101,7 +103,7 @@ export const CronJobTableCell = ({
   const onConfirmToggle = () => {
     toggleDatabaseCronJob({
       projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       jobId: jobid,
       active: !active,
       searchTerm: searchQuery,

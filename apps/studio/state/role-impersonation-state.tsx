@@ -7,6 +7,7 @@ import useLatest from 'hooks/misc/useLatest'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { getPostgrestClaims, ImpersonationRole } from 'lib/role-impersonation'
 import { CustomAccessTokenHookDetails } from '../hooks/misc/useCustomAccessTokenHookDetails'
+import { useSelectedBranchQuery } from '../data/branches/selected-branch-query'
 
 export function createRoleImpersonationState(
   projectRef: string,
@@ -59,6 +60,7 @@ export const RoleImpersonationStateContext = createContext<RoleImpersonationStat
 
 export const RoleImpersonationStateContextProvider = ({ children }: PropsWithChildren) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   async function customizeAccessToken({
     schema,
     functionName,
@@ -72,7 +74,7 @@ export const RoleImpersonationStateContextProvider = ({ children }: PropsWithChi
 
     const result = await executeSql({
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       sql: `select ${schema}.${functionName}('${JSON.stringify(event)}'::jsonb) as event;`,
       queryKey: ['customize-access-token', project?.ref],
     })

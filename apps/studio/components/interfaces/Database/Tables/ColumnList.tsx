@@ -26,6 +26,7 @@ import {
   TooltipTrigger,
 } from 'ui'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface ColumnListProps {
   onAddColumn: () => void
@@ -42,6 +43,7 @@ export const ColumnList = ({
   const id = _id ? Number(_id) : undefined
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data: selectedTable,
     error,
@@ -50,7 +52,7 @@ export const ColumnList = ({
     isSuccess,
   } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 

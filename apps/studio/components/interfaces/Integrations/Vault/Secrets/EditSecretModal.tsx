@@ -25,6 +25,7 @@ import { useVaultSecretDecryptedValueQuery } from 'data/vault/vault-secret-decry
 import { useVaultSecretUpdateMutation } from 'data/vault/vault-secret-update-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { VaultSecret } from 'types'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface EditSecretModalProps {
   visible: boolean
@@ -43,11 +44,12 @@ const formId = 'edit-vault-secret-form'
 const EditSecretModal = ({ visible, secret, onClose }: EditSecretModalProps) => {
   const [showSecretValue, setShowSecretValue] = useState(false)
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data, isLoading: isLoadingSecretValue } = useVaultSecretDecryptedValueQuery(
     {
       projectRef: project?.ref,
       id: secret.id,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     { enabled: !!project?.ref }
   )
@@ -66,6 +68,7 @@ const EditSecretModal = ({ visible, secret, onClose }: EditSecretModalProps) => 
 
   const onSubmit: SubmitHandler<z.infer<typeof SecretSchema>> = async (values) => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     const payload: Partial<VaultSecret> = {
       secret: values.secret,
@@ -77,7 +80,7 @@ const EditSecretModal = ({ visible, secret, onClose }: EditSecretModalProps) => 
       updateSecret(
         {
           projectRef: project.ref,
-          connectionString: project?.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           id: secret.id,
           ...payload,
         },

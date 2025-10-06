@@ -23,6 +23,7 @@ import {
   COLUMN_PRIVILEGE_TYPES,
   ColumnPrivilegeType,
 } from './Privileges.constants'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export interface PrivilegeOperation {
   object: 'table' | 'column'
@@ -267,6 +268,7 @@ export function usePrivilegesState({
 
 export function useApplyPrivilegeOperations(callback?: () => void) {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const queryClient = useQueryClient()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -274,6 +276,7 @@ export function useApplyPrivilegeOperations(callback?: () => void) {
   const apply = useCallback(
     async (operations: PrivilegeOperation[]) => {
       if (!project) return console.error('No project selected')
+      if (!branch) return console.error('No branch selected')
 
       setIsLoading(true)
 
@@ -316,28 +319,28 @@ export function useApplyPrivilegeOperations(callback?: () => void) {
       if (revokeTableOperations.length > 0) {
         await revokeTablePrivileges({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           revokes: revokeTableOperations,
         })
       }
       if (grantTableOperations.length > 0) {
         await grantTablePrivileges({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           grants: grantTableOperations,
         })
       }
       if (revokeColumnOperations.length > 0) {
         await revokeColumnPrivileges({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           revokes: revokeColumnOperations,
         })
       }
       if (grantColumnOperations.length > 0) {
         await grantColumnPrivileges({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           grants: grantColumnOperations,
         })
       }

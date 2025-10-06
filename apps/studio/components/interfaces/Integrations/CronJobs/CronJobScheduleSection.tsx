@@ -22,6 +22,7 @@ import {
 import { CreateCronJobForm } from './CreateCronJobSheet'
 import { formatScheduleString, getScheduleMessage } from './CronJobs.utils'
 import CronSyntaxChart from './CronSyntaxChart'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface CronJobScheduleSectionProps {
   form: UseFormReturn<CreateCronJobForm>
@@ -30,6 +31,7 @@ interface CronJobScheduleSectionProps {
 
 export const CronJobScheduleSection = ({ form, supportsSeconds }: CronJobScheduleSectionProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [inputValue, setInputValue] = useState('')
 
@@ -44,7 +46,7 @@ export const CronJobScheduleSection = ({ form, supportsSeconds }: CronJobSchedul
 
   const { data: timezone } = useCronTimezoneQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const schedule = form.watch('schedule')

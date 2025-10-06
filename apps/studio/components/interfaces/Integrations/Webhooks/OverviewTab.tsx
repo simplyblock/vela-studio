@@ -8,10 +8,12 @@ import { useSchemasQuery } from 'data/database/schemas-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Admonition } from 'ui-patterns'
 import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export const WebhooksOverviewTab = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     data: schemas,
@@ -20,7 +22,7 @@ export const WebhooksOverviewTab = () => {
   } = useSchemasQuery({
     orgSlug: orgSlug,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const isHooksEnabled = schemas?.some((schema) => schema.name === 'supabase_functions')

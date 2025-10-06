@@ -33,12 +33,14 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import type { NextPageWithLayout } from 'types'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
 
 const EDITABLE_ROLES = ['authenticated', 'anon', 'service_role']
 
 const PrivilegesPage: NextPageWithLayout = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, table: paramTable } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { openFeaturePreviewModal } = useFeaturePreviewModal()
   const isEnabled = useIsColumnLevelPrivilegesEnabled()
 
@@ -50,7 +52,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
   const { data: tableList, isLoading: isLoadingTables } = useTablesQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     {
       onSuccess(data) {
@@ -67,7 +69,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
 
   const { data: allRoles, isLoading: isLoadingRoles } = useDatabaseRolesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const tables = tableList
@@ -81,7 +83,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
     error: errorTablePrivileges,
   } = useTablePrivilegesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const tablePrivilege = useMemo(() => {
@@ -107,7 +109,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
     error: errorColumnPrivileges,
   } = useColumnPrivilegesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const columnPrivileges = useMemo(

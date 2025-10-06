@@ -54,6 +54,7 @@ import {
   USERS_TABLE_COLUMNS,
 } from './Users.constants'
 import { formatUserColumns, formatUsersData } from './Users.utils'
+import { useBranchQuery } from '../../../../data/branches/branch-query'
 
 export type Filter = 'all' | 'verified' | 'unverified' | 'anonymous'
 
@@ -61,8 +62,9 @@ export type Filter = 'all' | 'verified' | 'unverified' | 'anonymous'
 // Can change it to remove V2 thereafter
 export const UsersV2 = () => {
   const queryClient = useQueryClient()
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const gridRef = useRef<DataGridHandle>(null)
   const xScroll = useRef<number>(0)
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
@@ -118,7 +120,7 @@ export const UsersV2 = () => {
   } = useUsersInfiniteQuery(
     {
       projectRef,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       keywords: filterKeywords,
       filter: filter === 'all' ? undefined : filter,
       providers: selectedProviders,
@@ -135,7 +137,7 @@ export const UsersV2 = () => {
 
   const { data: countData, refetch: refetchCount } = useUsersCountQuery({
     projectRef,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     keywords: filterKeywords,
     filter: filter === 'all' ? undefined : filter,
     providers: selectedProviders,

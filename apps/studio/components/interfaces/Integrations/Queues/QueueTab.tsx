@@ -30,10 +30,12 @@ import {
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export const QueueTab = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, childId: queueName } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [openRlsPopover, setOpenRlsPopover] = useState(false)
   const [rlsConfirmModalOpen, setRlsConfirmModalOpen] = useState(false)
@@ -44,7 +46,7 @@ export const QueueTab = () => {
 
   const { data: tables, isLoading: isLoadingTables } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: 'pgmq',
   })
   const queueTable = tables?.find((x) => x.name === `q_${queueName}`)
@@ -52,20 +54,20 @@ export const QueueTab = () => {
 
   const { data: policies } = useDatabasePoliciesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: 'pgmq',
   })
   const queuePolicies = (policies ?? []).filter((policy) => policy.table === `q_${queueName}`)
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { data, error, isLoading, fetchNextPage, isFetching } = useQueueMessagesInfiniteQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       queueName: queueName!,
       // when no types are selected, include all types of messages
       status: selectedTypes.length === 0 ? ['archived', 'available', 'scheduled'] : selectedTypes,
@@ -92,7 +94,7 @@ export const QueueTab = () => {
     updateTable({
       orgSlug: orgRef,
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       id: queueTable.id,
       name: queueTable.name,
       schema: 'pgmq',

@@ -19,6 +19,7 @@ import {
 } from 'ui'
 import { QueryPerformanceSort } from '../Reports/Reports.queries'
 import { TextSearchPopover } from './TextSearchPopover'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export const QueryPerformanceFilterBar = ({
   queryPerformanceQuery,
@@ -30,6 +31,7 @@ export const QueryPerformanceFilterBar = ({
   const router = useRouter()
   const { ref } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [showBottomSection] = useLocalStorageQuery(
     LOCAL_STORAGE_KEYS.QUERY_PERF_SHOW_BOTTOM_SECTION,
     true
@@ -54,7 +56,7 @@ export const QueryPerformanceFilterBar = ({
   const { isLoading, isRefetching } = queryPerformanceQuery
   const { data, isLoading: isLoadingRoles } = useDatabaseRolesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const roles = (data ?? []).sort((a, b) => a.name.localeCompare(b.name))
 

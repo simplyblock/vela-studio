@@ -37,6 +37,7 @@ import {
 import { useTableEditorTabsCleanUp } from '../Tabs/Tabs.utils'
 import EntityListItem from './EntityListItem'
 import { TableMenuEmptyState } from './TableMenuEmptyState'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export const TableEditorMenu = () => {
   const { slug, id: _id, ref: projectRef } = useParams()
@@ -54,6 +55,7 @@ export const TableEditorMenu = () => {
   )
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data,
     isLoading,
@@ -66,7 +68,7 @@ export const TableEditorMenu = () => {
   } = useEntityTypesQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       schemas: [selectedSchema],
       search: searchText.trim() || undefined,
       sort,
@@ -88,7 +90,7 @@ export const TableEditorMenu = () => {
 
   const { data: selectedTable } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 
@@ -98,7 +100,7 @@ export const TableEditorMenu = () => {
     const table = await getTableEditor({
       id: id,
       projectRef,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     })
     const supaTable = table && parseSupaTable(table)
     setTableToExport(supaTable)

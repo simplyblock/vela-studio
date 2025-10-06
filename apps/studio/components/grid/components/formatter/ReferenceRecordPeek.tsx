@@ -16,6 +16,7 @@ import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { getPathReferences } from 'data/vela/path-references'
 import { useRouter } from 'next/router'
 import { DEFAULT_HOME } from '../../../../pages/api/constants'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface ReferenceRecordPeekProps {
   table: PostgresTable
@@ -26,13 +27,14 @@ interface ReferenceRecordPeekProps {
 export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPeekProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
 
   const router = useRouter()
 
   const { data, error, isSuccess, isError, isLoading } = useTableRowsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       tableId: table.id,
       filters: [{ column, operator: '=', value }],
       page: 1,

@@ -14,10 +14,14 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useGetImpersonatedRoleState } from 'state/role-impersonation-state'
 import { useTableEditorTableStateSnapshot } from 'state/table-editor-table'
 import { Dictionary } from 'types'
+import { useBranchQuery } from 'data/branches/branch-query'
+import { useParams } from 'common'
 
 export function useOnRowsChange(rows: SupaRow[]) {
   const queryClient = useQueryClient()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
   const snap = useTableEditorTableStateSnapshot()
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
 
@@ -124,7 +128,7 @@ export function useOnRowsChange(rows: SupaRow[]) {
 
       mutateUpdateTableRow({
         projectRef: project.ref,
-        connectionString: project.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         table: snap.originalTable,
         configuration,
         payload: updatedData,
@@ -132,6 +136,6 @@ export function useOnRowsChange(rows: SupaRow[]) {
         roleImpersonationState: getImpersonatedRoleState(),
       })
     },
-    [getImpersonatedRoleState, mutateUpdateTableRow, project, rows, snap.originalTable]
+    [getImpersonatedRoleState, mutateUpdateTableRow, project, branch, rows, snap.originalTable]
   )
 }

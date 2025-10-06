@@ -15,6 +15,7 @@ import { useTableEditorStateSnapshot } from 'state/table-editor'
 import { TableEditorTableStateContextProvider } from 'state/table-editor-table'
 import type { NextPageWithLayout } from 'types'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useSelectedBranchQuery } from '../../../../../../../../../data/branches/selected-branch-query'
 
 const DatabaseTables: NextPageWithLayout = () => {
   const snap = useTableEditorStateSnapshot()
@@ -23,9 +24,10 @@ const DatabaseTables: NextPageWithLayout = () => {
   const id = _id ? Number(_id) : undefined
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: selectedTable, isLoading } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 

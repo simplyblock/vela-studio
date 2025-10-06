@@ -6,6 +6,7 @@ import { useDatabasePublicationUpdateMutation } from 'data/database-publications
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProtectedSchemas } from 'hooks/useProtectedSchemas'
 import { Badge, Switch, TableCell, TableRow, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface PublicationsTableItemProps {
   table: PostgresTable
@@ -17,6 +18,7 @@ export const PublicationsTableItem = ({
   selectedPublication,
 }: PublicationsTableItemProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: protectedSchemas } = useProtectedSchemas()
   const enabledForAllTables = selectedPublication.tables == null
 
@@ -51,7 +53,7 @@ export const PublicationsTableItem = ({
     updatePublications(
       {
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         id: publication.id,
         tables,
       },

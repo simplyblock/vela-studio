@@ -20,6 +20,7 @@ import {
   WarningIcon,
 } from 'ui'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useBranchQuery } from '../../../../data/branches/branch-query'
 
 interface EnableExtensionModalProps {
   visible: boolean
@@ -29,15 +30,16 @@ interface EnableExtensionModalProps {
 
 const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionModalProps) => {
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const [defaultSchema, setDefaultSchema] = useState()
   const [fetchingSchemaInfo, setFetchingSchemaInfo] = useState(false)
 
   const { data: schemas, isLoading: isSchemasLoading } = useSchemasQuery(
     {
-      orgSlug: orgSlug,
+      orgSlug: orgRef,
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     { enabled: visible }
   )
@@ -68,7 +70,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
         try {
           const res = await executeSql({
             projectRef: project?.ref,
-            connectionString: project?.connectionString,
+            connectionString: branch?.database.encrypted_connection_string,
             sql: `select * from pg_available_extension_versions where name = '${extension.name}'`,
           })
           if (!cancel) setDefaultSchema(res.result[0].schema)
@@ -102,7 +104,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
 
     enableExtension({
       projectRef: project.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       schema,
       name: extension.name,
       version: extension.default_version,

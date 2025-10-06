@@ -23,10 +23,12 @@ import {
 import AddNewSecretModal from './AddNewSecretModal'
 import DeleteSecretModal from './DeleteSecretModal'
 import { formatSecretColumns } from './Secrets.utils'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 export const SecretsManagement = () => {
   const { search } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [searchValue, setSearchValue] = useState<string>('')
   const [showAddSecretModal, setShowAddSecretModal] = useState(false)
@@ -37,7 +39,7 @@ export const SecretsManagement = () => {
 
   const { data, isLoading, isRefetching, refetch, error, isError } = useVaultSecretsQuery({
     projectRef: project?.ref!,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const allSecrets = useMemo(() => data || [], [data])
   const secrets = useMemo(() => {

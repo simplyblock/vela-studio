@@ -38,6 +38,7 @@ import { formatBytes } from 'lib/helpers'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import type { NextPageWithLayout } from 'types'
 import { AlertDescription_Shadcn_, Alert_Shadcn_, Button } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
 
 const DatabaseReport: NextPageWithLayout = () => {
   return (
@@ -59,8 +60,9 @@ export default DatabaseReport
 const DatabaseUsage = () => {
   const { db, chart, ref: projectRef, slug: orgRef, branch: branchRef } = useParams()
   const isReportsV2 = useFlag('reportsDatabaseV2')
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     selectedDateRange,
@@ -85,7 +87,7 @@ const DatabaseUsage = () => {
 
   const { data: databaseSizeData } = useDatabaseSizeQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString || undefined,
+    connectionString: branch?.database.encrypted_connection_string || undefined,
   })
   const databaseSizeBytes = databaseSizeData ?? 0
   const currentDiskSize = project?.volumeSizeGb ?? 0
@@ -93,7 +95,7 @@ const DatabaseUsage = () => {
   const { data: diskConfig } = useDiskAttributesQuery({ projectRef: project?.ref })
   const { data: maxConnections } = useMaxConnectionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { data: poolerConfig } = usePgbouncerConfigQuery({ orgSlug: org?.slug, projectRef: project?.ref })
   // FIXME: need permission implemented 
@@ -131,7 +133,7 @@ const DatabaseUsage = () => {
     const { period_start, period_end, interval } = selectedDateRange
     REPORT_ATTRIBUTES.forEach((attr) => {
       queryClient.invalidateQueries(
-        analyticsKeys.infraMonitoring(ref, {
+        analyticsKeys.infraMonitoring(projectRef, {
           attribute: attr?.id,
           startDate: period_start.date,
           endDate: period_end.date,
@@ -144,7 +146,7 @@ const DatabaseUsage = () => {
       REPORT_ATTRIBUTES_V2.forEach((chart: any) => {
         chart.attributes.forEach((attr: any) => {
           queryClient.invalidateQueries(
-            analyticsKeys.infraMonitoring(ref, {
+            analyticsKeys.infraMonitoring(projectRef, {
               attribute: attr.attribute,
               startDate: period_start.date,
               endDate: period_end.date,
@@ -158,7 +160,7 @@ const DatabaseUsage = () => {
       REPORT_ATTRIBUTES.forEach((chart: any) => {
         chart.attributes.forEach((attr: any) => {
           queryClient.invalidateQueries(
-            analyticsKeys.infraMonitoring(ref, {
+            analyticsKeys.infraMonitoring(projectRef, {
               attribute: attr.attribute,
               startDate: period_start.date,
               endDate: period_end.date,
@@ -171,7 +173,7 @@ const DatabaseUsage = () => {
     }
     if (isReplicaSelected) {
       queryClient.invalidateQueries(
-        analyticsKeys.infraMonitoring(ref, {
+        analyticsKeys.infraMonitoring(projectRef, {
           attribute: 'physical_replication_lag_physical_replica_lag_seconds',
           startDate: period_start.date,
           endDate: period_end.date,

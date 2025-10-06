@@ -1,4 +1,3 @@
-
 export interface DatabaseInformation {
   host: string
   port: number
@@ -53,6 +52,9 @@ export interface Branch {
       | 'ACTIVE_UNHEALTHY'
       | 'CREATING'
       | 'DELETING'
+      | 'UPDATING'
+      | 'RESTARTING'
+      | 'STOPPING'
       | 'UNKNOWN'
     realtime:
       | 'ACTIVE_HEALTHY'
@@ -61,6 +63,9 @@ export interface Branch {
       | 'ACTIVE_UNHEALTHY'
       | 'CREATING'
       | 'DELETING'
+      | 'UPDATING'
+      | 'RESTARTING'
+      | 'STOPPING'
       | 'UNKNOWN'
   }
   created_at: string

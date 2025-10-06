@@ -16,6 +16,7 @@ import {
 import { INTEGRATIONS } from '../Landing/Integrations.constants'
 import WrapperRow from './WrapperRow'
 import { wrapperMetaComparator } from './Wrappers.utils'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface WrapperTableProps {
   isLatest?: boolean
@@ -24,11 +25,12 @@ interface WrapperTableProps {
 export const WrapperTable = ({ isLatest = false }: WrapperTableProps) => {
   const { id, ref } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const integration = INTEGRATIONS.find((i) => i.id === id)
 
   const { data } = useFDWsQuery({
     projectRef: ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const wrappers = useMemo(

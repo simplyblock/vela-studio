@@ -7,19 +7,21 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
 import RefreshButton from '../header/RefreshButton'
 import { Pagination } from './pagination'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 export interface FooterProps {
   isRefetching?: boolean
 }
 
 const Footer = ({ isRefetching }: FooterProps) => {
-  const { id: _id } = useParams()
+  const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
 
   const { data: entity } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 

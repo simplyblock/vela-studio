@@ -35,6 +35,7 @@ import {
   useSetPage,
 } from 'ui-patterns/CommandMenu'
 import { getPathReferences } from '../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export function useSqlEditorGotoCommands(options?: CommandOptions) {
   let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
@@ -250,6 +251,7 @@ const QUERY_TABLE_PAGE_NAME = 'Query a table'
 
 export function useQueryTableCommands(options?: CommandOptions) {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const setPage = useSetPage()
 
   const commandMenuOpen = useCommandMenuOpen()
@@ -259,7 +261,7 @@ export function useQueryTableCommands(options?: CommandOptions) {
 
   const prefetchTables = usePrefetchTables({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   useEffect(() => {
     if (project && commandMenuJustOpened) {
@@ -293,6 +295,7 @@ export function useQueryTableCommands(options?: CommandOptions) {
 function TableSelector() {
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: protectedSchemas } = useProtectedSchemas()
   const {
@@ -302,7 +305,7 @@ function TableSelector() {
     isSuccess,
   } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     includeColumns: true,
   })
   const tables = useMemo(() => {

@@ -29,6 +29,7 @@ import type { Table, TableOption } from './Wrappers.types'
 import { makeValidateRequired } from './Wrappers.utils'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export type WrapperTableEditorProps = {
   visible: boolean
@@ -218,6 +219,7 @@ const TableForm = ({
   initialData: any
 }) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
   const {
     data: schemas,
@@ -226,7 +228,7 @@ const TableForm = ({
   } = useSchemasQuery({
     orgSlug: orgSlug,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const requiredOptions =

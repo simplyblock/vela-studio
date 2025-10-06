@@ -20,6 +20,7 @@ import {
   ScrollArea,
 } from 'ui'
 import { getPathReferences } from '../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
 
 interface SchemaComboBoxProps {
   className?: string
@@ -46,6 +47,7 @@ export const SchemaComboBox = ({
   const [open, setOpen] = useState(false)
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
   const {
     data,
@@ -57,7 +59,7 @@ export const SchemaComboBox = ({
   } = useSchemasQuery({
     orgSlug,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const schemas = (data || [])

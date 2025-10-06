@@ -61,6 +61,7 @@ import {
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import { formatAllEntities } from './Tables.utils'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface TableListProps {
   onAddTable: () => void
@@ -78,6 +79,7 @@ export const TableList = ({
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const prefetchEditorTablePage = usePrefetchEditorTablePage()
 
@@ -97,7 +99,7 @@ export const TableList = ({
   } = useTablesQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       schema: selectedSchema,
       sortByProperty: 'name',
       includeColumns: true,
@@ -120,7 +122,7 @@ export const TableList = ({
   } = useViewsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       schema: selectedSchema,
     },
     {
@@ -141,7 +143,7 @@ export const TableList = ({
   } = useMaterializedViewsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       schema: selectedSchema,
     },
     {
@@ -164,7 +166,7 @@ export const TableList = ({
   } = useForeignTablesQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       schema: selectedSchema,
     },
     {
@@ -180,7 +182,7 @@ export const TableList = ({
 
   const { data: publications } = useDatabasePublicationsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'

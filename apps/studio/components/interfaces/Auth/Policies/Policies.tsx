@@ -17,7 +17,8 @@ import { useDatabasePolicyDeleteMutation } from 'data/database-policies/database
 import { useTableUpdateMutation } from 'data/tables/table-update-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import ConfirmModal from 'ui-patterns/Dialogs/ConfirmDialog'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface PoliciesProps {
   schema: string
@@ -39,6 +40,7 @@ const Policies = ({
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
 
   const [selectedTableToToggleRLS, setSelectedTableToToggleRLS] = useState<{
     id: number
@@ -99,7 +101,7 @@ const Policies = ({
     updateTable({
       orgSlug: orgRef!,
       projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       id: selectedTableToToggleRLS.id,
       name: selectedTableToToggleRLS.name,
       schema: selectedTableToToggleRLS.schema,
@@ -111,7 +113,7 @@ const Policies = ({
     if (!project) return console.error('Project is required')
     deleteDatabasePolicy({
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       originalPolicy: selectedPolicyToDelete,
     })
   }
