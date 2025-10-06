@@ -157,7 +157,7 @@ const RestoreToNewProject = () => {
     } else {
       return (
         <Link
-          href={`/org/${slug}/project/${clone.target_project.ref}`}
+          href={`/org/${orgRef}/project/${clone.target_project.ref}`}
           className="grid grid-cols-4 gap-2 text-sm p-4 group"
         >
           <div className="min-w-24 truncate">{(clone.target_project as any).name}</div>
@@ -239,7 +239,7 @@ const RestoreToNewProject = () => {
           If you need to restore from a restored project, please reach out via [support](/support/new?projectRef=${project?.ref}).`}
         />
         <Button asChild type="default">
-          <Link href={`/org/${slug}/project/${(cloneStatus?.cloned_from?.source_project as any)?.ref || ''}`}>
+          <Link href={`/org/${orgRef}/project/${(cloneStatus?.cloned_from?.source_project as any)?.ref || ''}`}>
             Go to original project
           </Link>
         </Button>
@@ -327,7 +327,7 @@ const RestoreToNewProject = () => {
               being created. You'll be able to restore again once the project is ready.
             </p>
             <Button asChild type="default" className="mt-2">
-              <Link href={`/org/${slug}/project/${restoringClone?.target_project.ref}`}>Go to new project</Link>
+              <Link href={`/org/${orgRef}/project/${restoringClone?.target_project.ref}`}>Go to new project</Link>
             </Button>
           </AlertDescription_Shadcn_>
         </Alert_Shadcn_>
