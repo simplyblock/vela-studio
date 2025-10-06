@@ -27,6 +27,8 @@ import {
   cn,
 } from 'ui'
 import EnumeratedTypeValueRow from './EnumeratedTypeValueRow'
+import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useParams } from 'common'
 
 interface EditEnumeratedTypeSidePanelProps {
   visible: boolean
@@ -40,7 +42,9 @@ const EditEnumeratedTypeSidePanel = ({
   onClose,
 }: EditEnumeratedTypeSidePanelProps) => {
   const submitRef = useRef<HTMLButtonElement>(null)
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const { mutate: updateEnumeratedType, isLoading: isCreating } = useEnumeratedTypeUpdateMutation({
     onSuccess: (_, vars) => {
       toast.success(`Successfully updated type "${vars.name.updated}"`)
@@ -89,8 +93,8 @@ const EditEnumeratedTypeSidePanel = ({
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     if (project?.ref === undefined) return console.error('Project ref required')
-    if (project?.connectionString === undefined)
-      return console.error('Project connectionString required')
+    if (branch?.database.encrypted_connection_string === undefined)
+      return console.error('Branch connectionString required')
     if (selectedEnumeratedType === undefined)
       return console.error('selectedEnumeratedType required')
 
@@ -116,7 +120,7 @@ const EditEnumeratedTypeSidePanel = ({
 
     updateEnumeratedType({
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       ...payload,
     })
   }

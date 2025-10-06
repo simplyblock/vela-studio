@@ -5948,7 +5948,7 @@ export interface components {
           last_updated_by?: number
           name: string
           owner_id: number
-          project_id: number
+          project_id: string
           /** @enum {string} */
           type: 'sql' | 'report' | 'log_sql'
           updated_at: string

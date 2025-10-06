@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { useVaultSecretCreateMutation } from 'data/vault/vault-secret-create-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Form, Input, Modal } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface AddNewSecretModalProps {
   visible: boolean
@@ -13,6 +14,7 @@ interface AddNewSecretModalProps {
 
 const AddNewSecretModal = ({ visible, onClose }: AddNewSecretModalProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [showSecretValue, setShowSecretValue] = useState(false)
 
   const { mutateAsync: addSecret } = useVaultSecretCreateMutation()
@@ -40,7 +42,7 @@ const AddNewSecretModal = ({ visible, onClose }: AddNewSecretModalProps) => {
 
       await addSecret({
         projectRef: project.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         name: values.name,
         description: values.description,
         secret: values.secret,

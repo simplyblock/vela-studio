@@ -22,14 +22,16 @@ import { Button, cn, LoadingLine, Sheet, SheetContent } from 'ui'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { formatCronJobColumns } from './CronJobs.utils'
 import { DeleteCronJob } from './DeleteCronJob'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 const EMPTY_CRON_JOB = { jobname: '', schedule: '', active: true, command: '' }
 
 export const CronjobsTab = () => {
   const router = useRouter()
   const { slug, ref, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const xScroll = useRef<number>(0)
   const gridRef = useRef<DataGridHandle>(null)
@@ -61,7 +63,7 @@ export const CronjobsTab = () => {
   } = useCronJobsInfiniteQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       searchTerm: searchQuery,
     },
     { keepPreviousData: Boolean(searchQuery), staleTime: Infinity }
@@ -70,12 +72,12 @@ export const CronjobsTab = () => {
 
   const { data: count, isLoading: isLoadingCount } = useCronJobsCountQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { data: extensions = [] } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { mutate: sendEvent } = useSendEventMutation()

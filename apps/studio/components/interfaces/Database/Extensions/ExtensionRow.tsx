@@ -14,6 +14,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import EnableExtensionModal from './EnableExtensionModal'
 import { EXTENSION_DISABLE_WARNINGS } from './Extensions.constants'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useBranchQuery } from '../../../../data/branches/branch-query'
 
 interface ExtensionRowProps {
   extension: DatabaseExtension
@@ -21,7 +22,8 @@ interface ExtensionRowProps {
 
 const ExtensionRow = ({ extension }: ExtensionRowProps) => {
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const isOn = extension.installed_version !== null
 
   const [isDisableModalOpen, setIsDisableModalOpen] = useState(false)
@@ -43,13 +45,13 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
   })
 
   const onConfirmDisable = () => {
-    if (orgSlug === undefined) return console.error('Organization slug is required')
+    if (orgRef === undefined) return console.error('Organization slug is required')
     if (project === undefined) return console.error('Project is required')
 
     disableExtension({
-      orgSlug,
+      orgSlug: orgRef,
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       id: extension.name,
     })
   }

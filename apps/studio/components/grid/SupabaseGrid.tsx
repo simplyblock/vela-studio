@@ -22,6 +22,7 @@ import { GridProps } from './types'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useTableFilter } from './hooks/useTableFilter'
 import { useTableSort } from './hooks/useTableSort'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 export const SupabaseGrid = ({
   customHeader,
@@ -32,10 +33,11 @@ export const SupabaseGrid = ({
     gridProps?: GridProps
   }
 >) => {
-  const { id: _id } = useParams()
+  const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const tableId = _id ? Number(_id) : undefined
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
   const tableEditorSnap = useTableEditorStateSnapshot()
   const snap = useTableEditorTableStateSnapshot()
 
@@ -50,7 +52,7 @@ export const SupabaseGrid = ({
   const { data, error, isSuccess, isError, isLoading, isRefetching } = useTableRowsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       tableId,
       sorts,
       filters,

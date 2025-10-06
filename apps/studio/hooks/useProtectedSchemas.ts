@@ -9,6 +9,7 @@ import {
 import { QUEUES_SCHEMA } from 'data/database-queues/database-queues-toggle-postgrest-mutation'
 import { useFDWsQuery } from 'data/fdw/fdws-query'
 import { useSelectedProjectQuery } from './misc/useSelectedProject'
+import { useSelectedBranchQuery } from '../data/branches/selected-branch-query'
 
 /**
  * A list of system schemas that users should not interact with
@@ -38,9 +39,10 @@ export const INTERNAL_SCHEMAS = [
  */
 const useIcebergFdwSchemasQuery = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const result = useFDWsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const schemas = useMemo(() => {

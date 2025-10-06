@@ -17,6 +17,7 @@ import type { VaultSecret } from 'types'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import EditSecretModal from './EditSecretModal'
 import type { SecretTableColumn } from './Secrets.utils'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface SecretRowProps {
   row: VaultSecret
@@ -27,6 +28,7 @@ interface SecretRowProps {
 const SecretRow = ({ row, col, onSelectRemove }: SecretRowProps) => {
   const { ref } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [modal, setModal] = useState<string | null>(null)
   const [revealSecret, setRevealSecret] = useState(false)
   const name = row?.name ?? 'No name provided'
@@ -36,7 +38,7 @@ const SecretRow = ({ row, col, onSelectRemove }: SecretRowProps) => {
   const { data: revealedValue, isFetching } = useVaultSecretDecryptedValueQuery(
     {
       projectRef: ref!,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       id: row.id,
     },
     {

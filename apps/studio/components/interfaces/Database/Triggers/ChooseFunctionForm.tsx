@@ -15,6 +15,7 @@ import {
 } from 'data/database-functions/database-functions-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { ChevronDown, HelpCircle, Terminal } from 'lucide-react'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export interface ChooseFunctionFormProps {
   visible: boolean
@@ -24,10 +25,11 @@ export interface ChooseFunctionFormProps {
 
 const ChooseFunctionForm = ({ visible, onChange, setVisible }: ChooseFunctionFormProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data = [] } = useDatabaseFunctionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const triggerFunctions = data.filter((fn) => fn.return_type === 'trigger')
   const hasPublicSchemaFunctions = triggerFunctions.length >= 1

@@ -12,6 +12,7 @@ import type { ForeignKey } from '../../ForeignKeySelector/ForeignKeySelector.typ
 import type { TableField } from '../TableEditor.types'
 import { ForeignKeyRow } from './ForeignKeyRow'
 import { checkIfRelationChanged } from './ForeignKeysManagement.utils'
+import { useSelectedBranchQuery } from '../../../../../../data/branches/selected-branch-query'
 
 interface ForeignKeysManagementProps {
   table: TableField
@@ -29,6 +30,7 @@ export const ForeignKeysManagement = ({
   onUpdateFkRelations,
 }: ForeignKeysManagementProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { selectedSchema } = useQuerySchemaState()
 
   const [open, setOpen] = useState(false)
@@ -36,7 +38,7 @@ export const ForeignKeysManagement = ({
 
   const { data, error, isLoading, isSuccess, isError } = useForeignKeyConstraintsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: selectedSchema,
   })
 

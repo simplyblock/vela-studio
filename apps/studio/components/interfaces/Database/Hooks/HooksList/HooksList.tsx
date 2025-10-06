@@ -14,6 +14,7 @@ import { noop } from 'lib/void'
 import { Input } from 'ui'
 import { HooksListEmpty } from './HooksListEmpty'
 import { SchemaTable } from './SchemaTable'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 export interface HooksListProps {
   createHook: () => void
@@ -27,6 +28,7 @@ export const HooksList = ({
   deleteHook = noop,
 }: HooksListProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data: hooks,
     isLoading,
@@ -35,7 +37,7 @@ export const HooksList = ({
     error,
   } = useDatabaseHooksQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const [filterString, setFilterString] = useState<string>('')
 

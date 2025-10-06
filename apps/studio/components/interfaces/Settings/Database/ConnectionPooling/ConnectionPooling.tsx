@@ -30,6 +30,7 @@ import {
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 const formId = 'pooling-configuration-form'
 
@@ -43,8 +44,9 @@ const PoolingConfigurationFormSchema = z.object({
  */
 export const ConnectionPooling = () => {
   const { slug, ref: projectRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { can: canUpdateConnectionPoolingConfiguration } = {can:true}
 
@@ -62,7 +64,7 @@ export const ConnectionPooling = () => {
 
   const { data: maxConnData } = useMaxConnectionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { mutate: updatePoolerConfig, isLoading: isUpdatingPoolerConfig } =

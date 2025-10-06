@@ -13,11 +13,13 @@ import { DeleteRoleModal } from './DeleteRoleModal'
 import { RoleRow } from './RoleRow'
 import { RoleRowSkeleton } from './RoleRowSkeleton'
 import { SUPABASE_ROLES } from './Roles.constants'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 type SUPABASE_ROLE = (typeof SUPABASE_ROLES)[number]
 
 const RolesList = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [filterString, setFilterString] = useState('')
   const [filterType, setFilterType] = useState<'all' | 'active'>('all')
@@ -28,13 +30,13 @@ const RolesList = () => {
 
   const { data: maxConnData } = useMaxConnectionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const maxConnectionLimit = maxConnData?.maxConnections
 
   const { data, isLoading } = useDatabaseRolesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const roles = sortBy(data ?? [], (r) => r.name.toLocaleLowerCase())
 

@@ -18,6 +18,7 @@ import {
   Switch,
 } from 'ui'
 import { ROLE_PERMISSIONS } from './Roles.constants'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface CreateRolePanelProps {
   visible: boolean
@@ -48,6 +49,7 @@ export const CreateRolePanel = ({ visible, onClose }: CreateRolePanelProps) => {
   const formId = 'create-new-role'
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -62,9 +64,10 @@ export const CreateRolePanel = ({ visible, onClose }: CreateRolePanelProps) => {
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (values) => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     createDatabaseRole({
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       payload: values,
     })
   }

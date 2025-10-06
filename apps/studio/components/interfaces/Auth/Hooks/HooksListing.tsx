@@ -16,9 +16,11 @@ import { CreateHookSheet } from './CreateHookSheet'
 import { HookCard } from './HookCard'
 import { HOOKS_DEFINITIONS, HOOK_DEFINITION_TITLE, Hook } from './hooks.constants'
 import { extractMethod, getRevokePermissionStatements, isValidHook } from './hooks.utils'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 export const HooksListing = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const { data: project } = useSelectedProjectQuery()
   const { data: authConfig, error: authConfigError, isError } = useAuthConfigQuery({ projectRef })
 
@@ -34,7 +36,7 @@ export const HooksListing = () => {
         const revokeStatements = getRevokePermissionStatements(method.schema, method.functionName)
         await executeSql({
           projectRef,
-          connectionString: project!.connectionString,
+          connectionString: branch!.database.encrypted_connection_string,
           sql: revokeStatements.join('\n'),
         })
       }

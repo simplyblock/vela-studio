@@ -17,6 +17,7 @@ import {
 } from 'ui'
 import { getPathReferences } from '../../../../../data/vela/path-references'
 import { useSelectedProjectQuery } from '../../../../../hooks/misc/useSelectedProject'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface FunctionListProps {
   schema: string
@@ -36,11 +37,12 @@ const FunctionList = ({
   const router = useRouter()
   const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: functions } = useDatabaseFunctionsQuery({
     projectRef: selectedProject?.ref,
-    connectionString: selectedProject?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const filteredFunctions = (functions ?? []).filter((x) =>

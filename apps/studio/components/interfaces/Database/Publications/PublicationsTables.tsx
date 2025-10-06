@@ -13,16 +13,18 @@ import { Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } f
 import { Admonition } from 'ui-patterns'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { PublicationsTableItem } from './PublicationsTableItem'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export const PublicationsTables = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [filterString, setFilterString] = useState<string>('')
 
   const { can: canUpdatePublications, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
   const { data: publications = [] } = useDatabasePublicationsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const selectedPublication = publications.find((pub) => pub.id === Number(id))
 
@@ -34,7 +36,7 @@ export const PublicationsTables = () => {
     error,
   } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const tables = useMemo(() => {

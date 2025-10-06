@@ -29,9 +29,11 @@ import {
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import CreateIndexSidePanel from './CreateIndexSidePanel'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 const Indexes = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { schema: urlSchema, table } = useParams()
 
   const [search, setSearch] = useState('')
@@ -49,7 +51,7 @@ const Indexes = () => {
   } = useIndexesQuery({
     schema: selectedSchema,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const {
     data: schemas,
@@ -58,7 +60,7 @@ const Indexes = () => {
     isError: isErrorSchemas,
   } = useSchemasQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { mutate: deleteIndex, isLoading: isExecuting } = useDatabaseIndexDeleteMutation({
@@ -78,10 +80,11 @@ const Indexes = () => {
 
   const onConfirmDeleteIndex = (index: DatabaseIndex) => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     deleteIndex({
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       name: index.name,
       schema: selectedSchema,
     })

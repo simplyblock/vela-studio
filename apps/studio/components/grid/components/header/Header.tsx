@@ -38,6 +38,7 @@ import { ExportDialog } from './ExportDialog'
 import { FilterPopover } from './filter/FilterPopover'
 import { formatRowsForCSV } from './Header.utils'
 import { SortPopover } from './sort/SortPopover'
+import { useBranchQuery } from '../../../../data/branches/branch-query'
 // [Joshen] CSV exports require this guard as a fail-safe if the table is
 // just too large for a browser to keep all the rows in memory before
 // exporting. Either that or export as multiple CSV sheets with max n rows each
@@ -222,7 +223,9 @@ const DefaultHeader = () => {
 }
 
 const RowHeader = () => {
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
   const tableEditorSnap = useTableEditorStateSnapshot()
   const snap = useTableEditorTableStateSnapshot()
 
@@ -237,7 +240,7 @@ const RowHeader = () => {
 
   const { data } = useTableRowsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     tableId: snap.table.id,
     sorts,
     filters,
@@ -249,7 +252,7 @@ const RowHeader = () => {
   const { data: countData } = useTableRowsCountQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       tableId: snap.table.id,
       filters,
       enforceExactCount: snap.enforceExactCount,
@@ -328,7 +331,7 @@ const RowHeader = () => {
     const rows = snap.allRowsSelected
       ? await fetchAllTableRows({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           table: snap.table,
           filters,
           sorts,
@@ -406,7 +409,7 @@ const RowHeader = () => {
     const rows = snap.allRowsSelected
       ? await fetchAllTableRows({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           table: snap.table,
           filters,
           sorts,

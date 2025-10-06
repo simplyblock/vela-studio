@@ -1170,7 +1170,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BranchResponse"
+                  "$ref": "#/components/schemas/BranchPublic"
                 }
               }
             }
@@ -1572,6 +1572,454 @@
                 "schema": {}
               }
             }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/stop": {
+      "post": {
+        "summary": "Organizations:Projects:Branch:Stop",
+        "operationId": "organizations:projects:branch:stop",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/start": {
+      "post": {
+        "summary": "Organizations:Projects:Branch:Start",
+        "operationId": "organizations:projects:branch:start",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/resume": {
+      "post": {
+        "summary": "Organizations:Projects:Branch:Resume",
+        "operationId": "organizations:projects:branch:resume",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/pause": {
+      "post": {
+        "summary": "Organizations:Projects:Branch:Pause",
+        "operationId": "organizations:projects:branch:pause",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
           },
           "401": {
             "description": "Not authenticated",
@@ -3634,6 +4082,24 @@
         ],
         "title": "AuditLog"
       },
+      "BranchApiKeys": {
+        "properties": {
+          "anon": {
+            "type": "string",
+            "title": "Anon"
+          },
+          "service_role": {
+            "type": "string",
+            "title": "Service Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "anon",
+          "service_role"
+        ],
+        "title": "BranchApiKeys"
+      },
       "BranchCreate": {
         "properties": {
           "name": {
@@ -3673,52 +4139,6 @@
         ],
         "title": "BranchCreate"
       },
-      "BranchDetailResources": {
-        "properties": {
-          "vcpu": {
-            "type": "integer",
-            "maximum": 2147483647.0,
-            "minimum": 1.0,
-            "title": "Vcpu",
-            "description": "Number of virtual CPUs provisioned (matches Branch.vcpu constraints)."
-          },
-          "ram_bytes": {
-            "type": "integer",
-            "multipleOf": 1024.0,
-            "minimum": 1024.0,
-            "title": "Ram Bytes",
-            "description": "Guest memory expressed in bytes (mirrors Branch.memory)."
-          },
-          "nvme_bytes": {
-            "type": "integer",
-            "minimum": 1073741824.0,
-            "title": "Nvme Bytes",
-            "description": "Provisioned NVMe volume capacity in bytes (derived from Branch.database_size)."
-          },
-          "iops": {
-            "type": "integer",
-            "maximum": 2147483647.0,
-            "minimum": 1.0,
-            "title": "Iops",
-            "description": "Configured storage IOPS budget (matches Branch.iops constraints)."
-          },
-          "storage_bytes": {
-            "type": "integer",
-            "minimum": 1073741824.0,
-            "title": "Storage Bytes",
-            "description": "Database storage capacity in bytes (mirrors Branch.database_size)."
-          }
-        },
-        "type": "object",
-        "required": [
-          "vcpu",
-          "ram_bytes",
-          "nvme_bytes",
-          "iops",
-          "storage_bytes"
-        ],
-        "title": "BranchDetailResources"
-      },
       "BranchPublic": {
         "properties": {
           "id": {
@@ -3740,29 +4160,81 @@
             "minLength": 1,
             "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
             "title": "Name"
-          }
-        },
-        "type": "object",
-        "required": [
-          "id",
-          "name"
-        ],
-        "title": "BranchPublic"
-      },
-      "BranchResponse": {
-        "properties": {
-          "name": {
-            "type": "string",
-            "maxLength": 50,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
-            "title": "Name"
           },
-          "id": {
+          "project_id": {
             "type": "string",
-            "title": "Id"
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
           },
-          "rest_endpoint": {
+          "organization_id": {
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
+          },
+          "database": {
+            "$ref": "#/components/schemas/DatabaseInformation"
+          },
+          "max_resources": {
+            "$ref": "#/components/schemas/ResourcesDefinition"
+          },
+          "assigned_labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Assigned Labels"
+          },
+          "used_resources": {
+            "$ref": "#/components/schemas/ResourceUsageDefinition"
+          },
+          "api_keys": {
+            "$ref": "#/components/schemas/BranchApiKeys"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BranchStatus"
+          },
+          "ptir_enabled": {
+            "type": "boolean",
+            "title": "Ptir Enabled"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "created_by": {
+            "type": "string",
+            "title": "Created By"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "updated_by": {
             "anyOf": [
               {
                 "type": "string"
@@ -3771,19 +4243,85 @@
                 "type": "null"
               }
             ],
-            "title": "Rest Endpoint"
-          },
-          "resources": {
-            "$ref": "#/components/schemas/BranchDetailResources"
+            "title": "Updated By"
           }
         },
         "type": "object",
         "required": [
-          "name",
           "id",
-          "resources"
+          "name",
+          "project_id",
+          "organization_id",
+          "database",
+          "max_resources",
+          "assigned_labels",
+          "used_resources",
+          "api_keys",
+          "status",
+          "ptir_enabled",
+          "created_at",
+          "created_by"
         ],
-        "title": "BranchResponse"
+        "title": "BranchPublic"
+      },
+      "BranchStatus": {
+        "properties": {
+          "database": {
+            "type": "string",
+            "enum": [
+              "ACTIVE_HEALTHY",
+              "STOPPED",
+              "STARTING",
+              "ACTIVE_UNHEALTHY",
+              "CREATING",
+              "DELETING",
+              "UPDATING",
+              "RESTARTING",
+              "STOPPING",
+              "UNKNOWN"
+            ],
+            "title": "Database"
+          },
+          "storage": {
+            "type": "string",
+            "enum": [
+              "ACTIVE_HEALTHY",
+              "STOPPED",
+              "STARTING",
+              "ACTIVE_UNHEALTHY",
+              "CREATING",
+              "DELETING",
+              "UPDATING",
+              "RESTARTING",
+              "STOPPING",
+              "UNKNOWN"
+            ],
+            "title": "Storage"
+          },
+          "realtime": {
+            "type": "string",
+            "enum": [
+              "ACTIVE_HEALTHY",
+              "STOPPED",
+              "STARTING",
+              "ACTIVE_UNHEALTHY",
+              "CREATING",
+              "DELETING",
+              "UPDATING",
+              "RESTARTING",
+              "STOPPING",
+              "UNKNOWN"
+            ],
+            "title": "Realtime"
+          }
+        },
+        "type": "object",
+        "required": [
+          "database",
+          "storage",
+          "realtime"
+        ],
+        "title": "BranchStatus"
       },
       "BranchUpdate": {
         "properties": {
@@ -3803,6 +4341,54 @@
         },
         "type": "object",
         "title": "BranchUpdate"
+      },
+      "DatabaseInformation": {
+        "properties": {
+          "host": {
+            "type": "string",
+            "title": "Host"
+          },
+          "port": {
+            "type": "integer",
+            "title": "Port"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "encrypted_connection_string": {
+            "type": "string",
+            "title": "Encrypted Connection String"
+          },
+          "service_endpoint_uri": {
+            "type": "string",
+            "title": "Service Endpoint Uri"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "has_replicas": {
+            "type": "boolean",
+            "title": "Has Replicas"
+          }
+        },
+        "type": "object",
+        "required": [
+          "host",
+          "port",
+          "username",
+          "name",
+          "encrypted_connection_string",
+          "service_endpoint_uri",
+          "version",
+          "has_replicas"
+        ],
+        "title": "DatabaseInformation"
       },
       "DeploymentParameters": {
         "properties": {
@@ -3844,7 +4430,7 @@
           "iops": {
             "type": "integer",
             "maximum": 2147483647.0,
-            "exclusiveMinimum": 0.0,
+            "minimum": 100.0,
             "title": "Iops"
           },
           "database_image_tag": {
@@ -4081,31 +4667,6 @@
           "status": {
             "type": "string",
             "title": "Status"
-          },
-          "deployment_status": {
-            "prefixItems": [
-              {
-                "type": "string"
-              },
-              {
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "type": "object"
-              }
-            ],
-            "type": "array",
-            "maxItems": 2,
-            "minItems": 2,
-            "title": "Deployment Status"
-          },
-          "database_user": {
-            "type": "string",
-            "title": "Database User"
-          },
-          "encrypted_database_connection_string": {
-            "type": "string",
-            "title": "Encrypted Database Connection String"
           }
         },
         "type": "object",
@@ -4113,10 +4674,7 @@
           "organization_id",
           "id",
           "name",
-          "status",
-          "deployment_status",
-          "database_user",
-          "encrypted_database_connection_string"
+          "status"
         ],
         "title": "ProjectPublic"
       },
@@ -4157,6 +4715,109 @@
         },
         "type": "object",
         "title": "ResizeParameters"
+      },
+      "ResourceUsageDefinition": {
+        "properties": {
+          "vcpu": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Vcpu",
+            "description": "Measured vCPU consumption for the branch."
+          },
+          "ram_bytes": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Ram Bytes",
+            "description": "Measured RAM usage in bytes."
+          },
+          "nvme_bytes": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Nvme Bytes",
+            "description": "Measured NVMe usage in bytes."
+          },
+          "iops": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Iops",
+            "description": "Measured IOPS consumption."
+          },
+          "storage_bytes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Bytes",
+            "description": "Measured storage usage in bytes, if available."
+          }
+        },
+        "type": "object",
+        "required": [
+          "vcpu",
+          "ram_bytes",
+          "nvme_bytes",
+          "iops"
+        ],
+        "title": "ResourceUsageDefinition"
+      },
+      "ResourcesDefinition": {
+        "properties": {
+          "vcpu": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "minimum": 1.0,
+            "title": "Vcpu",
+            "description": "Number of virtual CPUs provisioned (matches Branch.vcpu constraints)."
+          },
+          "ram_bytes": {
+            "type": "integer",
+            "multipleOf": 1024.0,
+            "minimum": 1024.0,
+            "title": "Ram Bytes",
+            "description": "Guest memory expressed in bytes (mirrors Branch.memory)."
+          },
+          "nvme_bytes": {
+            "type": "integer",
+            "minimum": 1073741824.0,
+            "title": "Nvme Bytes",
+            "description": "Provisioned NVMe volume capacity in bytes (derived from Branch.database_size)."
+          },
+          "iops": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "minimum": 100.0,
+            "title": "Iops",
+            "description": "Configured storage IOPS budget (matches Branch.iops constraints)."
+          },
+          "storage_bytes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1073741824.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Bytes",
+            "description": "Database storage capacity in bytes (mirrors Branch.database_size)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "vcpu",
+          "ram_bytes",
+          "nvme_bytes",
+          "iops"
+        ],
+        "title": "ResourcesDefinition"
       },
       "Role": {
         "properties": {

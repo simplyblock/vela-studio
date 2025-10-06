@@ -15,6 +15,7 @@ import { useGetImpersonatedRoleState } from 'state/role-impersonation-state'
 import { useTableEditorStateSnapshot } from 'state/table-editor'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button, Checkbox } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export type DeleteConfirmationDialogsProps = {
   selectedTable?: TableLike
@@ -26,6 +27,7 @@ const DeleteConfirmationDialogs = ({
   onTableDeleted,
 }: DeleteConfirmationDialogsProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useTableEditorStateSnapshot()
   const { filters, onApplyFilters } = useTableFilter()
 
@@ -136,7 +138,7 @@ const DeleteConfirmationDialogs = ({
       column: selectedColumnToDelete,
       cascade: isDeleteWithCascade,
       projectRef: project.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     })
   }
 
@@ -148,7 +150,7 @@ const DeleteConfirmationDialogs = ({
 
     deleteTable({
       projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       id: selectedTableToDelete.id,
       name: selectedTableToDelete.name,
       schema: selectedTableToDelete.schema,
@@ -160,6 +162,7 @@ const DeleteConfirmationDialogs = ({
 
   const onConfirmDeleteRow = async () => {
     if (!project) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     if (!selectedTable) return console.error('Selected table required')
     if (snap.confirmationDialog?.type !== 'row') return
     const selectedRowsToDelete = snap.confirmationDialog.rows
@@ -173,13 +176,13 @@ const DeleteConfirmationDialogs = ({
 
         truncateRows({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           table: selectedTable,
         })
       } else {
         deleteAllRows({
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           table: selectedTable,
           filters,
           roleImpersonationState: getImpersonatedRoleState(),
@@ -188,7 +191,7 @@ const DeleteConfirmationDialogs = ({
     } else {
       deleteRows({
         projectRef: project.ref,
-        connectionString: project.connectionString,
+        connectionString: branch.database.encrypted_connection_string,
         table: selectedTable,
         rows: selectedRowsToDelete as SupaRow[],
         roleImpersonationState: getImpersonatedRoleState(),

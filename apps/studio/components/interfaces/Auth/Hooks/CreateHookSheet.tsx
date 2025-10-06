@@ -39,6 +39,7 @@ import {
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { HOOKS_DEFINITIONS, HOOK_DEFINITION_TITLE, Hook } from './hooks.constants'
 import { extractMethod, getRevokePermissionStatements, isValidHook } from './hooks.utils'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface CreateHookSheetProps {
   visible: boolean
@@ -114,7 +115,8 @@ export const CreateHookSheet = ({
   onClose,
   onDelete,
 }: CreateHookSheetProps) => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const { data: project } = useSelectedProjectQuery()
 
   const definition = useMemo(
@@ -192,7 +194,7 @@ export const CreateHookSheet = ({
       if (statements.length > 0) {
         executeSql({
           projectRef,
-          connectionString: project!.connectionString,
+          connectionString: branch?.database.encrypted_connection_string,
           sql: statements.join('\n'),
         })
       }

@@ -28,6 +28,7 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export interface DeleteBucketModalProps {
   visible: boolean
@@ -41,6 +42,7 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const schema = z.object({
     confirm: z.literal(bucket.name, {
@@ -55,7 +57,7 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
   const { data } = useBucketsQuery({ projectRef })
   const { data: policies } = useDatabasePoliciesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: 'storage',
   })
   const { mutateAsync: deletePolicy } = useDatabasePolicyDeleteMutation()
@@ -81,7 +83,7 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
           bucketPolicies.map((policy: any) =>
             deletePolicy({
               projectRef: project?.ref,
-              connectionString: project?.connectionString,
+              connectionString: branch?.database.encrypted_connection_string,
               originalPolicy: policy,
             })
           )

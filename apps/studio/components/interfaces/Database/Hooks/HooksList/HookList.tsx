@@ -18,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 export interface HookListProps {
   schema: string
@@ -34,9 +35,10 @@ export const HookList = ({
 }: HookListProps) => {
   const { ref } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: hooks } = useDatabaseHooksQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const restUrl = project?.restUrl

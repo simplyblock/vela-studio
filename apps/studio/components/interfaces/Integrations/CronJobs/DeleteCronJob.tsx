@@ -8,6 +8,7 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface DeleteCronJobProps {
   cronJob: CronJob
@@ -16,8 +17,9 @@ interface DeleteCronJobProps {
 }
 
 export const DeleteCronJob = ({ cronJob, visible, onClose }: DeleteCronJobProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [searchQuery] = useQueryState('search', parseAsString.withDefault(''))
 
   const { mutate: sendEvent } = useSendEventMutation()
@@ -34,11 +36,12 @@ export const DeleteCronJob = ({ cronJob, visible, onClose }: DeleteCronJobProps)
 
   async function handleDelete() {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     deleteDatabaseCronJob({
       jobId: cronJob.jobid,
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       searchTerm: searchQuery,
     })
   }

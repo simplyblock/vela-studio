@@ -15,6 +15,7 @@ import { BlockKeys } from '../common/BlockKeys'
 import { MonacoEditor } from '../common/MonacoEditor'
 import { NullValue } from '../common/NullValue'
 import { TruncatedWarningOverlay } from './TruncatedWarningOverlay'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 const verifyJSON = (value: string) => {
   try {
@@ -51,13 +52,14 @@ export const JsonEditor = <TRow, TSummaryRow = unknown>({
   onRowChange,
   onExpandEditor,
 }: JsonEditorProps<TRow, TSummaryRow>) => {
-  const { id: _id } = useParams()
+  const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
 
   const { data: selectedTable } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 
@@ -91,7 +93,7 @@ export const JsonEditor = <TRow, TSummaryRow = unknown>({
         column: column.name as string,
         pkMatch,
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
       },
       {
         onSuccess: (data) => {

@@ -12,15 +12,18 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Card, Input, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui'
 import ExtensionRow from './ExtensionRow'
 import { HIDDEN_EXTENSIONS, SEARCH_TERMS } from './Extensions.constants'
+import { useBranchQuery } from '../../../../data/branches/branch-query'
 
 const Extensions = () => {
   const { filter } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const [filterString, setFilterString] = useState<string>('')
 
   const { data, isLoading } = useDatabaseExtensionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const extensions =

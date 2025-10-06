@@ -21,9 +21,11 @@ import { formatPoliciesForStorage } from '../Storage.utils'
 import StoragePoliciesBucketRow from './StoragePoliciesBucketRow'
 import StoragePoliciesEditPolicyModal from './StoragePoliciesEditPolicyModal'
 import StoragePoliciesPlaceholder from './StoragePoliciesPlaceholder'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 const StoragePolicies = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { ref: projectRef } = useParams()
 
   const { data, isLoading: isLoadingBuckets } = useBucketsQuery({ projectRef })
@@ -39,7 +41,7 @@ const StoragePolicies = () => {
     isLoading: isLoadingPolicies,
   } = useDatabasePoliciesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: 'storage',
   })
   const policies = policiesData ?? []
@@ -117,7 +119,7 @@ const StoragePolicies = () => {
           try {
             await createDatabasePolicy({
               projectRef: project?.ref,
-              connectionString: project?.connectionString,
+              connectionString: branch?.database.encrypted_connection_string,
               payload,
             })
             return false
@@ -140,7 +142,7 @@ const StoragePolicies = () => {
     try {
       await createDatabasePolicy({
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         payload,
       })
       return false
@@ -159,7 +161,7 @@ const StoragePolicies = () => {
     try {
       await updateDatabasePolicy({
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         originalPolicy: selectedPolicyToEdit,
         payload,
       })
@@ -174,7 +176,7 @@ const StoragePolicies = () => {
     if (!project) return console.error('Project is required')
     deleteDatabasePolicy({
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       originalPolicy: selectedPolicyToDelete,
     })
   }

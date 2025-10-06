@@ -18,6 +18,7 @@ import {
   TableCell,
 } from 'ui'
 import { generateTriggerCreateSQL } from './TriggerList.utils'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface TriggerListProps {
   schema: string
@@ -35,11 +36,12 @@ const TriggerList = ({
   deleteTrigger,
 }: TriggerListProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: triggers } = useDatabaseTriggersQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const filteredTriggers = (triggers ?? []).filter((x) =>
     includes(x.name.toLowerCase(), filterString.toLowerCase())

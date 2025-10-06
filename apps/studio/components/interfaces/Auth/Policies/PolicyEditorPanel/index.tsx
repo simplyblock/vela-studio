@@ -38,6 +38,7 @@ import { PolicyEditorPanelHeader } from './PolicyEditorPanelHeader'
 import { PolicyTemplates } from './PolicyTemplates'
 import { QueryError } from './QueryError'
 import { RLSCodeEditor } from './RLSCodeEditor'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface PolicyEditorPanelProps {
   visible: boolean
@@ -61,9 +62,10 @@ export const PolicyEditorPanel = memo(function ({
   onSelectCancel,
   authContext,
 }: PolicyEditorPanelProps) {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const queryClient = useQueryClient()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   // FIXME: need permission implemented 
   const { can: canUpdatePolicies } = {can:true}
 
@@ -120,7 +122,7 @@ export const PolicyEditorPanel = memo(function ({
   const { mutate: executeMutation, isLoading: isExecuting } = useExecuteSqlMutation({
     onSuccess: async () => {
       // refresh all policies
-      await queryClient.invalidateQueries(databasePoliciesKeys.list(ref))
+      await queryClient.invalidateQueries(databasePoliciesKeys.list(projectRef))
       toast.success('Successfully created new policy')
       onSelectCancel()
     },
@@ -194,7 +196,7 @@ export const PolicyEditorPanel = memo(function ({
       executeMutation({
         sql,
         projectRef: selectedProject?.ref,
-        connectionString: selectedProject?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         handleError: (error) => {
           throw error
         },
@@ -224,7 +226,7 @@ export const PolicyEditorPanel = memo(function ({
 
       updatePolicy({
         projectRef: selectedProject.ref,
-        connectionString: selectedProject?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         originalPolicy: selectedPolicy,
         payload,
       })

@@ -16,6 +16,7 @@ import { EmptyValue } from '../common/EmptyValue'
 import { MonacoEditor } from '../common/MonacoEditor'
 import { NullValue } from '../common/NullValue'
 import { TruncatedWarningOverlay } from './TruncatedWarningOverlay'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 export const TextEditor = <TRow, TSummaryRow = unknown>({
   row,
@@ -29,13 +30,14 @@ export const TextEditor = <TRow, TSummaryRow = unknown>({
   isEditable?: boolean
   onExpandEditor: (column: string, row: TRow) => void
 }) => {
-  const { id: _id } = useParams()
+  const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
 
   const { data: selectedTable } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 
@@ -65,7 +67,7 @@ export const TextEditor = <TRow, TSummaryRow = unknown>({
         column: column.name as string,
         pkMatch,
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
       },
       { onSuccess: (data) => setValue(data) }
     )

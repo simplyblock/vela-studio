@@ -22,6 +22,7 @@ import {
   TabsList_Shadcn_,
   TabsTrigger_Shadcn_,
 } from 'ui'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 export const DATE_FORMAT = 'DD MMM, YYYY HH:mm'
 
@@ -49,6 +50,7 @@ export const MessageDetailsPanel = ({
 }: MessageDetailsPanelProps) => {
   const { id: _id, childId: queueName } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   useEscapeKeydown(() => setSelectedMessage(null))
 
@@ -145,7 +147,7 @@ export const MessageDetailsPanel = ({
                     onClick: () => {
                       readMessage({
                         projectRef: project!.ref,
-                        connectionString: project?.connectionString,
+                        connectionString: branch?.database.encrypted_connection_string,
                         queryName: queueName!,
                         messageId: selectedMessage.msg_id,
                         duration: 60,
@@ -172,7 +174,7 @@ export const MessageDetailsPanel = ({
                     onClick: () => {
                       archiveMessage({
                         projectRef: project!.ref,
-                        connectionString: project?.connectionString,
+                        connectionString: branch?.database.encrypted_connection_string,
                         queryName: queueName!,
                         messageId: selectedMessage.msg_id,
                       })
@@ -198,7 +200,7 @@ export const MessageDetailsPanel = ({
                     onClick: () => {
                       deleteMessage({
                         projectRef: project!.ref,
-                        connectionString: project?.connectionString,
+                        connectionString: branch?.database.encrypted_connection_string,
                         queueName: queueName!,
                         messageId: selectedMessage.msg_id,
                       })

@@ -10,6 +10,7 @@ import { ScrollArea, SimpleCodeBlock } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { getPathReferences } from '../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 interface ViewEntityAutofixSecurityModalProps {
   table: Entity
@@ -23,13 +24,14 @@ export default function ViewEntityAutofixSecurityModal({
   setIsAutofixViewSecurityModalOpen,
 }: ViewEntityAutofixSecurityModalProps) {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
   const queryClient = useQueryClient()
   const { isSuccess, isLoading, data } = useViewDefinitionQuery(
     {
       id: table?.id,
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     {
       enabled: isAutofixViewSecurityModalOpen && isViewLike(table),
@@ -53,7 +55,7 @@ export default function ViewEntityAutofixSecurityModal({
 	`
     execute({
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       sql,
     })
   }

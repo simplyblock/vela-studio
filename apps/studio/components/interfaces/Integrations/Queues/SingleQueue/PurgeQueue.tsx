@@ -5,6 +5,7 @@ import { useDatabaseQueuePurgeMutation } from 'data/database-queues/database-que
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
 import { useParams } from 'common'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface PurgeQueueProps {
   queueName: string
@@ -16,6 +17,7 @@ const PurgeQueue = ({ queueName, visible, onClose }: PurgeQueueProps) => {
   const { slug: orgRef, branch: branchRef } = useParams()
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: purgeDatabaseQueue, isLoading } = useDatabaseQueuePurgeMutation({
     onSuccess: () => {
@@ -27,11 +29,12 @@ const PurgeQueue = ({ queueName, visible, onClose }: PurgeQueueProps) => {
 
   async function handlePurge() {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     purgeDatabaseQueue({
       queueName: queueName,
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
     })
   }
 

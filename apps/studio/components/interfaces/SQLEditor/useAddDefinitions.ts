@@ -14,10 +14,12 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatSql } from 'lib/formatSql'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import { getPathReferences } from '../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 export const useAddDefinitions = (id: string, monaco: Monaco | null) => {
-  const { data: project } = useSelectedProjectQuery()
   const { slug: orgSlug } = getPathReferences()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
 
   const [intellisenseEnabled] = useLocalStorageQuery(
@@ -28,14 +30,14 @@ export const useAddDefinitions = (id: string, monaco: Monaco | null) => {
   const { data: keywords, isSuccess: isKeywordsSuccess } = useKeywordsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     { enabled: intellisenseEnabled }
   )
   const { data: functions, isSuccess: isFunctionsSuccess } = useDatabaseFunctionsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     { enabled: intellisenseEnabled }
   )
@@ -43,14 +45,14 @@ export const useAddDefinitions = (id: string, monaco: Monaco | null) => {
     {
       orgSlug,
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     { enabled: intellisenseEnabled }
   )
   const { data: tableColumns, isSuccess: isTableColumnsSuccess } = useTableColumnsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     { enabled: intellisenseEnabled }
   )

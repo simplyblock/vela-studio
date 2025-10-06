@@ -27,6 +27,7 @@ import {
 } from 'ui'
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import TriggerList from './TriggerList'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface TriggersListProps {
   createTrigger: () => void
@@ -40,6 +41,7 @@ const TriggersList = ({
   deleteTrigger = noop,
 }: TriggersListProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
   const [filterString, setFilterString] = useState<string>('')
@@ -49,7 +51,7 @@ const TriggersList = ({
 
   const { data = [] } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const hasTables =
     data.filter((a) => !protectedSchemas.find((s) => s.name === a.schema)).length > 0
@@ -61,7 +63,7 @@ const TriggersList = ({
     isError,
   } = useDatabaseTriggersQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   // FIXME: need permission implemented 
   const { can: canCreateTriggers } = {can:true}

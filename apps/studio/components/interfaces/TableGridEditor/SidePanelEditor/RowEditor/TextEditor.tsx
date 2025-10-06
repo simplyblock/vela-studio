@@ -15,6 +15,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, SidePanel, cn } from 'ui'
 import ActionBar from '../ActionBar'
 import { isValueTruncated } from './RowEditor.utils'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface TextEditorProps {
   visible: boolean
@@ -36,10 +37,11 @@ export const TextEditor = ({
   const { id: _id } = useParams()
   const id = _id ? Number(_id) : undefined
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: selectedTable } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 
@@ -72,7 +74,7 @@ export const TextEditor = ({
         column: column,
         pkMatch,
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
       },
       { onSuccess: (data) => setStrValue(data) }
     )

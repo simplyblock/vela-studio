@@ -13,6 +13,7 @@ import { isValidHttpUrl, uuidv4 } from 'lib/helpers'
 import { Button, Form, SidePanel } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormContents } from './FormContents'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export interface EditHookPanelProps {
   visible: boolean
@@ -86,9 +87,10 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
   })
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data } = useTablesQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { mutate: createDatabaseTrigger } = useDatabaseTriggerCreateMutation({
@@ -199,7 +201,7 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
     const selectedTable = await getTableEditor({
       id: values.table_id,
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     })
     if (!selectedTable) {
       setIsSubmitting(false)
@@ -249,13 +251,13 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
     if (selectedHook === undefined) {
       createDatabaseTrigger({
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         payload,
       })
     } else {
       updateDatabaseTrigger({
         projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        connectionString: branch?.database.encrypted_connection_string,
         originalTrigger: selectedHook,
         updatedTrigger: { ...payload, enabled_mode: 'ORIGIN' },
       })

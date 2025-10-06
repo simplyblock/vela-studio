@@ -32,19 +32,21 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 const formId = 'realtime-configuration-form'
 
 export const RealtimeSettings = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
-  // FIXME: need permission implemented   
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
+  // FIXME: need permission implemented
   const { can: canUpdateConfig } = {can:true}
 
   const { data: maxConn } = useMaxConnectionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { data, error, isLoading, isError } = useRealtimeConfigurationQuery({
     projectRef,
@@ -52,7 +54,7 @@ export const RealtimeSettings = () => {
 
   const { data: policies, isSuccess: isSuccessPolicies } = useDatabasePoliciesQuery({
     projectRef,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: 'realtime',
   })
 

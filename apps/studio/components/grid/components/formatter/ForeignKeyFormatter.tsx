@@ -12,18 +12,22 @@ import { Popover_Shadcn_, PopoverContent_Shadcn_, PopoverTrigger_Shadcn_ } from 
 import type { SupaRow } from '../../types'
 import { NullValue } from '../common/NullValue'
 import { ReferenceRecordPeek } from './ReferenceRecordPeek'
+import { useBranchQuery } from 'data/branches/branch-query'
+import { useParams } from 'common'
 
 interface Props extends PropsWithChildren<RenderCellProps<SupaRow, unknown>> {
   tableId?: number
 }
 
 export const ForeignKeyFormatter = (props: Props) => {
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { tableId, row, column } = props
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
 
   const { data } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id: tableId,
   })
   const foreignKeyColumn = data?.columns.find((x) => x.name === column.key)
@@ -38,7 +42,7 @@ export const ForeignKeyFormatter = (props: Props) => {
   const { data: tables } = useTablesQuery({
     projectRef: project?.ref,
     includeColumns: true,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: relationship?.target_table_schema,
   })
   const targetTable = tables?.find(

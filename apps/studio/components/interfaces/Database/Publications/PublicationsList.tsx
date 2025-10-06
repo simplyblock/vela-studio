@@ -27,6 +27,7 @@ import {
 import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { PublicationSkeleton } from './PublicationSkeleton'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface PublicationEvent {
   event: string
@@ -36,6 +37,7 @@ interface PublicationEvent {
 export const PublicationsList = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [filterString, setFilterString] = useState<string>('')
 
   const {
@@ -46,7 +48,7 @@ export const PublicationsList = () => {
     isError,
   } = useDatabasePublicationsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { mutate: updatePublications } = useDatabasePublicationUpdateMutation({
     onSuccess: () => {
@@ -77,12 +79,12 @@ export const PublicationsList = () => {
   } | null>(null)
 
   const toggleListenEvent = async () => {
-    if (!toggleListenEventValue || !project) return
+    if (!toggleListenEventValue || !project || !branch) return
 
     const { publication, event, currentStatus } = toggleListenEventValue
     const payload = {
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       id: publication.id,
     } as any
     payload[`publish_${event.event.toLowerCase()}`] = !currentStatus

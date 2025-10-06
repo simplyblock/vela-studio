@@ -9,10 +9,12 @@ import DeleteWrapperModal from './DeleteWrapperModal'
 import { WRAPPERS } from './Wrappers.constants'
 import { wrapperMetaComparator } from './Wrappers.utils'
 import { WrapperTable } from './WrapperTable'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export const WrappersTab = () => {
   const { id } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [selectedWrapperForDelete, setSelectedWrapperForDelete] = useState<FDW | null>(null)
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
   const [isClosingCreateWrapper, setisClosingCreateWrapper] = useState(false)
@@ -21,7 +23,7 @@ export const WrappersTab = () => {
 
   const { data } = useFDWsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const wrappers = data ?? []

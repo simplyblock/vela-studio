@@ -370,6 +370,7 @@ export const updateColumn = async ({
 }
 
 export const duplicateTable = async (
+  orgRef: string,
   projectRef: string,
   connectionString: string | undefined | null,
   payload: { name: string; comment?: string },
@@ -439,6 +440,7 @@ export const duplicateTable = async (
 
   if (isRLSEnabled) {
     await updateTableMutation({
+      orgSlug: orgRef,
       projectRef,
       connectionString,
       id: duplicatedTable?.id!,
@@ -452,6 +454,7 @@ export const duplicateTable = async (
 }
 
 export const createTable = async ({
+  orgRef,
   projectRef,
   connectionString,
   toastId,
@@ -461,6 +464,7 @@ export const createTable = async ({
   isRLSEnabled,
   importContent,
 }: {
+  orgRef: string
   projectRef: string
   connectionString?: string | null
   toastId: string | number
@@ -500,6 +504,7 @@ export const createTable = async ({
     // Toggle RLS if configured to be
     if (isRLSEnabled) {
       await updateTableMutation({
+        orgSlug: orgRef,
         projectRef,
         connectionString,
         id: table.id,
@@ -652,6 +657,7 @@ export const createTable = async ({
 }
 
 export const updateTable = async ({
+  orgRef,
   projectRef,
   connectionString,
   toastId,
@@ -662,6 +668,7 @@ export const updateTable = async ({
   existingForeignKeyRelations,
   primaryKey,
 }: {
+  orgRef: string
   projectRef: string
   connectionString?: string | null
   toastId: string | number
@@ -694,6 +701,7 @@ export const updateTable = async ({
 
   // Update the table
   await updateTableMutation({
+    orgSlug: orgRef,
     projectRef,
     connectionString,
     id: table.id,

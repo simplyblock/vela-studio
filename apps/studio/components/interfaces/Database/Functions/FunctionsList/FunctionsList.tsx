@@ -29,6 +29,7 @@ import {
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import FunctionList from './FunctionList'
 import { getPathReferences } from '../../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface FunctionsListProps {
   createFunction: () => void
@@ -44,6 +45,7 @@ const FunctionsList = ({
   const router = useRouter()
   const { search } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
   const { slug: orgSlug } = getPathReferences()
@@ -68,7 +70,7 @@ const FunctionsList = ({
   useSchemasQuery({
     orgSlug: orgSlug,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const {
@@ -78,7 +80,7 @@ const FunctionsList = ({
     isError,
   } = useDatabaseFunctionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   if (isLoading) return <GenericSkeletonLoader />

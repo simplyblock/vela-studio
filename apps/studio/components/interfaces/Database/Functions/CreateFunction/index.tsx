@@ -14,7 +14,6 @@ import { DatabaseFunction } from 'data/database-functions/database-functions-que
 import { useDatabaseFunctionUpdateMutation } from 'data/database-functions/database-functions-update-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProtectedSchemas } from 'hooks/useProtectedSchemas'
-import type { FormSchema } from 'types'
 import {
   Button,
   FormControl_Shadcn_,
@@ -45,6 +44,7 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { convertArgumentTypes, convertConfigParams } from '../Functions.utils'
 import { CreateFunctionHeader } from './CreateFunctionHeader'
 import { FunctionEditor } from './FunctionEditor'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const FORM_ID = 'create-function-sidepanel'
 
@@ -70,6 +70,7 @@ const FormSchema = z.object({
 
 const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [isClosingPanel, setIsClosingPanel] = useState(false)
   const [advancedSettingsShown, setAdvancedSettingsShown] = useState(false)
   // For now, there's no AI assistant for functions
@@ -94,6 +95,7 @@ const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (data) => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     const payload = {
       ...data,
       args: data.args.map((x) => `${x.name} ${x.type}`),
@@ -105,7 +107,7 @@ const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
         {
           func,
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           payload,
         },
         {
@@ -119,7 +121,7 @@ const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
       createDatabaseFunction(
         {
           projectRef: project.ref,
-          connectionString: project.connectionString,
+          connectionString: branch.database.encrypted_connection_string,
           payload,
         },
         {
@@ -602,11 +604,12 @@ const ALL_ALLOWED_LANGUAGES = ['plpgsql', 'sql', 'plcoffee', 'plv8', 'plls']
 
 const FormFieldLanguage = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: enabledExtensions } = useDatabaseExtensionsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
     },
     {
       select(data) {

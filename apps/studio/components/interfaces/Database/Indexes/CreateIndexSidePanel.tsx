@@ -36,6 +36,7 @@ import { MultiSelectV2 } from 'ui-patterns/MultiSelectDeprecated/MultiSelectV2'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { INDEX_TYPES } from './Indexes.constants'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface CreateIndexSidePanelProps {
   visible: boolean
@@ -45,6 +46,7 @@ interface CreateIndexSidePanelProps {
 const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) => {
   const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [selectedSchema, setSelectedSchema] = useState('public')
   const [selectedEntity, setSelectedEntity] = useState<string | undefined>(undefined)
@@ -57,14 +59,14 @@ const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) =
   const { data: schemas } = useSchemasQuery({
     orgSlug: orgRef,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const { data: entities, isLoading: isLoadingEntities } = useEntityTypesQuery({
     schemas: [selectedSchema],
     sort: 'alphabetical',
     search: searchTerm,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const {
     data: tableColumns,
@@ -74,7 +76,7 @@ const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) =
     schema: selectedSchema,
     table: selectedEntity,
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const { mutate: createIndex, isLoading: isExecuting } = useDatabaseIndexCreateMutation({
@@ -111,11 +113,12 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
 
   const onSaveIndex = () => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!selectedEntity) return console.error('Entity is required')
 
     createIndex({
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       payload: {
         schema: selectedSchema,
         entity: selectedEntity,

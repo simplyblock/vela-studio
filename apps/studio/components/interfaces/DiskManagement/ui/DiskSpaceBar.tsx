@@ -14,6 +14,7 @@ import { useMemo } from 'react'
 import { badgeVariants, cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { DiskStorageSchemaType } from '../DiskManagement.schema'
 import { AUTOSCALING_THRESHOLD } from './DiskManagement.constants'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 interface DiskSpaceBarProps {
   form: UseFormReturn<DiskStorageSchemaType>
@@ -25,6 +26,7 @@ export default function DiskSpaceBar({ form }: DiskSpaceBarProps) {
   const { formState, watch } = form
   const isDarkMode = resolvedTheme?.includes('dark')
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     data: diskUtil,
@@ -35,7 +37,7 @@ export default function DiskSpaceBar({ form }: DiskSpaceBarProps) {
 
   const { data: diskBreakdown } = useDiskBreakdownQuery({
     projectRef: ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const diskBreakdownBytes = useMemo(() => {

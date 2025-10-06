@@ -10,6 +10,7 @@ import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { createTabId, useTabsStateSnapshot } from 'state/tabs'
 import type { NextPageWithLayout } from 'types'
+import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
 
 const TableEditorPage: NextPageWithLayout = () => {
   const { id: _id, ref: projectRef } = useParams()
@@ -17,9 +18,10 @@ const TableEditorPage: NextPageWithLayout = () => {
   const store = useTabsStateSnapshot()
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: selectedTable, isLoading } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id,
   })
 

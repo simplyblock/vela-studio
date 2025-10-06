@@ -27,6 +27,7 @@ import {
   ScrollArea,
 } from 'ui'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
 
 type DatabaseFunction = DatabaseFunctionsData[number]
 
@@ -57,11 +58,12 @@ const FunctionSelector = ({
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
 
   const { data, error, isLoading, isError, isSuccess, refetch } = useDatabaseFunctionsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
 
   const filteredFunctions = (data ?? [])

@@ -50,6 +50,7 @@ import AIEditor from '../AIEditor'
 import { ButtonTooltip } from '../ButtonTooltip'
 import { InlineLink } from '../InlineLink'
 import SqlWarningAdmonition from '../SqlWarningAdmonition'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 type Template = {
   name: string
@@ -89,6 +90,7 @@ export const EditorPanel = ({
 }: EditorPanelProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { profile } = useProfile()
   const snapV2 = useSqlEditorV2StateSnapshot()
   const { data: org } = useSelectedOrganizationQuery()
@@ -149,7 +151,7 @@ export const EditorPanel = ({
     executeSql({
       sql: suffixWithLimit(currentValue, 100),
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       handleError: (error) => {
         throw error
       },
@@ -326,7 +328,7 @@ export const EditorPanel = ({
               aiEndpoint={`${BASE_PATH}/api/ai/code/complete`}
               aiMetadata={{
                 projectRef: project?.ref,
-                connectionString: project?.connectionString,
+                connectionString: branch?.database.encrypted_connection_string,
                 orgSlug: org?.slug,
               }}
               initialPrompt={initialPrompt}

@@ -15,6 +15,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
 import { formatBytes } from 'lib/helpers'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 export interface DiskSizeConfigurationProps {
   disabled?: boolean
@@ -23,6 +24,7 @@ export interface DiskSizeConfigurationProps {
 const DiskSizeConfiguration = ({ disabled = false }: DiskSizeConfigurationProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [{ show_increase_disk_size_modal }, setUrlParams] = useUrlState()
   const showIncreaseDiskSizeModal = show_increase_disk_size_modal === 'true'
@@ -44,7 +46,7 @@ const DiskSizeConfiguration = ({ disabled = false }: DiskSizeConfigurationProps)
 
   const { data } = useDatabaseSizeQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
   })
   const databaseSizeBytesUsed = data ?? 0
 

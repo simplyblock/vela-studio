@@ -21,6 +21,7 @@ import {
   validateFields,
 } from './RowEditor.utils'
 import { TextEditor } from './TextEditor'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 export interface RowEditorProps {
   row?: Dictionary<any>
@@ -62,9 +63,10 @@ const RowEditor = ({
   )
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data } = useForeignKeyConstraintsQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     schema: selectedTable.schema,
   })
   const foreignKeys = formatForeignKeys(

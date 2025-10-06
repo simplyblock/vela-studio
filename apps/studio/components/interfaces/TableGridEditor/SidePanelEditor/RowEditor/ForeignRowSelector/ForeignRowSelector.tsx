@@ -22,6 +22,7 @@ import { ForeignKey } from '../../ForeignKeySelector/ForeignKeySelector.types'
 import { convertByteaToHex } from '../RowEditor.utils'
 import Pagination from './Pagination'
 import SelectorGrid from './SelectorGrid'
+import { useSelectedBranchQuery } from '../../../../../../data/branches/selected-branch-query'
 
 export interface ForeignRowSelectorProps {
   visible: boolean
@@ -38,9 +39,10 @@ const ForeignRowSelector = ({
 }: ForeignRowSelectorProps) => {
   const { id } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: selectedTable } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id: !!id ? Number(id) : undefined,
   })
 
@@ -54,7 +56,7 @@ const ForeignRowSelector = ({
 
   const { data: table } = useTableEditorQuery({
     projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    connectionString: branch?.database.encrypted_connection_string,
     id: tableId,
   })
 
@@ -94,7 +96,7 @@ const ForeignRowSelector = ({
   const { data, isLoading, isSuccess, isError, isRefetching } = useTableRowsQuery(
     {
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       tableId: table?.id,
       sorts,
       filters,

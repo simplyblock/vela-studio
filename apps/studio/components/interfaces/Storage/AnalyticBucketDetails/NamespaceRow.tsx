@@ -12,6 +12,8 @@ import { BASE_PATH } from 'lib/constants'
 import { Button, cn, TableCell, TableRow } from 'ui'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { getPathReferences } from '../../../../data/vela/path-references'
+import branch from '../../../../pages/org/[slug]/project/[ref]/branch'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 type NamespaceRowProps = {
   bucketName: string
@@ -35,6 +37,7 @@ export const NamespaceRow = ({
   wrapperMeta,
 }: NamespaceRowProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [importForeignSchemaShown, setImportForeignSchemaShown] = useState(false)
   const { slug: orgRef, branch: branchRef } = getPathReferences()
 
@@ -54,7 +57,7 @@ export const NamespaceRow = ({
   const rescanNamespace = async () => {
     await importForeignSchema({
       projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      connectionString: branch?.database.encrypted_connection_string,
       serverName: wrapperInstance.server_name,
       sourceSchema: namespace,
       targetSchema: schema,
