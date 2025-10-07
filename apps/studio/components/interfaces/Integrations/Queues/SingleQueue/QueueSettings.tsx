@@ -44,7 +44,7 @@ import {
 import { Admonition } from 'ui-patterns/admonition'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { getQueueFunctionsMapping } from './Queue.utils'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const ACTIONS = ['select', 'insert', 'update', 'delete']
 const ROLES = ['anon', 'authenticated', 'postgres', 'service_role']

@@ -51,9 +51,6 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface EntityListItemProps {
   id: number | string
-  orgRef: string
-  projectRef: string
-  branchRef: string
   isLocked: boolean
   isActive?: boolean
   onExportCLI: () => void
@@ -66,9 +63,6 @@ function isTableLikeEntityListItem(entity: { type?: string }) {
 
 const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   id,
-  orgRef,
-  projectRef,
-  branchRef,
   item: entity,
   isLocked,
   isActive: _isActive,
@@ -235,10 +229,10 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
     <EditorTablePageLink
       title={entity.name}
       id={String(entity.id)}
-      orgRef={orgRef!}
-      projectRef={projectRef}
-      branchRef={branchRef}
-      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${entity.id}?schema=${entity.schema}`}
+      orgRef={branch?.organization_id}
+      projectRef={branch?.project_id}
+      branchRef={branch?.id}
+      href={`/org/${branch?.organization_id}/project/${branch?.project_id}/branch/${branch?.id}/editor/${entity.id}?schema=${entity.schema}`}
       role="button"
       aria-label={`View ${entity.name}`}
       className={cn(
@@ -375,7 +369,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
                   <DropdownMenuItem key="view-policies" className="space-x-2" asChild>
                     <Link
                       key="view-policies"
-                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?schema=${selectedSchema}&search=${entity.id}`}
+                      href={`/org/${branch?.organization_id}/project/${branch?.project_id}/branch/${branch?.id}/auth/policies?schema=${selectedSchema}&search=${entity.id}`}
                     >
                       <Lock size={12} />
                       <span>View policies</span>

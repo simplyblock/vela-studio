@@ -11,7 +11,7 @@ import { useProjectStatusQuery } from 'data/projects/project-status-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { Button } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const RestoringState = () => {
   const { slug, ref } = getPathReferences()

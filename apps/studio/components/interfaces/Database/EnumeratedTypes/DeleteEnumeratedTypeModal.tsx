@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { useEnumeratedTypeDeleteMutation } from 'data/enumerated-types/enumerated-type-delete-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useBranchQuery } from 'data/branches/branch-query'
 import { useParams } from 'common'
 
 interface DeleteEnumeratedTypeModalProps {

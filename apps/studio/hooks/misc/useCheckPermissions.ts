@@ -7,7 +7,7 @@ import { useProjectDetailQuery } from 'data/projects/project-detail-query'
 import type { Permission } from 'types'
 import { useSelectedOrganizationQuery } from './useSelectedOrganization'
 import { useSelectedProjectQuery } from './useSelectedProject'
-import { getPathReferences } from '../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const toRegexpString = (actionOrResource: string) =>
   `^${actionOrResource.replace('.', '\\.').replace('%', '.*')}$`

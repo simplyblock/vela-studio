@@ -21,7 +21,7 @@ import { useUrlState } from 'hooks/ui/useUrlState'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import type { NextPageWithLayout } from 'types'
 import { Input } from 'ui'
-import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * Filter tables by table name and policy name

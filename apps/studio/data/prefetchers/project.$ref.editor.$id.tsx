@@ -96,7 +96,7 @@ export function usePrefetchEditorTablePage() {
 
 interface EditorTablePageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 'prefetcher'> {
   projectRef?: string
-  orgRef: string
+  orgRef?: string
   branchRef?: string
   id?: string
   sorts?: Sort[]

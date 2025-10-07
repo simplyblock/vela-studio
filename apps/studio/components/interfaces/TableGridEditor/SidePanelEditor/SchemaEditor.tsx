@@ -4,8 +4,8 @@ import { Input, SidePanel } from 'ui'
 
 import { useSchemaCreateMutation } from 'data/database/schema-create-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { getPathReferences } from '../../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface SchemaEditorProps {
   visible: boolean

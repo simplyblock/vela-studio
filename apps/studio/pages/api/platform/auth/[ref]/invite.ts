@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { apiBuilder } from '../../../../../lib/api/apiBuilder'
+import { apiBuilder } from 'lib/api/apiBuilder'
 import { VELA_PLATFORM_GOTRUE_URL } from '../../../constants'
 
 interface InviteRequest {

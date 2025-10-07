@@ -51,7 +51,7 @@ import { PROJECT_STATUS } from 'lib/constants'
 import { tryParseJson } from 'lib/helpers'
 import { lookupMime } from 'lib/mime'
 import { Button, SONNER_DEFAULT_DURATION, SonnerProgress } from 'ui'
-import { getOrganizationSlug } from '../data/vela/organization-path-slug'
+import { getOrganizationSlug } from 'data/vela/organization-path-slug'
 
 type UploadProgress = {
   percentage: number

@@ -4,7 +4,7 @@ import {
   getVelaClient,
   maybeHandleError,
   validStatusCodes,
-} from '../../../../../../../data/vela/vela'
+} from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {

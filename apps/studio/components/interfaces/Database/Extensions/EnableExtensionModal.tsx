@@ -19,8 +19,8 @@ import {
   Modal,
   WarningIcon,
 } from 'ui'
-import { getPathReferences } from '../../../../data/vela/path-references'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface EnableExtensionModalProps {
   visible: boolean

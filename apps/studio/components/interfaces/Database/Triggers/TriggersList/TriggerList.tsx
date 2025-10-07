@@ -18,7 +18,7 @@ import {
   TableCell,
 } from 'ui'
 import { generateTriggerCreateSQL } from './TriggerList.utils'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TriggerListProps {
   schema: string

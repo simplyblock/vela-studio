@@ -60,7 +60,7 @@ import {
 } from './SQLEditor.utils'
 import { useAddDefinitions } from './useAddDefinitions'
 import UtilityPanel from './UtilityPanel/UtilityPanel'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query' // Load the monaco editor client-side only (does not behave well server-side)
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query' // Load the monaco editor client-side only (does not behave well server-side)
 
 // Load the monaco editor client-side only (does not behave well server-side)
 const MonacoEditor = dynamic(() => import('./MonacoEditor'), { ssr: false })

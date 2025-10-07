@@ -53,7 +53,7 @@ import {
   USERS_TABLE_COLUMNS,
 } from './Users.constants'
 import { formatUserColumns, formatUsersData } from './Users.utils'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 export type Filter = 'all' | 'verified' | 'unverified' | 'anonymous'
 

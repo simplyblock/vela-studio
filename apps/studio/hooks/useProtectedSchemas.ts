@@ -8,7 +8,7 @@ import {
 } from 'components/interfaces/Integrations/Wrappers/Wrappers.utils'
 import { QUEUES_SCHEMA } from 'data/database-queues/database-queues-toggle-postgrest-mutation'
 import { useFDWsQuery } from 'data/fdw/fdws-query'
-import { useSelectedBranchQuery } from '../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * A list of system schemas that users should not interact with

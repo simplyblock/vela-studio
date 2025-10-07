@@ -11,7 +11,7 @@ import type { SqlSnippet } from 'data/content/sql-snippets-query'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import { createTabId, useTabsStateSnapshot } from 'state/tabs'
 import { Button, Form, Input, Modal } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export interface RenameQueryModalProps {
   snippet?: SqlSnippet | Snippet

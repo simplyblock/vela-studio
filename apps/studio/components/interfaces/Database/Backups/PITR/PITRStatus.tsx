@@ -8,7 +8,7 @@ import { useBackupsQuery } from 'data/database/backups-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import type { Timezone } from './PITR.types'
 import { TimezoneSelection } from './TimezoneSelection'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface PITRStatusProps {
   selectedTimezone: Timezone

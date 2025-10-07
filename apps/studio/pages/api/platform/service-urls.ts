@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { apiBuilder } from '../../../lib/api/apiBuilder'
+import { apiBuilder } from 'lib/api/apiBuilder'
 import { ServiceUrlsResponse } from 'common/hooks/useServiceUrls'
 
 const extPlatformSignInUrl = process.env.VELA_PLATFORM_EXT_SIGN_IN_URL

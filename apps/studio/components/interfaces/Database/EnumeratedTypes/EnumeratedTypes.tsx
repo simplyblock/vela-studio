@@ -31,7 +31,7 @@ import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import CreateEnumeratedTypeSidePanel from './CreateEnumeratedTypeSidePanel'
 import DeleteEnumeratedTypeModal from './DeleteEnumeratedTypeModal'
 import EditEnumeratedTypeSidePanel from './EditEnumeratedTypeSidePanel'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useBranchQuery } from 'data/branches/branch-query'
 import { useParams } from 'common'
 
 const EnumeratedTypes = () => {

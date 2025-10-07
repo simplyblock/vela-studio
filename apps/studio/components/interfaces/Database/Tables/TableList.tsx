@@ -60,8 +60,8 @@ import {
 } from 'ui'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import { formatAllEntities } from './Tables.utils'
-import { getPathReferences } from '../../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TableListProps {
   onAddTable: () => void

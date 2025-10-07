@@ -8,11 +8,11 @@ import type { NextPageWithLayout } from 'types'
 import { useRouter } from 'next/router'
 import { useLastVisitedBranch } from 'data/branches/last-visited-branch'
 import { cn } from '@ui/lib/utils'
-import { PROJECT_STATUS } from '../../../../../lib/constants'
+import { PROJECT_STATUS } from 'lib/constants'
 import Link from 'next/link'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
-import { ServiceStatus } from '../../../../../components/interfaces/Home/ServiceStatus'
-import { ProjectUpgradeFailedBanner } from '../../../../../components/ui/ProjectUpgradeFailedBanner'
+import { ServiceStatus } from 'components/interfaces/Home/ServiceStatus'
+import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBanner'
 
 const Home: NextPageWithLayout = () => {
   const { data: project, isLoading: isProjectLoading } = useSelectedProjectQuery()

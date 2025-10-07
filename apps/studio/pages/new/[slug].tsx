@@ -57,7 +57,7 @@ import {
 import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { getPathReferences } from '../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
 

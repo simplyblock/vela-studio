@@ -34,8 +34,8 @@ import {
   useSetCommandMenuSize,
   useSetPage,
 } from 'ui-patterns/CommandMenu'
-import { getPathReferences } from '../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function useSqlEditorGotoCommands(options?: CommandOptions) {
   let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()

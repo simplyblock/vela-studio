@@ -13,7 +13,7 @@ import { Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } f
 import { Admonition } from 'ui-patterns'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { PublicationsTableItem } from './PublicationsTableItem'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const PublicationsTables = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()

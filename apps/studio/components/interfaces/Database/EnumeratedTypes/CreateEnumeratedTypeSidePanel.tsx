@@ -27,7 +27,7 @@ import {
 } from 'ui'
 import EnumeratedTypeValueRow from './EnumeratedTypeValueRow'
 import { NATIVE_POSTGRES_TYPES } from './EnumeratedTypes.constants'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useBranchQuery } from 'data/branches/branch-query'
 import { useParams } from 'common'
 
 interface CreateEnumeratedTypeSidePanelProps {

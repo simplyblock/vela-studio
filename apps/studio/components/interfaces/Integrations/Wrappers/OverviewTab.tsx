@@ -18,7 +18,7 @@ import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
 import { CreateWrapperSheet } from './CreateWrapperSheet'
 import { WRAPPERS } from './Wrappers.constants'
 import { WrapperTable } from './WrapperTable'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const WrapperOverviewTab = () => {
   const { id, slug: orgRef, branch: branchRef } = useParams()

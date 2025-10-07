@@ -9,7 +9,7 @@ import type { ResourceWarning } from 'data/usage/resource-warnings-query'
 import { inferProjectStatus } from './ProjectCard.utils'
 import { ProjectCardStatus } from './ProjectCardStatus'
 import { useParams } from 'common'
-import { useBranchesQuery } from '../../../../data/branches/branches-query'
+import { useBranchesQuery } from 'data/branches/branches-query'
 
 export interface ProjectCardProps {
   project: ProjectInfo

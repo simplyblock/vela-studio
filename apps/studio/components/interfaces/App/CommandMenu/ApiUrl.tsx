@@ -6,7 +6,7 @@ import { Badge, copyToClipboard } from 'ui'
 import { useRegisterCommands, useSetCommandMenuOpen } from 'ui-patterns/CommandMenu'
 import { COMMAND_MENU_SECTIONS } from './CommandMenu.utils'
 import { orderCommandSectionsByPriority } from './ordering'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export function useApiUrlCommand() {
   const setIsOpen = useSetCommandMenuOpen()

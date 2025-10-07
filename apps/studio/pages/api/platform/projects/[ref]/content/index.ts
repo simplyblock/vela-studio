@@ -1,7 +1,7 @@
 import { paths } from 'api-types'
 import { NextApiRequest, NextApiResponse } from 'next'
 import type { UserContent } from 'types'
-import { apiBuilder } from '../../../../../../lib/api/apiBuilder'
+import { apiBuilder } from 'lib/api/apiBuilder'
 
 type GetResponseData =
   paths['/platform/projects/{ref}/content']['get']['responses']['200']['content']['application/json']

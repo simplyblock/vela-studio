@@ -31,7 +31,7 @@ import {
   parseCronJobCommand,
 } from './CronJobs.utils'
 import CronJobsEmptyState from './CronJobsEmptyState'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const cronJobColumns = [
   {

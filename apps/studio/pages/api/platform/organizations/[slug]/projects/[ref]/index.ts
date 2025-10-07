@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getVelaClient } from '../../../../../../../data/vela/vela'
-import { apiBuilder } from '../../../../../../../lib/api/apiBuilder'
-import { getPlatformQueryParams } from '../../../../../../../lib/api/platformQueryParams'
-import { mapProject } from '../../../../../../../data/vela/api-mappers'
+import { getVelaClient } from 'data/vela/vela'
+import { apiBuilder } from 'lib/api/apiBuilder'
+import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
+import { mapProject } from 'data/vela/api-mappers'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref } = getPlatformQueryParams(req, "slug", "ref")

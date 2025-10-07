@@ -16,7 +16,7 @@ import ActionBar from '../../ActionBar'
 import { isValueTruncated } from '../RowEditor.utils'
 import { DrilldownViewer } from './DrilldownViewer'
 import JsonCodeEditor from './JsonCodeEditor'
-import { useSelectedBranchQuery } from '../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface JsonEditProps {
   row?: { [key: string]: any }

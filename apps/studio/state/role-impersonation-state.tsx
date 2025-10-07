@@ -6,8 +6,8 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import useLatest from 'hooks/misc/useLatest'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { getPostgrestClaims, ImpersonationRole } from 'lib/role-impersonation'
-import { CustomAccessTokenHookDetails } from '../hooks/misc/useCustomAccessTokenHookDetails'
-import { useSelectedBranchQuery } from '../data/branches/selected-branch-query'
+import { CustomAccessTokenHookDetails } from 'hooks/misc/useCustomAccessTokenHookDetails'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function createRoleImpersonationState(
   projectRef: string,

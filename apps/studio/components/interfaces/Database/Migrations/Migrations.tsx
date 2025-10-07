@@ -21,7 +21,7 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import MigrationsEmptyState from './MigrationsEmptyState'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Migrations = () => {
   const [search, setSearch] = useState('')

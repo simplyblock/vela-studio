@@ -41,7 +41,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from 'ui'
-import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // Array of adjectives and nouns for random function name generation
 const ADJECTIVES = [

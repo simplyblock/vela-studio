@@ -21,7 +21,7 @@ import { GridProps } from './types'
 
 import { useTableFilter } from './hooks/useTableFilter'
 import { useTableSort } from './hooks/useTableSort'
-import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const SupabaseGrid = ({
   customHeader,

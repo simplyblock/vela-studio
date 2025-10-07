@@ -49,7 +49,7 @@ import { NamespaceRow } from './NamespaceRow'
 import { SimpleConfigurationDetails } from './SimpleConfigurationDetails'
 import { useIcebergWrapperExtension } from './useIcebergWrapper'
 import { useParams } from 'common'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
   const { slug: orgRef, branch: branchRef } = useParams()

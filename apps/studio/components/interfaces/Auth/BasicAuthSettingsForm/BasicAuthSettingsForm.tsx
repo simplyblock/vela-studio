@@ -29,7 +29,7 @@ import {
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { NO_REQUIRED_CHARACTERS } from '../Auth.constants'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const schema = object({
   DISABLE_SIGNUP: boolean().required(),

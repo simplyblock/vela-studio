@@ -1,7 +1,7 @@
 import { useIsLoggedIn } from 'common'
 import { useProjectDetailQuery } from 'data/projects/project-detail-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { getPathReferences } from '../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export function useSelectedProjectQuery({ enabled = true } = {}) {
   const { slug, ref } = getPathReferences()
