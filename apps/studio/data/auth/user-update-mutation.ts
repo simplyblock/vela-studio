@@ -4,17 +4,23 @@ import { toast } from 'sonner'
 import { handleError, patch } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { authKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type UserUpdateVariables = {
-  projectRef: string
+  branch: Branch
   userId: string
   // For now just support updating banning the user
   banDuration: number | 'none' // In hours,  "none" to unban, otherwise a string in hours e.g "24h"
 }
 
-export async function updateUser({ projectRef, userId, banDuration }: UserUpdateVariables) {
+export async function updateUser({ branch, userId, banDuration }: UserUpdateVariables) {
   const { data, error } = await patch('/platform/auth/{ref}/users/{id}', {
-    params: { path: { ref: projectRef, id: userId } },
+    params: {
+      path: {
+        ref: branch.project_id,
+        id: userId,
+      },
+    },
     body: { ban_duration: typeof banDuration === 'number' ? `${banDuration}h` : banDuration },
   })
 
@@ -38,8 +44,10 @@ export const useUserUpdateMutation = ({
     (vars) => updateUser(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(authKeys.usersInfinite(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          authKeys.usersInfinite(branch.organization_id, branch.project_id, branch.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

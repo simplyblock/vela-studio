@@ -9,6 +9,7 @@ import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { Input } from 'ui'
 import { getLastUsedAPIKeys, useLastUsedAPIKeysLogQuery } from './DisplayApiSettings.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const DisplayApiSettings = ({
   showTitle = true,
@@ -19,7 +20,8 @@ export const DisplayApiSettings = ({
   showNotice?: boolean
   showLegacyText?: boolean
 }) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     data: settings,
@@ -30,7 +32,7 @@ export const DisplayApiSettings = ({
     data,
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
-  } = useJwtSecretUpdatingStatusQuery({ projectRef })
+  } = useJwtSecretUpdatingStatusQuery({ branch })
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
   // FIXME: need permission implemented 
   const { isLoading: isLoadingPermissions, can: canReadAPIKeys } = {can:true , isLoading:false}

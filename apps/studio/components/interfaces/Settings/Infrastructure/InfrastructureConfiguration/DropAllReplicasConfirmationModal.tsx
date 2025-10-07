@@ -6,6 +6,7 @@ import { replicaKeys } from 'data/read-replicas/keys'
 import { useReadReplicaRemoveMutation } from 'data/read-replicas/replica-remove-mutation'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DropAllReplicasConfirmationModalProps {
   visible: boolean
@@ -18,13 +19,15 @@ const DropAllReplicasConfirmationModal = ({
   onSuccess,
   onCancel,
 }: DropAllReplicasConfirmationModalProps) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { ref: projectRef } = useParams()
   const queryClient = useQueryClient()
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef })
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: databases } = useReadReplicasQuery({ branch })
   const { mutateAsync: removeReadReplica, isLoading: isRemoving } = useReadReplicaRemoveMutation()
 
   const onConfirmRemove = async () => {
     if (!projectRef) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (databases === undefined) return console.error('Unable to retrieve replicas')
     if (databases.length === 1) toast('Your project has no read replicas')
 
@@ -33,7 +36,7 @@ const DropAllReplicasConfirmationModal = ({
       await Promise.all(
         replicas.map((db) =>
           removeReadReplica({
-            projectRef,
+            branch,
             identifier: db.identifier,
             invalidateReplicaQueries: false,
           })
@@ -42,7 +45,9 @@ const DropAllReplicasConfirmationModal = ({
       toast.success(`Tearing down all read replicas`)
 
       await Promise.all([
-        queryClient.invalidateQueries(replicaKeys.list(orgSlug, projectRef)),
+        queryClient.invalidateQueries(
+          replicaKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
         queryClient.invalidateQueries(replicaKeys.loadBalancers(projectRef)),
       ])
 

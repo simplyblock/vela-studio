@@ -33,8 +33,7 @@ const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
   const { data: metrics, isLoading } = useQueuesMetricsQuery(
     {
       queueName: queue.queue_name,
-      projectRef: selectedProject?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
     },
     {
       staleTime: 30 * 1000, // 30 seconds, talk with Oli whether this is ok to call every minute

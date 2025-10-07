@@ -28,13 +28,11 @@ const DeleteQueue = ({ queueName, visible, onClose }: DeleteQueueProps) => {
   })
 
   async function handleDelete() {
-    if (!project) return console.error('Project is required')
     if (!branch) return console.error('Branch is required')
 
     deleteDatabaseQueue({
       queueName: queueName,
-      projectRef: project.ref,
-      connectionString: branch.database.encrypted_connection_string,
+      branch,
     })
   }
 

@@ -3,7 +3,6 @@ import { isEmpty, noop, partition } from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useForeignKeyConstraintsQuery } from 'data/database/foreign-key-constraints-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { Dictionary } from 'types'
 import { SidePanel } from 'ui'
 import ActionBar from '../ActionBar'
@@ -21,7 +20,7 @@ import {
   validateFields,
 } from './RowEditor.utils'
 import { TextEditor } from './TextEditor'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface RowEditorProps {
   row?: Dictionary<any>
@@ -62,11 +61,9 @@ const RowEditor = ({
     (rowField: any) => !rowField.isNullable
   )
 
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data } = useForeignKeyConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: selectedTable.schema,
   })
   const foreignKeys = formatForeignKeys(

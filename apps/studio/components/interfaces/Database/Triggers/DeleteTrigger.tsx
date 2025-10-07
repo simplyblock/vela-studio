@@ -2,9 +2,8 @@ import { PostgresTrigger } from '@supabase/postgres-meta'
 import { toast } from 'sonner'
 
 import { useDatabaseTriggerDeleteMutation } from 'data/database-triggers/database-trigger-delete-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DeleteTriggerProps {
   trigger?: PostgresTrigger
@@ -13,21 +12,18 @@ interface DeleteTriggerProps {
 }
 
 export const DeleteTrigger = ({ trigger, visible, setVisible }: DeleteTriggerProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { name, schema } = trigger ?? {}
 
   const { mutate: deleteDatabaseTrigger, isLoading } = useDatabaseTriggerDeleteMutation()
 
   async function handleDelete() {
-    if (!project) return console.error('Project is required')
     if (!branch) return console.error('Branch is required')
     if (!trigger) return console.error('Trigger ID is required')
 
     deleteDatabaseTrigger(
       {
-        projectRef: project.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         trigger,
       },
       {

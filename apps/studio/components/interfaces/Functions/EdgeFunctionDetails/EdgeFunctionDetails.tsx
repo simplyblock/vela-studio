@@ -47,6 +47,7 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import CommandRender from '../CommandRender'
 import { INVOCATION_TABS } from './EdgeFunctionDetails.constants'
 import { generateCLICommands } from './EdgeFunctionDetails.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const FormSchema = z.object({
   name: z.string().min(0, 'Name is required'),
@@ -54,13 +55,14 @@ const FormSchema = z.object({
 })
 
 export const EdgeFunctionDetails = () => {
+  const { data: branch } = useSelectedBranchQuery()
   const router = useRouter()
   const { slug, ref: projectRef, functionSlug } = useParams()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
     // FIXME: need permission implemented 
   const { can: canUpdateEdgeFunction } = {can:true}
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
   const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
   const {
@@ -78,7 +80,7 @@ export const EdgeFunctionDetails = () => {
   const { mutate: deleteEdgeFunction, isLoading: isDeleting } = useEdgeFunctionDeleteMutation({
     onSuccess: () => {
       toast.success(`Successfully deleted "${selectedFunction?.name}"`)
-      router.push(`/org/${slug}/project/${projectRef}/functions`)
+      router.push(`/org/${branch?.organization_id}/project/${branch?.project_id}/branch/${branch?.id}functions`)
     },
   })
 

@@ -2,7 +2,6 @@ import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import { useState } from 'react'
 
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -21,8 +20,7 @@ import {
   ScrollArea,
   Skeleton,
 } from 'ui'
-import { getPathReferences } from '../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface SchemaSelectorProps {
   className?: string
@@ -53,9 +51,7 @@ const SchemaSelector = ({
   // FIXME: need permission implemented   
   const { can: canCreateSchemas } = {can:true}
 
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const { slug: orgSlug } = getPathReferences()
   const {
     data,
     isLoading: isSchemasLoading,
@@ -64,9 +60,7 @@ const SchemaSelector = ({
     error: schemasError,
     refetch: refetchSchemas,
   } = useSchemasQuery({
-    orgSlug,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const schemas = (data || [])

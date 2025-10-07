@@ -90,8 +90,7 @@ const ColumnEditor = ({
   )
 
   const { data: constraints } = useTableConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id: selectedTable?.id,
   })
   const primaryKey = (constraints ?? []).find(
@@ -99,8 +98,7 @@ const ColumnEditor = ({
   )
 
   const { data } = useForeignKeyConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: selectedTable?.schema,
   })
 

@@ -6,9 +6,8 @@ import * as z from 'zod'
 
 import { useParams } from 'common'
 import { useBranchUpdateMutation } from 'data/branches/branch-update-mutation'
-import { Branch, useBranchesQuery } from 'data/branches/branches-query'
+import { useBranchesQuery } from 'data/branches/branches-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useRouter } from 'next/router'
 import {
   Button,
   Dialog,
@@ -24,6 +23,7 @@ import {
   Input_Shadcn_,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { Branch } from 'api-types/types'
 
 interface EditBranchModalProps {
   branch?: Branch
@@ -33,7 +33,6 @@ interface EditBranchModalProps {
 
 export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalProps) => {
   const { slug: orgSlug, ref } = useParams()
-  const router = useRouter()
   const { data: projectDetails } = useSelectedProjectQuery()
 
   const isBranch = projectDetails?.parent_project_ref !== undefined

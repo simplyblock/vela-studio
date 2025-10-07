@@ -1,18 +1,14 @@
 import { toast } from 'sonner'
-import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useHooksEnableMutation } from 'data/database/hooks-enable-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Admonition } from 'ui-patterns'
 import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const WebhooksOverviewTab = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const {
@@ -20,9 +16,7 @@ export const WebhooksOverviewTab = () => {
     isSuccess: isSchemasLoaded,
     refetch,
   } = useSchemasQuery({
-    orgSlug: orgSlug,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const isHooksEnabled = schemas?.some((schema) => schema.name === 'supabase_functions')
@@ -37,9 +31,8 @@ export const WebhooksOverviewTab = () => {
   })
 
   const enableHooksForProject = async () => {
-    if (!orgSlug) return console.error('Organization slug is required')
-    if (!projectRef) return console.error('Project ref is required')
-    enableHooks({ slug: orgSlug, ref: projectRef })
+    if (!branch) return console.error('Branch is required')
+    enableHooks({ branch })
   }
 
   if (!isSchemasLoaded || isLoadingPermissions) {

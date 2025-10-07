@@ -1,7 +1,6 @@
 import { ChevronDown, Plus, Trash } from 'lucide-react'
 import { useFieldArray } from 'react-hook-form'
 
-import { useParams } from 'common'
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import {
   Button,
@@ -20,6 +19,7 @@ import {
   SheetSection,
 } from 'ui'
 import { CreateCronJobForm } from './CreateCronJobSheet'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface HTTPHeaderFieldsSectionProps {
   variant: 'edge_function' | 'http_request'
@@ -31,8 +31,8 @@ export const HTTPHeaderFieldsSection = ({ variant }: HTTPHeaderFieldsSectionProp
     name: 'values.httpHeaders',
   })
 
-  const { slug, ref } = useParams()
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef: ref, reveal: true })
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: apiKeys } = useAPIKeysQuery({ branch, reveal: true })
 
   const { serviceKey, secretKey } = getKeys(apiKeys)
   const apiKey = secretKey?.api_key ?? serviceKey?.api_key ?? '[YOUR API KEY]'

@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-// import { useQueryState } from 'nuqs'
 import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -37,7 +36,8 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { LintInfo } from '../Linter/Linter.constants'
 import { lintInfoMap } from '../Linter/Linter.utils'
 import { generateRuleDescription } from './AdvisorRules.utils'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface CreateRuleSheetProps {
   lint?: LintInfo
@@ -68,6 +68,7 @@ const defaultValues = {
 export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetProps) => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
 
   const routeCategory = router.pathname.split('/').pop()
   const { data: organization } = useSelectedOrganizationQuery()
@@ -103,12 +104,10 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
   const { lint_name, assigned_to, is_disabled } = form.watch()
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (values) => {
-    if (!orgRef) return console.error('Organization slug is required')
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
 
     createRule({
-      orgSlug: orgRef,
-      projectRef,
+      branch,
       exception: {
         ...values,
         lint_category: undefined,

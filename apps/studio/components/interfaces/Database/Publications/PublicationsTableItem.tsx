@@ -3,10 +3,9 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useDatabasePublicationUpdateMutation } from 'data/database-publications/database-publications-update-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProtectedSchemas } from 'hooks/useProtectedSchemas'
 import { Badge, Switch, TableCell, TableRow, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface PublicationsTableItemProps {
   table: PostgresTable
@@ -17,7 +16,6 @@ export const PublicationsTableItem = ({
   table,
   selectedPublication,
 }: PublicationsTableItemProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data: protectedSchemas } = useProtectedSchemas()
   const enabledForAllTables = selectedPublication.tables == null
@@ -35,7 +33,7 @@ export const PublicationsTableItem = ({
     table: PostgresTable,
     publication: PostgresPublication
   ) => {
-    if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
 
     const originalChecked = checked
     setChecked(!checked)
@@ -52,8 +50,7 @@ export const PublicationsTableItem = ({
 
     updatePublications(
       {
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         id: publication.id,
         tables,
       },

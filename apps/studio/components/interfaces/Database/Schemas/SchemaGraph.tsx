@@ -67,9 +67,7 @@ export const SchemaGraph = () => {
     isLoading: isLoadingSchemas,
     isError: isErrorSchemas,
   } = useSchemasQuery({
-    orgSlug: orgRef,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const {

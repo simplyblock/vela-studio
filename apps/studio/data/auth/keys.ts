@@ -1,5 +1,5 @@
 export const authKeys = {
-  users: (
+  users2: (
     projectRef: string | undefined,
     params?: {
       page: number | undefined
@@ -21,8 +21,10 @@ export const authKeys = {
     }
   ) =>
     [
-      'projects',
-      projectRef,
+      'branches',
+      orgId,
+      projectId,
+      branchId,
       'users-infinite',
       ...(params ? [params].filter(Boolean) : []),
     ] as const,

@@ -16,6 +16,7 @@ import { MonacoEditor } from '../common/MonacoEditor'
 import { NullValue } from '../common/NullValue'
 import { TruncatedWarningOverlay } from './TruncatedWarningOverlay'
 import { useBranchQuery } from 'data/branches/branch-query'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 const verifyJSON = (value: string) => {
   try {
@@ -55,11 +56,10 @@ export const JsonEditor = <TRow, TSummaryRow = unknown>({
   const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
   const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
 
@@ -78,7 +78,7 @@ export const JsonEditor = <TRow, TSummaryRow = unknown>({
   const { mutate: getCellValue, isLoading, isSuccess } = useGetCellValueMutation()
 
   const loadFullValue = () => {
-    if (selectedTable === undefined || project === undefined || !isTableLike(selectedTable)) return
+    if (selectedTable === undefined || project === undefined || branch === undefined || !isTableLike(selectedTable)) return
     if (selectedTable.primary_keys.length === 0) {
       return toast('Unable to load value as table has no primary keys')
     }
@@ -92,8 +92,7 @@ export const JsonEditor = <TRow, TSummaryRow = unknown>({
         table: { schema: selectedTable.schema, name: selectedTable.name },
         column: column.name as string,
         pkMatch,
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch
       },
       {
         onSuccess: (data) => {

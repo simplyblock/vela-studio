@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-import { useParams } from 'common'
 import { useUserCreateMutation } from 'data/auth/user-create-mutation'
 import {
   Button,
@@ -22,6 +21,7 @@ import {
   Form_Shadcn_,
   Input_Shadcn_,
 } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export type CreateUserModalProps = {
   visible: boolean
@@ -35,7 +35,7 @@ const CreateUserFormSchema = z.object({
 })
 
 const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
-  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
    // FIXME: need permission implemented  
   const { can: canCreateUsers } = {can:true}
 
@@ -48,9 +48,9 @@ const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
   })
 
   const onCreateUser = async (values: any) => {
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
 
-    createUser({ projectRef, user: values })
+    createUser({ branch, user: values })
   }
 
   const form = useForm<z.infer<typeof CreateUserFormSchema>>({

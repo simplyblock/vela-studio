@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { useParams } from 'common'
 import { useAPIKeysQuery } from 'data/api-keys/api-keys-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ApiKeysVisibilityState {
   hasApiKeys: boolean
@@ -16,13 +16,12 @@ interface ApiKeysVisibilityState {
  * Consolidates logic for determining access to API keys functionality
  */
 export function useApiKeysVisibility(): ApiKeysVisibilityState {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
     // FIXME: need permission implemented 
   const { can: canReadAPIKeys } = {can:true}
 
   const { data: apiKeysData, isLoading } = useAPIKeysQuery({
-    orgSlug,
-    projectRef,
+    branch,
     reveal: false,
   })
 

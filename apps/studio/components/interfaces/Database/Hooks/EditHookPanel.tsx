@@ -190,8 +190,8 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
 
   const onSubmit = async (values: any) => {
     setIsSubmitting(true)
-    if (!project?.ref) {
-      return console.error('Project ref is required')
+    if (!branch) {
+      return console.error('Branch is required')
     }
     if (events.length === 0) {
       return setEventsError('Please select at least one event')
@@ -199,8 +199,7 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
 
     const selectedTable = await getTableEditor({
       id: values.table_id,
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
     })
     if (!selectedTable) {
       setIsSubmitting(false)
@@ -249,14 +248,12 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
 
     if (selectedHook === undefined) {
       createDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         payload,
       })
     } else {
       updateDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         originalTrigger: selectedHook,
         updatedTrigger: { ...payload, enabled_mode: 'ORIGIN' },
       })

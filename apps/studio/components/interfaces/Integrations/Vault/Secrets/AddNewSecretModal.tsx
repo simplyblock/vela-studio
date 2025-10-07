@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useVaultSecretCreateMutation } from 'data/vault/vault-secret-create-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Form, Input, Modal } from 'ui'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface AddNewSecretModalProps {
   visible: boolean
@@ -13,7 +12,6 @@ interface AddNewSecretModalProps {
 }
 
 const AddNewSecretModal = ({ visible, onClose }: AddNewSecretModalProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [showSecretValue, setShowSecretValue] = useState(false)
 
@@ -33,7 +31,7 @@ const AddNewSecretModal = ({ visible, onClose }: AddNewSecretModalProps) => {
   }
 
   const onAddNewSecret = async (values: any, { setSubmitting }: any) => {
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     setSubmitting(true)
 
@@ -41,8 +39,7 @@ const AddNewSecretModal = ({ visible, onClose }: AddNewSecretModalProps) => {
       setSubmitting(true)
 
       await addSecret({
-        projectRef: project.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         name: values.name,
         description: values.description,
         secret: values.secret,

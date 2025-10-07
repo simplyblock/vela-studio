@@ -40,8 +40,7 @@ export const TextEditor = ({
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
 
@@ -57,6 +56,7 @@ export const TextEditor = ({
       selectedTable === undefined ||
       project === undefined ||
       row === undefined ||
+      branch === undefined ||
       !isTableLike(selectedTable)
     )
       return
@@ -73,8 +73,7 @@ export const TextEditor = ({
         table: { schema: selectedTable.schema, name: selectedTable.name },
         column: column,
         pkMatch,
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
       },
       { onSuccess: (data) => setStrValue(data) }
     )

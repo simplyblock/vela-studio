@@ -31,7 +31,7 @@ import {
   TabsTrigger_Shadcn_,
 } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
-import { useSelectedBranchQuery } from '../../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Home: NextPageWithLayout = () => {
   const { data: organization } = useSelectedOrganizationQuery()
@@ -78,8 +78,7 @@ const Home: NextPageWithLayout = () => {
     projectRef: project?.ref,
   })
   const { data: replicasData, isLoading: isLoadingReplicas } = useReadReplicasQuery({
-    orgSlug: slug,
-    projectRef: project?.ref,
+    branch,
   })
 
   let projectName = 'Welcome to your project'

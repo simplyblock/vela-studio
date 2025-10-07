@@ -2,11 +2,11 @@ import { Loader2 } from 'lucide-react'
 import type { EdgeProps } from 'reactflow'
 import { BaseEdge, EdgeLabelRenderer, getSmoothStepPath } from 'reactflow'
 
-import { useParams } from 'common'
 import { useReplicationLagQuery } from 'data/read-replicas/replica-lag-query'
 import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { REPLICA_STATUS } from './InstanceConfiguration.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const SmoothstepEdge = ({
   id,
@@ -20,7 +20,7 @@ export const SmoothstepEdge = ({
   markerEnd,
   data,
 }: EdgeProps) => {
-  const { ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   // [Joshen] Only applicable for replicas
   const { status, identifier, connectionString } = data || {}
   const formattedId = formatDatabaseID(identifier ?? '')
@@ -40,9 +40,8 @@ export const SmoothstepEdge = ({
     isError,
   } = useReplicationLagQuery(
     {
+      branch,
       id: identifier,
-      projectRef: ref,
-      connectionString,
     },
     { enabled: status === REPLICA_STATUS.ACTIVE_HEALTHY }
   )

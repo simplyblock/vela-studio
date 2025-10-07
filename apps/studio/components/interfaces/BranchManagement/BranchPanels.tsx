@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import { PropsWithChildren, ReactNode } from 'react'
 
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
-import type { Branch } from 'data/branches/branches-query'
 import { BASE_PATH } from 'lib/constants'
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { Branch } from 'api-types/types'
 
 interface BranchManagementSectionProps {
   header: string | ReactNode
@@ -79,7 +79,7 @@ export const BranchRow = ({
   const formattedTimeFromNow = dayjs(branch.updated_at).fromNow()
   const formattedUpdatedAt = dayjs(branch.updated_at).format('DD MMM YYYY, HH:mm:ss (ZZ)')
 
-  const navigateUrl = rowLink ?? `/org/${branch.organization_slug}/project/${branch.project_slug}/branch/${branch.name}`
+  const navigateUrl = rowLink ?? `/org/${branch.organization_id}/project/${branch.project_id}/branch/${branch.id}`
 
   const handleRowClick = () => {
     if (external) {

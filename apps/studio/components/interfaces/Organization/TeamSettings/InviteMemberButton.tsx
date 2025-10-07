@@ -124,7 +124,7 @@ export const InviteMemberButton = () => {
       {
         slug,
         email: values.email.toLowerCase(),
-        roleId: Number(values.role),
+        roleId: values.role,
         ...(!values.applyToOrg && values.projectRef ? { projects: [values.projectRef] } : {}),
       },
       {
@@ -221,7 +221,7 @@ export const InviteMemberButton = () => {
                         onValueChange={(value) => form.setValue('role', value)}
                       >
                         <SelectTrigger_Shadcn_ className="text-sm capitalize">
-                          {orgScopedRoles.find((role) => role.id === Number(field.value))?.name ??
+                          {orgScopedRoles.find((role) => role.id === field.value)?.name ??
                             'Unknown'}
                         </SelectTrigger_Shadcn_>
                         <SelectContent_Shadcn_>

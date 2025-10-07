@@ -1,16 +1,13 @@
 import { useParams } from 'common'
 import { AlertTriangle, ExternalLink } from 'lucide-react'
-import Link from 'next/link'
 import { useState } from 'react'
 
 import { useResourceWarningsQuery } from 'data/usage/resource-warnings-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
 import ConfirmDisableReadOnlyModeModal from './DatabaseSettings/ConfirmDisableReadOnlyModal'
 
 export const DatabaseReadOnlyAlert = () => {
   const { ref: projectRef } = useParams()
-  const { data: organization } = useSelectedOrganizationQuery()
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
 
   const { data: resourceWarnings } = useResourceWarningsQuery()
@@ -35,25 +32,6 @@ export const DatabaseReadOnlyAlert = () => {
               <li>
                 Temporarily disable read-only mode to free up space and reduce your database size
               </li>
-              {organization?.plan.id === 'free' ? (
-                <li>
-                  <Link
-                    href={`/org/${organization?.slug}/billing?panel=subscriptionPlan&source=databaseReadOnlyAlertUpgradePlan`}
-                  >
-                    <a className="text underline">Upgrade to the Pro Plan</a>
-                  </Link>{' '}
-                  to increase your database size limit to 8GB.
-                </li>
-              ) : organization?.plan.id === 'pro' && organization?.usage_billing_enabled ? (
-                <li>
-                  <Link
-                    href={`/org/${organization?.slug}/billing?panel=subscriptionPlan&source=databaseReadOnlyAlertSpendCap`}
-                  >
-                    <a className="text-foreground underline">Disable your Spend Cap</a>
-                  </Link>{' '}
-                  to allow your project to auto-scale and expand beyond the 8GB database size limit
-                </li>
-              ) : null}
             </ul>
           </AlertDescription_Shadcn_>
           <div className="mt-4 flex items-center space-x-2">

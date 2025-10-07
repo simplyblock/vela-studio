@@ -1,4 +1,5 @@
 import { apiBuilder } from 'lib/api/apiBuilder'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 // FIXME: Implementation missing
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {

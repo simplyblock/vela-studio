@@ -309,8 +309,7 @@ export const CreateCronJobSheet = ({
       try {
         setIsLoadingGetCronJob(true)
         const checkExistingJob = await getDatabaseCronJob({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           name,
         })
         const nameExists = !!checkExistingJob
@@ -333,8 +332,7 @@ export const CreateCronJobSheet = ({
 
     upsertCronJob(
       {
-        projectRef: project!.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         query,
         searchTerm: searchQuery,
       },

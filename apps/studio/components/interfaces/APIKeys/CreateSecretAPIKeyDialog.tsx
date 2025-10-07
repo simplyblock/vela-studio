@@ -16,7 +16,6 @@ import {
   FormField_Shadcn_,
   Form_Shadcn_,
   Input_Shadcn_,
-  Alert,
   Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -25,9 +24,9 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import * as z from 'zod'
 import { toast } from 'sonner'
 
-import { useParams } from 'common'
 import { useAPIKeyCreateMutation } from 'data/api-keys/api-key-create-mutation'
 import { Plus, ShieldCheck } from 'lucide-react'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const NAME_SCHEMA = z
   .string()
@@ -48,7 +47,7 @@ const SCHEMA = z.object({
 
 const CreateSecretAPIKeyDialog = () => {
   const [visible, setVisible] = useState(false)
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const onClose = (value: boolean) => {
     setVisible(value)
@@ -67,8 +66,7 @@ const CreateSecretAPIKeyDialog = () => {
   const onSubmit: SubmitHandler<z.infer<typeof SCHEMA>> = async (values) => {
     createAPIKey(
       {
-        orgSlug,
-        projectRef,
+        branch,
         type: 'secret',
         name: values.name,
         description: values.description,

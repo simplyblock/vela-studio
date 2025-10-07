@@ -9,6 +9,7 @@ import { DocsButton } from 'components/ui/DocsButton'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { generateTypes } from 'data/projects/project-type-generation-query'
 import { Button } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface Props {
   selectedLang: 'bash' | 'js'
@@ -16,9 +17,10 @@ interface Props {
 
 export default function GeneratingTypes({ selectedLang }: Props) {
   const { slug, ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [isGeneratingTypes, setIsGeneratingTypes] = useState(false)
 
-  const { data: config } = useProjectPostgrestConfigQuery({ orgSlug: slug, projectRef: ref })
+  const { data: config } = useProjectPostgrestConfigQuery({ branch })
 
   const onClickGenerateTypes = async () => {
     try {

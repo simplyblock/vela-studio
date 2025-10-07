@@ -4,17 +4,20 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { replicaKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type ReadReplicaRemoveVariables = {
-  projectRef: string
+  branch: Branch
   identifier: string
   invalidateReplicaQueries: boolean
 }
 
-export async function removeReadReplica({ projectRef, identifier }: ReadReplicaRemoveVariables) {
+export async function removeReadReplica({ branch, identifier }: ReadReplicaRemoveVariables) {
   const { data, error } = await post('/v1/projects/{ref}/read-replicas/remove', {
     params: {
-      path: { ref: projectRef },
+      path: {
+        ref: branch.project_id,
+      },
     },
     body: {
       database_identifier: identifier,
@@ -39,12 +42,12 @@ export const useReadReplicaRemoveMutation = ({
     (vars) => removeReadReplica(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, invalidateReplicaQueries } = variables
+        const { branch, invalidateReplicaQueries } = variables
 
         if (invalidateReplicaQueries) {
           await Promise.all([
-            queryClient.invalidateQueries(replicaKeys.list(orgSlug, projectRef)),
-            queryClient.invalidateQueries(replicaKeys.loadBalancers(projectRef)),
+            queryClient.invalidateQueries(replicaKeys.list(branch?.organization_id, branch?.project_id, branch?.id)),
+            queryClient.invalidateQueries(replicaKeys.loadBalancers(branch.project_id)),
           ])
         }
 

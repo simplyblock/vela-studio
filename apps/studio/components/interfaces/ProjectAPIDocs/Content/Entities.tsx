@@ -10,12 +10,14 @@ import { Button } from 'ui'
 import ContentSnippet from '../ContentSnippet'
 import { DOCS_CONTENT } from '../ProjectAPIDocs.constants'
 import type { ContentProps } from './Content.types'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Entities = ({ language }: ContentProps) => {
   const { slug, ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [isGeneratingTypes, setIsGeneratingTypes] = useState(false)
 
-  const { data: config } = useProjectPostgrestConfigQuery({ orgSlug: slug, projectRef: ref })
+  const { data: config } = useProjectPostgrestConfigQuery({ branch })
 
   const onClickGenerateTypes = async () => {
     try {

@@ -50,6 +50,7 @@ import {
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { HTTP_METHODS } from './EdgeFunctionDetails.constants'
 import { ErrorWithStatus, ResponseData } from './EdgeFunctionDetails.types'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface EdgeFunctionTesterSheetProps {
   visible: boolean
@@ -81,13 +82,14 @@ type FormValues = z.infer<typeof FormSchema>
 export const EdgeFunctionTesterSheet = ({ visible, onClose }: EdgeFunctionTesterSheetProps) => {
   const { data: org } = useSelectedOrganizationQuery()
   const { slug: orgSlug, ref: projectRef, functionSlug } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
 
   const [response, setResponse] = useState<ResponseData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug, projectRef })
-  const { data: config } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
+  const { data: config } = useProjectPostgrestConfigQuery({ branch })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
   const { data: accessToken } = useSessionAccessTokenQuery({ enabled: true })
   const { serviceKey } = getKeys(apiKeys)

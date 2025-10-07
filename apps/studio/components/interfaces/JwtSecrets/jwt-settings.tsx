@@ -53,6 +53,7 @@ import {
   JWT_SECRET_UPDATE_ERROR_MESSAGES,
   JWT_SECRET_UPDATE_PROGRESS_MESSAGES,
 } from './jwt.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const schema = object({
   JWT_EXP: number()
@@ -61,7 +62,8 @@ const schema = object({
 })
 
 const JWTSettings = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const newJwtSecrets = useFlag('newJwtSecrets')
 
@@ -69,15 +71,15 @@ const JWTSettings = () => {
   const [showCustomTokenInput, setShowCustomTokenInput] = useState(false)
   const [isCreatingKey, setIsCreatingKey] = useState<boolean>(false)
   const [isRegeneratingKey, setIsGeneratingKey] = useState<boolean>(false)
-  // FIXME: need permission implemented 
-  const { can: canReadJWTSecret } = {can:true}
-   // FIXME: need permission implemented  
-  const { can: canGenerateNewJWTSecret } = {can:true}
-   // FIXME: need permission implemented  
-  const { can: canUpdateConfig } ={can:true}
+  // FIXME: need permission implemented
+  const { can: canReadJWTSecret } = { can: true }
+  // FIXME: need permission implemented
+  const { can: canGenerateNewJWTSecret } = { can: true }
+  // FIXME: need permission implemented
+  const { can: canUpdateConfig } = { can: true }
 
-  const { data } = useJwtSecretUpdatingStatusQuery({ projectRef, orgSlug })
-  const { data: config, isError } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
+  const { data } = useJwtSecretUpdatingStatusQuery({ branch })
+  const { data: config, isError } = useProjectPostgrestConfigQuery({ branch })
   const { mutateAsync: updateJwt, isLoading: isSubmittingJwtSecretUpdateRequest } =
     useJwtSecretUpdateMutation()
 
@@ -130,10 +132,10 @@ const JWTSettings = () => {
     jwt_secret: string,
     setModalVisibility: Dispatch<SetStateAction<boolean>>
   ) {
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     const trackingId = uuidv4()
     try {
-      await updateJwt({ projectRef, jwtSecret: jwt_secret, changeTrackingId: trackingId })
+      await updateJwt({ branch, jwtSecret: jwt_secret, changeTrackingId: trackingId })
       setModalVisibility(false)
       toast(
         'Successfully submitted JWT secret update request. Please wait while your project is updated.'
@@ -197,7 +199,9 @@ const JWTSettings = () => {
                         </p>
 
                         <Button type="default" asChild icon={<ExternalLink className="size-4" />}>
-                          <Link href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys`}>
+                          <Link
+                            href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys`}
+                          >
                             Go to API keys
                           </Link>
                         </Button>
@@ -308,7 +312,9 @@ const JWTSettings = () => {
                               icon={<ExternalLink className="size-4" />}
                               asChild
                             >
-                              <Link href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}>
+                              <Link
+                                href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
+                              >
                                 Go to API Keys
                               </Link>
                             </Button>
@@ -317,7 +323,9 @@ const JWTSettings = () => {
                               icon={<ExternalLink className="size-4" />}
                               asChild
                             >
-                              <Link href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/jwt/signing-keys`}>
+                              <Link
+                                href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/jwt/signing-keys`}
+                              >
                                 Go to JWT Signing Keys
                               </Link>
                             </Button>

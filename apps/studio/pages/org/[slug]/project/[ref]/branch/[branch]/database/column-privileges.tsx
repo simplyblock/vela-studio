@@ -29,17 +29,15 @@ import { useTablePrivilegesQuery } from 'data/privileges/table-privileges-query'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useLocalStorage } from 'hooks/misc/useLocalStorage'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import type { NextPageWithLayout } from 'types'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
-import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const EDITABLE_ROLES = ['authenticated', 'anon', 'service_role']
 
 const PrivilegesPage: NextPageWithLayout = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, table: paramTable } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { openFeaturePreviewModal } = useFeaturePreviewModal()
   const isEnabled = useIsColumnLevelPrivilegesEnabled()
@@ -67,8 +65,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
   )
 
   const { data: allRoles, isLoading: isLoadingRoles } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const tables = tableList
@@ -81,8 +78,7 @@ const PrivilegesPage: NextPageWithLayout = () => {
     isError: isErrorTablePrivileges,
     error: errorTablePrivileges,
   } = useTablePrivilegesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const tablePrivilege = useMemo(() => {

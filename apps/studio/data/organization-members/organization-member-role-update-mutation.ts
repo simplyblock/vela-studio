@@ -9,7 +9,7 @@ import { organizationKeys } from './keys'
 export type OrganizationMemberUpdateRoleVariables = {
   slug: string
   userId: string
-  roleId: number
+  roleId: string
   roleName: string
   projects: string[]
   skipInvalidation?: boolean

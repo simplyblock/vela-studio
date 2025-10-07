@@ -16,6 +16,7 @@ import {
 } from 'ui/src/components/shadcn/ui/table'
 import { APIKeyRow } from './APIKeyRow'
 import CreateSecretAPIKeyDialog from './CreateSecretAPIKeyDialog'
+import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
 
 interface LastSeenData {
   [hash: string]: { timestamp: string }
@@ -48,11 +49,12 @@ function useLastSeen(projectRef: string): LastSeenData {
 
 export const SecretAPIKeys = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data: apiKeysData,
     isLoading: isLoadingApiKeys,
     error,
-  } = useAPIKeysQuery({ orgSlug, projectRef, reveal: false })
+  } = useAPIKeysQuery({ branch, reveal: false })
   // FIXME: need permission implemented 
   const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
   const lastSeen = useLastSeen(projectRef!)

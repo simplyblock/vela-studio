@@ -85,8 +85,8 @@ function createStorageExplorerState({
   resumableUploadUrl,
   supabaseClient,
 }: {
-  projectRef: string
   orgRef: string
+  projectRef: string
   branchRef: string
   resumableUploadUrl: string
   supabaseClient?: () => Promise<SupabaseClient<any, 'public', any>>
@@ -97,8 +97,9 @@ function createStorageExplorerState({
     DEFAULT_PREFERENCES
 
   const state = proxy({
-    projectRef,
     orgRef,
+    projectRef,
+    branchRef,
     supabaseClient,
     resumableUploadUrl,
     uploadProgresses: [] as UploadProgress[],
@@ -984,7 +985,7 @@ function createStorageExplorerState({
       const queryClient = getQueryClient()
       const storageConfiguration = queryClient
         .getQueryCache()
-        .find(configKeys.storage(state.projectRef))?.state.data as
+        .find(configKeys.storage(state.orgRef, state.projectRef, state.branchRef))?.state.data as
         | ProjectStorageConfigResponse
         | undefined
       const fileSizeLimit = storageConfiguration?.fileSizeLimit
@@ -1020,7 +1021,9 @@ function createStorageExplorerState({
             </p>
             <p className="text-foreground-light">
               You can change the global file size upload limit in{' '}
-              <InlineLink href={`/org/${orgRef}/project/${state.projectRef}/branch/${branchRef}/storage/settings`}>
+              <InlineLink
+                href={`/org/${orgRef}/project/${state.projectRef}/branch/${branchRef}/storage/settings`}
+              >
                 Storage settings
               </InlineLink>
               .
@@ -1812,7 +1815,10 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
   const orgRef = getOrganizationSlug()
   const { branch: branchRef } = useParams()
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef: project?.ref })
+  const { data: settings } = useProjectSettingsV2Query({
+    orgSlug: orgRef,
+    projectRef: project?.ref,
+  })
 
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.endpoint

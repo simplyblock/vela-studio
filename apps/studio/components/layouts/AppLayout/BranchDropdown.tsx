@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 import { useParams } from 'common'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
-import { Branch, useBranchesQuery } from 'data/branches/branches-query'
+import { useBranchesQuery } from 'data/branches/branches-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useAppStateSnapshot } from 'state/app-state'
 import {
@@ -24,6 +24,7 @@ import {
   ScrollArea,
   cn,
 } from 'ui'
+import { Branch } from 'api-types/types'
 
 const BranchLink = ({
   branch,

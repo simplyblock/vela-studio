@@ -27,9 +27,7 @@ import {
 import WrapperDynamicColumns from './WrapperDynamicColumns'
 import type { Table, TableOption } from './Wrappers.types'
 import { makeValidateRequired } from './Wrappers.utils'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { getPathReferences } from '../../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export type WrapperTableEditorProps = {
   visible: boolean
@@ -218,17 +216,13 @@ const TableForm = ({
   onSubmit: OnSubmitFn
   initialData: any
 }) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const { slug: orgSlug } = getPathReferences()
   const {
     data: schemas,
     isLoading,
     isSuccess,
   } = useSchemasQuery({
-    orgSlug: orgSlug,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const requiredOptions =

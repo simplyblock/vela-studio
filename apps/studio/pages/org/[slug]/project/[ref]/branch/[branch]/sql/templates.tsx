@@ -1,4 +1,3 @@
-import { useParams } from 'common'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
@@ -12,7 +11,6 @@ import type { NextPageWithLayout } from 'types'
 
 const SqlTemplates: NextPageWithLayout = () => {
   const router = useRouter()
-  const { ref } = useParams<{ ref: string }>()
   const tabs = useTabsStateSnapshot()
 
   useEffect(() => {
@@ -28,7 +26,7 @@ const SqlTemplates: NextPageWithLayout = () => {
         name: 'templates',
       },
     })
-  }, [router.isReady, ref])
+  }, [router.isReady])
 
   return <SQLTemplates />
 }

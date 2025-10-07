@@ -35,13 +35,11 @@ export const DeleteCronJob = ({ cronJob, visible, onClose }: DeleteCronJobProps)
   })
 
   async function handleDelete() {
-    if (!project) return console.error('Project is required')
     if (!branch) return console.error('Branch is required')
 
     deleteDatabaseCronJob({
+      branch,
       jobId: cronJob.jobid,
-      projectRef: project.ref,
-      connectionString: branch.database.encrypted_connection_string,
       searchTerm: searchQuery,
     })
   }

@@ -24,14 +24,16 @@ import type { Timezone } from './PITR.types'
 import { getClientTimezone } from './PITR.utils'
 import PITRStatus from './PITRStatus'
 import { PITRForm } from './pitr-form'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const PITRSelection = () => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const queryClient = useQueryClient()
 
   const { data: backups } = useBackupsQuery({ orgSlug: orgRef, projectRef: projectRef })
-  const { data: databases } = useReadReplicasQuery({ orgSlug: orgRef, projectRef: projectRef })
+  const { data: databases } = useReadReplicasQuery({ branch })
   const [showConfiguration, setShowConfiguration] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [selectedTimezone, setSelectedTimezone] = useState<Timezone>(getClientTimezone())

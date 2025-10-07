@@ -11,6 +11,7 @@ import {
 } from 'ui'
 import { BillingChangeBadge } from './BillingChangeBadge'
 import { DISK_LIMITS, DISK_PRICING, DiskType } from './DiskManagement.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DiskManagementDiskSizeReadReplicasProps {
   isDirty: boolean
@@ -29,9 +30,10 @@ export const DiskManagementDiskSizeReadReplicas = ({
   oldStorageType,
   newStorageType,
 }: DiskManagementDiskSizeReadReplicasProps) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef })
+  const { data: databases } = useReadReplicasQuery({ branch })
   const readReplicas = (databases ?? []).filter((db) => db.identifier !== projectRef)
   const beforePrice = totalSize * DISK_PRICING[oldStorageType]?.storage
   const afterPrice = newTotalSize * DISK_PRICING[newStorageType]?.storage
@@ -141,8 +143,9 @@ export const DiskManagementIOPSReadReplicas = ({
   oldStorageType: DiskType
   newStorageType: DiskType
 }) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef })
+  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: databases } = useReadReplicasQuery({ branch })
   const readReplicas = (databases ?? []).filter((db) => db.identifier !== projectRef)
 
   const beforePrice =
@@ -198,8 +201,9 @@ export const DiskManagementThroughputReadReplicas = ({
   oldStorageType: DiskType
   newStorageType: DiskType
 }) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef })
+  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: databases } = useReadReplicasQuery({ branch })
   const readReplicas = (databases ?? []).filter((db) => db.identifier !== projectRef)
 
   const beforePrice =

@@ -25,6 +25,7 @@ import {
   TabsTrigger_Shadcn_,
 } from 'ui'
 import { Admonition } from 'ui-patterns'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ExportDialogProps {
   table?: SupaTable
@@ -44,12 +45,13 @@ export const ExportDialog = ({
   open,
   onOpenChange,
 }: ExportDialogProps) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const roleImpersonationState = useRoleImpersonationStateSnapshot()
 
   const [selectedTab, setSelectedTab] = useState<string>('csv')
 
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef })
+  const { data: databases } = useReadReplicasQuery({ branch })
   const primaryDatabase = (databases ?? []).find((db) => db.identifier === projectRef)
   const DB_FIELDS = ['db_host', 'db_name', 'db_port', 'db_user', 'inserted_at']
   const emptyState = { db_user: '', db_host: '', db_port: '', db_name: '' }

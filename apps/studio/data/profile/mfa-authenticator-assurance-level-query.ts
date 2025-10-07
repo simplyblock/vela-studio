@@ -11,13 +11,10 @@ export async function getMfaAuthenticatorAssuranceLevel() {
   if (error) throw error
   return data*/ // FIXME: no idea what this does
 
-  const fakeResponse: AuthMFAGetAuthenticatorAssuranceLevelResponse = {
-    data: {
-      currentLevel: null,
-      nextLevel: null,
-      currentAuthenticationMethods: [],
-    },
-    error: null,
+  const fakeResponse: CustomAuthMFAGetAuthenticatorAssuranceLevelData = {
+    currentLevel: null,
+    nextLevel: null,
+    currentAuthenticationMethods: [],
   }
   return fakeResponse
 }

@@ -2,7 +2,6 @@ import { Loader2 } from 'lucide-react'
 import { MouseEvent, useState } from 'react'
 
 import { GetIndexAdvisorResultResponse } from 'data/database/retrieve-index-advisor-result-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   cn,
@@ -17,7 +16,7 @@ import { IndexImprovementText } from './IndexImprovementText'
 import { QueryPanelScoreSection } from './QueryPanel'
 import { useIndexInvalidation } from './hooks/useIndexInvalidation'
 import { createIndexes } from './index-advisor.utils'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface IndexSuggestionIconProps {
   indexAdvisorResult: GetIndexAdvisorResultResponse
@@ -28,7 +27,6 @@ export const IndexSuggestionIcon = ({
   indexAdvisorResult,
   onClickIcon,
 }: IndexSuggestionIconProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [isCreatingIndex, setIsCreatingIndex] = useState(false)
   const [isHoverCardOpen, setIsHoverCardOpen] = useState(false)
@@ -42,8 +40,7 @@ export const IndexSuggestionIcon = ({
 
     try {
       await createIndexes({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         indexStatements: indexAdvisorResult.index_statements,
         onSuccess: () => {
           // Handle UI-specific logic

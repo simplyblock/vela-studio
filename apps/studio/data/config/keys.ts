@@ -8,16 +8,26 @@ export const configKeys = {
     projectId: string | undefined,
     branchId: string | undefined
   ) => ['branches', orgId, projectId, branchId, 'postgrest'] as const,
-  jwtSecretUpdatingStatus: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'jwt-secret-updating-status'] as const,
-  storage: (projectRef: string | undefined) => ['projects', projectRef, 'storage'] as const,
+  jwtSecretUpdatingStatus: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'jwt-secret-updating-status'] as const,
+  storage: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'storage'] as const,
   upgradeEligibility: (
     orgId: string | undefined,
     projectId: string | undefined,
     branchId: string | undefined
   ) => ['branches', orgId, projectId, branchId, 'upgrade-eligibility'] as const,
-  upgradeStatus: (orgSlug: string | undefined, projectRef: string | undefined) =>
-    ['projects', orgSlug, projectRef, 'upgrade-status'] as const,
+  upgradeStatus: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'upgrade-status'] as const,
   diskAttributes: (projectRef: string | undefined) =>
     ['projects', projectRef, 'disk-attributes'] as const,
   diskBreakdown: (

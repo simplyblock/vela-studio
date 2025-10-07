@@ -4,25 +4,32 @@ import { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type ProjectStorageConfigVariables = {
-  orgSlug?: string,
-  projectRef?: string
+  branch?: Branch
 }
 
 export type ProjectStorageConfigResponse = components['schemas']['StorageConfigResponse']
 
 export async function getProjectStorageConfig(
-  { orgSlug, projectRef }: ProjectStorageConfigVariables,
+  { branch }: ProjectStorageConfigVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('Branch is required')
 
-  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/config/storage', {
-    params: { path: { slug: orgSlug, ref: projectRef } },
-    signal,
-  })
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/config/storage',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+        },
+      },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -32,14 +39,17 @@ export type ProjectStorageConfigData = Awaited<ReturnType<typeof getProjectStora
 export type ProjectStorageConfigError = ResponseError
 
 export const useProjectStorageConfigQuery = <TData = ProjectStorageConfigData>(
-  { orgSlug, projectRef }: ProjectStorageConfigVariables,
+  { branch }: ProjectStorageConfigVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ProjectStorageConfigData, ProjectStorageConfigError, TData> = {}
 ) =>
   useQuery<ProjectStorageConfigData, ProjectStorageConfigError, TData>(
-    configKeys.storage(projectRef),
-    ({ signal }) => getProjectStorageConfig({ orgSlug, projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
+    configKeys.storage(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getProjectStorageConfig({ branch }, signal),
+    {
+      enabled: enabled && typeof branch !== 'undefined',
+      ...options,
+    }
   )

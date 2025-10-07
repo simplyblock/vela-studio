@@ -135,15 +135,13 @@ export const TriggerSheet = ({ selectedTrigger, open, setOpen }: TriggerSheetPro
 
     if (isEditing) {
       updateDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         originalTrigger: selectedTrigger,
         payload: { name: payload.name, enabled_mode: payload.enabled_mode },
       })
     } else {
       createDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         payload,
       })
     }

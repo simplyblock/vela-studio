@@ -4347,7 +4347,7 @@ export interface components {
         | null
       organization_id: number | null
       organization_slug: string
-      project_ids: number[] | null
+      project_ids: string[] | null
       project_refs: string[] | null
       resources: string[] | null
       restrictive: boolean | null
@@ -4383,7 +4383,7 @@ export interface components {
       url: string
     }
     AssignMemberRoleBodyV2: {
-      role_id: number
+      role_id: string
       role_scoped_projects?: string[]
     }
     AuditLogsResponse: {
@@ -4448,7 +4448,7 @@ export interface components {
         id: number
         inserted_at: string
         isPhysicalBackup: boolean
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'REMOVED' | 'ARCHIVED' | 'CANCELLED'
       }[]
@@ -4485,7 +4485,7 @@ export interface components {
         id: number
         inserted_at: string
         isPhysicalBackup: boolean
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'REMOVED' | 'ARCHIVED' | 'CANCELLED'
       }[]
@@ -4720,7 +4720,7 @@ export interface components {
     }
     CreateInvitationBody: {
       email: string
-      role_id: number
+      role_id: string
       role_scoped_projects?: string[]
     }
     CreateNotificationExceptionsBody: {
@@ -4857,7 +4857,7 @@ export interface components {
           billing_email: string | null
           /** @enum {string|null} */
           billing_partner: 'fly' | 'aws' | 'aws_marketplace' | 'vercel_marketplace' | null
-          id: number
+          id: string
           is_owner: boolean
           name: string
           opt_in_tags: string[]
@@ -5214,7 +5214,7 @@ export interface components {
       name: string
       owner_id: number
       parent_id?: string | null
-      project_id: number
+      project_id: string
     }
     CreateUserResponse: {
       aud?: string
@@ -5492,7 +5492,7 @@ export interface components {
         id: number
         inserted_at: string
         isPhysicalBackup: boolean
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'REMOVED' | 'ARCHIVED' | 'CANCELLED'
       }[]
@@ -5929,7 +5929,7 @@ export interface components {
       last_updated_by?: number
       name: string
       owner_id: number
-      project_id: number
+      project_id: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'
       updated_at: string
@@ -5960,7 +5960,7 @@ export interface components {
           name: string
           owner_id: number
           parent_id?: string | null
-          project_id: number
+          project_id: string
         }[]
       }
     }
@@ -5982,7 +5982,7 @@ export interface components {
           username: string
         }
         owner_id: number
-        project_id: number
+        project_id: string
         /** @enum {string} */
         type: 'sql' | 'report' | 'log_sql'
         updated_at: string
@@ -6523,7 +6523,7 @@ export interface components {
       }
       mfa_enabled: boolean
       primary_email: string | null
-      role_ids: number[]
+      role_ids: string[]
       username: string
     }
     MemberWithFreeProjectLimit: {
@@ -6547,7 +6547,7 @@ export interface components {
       meta: unknown
       notification_name: string
       notification_status: string
-      project_id: number
+      project_id: string
     }
     NotificationResponseV2: {
       /** @description Any JSON-serializable value */
@@ -6706,18 +6706,18 @@ export interface components {
     }
     OrganizationRoleResponse: {
       org_scoped_roles: {
-        base_role_id: number
+        base_role_id: string
         description: string | null
-        id: number
+        id: string
         name: string
-        project_ids: number[] | null
+        project_ids: string[] | null
       }[]
       project_scoped_roles: {
-        base_role_id: number
+        base_role_id: string
         description: string | null
-        id: number
+        id: string
         name: string
-        project_ids: number[] | null
+        project_ids: string[] | null
       }[]
     }
     OrganizationSlugAvailableVersionsBody: {
@@ -7377,7 +7377,7 @@ export interface components {
     }
     ProjectClonedStatusResponse: {
       cloned_from?: {
-        project_id: number
+        project_id: string
         source_project: {
           name: string
           ref: string
@@ -7385,14 +7385,14 @@ export interface components {
       }
       clones: {
         inserted_at: string | null
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'IN_PROGRESS' | 'FAILED' | 'REMOVED'
         target_project: {
           name: string
           ref: string
         }
-        target_project_id: number
+        target_project_id: string
         updated_at: string | null
       }[]
       id: number
@@ -9199,7 +9199,7 @@ export interface components {
       id: string
       name: string
       owner_id: number
-      project_id?: number
+      project_id?: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'
       /** @enum {string} */
@@ -9264,7 +9264,7 @@ export interface components {
       last_updated_by?: number
       name: string
       owner_id: number
-      project_id: number
+      project_id: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'
       updated_at: string
@@ -12362,7 +12362,7 @@ export interface operations {
       header?: never
       path: {
         user_id: string
-        role_id: number
+        role_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12395,7 +12395,7 @@ export interface operations {
       header?: never
       path: {
         user_id: string
-        role_id: number
+        role_id: string
         /** @description Organization slug */
         slug: string
       }

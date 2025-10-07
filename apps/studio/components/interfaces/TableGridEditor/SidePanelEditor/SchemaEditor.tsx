@@ -37,13 +37,10 @@ const SchemaEditor = ({ visible, onSuccess, closePanel }: SchemaEditorProps) => 
       return setErrors(errors)
     }
 
-    if (project === undefined) return console.error('Project is required')
     if (branch === undefined) return console.error('Branch is required')
     try {
       await createSchema({
-        orgSlug,
-        projectRef: project.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         name,
       })
       onSuccess(name)

@@ -13,16 +13,17 @@ import { getInitialGridColumns } from 'components/grid/utils/column'
 import { getGridColumns } from 'components/grid/utils/gridColumns'
 import { Entity } from 'data/table-editor/table-editor-types'
 import { useTableEditorStateSnapshot } from './table-editor'
+import { Branch } from 'api-types/types'
 
 export const createTableEditorTableState = ({
-  projectRef,
+  branch,
   table: originalTable,
   editable = true,
   onAddColumn,
   onExpandJSONEditor,
   onExpandTextEditor,
 }: {
-  projectRef: string
+  branch: Branch
   table: Entity
   /** If set to true, render an additional "+" column to support adding a new column in the grid editor */
   editable?: boolean
@@ -32,7 +33,7 @@ export const createTableEditorTableState = ({
 }) => {
   const table = parseSupaTable(originalTable)
 
-  const savedState = loadTableEditorStateFromLocalStorage(projectRef, table.name, table.schema)
+  const savedState = loadTableEditorStateFromLocalStorage(branch, table.name, table.schema)
   const gridColumns = getInitialGridColumns(
     getGridColumns(table, {
       tableId: table.id,
@@ -172,7 +173,7 @@ type TableEditorTableStateContextProviderProps = Omit<
 
 export const TableEditorTableStateContextProvider = ({
   children,
-  projectRef,
+  branch,
   table,
   ...props
 }: PropsWithChildren<TableEditorTableStateContextProviderProps>) => {
@@ -180,7 +181,7 @@ export const TableEditorTableStateContextProvider = ({
   const state = useRef(
     createTableEditorTableState({
       ...props,
-      projectRef,
+      branch,
       table,
       onAddColumn: tableEditorSnap.onAddColumn,
       onExpandJSONEditor: (column: string, row: SupaRow) => {
@@ -201,7 +202,7 @@ export const TableEditorTableStateContextProvider = ({
       return subscribe(state, () => {
         saveTableEditorStateToLocalStorageDebounced({
           gridColumns: state.gridColumns,
-          projectRef,
+          branch,
           tableName: state.table.name,
           schema: state.table.schema,
         })

@@ -11,9 +11,14 @@ export type ProjectDeleteVariables = {
   organizationSlug?: string
 }
 
-export async function deleteProject({ projectRef }: ProjectDeleteVariables) {
-  const { data, error } = await del('/platform/projects/{ref}', {
-    params: { path: { ref: projectRef } },
+export async function deleteProject({ projectRef, organizationSlug }: ProjectDeleteVariables) {
+  const { data, error } = await del('/platform/organizations/{slug}/projects/{ref}', {
+    params: {
+      path: {
+        slug: organizationSlug!,
+        ref: projectRef,
+      },
+    },
   })
 
   if (error) handleError(error)

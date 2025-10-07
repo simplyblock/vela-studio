@@ -30,8 +30,7 @@ const Migrations = () => {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data, isLoading, isSuccess, isError, error } = useMigrationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const migrations =
     search.length === 0

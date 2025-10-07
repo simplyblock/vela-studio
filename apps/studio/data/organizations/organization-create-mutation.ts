@@ -6,7 +6,7 @@ import { permissionKeys } from 'data/permissions/keys'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
 import { castOrganizationResponseToOrganization } from './organizations-query'
-import type { CustomerAddress, CustomerTaxId } from './types'
+import type { CustomerAddress } from './types'
 
 export type OrganizationCreateVariables = {
   name: string

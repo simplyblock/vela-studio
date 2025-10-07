@@ -56,8 +56,7 @@ const UserImpersonationSelector = () => {
   const { data, isSuccess, isLoading, isError, error, isFetching, isPreviousData } =
     useUsersInfiniteQuery(
       {
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         keywords: debouncedSearchText.trim().toLocaleLowerCase(),
       },
       {

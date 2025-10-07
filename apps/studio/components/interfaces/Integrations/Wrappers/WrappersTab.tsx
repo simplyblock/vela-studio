@@ -2,18 +2,16 @@ import { HTMLProps, ReactNode, useCallback, useState } from 'react'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { FDW, useFDWsQuery } from 'data/fdw/fdws-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Sheet, SheetContent } from 'ui'
 import { CreateWrapperSheet } from './CreateWrapperSheet'
 import DeleteWrapperModal from './DeleteWrapperModal'
 import { WRAPPERS } from './Wrappers.constants'
 import { wrapperMetaComparator } from './Wrappers.utils'
 import { WrapperTable } from './WrapperTable'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const WrappersTab = () => {
   const { id } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [selectedWrapperForDelete, setSelectedWrapperForDelete] = useState<FDW | null>(null)
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
@@ -22,8 +20,7 @@ export const WrappersTab = () => {
   const { can: canCreateWrapper } = {can:true}
 
   const { data } = useFDWsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const wrappers = data ?? []

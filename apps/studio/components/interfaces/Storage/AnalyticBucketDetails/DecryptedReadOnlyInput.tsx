@@ -3,9 +3,8 @@ import { useState } from 'react'
 
 import { useParams } from 'common'
 import { useVaultSecretDecryptedValueQuery } from 'data/vault/vault-secret-decrypted-value-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Input, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const DecryptedReadOnlyInput = ({
   value,
@@ -19,15 +18,13 @@ export const DecryptedReadOnlyInput = ({
   label: string
 }) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [showHidden, setShowHidden] = useState(false)
 
   const { data: decryptedValue, isLoading: isDecryptedValueLoading } =
     useVaultSecretDecryptedValueQuery(
       {
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         id: value ?? '',
       },
       { enabled: secureEntry && showHidden }

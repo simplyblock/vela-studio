@@ -55,11 +55,13 @@ import {
 } from './ui/DiskManagement.constants'
 import { NoticeBar } from './ui/NoticeBar'
 import { SpendCapDisabledSection } from './ui/SpendCapDisabledSection'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function DiskManagementForm() {
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
+  const { ref: projectRef } = useParams()
   const queryClient = useQueryClient()
 
   const { data: resourceWarnings } = useResourceWarningsQuery()
@@ -73,7 +75,7 @@ export function DiskManagementForm() {
   const [message, setMessageState] = useState<DiskManagementMessage | null>(null)
   const [advancedSettingsOpen, setAdvancedSettingsOpenState] = useState(false)
 
-  const { data: databases, isSuccess: isReadReplicasSuccess } = useReadReplicasQuery({ orgSlug, projectRef })
+  const { data: databases, isSuccess: isReadReplicasSuccess } = useReadReplicasQuery({ branch })
   const { data, isSuccess: isDiskAttributesSuccess } = useDiskAttributesQuery(
     { projectRef },
     {

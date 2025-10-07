@@ -1,10 +1,10 @@
 import { toast } from 'sonner'
 
-import { useParams } from 'common'
 import { useReadReplicaRemoveMutation } from 'data/read-replicas/replica-remove-mutation'
 import type { Database } from 'data/read-replicas/replicas-query'
 import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DropReplicaConfirmationModalProps {
   selectedReplica?: Database
@@ -17,7 +17,7 @@ const DropReplicaConfirmationModal = ({
   onSuccess,
   onCancel,
 }: DropReplicaConfirmationModalProps) => {
-  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const formattedId = formatDatabaseID(selectedReplica?.identifier ?? '')
   const { mutate: removeReadReplica, isLoading: isRemoving } = useReadReplicaRemoveMutation({
     onSuccess: () => {
@@ -28,11 +28,11 @@ const DropReplicaConfirmationModal = ({
   })
 
   const onConfirmRemove = async () => {
-    if (!projectRef) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (selectedReplica === undefined) return toast.error('No replica selected')
 
     removeReadReplica({
-      projectRef,
+      branch,
       identifier: selectedReplica.identifier,
       invalidateReplicaQueries: true,
     })

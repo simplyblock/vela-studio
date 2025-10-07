@@ -17,6 +17,7 @@ import {
 } from 'ui'
 import { LintInfo } from '../Linter/Linter.constants'
 import { lintInfoMap } from '../Linter/Linter.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DisableRuleModalProps {
   lint: LintInfo
@@ -24,6 +25,7 @@ interface DisableRuleModalProps {
 
 export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const router = useRouter()
   const routeCategory = router.pathname.split('/').pop()
 
@@ -47,12 +49,10 @@ export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
   })
 
   const onCreateRule = () => {
-    if (!orgRef) return console.error('Organization slug is required')
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
 
     createRule({
-      orgSlug: orgRef,
-      projectRef: projectRef,
+      branch,
       exception: {
         is_disabled: true,
         lint_category: undefined,

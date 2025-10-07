@@ -2,7 +2,6 @@ import { ChevronRight, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DocsButton } from 'components/ui/DocsButton'
@@ -27,6 +26,7 @@ import { generateRuleText } from './AdvisorRules.utils'
 import { CreateRuleSheet } from './CreateRuleSheet'
 import { DisableRuleModal } from './DisableRuleModal'
 import { EnableRuleModal } from './EnableRuleModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface AdvisorRuleItemProps {
   lint: LintInfo
@@ -39,8 +39,8 @@ interface AdvisorRuleItemProps {
 const SIMPLIFIED_INTERFACE = true
 
 export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [open, setOpen] = useState(false)
   const [expandedLint, setExpandedLint] = useState<string>()
@@ -53,7 +53,7 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
     isLoading,
     isSuccess,
     isError,
-  } = useProjectLintRulesQuery({ projectRef })
+  } = useProjectLintRulesQuery({ branch })
 
   const rules = data.exceptions.filter((x) => x.lint_name === lint.name)
   const selectedRuleMeta = data.exceptions.find((x) => x.id === selectedRuleToDelete)
@@ -67,10 +67,9 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
   })
 
   const onDeleteRule = () => {
-    if (!orgSlug) return console.error('Organization slug is required')
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     if (!selectedRuleToDelete) return console.error('No rules selected')
-    deleteRule({ orgSlug, projectRef, ids: [selectedRuleToDelete] })
+    deleteRule({ branch, ids: [selectedRuleToDelete] })
   }
 
   if (SIMPLIFIED_INTERFACE) {

@@ -86,16 +86,14 @@ const DatabaseUsage = () => {
   const { data, params, largeObjectsSql, isLoading, refresh } = report
 
   const { data: databaseSizeData } = useDatabaseSizeQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string || undefined,
+    branch,
   })
   const databaseSizeBytes = databaseSizeData ?? 0
   const currentDiskSize = project?.volumeSizeGb ?? 0
 
   const { data: diskConfig } = useDiskAttributesQuery({ projectRef: project?.ref })
   const { data: maxConnections } = useMaxConnectionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { data: poolerConfig } = usePgbouncerConfigQuery({ orgSlug: org?.slug, projectRef: project?.ref })
   // FIXME: need permission implemented 

@@ -36,11 +36,7 @@ const Wizard: NextPageWithLayout = () => {
 
   return (
     <>
-      <NewOrgForm
-        setupIntent={intent}
-        onPaymentMethodReset={() => resetSetupIntent()}
-        onPlanSelected={(plan) => setSelectedPlan(plan)}
-      />
+      <NewOrgForm setupIntent={intent} />
     </>
   )
 }

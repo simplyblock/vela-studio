@@ -4,16 +4,21 @@ import { toast } from 'sonner'
 import { del, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { lintKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type LintRuleDeleteVariables = {
-  orgSlug: string
-  projectRef: string
+  branch: Branch
   ids: string[]
 }
 
-export async function deleteLintRule({ orgSlug, projectRef, ids }: LintRuleDeleteVariables) {
+export async function deleteLintRule({ branch, ids }: LintRuleDeleteVariables) {
   const { data, error } = await del('/platform/projects/{ref}/notifications/advisor/exceptions', {
-    params: { path: { ref: projectRef }, query: { ids } },
+    params: {
+      path: {
+        ref: branch.project_id,
+      },
+      query: { ids },
+    },
   })
 
   if (error) handleError(error)
@@ -35,10 +40,14 @@ export const useLintRuleDeleteMutation = ({
     (vars) => deleteLintRule(vars),
     {
       async onSuccess(data, variables, context) {
-        const { orgSlug, projectRef } = variables
+        const { branch } = variables
         await Promise.all([
-          queryClient.invalidateQueries(lintKeys.lintRules(orgSlug, projectRef)),
-          queryClient.invalidateQueries(lintKeys.lint(orgSlug, projectRef)),
+          queryClient.invalidateQueries(
+            lintKeys.lintRules(branch.organization_id, branch.project_id, branch.id)
+          ),
+          queryClient.invalidateQueries(
+            lintKeys.lint(branch.organization_id, branch.project_id, branch.id)
+          ),
         ])
         await onSuccess?.(data, variables, context)
       },

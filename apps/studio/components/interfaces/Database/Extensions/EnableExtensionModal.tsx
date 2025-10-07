@@ -37,9 +37,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
 
   const { data: schemas, isLoading: isSchemasLoading } = useSchemasQuery(
     {
-      orgSlug: orgRef,
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
     },
     { enabled: visible }
   )
@@ -92,7 +90,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
   }
 
   const onSubmit = async (values: any) => {
-    if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
 
     const schema =
       defaultSchema !== undefined && defaultSchema !== null
@@ -102,8 +100,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
           : values.schema
 
     enableExtension({
-      projectRef: project.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schema,
       name: extension.name,
       version: extension.default_version,

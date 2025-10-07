@@ -14,7 +14,6 @@ import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-co
 import { useProjectPostgrestConfigUpdateMutation } from 'data/config/project-postgrest-config-update-mutation'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -48,7 +47,7 @@ import {
   MultiSelectorTrigger,
 } from 'ui-patterns/multi-select'
 import { HardenAPIModal } from './HardenAPIModal'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const formSchema = z
   .object({
@@ -78,19 +77,16 @@ const formSchema = z
 
 export const PostgrestConfig = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const [showModal, setShowModal] = useState(false)
 
-  const { data: config, isError, isLoading } = useProjectPostgrestConfigQuery({ orgSlug: orgRef, projectRef })
+  const { data: config, isError, isLoading } = useProjectPostgrestConfigQuery({ branch })
   const { data: extensions } = useDatabaseExtensionsQuery({
     branch
   })
   const { data: schemas, isLoading: isLoadingSchemas } = useSchemasQuery({
-    orgSlug: orgRef,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { mutate: updatePostgrestConfig, isLoading: isUpdating } =
     useProjectPostgrestConfigUpdateMutation({
@@ -141,11 +137,10 @@ export const PostgrestConfig = () => {
   }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!projectRef) return console.error('Project ref is required') // is this needed ?
+    if (!branch) return console.error('Branch is required') // is this needed ?
 
     updatePostgrestConfig({
-      orgSlug: orgRef!,
-      projectRef,
+      branch,
       dbSchema: values.dbSchema.join(', '),
       maxRows: values.maxRows,
       dbExtraSearchPath: values.dbExtraSearchPath,

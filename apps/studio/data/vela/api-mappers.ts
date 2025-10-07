@@ -85,9 +85,11 @@ export function mapProjectBranch(branch: VelaBranch): Branch {
     project_id: branch.project_id,
     organization_id: branch.organization_id,
     status: {
-      database: branch.status.database,
-      realtime: branch.status.realtime,
-      storage: branch.status.storage,
+      database: branch.service_health.database,
+      realtime: branch.service_health.realtime,
+      storage: branch.service_health.storage,
+      meta: branch.service_health.meta,
+      rest: branch.service_health.rest
     },
     database: {
       host: branch.database.host,

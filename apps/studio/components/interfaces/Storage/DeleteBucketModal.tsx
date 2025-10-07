@@ -28,7 +28,7 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface DeleteBucketModalProps {
   visible: boolean
@@ -63,7 +63,7 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
 
   const { mutate: deleteBucket, isLoading } = useBucketDeleteMutation({
     onSuccess: async () => {
-      if (!project) return console.error('Project is required')
+      if (!branch) return console.error('Branch is required')
 
       // Clean up policies from the corresponding bucket that was deleted
       const storageObjectsPolicies = (policies ?? []).filter((policy) => policy.table === 'objects')
@@ -81,8 +81,7 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
         await Promise.all(
           bucketPolicies.map((policy: any) =>
             deletePolicy({
-              projectRef: project?.ref,
-              connectionString: branch?.database.encrypted_connection_string,
+              branch,
               originalPolicy: policy,
             })
           )

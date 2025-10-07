@@ -8,6 +8,7 @@ import { useBackupsQuery } from 'data/database/backups-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import type { Timezone } from './PITR.types'
 import { TimezoneSelection } from './TimezoneSelection'
+import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
 
 interface PITRStatusProps {
   selectedTimezone: Timezone
@@ -22,7 +23,8 @@ const PITRStatus = ({
 }: PITRStatusProps) => {
   const { slug: orgSlug, ref } = useParams()
   const { data: backups } = useBackupsQuery({ orgSlug, projectRef: ref })
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef: ref })
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: databases } = useReadReplicasQuery({ branch })
 
   const hasReadReplicas = (databases ?? []).length > 1
 

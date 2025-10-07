@@ -10,7 +10,6 @@ import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { DbQueryHook } from 'hooks/analytics/useDbQuery'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import {
   Button,
@@ -31,7 +30,7 @@ import { PresetHookResult } from '../Reports/Reports.utils'
 import { QUERY_PERFORMANCE_REPORT_TYPES } from './QueryPerformance.constants'
 import { QueryPerformanceFilterBar } from './QueryPerformanceFilterBar'
 import { QueryPerformanceGrid } from './QueryPerformanceGrid'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface QueryPerformanceProps {
   queryHitRate: PresetHookResult
@@ -42,7 +41,7 @@ export const QueryPerformance = ({
   queryHitRate,
   queryPerformanceQuery,
 }: QueryPerformanceProps) => {
-  const { slug: orgSlug, ref } = useParams()
+  const { ref } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
@@ -69,7 +68,7 @@ export const QueryPerformance = ({
     queryHitRate.runQuery()
   }
 
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef: ref })
+  const { data: databases } = useReadReplicasQuery({ branch })
 
   const { data: mostTimeConsumingQueries, isLoading: isLoadingMTC } = useQueryPerformanceQuery({
     preset: 'mostTimeConsuming',

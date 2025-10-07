@@ -128,8 +128,7 @@ const TableEditor = ({
   const [rlsConfirmVisible, setRlsConfirmVisible] = useState<boolean>(false)
 
   const { data: constraints } = useTableConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id: table?.id,
   })
   const primaryKey = (constraints ?? []).find(
@@ -138,8 +137,7 @@ const TableEditor = ({
 
   const { data: foreignKeyMeta, isSuccess: isSuccessForeignKeyMeta } =
     useForeignKeyConstraintsQuery({
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schema: table?.schema,
     })
   const foreignKeys = (foreignKeyMeta ?? []).filter(

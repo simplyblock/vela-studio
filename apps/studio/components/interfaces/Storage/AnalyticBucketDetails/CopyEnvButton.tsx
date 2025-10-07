@@ -4,9 +4,8 @@ import { toast } from 'sonner'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { getDecryptedValue } from 'data/vault/vault-secret-decrypted-value-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { copyToClipboard } from 'ui'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const CopyEnvButton = ({
   serverOptions,
@@ -15,7 +14,6 @@ export const CopyEnvButton = ({
   serverOptions: { name: string; secureEntry: boolean }[]
   values: Record<string, string>
 }) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -25,8 +23,7 @@ export const CopyEnvButton = ({
       serverOptions.map(async (option) => {
         if (option.secureEntry) {
           const decryptedValue = await getDecryptedValue({
-            projectRef: project?.ref,
-            connectionString: branch?.database.encrypted_connection_string,
+            branch,
             id: values[option.name],
           })
           return `${option.name.toUpperCase().replace('VAULT_', '')}=${decryptedValue[0].decrypted_secret}`

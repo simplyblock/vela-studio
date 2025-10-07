@@ -61,8 +61,7 @@ export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
   })
 
   const { data, isLoading: isFDWsLoading } = useFDWsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   /** The wrapper instance is the wrapper that is installed for this Analytics bucket. */
@@ -91,8 +90,7 @@ export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
 
   const { data: token, isSuccess: isSuccessToken } = useVaultSecretDecryptedValueQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       id: wrapperValues.vault_token,
     },
     {

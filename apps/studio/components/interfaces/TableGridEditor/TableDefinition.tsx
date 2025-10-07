@@ -15,11 +15,10 @@ import {
   isView,
   isViewLike,
 } from 'data/table-editor/table-editor-types'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatSql } from 'lib/formatSql'
 import { timeout } from 'lib/helpers'
 import { Button } from 'ui'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface TableDefinitionProps {
   entity?: Entity
@@ -30,14 +29,12 @@ const TableDefinition = ({ entity }: TableDefinitionProps) => {
   const editorRef = useRef(null)
   const monacoRef = useRef(null)
   const { resolvedTheme } = useTheme()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const viewResult = useViewDefinitionQuery(
     {
+      branch,
       id: entity?.id,
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
     },
     {
       enabled: isViewLike(entity),
@@ -46,9 +43,8 @@ const TableDefinition = ({ entity }: TableDefinitionProps) => {
 
   const tableResult = useTableDefinitionQuery(
     {
+      branch,
       id: entity?.id,
-      projectRef: project?.ref,
-      connectionString: branch!.database.encrypted_connection_string,
     },
     {
       enabled: isTableLike(entity),

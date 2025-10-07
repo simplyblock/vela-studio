@@ -1,16 +1,14 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
-
-import { useParams } from 'common'
 import { RoleImpersonationPopover } from 'components/interfaces/RoleImpersonationSelector'
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { getTemporaryAPIKey } from 'data/api-keys/temp-api-keys-query'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { getRoleImpersonationJWT } from 'lib/role-impersonation'
 import { useRoleImpersonationStateSnapshot } from 'state/role-impersonation-state'
 import { RealtimeConfig } from '../useRealtimeMessages'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface RealtimeTokensPopoverProps {
   config: RealtimeConfig
@@ -18,21 +16,16 @@ interface RealtimeTokensPopoverProps {
 }
 
 export const RealtimeTokensPopover = ({ config, onChangeConfig }: RealtimeTokensPopoverProps) => {
-  const { slug: orgSlug, ref } = useParams()
-  const { data: org } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useRoleImpersonationStateSnapshot()
 
   const { data: apiKeys } = useAPIKeysQuery({
-    orgSlug,
-    projectRef: config.projectRef,
+    branch,
     reveal: true,
   })
   const { anonKey, publishableKey } = getKeys(apiKeys)
 
-  const { data: postgrestConfig } = useProjectPostgrestConfigQuery(
-    { orgSlug, projectRef: config.projectRef },
-    { enabled: true }
-  )
+  const { data: postgrestConfig } = useProjectPostgrestConfigQuery({ branch }, { enabled: true })
 
   const jwtSecret = postgrestConfig?.jwt_secret
 
@@ -45,7 +38,10 @@ export const RealtimeTokensPopover = ({ config, onChangeConfig }: RealtimeTokens
     if (isMounted.current) {
       sendEvent({
         action: 'realtime_inspector_database_role_updated',
-        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: {
+          project: branch?.project_id ?? 'Unknown',
+          organization: branch?.organization_id ?? 'Unknown',
+        },
       })
     }
     isMounted.current = true

@@ -5,14 +5,13 @@ import AlertError from 'components/ui/AlertError'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useForeignKeyConstraintsQuery } from 'data/database/foreign-key-constraints-query'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { ResponseError } from 'types'
 import { ForeignKeySelector } from '../../ForeignKeySelector/ForeignKeySelector'
 import type { ForeignKey } from '../../ForeignKeySelector/ForeignKeySelector.types'
 import type { TableField } from '../TableEditor.types'
 import { ForeignKeyRow } from './ForeignKeyRow'
 import { checkIfRelationChanged } from './ForeignKeysManagement.utils'
-import { useSelectedBranchQuery } from '../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ForeignKeysManagementProps {
   table: TableField
@@ -29,7 +28,6 @@ export const ForeignKeysManagement = ({
   setEditorDirty,
   onUpdateFkRelations,
 }: ForeignKeysManagementProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { selectedSchema } = useQuerySchemaState()
 
@@ -37,8 +35,7 @@ export const ForeignKeysManagement = ({
   const [selectedFk, setSelectedFk] = useState<ForeignKey>()
 
   const { data, error, isLoading, isSuccess, isError } = useForeignKeyConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: selectedSchema,
   })
 

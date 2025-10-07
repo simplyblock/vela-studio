@@ -106,8 +106,7 @@ const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
       updateDatabaseFunction(
         {
           func,
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           payload,
         },
         {
@@ -120,8 +119,7 @@ const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
     } else {
       createDatabaseFunction(
         {
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           payload,
         },
         {

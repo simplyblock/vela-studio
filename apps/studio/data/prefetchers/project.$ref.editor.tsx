@@ -6,15 +6,13 @@ import { prefetchSchemas } from 'data/database/schemas-query'
 import { ENTITY_TYPE } from 'data/entity-types/entity-type-constants'
 import { prefetchEntityTypes } from 'data/entity-types/entity-types-infinite-query'
 import { useLocalStorage } from 'hooks/misc/useLocalStorage'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import PrefetchableLink, { PrefetchableLinkProps } from './PrefetchableLink'
-import { useParams } from 'common'
+import { useSelectedBranchQuery } from '../branches/selected-branch-query'
 
 export function usePrefetchEditorIndexPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { slug: orgRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [entityTypesSort] = useLocalStorage<'alphabetical' | 'grouped-alphabetical'>(
     'table-editor-sort',
@@ -22,28 +20,25 @@ export function usePrefetchEditorIndexPage() {
   )
 
   return useCallback(() => {
-    if (!project) return
+    if (!branch) return
 
     // Prefetch code
-    router.prefetch(`/org/${orgRef}/project/${project.ref}/branch/${branchRef}/editor`)
+    router.prefetch(`/org/${branch.organization_id}/project/${branch.project_id}/branch/${branch.id}/editor`)
 
     // Prefetch data
     prefetchSchemas(queryClient, {
-      orgSlug: orgRef,
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
     }).catch(() => {
       // eat prefetching errors as they are not critical
     })
     prefetchEntityTypes(queryClient, {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       sort: entityTypesSort,
       filterTypes: Object.values(ENTITY_TYPE),
     }).catch(() => {
       // eat prefetching errors as they are not critical
     })
-  }, [entityTypesSort, project, queryClient, router])
+  }, [entityTypesSort, branch, queryClient, router])
 }
 
 interface EditorIndexPageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 'prefetcher'> {

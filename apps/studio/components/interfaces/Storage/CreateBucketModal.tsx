@@ -55,6 +55,7 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { inverseValidBucketNameRegex, validBucketNameRegex } from './CreateBucketModal.utils'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { convertFromBytes, convertToBytes } from './StorageSettings/StorageSettings.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 const FormSchema = z
   .object({
     name: z
@@ -100,6 +101,7 @@ const CreateBucketModal = () => {
   const [visible, setVisible] = useState(false)
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { mutate: sendEvent } = useSendEventMutation()
   const router = useRouter()
   // FIXME: need permission implemented   
@@ -112,7 +114,7 @@ const CreateBucketModal = () => {
   const { mutateAsync: createIcebergWrapper, isLoading: isCreatingIcebergWrapper } =
     useIcebergWrapperCreateMutation()
 
-  const { data } = useProjectStorageConfigQuery({ orgSlug: orgRef, projectRef })
+  const { data } = useProjectStorageConfigQuery({ branch })
   const { value, unit } = convertFromBytes(data?.fileSizeLimit ?? 0)
   const formattedGlobalUploadLimit = `${value} ${unit}`
 

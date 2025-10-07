@@ -50,7 +50,7 @@ import {
 import SpreadsheetImport from './SpreadsheetImport/SpreadsheetImport'
 import TableEditor from './TableEditor/TableEditor'
 import type { ImportContent } from './TableEditor/TableEditor.types'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface SidePanelEditorProps {
   editable?: boolean
@@ -68,7 +68,7 @@ const SidePanelEditor = ({
   includeColumns = false,
   onTableCreated = noop,
 }: SidePanelEditorProps) => {
-  const { slug: orgRef, ref } = useParams()
+  const { ref } = useParams()
   const snap = useTableEditorStateSnapshot()
   const tabsSnap = useTabsStateSnapshot()
   const [_, setParams] = useUrlState({ arrayKeys: ['filter', 'sort'] })
@@ -97,7 +97,7 @@ const SidePanelEditor = ({
     },
   })
   const { data: publications } = useDatabasePublicationsQuery({
-    branch
+    branch,
   })
   const { mutateAsync: createPublication } = useDatabasePublicationCreateMutation()
   const { mutateAsync: updatePublication } = useDatabasePublicationUpdateMutation({
@@ -120,8 +120,7 @@ const SidePanelEditor = ({
     if (isNewRecord) {
       try {
         await createTableRows({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           table: selectedTable,
           payload,
           enumArrayColumns,
@@ -136,8 +135,7 @@ const SidePanelEditor = ({
         if (selectedTable.primary_keys.length > 0) {
           try {
             await updateTableRow({
-              projectRef: project.ref,
-              connectionString: branch.database.encrypted_connection_string,
+              branch,
               table: selectedTable,
               configuration,
               payload,
@@ -231,22 +229,20 @@ const SidePanelEditor = ({
     const selectedColumnToEdit = snap.sidePanel?.type === 'column' && snap.sidePanel.column
     const { primaryKey, foreignKeyRelations, existingForeignKeyRelations } = configuration
 
-    if (!project || selectedTable === undefined) {
-      return console.error('no project or table selected')
+    if (selectedTable === undefined || !branch) {
+      return console.error('no branch or table selected')
     }
 
     const response = isNewRecord
       ? await createColumn({
-          projectRef: project?.ref!,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           payload: payload as CreateColumnPayload,
           selectedTable,
           primaryKey,
           foreignKeyRelations,
         })
       : await updateColumn({
-          projectRef: project?.ref!,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           originalColumn: selectedColumnToEdit as PostgresColumn,
           payload: payload as UpdateColumnPayload,
           selectedTable,
@@ -268,20 +264,44 @@ const SidePanelEditor = ({
       }
 
       await Promise.all([
-        queryClient.invalidateQueries(tableEditorKeys.tableEditor(project?.ref, selectedTable?.id)),
         queryClient.invalidateQueries(
-          databaseKeys.foreignKeyConstraints(project?.ref, selectedTable?.schema)
+          tableEditorKeys.tableEditor(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            selectedTable?.id
+          )
         ),
         queryClient.invalidateQueries(
-          databaseKeys.tableDefinition(project?.ref, selectedTable?.id)
+          databaseKeys.foreignKeyConstraints(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            selectedTable?.schema
+          )
         ),
-        queryClient.invalidateQueries(entityTypeKeys.list(project?.ref)),
+        queryClient.invalidateQueries(
+          databaseKeys.tableDefinition(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            selectedTable?.id
+          )
+        ),
+        queryClient.invalidateQueries(
+          entityTypeKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
       ])
 
       // We need to invalidate tableRowsAndCount after tableEditor
       // to ensure the query sent is correct
       await queryClient.invalidateQueries(
-        tableRowKeys.tableRowsAndCount(project?.ref, selectedTable?.id)
+        tableRowKeys.tableRowsAndCount(
+          branch?.organization_id,
+          branch?.project_id,
+          branch?.id,
+          selectedTable?.id
+        )
       )
 
       setIsEdited(false)
@@ -322,8 +342,7 @@ const SidePanelEditor = ({
       if (realtimePublication === undefined) {
         const realtimeTables = enabled ? [`${table.schema}.${table.name}`] : []
         await createPublication({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           name: 'supabase_realtime',
           publish_insert: true,
           publish_update: true,
@@ -337,12 +356,17 @@ const SidePanelEditor = ({
         // Switch it to individual tables via an array of strings
         // Refer to PublicationStore for more information about this
         const publicTables = await queryClient.fetchQuery({
-          queryKey: tableKeys.list(project.ref, 'public', includeColumns),
+          queryKey: tableKeys.list(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            'public',
+            includeColumns
+          ),
           queryFn: ({ signal }) =>
             getTables(
               {
-                projectRef: project.ref,
-                connectionString: branch.database.encrypted_connection_string,
+                branch,
                 schema: 'public',
               },
               signal
@@ -353,9 +377,8 @@ const SidePanelEditor = ({
           ? publicTables.map((t) => `${t.schema}.${t.name}`)
           : publicTables.filter((t) => t.id !== table.id).map((t) => `${t.schema}.${t.name}`)
         await updatePublication({
+          branch,
           id: realtimePublication.id,
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
           tables: realtimeTables,
         })
         return
@@ -375,9 +398,8 @@ const SidePanelEditor = ({
             : null
       if (realtimeTables === null) return
       await updatePublication({
+        branch,
         id: realtimePublication.id,
-        projectRef: project.ref,
-        connectionString: branch.database.encrypted_connection_string,
         tables: realtimeTables,
       })
     } catch (error: any) {
@@ -416,6 +438,10 @@ const SidePanelEditor = ({
       primaryKey,
     } = configuration
 
+    if (!branch) {
+      return console.error('no branch selected')
+    }
+
     try {
       if (
         snap.sidePanel?.type === 'table' &&
@@ -426,7 +452,7 @@ const SidePanelEditor = ({
 
         toastId = toast.loading(`Duplicating table: ${tableToDuplicate.name}...`)
 
-        const table = await duplicateTable(orgRef!, project?.ref!, branch?.database.encrypted_connection_string, payload, {
+        const table = await duplicateTable(branch, payload, {
           isRLSEnabled,
           isDuplicateRows,
           duplicateTable: tableToDuplicate,
@@ -435,8 +461,18 @@ const SidePanelEditor = ({
         if (isRealtimeEnabled) await updateTableRealtime(table, isRealtimeEnabled)
 
         await Promise.all([
-          queryClient.invalidateQueries(tableKeys.list(project?.ref, table.schema, includeColumns)),
-          queryClient.invalidateQueries(entityTypeKeys.list(project?.ref)),
+          queryClient.invalidateQueries(
+            tableKeys.list(
+              branch?.organization_id,
+              branch?.project_id,
+              branch?.id,
+              table.schema,
+              includeColumns
+            )
+          ),
+          queryClient.invalidateQueries(
+            entityTypeKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+          ),
         ])
 
         toast.success(
@@ -448,9 +484,7 @@ const SidePanelEditor = ({
         toastId = toast.loading(`Creating new table: ${payload.name}...`)
 
         const table = await createTable({
-          orgRef: orgRef!,
-          projectRef: project?.ref!,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           toastId,
           payload,
           columns,
@@ -461,8 +495,18 @@ const SidePanelEditor = ({
         if (isRealtimeEnabled) await updateTableRealtime(table, true)
 
         await Promise.all([
-          queryClient.invalidateQueries(tableKeys.list(project?.ref, table.schema, includeColumns)),
-          queryClient.invalidateQueries(entityTypeKeys.list(project?.ref)),
+          queryClient.invalidateQueries(
+            tableKeys.list(
+              branch?.organization_id,
+              branch?.project_id,
+              branch?.id,
+              table.schema,
+              includeColumns
+            )
+          ),
+          queryClient.invalidateQueries(
+            entityTypeKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+          ),
         ])
 
         toast.success(`Table ${table.name} is good to go!`, { id: toastId })
@@ -471,9 +515,7 @@ const SidePanelEditor = ({
         toastId = toast.loading(`Updating table: ${selectedTable?.name}...`)
 
         const { table, hasError } = await updateTable({
-          orgRef: orgRef!,
-          projectRef: project?.ref!,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           toastId,
           table: selectedTable,
           payload,
@@ -529,8 +571,7 @@ const SidePanelEditor = ({
     if (file && rowCount > 0) {
       // CSV file upload
       const res: any = await insertRowsViaSpreadsheet(
-        project.ref!,
-        branch.database.encrypted_connection_string,
+        branch,
         file,
         selectedTable,
         selectedHeaders,
@@ -551,8 +592,7 @@ const SidePanelEditor = ({
     } else {
       // Text paste
       const res: any = await insertTableRows(
-        project.ref!,
-        branch.database.encrypted_connection_string,
+        branch,
         selectedTable,
         importContent.rows,
         selectedHeaders,
@@ -575,7 +615,12 @@ const SidePanelEditor = ({
     }
 
     await queryClient.invalidateQueries(
-      tableRowKeys.tableRowsAndCount(project?.ref, selectedTable?.id)
+      tableRowKeys.tableRowsAndCount(
+        branch?.organization_id,
+        branch?.project_id,
+        branch?.id,
+        selectedTable?.id
+      )
     )
     toast.success(`Successfully imported ${rowCount} rows of data into ${selectedTable.name}`, {
       id: toastId,

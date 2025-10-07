@@ -3,16 +3,12 @@ import { useMemo } from 'react'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useFDWsQuery } from 'data/fdw/fdws-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { EMPTY_ARR } from 'lib/void'
 import { wrapperMetaComparator } from '../Wrappers/Wrappers.utils'
 import { INTEGRATIONS } from './Integrations.constants'
-import { getPathReferences } from '../../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const useInstalledIntegrations = () => {
-  const { slug: orgSlug } = getPathReferences()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const {
@@ -22,8 +18,7 @@ export const useInstalledIntegrations = () => {
     isLoading: isFDWLoading,
     isSuccess: isSuccessFDWs,
   } = useFDWsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const {
     data: extensions,
@@ -42,9 +37,7 @@ export const useInstalledIntegrations = () => {
     isLoading: isSchemasLoading,
     isSuccess: isSuccessSchemas,
   } = useSchemasQuery({
-    orgSlug: orgSlug,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const isHooksEnabled = schemas?.some((schema) => schema.name === 'supabase_functions')

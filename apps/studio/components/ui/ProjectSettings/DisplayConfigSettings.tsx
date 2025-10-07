@@ -8,23 +8,26 @@ import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { Input } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const DisplayConfigSettings = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data: settings,
     isLoading: isProjectSettingsLoading,
     isError: isProjectSettingsError,
   } = useProjectSettingsV2Query({
-    orgSlug, projectRef,
+    orgSlug,
+    projectRef,
   })
-  const { data: config, isError: isPostgrestError } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
+  const { data: config, isError: isPostgrestError } = useProjectPostgrestConfigQuery({ branch })
 
   const {
     data,
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
-  } = useJwtSecretUpdatingStatusQuery({ orgSlug, projectRef })
+  } = useJwtSecretUpdatingStatusQuery({ branch })
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
   const isNotUpdatingJwtSecret =
     jwtSecretUpdateStatus === undefined || jwtSecretUpdateStatus === JwtSecretUpdateStatus.Updated

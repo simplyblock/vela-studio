@@ -5,22 +5,31 @@ import { handleError, patch } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
 import { components } from 'api-types'
+import { Branch } from 'api-types/types'
 
 type StorageConfigUpdatePayload = components['schemas']['UpdateStorageConfigBody']
 
 export type ProjectStorageConfigUpdateUpdateVariables = StorageConfigUpdatePayload & {
-  projectRef: string
+  branch: Branch
 }
 
 export async function updateProjectStorageConfigUpdate({
-  projectRef,
+  branch,
   fileSizeLimit,
   features,
 }: ProjectStorageConfigUpdateUpdateVariables) {
-  const { data, error } = await patch('/platform/projects/{ref}/config/storage', {
-    params: { path: { ref: projectRef } },
-    body: { fileSizeLimit, features },
-  })
+  const { data, error } = await patch(
+    `/platform/organizations/{slug}/projects/{ref}/config/storage`,
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+        },
+      },
+      body: { fileSizeLimit, features },
+    }
+  )
   if (error) handleError(error)
   return data
 }
@@ -49,8 +58,10 @@ export const useProjectStorageConfigUpdateUpdateMutation = ({
     ProjectStorageConfigUpdateUpdateVariables
   >((vars) => updateProjectStorageConfigUpdate(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef } = variables
-      await queryClient.invalidateQueries(configKeys.storage(projectRef))
+      const { branch } = variables
+      await queryClient.invalidateQueries(
+        configKeys.storage(branch.organization_id, branch.project_id, branch.id)
+      )
       await onSuccess?.(data, variables, context)
     },
     async onError(data, variables, context) {

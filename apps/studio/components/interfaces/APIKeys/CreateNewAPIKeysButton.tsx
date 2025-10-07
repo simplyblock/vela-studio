@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-import { useParams } from 'common'
 import { useAPIKeyCreateMutation } from 'data/api-keys/api-key-create-mutation'
 import {
   AlertDialog,
@@ -13,31 +12,30 @@ import {
   AlertDialogTitle,
   Button,
 } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const CreateNewAPIKeysButton = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [createKeysDialogOpen, setCreateKeysDialogOpen] = useState(false)
   const [isCreatingKeys, setIsCreatingKeys] = useState(false)
 
   const { mutate: createAPIKey } = useAPIKeyCreateMutation()
 
   const handleCreateNewApiKeys = async () => {
-    if (!projectRef) return
+    if (!branch) return
     setIsCreatingKeys(true)
 
     try {
       // Create publishable key
       await createAPIKey({
-        orgSlug,
-        projectRef,
+        branch,
         type: 'publishable',
         name: 'default',
       })
 
       // Create secret key
       await createAPIKey({
-        orgSlug,
-        projectRef,
+        branch,
         type: 'secret',
         name: 'default',
       })

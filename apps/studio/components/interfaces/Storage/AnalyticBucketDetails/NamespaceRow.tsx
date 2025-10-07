@@ -11,9 +11,8 @@ import { useIcebergNamespaceTablesQuery } from 'data/storage/iceberg-namespace-t
 import { BASE_PATH } from 'lib/constants'
 import { Button, cn, TableCell, TableRow } from 'ui'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { getPathReferences } from '../../../../data/vela/path-references'
-import branch from '../../../../pages/org/[slug]/project/[ref]/branch'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type NamespaceRowProps = {
   bucketName: string
@@ -56,8 +55,7 @@ export const NamespaceRow = ({
 
   const rescanNamespace = async () => {
     await importForeignSchema({
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       serverName: wrapperInstance.server_name,
       sourceSchema: namespace,
       targetSchema: schema,

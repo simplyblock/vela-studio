@@ -149,9 +149,8 @@ export const EditorPanel = ({
       }
     }
     executeSql({
+      branch,
       sql: suffixWithLimit(currentValue, 100),
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
       handleError: (error) => {
         throw error
       },

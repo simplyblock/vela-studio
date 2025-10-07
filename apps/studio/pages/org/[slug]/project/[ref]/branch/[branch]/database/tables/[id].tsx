@@ -10,12 +10,11 @@ import { ScaffoldContainer, ScaffoldSection } from 'components/layouts/Scaffold'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
 import { isTableLike } from 'data/table-editor/table-editor-types'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useTableEditorStateSnapshot } from 'state/table-editor'
 import { TableEditorTableStateContextProvider } from 'state/table-editor-table'
 import type { NextPageWithLayout } from 'types'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
-import { useSelectedBranchQuery } from '../../../../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const DatabaseTables: NextPageWithLayout = () => {
   const snap = useTableEditorStateSnapshot()
@@ -23,11 +22,9 @@ const DatabaseTables: NextPageWithLayout = () => {
   const { id: _id } = useParams()
   const id = _id ? Number(_id) : undefined
 
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data: selectedTable, isLoading } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
 
@@ -54,10 +51,10 @@ const DatabaseTables: NextPageWithLayout = () => {
         </ScaffoldSection>
       </ScaffoldContainer>
 
-      {project?.ref !== undefined && selectedTable !== undefined && isTableLike(selectedTable) && (
+      {branch && selectedTable !== undefined && isTableLike(selectedTable) && (
         <TableEditorTableStateContextProvider
           key={`table-editor-table-${selectedTable.id}`}
-          projectRef={project?.ref}
+          branch={branch}
           table={selectedTable}
         >
           <DeleteConfirmationDialogs selectedTable={selectedTable} />

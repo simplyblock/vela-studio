@@ -1,5 +1,5 @@
-import { useParams } from 'common'
 import { useProjectLintsQuery } from 'data/lint/lint-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * Hook to fetch and filter project lints
@@ -13,10 +13,9 @@ import { useProjectLintsQuery } from 'data/lint/lint-query'
  * @returns {Array} errorLints - Security lints with ERROR level
  */
 export const useLints = () => {
-  const { slug, ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const { data } = useProjectLintsQuery({
-    orgSlug: slug,
-    projectRef: ref,
+    branch,
   })
 
   const securityLints = (Array.isArray(data) && data || []).filter((lint) => lint.categories.includes('SECURITY'))

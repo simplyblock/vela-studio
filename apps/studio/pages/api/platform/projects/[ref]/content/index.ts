@@ -1,5 +1,4 @@
 import { paths } from 'api-types'
-import apiWrapper from 'lib/api/apiWrapper'
 import { NextApiRequest, NextApiResponse } from 'next'
 import type { UserContent } from 'types'
 import { apiBuilder } from '../../../../../../lib/api/apiBuilder'
@@ -32,7 +31,7 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse<GetRespons
       } as any,
       favorite: false,
       inserted_at: '',
-      project_id: 0,
+      project_id: '',
       updated_at: '',
       owner: {
         id: 1,

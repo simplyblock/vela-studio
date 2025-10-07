@@ -3,9 +3,8 @@ import { Modal } from 'ui'
 
 import { useFDWDeleteMutation } from 'data/fdw/fdw-delete-mutation'
 import type { FDW } from 'data/fdw/fdws-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { getWrapperMetaForWrapper } from './Wrappers.utils'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DeleteWrapperModalProps {
   selectedWrapper?: FDW
@@ -13,7 +12,6 @@ interface DeleteWrapperModalProps {
 }
 
 const DeleteWrapperModal = ({ selectedWrapper, onClose }: DeleteWrapperModalProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { mutate: deleteFDW, isLoading: isDeleting } = useFDWDeleteMutation({
     onSuccess: () => {
@@ -24,14 +22,12 @@ const DeleteWrapperModal = ({ selectedWrapper, onClose }: DeleteWrapperModalProp
   const wrapperMeta = getWrapperMetaForWrapper(selectedWrapper)
 
   const onConfirmDelete = async () => {
-    if (!project?.ref) return console.error('Project ref is required')
     if (!branch) return console.error('Branch is required')
     if (!selectedWrapper) return console.error('Wrapper is required')
     if (!wrapperMeta) return console.error('Wrapper meta is required')
 
     deleteFDW({
-      projectRef: project?.ref,
-      connectionString: branch.database.encrypted_connection_string,
+      branch,
       wrapper: selectedWrapper,
       wrapperMeta: wrapperMeta,
     })

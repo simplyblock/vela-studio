@@ -86,8 +86,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { mutate: createQueue, isLoading } = useDatabaseQueueCreateMutation()
@@ -115,10 +114,10 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   }
 
   const onSubmit: SubmitHandler<CreateQueueForm> = async ({ name, enableRls, values }) => {
+    if (!branch) return console.error('Branch is required')
     createQueue(
       {
-        projectRef: project!.ref,
-        connectionString: branch!.database.encrypted_connection_string,
+        branch,
         name,
         enableRls,
         type: values.type,

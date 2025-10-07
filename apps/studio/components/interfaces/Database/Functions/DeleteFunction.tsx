@@ -26,12 +26,11 @@ const DeleteFunction = ({ func, visible, setVisible }: DeleteFunctionProps) => {
 
   async function handleDelete() {
     if (!func) return console.error('Function is required')
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     deleteDatabaseFunction({
       func,
-      projectRef: project.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
     })
   }
 

@@ -14,10 +14,12 @@ import { Alert_Shadcn_, AlertTitle_Shadcn_, Badge, Card, CardContent, CardHeader
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { FormLayout } from 'ui-patterns/form/Layout/FormLayout'
 import { PostgrestConfig } from './PostgrestConfig'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const ServiceList = () => {
   const { data: project, isLoading } = useSelectedProjectQuery()
   const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
   const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
@@ -25,7 +27,7 @@ export const ServiceList = () => {
     data: databases,
     isError,
     isLoading: isLoadingDatabases,
-  } = useReadReplicasQuery({ orgSlug, projectRef })
+  } = useReadReplicasQuery({ branch })
   const { data: loadBalancers } = useLoadBalancersQuery({ projectRef, orgSlug })
 
   // Get the API service

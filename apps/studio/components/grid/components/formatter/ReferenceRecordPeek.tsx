@@ -10,13 +10,12 @@ import {
 import { convertByteaToHex } from 'components/interfaces/TableGridEditor/SidePanelEditor/RowEditor/RowEditor.utils'
 import { EditorTablePageLink } from 'data/prefetchers/project.$ref.editor.$id'
 import { useTableRowsQuery } from 'data/table-rows/table-rows-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { getPathReferences } from 'data/vela/path-references'
 import { useRouter } from 'next/router'
 import { DEFAULT_HOME } from '../../../../pages/api/constants'
-import { useBranchQuery } from 'data/branches/branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ReferenceRecordPeekProps {
   table: PostgresTable
@@ -26,15 +25,13 @@ interface ReferenceRecordPeekProps {
 
 export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPeekProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
-  const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
+  const { data: branch } = useSelectedBranchQuery()
 
   const router = useRouter()
 
   const { data, error, isSuccess, isError, isLoading } = useTableRowsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       tableId: table.id,
       filters: [{ column, operator: '=', value }],
       page: 1,

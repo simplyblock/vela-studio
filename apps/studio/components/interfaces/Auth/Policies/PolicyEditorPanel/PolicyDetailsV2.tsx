@@ -5,7 +5,6 @@ import { UseFormReturn } from 'react-hook-form'
 import { useDatabaseRolesQuery } from 'data/database-roles/database-roles-query'
 import { useTablesQuery } from 'data/tables/tables-query'
 
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   CommandEmpty_Shadcn_,
@@ -60,7 +59,6 @@ export const PolicyDetailsV2 = ({
   onUpdateCommand,
   authContext,
 }: PolicyDetailsV2Props) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
     // FIXME: need permission implemented 
@@ -74,8 +72,7 @@ export const PolicyDetailsV2 = ({
   })
 
   const { data: dbRoles } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const formattedRoles = (dbRoles ?? [])
     .map((role) => {

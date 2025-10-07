@@ -26,7 +26,7 @@ const RenameQueryModal = ({
   onCancel,
   onComplete,
 }: RenameQueryModalProps) => {
-  const { slug: orgSlug, ref } = getPathReferences()
+  const { ref } = getPathReferences()
 
   const snapV2 = useSqlEditorV2StateSnapshot()
   const tabsSnap = useTabsStateSnapshot()
@@ -61,6 +61,7 @@ const RenameQueryModal = ({
       await upsertContent({
         projectRef: ref,
         payload: {
+          content: '',
           ...localSnippet,
           name: nameInput,
           description: descriptionInput,

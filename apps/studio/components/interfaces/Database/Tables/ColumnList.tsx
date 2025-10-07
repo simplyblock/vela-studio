@@ -12,7 +12,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
 import { isTableLike } from 'data/table-editor/table-editor-types'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import {
   Button,
@@ -26,7 +25,7 @@ import {
   TooltipTrigger,
 } from 'ui'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ColumnListProps {
   onAddColumn: () => void
@@ -42,7 +41,6 @@ export const ColumnList = ({
   const { slug: orgRef, ref: projectRef, branch: branchRef, id: _id } = useParams()
   const id = _id ? Number(_id) : undefined
 
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const {
     data: selectedTable,
@@ -51,8 +49,7 @@ export const ColumnList = ({
     isLoading,
     isSuccess,
   } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
 

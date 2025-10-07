@@ -1,24 +1,26 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
 
 import { handleError, patch } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type JwtSecretUpdateVariables = {
-  projectRef: string
+  branch: Branch
   jwtSecret: string
   changeTrackingId: string
 }
 
 export async function updateJwtSecret({
-  projectRef,
+  branch,
   jwtSecret,
   changeTrackingId,
 }: JwtSecretUpdateVariables) {
   const { data, error } = await patch('/platform/projects/{ref}/config/secrets', {
     params: {
-      path: { ref: projectRef },
+      path: {
+        ref: branch.project_id,
+      },
     },
     body: {
       jwt_secret: jwtSecret,
@@ -47,8 +49,10 @@ export const useJwtSecretUpdateMutation = ({
     (vars) => updateJwtSecret(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(configKeys.jwtSecretUpdatingStatus(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          configKeys.jwtSecretUpdatingStatus(branch.organization_id, branch.project_id, branch.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

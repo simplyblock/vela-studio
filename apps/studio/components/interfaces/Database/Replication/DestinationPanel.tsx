@@ -64,7 +64,7 @@ const DestinationPanel = ({
   onClose,
   existingDestination,
 }: DestinationPanelProps) => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef } = useParams()
   const [publicationPanelVisible, setPublicationPanelVisible] = useState(false)
   const { mutateAsync: createTenantSource, isLoading: creatingTenantSource } =
     useCreateTenantSourceMutation()
@@ -204,8 +204,9 @@ const DestinationPanel = ({
     }
   }
   const onEnableReplication = async () => {
+    if (!orgRef) return console.error('Organization ref is required')
     if (!projectRef) return console.error('Project ref is required')
-    await createTenantSource({ projectRef })
+    await createTenantSource({ orgId: orgRef, projectId: projectRef })
   }
 
   const { enabled } = form.watch()

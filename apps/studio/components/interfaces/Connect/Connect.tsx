@@ -30,10 +30,12 @@ import { CONNECTION_TYPES, ConnectionType, FRAMEWORKS, MOBILES, ORMS } from './C
 import { getContentFilePath } from './Connect.utils'
 import ConnectDropdown from './ConnectDropdown'
 import ConnectTabContent from './ConnectTabContent'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const Connect = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const isActiveHealthy = selectedProject?.status === PROJECT_STATUS.ACTIVE_HEALTHY
 
   const [showConnect, setShowConnect] = useQueryState(
@@ -137,7 +139,7 @@ export const Connect = () => {
     return []
   }
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { anonKey, publishableKey } = canReadAPIKeys
     ? getKeys(apiKeys)
     : { anonKey: null, publishableKey: null }

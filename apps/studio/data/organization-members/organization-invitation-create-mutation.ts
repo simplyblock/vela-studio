@@ -10,7 +10,7 @@ import { organizationKeys } from './keys'
 export type OrganizationCreateInvitationVariables = {
   slug: string
   email: string
-  roleId: number
+  roleId: string
   projects?: string[]
 }
 

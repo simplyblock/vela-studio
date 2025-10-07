@@ -22,7 +22,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   // Request failed, error already handled by getOrFail
   if (!result.success) return
 
-  const userIds = result.data.map((member) => member.id)
+  const userIds = result.data.map((member) => (typeof member === 'string' ? member : member.id))
 
   const responses = await Promise.all(
     userIds.map((userId) =>
@@ -76,7 +76,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!result.success) return
 
     // Store new user id
-    userId = result.data.id
+    userId = result.data[0].id
   }
 
   // Add user to an organization

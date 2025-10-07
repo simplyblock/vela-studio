@@ -1,4 +1,4 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
@@ -6,21 +6,26 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { ResponseError } from 'types'
 import { lintKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type ProjectLintRulesVariables = {
-  projectRef?: string
+  branch?: Branch
 }
 type LintDismissalResponse = components['schemas']['ListNotificationExceptionsResponse']
 export type LintException = LintDismissalResponse['exceptions'][0]
 
 export async function getProjectLintRules(
-  { projectRef }: ProjectLintRulesVariables,
+  { branch }: ProjectLintRulesVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('Project ref is required')
+  if (!branch) throw new Error('Branch is required')
 
   const { data, error } = await get('/platform/projects/{ref}/notifications/advisor/exceptions', {
-    params: { path: { ref: projectRef } },
+    params: {
+      path: {
+        ref: branch.project_id,
+      },
+    },
     signal,
   })
 
@@ -33,7 +38,7 @@ export type ProjectLintRulesData = Awaited<ReturnType<typeof getProjectLintRules
 export type ProjectLintRulesError = ResponseError
 
 export const useProjectLintRulesQuery = <TData = ProjectLintRulesData>(
-  { projectRef }: ProjectLintRulesVariables,
+  { branch }: ProjectLintRulesVariables,
   {
     enabled = true,
     ...options
@@ -43,10 +48,10 @@ export const useProjectLintRulesQuery = <TData = ProjectLintRulesData>(
   const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
 
   return useQuery<ProjectLintRulesData, ProjectLintRulesError, TData>(
-    lintKeys.lintRules(projectRef),
-    ({ signal }) => getProjectLintRules({ projectRef }, signal),
+    lintKeys.lintRules(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getProjectLintRules({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && isActive,
+      enabled: enabled && typeof branch !== 'undefined' && isActive,
       ...options,
     }
   )

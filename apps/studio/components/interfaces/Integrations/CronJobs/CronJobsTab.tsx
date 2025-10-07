@@ -22,7 +22,7 @@ import { Button, cn, LoadingLine, Sheet, SheetContent } from 'ui'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { formatCronJobColumns } from './CronJobs.utils'
 import { DeleteCronJob } from './DeleteCronJob'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const EMPTY_CRON_JOB = { jobname: '', schedule: '', active: true, command: '' }
 
@@ -62,8 +62,7 @@ export const CronjobsTab = () => {
     fetchNextPage,
   } = useCronJobsInfiniteQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       searchTerm: searchQuery,
     },
     { keepPreviousData: Boolean(searchQuery), staleTime: Infinity }
@@ -71,8 +70,7 @@ export const CronjobsTab = () => {
   const cronJobs = useMemo(() => data?.pages.flatMap((p) => p) || [], [data?.pages])
 
   const { data: count, isLoading: isLoadingCount } = useCronJobsCountQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { data: extensions = [] } = useDatabaseExtensionsQuery({

@@ -137,21 +137,21 @@ export function loadTableEditorStateFromLocalStorage(
 }
 
 export function saveTableEditorStateToLocalStorage({
-  projectRef,
+  branch,
   tableName,
   schema,
   gridColumns,
   sorts,
   filters,
 }: {
-  projectRef: string
+  branch: Branch
   tableName: string
   schema?: string | null
   gridColumns?: CalculatedColumn<any, any>[]
   sorts?: string[]
   filters?: string[]
 }) {
-  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, projectRef)
+  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branch.project_id)
   const savedStr = localStorage.getItem(storageKey)
   const tableKey = !schema || schema == 'public' ? tableName : `${schema}.${tableName}`
 

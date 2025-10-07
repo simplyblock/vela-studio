@@ -167,7 +167,7 @@ export const sqlEditorState = proxy({
         id,
         name: '',
         owner_id: -1,
-        project_id: -1,
+        project_id: '',
         parent_id: null,
       },
     }

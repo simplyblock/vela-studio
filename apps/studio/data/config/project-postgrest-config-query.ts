@@ -4,10 +4,10 @@ import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
 import { ResponseError } from 'types'
 import { configKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type ProjectPostgrestConfigVariables = {
-  orgSlug?: string
-  projectRef?: string
+  branch?: Branch
 }
 
 type PostgrestConfigResponse = components['schemas']['GetPostgrestConfigResponse'] & {
@@ -15,16 +15,23 @@ type PostgrestConfigResponse = components['schemas']['GetPostgrestConfigResponse
 }
 
 export async function getProjectPostgrestConfig(
-  { orgSlug, projectRef }: ProjectPostgrestConfigVariables,
+  { branch }: ProjectPostgrestConfigVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('Branch is required')
 
-  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/config/postgrest', {
-    params: { path: { slug: orgSlug, ref: projectRef } },
-    signal,
-  })
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/config/postgrest',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+        },
+      },
+      signal,
+    }
+  )
   if (error) handleError(error)
   // [Joshen] Not sure why but db_pool isn't part of the API typing
   // https://github.com/supabase/infrastructure/blob/develop/api/src/routes/platform/projects/ref/config/postgrest.dto.ts#L6
@@ -35,17 +42,17 @@ export type ProjectPostgrestConfigData = Awaited<ReturnType<typeof getProjectPos
 export type ProjectPostgrestConfigError = ResponseError
 
 export const useProjectPostgrestConfigQuery = <TData = ProjectPostgrestConfigData>(
-  { orgSlug, projectRef }: ProjectPostgrestConfigVariables,
+  { branch }: ProjectPostgrestConfigVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ProjectPostgrestConfigData, ProjectPostgrestConfigError, TData> = {}
 ) =>
   useQuery<ProjectPostgrestConfigData, ProjectPostgrestConfigError, TData>(
-    configKeys.postgrest(orgSlug, projectRef),
-    ({ signal }) => getProjectPostgrestConfig({ orgSlug, projectRef }, signal),
+    configKeys.postgrest(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getProjectPostgrestConfig({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

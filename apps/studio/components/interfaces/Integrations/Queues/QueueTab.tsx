@@ -58,14 +58,12 @@ export const QueueTab = () => {
   const queuePolicies = (policies ?? []).filter((policy) => policy.table === `q_${queueName}`)
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { data, error, isLoading, fetchNextPage, isFetching } = useQueueMessagesInfiniteQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       queueName: queueName!,
       // when no types are selected, include all types of messages
       status: selectedTypes.length === 0 ? ['archived', 'available', 'scheduled'] : selectedTypes,
@@ -82,17 +80,14 @@ export const QueueTab = () => {
   })
 
   const onToggleRLS = async () => {
-    if (!orgRef) return console.error('Organization slug is required')
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!queueTable) return toast.error('Unable to toggle RLS: Queue table not found')
     const payload = {
       id: queueTable.id,
       rls_enabled: true,
     }
     updateTable({
-      orgSlug: orgRef,
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       id: queueTable.id,
       name: queueTable.name,
       schema: 'pgmq',

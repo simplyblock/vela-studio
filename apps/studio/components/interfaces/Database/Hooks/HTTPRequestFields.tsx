@@ -20,7 +20,8 @@ import {
   SidePanel,
 } from 'ui'
 import { HTTPArgument } from './EditHookPanel'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface HTTPRequestFieldsProps {
   type: 'http_request' | 'supabase_function'
@@ -49,9 +50,10 @@ const HTTPRequestFields = ({
 }: HTTPRequestFieldsProps) => {
   const { slug, ref } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: functions } = useEdgeFunctionsQuery({ projectRef: ref })
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef: ref, reveal: true })
+  const { data: apiKeys } = useAPIKeysQuery({ branch, reveal: true })
 
   const edgeFunctions = functions ?? []
   const { serviceKey, secretKey } = getKeys(apiKeys)

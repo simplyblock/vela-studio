@@ -12,7 +12,6 @@ import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabaseFunctionsQuery } from 'data/database-functions/database-functions-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
@@ -23,13 +22,11 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell,
   Card,
 } from 'ui'
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import FunctionList from './FunctionList'
-import { getPathReferences } from '../../../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface FunctionsListProps {
   createFunction: () => void
@@ -44,11 +41,9 @@ const FunctionsList = ({
 }: FunctionsListProps) => {
   const router = useRouter()
   const { search } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
-  const { slug: orgSlug } = getPathReferences()
 
   const filterString = search ?? ''
 
@@ -68,9 +63,7 @@ const FunctionsList = ({
 
   // [Joshen] This is to preload the data for the Schema Selector
   useSchemasQuery({
-    orgSlug: orgSlug,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const {
@@ -79,8 +72,7 @@ const FunctionsList = ({
     isLoading,
     isError,
   } = useDatabaseFunctionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   if (isLoading) return <GenericSkeletonLoader />

@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useParams } from 'common'
-import { Branch, useBranchesQuery } from 'data/branches/branches-query'
+import { useBranchesQuery } from 'data/branches/branches-query'
 import {
   Button,
   DropdownMenu,
@@ -17,6 +17,7 @@ import {
 } from 'ui'
 import { BranchLoader, BranchManagementSection, BranchRow, BranchRowLoader } from './BranchPanels'
 import { EditBranchModal } from './EditBranchModal'
+import { Branch } from 'api-types/types'
 
 interface OverviewProps {
   isLoading: boolean

@@ -26,7 +26,7 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
         database_size: 107374182400,
         storage_size: 107374182400,
         vcpu: 32,
-        memory: 68719476736,
+        memory_bytes: 68719476736,
         iops: 1000000,
         database_image_tag: '15.1.0.147',
       },

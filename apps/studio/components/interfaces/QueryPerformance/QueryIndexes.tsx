@@ -52,8 +52,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     isError,
     error,
   } = useGetIndexesFromSelectQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     query: selectedRow?.['query'],
   })
 
@@ -72,8 +71,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     isLoading: isLoadingIndexAdvisorResult,
   } = useGetIndexAdvisorResult(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       query: selectedRow?.['query'],
     },
     { enabled: isIndexAdvisorEnabled }
@@ -101,8 +99,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
 
     try {
       await createIndexes({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         indexStatements: index_statements,
         onSuccess: () => refetch(),
       })

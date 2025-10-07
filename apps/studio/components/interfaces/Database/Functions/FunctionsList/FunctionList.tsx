@@ -41,8 +41,7 @@ const FunctionList = ({
   const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: functions } = useDatabaseFunctionsQuery({
-    projectRef: selectedProject?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const filteredFunctions = (functions ?? []).filter((x) =>

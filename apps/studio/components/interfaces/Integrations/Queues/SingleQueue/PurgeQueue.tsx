@@ -28,13 +28,11 @@ const PurgeQueue = ({ queueName, visible, onClose }: PurgeQueueProps) => {
   })
 
   async function handlePurge() {
-    if (!project) return console.error('Project is required')
     if (!branch) return console.error('Branch is required')
 
     purgeDatabaseQueue({
       queueName: queueName,
-      projectRef: project.ref,
-      connectionString: branch.database.encrypted_connection_string,
+      branch,
     })
   }
 

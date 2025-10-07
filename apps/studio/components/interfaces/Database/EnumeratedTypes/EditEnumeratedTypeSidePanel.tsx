@@ -11,24 +11,23 @@ import { useEnumeratedTypeUpdateMutation } from 'data/enumerated-types/enumerate
 import type { EnumeratedType } from 'data/enumerated-types/enumerated-types-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   Button,
+  cn,
+  Form_Shadcn_,
   FormControl_Shadcn_,
   FormDescription_Shadcn_,
   FormField_Shadcn_,
   FormItem_Shadcn_,
   FormLabel_Shadcn_,
   FormMessage_Shadcn_,
-  Form_Shadcn_,
   Input_Shadcn_,
   SidePanel,
-  cn,
 } from 'ui'
 import EnumeratedTypeValueRow from './EnumeratedTypeValueRow'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
-import { useParams } from 'common'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface EditEnumeratedTypeSidePanelProps {
   visible: boolean
@@ -42,9 +41,8 @@ const EditEnumeratedTypeSidePanel = ({
   onClose,
 }: EditEnumeratedTypeSidePanelProps) => {
   const submitRef = useRef<HTMLButtonElement>(null)
-  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
+  const { data: branch } = useSelectedBranchQuery()
   const { mutate: updateEnumeratedType, isLoading: isCreating } = useEnumeratedTypeUpdateMutation({
     onSuccess: (_, vars) => {
       toast.success(`Successfully updated type "${vars.name.updated}"`)
@@ -93,8 +91,7 @@ const EditEnumeratedTypeSidePanel = ({
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     if (project?.ref === undefined) return console.error('Project ref required')
-    if (branch?.database.encrypted_connection_string === undefined)
-      return console.error('Branch connectionString required')
+    if (branch === undefined) return console.error('Branch connectionString required')
     if (selectedEnumeratedType === undefined)
       return console.error('selectedEnumeratedType required')
 
@@ -119,8 +116,7 @@ const EditEnumeratedTypeSidePanel = ({
     }
 
     updateEnumeratedType({
-      projectRef: project.ref,
-      connectionString: branch.database.encrypted_connection_string,
+      branch,
       ...payload,
     })
   }
