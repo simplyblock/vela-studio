@@ -92,6 +92,10 @@ services:
       VELA_KEYCLOAK_URL: 'http://auth:8080/auth/'
       VELA_KEYCLOAK_CLIENT_ID: 'controller'
       VELA_KEYCLOAK_CLIENT_SECRET: 'controller-secret'
+      VELA_CLOUDFLARE_API_TOKEN: 'your_cloudflare_api_token'
+      VELA_CLOUDFLARE_ZONE_ID: 'your_cloudflare_zone_id'
+      VELA_CLOUDFLARE_BRANCH_REF_CNAME: 'branch-ref.staging.vela.run'
+      VELA_CLOUDFLARE_DOMAIN_SUFFIX: 'example.com'
 
   kong:
     container_name: vela-kong
