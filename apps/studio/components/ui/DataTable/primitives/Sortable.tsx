@@ -34,7 +34,7 @@ import { createContext, forwardRef, useContext, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import { Button, cn, type ButtonProps } from 'ui'
-import { composeRefs } from 'hooks/useComposedRefs'
+import { composeRefs } from '../hooks/useComposedRefs'
 
 const orientationConfig = {
   vertical: {

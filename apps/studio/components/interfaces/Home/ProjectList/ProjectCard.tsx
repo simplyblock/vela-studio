@@ -10,6 +10,7 @@ import { inferProjectStatus } from './ProjectCard.utils'
 import { ProjectCardStatus } from './ProjectCardStatus'
 import { useParams } from 'common'
 import { useBranchesQuery } from 'data/branches/branches-query'
+import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 
 export interface ProjectCardProps {
   project: ProjectInfo
@@ -18,56 +19,60 @@ export interface ProjectCardProps {
   resourceWarnings?: ResourceWarning
 }
 
-const ProjectCard = ({
-  project,
-  githubIntegration,
-  resourceWarnings,
-}: ProjectCardProps) => {
+const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCardProps) => {
   const { slug: orgRef } = useParams() as { slug: string }
   const { name, ref: projectRef, default_branch } = project
 
-  const { data: branches } = useBranchesQuery({orgSlug: orgRef, projectRef})
-  const mainBranch = branches?.find(branch => branch.name === default_branch)
+  const { data: branches, isLoading } = useBranchesQuery({ orgSlug: orgRef, projectRef })
+  const mainBranch = branches?.find((branch) => branch.name === default_branch)
 
   const isBranchingEnabled = true
   const isGithubIntegrated = githubIntegration !== undefined
   const githubRepository = githubIntegration?.metadata.name ?? undefined
   const projectStatus = inferProjectStatus(project)
 
-  if (!mainBranch) console.error('No main branch found for project', project)
+  if (!isLoading && !mainBranch) console.error('No main branch found for project', project)
 
   return (
     <li className="list-none">
-      <CardButton
-        linkHref={`/org/${orgRef}/project/${projectRef}/branch/${mainBranch?.id}`}
-        className="h-44 !px-0 group pt-5 pb-0"
-        title={
-          <div className="w-full justify-between space-y-1.5 px-5">
-            <p className="flex-shrink truncate text-sm pr-4">{name}</p>
-            <span className="text-sm lowercase text-foreground-light">Reference: {project.ref}</span>
-            <div className="flex items-center gap-x-1.5">
-              {project.status !== 'INACTIVE' && <ComputeBadgeWrapper project={project} />}
-              {isBranchingEnabled && (
-                <div className="w-fit p-1 border rounded-md flex items-center">
-                  <GitBranch size={12} strokeWidth={1.5} />
-                </div>
-              )}
-              {isGithubIntegrated && (
-                <>
+      {isLoading ? (
+        <ShimmeringLoader className="w-full h-[32px] w-6 p-0" />
+      ) : (
+        <CardButton
+          linkHref={`/org/${orgRef}/project/${projectRef}/branch/${mainBranch?.id}`}
+          className="h-44 !px-0 group pt-5 pb-0"
+          title={
+            <div className="w-full justify-between space-y-1.5 px-5">
+              <p className="flex-shrink truncate text-sm pr-4">{name}</p>
+              <span className="text-sm lowercase text-foreground-light">
+                Reference: {project.ref}
+              </span>
+              <div className="flex items-center gap-x-1.5">
+                {project.status !== 'INACTIVE' && <ComputeBadgeWrapper project={project} />}
+                {isBranchingEnabled && (
                   <div className="w-fit p-1 border rounded-md flex items-center">
-                    <Github size={12} strokeWidth={1.5} />
+                    <GitBranch size={12} strokeWidth={1.5} />
                   </div>
-                  <p className="text-xs !ml-2 text-foreground-light truncate">{githubRepository}</p>
-                </>
-              )}
+                )}
+                {isGithubIntegrated && (
+                  <>
+                    <div className="w-fit p-1 border rounded-md flex items-center">
+                      <Github size={12} strokeWidth={1.5} />
+                    </div>
+                    <p className="text-xs !ml-2 text-foreground-light truncate">
+                      {githubRepository}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        }
-        footer={
-          <ProjectCardStatus projectStatus={projectStatus} resourceWarnings={resourceWarnings} />
-        }
-        containerElement={<ProjectIndexPageLink slug={orgRef} projectRef={projectRef} />}
-      />
+          }
+          footer={
+            <ProjectCardStatus projectStatus={projectStatus} resourceWarnings={resourceWarnings} />
+          }
+          containerElement={<ProjectIndexPageLink slug={orgRef} projectRef={projectRef} />}
+        />
+      )}
     </li>
   )
 }

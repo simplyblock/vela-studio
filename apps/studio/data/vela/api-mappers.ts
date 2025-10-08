@@ -104,14 +104,14 @@ export function mapProjectBranch(branch: VelaBranch): Branch {
     pitr_enabled: branch.ptir_enabled,
     assigned_labels: branch.assigned_labels,
     used_resources: {
-      vcpu: branch.used_resources.vcpu,
+      vcpu: branch.used_resources.milli_vcpu,
       ram_bytes: branch.used_resources.ram_bytes,
       nvme_bytes: branch.used_resources.nvme_bytes,
       iops: branch.used_resources.iops,
       storage_bytes: branch.used_resources.storage_bytes ?? undefined,
     },
     max_resources: {
-      vcpu: branch.max_resources.vcpu,
+      vcpu: branch.max_resources.milli_vcpu,
       ram_bytes: branch.max_resources.ram_bytes,
       nvme_bytes: branch.max_resources.nvme_bytes,
       iops: branch.max_resources.iops,

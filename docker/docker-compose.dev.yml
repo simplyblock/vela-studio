@@ -90,12 +90,12 @@ services:
       VELA_POSTGRES_URL: 'postgresql+asyncpg://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}'
       VELA_PGMETA_CRYPTO_KEY: SAMPLE_KEY
       VELA_KEYCLOAK_URL: 'http://auth:8080/auth/'
-      VELA_KEYCLOAK_CLIENT_ID: 'controller'
-      VELA_KEYCLOAK_CLIENT_SECRET: 'controller-secret'
       VELA_CLOUDFLARE_API_TOKEN: 'your_cloudflare_api_token'
       VELA_CLOUDFLARE_ZONE_ID: 'your_cloudflare_zone_id'
       VELA_CLOUDFLARE_BRANCH_REF_CNAME: 'branch-ref.staging.vela.run'
       VELA_CLOUDFLARE_DOMAIN_SUFFIX: 'example.com'
+      VELA_KEYCLOAK_ADMIN_NAME: 'admin'
+      VELA_KEYCLOAK_ADMIN_SECRET: 'admin'
 
   kong:
     container_name: vela-kong
@@ -381,6 +381,8 @@ services:
     container_name: vela-db
     image: supabase/postgres:15.8.1.060
     restart: unless-stopped
+    ports:
+      - 5433:5432/tcp
     volumes:
       - ./volumes/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
       # Must be superuser to create event trigger
