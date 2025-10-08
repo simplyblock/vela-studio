@@ -49,4 +49,22 @@ export const authKeys = {
 
   authConfig: (projectRef: string | undefined) => ['projects', projectRef, 'auth-config'] as const,
   accessToken: () => ['access-token'] as const,
+  authProviders: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    params?: {
+      keywords: string | undefined
+      filter: string | undefined
+      providers: string[] | undefined
+    }
+  ) =>
+    [
+      'branches',
+      orgId,
+      projectId,
+      branchId,
+      'auth-providers',
+      ...(params ? [params].filter(Boolean) : []),
+    ] as const,
 }

@@ -4,6 +4,38 @@
  */
 
 export interface paths {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getProviders']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers/{name}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get?: never
+    put?: never
+    post?: never
+    delete: operations['BranchAuthController_deleteProvider']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/service-urls': {
     parameters: {
       query?: never
@@ -4332,6 +4364,31 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    AuthProviderResponse: {
+      /** Alias */
+      alias: string;
+      /**
+       * Providerid
+       * @constant
+       */
+      providerId: "oidc";
+      /** Clientid */
+      "clientId": string;
+      /**
+       * Authorizationurl
+       * Format: uri
+       */
+      "authorizationUrl": string;
+      /**
+       * Tokenurl
+       * Format: uri
+       */
+      "tokenUrl": string;
+      /** Issuer */
+      "issuer": string | null;
+      /** Userinfourl */
+      "userInfoUrl": string | null;
+    }
     AccessControlPermission: {
       actions: string[] | null
       condition:
@@ -9319,6 +9376,77 @@ export interface components {
 export type $defs = Record<string, never>
 
 export interface operations {
+  BranchAuthController_getProviders: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuthProviderResponse'][]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_deleteProvider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        name: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   ServiceUrlsController_getServiceUrls: {
     parameters: {
       query?: never

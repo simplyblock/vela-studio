@@ -4,18 +4,18 @@ import DefaultLayout from 'components/layouts/DefaultLayout'
 import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import type { NextPageWithLayout } from 'types'
 
-const ProvidersPage: NextPageWithLayout = () => {
+const SignupPage: NextPageWithLayout = () => {
   return (
     <ScaffoldContainer>
-      <AuthProvidersForm />
+      <BasicAuthSettingsForm />
     </ScaffoldContainer>
   )
 }
 
-ProvidersPage.getLayout = (page) => (
+SignupPage.getLayout = (page) => (
   <DefaultLayout>
     <AuthProvidersLayout>{page}</AuthProvidersLayout>
   </DefaultLayout>
 )
 
-export default ProvidersPage
+export default SignupPage

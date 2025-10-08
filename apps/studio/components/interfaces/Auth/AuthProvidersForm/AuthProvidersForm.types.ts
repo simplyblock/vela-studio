@@ -16,7 +16,7 @@ export interface Provider {
       enum: Enum[]
       show: {
         key: string
-        matches: string
+        matches?: string
       }
       description?: string
       descriptionOptional?: string

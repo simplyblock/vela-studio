@@ -16,7 +16,7 @@ export const generateAuthMenu = (orgRef: string, projectRef: string, branchRef: 
           items: [],
         },
         {
-          name: 'Sign In / Providers',
+          name: 'Sign Up / Providers',
           key: 'sign-in-up',
           pages: ['providers', 'third-party'],
           url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,

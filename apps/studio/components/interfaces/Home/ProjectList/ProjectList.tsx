@@ -4,7 +4,6 @@ import Link from 'next/link'
 import AlertError from 'components/ui/AlertError'
 import NoSearchResults from 'components/ui/NoSearchResults'
 import { useGitHubConnectionsQuery } from 'data/integrations/github-connections-query'
-import { useOrgIntegrationsQuery } from 'data/integrations/integrations-query-org-only'
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { ProjectInfo, useProjectsQuery } from 'data/projects/projects-query'
 import { ResourceWarning, useResourceWarningsQuery } from 'data/usage/resource-warnings-query'
@@ -175,7 +174,6 @@ const OrganizationProjects = ({
         : filteredProjects.filter((project) => filterStatus.includes(project.status))
       : filteredProjects
 
-  const { data: integrations } = useOrgIntegrationsQuery({ orgSlug: organization?.slug })
   const { data: connections } = useGitHubConnectionsQuery({ organizationId: organization?.id })
   const githubConnections = connections?.map((connection) => ({
     id: String(connection.id),
