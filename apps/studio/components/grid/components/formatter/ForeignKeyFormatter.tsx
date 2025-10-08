@@ -7,27 +7,22 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
 import { isTableLike } from 'data/table-editor/table-editor-types'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Popover_Shadcn_, PopoverContent_Shadcn_, PopoverTrigger_Shadcn_ } from 'ui'
 import type { SupaRow } from '../../types'
 import { NullValue } from '../common/NullValue'
 import { ReferenceRecordPeek } from './ReferenceRecordPeek'
-import { useBranchQuery } from 'data/branches/branch-query'
-import { useParams } from 'common'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface Props extends PropsWithChildren<RenderCellProps<SupaRow, unknown>> {
   tableId?: number
 }
 
 export const ForeignKeyFormatter = (props: Props) => {
-  const { slug: orgRef, branch: branchRef } = useParams()
   const { tableId, row, column } = props
-  const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id: tableId,
   })
   const foreignKeyColumn = data?.columns.find((x) => x.name === column.key)
@@ -40,9 +35,8 @@ export const ForeignKeyFormatter = (props: Props) => {
       r.source_column_name === column.name
   )
   const { data: tables } = useTablesQuery({
-    projectRef: project?.ref,
+    branch,
     includeColumns: true,
-    connectionString: branch?.database.encrypted_connection_string,
     schema: relationship?.target_table_schema,
   })
   const targetTable = tables?.find(

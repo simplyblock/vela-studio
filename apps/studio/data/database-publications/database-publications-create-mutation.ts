@@ -5,10 +5,10 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databasePublicationsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabasePublicationCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   name: string
   tables?: string[]
   publish_insert?: boolean
@@ -18,8 +18,7 @@ export type DatabasePublicationCreateVariables = {
 }
 
 export async function createDatabasePublication({
-  projectRef,
-  connectionString,
+  branch,
   name,
   tables = [],
   publish_insert = false,
@@ -37,8 +36,7 @@ export async function createDatabasePublication({
   })
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['publication', 'create'],
   })
@@ -68,8 +66,10 @@ export const useDatabasePublicationCreateMutation = ({
     DatabasePublicationCreateVariables
   >((vars) => createDatabasePublication(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef } = variables
-      await queryClient.invalidateQueries(databasePublicationsKeys.list(projectRef))
+      const { branch } = variables
+      await queryClient.invalidateQueries(
+        databasePublicationsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+      )
       await onSuccess?.(data, variables, context)
     },
     async onError(data, variables, context) {

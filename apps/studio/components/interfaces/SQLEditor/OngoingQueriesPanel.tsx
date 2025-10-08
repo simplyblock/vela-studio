@@ -28,16 +28,18 @@ import {
   cn,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const OngoingQueriesPanel = () => {
   const [_, setParams] = useUrlState({ replace: true })
-  const { slug: orgSlug, viewOngoingQueries } = useParams()
+  const { viewOngoingQueries } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
   const appState = useAppStateSnapshot()
   const [selectedId, setSelectedId] = useState<number>()
 
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef: project?.ref })
+  const { data: databases } = useReadReplicasQuery({ branch })
   const database = (databases ?? []).find((db) => db.identifier === state.selectedDatabaseId)
 
   const {
@@ -49,8 +51,7 @@ export const OngoingQueriesPanel = () => {
     refetch,
   } = useOngoingQueriesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: database?.connectionString,
+      branch
     },
     {
       enabled: database?.connectionString !== undefined,
@@ -179,8 +180,7 @@ export const OngoingQueriesPanel = () => {
           if (selectedId !== undefined)
             abortQuery({
               pid: selectedId,
-              projectRef: project?.ref,
-              connectionString: database?.connectionString,
+              branch,
             })
         }}
       >

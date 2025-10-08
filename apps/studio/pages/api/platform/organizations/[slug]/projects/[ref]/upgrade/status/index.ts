@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { apiBuilder } from '../../../../../../../../../lib/api/apiBuilder'
+import { apiBuilder } from 'lib/api/apiBuilder'
 
 interface Response {
   databaseUpgradeStatus: {

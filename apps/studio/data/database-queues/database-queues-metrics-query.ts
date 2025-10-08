@@ -1,11 +1,11 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueuesMetricsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   queueName: string
 }
 
@@ -34,16 +34,14 @@ const estimateMetricsSqlQuery = (queueName: string) => `
 `
 
 export async function getDatabaseQueuesMetrics({
-  projectRef,
-  connectionString,
+  branch,
   queueName,
 }: DatabaseQueuesMetricsVariables) {
-  if (!projectRef) throw new Error('Project ref is required')
+  if (!branch) throw new Error('Branch is required')
 
   try {
     const { result } = await executeSql({
-      projectRef,
-      connectionString,
+      branch,
       sql: preciseMetricsSqlQuery(queueName),
     })
     return {
@@ -55,8 +53,7 @@ export async function getDatabaseQueuesMetrics({
     // if the error is caused because the count timeouted, try to fetch an approximate count
     if (error?.message === 'canceling statement due to statement timeout') {
       const { result } = await executeSql({
-        projectRef,
-        connectionString,
+        branch,
         sql: estimateMetricsSqlQuery(queueName),
       })
       return {
@@ -73,17 +70,17 @@ export type DatabaseQueuesMetricsData = PostgresQueueMetric
 export type DatabaseQueuesMetricsError = ResponseError
 
 export const useQueuesMetricsQuery = <TData = DatabaseQueuesMetricsData>(
-  { projectRef, connectionString, queueName }: DatabaseQueuesMetricsVariables,
+  { branch, queueName }: DatabaseQueuesMetricsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<DatabaseQueuesMetricsData, DatabaseQueuesMetricsError, TData> = {}
 ) =>
   useQuery<DatabaseQueuesMetricsData, DatabaseQueuesMetricsError, TData>(
-    databaseQueuesKeys.metrics(projectRef, queueName),
-    () => getDatabaseQueuesMetrics({ projectRef, connectionString, queueName }),
+    databaseQueuesKeys.metrics(branch?.organization_id, branch?.project_id, branch?.id, queueName),
+    () => getDatabaseQueuesMetrics({ branch, queueName }),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

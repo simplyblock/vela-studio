@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { replicaKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export const replicationLagSql = () => {
   const sql = /* SQL */ `
@@ -17,18 +18,21 @@ select
 
 export type ReplicationLagVariables = {
   id: string
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export async function getReplicationLag(
-  { projectRef, connectionString, id }: ReplicationLagVariables,
+  { branch, id }: ReplicationLagVariables,
   signal?: AbortSignal
 ) {
   const sql = replicationLagSql()
 
   const { result } = await executeSql(
-    { projectRef, connectionString, sql, queryKey: ['replica-lag', id] },
+    {
+      branch,
+      sql,
+      queryKey: ['replica-lag', id],
+    },
     signal
   )
 
@@ -39,17 +43,17 @@ export type ReplicationLagData = Awaited<ReturnType<typeof getReplicationLag>>
 export type ReplicationLagError = ExecuteSqlError
 
 export const useReplicationLagQuery = <TData = ReplicationLagData>(
-  { projectRef, connectionString, id }: ReplicationLagVariables,
+  { branch, id }: ReplicationLagVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ReplicationLagData, ReplicationLagError, TData> = {}
 ) =>
   useQuery<ReplicationLagData, ReplicationLagError, TData>(
-    replicaKeys.replicaLag(projectRef, id),
-    ({ signal }) => getReplicationLag({ projectRef, connectionString, id }, signal),
+    replicaKeys.replicaLag(branch?.organization_id, branch?.project_id, branch?.id, id),
+    ({ signal }) => getReplicationLag({ branch, id }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof id !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined' && typeof id !== 'undefined',
       ...options,
     }
   )

@@ -124,14 +124,14 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
       setProjectsRoleConfiguration(
         projectsRoleConfiguration.map((p) => {
           if (p.ref === project.ref) {
-            return { ref: p.ref, projectId: p.projectId, roleId: Number(value) }
+            return { ref: p.ref, projectId: p.projectId, roleId: value }
           } else {
             return p
           }
         })
       )
     } else {
-      setProjectsRoleConfiguration([{ ref: undefined, roleId: Number(value) }])
+      setProjectsRoleConfiguration([{ ref: undefined, roleId: value }])
     }
   }
 
@@ -232,7 +232,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
 
               <div className="flex flex-col gap-y-2">
                 {projectsRoleConfiguration
-                  .sort((a, b) => (a?.projectId ?? 0) - (b?.projectId ?? 0))
+                  .sort((a, b) => (a?.projectId ?? '').localeCompare(b?.projectId ?? ''))
                   .map((project) => {
                     const name =
                       project.ref === undefined
@@ -242,7 +242,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
                       if (project.baseRoleId !== undefined) return r.id === project.baseRoleId
                       else return r.id === project.roleId
                     })
-                    const canRemoveRole = rolesRemovable.includes(role?.id ?? 0)
+                    const canRemoveRole = rolesRemovable.includes(role?.id ?? '')
 
                     return (
                       <div

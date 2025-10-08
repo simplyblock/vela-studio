@@ -9,9 +9,9 @@ import { ProjectInfo } from 'data/projects/projects-query'
 
 export interface ProjectRoleConfiguration {
   ref?: string
-  projectId?: number
-  roleId: number
-  baseRoleId?: number
+  projectId?: string
+  roleId: string
+  baseRoleId?: string
 }
 
 export const formatMemberRoleToProjectRoleConfiguration = (
@@ -55,10 +55,10 @@ export const deriveChanges = (
   const added: ProjectRoleConfiguration[] = []
   const updated: {
     ref?: string
-    projectId?: number
-    originalRole: number
-    originalBaseRole?: number
-    updatedRole: number
+    projectId?: string
+    originalRole: string
+    originalBaseRole?: string
+    updatedRole: string
   }[] = []
 
   original.forEach((x) => {
@@ -99,17 +99,17 @@ export const deriveRoleChangeActions = (
     added: ProjectRoleConfiguration[]
     updated: {
       ref?: string
-      projectId?: number
-      originalRole: number
-      originalBaseRole?: number
-      updatedRole: number
+      projectId?: string
+      originalRole: string
+      originalBaseRole?: string
+      updatedRole: string
     }[]
   }
 ) => {
   const { removed, added, updated } = changesToRoles
-  const toRemove: number[] = []
-  const toAssign: { roleId: number; projectIds: number[] }[] = []
-  const toUpdate: { roleId: number; projectIds: number[] }[] = []
+  const toRemove: string[] = []
+  const toAssign: { roleId: string; projectIds: string[] }[] = []
+  const toUpdate: { roleId: string; projectIds: string[] }[] = []
 
   const groupByAddedRoles = groupBy(added, 'roleId')
   const groupByRemovedRoles = groupBy(removed, 'roleId')
@@ -138,14 +138,14 @@ export const deriveRoleChangeActions = (
     }
 
     const projectsToAddToRole = (groupByAddedRoles[role.base_role_id]?.map((r) => r.projectId) ??
-      []) as number[]
+      []) as string[]
     const projectsToRemoveFromRole = (groupByRemovedRoles[role.id]?.map((r) => r.projectId) ??
-      []) as number[]
+      []) as string[]
     const projectsUpdatingFromRole = (groupByUpdatingFromRoles[role.id]?.map((r) => r.projectId) ??
-      []) as number[]
+      []) as string[]
     const projectsUpdatingToRole = (groupByUpdatingToRoles[role.base_role_id]?.map(
       (r) => r.projectId
-    ) ?? []) as number[]
+    ) ?? []) as string[]
     const projectIdsAppliedUpdated = projectIdsApplied
       .filter((x) => !projectsToRemoveFromRole.includes(x))
       .filter((x) => !projectsUpdatingFromRole.includes(x))
@@ -153,32 +153,35 @@ export const deriveRoleChangeActions = (
       .concat(projectsUpdatingToRole)
 
     if (!isEqual(projectIdsApplied, projectIdsAppliedUpdated)) {
-      toUpdate.push({ roleId: role.id, projectIds: projectIdsAppliedUpdated.sort((a, b) => a - b) })
+      toUpdate.push({
+        roleId: role.id,
+        projectIds: projectIdsAppliedUpdated.sort((a, b) => a.localeCompare(b)),
+      })
     }
   })
 
   Object.keys(groupByAddedRoles).forEach((roleId) => {
-    if (!existingProjectRolesByBaseIds.includes(Number(roleId))) {
+    if (!existingProjectRolesByBaseIds.includes(roleId)) {
       toAssign.push({
-        roleId: Number(roleId),
-        projectIds: (groupByAddedRoles[roleId].map((x) => x.projectId) as number[]).sort(
-          (a, b) => a - b
+        roleId: roleId,
+        projectIds: (groupByAddedRoles[roleId].map((x) => x.projectId) as string[]).sort((a, b) =>
+          a.localeCompare(b)
         ),
       })
     }
   })
 
   Object.keys(groupByUpdatingToRoles).forEach((roleId) => {
-    if (!existingProjectRolesByBaseIds.includes(Number(roleId))) {
+    if (!existingProjectRolesByBaseIds.includes(roleId)) {
       toAssign.push({
-        roleId: Number(roleId),
-        projectIds: (groupByUpdatingToRoles[roleId].map((x) => x.projectId) as number[]).sort(
-          (a, b) => a - b
+        roleId: roleId,
+        projectIds: (groupByUpdatingToRoles[roleId].map((x) => x.projectId) as string[]).sort(
+          (a, b) => a.localeCompare(b)
         ),
       })
     }
   })
 
   // [Joshen] Am sorting the results just so its more deterministic when writing tests
-  return { toRemove: toRemove.sort((a, b) => a - b), toAssign, toUpdate }
+  return { toRemove: toRemove.sort((a, b) => a.localeCompare(b)), toAssign, toUpdate }
 }

@@ -30,7 +30,7 @@ import {
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const QueueTab = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, childId: queueName } = useParams()
@@ -45,29 +45,25 @@ export const QueueTab = () => {
   const [selectedTypes, setSelectedTypes] = useState<QUEUE_MESSAGE_TYPE[]>([])
 
   const { data: tables, isLoading: isLoadingTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = tables?.find((x) => x.name === `q_${queueName}`)
   const isRlsEnabled = queueTable?.rls_enabled ?? false
 
   const { data: policies } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const queuePolicies = (policies ?? []).filter((policy) => policy.table === `q_${queueName}`)
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { data, error, isLoading, fetchNextPage, isFetching } = useQueueMessagesInfiniteQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       queueName: queueName!,
       // when no types are selected, include all types of messages
       status: selectedTypes.length === 0 ? ['archived', 'available', 'scheduled'] : selectedTypes,
@@ -84,17 +80,14 @@ export const QueueTab = () => {
   })
 
   const onToggleRLS = async () => {
-    if (!orgRef) return console.error('Organization slug is required')
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!queueTable) return toast.error('Unable to toggle RLS: Queue table not found')
     const payload = {
       id: queueTable.id,
       rls_enabled: true,
     }
     updateTable({
-      orgSlug: orgRef,
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       id: queueTable.id,
       name: queueTable.name,
       schema: 'pgmq',

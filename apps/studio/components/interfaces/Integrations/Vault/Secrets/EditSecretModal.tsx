@@ -23,9 +23,8 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useVaultSecretDecryptedValueQuery } from 'data/vault/vault-secret-decrypted-value-query'
 import { useVaultSecretUpdateMutation } from 'data/vault/vault-secret-update-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { VaultSecret } from 'types'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface EditSecretModalProps {
   visible: boolean
@@ -43,15 +42,13 @@ const formId = 'edit-vault-secret-form'
 
 const EditSecretModal = ({ visible, secret, onClose }: EditSecretModalProps) => {
   const [showSecretValue, setShowSecretValue] = useState(false)
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data, isLoading: isLoadingSecretValue } = useVaultSecretDecryptedValueQuery(
     {
-      projectRef: project?.ref,
+      branch,
       id: secret.id,
-      connectionString: branch?.database.encrypted_connection_string,
     },
-    { enabled: !!project?.ref }
+    { enabled: !!branch }
   )
   const values = {
     name: secret.name ?? '',
@@ -67,7 +64,6 @@ const EditSecretModal = ({ visible, secret, onClose }: EditSecretModalProps) => 
   const { mutate: updateSecret, isLoading: isSubmitting } = useVaultSecretUpdateMutation()
 
   const onSubmit: SubmitHandler<z.infer<typeof SecretSchema>> = async (values) => {
-    if (!project) return console.error('Project is required')
     if (!branch) return console.error('Branch is required')
 
     const payload: Partial<VaultSecret> = {
@@ -79,8 +75,7 @@ const EditSecretModal = ({ visible, secret, onClose }: EditSecretModalProps) => 
     if (Object.keys(payload).length > 0) {
       updateSecret(
         {
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           id: secret.id,
           ...payload,
         },

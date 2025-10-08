@@ -27,6 +27,7 @@ import {
   TabsTrigger_Shadcn_ as TabsTrigger,
 } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface SlowQuery {
   rolname: string
@@ -37,8 +38,9 @@ interface SlowQuery {
 
 export const AdvisorWidget = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref?: string, branch?: string }
+  const { data: branch } = useSelectedBranchQuery()
   const [selectedTab, setSelectedTab] = useState<'security' | 'performance'>('security')
-  const { data: lints, isLoading: isLoadingLints } = useProjectLintsQuery({ orgSlug: orgRef, projectRef })
+  const { data: lints, isLoading: isLoadingLints } = useProjectLintsQuery({ branch })
   const { data: slowestQueriesData, isLoading: isLoadingSlowestQueries } = useQueryPerformanceQuery(
     {
       preset: 'slowestExecutionTime',

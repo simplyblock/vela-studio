@@ -4,8 +4,8 @@ import { partition } from 'lodash'
 import { NextRouter } from 'next/router'
 import { createContext, PropsWithChildren, ReactNode, useContext, useEffect, useState } from 'react'
 import { proxy, subscribe, useSnapshot } from 'valtio'
-import { getOrganizationSlug } from '../data/vela/organization-path-slug'
-import { getBranchRef } from '../data/vela/branch-path-ref'
+import { getOrganizationSlug } from 'data/vela/organization-path-slug'
+import { getBranchRef } from 'data/vela/branch-path-ref'
 
 export const editorEntityTypes = {
   table: ['r', 'v', 'm', 'f', 'p'],

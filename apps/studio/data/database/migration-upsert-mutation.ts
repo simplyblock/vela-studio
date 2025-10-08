@@ -4,16 +4,17 @@ import { toast } from 'sonner'
 import { handleError, put } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type MigrationUpsertVariables = {
-  projectRef: string
+  branch: Branch
   query: string
   name?: string
   idempotencyKey?: string
 }
 
 export async function upsertMigration({
-  projectRef,
+  branch,
   query,
   name,
   idempotencyKey,
@@ -29,7 +30,11 @@ export async function upsertMigration({
   }
 
   const { data, error } = await put('/v1/projects/{ref}/database/migrations', {
-    params: { path: { ref: projectRef } },
+    params: {
+      path: {
+        ref: branch.project_id,
+      },
+    },
     body,
     headers,
   })
@@ -53,8 +58,10 @@ export const useMigrationUpsertMutation = ({
     (vars) => upsertMigration(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseKeys.migrations(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseKeys.migrations(branch.organization_id, branch.project_id, branch.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

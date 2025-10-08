@@ -31,7 +31,7 @@ import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import CreateEnumeratedTypeSidePanel from './CreateEnumeratedTypeSidePanel'
 import DeleteEnumeratedTypeModal from './DeleteEnumeratedTypeModal'
 import EditEnumeratedTypeSidePanel from './EditEnumeratedTypeSidePanel'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useBranchQuery } from 'data/branches/branch-query'
 import { useParams } from 'common'
 
 const EnumeratedTypes = () => {
@@ -45,8 +45,7 @@ const EnumeratedTypes = () => {
   const [selectedTypeToDelete, setSelectedTypeToDelete] = useState<EnumeratedType>()
 
   const { data, error, isLoading, isError, isSuccess } = useEnumeratedTypesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const enumeratedTypes = (data ?? []).filter((type) => type.enums.length > 0)
   const filteredEnumeratedTypes =

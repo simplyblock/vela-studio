@@ -50,7 +50,7 @@ import { HTTPHeaderFieldsSection } from './HttpHeaderFieldsSection'
 import { HttpRequestSection } from './HttpRequestSection'
 import { SqlFunctionSection } from './SqlFunctionSection'
 import { SqlSnippetSection } from './SqlSnippetSection'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface CreateCronJobSheetProps {
   selectedCronJob?: Pick<CronJob, 'jobname' | 'schedule' | 'active' | 'command'>
@@ -210,8 +210,7 @@ export const CreateCronJobSheet = ({
   const [showEnableExtensionModal, setShowEnableExtensionModal] = useState(false)
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const pgNetExtension = (data ?? []).find((ext) => ext.name === 'pg_net')
   const pgNetExtensionInstalled = pgNetExtension?.installed_version != undefined
@@ -310,8 +309,7 @@ export const CreateCronJobSheet = ({
       try {
         setIsLoadingGetCronJob(true)
         const checkExistingJob = await getDatabaseCronJob({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           name,
         })
         const nameExists = !!checkExistingJob
@@ -334,8 +332,7 @@ export const CreateCronJobSheet = ({
 
     upsertCronJob(
       {
-        projectRef: project!.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         query,
         searchTerm: searchQuery,
       },

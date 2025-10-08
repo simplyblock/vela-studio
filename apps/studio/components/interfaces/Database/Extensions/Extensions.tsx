@@ -8,22 +8,18 @@ import InformationBox from 'components/ui/InformationBox'
 import NoSearchResults from 'components/ui/NoSearchResults'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Card, Input, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui'
 import ExtensionRow from './ExtensionRow'
 import { HIDDEN_EXTENSIONS, SEARCH_TERMS } from './Extensions.constants'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Extensions = () => {
   const { filter } = useParams()
-  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
+  const { data: branch } = useSelectedBranchQuery()
   const [filterString, setFilterString] = useState<string>('')
 
   const { data, isLoading } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const extensions =

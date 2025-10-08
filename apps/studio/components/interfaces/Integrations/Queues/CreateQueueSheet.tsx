@@ -31,7 +31,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { QUEUE_TYPES } from './Queues.constants'
 import { useParams } from 'common'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface CreateQueueSheetProps {
   isClosing: boolean
@@ -86,8 +86,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { mutate: createQueue, isLoading } = useDatabaseQueueCreateMutation()
@@ -115,10 +114,10 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   }
 
   const onSubmit: SubmitHandler<CreateQueueForm> = async ({ name, enableRls, values }) => {
+    if (!branch) return console.error('Branch is required')
     createQueue(
       {
-        projectRef: project!.ref,
-        connectionString: branch!.database.encrypted_connection_string,
+        branch,
         name,
         enableRls,
         type: values.type,
@@ -141,8 +140,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   }
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const pgPartmanExtension = (data ?? []).find((ext) => ext.name === 'pg_partman')

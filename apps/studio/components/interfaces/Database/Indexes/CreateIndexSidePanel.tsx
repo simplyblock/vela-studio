@@ -35,8 +35,8 @@ import { MultiSelectOption } from 'ui-patterns/MultiSelectDeprecated'
 import { MultiSelectV2 } from 'ui-patterns/MultiSelectDeprecated/MultiSelectV2'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { INDEX_TYPES } from './Indexes.constants'
-import { getPathReferences } from '../../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface CreateIndexSidePanelProps {
   visible: boolean
@@ -57,16 +57,13 @@ const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) =
   const [searchTerm, setSearchTerm] = useState('')
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug: orgRef,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { data: entities, isLoading: isLoadingEntities } = useEntityTypesQuery({
     schemas: [selectedSchema],
     sort: 'alphabetical',
     search: searchTerm,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const {
     data: tableColumns,
@@ -75,8 +72,7 @@ const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) =
   } = useTableColumnsQuery({
     schema: selectedSchema,
     table: selectedEntity,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { mutate: createIndex, isLoading: isExecuting } = useDatabaseIndexCreateMutation({
@@ -117,8 +113,7 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
     if (!selectedEntity) return console.error('Entity is required')
 
     createIndex({
-      projectRef: project.ref,
-      connectionString: branch.database.encrypted_connection_string,
+      branch,
       payload: {
         schema: selectedSchema,
         entity: selectedEntity,

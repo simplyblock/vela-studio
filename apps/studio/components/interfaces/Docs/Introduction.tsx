@@ -6,6 +6,7 @@ import { InlineLink } from 'components/ui/InlineLink'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import CodeSnippet from './CodeSnippet'
 import PublicSchemaNotEnabledAlert from './PublicSchemaNotEnabledAlert'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface Props {
   selectedLang: 'bash' | 'js'
@@ -13,9 +14,10 @@ interface Props {
 
 export default function Introduction({ selectedLang }: Props) {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
-  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ orgSlug: orgRef, projectRef })
+  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ branch })
 
   const protocol = settings?.app_config?.protocol ?? 'https'
   const hostEndpoint = settings?.app_config?.endpoint

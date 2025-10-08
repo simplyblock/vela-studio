@@ -43,6 +43,7 @@ import { Admonition } from 'ui-patterns'
 import { Bucket } from 'data/storage/buckets-query'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { isNonNullable } from 'lib/isNonNullable'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface EditBucketModalProps {
   visible: boolean
@@ -65,9 +66,10 @@ const formId = 'edit-storage-bucket-form'
 
 export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: updateBucket, isLoading: isUpdating } = useBucketUpdateMutation()
-  const { data } = useProjectStorageConfigQuery({ orgSlug: orgRef, projectRef: projectRef })
+  const { data } = useProjectStorageConfigQuery({ branch })
   const { value, unit } = convertFromBytes(data?.fileSizeLimit ?? 0)
   const formattedGlobalUploadLimit = `${value} ${unit}`
 

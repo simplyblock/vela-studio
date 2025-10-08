@@ -26,8 +26,7 @@ import {
   Popover_Shadcn_,
   ScrollArea,
 } from 'ui'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type DatabaseFunction = DatabaseFunctionsData[number]
 
@@ -57,13 +56,11 @@ const FunctionSelector = ({
 }: FunctionSelectorProps) => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
 
   const { data, error, isLoading, isError, isSuccess, refetch } = useDatabaseFunctionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const filteredFunctions = (data ?? [])

@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Badge, NavMenu, NavMenuItem } from 'ui'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 type Props = {
   active: 'pitr' | 'scheduled' | 'rtnp'

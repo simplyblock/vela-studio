@@ -4,16 +4,16 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { sqlKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type QueryAbortVariables = {
   pid: number
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
-export async function abortQuery({ pid, projectRef, connectionString }: QueryAbortVariables) {
+export async function abortQuery({ pid, branch }: QueryAbortVariables) {
   const sql = /* SQL */ `select pg_terminate_backend(${pid})`
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -32,8 +32,10 @@ export const useQueryAbortMutation = ({
     (vars) => abortQuery(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(sqlKeys.ongoingQueries(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          sqlKeys.ongoingQueries(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

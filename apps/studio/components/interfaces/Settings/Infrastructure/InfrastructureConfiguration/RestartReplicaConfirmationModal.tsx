@@ -8,6 +8,7 @@ import { Database } from 'data/read-replicas/replicas-query'
 import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { REPLICA_STATUS } from './InstanceConfiguration.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface RestartReplicaConfirmationModalProps {
   selectedReplica?: Database
@@ -21,6 +22,7 @@ export const RestartReplicaConfirmationModal = ({
   onCancel,
 }: RestartReplicaConfirmationModalProps) => {
   const { ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const queryClient = useQueryClient()
   const formattedId = formatDatabaseID(selectedReplica?.identifier ?? '')
 
@@ -29,16 +31,19 @@ export const RestartReplicaConfirmationModal = ({
       toast.success(`Restarting read replica (ID: ${formattedId})`)
 
       // [Joshen] Temporarily optimistic rendering until API supports immediate status update
-      queryClient.setQueriesData<any>(replicaKeys.list(ref), (old: Database[]) => {
-        const updatedReplicas = old.map((x) => {
-          if (x.identifier === selectedReplica?.identifier) {
-            return { ...x, status: REPLICA_STATUS.RESTARTING }
-          } else {
-            return x
-          }
-        })
-        return updatedReplicas
-      })
+      queryClient.setQueriesData<any>(
+        replicaKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+        (old: Database[]) => {
+          const updatedReplicas = old.map((x) => {
+            if (x.identifier === selectedReplica?.identifier) {
+              return { ...x, status: REPLICA_STATUS.RESTARTING }
+            } else {
+              return x
+            }
+          })
+          return updatedReplicas
+        }
+      )
 
       onSuccess()
       onCancel()

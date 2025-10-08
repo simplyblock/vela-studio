@@ -3,7 +3,7 @@ import { Button, Modal } from 'ui'
 
 import InformationBox from 'components/ui/InformationBox'
 import { useNetworkRestrictionsApplyMutation } from 'data/network-restrictions/network-retrictions-apply-mutation'
-import { getPathReferences } from '../../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 interface DisallowAllModalProps {
   visible: boolean

@@ -13,13 +13,14 @@ import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import NoPermission from 'components/ui/NoPermission'
 import { useBranchDeleteMutation } from 'data/branches/branch-delete-mutation'
-import { Branch, useBranchesQuery } from 'data/branches/branches-query'
+import { useBranchesQuery } from 'data/branches/branches-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
+import { Branch } from 'api-types/types'
 
 const BranchesPage: NextPageWithLayout = () => {
   const router = useRouter()
@@ -61,7 +62,7 @@ const BranchesPage: NextPageWithLayout = () => {
 
   const onConfirmDeleteBranch = () => {
     if (selectedBranchToDelete == undefined) return console.error('No branch selected')
-    const { slug: branch, project_slug: projectRef, organization_slug: orgSlug } = selectedBranchToDelete
+    const { id: branch, project_id: projectRef, organization_id: orgSlug } = selectedBranchToDelete
     deleteBranch(
       { orgSlug, projectRef, branch  },
       {

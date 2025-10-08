@@ -11,14 +11,13 @@ import { useSchemasQuery } from 'data/database/schemas-query'
 import { useFDWImportForeignSchemaMutation } from 'data/fdw/fdw-import-foreign-schema-mutation'
 import { useFDWUpdateMutation } from 'data/fdw/fdw-update-mutation'
 import { getFDWs } from 'data/fdw/fdws-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Form_Shadcn_, FormField_Shadcn_, Input_Shadcn_, Modal } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import type { WrapperMeta } from '../Integrations/Wrappers/Wrappers.types'
 import { formatWrapperTables } from '../Integrations/Wrappers/Wrappers.utils'
 import SchemaEditor from '../TableGridEditor/SidePanelEditor/SchemaEditor'
 import { getDecryptedParameters } from './ImportForeignSchemaDialog.utils'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface ImportForeignSchemaDialogProps {
   bucketName: string
@@ -35,9 +34,8 @@ export const ImportForeignSchemaDialog = ({
   visible,
   onClose,
 }: ImportForeignSchemaDialogProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const { slug, ref } = useParams()
+  const { ref } = useParams()
   const [loading, setLoading] = useState(false)
   const [createSchemaSheetOpen, setCreateSchemaSheetOpen] = useState(false)
 
@@ -49,7 +47,7 @@ export const ImportForeignSchemaDialog = ({
     },
   })
 
-  const { data: schemas } = useSchemasQuery({ orgSlug: slug, projectRef: project?.ref! })
+  const { data: schemas } = useSchemasQuery({ branch })
 
   const FormSchema = z.object({
     bucketName: z.string().trim(),
@@ -87,29 +85,27 @@ export const ImportForeignSchemaDialog = ({
 
     try {
       await createSchema({
-        orgSlug: slug,
-        projectRef: ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         name: values.targetSchema,
       })
 
       await importForeignSchema({
-        projectRef: ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         serverName: serverName,
         sourceSchema: values.sourceNamespace,
         targetSchema: values.targetSchema,
       })
 
-      const FDWs = await getFDWs({ projectRef: ref, connectionString: branch?.database.encrypted_connection_string })
+      const FDWs = await getFDWs({
+        branch
+      })
       const wrapper = FDWs.find((fdw) => fdw.server_name === serverName)
       if (!wrapper) {
         throw new Error(`Foreign data wrapper with server name ${serverName} not found`)
       }
 
       const serverOptions = await getDecryptedParameters({
-        ref: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string ?? undefined,
+        branch,
         wrapper,
       })
 
@@ -126,8 +122,7 @@ export const ImportForeignSchemaDialog = ({
       const wrapperTables = formatWrapperTables(wrapper, wrapperMeta)
 
       await updateFDW({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         wrapper: wrapper,
         wrapperMeta: wrapperMeta,
         formState: {

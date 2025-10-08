@@ -49,7 +49,7 @@ import { NamespaceRow } from './NamespaceRow'
 import { SimpleConfigurationDetails } from './SimpleConfigurationDetails'
 import { useIcebergWrapperExtension } from './useIcebergWrapper'
 import { useParams } from 'common'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
   const { slug: orgRef, branch: branchRef } = useParams()
@@ -57,13 +57,11 @@ export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: extensionsData } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const { data, isLoading: isFDWsLoading } = useFDWsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   /** The wrapper instance is the wrapper that is installed for this Analytics bucket. */
@@ -92,8 +90,7 @@ export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
 
   const { data: token, isSuccess: isSuccessToken } = useVaultSecretDecryptedValueQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       id: wrapperValues.vault_token,
     },
     {

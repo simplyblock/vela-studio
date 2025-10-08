@@ -8,8 +8,7 @@ import {
 } from 'components/interfaces/Integrations/Wrappers/Wrappers.utils'
 import { QUEUES_SCHEMA } from 'data/database-queues/database-queues-toggle-postgrest-mutation'
 import { useFDWsQuery } from 'data/fdw/fdws-query'
-import { useSelectedProjectQuery } from './misc/useSelectedProject'
-import { useSelectedBranchQuery } from '../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * A list of system schemas that users should not interact with
@@ -38,11 +37,9 @@ export const INTERNAL_SCHEMAS = [
  * Get the list of schemas used by IcebergFDWs
  */
 const useIcebergFdwSchemasQuery = () => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const result = useFDWsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const schemas = useMemo(() => {

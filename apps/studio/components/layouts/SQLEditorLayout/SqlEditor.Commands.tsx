@@ -34,8 +34,8 @@ import {
   useSetCommandMenuSize,
   useSetPage,
 } from 'ui-patterns/CommandMenu'
-import { getPathReferences } from '../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function useSqlEditorGotoCommands(options?: CommandOptions) {
   let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
@@ -260,8 +260,7 @@ export function useQueryTableCommands(options?: CommandOptions) {
   commandMenuPreviouslyOpen.current = commandMenuOpen
 
   const prefetchTables = usePrefetchTables({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   useEffect(() => {
     if (project && commandMenuJustOpened) {
@@ -304,8 +303,7 @@ function TableSelector() {
     isError,
     isSuccess,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     includeColumns: true,
   })
   const tables = useMemo(() => {

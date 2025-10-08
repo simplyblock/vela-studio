@@ -40,7 +40,7 @@ import {
   TRIGGER_ORIENTATIONS,
   TRIGGER_TYPES,
 } from './Triggers.constants'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const formId = 'create-trigger'
 
@@ -110,8 +110,7 @@ export const TriggerSheet = ({ selectedTrigger, open, setOpen }: TriggerSheetPro
   )
 
   const { data = [], isSuccess: isSuccessTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { data: protectedSchemas, isSuccess: isSuccessProtectedSchemas } = useProtectedSchemas()
   const isSuccess = isSuccessTables && isSuccessProtectedSchemas
@@ -136,15 +135,13 @@ export const TriggerSheet = ({ selectedTrigger, open, setOpen }: TriggerSheetPro
 
     if (isEditing) {
       updateDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         originalTrigger: selectedTrigger,
         payload: { name: payload.name, enabled_mode: payload.enabled_mode },
       })
     } else {
       createDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         payload,
       })
     }

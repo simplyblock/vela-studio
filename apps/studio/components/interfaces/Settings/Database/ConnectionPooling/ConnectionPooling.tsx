@@ -15,7 +15,6 @@ import { useMaxConnectionsQuery } from 'data/database/max-connections-query'
 import { usePgbouncerConfigQuery } from 'data/database/pgbouncer-config-query'
 import { usePgbouncerConfigurationUpdateMutation } from 'data/database/pgbouncer-config-update-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -30,7 +29,7 @@ import {
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const formId = 'pooling-configuration-form'
 
@@ -45,7 +44,6 @@ const PoolingConfigurationFormSchema = z.object({
 export const ConnectionPooling = () => {
   const { slug, ref: projectRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const { can: canUpdateConnectionPoolingConfiguration } = {can:true}
@@ -63,8 +61,7 @@ export const ConnectionPooling = () => {
   }, [org])
 
   const { data: maxConnData } = useMaxConnectionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { mutate: updatePoolerConfig, isLoading: isUpdatingPoolerConfig } =

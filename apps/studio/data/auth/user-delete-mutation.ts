@@ -4,16 +4,22 @@ import { toast } from 'sonner'
 import { del, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { authKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type UserDeleteVariables = {
-  projectRef: string
+  branch: Branch
   userId: string
   skipInvalidation?: boolean
 }
 
-export async function deleteUser({ projectRef, userId }: UserDeleteVariables) {
+export async function deleteUser({ branch, userId }: UserDeleteVariables) {
   const { data, error } = await del('/platform/auth/{ref}/users/{id}', {
-    params: { path: { ref: projectRef, id: userId } },
+    params: {
+      path: {
+        ref: branch.project_id,
+        id: userId,
+      },
+    },
   })
   if (error) handleError(error)
   return data
@@ -35,12 +41,16 @@ export const useUserDeleteMutation = ({
     (vars) => deleteUser(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, skipInvalidation = false } = variables
+        const { branch, skipInvalidation = false } = variables
 
         if (!skipInvalidation) {
           await Promise.all([
-            queryClient.invalidateQueries(authKeys.usersInfinite(projectRef)),
-            queryClient.invalidateQueries(authKeys.usersCount(projectRef)),
+            queryClient.invalidateQueries(
+              authKeys.usersInfinite(branch.organization_id, branch.project_id, branch.id)
+            ),
+            queryClient.invalidateQueries(
+              authKeys.usersCount(branch.organization_id, branch.project_id, branch.id)
+            ),
           ])
         }
 

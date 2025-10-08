@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { useEnumeratedTypeDeleteMutation } from 'data/enumerated-types/enumerated-type-delete-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useBranchQuery } from 'data/branches/branch-query'
 import { useParams } from 'common'
 
 interface DeleteEnumeratedTypeModalProps {
@@ -19,7 +19,7 @@ const DeleteEnumeratedTypeModal = ({
 }: DeleteEnumeratedTypeModalProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
+  const { data: branch } = useBranchQuery({ orgRef, projectRef, branchRef })
   const { mutate: deleteEnumeratedType, isLoading: isDeleting } = useEnumeratedTypeDeleteMutation({
     onSuccess: () => {
       toast.success(`Successfully deleted "${selectedEnumeratedType.name}"`)
@@ -30,12 +30,10 @@ const DeleteEnumeratedTypeModal = ({
   const onConfirmDeleteType = () => {
     if (selectedEnumeratedType === undefined) return console.error('No enumerated type selected')
     if (project?.ref === undefined) return console.error('Project ref required')
-    if (branch?.database.encrypted_connection_string === undefined)
-      return console.error('Branch connectionString required')
+    if (branch === undefined) return console.error('Branch connectionString required')
 
     deleteEnumeratedType({
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       name: selectedEnumeratedType.name,
       schema: selectedEnumeratedType.schema,
     })

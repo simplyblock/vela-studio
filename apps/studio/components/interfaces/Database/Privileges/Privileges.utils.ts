@@ -9,13 +9,13 @@ import {
 } from 'data/privileges/column-privileges-revoke-mutation'
 import { privilegeKeys } from 'data/privileges/keys'
 import {
-  TablePrivilegesGrant,
   grantTablePrivileges,
+  TablePrivilegesGrant,
 } from 'data/privileges/table-privileges-grant-mutation'
 import type { PgTablePrivileges } from 'data/privileges/table-privileges-query'
 import {
-  TablePrivilegesRevoke,
   revokeTablePrivileges,
+  TablePrivilegesRevoke,
 } from 'data/privileges/table-privileges-revoke-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
@@ -23,7 +23,7 @@ import {
   COLUMN_PRIVILEGE_TYPES,
   ColumnPrivilegeType,
 } from './Privileges.constants'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface PrivilegeOperation {
   object: 'table' | 'column'
@@ -318,36 +318,36 @@ export function useApplyPrivilegeOperations(callback?: () => void) {
 
       if (revokeTableOperations.length > 0) {
         await revokeTablePrivileges({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           revokes: revokeTableOperations,
         })
       }
       if (grantTableOperations.length > 0) {
         await grantTablePrivileges({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           grants: grantTableOperations,
         })
       }
       if (revokeColumnOperations.length > 0) {
         await revokeColumnPrivileges({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           revokes: revokeColumnOperations,
         })
       }
       if (grantColumnOperations.length > 0) {
         await grantColumnPrivileges({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           grants: grantColumnOperations,
         })
       }
 
       await Promise.all([
-        queryClient.invalidateQueries(privilegeKeys.tablePrivilegesList(project.ref)),
-        queryClient.invalidateQueries(privilegeKeys.columnPrivilegesList(project.ref)),
+        queryClient.invalidateQueries(
+          privilegeKeys.tablePrivilegesList(branch.organization_id, branch.project_id, branch.id)
+        ),
+        queryClient.invalidateQueries(
+          privilegeKeys.columnPrivilegesList(branch.organization_id, branch.project_id, branch.id)
+        ),
       ])
 
       setIsLoading(false)

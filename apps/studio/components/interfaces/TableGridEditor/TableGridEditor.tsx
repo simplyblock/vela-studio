@@ -21,6 +21,7 @@ import { Admonition, GenericSkeletonLoader } from 'ui-patterns'
 import DeleteConfirmationDialogs from './DeleteConfirmationDialogs'
 import SidePanelEditor from './SidePanelEditor/SidePanelEditor'
 import TableDefinition from './TableDefinition'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface TableGridEditorProps {
   isLoadingSelectedTable?: boolean
@@ -34,11 +35,12 @@ export const TableGridEditor = ({
   const router = useRouter()
   const appSnap = useAppStateSnapshot()
   const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const tabs = useTabsStateSnapshot()
 
   useLoadTableEditorStateFromLocalStorageIntoUrl({
-    projectRef,
+    branch,
     table: selectedTable,
   })
 
@@ -155,7 +157,7 @@ export const TableGridEditor = ({
     <div className="h-full" onClick={() => tabs.makeActiveTabPermanent()}>
       <TableEditorTableStateContextProvider
         key={`table-editor-table-${selectedTable.id}`}
-        projectRef={projectRef}
+        branch={branch!}
         table={selectedTable}
         editable={editable}
       >

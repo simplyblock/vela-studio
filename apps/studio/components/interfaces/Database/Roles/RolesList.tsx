@@ -6,19 +6,17 @@ import NoSearchResults from 'components/ui/NoSearchResults'
 import SparkBar from 'components/ui/SparkBar'
 import { useDatabaseRolesQuery } from 'data/database-roles/database-roles-query'
 import { useMaxConnectionsQuery } from 'data/database/max-connections-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Badge, Button, Input, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { CreateRolePanel } from './CreateRolePanel'
 import { DeleteRoleModal } from './DeleteRoleModal'
 import { RoleRow } from './RoleRow'
 import { RoleRowSkeleton } from './RoleRowSkeleton'
 import { SUPABASE_ROLES } from './Roles.constants'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type SUPABASE_ROLE = (typeof SUPABASE_ROLES)[number]
 
 const RolesList = () => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const [filterString, setFilterString] = useState('')
@@ -29,14 +27,12 @@ const RolesList = () => {
   const { can: canUpdateRoles } = {can:true}
 
   const { data: maxConnData } = useMaxConnectionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const maxConnectionLimit = maxConnData?.maxConnections
 
   const { data, isLoading } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const roles = sortBy(data ?? [], (r) => r.name.toLocaleLowerCase())
 

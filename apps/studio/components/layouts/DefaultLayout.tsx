@@ -10,8 +10,8 @@ import { LayoutHeader } from './ProjectLayout/LayoutHeader'
 import MobileNavigationBar from './ProjectLayout/NavigationBar/MobileNavigationBar'
 import { ProjectContextProvider } from './ProjectLayout/ProjectContext'
 import { OrganizationContextProvider } from './OrganizationContext'
-import { getOrganizationSlug } from '../../data/vela/organization-path-slug'
-import { getProjectRef } from '../../data/vela/project-path-ref'
+import { getOrganizationSlug } from 'data/vela/organization-path-slug'
+import { getProjectRef } from 'data/vela/project-path-ref'
 
 export interface DefaultLayoutProps {
   headerTitle?: string

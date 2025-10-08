@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getVelaClient } from '../../../../../../../../data/vela/vela'
-import { apiBuilder } from '../../../../../../../../lib/api/apiBuilder'
+import { getVelaClient } from 'data/vela/vela'
+import { apiBuilder } from 'lib/api/apiBuilder'
 
 // FIXME: Implementation missing
 const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {

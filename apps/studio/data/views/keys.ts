@@ -1,5 +1,10 @@
 export const viewKeys = {
-  list: (projectRef: string | undefined) => ['projects', projectRef, 'views'] as const,
-  listBySchema: (projectRef: string | undefined, schema: string) =>
-    [...viewKeys.list(projectRef), schema] as const,
+  list: (orgId: string | undefined, projectId: string | undefined, branchId: string | undefined) =>
+    ['branches', orgId, projectId, branchId, 'views'] as const,
+  listBySchema: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    schema: string
+  ) => [...viewKeys.list(orgId, projectId, branchId), schema] as const,
 }

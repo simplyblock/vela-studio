@@ -61,7 +61,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
     isError,
     isSuccess,
     isLoading,
-  } = useProjectPauseStatusQuery({ ref }, { enabled: project?.status === PROJECT_STATUS.INACTIVE })
+  } = useProjectPauseStatusQuery({ ref: projectRef }, { enabled: project?.status === PROJECT_STATUS.INACTIVE })
 
   const finalDaysRemainingBeforeRestoreDisabled =
     pauseStatus?.remaining_days_till_restore_disabled ??
@@ -229,7 +229,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                   {isFreePlan ? (
                     <Button asChild type="primary">
                       <Link
-                        href={`/org/${slug}/billing?panel=subscriptionPlan&source=projectPausedStateRestore`}
+                        href={`/org/${orgRef}/billing?panel=subscriptionPlan&source=projectPausedStateRestore`}
                       >
                         Upgrade to Pro
                       </Link>

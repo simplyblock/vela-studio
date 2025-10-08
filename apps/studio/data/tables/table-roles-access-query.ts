@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { tableKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type TableRolesAccessArgs = {
   schema: string
@@ -24,12 +25,11 @@ WHERE table_schema = '${schema}'
 }
 
 export type TableRolesAccessVariables = TableRolesAccessArgs & {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export async function getTableRolesAccess(
-  { schema, table, projectRef, connectionString }: TableRolesAccessVariables,
+  { schema, table, branch }: TableRolesAccessVariables,
   signal?: AbortSignal
 ) {
   if (!schema) {
@@ -39,7 +39,7 @@ export async function getTableRolesAccess(
   const sql = getTableRolesAccessSql({ schema, table })
 
   const { result } = (await executeSql(
-    { projectRef, connectionString, sql, queryKey: ['TableRolesAccess', schema] },
+    { branch, sql, queryKey: ['TableRolesAccess', schema] },
     signal
   )) as { result: { grantee: string; privilege_type: string }[] }
 
@@ -54,17 +54,17 @@ export type TableRolesAccessData = Awaited<ReturnType<typeof getTableRolesAccess
 export type TableRolesAccessError = ExecuteSqlError
 
 export const useTableRolesAccessQuery = <TData = TableRolesAccessData>(
-  { projectRef, connectionString, schema, table }: TableRolesAccessVariables,
+  { branch, schema, table }: TableRolesAccessVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<TableRolesAccessData, TableRolesAccessError, TData> = {}
 ) =>
   useQuery<TableRolesAccessData, TableRolesAccessError, TData>(
-    tableKeys.rolesAccess(projectRef, schema, table),
-    ({ signal }) => getTableRolesAccess({ projectRef, connectionString, schema, table }, signal),
+    tableKeys.rolesAccess(branch?.organization_id, branch?.project_id, branch?.id, schema, table),
+    ({ signal }) => getTableRolesAccess({ branch, schema, table }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof schema !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined' && typeof schema !== 'undefined',
       ...options,
     }
   )

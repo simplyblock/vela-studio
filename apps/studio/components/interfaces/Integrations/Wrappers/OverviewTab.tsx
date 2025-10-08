@@ -18,7 +18,7 @@ import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
 import { CreateWrapperSheet } from './CreateWrapperSheet'
 import { WRAPPERS } from './Wrappers.constants'
 import { WrapperTable } from './WrapperTable'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const WrapperOverviewTab = () => {
   const { id, slug: orgRef, branch: branchRef } = useParams()
@@ -30,8 +30,7 @@ export const WrapperOverviewTab = () => {
   const { can: canCreateWrapper } = {can:true}
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const wrapperMeta = WRAPPERS.find((w) => w.name === id)

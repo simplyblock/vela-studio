@@ -11,7 +11,7 @@ import { INTEGRATIONS } from '../Landing/Integrations.constants'
 import { BuiltBySection } from './BuildBySection'
 import { MarkdownContent } from './MarkdownContent'
 import { MissingExtensionAlert } from './MissingExtensionAlert'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface IntegrationOverviewTabProps {
   actions?: ReactNode
@@ -23,14 +23,12 @@ export const IntegrationOverviewTab = ({
 }: PropsWithChildren<IntegrationOverviewTabProps>) => {
   const { id } = useParams()
   const router = useRouter()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const integration = INTEGRATIONS.find((i) => i.id === id)
 
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   if (!integration) {

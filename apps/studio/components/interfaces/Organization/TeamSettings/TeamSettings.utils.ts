@@ -6,15 +6,15 @@ export const useGetRolesManagementPermissions = (
   orgSlug?: string,
   roles?: Role[],
   permissions?: Permission[]
-): { rolesAddable: Number[]; rolesRemovable: Number[] } => {
+): { rolesAddable: string[]; rolesRemovable: string[] } => {
   const { permissions: allPermissions, organizationSlug } = useGetPermissions(
     permissions,
     orgSlug,
     permissions !== undefined && orgSlug !== undefined
   )
 
-  const rolesAddable: Number[] = []
-  const rolesRemovable: Number[] = []
+  const rolesAddable: string[] = []
+  const rolesRemovable: string[] = []
   if (!roles || !orgSlug) return { rolesAddable, rolesRemovable }
   // FIXME: need permission implemented   
   /* roles.forEach((role: Role) => { 

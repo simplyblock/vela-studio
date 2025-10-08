@@ -1,12 +1,23 @@
 export const tableKeys = {
-  list: (projectRef: string | undefined, schema?: string, includeColumns?: boolean) =>
-    ['projects', projectRef, 'tables', schema, includeColumns].filter(Boolean),
-  retrieve: (projectRef: string | undefined, name: string, schema: string) =>
-    ['projects', projectRef, 'tables', schema, name].filter(Boolean),
-  rolesAccess: (projectRef: string | undefined, schema: string, table: string) => [
-    'projects',
-    projectRef,
-    'roles-access',
-    { schema, table },
-  ],
+  list: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    schema?: string,
+    includeColumns?: boolean
+  ) => ['branches', orgId, projectId, branchId, 'tables', schema, includeColumns].filter(Boolean),
+  retrieve: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    name: string,
+    schema: string
+  ) => ['branches', orgId, projectId, branchId, 'tables', schema, name].filter(Boolean),
+  rolesAccess: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    schema: string,
+    table: string
+  ) => ['branches', orgId, projectId, branchId, 'roles-access', { schema, table }],
 }

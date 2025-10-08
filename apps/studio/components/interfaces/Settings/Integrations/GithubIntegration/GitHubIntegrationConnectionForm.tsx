@@ -42,7 +42,8 @@ import {
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { getPathReferences } from '../../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const GITHUB_ICON = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 96" className="w-6">
@@ -67,6 +68,7 @@ const GitHubIntegrationConnectionForm = ({
   const { slug: orgRef } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [isConfirmingBranchChange, setIsConfirmingBranchChange] = useState(false)
   const [isConfirmingRepoChange, setIsConfirmingRepoChange] = useState(false)
   const [repoComboBoxOpen, setRepoComboboxOpen] = useState(false)
@@ -222,7 +224,7 @@ const GitHubIntegrationConnectionForm = ({
     data: z.infer<typeof GitHubSettingsSchema>,
     selectedRepo: { id: string; installation_id: number }
   ) => {
-    if (!selectedProject?.ref || !selectedOrganization?.id) return
+    if (!selectedProject?.ref || !selectedOrganization?.id || !branch) return
 
     createConnection({
       organizationId: selectedOrganization.id,
@@ -239,9 +241,10 @@ const GitHubIntegrationConnectionForm = ({
 
     if (!prodBranch?.id) {
       createBranch({
-        projectRef: selectedProject.ref,
+        orgRef: branch.organization_id,
+        projectRef: branch.project_id,
+        branchRef: branch.id,
         branchName: 'main',
-        orgSlug: orgRef!
       })
     } else {
       updateBranch({

@@ -13,18 +13,20 @@ import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-co
 import { API_URL } from 'lib/constants'
 import { getRoleImpersonationJWT } from 'lib/role-impersonation'
 import { useGetImpersonatedRoleState } from 'state/role-impersonation-state'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const GraphiQLTab = () => {
   const { resolvedTheme } = useTheme()
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const currentTheme = resolvedTheme?.includes('dark') ? 'dark' : 'light'
 
   const { data: accessToken } = useSessionAccessTokenQuery({ enabled: true })
 
-  const { data: apiKeys, isFetched } = useAPIKeysQuery({ orgSlug, projectRef, reveal: true })
+  const { data: apiKeys, isFetched } = useAPIKeysQuery({ branch, reveal: true })
   const { serviceKey, secretKey } = getKeys(apiKeys)
 
-  const { data: config } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
+  const { data: config } = useProjectPostgrestConfigQuery({ branch })
   const jwtSecret = config?.jwt_secret
 
   const getImpersonatedRoleState = useGetImpersonatedRoleState()

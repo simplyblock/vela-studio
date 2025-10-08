@@ -36,6 +36,7 @@ import {
   StorageSizeUnits,
 } from './StorageSettings.constants'
 import { convertFromBytes, convertToBytes } from './StorageSettings.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface StorageSettingsState {
   fileSizeLimit: number
@@ -45,6 +46,7 @@ interface StorageSettingsState {
 
 const StorageSettings = () => {
   const { slug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   // FIXME: need permission implemented 
   const canReadStorageSettings = true
   // FIXME: need permission implemented   
@@ -56,7 +58,7 @@ const StorageSettings = () => {
     isLoading,
     isSuccess,
     isError,
-  } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef })
+  } = useProjectStorageConfigQuery({ branch })
 
   const { data: organization } = useSelectedOrganizationQuery()
   const isFreeTier = organization?.plan.id === 'free'
@@ -125,11 +127,11 @@ const StorageSettings = () => {
     })
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (data) => {
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     if (!config) return console.error('Storage config is required')
 
     updateStorageConfig({
-      projectRef,
+      branch,
       fileSizeLimit: convertToBytes(data.fileSizeLimit, data.unit),
       features: {
         imageTransformation: { enabled: data.imageTransformationEnabled },

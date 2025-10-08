@@ -15,7 +15,7 @@ import { useGetImpersonatedRoleState } from 'state/role-impersonation-state'
 import { useTableEditorStateSnapshot } from 'state/table-editor'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button, Checkbox } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export type DeleteConfirmationDialogsProps = {
   selectedTable?: TableLike
@@ -133,12 +133,12 @@ const DeleteConfirmationDialogs = ({
 
     const selectedColumnToDelete = snap.confirmationDialog.column
     if (selectedColumnToDelete === undefined) return
+    if (branch === undefined) return
 
     deleteColumn({
+      branch,
       column: selectedColumnToDelete,
       cascade: isDeleteWithCascade,
-      projectRef: project.ref,
-      connectionString: branch?.database.encrypted_connection_string,
     })
   }
 
@@ -147,10 +147,10 @@ const DeleteConfirmationDialogs = ({
     const selectedTableToDelete = selectedTable
 
     if (selectedTableToDelete === undefined) return
+    if (branch === undefined) return
 
     deleteTable({
-      projectRef: project?.ref!,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       id: selectedTableToDelete.id,
       name: selectedTableToDelete.name,
       schema: selectedTableToDelete.schema,
@@ -175,14 +175,12 @@ const DeleteConfirmationDialogs = ({
         }
 
         truncateRows({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           table: selectedTable,
         })
       } else {
         deleteAllRows({
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           table: selectedTable,
           filters,
           roleImpersonationState: getImpersonatedRoleState(),
@@ -190,8 +188,7 @@ const DeleteConfirmationDialogs = ({
       }
     } else {
       deleteRows({
-        projectRef: project.ref,
-        connectionString: branch.database.encrypted_connection_string,
+        branch,
         table: selectedTable,
         rows: selectedRowsToDelete as SupaRow[],
         roleImpersonationState: getImpersonatedRoleState(),

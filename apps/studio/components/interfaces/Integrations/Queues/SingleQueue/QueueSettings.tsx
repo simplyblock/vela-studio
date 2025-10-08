@@ -44,7 +44,7 @@ import {
 import { Admonition } from 'ui-patterns/admonition'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { getQueueFunctionsMapping } from './Queue.utils'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const ACTIONS = ['select', 'insert', 'update', 'delete']
 const ROLES = ['anon', 'authenticated', 'postgres', 'service_role']
@@ -62,29 +62,25 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
   const [privileges, setPrivileges] = useState<{ [key: string]: Privileges }>({})
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const { data, error, isLoading, isSuccess, isError } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const roles = (data ?? [])
     .filter((x) => ROLES.includes(x.name))
     .sort((a, b) => a.name.localeCompare(b.name))
 
   const { data: queueTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = queueTables?.find((x) => x.name === `q_${name}`)
   const archiveTable = queueTables?.find((x) => x.name === `a_${name}`)
 
   const { data: allTablePrivileges, isSuccess: isSuccessPrivileges } = useTablePrivilegesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const queuePrivileges = allTablePrivileges?.find(
     (x) => x.schema === 'pgmq' && x.name === `q_${name}`
@@ -143,8 +139,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
         ...(revoke.length > 0
           ? [
               revokePrivilege({
-                projectRef: project.ref,
-                connectionString: branch.database.encrypted_connection_string,
+                branch,
                 revokes: revoke.map((x) => ({
                   grantee: x.role,
                   privilegeType: x.action.toUpperCase(),
@@ -157,8 +152,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
         ...(rolesNoLongerHavingPerms.length > 0
           ? [
               revokePrivilege({
-                projectRef: project.ref,
-                connectionString: branch.database.encrypted_connection_string,
+                branch,
                 revokes: [
                   ...rolesNoLongerHavingPerms.map((x) => ({
                     grantee: x,
@@ -177,8 +171,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
         ...(grant.length > 0
           ? [
               grantPrivilege({
-                projectRef: project.ref,
-                connectionString: branch.database.encrypted_connection_string,
+                branch,
                 grants: grant.map((x) => ({
                   grantee: x.role,
                   privilegeType: x.action.toUpperCase(),
@@ -187,8 +180,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
               }),
               // Just grant select + insert on archive table as long as we're granting any perms to the queue table for the role
               grantPrivilege({
-                projectRef: project.ref,
-                connectionString: branch.database.encrypted_connection_string,
+                branch,
                 grants: [
                   ...rolesBeingGrantedPerms.map((x) => ({
                     grantee: x,

@@ -5,10 +5,10 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databasePoliciesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabasePolicyDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   originalPolicy: {
     id: number
     name: string
@@ -18,17 +18,12 @@ export type DatabasePolicyDeleteVariables = {
 }
 
 export async function deleteDatabasePolicy({
-  projectRef,
-  connectionString,
+  branch,
   originalPolicy,
 }: DatabasePolicyDeleteVariables) {
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
   const { sql } = pgMeta.policies.remove(originalPolicy)
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['policy', 'delete', originalPolicy.id],
   })
@@ -52,8 +47,10 @@ export const useDatabasePolicyDeleteMutation = ({
     (vars) => deleteDatabasePolicy(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databasePoliciesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databasePoliciesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

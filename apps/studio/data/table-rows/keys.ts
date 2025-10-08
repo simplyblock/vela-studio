@@ -4,19 +4,27 @@ type TableRowKeyArgs = Omit<GetTableRowsArgs, 'table'> & { table?: { id?: number
 
 export const tableRowKeys = {
   tableRows: (
-    projectRef?: string,
+    orgId?: string,
+    projectId?: string,
+    branchId?: string,
     { table, roleImpersonationState, ...args }: TableRowKeyArgs = {}
   ) =>
     [
-      'projects',
-      projectRef,
+      'branches',
+      orgId,
+      projectId,
+      branchId,
       'table-rows',
       table?.id,
       'rows',
       { roleImpersonation: roleImpersonationState?.role, ...args },
     ] as const,
-  tableRowsCount: (projectRef?: string, { table, ...args }: TableRowKeyArgs = {}) =>
-    ['projects', projectRef, 'table-rows', table?.id, 'count', args] as const,
-  tableRowsAndCount: (projectRef?: string, tableId?: number) =>
-    ['projects', projectRef, 'table-rows', tableId] as const,
+  tableRowsCount: (
+    orgId?: string,
+    projectId?: string,
+    branchId?: string,
+    { table, ...args }: TableRowKeyArgs = {}
+  ) => ['branches', orgId, projectId, branchId, 'table-rows', table?.id, 'count', args] as const,
+  tableRowsAndCount: (orgId?: string, projectId?: string, branchId?: string, tableId?: number) =>
+    ['branches', orgId, projectId, branchId, 'table-rows', tableId] as const,
 }

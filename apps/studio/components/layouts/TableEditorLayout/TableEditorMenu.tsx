@@ -37,10 +37,10 @@ import {
 import { useTableEditorTabsCleanUp } from '../Tabs/Tabs.utils'
 import EntityListItem from './EntityListItem'
 import { TableMenuEmptyState } from './TableMenuEmptyState'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const TableEditorMenu = () => {
-  const { slug, id: _id, ref: projectRef } = useParams()
+  const { slug, id: _id } = useParams()
   const id = _id ? Number(_id) : undefined
   const snap = useTableEditorStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
@@ -67,8 +67,7 @@ export const TableEditorMenu = () => {
     fetchNextPage,
   } = useEntityTypesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schemas: [selectedSchema],
       search: searchText.trim() || undefined,
       sort,
@@ -89,8 +88,7 @@ export const TableEditorMenu = () => {
   const { isSchemaLocked, reason } = useIsProtectedSchema({ schema: selectedSchema })
 
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
 
@@ -98,9 +96,8 @@ export const TableEditorMenu = () => {
 
   const onSelectExportCLI = async (id: number) => {
     const table = await getTableEditor({
+      branch,
       id: id,
-      projectRef,
-      connectionString: branch?.database.encrypted_connection_string,
     })
     const supaTable = table && parseSupaTable(table)
     setTableToExport(supaTable)

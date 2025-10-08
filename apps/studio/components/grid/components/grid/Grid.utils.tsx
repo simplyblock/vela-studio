@@ -14,22 +14,25 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useGetImpersonatedRoleState } from 'state/role-impersonation-state'
 import { useTableEditorTableStateSnapshot } from 'state/table-editor-table'
 import { Dictionary } from 'types'
-import { useBranchQuery } from 'data/branches/branch-query'
-import { useParams } from 'common'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function useOnRowsChange(rows: SupaRow[]) {
   const queryClient = useQueryClient()
-  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useTableEditorTableStateSnapshot()
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
 
   const { mutate: mutateUpdateTableRow } = useTableRowUpdateMutation({
-    async onMutate({ projectRef, table, configuration, payload }) {
+    async onMutate({ branch, table, configuration, payload }) {
       const primaryKeyColumns = new Set(Object.keys(configuration.identifiers))
 
-      const queryKey = tableRowKeys.tableRows(projectRef, { table: { id: table.id } })
+      const queryKey = tableRowKeys.tableRows(
+        branch.organization_id,
+        branch.project_id,
+        branch.id,
+        { table: { id: table.id } }
+      )
 
       await queryClient.cancelQueries(queryKey)
 
@@ -81,7 +84,7 @@ export function useOnRowsChange(rows: SupaRow[]) {
 
   return useCallback(
     (_rows: SupaRow[], data: RowsChangeData<SupaRow, unknown>) => {
-      if (!project) return
+      if (!project || !branch) return
 
       const rowData = _rows[data.indexes[0]]
       const previousRow = rows.find((x) => x.idx == rowData.idx)
@@ -127,8 +130,7 @@ export function useOnRowsChange(rows: SupaRow[]) {
       }
 
       mutateUpdateTableRow({
-        projectRef: project.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         table: snap.originalTable,
         configuration,
         payload: updatedData,

@@ -6,23 +6,18 @@ import pgMeta from '@supabase/pg-meta'
 import { databaseKeys } from 'data/database/keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
+import { Branch } from 'api-types/types'
 
 export type DatabaseFunctionCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   payload: z.infer<typeof pgMeta.functions.pgFunctionCreateZod>
 }
 
-export async function createDatabaseFunction({
-  projectRef,
-  connectionString,
-  payload,
-}: DatabaseFunctionCreateVariables) {
+export async function createDatabaseFunction({ branch, payload }: DatabaseFunctionCreateVariables) {
   const { sql, zod } = pgMeta.functions.create(payload)
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['functions', 'create'],
   })
@@ -46,8 +41,10 @@ export const useDatabaseFunctionCreateMutation = ({
     (vars) => createDatabaseFunction(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseKeys.databaseFunctions(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseKeys.databaseFunctions(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

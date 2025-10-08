@@ -106,8 +106,7 @@ const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
       updateDatabaseFunction(
         {
           func,
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           payload,
         },
         {
@@ -120,8 +119,7 @@ const CreateFunction = ({ func, visible, setVisible }: CreateFunctionProps) => {
     } else {
       createDatabaseFunction(
         {
-          projectRef: project.ref,
-          connectionString: branch.database.encrypted_connection_string,
+          branch,
           payload,
         },
         {
@@ -603,13 +601,11 @@ const FormFieldConfigParams = ({ readonly }: FormFieldConfigParamsProps) => {
 const ALL_ALLOWED_LANGUAGES = ['plpgsql', 'sql', 'plcoffee', 'plv8', 'plls']
 
 const FormFieldLanguage = () => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: enabledExtensions } = useDatabaseExtensionsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch
     },
     {
       select(data) {

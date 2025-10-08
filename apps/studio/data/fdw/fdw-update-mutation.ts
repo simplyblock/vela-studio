@@ -12,10 +12,10 @@ import { getCreateFDWSql } from './fdw-create-mutation'
 import { getDeleteFDWSql } from './fdw-delete-mutation'
 import { FDW } from './fdws-query'
 import { fdwKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type FDWUpdateVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   wrapper: FDW
   wrapperMeta: WrapperMeta
   formState: {
@@ -50,15 +50,14 @@ export const getUpdateFDWSql = ({
 }
 
 export async function updateFDW({
-  projectRef,
-  connectionString,
+  branch,
   wrapper,
   wrapperMeta,
   formState,
   tables,
 }: FDWUpdateVariables) {
   const sql = wrapWithTransaction(getUpdateFDWSql({ wrapper, wrapperMeta, formState, tables }))
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -76,13 +75,22 @@ export const useFDWUpdateMutation = ({
 
   return useMutation<FDWUpdateData, ResponseError, FDWUpdateVariables>((vars) => updateFDW(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef } = variables
+      const { branch } = variables
 
       await Promise.all([
-        queryClient.invalidateQueries(fdwKeys.list(projectRef), { refetchType: 'all' }),
-        queryClient.invalidateQueries(entityTypeKeys.list(projectRef)),
-        queryClient.invalidateQueries(foreignTableKeys.list(projectRef)),
-        queryClient.invalidateQueries(vaultSecretsKeys.list(projectRef)),
+        queryClient.invalidateQueries(
+          fdwKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+          { refetchType: 'all' }
+        ),
+        queryClient.invalidateQueries(
+          entityTypeKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
+        queryClient.invalidateQueries(
+          foreignTableKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
+        queryClient.invalidateQueries(
+          vaultSecretsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
       ])
 
       await onSuccess?.(data, variables, context)

@@ -43,7 +43,7 @@ import {
   generateTableFieldFromPostgresTable,
   validateFields,
 } from './TableEditor.utils'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface TableEditorProps {
   table?: PostgresTable
@@ -100,8 +100,7 @@ const TableEditor = ({
   }, [snap, params, setParams])
 
   const { data: types } = useEnumeratedTypesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { data: protectedSchemas } = useProtectedSchemas({ excludeSchemas: ['extensions'] })
   const enumTypes = (types ?? []).filter(
@@ -109,8 +108,7 @@ const TableEditor = ({
   )
 
   const { data: publications } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'
@@ -130,8 +128,7 @@ const TableEditor = ({
   const [rlsConfirmVisible, setRlsConfirmVisible] = useState<boolean>(false)
 
   const { data: constraints } = useTableConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id: table?.id,
   })
   const primaryKey = (constraints ?? []).find(
@@ -140,8 +137,7 @@ const TableEditor = ({
 
   const { data: foreignKeyMeta, isSuccess: isSuccessForeignKeyMeta } =
     useForeignKeyConstraintsQuery({
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       schema: table?.schema,
     })
   const foreignKeys = (foreignKeyMeta ?? []).filter(

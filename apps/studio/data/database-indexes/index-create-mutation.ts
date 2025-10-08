@@ -4,10 +4,10 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseIndexesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseIndexCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   payload: {
     schema: string
     entity: string
@@ -16,11 +16,7 @@ export type DatabaseIndexCreateVariables = {
   }
 }
 
-export async function createDatabaseIndex({
-  projectRef,
-  connectionString,
-  payload,
-}: DatabaseIndexCreateVariables) {
+export async function createDatabaseIndex({ branch, payload }: DatabaseIndexCreateVariables) {
   const { schema, entity, type, columns } = payload
 
   const sql = `
@@ -30,8 +26,7 @@ export async function createDatabaseIndex({
   `.trim()
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['indexes', schema],
   })
@@ -55,8 +50,10 @@ export const useDatabaseIndexCreateMutation = ({
     (vars) => createDatabaseIndex(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseIndexesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseIndexesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

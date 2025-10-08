@@ -8,7 +8,7 @@ import { invalidateProjectDetailsQuery, type Project } from 'data/projects/proje
 import { setProjectPostgrestStatus } from 'data/projects/projects-query'
 import pingPostgrest from 'lib/pingPostgrest'
 import { Loader, Monitor, Server, ExternalLink } from 'lucide-react'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export interface ConnectingStateProps {
   project: Project

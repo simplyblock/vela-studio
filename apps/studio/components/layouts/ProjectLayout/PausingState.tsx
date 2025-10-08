@@ -7,7 +7,7 @@ import { invalidateProjectsQuery } from 'data/projects/projects-query'
 import { PROJECT_STATUS } from 'lib/constants'
 import { Circle, Loader } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export interface PausingStateProps {
   project: Project

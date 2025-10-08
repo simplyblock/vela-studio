@@ -8,12 +8,14 @@ import { useParams } from 'common'
 import { useProjectUpgradingStatusQuery } from 'data/config/project-upgrade-status-query'
 import { Alert, Button } from 'ui'
 import { InlineLink } from './InlineLink'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // [Joshen] Think twice about the category though - it doesn't correspond
 
 export const ProjectUpgradeFailedBanner = () => {
   const { slug: orgSlug, ref: projectRef, branch: branchRef } = useParams()
-  const { data } = useProjectUpgradingStatusQuery({ orgSlug, projectRef }, { enabled: true })
+  const { data: branch } = useSelectedBranchQuery()
+  const { data } = useProjectUpgradingStatusQuery({ branch }, { enabled: true })
   const { status, initiated_at, latest_status_at, error } = data?.databaseUpgradeStatus ?? {}
 
   const key = `supabase-upgrade-${projectRef}-${initiated_at}`

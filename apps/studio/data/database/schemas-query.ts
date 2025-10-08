@@ -4,11 +4,10 @@ import { z } from 'zod'
 
 import { executeSql, ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type SchemasVariables = {
-  orgSlug?: string
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type Schema = z.infer<typeof pgMeta.schemas.zod>
@@ -18,15 +17,10 @@ const pgMetaSchemasList = pgMeta.schemas.list()
 export type SchemasData = z.infer<typeof pgMetaSchemasList.zod>
 export type SchemasError = ExecuteSqlError
 
-export async function getSchemas(
-  { orgSlug, projectRef, connectionString }: SchemasVariables,
-  signal?: AbortSignal
-) {
+export async function getSchemas({ branch }: SchemasVariables, signal?: AbortSignal) {
   const { result } = await executeSql(
     {
-      orgSlug,
-      projectRef,
-      connectionString,
+      branch,
       sql: pgMetaSchemasList.sql,
       queryKey: ['schemas'],
     },
@@ -37,27 +31,30 @@ export async function getSchemas(
 }
 
 export const useSchemasQuery = <TData = SchemasData>(
-  { orgSlug, projectRef, connectionString }: SchemasVariables,
+  { branch }: SchemasVariables,
   { enabled = true, ...options }: UseQueryOptions<SchemasData, SchemasError, TData> = {}
 ) =>
   useQuery<SchemasData, SchemasError, TData>(
-    databaseKeys.schemas(orgSlug, projectRef),
-    ({ signal }) => getSchemas({ orgSlug, projectRef, connectionString }, signal),
+    databaseKeys.schemas(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getSchemas({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )
 
-export function invalidateSchemasQuery(client: QueryClient, orgSlug: string | undefined, projectRef: string | undefined) {
-  return client.invalidateQueries(databaseKeys.schemas(orgSlug, projectRef))
+export function invalidateSchemasQuery(
+  client: QueryClient,
+  orgId: string | undefined,
+  projectId: string | undefined,
+  branchId: string | undefined
+) {
+  return client.invalidateQueries(databaseKeys.schemas(orgId, projectId, branchId))
 }
 
-export function prefetchSchemas(
-  client: QueryClient,
-  { orgSlug, projectRef, connectionString }: SchemasVariables
-) {
-  return client.fetchQuery(databaseKeys.schemas(orgSlug, projectRef), ({ signal }) =>
-    getSchemas({ projectRef, connectionString }, signal)
+export function prefetchSchemas(client: QueryClient, { branch }: SchemasVariables) {
+  return client.fetchQuery(
+    databaseKeys.schemas(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getSchemas({ branch }, signal)
   )
 }

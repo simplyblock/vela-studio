@@ -6,27 +6,19 @@ import type { components } from 'data/api'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databasePoliciesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type CreatePolicyBody = components['schemas']['CreatePolicyBody']
 
 export type DatabasePolicyCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   payload: CreatePolicyBody
 }
 
-export async function createDatabasePolicy({
-  projectRef,
-  connectionString,
-  payload,
-}: DatabasePolicyCreateVariables) {
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
+export async function createDatabasePolicy({ branch, payload }: DatabasePolicyCreateVariables) {
   const { sql } = pgMeta.policies.create(payload)
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['policy', 'create'],
   })
@@ -50,8 +42,10 @@ export const useDatabasePolicyCreateMutation = ({
     (vars) => createDatabasePolicy(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databasePoliciesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databasePoliciesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

@@ -67,6 +67,28 @@ export interface Branch {
       | 'RESTARTING'
       | 'STOPPING'
       | 'UNKNOWN'
+    meta:
+      | 'ACTIVE_HEALTHY'
+      | 'STOPPED'
+      | 'STARTING'
+      | 'ACTIVE_UNHEALTHY'
+      | 'CREATING'
+      | 'DELETING'
+      | 'UPDATING'
+      | 'RESTARTING'
+      | 'STOPPING'
+      | 'UNKNOWN'
+    rest:
+      | 'ACTIVE_HEALTHY'
+      | 'STOPPED'
+      | 'STARTING'
+      | 'ACTIVE_UNHEALTHY'
+      | 'CREATING'
+      | 'DELETING'
+      | 'UPDATING'
+      | 'RESTARTING'
+      | 'STOPPING'
+      | 'UNKNOWN'
   }
   created_at: string
   created_by: string

@@ -5,12 +5,10 @@ import { useViewDefinitionQuery } from 'data/database/view-definition-query'
 import { lintKeys } from 'data/lint/keys'
 import { useExecuteSqlMutation } from 'data/sql/execute-sql-mutation'
 import { Entity, isViewLike } from 'data/table-editor/table-editor-types'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { ScrollArea, SimpleCodeBlock } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { getPathReferences } from '../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ViewEntityAutofixSecurityModalProps {
   table: Entity
@@ -23,15 +21,12 @@ export default function ViewEntityAutofixSecurityModal({
   isAutofixViewSecurityModalOpen,
   setIsAutofixViewSecurityModalOpen,
 }: ViewEntityAutofixSecurityModalProps) {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const { slug: orgSlug } = getPathReferences()
   const queryClient = useQueryClient()
   const { isSuccess, isLoading, data } = useViewDefinitionQuery(
     {
+      branch,
       id: table?.id,
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
     },
     {
       enabled: isAutofixViewSecurityModalOpen && isViewLike(table),
@@ -42,7 +37,9 @@ export default function ViewEntityAutofixSecurityModal({
     onSuccess: async () => {
       toast.success('View security changed successfully')
       setIsAutofixViewSecurityModalOpen(false)
-      await queryClient.invalidateQueries(lintKeys.lint(orgSlug, project?.ref))
+      await queryClient.invalidateQueries(
+        lintKeys.lint(branch?.organization_id, branch?.project_id, branch?.id)
+      )
     },
     onError: (error) => {
       toast.error(`Failed to autofix view security: ${error.message}`)
@@ -54,8 +51,7 @@ export default function ViewEntityAutofixSecurityModal({
 	ALTER VIEW "${table.schema}"."${table.name}" SET (security_invoker = on);
 	`
     execute({
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       sql,
     })
   }

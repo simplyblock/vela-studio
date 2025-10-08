@@ -34,6 +34,7 @@ import { getSqlEditorV2StateSnapshot, useSqlEditorV2StateSnapshot } from 'state/
 import { createTabId, useTabsStateSnapshot } from 'state/tabs'
 import {
   Button,
+  cn,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
@@ -45,14 +46,10 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  cn,
 } from 'ui'
 import { useSqlEditorDiff, useSqlEditorPrompt } from './hooks'
 import { RunQueryWarningModal } from './RunQueryWarningModal'
-import {
-  ROWS_PER_PAGE_OPTIONS,
-  sqlAiDisclaimerComment,
-} from './SQLEditor.constants'
+import { ROWS_PER_PAGE_OPTIONS, sqlAiDisclaimerComment } from './SQLEditor.constants'
 import { DiffType, IStandaloneCodeEditor, IStandaloneDiffEditor } from './SQLEditor.types'
 import {
   checkDestructiveQuery,
@@ -63,7 +60,7 @@ import {
 } from './SQLEditor.utils'
 import { useAddDefinitions } from './useAddDefinitions'
 import UtilityPanel from './UtilityPanel/UtilityPanel'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query' // Load the monaco editor client-side only (does not behave well server-side)
 
 // Load the monaco editor client-side only (does not behave well server-side)
 const MonacoEditor = dynamic(() => import('./MonacoEditor'), { ssr: false })
@@ -134,8 +131,7 @@ export const SQLEditor = () => {
 
   const { data: databases, isSuccess: isSuccessReadReplicas } = useReadReplicasQuery(
     {
-      orgSlug: orgRef,
-      projectRef: projectRef,
+      branch,
     },
     { enabled: isValidConnString(branch?.database.encrypted_connection_string) }
   )
@@ -143,8 +139,7 @@ export const SQLEditor = () => {
   const { data, refetch: refetchEntityDefinitions } = useEntityDefinitionsQuery(
     {
       schemas: selectedSchemas,
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
     },
     { enabled: isValidConnString(branch?.database.encrypted_connection_string) }
   )
@@ -159,7 +154,9 @@ export const SQLEditor = () => {
       refetchEntityDefinitions()
 
       // revalidate lint query
-      queryClient.invalidateQueries(lintKeys.lint(orgRef, projectRef))
+      queryClient.invalidateQueries(
+        lintKeys.lint(branch?.organization_id, branch?.project_id, branch?.id)
+      )
     },
     onError(error: any, vars) {
       if (id) {
@@ -282,8 +279,7 @@ export const SQLEditor = () => {
         const formattedSql = suffixWithLimit(sql, limit)
 
         execute({
-          projectRef: project.ref,
-          connectionString: connectionString,
+          branch,
           sql: wrapWithRoleImpersonation(formattedSql, impersonatedRoleState),
           autoLimit: appendAutoLimit ? limit : undefined,
           isRoleImpersonationEnabled: isRoleImpersonationEnabled(impersonatedRoleState.role),

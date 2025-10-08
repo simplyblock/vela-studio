@@ -17,7 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from 'ui'
-import { useMediaQuery } from '../hooks/useMediaQuery'
+import { useMediaQuery } from 'hooks/useMediaQuery'
 import { Kbd } from '../primitives/Kbd'
 import { DataTableFilterControls } from './DataTableFilterControls'
 

@@ -11,7 +11,6 @@ import { useDatabaseQueueMessageDeleteMutation } from 'data/database-queues/data
 import { PostgresQueueMessage } from 'data/database-queues/database-queue-messages-infinite-query'
 import { useDatabaseQueueMessageReadMutation } from 'data/database-queues/database-queue-messages-read-mutation'
 import dayjs from 'dayjs'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { prettifyJSON } from 'lib/helpers'
 import {
   Button,
@@ -22,7 +21,7 @@ import {
   TabsList_Shadcn_,
   TabsTrigger_Shadcn_,
 } from 'ui'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const DATE_FORMAT = 'DD MMM, YYYY HH:mm'
 
@@ -48,8 +47,7 @@ export const MessageDetailsPanel = ({
   selectedMessage,
   setSelectedMessage,
 }: MessageDetailsPanelProps) => {
-  const { id: _id, childId: queueName } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { childId: queueName } = useParams()
   const { data: branch } = useSelectedBranchQuery()
 
   useEscapeKeydown(() => setSelectedMessage(null))
@@ -76,6 +74,10 @@ export const MessageDetailsPanel = ({
   const jsonString = prettifyJSON(!isNil(initialValue) ? tryFormatInitialValue(initialValue) : '')
 
   const [view, setView] = useState<'details' | 'suggestion'>('details')
+
+  if (!branch) {
+    return null
+  }
 
   return (
     <ResizablePanel
@@ -146,8 +148,7 @@ export const MessageDetailsPanel = ({
                     isLoading: isLoadingRead,
                     onClick: () => {
                       readMessage({
-                        projectRef: project!.ref,
-                        connectionString: branch?.database.encrypted_connection_string,
+                        branch,
                         queryName: queueName!,
                         messageId: selectedMessage.msg_id,
                         duration: 60,
@@ -173,8 +174,7 @@ export const MessageDetailsPanel = ({
                     type: 'warning',
                     onClick: () => {
                       archiveMessage({
-                        projectRef: project!.ref,
-                        connectionString: branch?.database.encrypted_connection_string,
+                        branch,
                         queryName: queueName!,
                         messageId: selectedMessage.msg_id,
                       })
@@ -199,8 +199,7 @@ export const MessageDetailsPanel = ({
                     isLoading: isLoadingDelete,
                     onClick: () => {
                       deleteMessage({
-                        projectRef: project!.ref,
-                        connectionString: branch?.database.encrypted_connection_string,
+                        branch,
                         queueName: queueName!,
                         messageId: selectedMessage.msg_id,
                       })

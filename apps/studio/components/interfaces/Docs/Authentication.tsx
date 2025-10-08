@@ -5,6 +5,7 @@ import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import CodeSnippet from './CodeSnippet'
 import Snippets from './Snippets'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface AuthenticationProps {
   selectedLang: 'bash' | 'js'
@@ -13,7 +14,8 @@ interface AuthenticationProps {
 
 const Authentication = ({ selectedLang, showApiKey }: AuthenticationProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: orgRef, projectRef })
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
 
   const { anonKey, serviceKey } = getKeys(apiKeys)

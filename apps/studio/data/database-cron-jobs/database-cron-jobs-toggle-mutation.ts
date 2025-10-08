@@ -4,24 +4,22 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseCronJobsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseCronJobToggleVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   jobId: number
   active: boolean
   searchTerm?: string
 }
 
 export async function toggleDatabaseCronJob({
-  projectRef,
-  connectionString,
+  branch,
   jobId,
   active,
 }: DatabaseCronJobToggleVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `select cron.alter_job(job_id := ${jobId}, active := ${active});`,
     queryKey: databaseCronJobsKeys.alter(),
   })
@@ -45,9 +43,14 @@ export const useDatabaseCronJobToggleMutation = ({
     (vars) => toggleDatabaseCronJob(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, searchTerm } = variables
+        const { branch, searchTerm } = variables
         await queryClient.invalidateQueries(
-          databaseCronJobsKeys.listInfinite(projectRef, searchTerm)
+          databaseCronJobsKeys.listInfinite(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            searchTerm
+          )
         )
         await onSuccess?.(data, variables, context)
       },

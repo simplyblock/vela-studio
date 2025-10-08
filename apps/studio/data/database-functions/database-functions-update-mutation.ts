@@ -7,25 +7,23 @@ import { databaseKeys } from 'data/database/keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import type { DatabaseFunction } from './database-functions-query'
+import { Branch } from 'api-types/types'
 
 export type DatabaseFunctionUpdateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   func: DatabaseFunction
   payload: z.infer<typeof pgMeta.functions.pgFunctionCreateZod>
 }
 
 export async function updateDatabaseFunction({
-  projectRef,
-  connectionString,
+  branch,
   func,
   payload,
 }: DatabaseFunctionUpdateVariables) {
   const { sql, zod } = pgMeta.functions.update(func, payload)
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['functions', 'update', func.id.toString()],
   })
@@ -49,8 +47,10 @@ export const useDatabaseFunctionUpdateMutation = ({
     (vars) => updateDatabaseFunction(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseKeys.databaseFunctions(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseKeys.databaseFunctions(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

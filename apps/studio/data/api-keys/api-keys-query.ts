@@ -3,6 +3,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import { ResponseError } from 'types'
 import { apiKeysKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type LegacyKeys = {
   api_key: string
@@ -44,26 +45,24 @@ type PublishableKeys = {
 }
 
 interface APIKeysVariables {
-  orgSlug?: string
-  projectRef?: string
+  branch?: Branch
   reveal?: boolean
 }
 
 type APIKey = LegacyKeys | SecretKeys | PublishableKeys
 
-async function getAPIKeys({ orgSlug, projectRef, reveal }: APIKeysVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('orgSlug is required')
-  if (!projectRef) throw new Error('projectRef is required')
-
+async function getAPIKeys({ branch, reveal }: APIKeysVariables, signal?: AbortSignal) {
+  if (!branch) throw new Error('branch is required')
+  // FIXME: Guess this also needs to move to a branch level
   const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/api-keys`, {
     params: {
       path: {
-        slug: orgSlug,
-        ref: projectRef
+        slug: branch.organization_id,
+        ref: branch.project_id,
       },
       query: {
-        reveal
-      }
+        reveal,
+      },
     },
     signal,
   })
@@ -77,14 +76,14 @@ async function getAPIKeys({ orgSlug, projectRef, reveal }: APIKeysVariables, sig
 export type APIKeysData = Awaited<ReturnType<typeof getAPIKeys>>
 
 export const useAPIKeysQuery = <TData = APIKeysData>(
-  { orgSlug, projectRef, reveal = false }: APIKeysVariables,
+  { branch, reveal = false }: APIKeysVariables,
   { enabled = true, ...options }: UseQueryOptions<APIKeysData, ResponseError, TData> = {}
 ) => {
   return useQuery<APIKeysData, ResponseError, TData>(
-    apiKeysKeys.list(projectRef, reveal),
-    ({ signal }) => getAPIKeys({ orgSlug, projectRef, reveal }, signal),
+    apiKeysKeys.list(branch?.organization_id, branch?.project_id, branch?.id, reveal),
+    ({ signal }) => getAPIKeys({ branch, reveal }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

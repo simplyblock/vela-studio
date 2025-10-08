@@ -38,7 +38,7 @@ import { formatBytes } from 'lib/helpers'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import type { NextPageWithLayout } from 'types'
 import { AlertDescription_Shadcn_, Alert_Shadcn_, Button } from 'ui'
-import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const DatabaseReport: NextPageWithLayout = () => {
   return (
@@ -86,16 +86,14 @@ const DatabaseUsage = () => {
   const { data, params, largeObjectsSql, isLoading, refresh } = report
 
   const { data: databaseSizeData } = useDatabaseSizeQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string || undefined,
+    branch,
   })
   const databaseSizeBytes = databaseSizeData ?? 0
   const currentDiskSize = project?.volumeSizeGb ?? 0
 
   const { data: diskConfig } = useDiskAttributesQuery({ projectRef: project?.ref })
   const { data: maxConnections } = useMaxConnectionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { data: poolerConfig } = usePgbouncerConfigQuery({ orgSlug: org?.slug, projectRef: project?.ref })
   // FIXME: need permission implemented 

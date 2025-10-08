@@ -2,6 +2,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { CREATE_PG_GET_TABLEDEF_SQL } from './database-query-constants'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export const getEntityDefinitionsSql = ({
   schemas,
@@ -77,20 +78,18 @@ from records r;
 
 export type EntityDefinitionsVariables = {
   limit?: number
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   schemas: string[]
 }
 
 export async function getEntityDefinitions(
-  { projectRef, connectionString, schemas, limit }: EntityDefinitionsVariables,
+  { branch, schemas, limit }: EntityDefinitionsVariables,
   signal?: AbortSignal
 ) {
   const sql = getEntityDefinitionsSql({ schemas, limit })
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['entity-definitions', schemas],
     },
@@ -105,17 +104,22 @@ export type EntityDefinitionsData = EntityDefinition[]
 export type EntityDefinitionsError = ExecuteSqlError
 
 export const useEntityDefinitionsQuery = <TData = EntityDefinitionsData>(
-  { projectRef, connectionString, schemas, limit }: EntityDefinitionsVariables,
+  { branch, schemas, limit }: EntityDefinitionsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<EntityDefinitionsData, EntityDefinitionsError, TData> = {}
 ) =>
   useQuery<EntityDefinitionsData, EntityDefinitionsError, TData>(
-    databaseKeys.entityDefinitions(projectRef, schemas),
-    ({ signal }) => getEntityDefinitions({ projectRef, connectionString, schemas, limit }, signal),
+    databaseKeys.entityDefinitions(
+      branch?.organization_id,
+      branch?.project_id,
+      branch?.id,
+      schemas
+    ),
+    ({ signal }) => getEntityDefinitions({ branch, schemas, limit }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && schemas.length > 0,
+      enabled: enabled && typeof branch !== 'undefined' && schemas.length > 0,
       ...options,
     }
   )

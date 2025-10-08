@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-import { useParams } from 'common'
 import { IStandaloneCodeEditor } from 'components/interfaces/SQLEditor/SQLEditor.types'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabasePolicyUpdateMutation } from 'data/database-policies/database-policy-update-mutation'
@@ -18,17 +17,17 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   Checkbox_Shadcn_,
+  cn,
   Form_Shadcn_,
   Label_Shadcn_,
   ScrollArea,
   Sheet,
   SheetContent,
   SheetFooter,
+  Tabs_Shadcn_,
   TabsContent_Shadcn_,
   TabsList_Shadcn_,
   TabsTrigger_Shadcn_,
-  Tabs_Shadcn_,
-  cn,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { LockedCreateQuerySection, LockedRenameQuerySection } from './LockedQuerySection'
@@ -38,7 +37,7 @@ import { PolicyEditorPanelHeader } from './PolicyEditorPanelHeader'
 import { PolicyTemplates } from './PolicyTemplates'
 import { QueryError } from './QueryError'
 import { RLSCodeEditor } from './RLSCodeEditor'
-import { useBranchQuery } from 'data/branches/branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface PolicyEditorPanelProps {
   visible: boolean
@@ -62,12 +61,11 @@ export const PolicyEditorPanel = memo(function ({
   onSelectCancel,
   authContext,
 }: PolicyEditorPanelProps) {
-  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const queryClient = useQueryClient()
   const { data: selectedProject } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
-  // FIXME: need permission implemented 
-  const { can: canUpdatePolicies } = {can:true}
+  const { data: branch } = useSelectedBranchQuery()
+  // FIXME: need permission implemented
+  const { can: canUpdatePolicies } = { can: true }
 
   // [Joshen] Hyrid form fields, just spit balling to get a decent POC out
   const [using, setUsing] = useState('')
@@ -122,7 +120,9 @@ export const PolicyEditorPanel = memo(function ({
   const { mutate: executeMutation, isLoading: isExecuting } = useExecuteSqlMutation({
     onSuccess: async () => {
       // refresh all policies
-      await queryClient.invalidateQueries(databasePoliciesKeys.list(projectRef))
+      await queryClient.invalidateQueries(
+        databasePoliciesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+      )
       toast.success('Successfully created new policy')
       onSelectCancel()
     },
@@ -163,6 +163,8 @@ export const PolicyEditorPanel = memo(function ({
   }
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    if (!branch) return;
+
     const { name, table, behavior, command, roles } = data
     let using = editorOneRef.current?.getValue().trim() ?? undefined
     let check = editorTwoRef.current?.getValue().trim()
@@ -195,8 +197,7 @@ export const PolicyEditorPanel = memo(function ({
       setError(undefined)
       executeMutation({
         sql,
-        projectRef: selectedProject?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         handleError: (error) => {
           throw error
         },
@@ -225,8 +226,7 @@ export const PolicyEditorPanel = memo(function ({
       if (Object.keys(payload).length === 0) return onSelectCancel()
 
       updatePolicy({
-        projectRef: selectedProject.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         originalPolicy: selectedPolicy,
         payload,
       })

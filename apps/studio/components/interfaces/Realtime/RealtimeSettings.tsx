@@ -17,7 +17,6 @@ import {
   useRealtimeConfigurationQuery,
 } from 'data/realtime/realtime-config-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   Card,
@@ -32,29 +31,27 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const formId = 'realtime-configuration-form'
 
 export const RealtimeSettings = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   // FIXME: need permission implemented
   const { can: canUpdateConfig } = {can:true}
 
   const { data: maxConn } = useMaxConnectionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { data, error, isLoading, isError } = useRealtimeConfigurationQuery({
-    projectRef,
+    orgId: branch?.organization_id,
+    projectId: branch?.project_id
   })
 
   const { data: policies, isSuccess: isSuccessPolicies } = useDatabasePoliciesQuery({
-    projectRef,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'realtime',
   })
 
@@ -106,9 +103,10 @@ export const RealtimeSettings = () => {
   const isSettingToPrivate = !data?.private_only && !allow_public
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = (data) => {
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     updateRealtimeConfig({
-      ref: projectRef,
+      orgId: branch.organization_id,
+      projectId: branch.project_id,
       private_only: !data.allow_public,
       connection_pool: data.connection_pool,
       max_concurrent_users: data.max_concurrent_users,

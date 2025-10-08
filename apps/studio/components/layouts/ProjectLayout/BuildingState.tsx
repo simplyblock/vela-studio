@@ -14,7 +14,7 @@ import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { Badge, Button } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const BuildingState = () => {
   const { slug, ref } = getPathReferences()

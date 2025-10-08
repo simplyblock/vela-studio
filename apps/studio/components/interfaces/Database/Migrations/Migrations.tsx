@@ -21,7 +21,7 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import MigrationsEmptyState from './MigrationsEmptyState'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Migrations = () => {
   const [search, setSearch] = useState('')
@@ -30,8 +30,7 @@ const Migrations = () => {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data, isLoading, isSuccess, isError, error } = useMigrationsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const migrations =
     search.length === 0

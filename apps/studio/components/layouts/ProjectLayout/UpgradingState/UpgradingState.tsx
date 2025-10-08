@@ -20,19 +20,20 @@ import { invalidateProjectDetailsQuery } from 'data/projects/project-detail-quer
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { DATABASE_UPGRADE_MESSAGES } from './UpgradingState.constants'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const UpgradingState = () => {
   const { slug: orgSlug, ref: projectRef } = getPathReferences()
   const queryParams = useSearchParams()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [loading, setLoading] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const { data } = useProjectUpgradingStatusQuery(
     {
-      orgSlug,
-      projectRef,
+      branch,
       projectStatus: project?.status,
       trackingId: queryParams.get('trackingId'),
     },

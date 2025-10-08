@@ -11,7 +11,7 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { useAppStateSnapshot } from 'state/app-state'
 import { DEFAULT_HOME } from '../../../pages/api/constants'
 
-// Ideally these could all be within a _middleware when we use Next 12
+// Ideally, these could all be within a _middleware when we use Next 12
 const RouteValidationWrapper = ({ children }: PropsWithChildren<{}>) => {
   const router = useRouter()
   const { ref, slug, id } = useParams()
@@ -59,7 +59,7 @@ const RouteValidationWrapper = ({ children }: PropsWithChildren<{}>) => {
   const organizationsRef = useLatest(organizations)
 
   useEffect(() => {
-    // check if current route is excempted from route validation check
+    // check if current route is excepted from route validation check
     if (isExceptUrl() || !isLoggedIn) return
 
     if (orgsInitialized && slug) {
@@ -88,10 +88,8 @@ const RouteValidationWrapper = ({ children }: PropsWithChildren<{}>) => {
       // Check validity of project that the user is trying to access
       const projects = projectsRef.current ?? []
       const isValidProject = projects.some((project) => project.ref === ref)
-      const isValidBranch =
-        projects.some((project) => !!project.preview_branch_refs && project.preview_branch_refs.includes(ref))
 
-      if (!isValidProject && !isValidBranch) {
+      if (!isValidProject) {
         toast.error('This project does not exist')
         router.push(DEFAULT_HOME)
         return

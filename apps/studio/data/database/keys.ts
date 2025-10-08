@@ -1,40 +1,91 @@
 export const databaseKeys = {
-  schemas: (orgSlug: string | undefined, projectRef: string | undefined) => ['projects', orgSlug, projectRef, 'schemas'] as const,
-  keywords: (projectRef: string | undefined) => ['projects', projectRef, 'keywords'] as const,
-  migrations: (projectRef: string | undefined) => ['projects', projectRef, 'migrations'] as const,
+  schemas: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'schemas'] as const,
+  keywords: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'keywords'] as const,
+  migrations: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'migrations'] as const,
   tableColumns: (
-    projectRef: string | undefined,
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
     schema: string | undefined,
     table: string | undefined
-  ) => ['projects', projectRef, 'table-columns', schema, table] as const,
-  databaseFunctions: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'database-functions'] as const,
+  ) => ['branches', orgId, projectId, branchId, 'table-columns', schema, table] as const,
+  databaseFunctions: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'database-functions'] as const,
   entityDefinition: (projectRef: string | undefined, id?: number) =>
     ['projects', projectRef, 'entity-definition', id] as const,
-  entityDefinitions: (projectRef: string | undefined, schemas: string[]) =>
-    ['projects', projectRef, 'entity-definitions', schemas] as const,
-  tableDefinition: (projectRef: string | undefined, id?: number) =>
-    ['projects', projectRef, 'table-definition', id] as const,
-  viewDefinition: (projectRef: string | undefined, id?: number) =>
-    ['projects', projectRef, 'view-definition', id] as const,
+  entityDefinitions: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    schemas: string[]
+  ) => ['branches', orgId, projectId, branchId, 'entity-definitions', schemas] as const,
+  tableDefinition: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    id?: number
+  ) => ['branches', orgId, projectId, branchId, 'table-definition', id] as const,
+  viewDefinition: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    id?: number
+  ) => ['branches', orgId, projectId, branchId, 'view-definition', id] as const,
   backups: (projectRef: string | undefined) =>
     ['projects', projectRef, 'database', 'backups'] as const,
   poolingConfiguration: (projectRef: string | undefined) =>
     ['projects', projectRef, 'database', 'pooling-configuration'] as const,
-  indexesFromQuery: (projectRef: string | undefined, query: string) =>
-    ['projects', projectRef, 'indexes', { query }] as const,
-  indexAdvisorFromQuery: (projectRef: string | undefined, query: string) =>
-    ['projects', projectRef, 'index-advisor', { query }] as const,
-  tableConstraints: (projectRef: string | undefined, id?: number) =>
-    ['projects', projectRef, 'table-constraints', id] as const,
-  foreignKeyConstraints: (projectRef: string | undefined, schema?: string) =>
-    ['projects', projectRef, 'foreign-key-constraints', schema] as const,
-  databaseSize: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'database-size'] as const,
-  maxConnections: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'max-connections'] as const,
+  indexesFromQuery: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    query: string
+  ) => ['branches', orgId, projectId, branchId, 'indexes', { query }] as const,
+  indexAdvisorFromQuery: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    query: string
+  ) => ['branches', orgId, projectId, branchId, 'index-advisor', { query }] as const,
+  tableConstraints: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    id?: number
+  ) => ['branches', orgId, projectId, branchId, 'table-constraints', id] as const,
+  foreignKeyConstraints: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    schema?: string
+  ) => ['branches', orgId, projectId, branchId, 'foreign-key-constraints', schema] as const,
+  databaseSize: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'database-size'] as const,
+  maxConnections: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'max-connections'] as const,
   pgbouncerStatus: (projectRef: string | undefined) =>
     ['projects', projectRef, 'pgbouncer', 'status'] as const,
-  pgbouncerConfig: (orgSlug: string| undefined, projectRef: string | undefined) =>
+  pgbouncerConfig: (orgSlug: string | undefined, projectRef: string | undefined) =>
     ['projects', orgSlug, projectRef, 'pgbouncer', 'config'] as const,
 }

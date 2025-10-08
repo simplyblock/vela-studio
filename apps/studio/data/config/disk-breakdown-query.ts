@@ -3,10 +3,10 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
 import { executeSql } from 'data/sql/execute-sql-query'
+import { Branch } from 'api-types/types'
 
 export type DiskBreakdownVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 type DiskBreakdownResult = {
@@ -15,16 +15,14 @@ type DiskBreakdownResult = {
 }
 
 export async function getDiskBreakdown(
-  { projectRef, connectionString }: DiskBreakdownVariables,
+  { branch }: DiskBreakdownVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('Project ref is required')
-  if (!connectionString) throw new Error('Connection string is required')
+  if (!branch) throw new Error('Branch is required')
 
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql: `
     SELECT
   (
@@ -49,11 +47,11 @@ export type DiskBreakdownData = Awaited<ReturnType<typeof getDiskBreakdown>>
 export type DiskBreakdownError = ResponseError
 
 export const useDiskBreakdownQuery = <TData = DiskBreakdownData>(
-  { projectRef, connectionString }: DiskBreakdownVariables,
+  { branch }: DiskBreakdownVariables,
   { enabled = true, ...options }: UseQueryOptions<DiskBreakdownData, DiskBreakdownError, TData> = {}
 ) =>
   useQuery<DiskBreakdownData, DiskBreakdownError, TData>(
-    configKeys.diskBreakdown(projectRef),
-    ({ signal }) => getDiskBreakdown({ projectRef, connectionString }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined', ...options }
+    configKeys.diskBreakdown(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getDiskBreakdown({ branch }, signal),
+    { enabled: enabled && typeof branch !== 'undefined', ...options }
   )

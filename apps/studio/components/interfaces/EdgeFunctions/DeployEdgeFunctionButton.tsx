@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export const DeployEdgeFunctionButton = () => {
   const router = useRouter()

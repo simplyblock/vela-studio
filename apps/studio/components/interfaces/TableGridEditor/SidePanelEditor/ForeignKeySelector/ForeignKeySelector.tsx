@@ -17,7 +17,6 @@ import { FOREIGN_KEY_CASCADE_ACTION } from 'data/database/database-query-constan
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { uuidv4 } from 'lib/helpers'
 import ActionBar from '../ActionBar'
 import { NUMERICAL_TYPES, TEXT_TYPES } from '../SidePanelEditor.constants'
@@ -25,8 +24,7 @@ import type { ColumnField } from '../SidePanelEditor.types'
 import { FOREIGN_KEY_CASCADE_OPTIONS } from './ForeignKeySelector.constants'
 import type { ForeignKey } from './ForeignKeySelector.types'
 import { generateCascadeActionDescription } from './ForeignKeySelector.utils'
-import { getPathReferences } from '../../../../../data/vela/path-references'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const EMPTY_STATE: ForeignKey = {
   id: undefined,
@@ -58,9 +56,7 @@ export const ForeignKeySelector = ({
   onClose,
   onSaveRelation,
 }: ForeignKeySelectorProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const { slug: orgSlug } = getPathReferences()
   const { selectedSchema } = useQuerySchemaState()
 
   const [fk, setFk] = useState(EMPTY_STATE)
@@ -69,13 +65,10 @@ export const ForeignKeySelector = ({
   const hasTypeNotices = (errors?.typeNotice ?? []).filter((x: any) => x !== undefined).length > 0
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const { data: tables } = useTablesQuery<PostgresTable[] | undefined>({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: fk.schema,
     includeColumns: true,
   })

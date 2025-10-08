@@ -1,7 +1,6 @@
 import { PostgresTable } from '@supabase/postgres-meta'
 import { useState } from 'react'
 
-import { useParams } from 'common'
 import { TableList } from 'components/interfaces/Database/Tables/TableList'
 import { SidePanelEditor } from 'components/interfaces/TableGridEditor'
 import DeleteConfirmationDialogs from 'components/interfaces/TableGridEditor/DeleteConfirmationDialogs'
@@ -13,9 +12,10 @@ import { Entity, isTableLike, postgresTableToEntity } from 'data/table-editor/ta
 import { useTableEditorStateSnapshot } from 'state/table-editor'
 import { TableEditorTableStateContextProvider } from 'state/table-editor-table'
 import type { NextPageWithLayout } from 'types'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const DatabaseTables: NextPageWithLayout = () => {
-  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useTableEditorStateSnapshot()
   const [selectedTableToEdit, setSelectedTableToEdit] = useState<Entity>()
 
@@ -44,12 +44,12 @@ const DatabaseTables: NextPageWithLayout = () => {
         </ScaffoldSection>
       </ScaffoldContainer>
 
-      {projectRef !== undefined &&
+      {branch !== undefined &&
         selectedTableToEdit !== undefined &&
         isTableLike(selectedTableToEdit) && (
           <TableEditorTableStateContextProvider
             key={`table-editor-table-${selectedTableToEdit.id}`}
-            projectRef={projectRef}
+            branch={branch}
             table={selectedTableToEdit}
           >
             <DeleteConfirmationDialogs selectedTable={selectedTableToEdit} />

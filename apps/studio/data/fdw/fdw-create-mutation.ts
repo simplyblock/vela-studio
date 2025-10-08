@@ -12,10 +12,10 @@ import { wrapWithTransaction } from 'data/sql/utils/transaction'
 import { vaultSecretsKeys } from 'data/vault/keys'
 import type { ResponseError } from 'types'
 import { fdwKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type FDWCreateVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   wrapperMeta: WrapperMeta
   formState: {
     [k: string]: string
@@ -229,9 +229,9 @@ export function getCreateFDWSql({
   return sql
 }
 
-export async function createFDW({ projectRef, connectionString, ...rest }: FDWCreateVariables) {
+export async function createFDW({ branch, ...rest }: FDWCreateVariables) {
   const sql = wrapWithTransaction(getCreateFDWSql(rest))
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -249,13 +249,22 @@ export const useFDWCreateMutation = ({
 
   return useMutation<FDWCreateData, ResponseError, FDWCreateVariables>((vars) => createFDW(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef } = variables
+      const { branch } = variables
 
       await Promise.all([
-        queryClient.invalidateQueries(fdwKeys.list(projectRef), { refetchType: 'all' }),
-        queryClient.invalidateQueries(entityTypeKeys.list(projectRef)),
-        queryClient.invalidateQueries(foreignTableKeys.list(projectRef)),
-        queryClient.invalidateQueries(vaultSecretsKeys.list(projectRef)),
+        queryClient.invalidateQueries(
+          fdwKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+          { refetchType: 'all' }
+        ),
+        queryClient.invalidateQueries(
+          entityTypeKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
+        queryClient.invalidateQueries(
+          foreignTableKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
+        queryClient.invalidateQueries(
+          vaultSecretsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        ),
       ])
 
       await onSuccess?.(data, variables, context)

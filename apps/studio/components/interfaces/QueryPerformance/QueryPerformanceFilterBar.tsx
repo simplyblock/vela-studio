@@ -8,7 +8,6 @@ import { FilterPopover } from 'components/ui/FilterPopover'
 import { useDatabaseRolesQuery } from 'data/database-roles/database-roles-query'
 import { DbQueryHook } from 'hooks/analytics/useDbQuery'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   DropdownMenu,
@@ -19,7 +18,7 @@ import {
 } from 'ui'
 import { QueryPerformanceSort } from '../Reports/Reports.queries'
 import { TextSearchPopover } from './TextSearchPopover'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const QueryPerformanceFilterBar = ({
   queryPerformanceQuery,
@@ -30,7 +29,6 @@ export const QueryPerformanceFilterBar = ({
 }) => {
   const router = useRouter()
   const { ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [showBottomSection] = useLocalStorageQuery(
     LOCAL_STORAGE_KEYS.QUERY_PERF_SHOW_BOTTOM_SECTION,
@@ -55,8 +53,7 @@ export const QueryPerformanceFilterBar = ({
 
   const { isLoading, isRefetching } = queryPerformanceQuery
   const { data, isLoading: isLoadingRoles } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const roles = (data ?? []).sort((a, b) => a.name.localeCompare(b.name))
 

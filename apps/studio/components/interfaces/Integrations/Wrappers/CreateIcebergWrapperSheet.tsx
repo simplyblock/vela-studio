@@ -24,7 +24,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { CreateWrapperSheetProps } from './CreateWrapperSheet'
 import InputField from './InputField'
 import { makeValidateRequired } from './Wrappers.utils'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const FORM_ID = 'create-wrapper-form'
 
@@ -100,9 +100,7 @@ export const CreateIcebergWrapperSheet = ({
   }, [wrapperMetaOriginal, selectedTarget])
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug: org?.slug,
-    projectRef: project?.ref!,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const initialValues = {
@@ -143,15 +141,12 @@ export const CreateIcebergWrapperSheet = ({
 
     try {
       await createSchema({
-        orgSlug: org?.slug,
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         name: values.target_schema,
       })
 
       await createFDW({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         wrapperMeta,
         formState: {
           ...values,

@@ -14,17 +14,15 @@ import { useDatabasePolicyCreateMutation } from 'data/database-policies/database
 import { useDatabasePolicyDeleteMutation } from 'data/database-policies/database-policy-delete-mutation'
 import { useDatabasePolicyUpdateMutation } from 'data/database-policies/database-policy-update-mutation'
 import { useBucketsQuery } from 'data/storage/buckets-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Loader } from 'lucide-react'
 import ConfirmModal from 'ui-patterns/Dialogs/ConfirmDialog'
 import { formatPoliciesForStorage } from '../Storage.utils'
 import StoragePoliciesBucketRow from './StoragePoliciesBucketRow'
 import StoragePoliciesEditPolicyModal from './StoragePoliciesEditPolicyModal'
 import StoragePoliciesPlaceholder from './StoragePoliciesPlaceholder'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const StoragePolicies = () => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { ref: projectRef } = useParams()
 
@@ -40,8 +38,7 @@ const StoragePolicies = () => {
     refetch,
     isLoading: isLoadingPolicies,
   } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: 'storage',
   })
   const policies = policiesData ?? []
@@ -108,8 +105,8 @@ const StoragePolicies = () => {
     For each API call within the Promise.all, return true if an error occurred, else return false
   */
   const onCreatePolicies = async (payloads: any[]) => {
-    if (!project) {
-      console.error('Project is required')
+    if (!branch) {
+      console.error('Branch is required')
       return true
     }
 
@@ -118,8 +115,7 @@ const StoragePolicies = () => {
         payloads.map(async (payload) => {
           try {
             await createDatabasePolicy({
-              projectRef: project?.ref,
-              connectionString: branch?.database.encrypted_connection_string,
+              branch,
               payload,
             })
             return false
@@ -134,15 +130,14 @@ const StoragePolicies = () => {
   }
 
   const onCreatePolicy = async (payload: any) => {
-    if (!project) {
-      console.error('Project is required')
+    if (!branch) {
+      console.error('Branch is required')
       return true
     }
 
     try {
       await createDatabasePolicy({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         payload,
       })
       return false
@@ -153,15 +148,14 @@ const StoragePolicies = () => {
   }
 
   const onUpdatePolicy = async (payload: any) => {
-    if (!project) {
-      console.error('Project is required')
+    if (!branch) {
+      console.error('Branch is required')
       return true
     }
 
     try {
       await updateDatabasePolicy({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         originalPolicy: selectedPolicyToEdit,
         payload,
       })
@@ -173,10 +167,9 @@ const StoragePolicies = () => {
   }
 
   const onDeletePolicy = async () => {
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     deleteDatabasePolicy({
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       originalPolicy: selectedPolicyToDelete,
     })
   }

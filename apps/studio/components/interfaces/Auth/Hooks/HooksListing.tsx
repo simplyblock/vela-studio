@@ -35,8 +35,7 @@ export const HooksListing = () => {
       if (method.type === 'postgres') {
         const revokeStatements = getRevokePermissionStatements(method.schema, method.functionName)
         await executeSql({
-          projectRef,
-          connectionString: branch!.database.encrypted_connection_string,
+          branch,
           sql: revokeStatements.join('\n'),
         })
       }

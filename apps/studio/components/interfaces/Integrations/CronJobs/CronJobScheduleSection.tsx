@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { useCronTimezoneQuery } from 'data/database-cron-jobs/database-cron-timezone-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Accordion_Shadcn_,
   AccordionContent_Shadcn_,
@@ -22,7 +21,7 @@ import {
 import { CreateCronJobForm } from './CreateCronJobSheet'
 import { formatScheduleString, getScheduleMessage } from './CronJobs.utils'
 import CronSyntaxChart from './CronSyntaxChart'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface CronJobScheduleSectionProps {
   form: UseFormReturn<CreateCronJobForm>
@@ -30,7 +29,6 @@ interface CronJobScheduleSectionProps {
 }
 
 export const CronJobScheduleSection = ({ form, supportsSeconds }: CronJobScheduleSectionProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const [inputValue, setInputValue] = useState('')
@@ -45,8 +43,7 @@ export const CronJobScheduleSection = ({ form, supportsSeconds }: CronJobSchedul
   ] as const
 
   const { data: timezone } = useCronTimezoneQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const schedule = form.watch('schedule')

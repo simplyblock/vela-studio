@@ -10,12 +10,14 @@ import { FDWCreateVariables, useFDWCreateMutation } from 'data/fdw/fdw-create-mu
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useS3AccessKeyCreateMutation } from './s3-access-key-create-mutation'
 import { getPathReferences } from '../vela/path-references'
+import { useSelectedBranchQuery } from '../branches/selected-branch-query'
 
 export const useIcebergWrapperCreateMutation = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { slug: orgSlug } = getPathReferences()
 
-  const { data: apiKeys } = useAPIKeysQuery({ projectRef: project?.ref, reveal: true })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { secretKey, serviceKey } = getKeys(apiKeys)
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef: project?.ref })
@@ -42,8 +44,7 @@ export const useIcebergWrapperCreateMutation = () => {
     const wrapperName = `${snakeCase(bucketName)}_fdw`
 
     const params: FDWCreateVariables = {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       wrapperMeta: wrapperMeta!,
       formState: {
         wrapper_name: wrapperName,

@@ -50,7 +50,7 @@ import AIEditor from '../AIEditor'
 import { ButtonTooltip } from '../ButtonTooltip'
 import { InlineLink } from '../InlineLink'
 import SqlWarningAdmonition from '../SqlWarningAdmonition'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type Template = {
   name: string
@@ -149,9 +149,8 @@ export const EditorPanel = ({
       }
     }
     executeSql({
+      branch,
       sql: suffixWithLimit(currentValue, 100),
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
       handleError: (error) => {
         throw error
       },

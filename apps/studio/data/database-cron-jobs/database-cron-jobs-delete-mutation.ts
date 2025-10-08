@@ -4,22 +4,17 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseCronJobsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseCronJobDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   jobId: number
   searchTerm?: string
 }
 
-export async function deleteDatabaseCronJob({
-  projectRef,
-  connectionString,
-  jobId,
-}: DatabaseCronJobDeleteVariables) {
+export async function deleteDatabaseCronJob({ branch, jobId }: DatabaseCronJobDeleteVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `SELECT cron.unschedule(${jobId});`,
     queryKey: databaseCronJobsKeys.delete(),
   })
@@ -43,9 +38,14 @@ export const useDatabaseCronJobDeleteMutation = ({
     (vars) => deleteDatabaseCronJob(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, searchTerm } = variables
+        const { branch, searchTerm } = variables
         await queryClient.invalidateQueries(
-          databaseCronJobsKeys.listInfinite(projectRef, searchTerm)
+          databaseCronJobsKeys.listInfinite(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            searchTerm
+          )
         )
         await onSuccess?.(data, variables, context)
       },

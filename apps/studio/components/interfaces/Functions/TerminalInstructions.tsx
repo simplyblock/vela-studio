@@ -16,6 +16,7 @@ import {
   Collapsible_Shadcn_,
 } from 'ui'
 import type { Commands } from './Functions.types'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TerminalInstructionsProps extends ComponentPropsWithoutRef<typeof Collapsible_Shadcn_> {
   closable?: boolean
@@ -28,10 +29,11 @@ export const TerminalInstructions = forwardRef<
 >(({ closable = false, removeBorder = false, ...props }, ref) => {
   const router = useRouter()
   const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [showInstructions, setShowInstructions] = useState(!closable)
 
   const { data: tokens } = useAccessTokensQuery()
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
   const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
 

@@ -27,6 +27,7 @@ import {
   TooltipTrigger,
   cn,
 } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DatabaseSelectorProps {
   selectedDatabaseId?: string // To override initial state
@@ -49,13 +50,14 @@ const DatabaseSelector = ({
 }: DatabaseSelectorProps) => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
   const [, setShowConnect] = useQueryState('showConnect', parseAsBoolean.withDefault(false))
 
   const state = useDatabaseSelectorStateSnapshot()
   const selectedDatabaseId = _selectedDatabaseId ?? state.selectedDatabaseId
 
-  const { data, isLoading, isSuccess } = useReadReplicasQuery({ orgSlug: orgRef, projectRef })
+  const { data, isLoading, isSuccess } = useReadReplicasQuery({ branch })
   const databases = data ?? []
   const sortedDatabases = databases
     .sort((a, b) => (a.inserted_at > b.inserted_at ? 1 : 0))

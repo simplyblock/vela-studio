@@ -36,6 +36,7 @@ import { LoadBalancerNode, PrimaryNode, RegionNode, ReplicaNode } from './Instan
 import MapView from './MapView'
 import { RestartReplicaConfirmationModal } from './RestartReplicaConfirmationModal'
 import { useShowNewReplicaPanel } from './use-show-new-replica'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const InstanceConfigurationUI = () => {
   const reactFlow = useReactFlow()
@@ -43,6 +44,7 @@ const InstanceConfigurationUI = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const numTransition = useRef<number>()
   const { data: project, isLoading: isLoadingProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [view, setView] = useState<'flow' | 'map'>('flow')
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false)
@@ -68,8 +70,7 @@ const InstanceConfigurationUI = () => {
     isError,
     isSuccess: isSuccessReplicas,
   } = useReadReplicasQuery({
-    orgSlug: orgRef,
-    projectRef,
+    branch,
   })
   const [[primary], replicas] = useMemo(
     () => partition(data ?? [], (db) => db.identifier === projectRef),

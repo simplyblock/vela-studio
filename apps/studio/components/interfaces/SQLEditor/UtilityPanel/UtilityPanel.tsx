@@ -99,7 +99,7 @@ const UtilityPanel = ({
         ...snippet,
         id: snippet.id,
         description: snippet.description || '',
-        project_id: snippet.project_id || 0,
+        project_id: snippet.project_id || '',
         content: {
           ...snippet.content,
           content_id: id,

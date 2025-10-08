@@ -4,25 +4,19 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { CronJob } from './database-cron-jobs-infinite-query'
 import { databaseCronJobsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseCronJobVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   id?: number
   name?: string
 }
 
-export async function getDatabaseCronJob({
-  projectRef,
-  connectionString,
-  id,
-  name,
-}: DatabaseCronJobVariables) {
-  if (!projectRef) throw new Error('Project ref is required')
+export async function getDatabaseCronJob({ branch, id, name }: DatabaseCronJobVariables) {
+  if (!branch) throw new Error('Branch is required')
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: !!id
       ? `SELECT * FROM cron.job where jobid = ${id};`
       : `SELECT * FROM cron.job where jobname = '${name}';`,
@@ -36,19 +30,19 @@ export type DatabaseCronJobData = CronJob
 export type DatabaseCronJobError = ResponseError
 
 export const useCronJobQuery = <TData = DatabaseCronJobData>(
-  { projectRef, connectionString, id, name }: DatabaseCronJobVariables,
+  { branch, id, name }: DatabaseCronJobVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<DatabaseCronJobData, DatabaseCronJobError, TData> = {}
 ) =>
   useQuery<DatabaseCronJobData, DatabaseCronJobError, TData>(
-    databaseCronJobsKeys.job(projectRef, id ?? name),
-    () => getDatabaseCronJob({ projectRef, connectionString, id }),
+    databaseCronJobsKeys.job(branch?.organization_id, branch?.project_id, branch?.id, id ?? name),
+    () => getDatabaseCronJob({ branch, id }),
     {
       enabled:
         enabled &&
-        typeof projectRef !== 'undefined' &&
+        typeof branch !== 'undefined' &&
         (typeof id !== 'undefined' || typeof name !== 'undefined'),
       ...options,
     }

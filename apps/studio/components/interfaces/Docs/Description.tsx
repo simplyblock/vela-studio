@@ -7,7 +7,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { timeout } from 'lib/helpers'
 import { Loader } from 'lucide-react'
 import { Button } from 'ui'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // Removes some auto-generated Postgrest text
 // Ideally PostgREST wouldn't add this if there is already a comment
@@ -56,8 +56,7 @@ const Description = ({ content, metadata, onChange = noop }: DescrptionProps) =>
     if (query) {
       try {
         await executeSql({
-          projectRef: project?.ref,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           sql: query,
         })
         // [Joshen] Temp fix, immediately refreshing the docs fetches stale state

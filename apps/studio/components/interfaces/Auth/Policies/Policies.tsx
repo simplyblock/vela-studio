@@ -92,6 +92,7 @@ const Policies = ({
   // Methods that involve some API
   const onToggleRLS = async () => {
     if (!selectedTableToToggleRLS) return console.error('Table is required')
+    if (!branch) return console.error('Branch is required')
 
     const payload = {
       id: selectedTableToToggleRLS.id,
@@ -99,9 +100,7 @@ const Policies = ({
     }
 
     updateTable({
-      orgSlug: orgRef!,
-      projectRef: project?.ref!,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       id: selectedTableToToggleRLS.id,
       name: selectedTableToToggleRLS.name,
       schema: selectedTableToToggleRLS.schema,
@@ -111,9 +110,9 @@ const Policies = ({
 
   const onDeletePolicy = async () => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     deleteDatabasePolicy({
-      projectRef: project.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       originalPolicy: selectedPolicyToDelete,
     })
   }

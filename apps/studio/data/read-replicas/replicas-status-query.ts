@@ -29,10 +29,13 @@ export async function getReadReplicasStatuses(
 ) {
   if (!projectRef) throw new Error('Project ref is required')
 
-  const { data, error } = await get(`/platform/projects/{ref}/databases-statuses`, {
-    params: { path: { ref: projectRef } },
-    signal,
-  })
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/databases-statuses`,
+    {
+      params: { path: { ref: projectRef } },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data

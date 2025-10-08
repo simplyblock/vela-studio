@@ -7,7 +7,7 @@ import { useCustomDomainsQuery } from 'data/custom-domains/custom-domains-query'
 import type { EdgeFunctionsResponse } from 'data/edge-functions/edge-functions-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { copyToClipboard, TableCell, TableRow, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 interface EdgeFunctionsListItemProps {
   function: EdgeFunctionsResponse

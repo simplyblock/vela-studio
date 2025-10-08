@@ -1,10 +1,10 @@
-import { useParams } from 'common'
 import { toast } from 'sonner'
 
 import { useUserDeleteMutation } from 'data/auth/user-delete-mutation'
 import { User } from 'data/auth/users-infinite-query'
 import { timeout } from 'lib/helpers'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DeleteUserModalProps {
   visible: boolean
@@ -19,7 +19,7 @@ export const DeleteUserModal = ({
   onClose,
   onDeleteSuccess,
 }: DeleteUserModalProps) => {
-  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: deleteUser, isLoading: isDeleting } = useUserDeleteMutation({
     onSuccess: () => {
@@ -30,11 +30,11 @@ export const DeleteUserModal = ({
 
   const handleDeleteUser = async () => {
     await timeout(200)
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     if (selectedUser?.id === undefined) {
       return toast.error(`Failed to delete user: User ID not found`)
     }
-    deleteUser({ projectRef, userId: selectedUser.id })
+    deleteUser({ branch, userId: selectedUser.id })
   }
 
   return (

@@ -15,11 +15,13 @@ import {
   QUERY_PERFORMANCE_REPORT_TYPES,
 } from '../QueryPerformance.constants'
 import { useIndexAdvisorStatus } from './useIsIndexAdvisorStatus'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function useIndexInvalidation() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { isIndexAdvisorEnabled } = useIndexAdvisorStatus()
 
   const [{ preset: urlPreset, search: searchQuery, order, sort }] = useQueryStates({
@@ -43,7 +45,16 @@ export function useIndexInvalidation() {
 
   return useCallback(() => {
     queryPerformanceQuery.runQuery()
-    queryClient.invalidateQueries(databaseKeys.indexAdvisorFromQuery(project?.ref, ''))
-    queryClient.invalidateQueries(databaseIndexesKeys.list(project?.ref))
+    queryClient.invalidateQueries(
+      databaseKeys.indexAdvisorFromQuery(
+        branch?.organization_id,
+        branch?.project_id,
+        branch?.id,
+        ''
+      )
+    )
+    queryClient.invalidateQueries(
+      databaseIndexesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+    )
   }, [queryPerformanceQuery, queryClient, project?.ref])
 }

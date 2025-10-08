@@ -15,7 +15,7 @@ import { useFlag } from 'hooks/ui/useFlag'
 import { Menu, Separator } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import { IntegrationTabs } from './tabs'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 /**
  * Layout component for the Integrations section

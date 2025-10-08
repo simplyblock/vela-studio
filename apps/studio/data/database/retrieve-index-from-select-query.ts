@@ -3,10 +3,10 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type GetInvolvedIndexesFromSelectQueryVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   query: string
 }
 
@@ -20,16 +20,14 @@ export type GetInvolvedIndexesFromSelectQueryResponse = {
 // [Alaister] Based on: https://github.com/supabase/index_advisor/blob/ddb9b4ed17692ef8dbf049fad806426a851a3079/index_advisor--0.2.0.sql
 
 export async function getInvolvedIndexesInSelectQuery({
-  projectRef,
-  connectionString,
+  branch,
   query,
 }: GetInvolvedIndexesFromSelectQueryVariables) {
-  if (!projectRef) throw new Error('Project ref is required')
+  if (!branch) throw new Error('Branch is required')
 
   try {
     const { result } = await executeSql({
-      projectRef,
-      connectionString,
+      branch,
       queryKey: ['involved-indexes-explain-query'],
       sql: /* sql */ `
         create or replace function pg_temp.explain_query(query text) returns jsonb
@@ -110,8 +108,7 @@ export async function getInvolvedIndexesInSelectQuery({
     if (involvedIndexes.length <= 0) return []
 
     const { result: indexResult } = await executeSql({
-      projectRef,
-      connectionString,
+      branch,
       queryKey: ['involved-indexes-names'],
       sql: `select schemaname as schema, tablename as table, indexname as name from pg_indexes where indexname in (${involvedIndexes.map((name) => `'${name}'`).join(', ')});`,
     })
@@ -128,7 +125,7 @@ export type GetInvolvedIndexesFromSelectQueryData = Awaited<
 export type GetInvolvedIndexesFromSelectQueryError = ResponseError
 
 export const useGetIndexesFromSelectQuery = <TData = GetInvolvedIndexesFromSelectQueryData>(
-  { projectRef, connectionString, query }: GetInvolvedIndexesFromSelectQueryVariables,
+  { branch, query }: GetInvolvedIndexesFromSelectQueryVariables,
   {
     enabled = true,
     ...options
@@ -150,13 +147,13 @@ export const useGetIndexesFromSelectQuery = <TData = GetInvolvedIndexesFromSelec
     GetInvolvedIndexesFromSelectQueryError,
     TData
   >(
-    databaseKeys.indexesFromQuery(projectRef, query),
-    () => getInvolvedIndexesInSelectQuery({ projectRef, connectionString, query }),
+    databaseKeys.indexesFromQuery(branch?.organization_id, branch?.project_id, branch?.id, query),
+    () => getInvolvedIndexesInSelectQuery({ branch, query }),
     {
       retry: false,
       enabled:
         enabled &&
-        typeof projectRef !== 'undefined' &&
+        typeof branch !== 'undefined' &&
         typeof query !== 'undefined' &&
         isValidQueryForIndexing,
       ...options,

@@ -209,7 +209,7 @@ export const NotificationsPopoverV2 = () => {
                       }
                     },
                     getProject: (ref: string) => projects?.find((project) => project.ref === ref)!,
-                    getOrganizationById: (id: number) =>
+                    getOrganizationById: (id: string) =>
                       organizations?.find((org) => org.id === id)!,
                     getOrganizationBySlug: (slug: string) =>
                       organizations?.find((org) => org.slug === slug)!,

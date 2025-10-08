@@ -2,14 +2,6 @@ import { toast } from 'sonner'
 import { handleError } from 'data/fetchers'
 import { ResponseError } from 'types'
 
-import { authKeys } from 'data/auth/keys'
-import { databaseExtensionsKeys } from 'data/database-extensions/keys'
-import { databaseIndexesKeys } from 'data/database-indexes/keys'
-import { databasePoliciesKeys } from 'data/database-policies/keys'
-import { databaseTriggerKeys } from 'data/database-triggers/keys'
-import { databaseKeys } from 'data/database/keys'
-import { enumeratedTypesKeys } from 'data/enumerated-types/keys'
-import { tableKeys } from 'data/tables/keys'
 import { tryParseJson } from 'lib/helpers'
 import { SAFE_FUNCTIONS } from './AiAssistant.constants'
 
@@ -76,33 +68,6 @@ const getContextKey = (pathname: string) => {
   const [_, __, ___, ...rest] = pathname.split('/')
   const key = rest.join('/')
   return key
-}
-
-export const getContextualInvalidationKeys = ({
-  ref,
-  pathname,
-  schema = 'public',
-}: {
-  ref: string
-  pathname: string
-  schema?: string
-}) => {
-  const key = getContextKey(pathname)
-
-  return (
-    (
-      {
-        'auth/users': [authKeys.usersInfinite(ref)],
-        'auth/policies': [databasePoliciesKeys.list(ref)],
-        'database/functions': [databaseKeys.databaseFunctions(ref)],
-        'database/tables': [tableKeys.list(ref, schema, true), tableKeys.list(ref, schema, false)],
-        'database/triggers': [databaseTriggerKeys.list(ref)],
-        'database/types': [enumeratedTypesKeys.list(ref)],
-        'database/extensions': [databaseExtensionsKeys.list(ref)],
-        'database/indexes': [databaseIndexesKeys.list(ref, schema)],
-      } as const
-    )[key] ?? []
-  )
 }
 
 export const onErrorChat = (error: Error) => {

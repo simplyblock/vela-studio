@@ -4,25 +4,19 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseIndexesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseIndexDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   name: string
   schema: string
 }
 
-export async function deleteDatabaseIndex({
-  projectRef,
-  connectionString,
-  name,
-  schema,
-}: DatabaseIndexDeleteVariables) {
+export async function deleteDatabaseIndex({ branch, name, schema }: DatabaseIndexDeleteVariables) {
   const sql = `drop index if exists "${schema}"."${name}"`
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['indexes'],
   })
@@ -46,8 +40,10 @@ export const useDatabaseIndexDeleteMutation = ({
     (vars) => deleteDatabaseIndex(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseIndexesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseIndexesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

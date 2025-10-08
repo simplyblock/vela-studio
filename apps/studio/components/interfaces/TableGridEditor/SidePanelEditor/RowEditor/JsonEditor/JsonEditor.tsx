@@ -16,7 +16,7 @@ import ActionBar from '../../ActionBar'
 import { isValueTruncated } from '../RowEditor.utils'
 import { DrilldownViewer } from './DrilldownViewer'
 import JsonCodeEditor from './JsonCodeEditor'
-import { useSelectedBranchQuery } from '../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface JsonEditProps {
   row?: { [key: string]: any }
@@ -45,8 +45,7 @@ const JsonEdit = ({
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
 
@@ -80,6 +79,7 @@ const JsonEdit = ({
       selectedTable === undefined ||
       project === undefined ||
       row === undefined ||
+      branch === undefined ||
       !isTableLike(selectedTable)
     )
       return
@@ -96,8 +96,7 @@ const JsonEdit = ({
         table: { schema: selectedTable.schema, name: selectedTable.name },
         column: column,
         pkMatch,
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
       },
       {
         onSuccess: (data) => {

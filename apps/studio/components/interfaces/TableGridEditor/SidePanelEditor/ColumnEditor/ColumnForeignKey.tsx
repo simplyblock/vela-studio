@@ -4,13 +4,12 @@ import { Button } from 'ui'
 
 import { useForeignKeyConstraintsQuery } from 'data/database/foreign-key-constraints-query'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { ForeignKeySelector } from '../ForeignKeySelector/ForeignKeySelector'
 import type { ForeignKey } from '../ForeignKeySelector/ForeignKeySelector.types'
 import type { ColumnField } from '../SidePanelEditor.types'
 import { ForeignKeyRow } from '../TableEditor/ForeignKeysManagement/ForeignKeyRow'
 import { checkIfRelationChanged } from '../TableEditor/ForeignKeysManagement/ForeignKeysManagement.utils'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ColumnForeignKeyProps {
   column: ColumnField
@@ -31,18 +30,15 @@ const ColumnForeignKey = ({
   const [open, setOpen] = useState(false)
   const [selectedFk, setSelectedFk] = useState<ForeignKey>()
 
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data } = useForeignKeyConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: column.schema,
   })
 
   const id = _id ? Number(_id) : undefined
   const { data: table } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
   const formattedColumnsForFkSelector = (table?.columns ?? []).map((c) => {

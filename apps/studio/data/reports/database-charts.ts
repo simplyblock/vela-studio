@@ -229,7 +229,7 @@ export const getReportAttributesV2: (
   const isFreePlan = org?.plan?.id === 'free'
   const computeSize = project?.infra_compute_size || 'medium'
   const isSpendCapEnabled =
-    org?.plan.id !== 'free' && !org?.usage_billing_enabled && project?.cloud_provider !== 'FLY'
+    org?.plan.id !== 'free' && project?.cloud_provider !== 'FLY'
 
   return [
     {

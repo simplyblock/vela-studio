@@ -587,8 +587,8 @@ export interface components {
             storage_size: number;
             /** Vcpu */
             vcpu: number;
-            /** Memory */
-            memory: number;
+            /** Memory Bytes */
+            memory_bytes: number;
             /** Iops */
             iops: number;
             /**

@@ -26,6 +26,7 @@ import {
 } from './Logs.constants'
 import type { Filters, LogSearchCallback, LogTemplate, QueryType } from './Logs.types'
 import { PreviewFilterPanelWithUniversal } from './PreviewFilterPanelWithUniversal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * Acts as a container component for the entire log display
@@ -60,6 +61,7 @@ export const LogsPreviewer = ({
 
   const router = useRouter()
   const { slug, db, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
   const [showChart, setShowChart] = useState(true)
@@ -82,7 +84,7 @@ export const LogsPreviewer = ({
   }, [timestampStart, timestampEnd])
 
   const [selectedLogId, setSelectedLogId] = useSelectedLog()
-  const { data: databases, isSuccess } = useReadReplicasQuery({ orgSlug: slug, projectRef })
+  const { data: databases, isSuccess } = useReadReplicasQuery({ branch })
 
   // TODO: Move this to useLogsUrlState to simplify LogsPreviewer. - Jordi
   function getDefaultDatePickerValue() {

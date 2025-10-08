@@ -21,6 +21,7 @@ import { BlockViewConfiguration } from './BlockViewConfiguration'
 import { EditQueryButton } from './EditQueryButton'
 import { ParametersPopover } from './ParametersPopover'
 import { getCumulativeResults } from './QueryBlock.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const DEFAULT_CHART_CONFIG: ChartConfig = {
   type: 'bar',
@@ -123,6 +124,7 @@ export const QueryBlock = ({
   onResults,
 }: QueryBlockProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [chartSettings, setChartSettings] = useState<ChartConfig>(chartConfig)
   const { xKey, yKey, view = 'table' } = chartSettings
@@ -155,7 +157,7 @@ export const QueryBlock = ({
   // [Joshen] This is for when we introduced the concept of parameters into our reports
   // const combinedParameterValues = { ...extParameterValues, ...parameterValues }
 
-  const { database: primaryDatabase } = usePrimaryDatabase({ orgSlug: orgRef, projectRef })
+  const { database: primaryDatabase } = usePrimaryDatabase({ branch })
   const postgresConnectionString = primaryDatabase?.connectionString
   const readOnlyConnectionString = primaryDatabase?.connection_string_read_only
 
@@ -203,8 +205,7 @@ export const QueryBlock = ({
       // [Joshen] This is for when we introduced the concept of parameters into our reports
       // const processedSql = processParameterizedSql(sql, combinedParameterValues)
       execute({
-        projectRef,
-        connectionString: readOnlyConnectionString,
+        branch,
         sql,
       })
     } catch (error: any) {
@@ -339,8 +340,7 @@ export const QueryBlock = ({
             if (sql) {
               setShowWarning(undefined)
               execute({
-                projectRef,
-                connectionString: postgresConnectionString,
+                branch,
                 sql,
               })
               onRunQuery?.('mutation')

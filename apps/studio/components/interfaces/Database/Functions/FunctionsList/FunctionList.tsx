@@ -15,9 +15,9 @@ import {
   TableRow,
   TableCell,
 } from 'ui'
-import { getPathReferences } from '../../../../../data/vela/path-references'
-import { useSelectedProjectQuery } from '../../../../../hooks/misc/useSelectedProject'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface FunctionListProps {
   schema: string
@@ -41,8 +41,7 @@ const FunctionList = ({
   const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: functions } = useDatabaseFunctionsQuery({
-    projectRef: selectedProject?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const filteredFunctions = (functions ?? []).filter((x) =>

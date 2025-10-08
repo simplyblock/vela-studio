@@ -6,10 +6,10 @@ import { databaseKeys } from 'data/database/keys'
 import { handleError, patch } from 'data/fetchers'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
+import { Branch } from 'api-types/types'
 
 export type CreateAndExposeAPISchemaVariables = {
-  orgSlug: string
-  projectRef: string
+  branch: Branch
   connectionString?: string | null
   existingPostgrestConfig: {
     db_pool: any
@@ -20,8 +20,7 @@ export type CreateAndExposeAPISchemaVariables = {
 }
 
 export async function createAndExposeApiSchema({
-  orgSlug,
-  projectRef,
+  branch,
   connectionString,
   existingPostgrestConfig,
 }: CreateAndExposeAPISchemaVariables) {
@@ -30,11 +29,16 @@ create schema if not exists api;
 grant usage on schema api to anon, authenticated;
   `.trim()
 
-  await executeSql({ orgSlug, projectRef, connectionString, sql })
+  await executeSql({ branch, sql })
 
   const { db_extra_search_path, db_pool, db_schema, max_rows } = existingPostgrestConfig
   const { error } = await patch('/platform/organizations/{slug}/projects/{ref}/config/postgrest', {
-    params: { path: { slug: orgSlug, ref: projectRef } },
+    params: {
+      path: {
+        slug: branch.organization_id,
+        ref: branch.project_id,
+      },
+    },
     body: {
       db_pool,
       max_rows,
@@ -69,10 +73,14 @@ export const useCreateAndExposeAPISchemaMutation = ({
     CreateAndExposeAPISchemaVariables
   >((vars) => createAndExposeApiSchema(vars), {
     async onSuccess(data, variables, context) {
-      const { orgSlug, projectRef } = variables
+      const { branch } = variables
       await Promise.all([
-        queryClient.invalidateQueries(databaseKeys.schemas(orgSlug, projectRef)),
-        queryClient.invalidateQueries(configKeys.postgrest(orgSlug, projectRef)),
+        queryClient.invalidateQueries(
+          databaseKeys.schemas(branch.organization_id, branch.project_id, branch.id)
+        ),
+        queryClient.invalidateQueries(
+          configKeys.postgrest(branch.organization_id, branch.project_id, branch.id)
+        ),
       ])
       await onSuccess?.(data, variables, context)
     },

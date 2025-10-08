@@ -1,4 +1,4 @@
-import { useIsLoggedIn, useParams } from 'common'
+import { useIsLoggedIn } from 'common'
 import jsonLogic from 'json-logic-js'
 
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
@@ -7,7 +7,7 @@ import { useProjectDetailQuery } from 'data/projects/project-detail-query'
 import type { Permission } from 'types'
 import { useSelectedOrganizationQuery } from './useSelectedOrganization'
 import { useSelectedProjectQuery } from './useSelectedProject'
-import { getPathReferences } from '../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const toRegexpString = (actionOrResource: string) =>
   `^${actionOrResource.replace('.', '\\.').replace('%', '.*')}$`
@@ -44,19 +44,19 @@ export function doPermissionsCheck(
   }
 
   if (projectRef) {
-    const projectPermissions = permissions.filter(
+    const projectPermissions = (permissions ?? []).filter(
       (permission) =>
         permission.organization_slug === organizationSlug &&
         permission.actions.some((act) => (action ? action.match(toRegexpString(act)) : null)) &&
         permission.resources.some((res) => resource.match(toRegexpString(res))) &&
-        permission.project_refs?.includes(projectRef)
+        permission.project_refs?.includes(projectRef as string)
     )
     if (projectPermissions.length > 0) {
       return doPermissionConditionCheck(projectPermissions, { resource_name: resource, ...data })
     }
   }
 
-  const orgPermissions = permissions
+  const orgPermissions = (permissions ?? [])
     // filter out org-level permission
     .filter((permission) => !permission.project_refs || permission.project_refs.length === 0)
     .filter(

@@ -6,10 +6,10 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseExtensionsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseExtensionEnableVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   schema: string
   name: string
   version: string
@@ -18,21 +18,16 @@ export type DatabaseExtensionEnableVariables = {
 }
 
 export async function enableDatabaseExtension({
-  projectRef,
-  connectionString,
+  branch,
   schema,
   name,
   version,
   cascade = false,
   createSchema = false,
 }: DatabaseExtensionEnableVariables) {
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
   const { sql } = pgMeta.extensions.create({ schema, name, version, cascade })
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: createSchema ? `create schema if not exists ${ident(schema)}; ${sql}` : sql,
     queryKey: ['extension', 'create'],
   })
@@ -56,8 +51,10 @@ export const useDatabaseExtensionEnableMutation = ({
     (vars) => enableDatabaseExtension(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(databaseExtensionsKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          databaseExtensionsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

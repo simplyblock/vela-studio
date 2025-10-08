@@ -17,8 +17,8 @@ import Panel from 'components/ui/Panel'
 import { useFillTimeseriesSorted } from 'hooks/analytics/useFillTimeseriesSorted'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useChartData } from 'hooks/useChartData'
-import type { UpdateDateRange } from 'pages/org/[slug]/project/[ref]/reports/database'
 import { Button, cn } from 'ui'
+import { UpdateDateRange } from '../../../pages/org/[slug]/project/[ref]/branch/[branch]/reports/database'
 
 const ReportChart = ({
   chart,

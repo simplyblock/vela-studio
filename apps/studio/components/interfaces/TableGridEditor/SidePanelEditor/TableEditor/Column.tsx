@@ -17,7 +17,6 @@ import {
 
 import { useForeignKeyConstraintsQuery } from 'data/database/foreign-key-constraints-query'
 import type { EnumeratedType } from 'data/enumerated-types/enumerated-types-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { EMPTY_ARR, EMPTY_OBJ } from 'lib/void'
 import { useState } from 'react'
 import { typeExpressionSuggestions } from '../ColumnEditor/ColumnEditor.constants'
@@ -27,7 +26,7 @@ import InputWithSuggestions from '../ColumnEditor/InputWithSuggestions'
 import { ForeignKey } from '../ForeignKeySelector/ForeignKeySelector.types'
 import type { ColumnField } from '../SidePanelEditor.types'
 import { checkIfRelationChanged } from './ForeignKeysManagement/ForeignKeysManagement.utils'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * [Joshen] For context:
@@ -72,7 +71,6 @@ const Column = ({
   onRemoveColumn,
   onEditForeignKey,
 }: ColumnProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
   const suggestions: Suggestion[] = typeExpressionSuggestions?.[column.format] ?? []
@@ -85,8 +83,7 @@ const Column = ({
   ].reduce((a, b) => a + b, 0)
 
   const { data } = useForeignKeyConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: column.schema,
   })
 

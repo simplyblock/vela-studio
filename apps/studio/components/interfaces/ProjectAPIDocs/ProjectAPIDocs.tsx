@@ -22,6 +22,7 @@ import {
 import FirstLevelNav from './FirstLevelNav'
 import LanguageSelector from './LanguageSelector'
 import SecondLevelNav from './SecondLevelNav'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * [Joshen] Reminder: when we choose to release this as a main feature
@@ -36,6 +37,7 @@ import SecondLevelNav from './SecondLevelNav'
 
 const ProjectAPIDocs = () => {
   const { slug: orgSlug, ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useAppStateSnapshot()
   const isIntroduction =
     snap.activeDocsSection.length === 1 && snap.activeDocsSection[0] === 'introduction'
@@ -46,7 +48,7 @@ const ProjectAPIDocs = () => {
   const language = snap.docsLanguage
 
   const { data: apiKeys } = useAPIKeysQuery(
-    { orgSlug, projectRef: ref },
+    { branch },
     { enabled: snap.showProjectApiDocs }
   )
   const { data: settings } = useProjectSettingsV2Query(

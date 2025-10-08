@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { MenuId } from '~/components/Navigation/NavigationMenu/NavigationMenu'
 import type { ICommonItem } from '~/components/reference/Reference.types'
 import type { Json } from '~/features/helpers.types'
-import { menuState } from '../../../hooks/useMenuState'
+import { menuState } from 'hooks/useMenuState'
 
 export function getPathWithoutHash(relativePath: string) {
   return new URL(relativePath, 'http://placeholder').pathname

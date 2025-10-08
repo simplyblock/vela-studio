@@ -28,7 +28,7 @@ import {
 import { SchemaGraphLegend } from './SchemaGraphLegend'
 import { getGraphDataFromTables, getLayoutedElementsViaDagre } from './Schemas.utils'
 import { TableNode } from './SchemaTableNode'
-import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 // [Joshen] Persisting logic: Only save positions to local storage WHEN a node is moved OR when explicitly clicked to reset layout
 
 export const SchemaGraph = () => {
@@ -67,9 +67,7 @@ export const SchemaGraph = () => {
     isLoading: isLoadingSchemas,
     isError: isErrorSchemas,
   } = useSchemasQuery({
-    orgSlug: orgRef,
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
 
   const {
@@ -79,8 +77,7 @@ export const SchemaGraph = () => {
     isLoading: isLoadingTables,
     isError: isErrorTables,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     schema: selectedSchema,
     includeColumns: true,
   })

@@ -1,4 +1,4 @@
-import { apiBuilder } from '../../../../../../../lib/api/apiBuilder'
+import { apiBuilder } from 'lib/api/apiBuilder'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 // FIXME: Implementation missing

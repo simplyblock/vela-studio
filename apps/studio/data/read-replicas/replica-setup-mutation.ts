@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { replicaKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type Region =
   | 'us-east-1'
@@ -22,15 +23,17 @@ export type Region =
   | 'sa-east-1'
 
 export type ReadReplicaSetUpVariables = {
-  projectRef: string
+  branch: Branch
   region: Region
   size: string // Not used in API yet, purely for UI atm
 }
 
-export async function setUpReadReplica({ projectRef, region }: ReadReplicaSetUpVariables) {
+export async function setUpReadReplica({ branch, region }: ReadReplicaSetUpVariables) {
   const { data, error } = await post('/v1/projects/{ref}/read-replicas/setup', {
     params: {
-      path: { ref: projectRef },
+      path: {
+        ref: branch.project_id,
+      },
     },
     body: {
       read_replica_region: region,
@@ -55,8 +58,10 @@ export const useReadReplicaSetUpMutation = ({
     (vars) => setUpReadReplica(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(replicaKeys.list(orgSlug, projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          replicaKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

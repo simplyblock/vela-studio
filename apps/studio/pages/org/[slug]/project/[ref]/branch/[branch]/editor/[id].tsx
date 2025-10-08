@@ -7,21 +7,18 @@ import { EditorBaseLayout } from 'components/layouts/editors/EditorBaseLayout'
 import TableEditorLayout from 'components/layouts/TableEditorLayout/TableEditorLayout'
 import { TableEditorMenu } from 'components/layouts/TableEditorLayout/TableEditorMenu'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { createTabId, useTabsStateSnapshot } from 'state/tabs'
 import type { NextPageWithLayout } from 'types'
-import { useSelectedBranchQuery } from '../../../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const TableEditorPage: NextPageWithLayout = () => {
   const { id: _id, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const id = _id ? Number(_id) : undefined
   const store = useTabsStateSnapshot()
 
-  const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useSelectedBranchQuery()
   const { data: selectedTable, isLoading } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id,
   })
 

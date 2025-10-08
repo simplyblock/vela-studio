@@ -10,7 +10,6 @@ import { SortPopoverPrimitive } from 'components/grid/components/header/sort/Sor
 import type { Filter, Sort } from 'components/grid/types'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
 import { useTableRowsQuery } from 'data/table-rows/table-rows-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   RoleImpersonationState,
   useRoleImpersonationStateSnapshot,
@@ -22,7 +21,7 @@ import { ForeignKey } from '../../ForeignKeySelector/ForeignKeySelector.types'
 import { convertByteaToHex } from '../RowEditor.utils'
 import Pagination from './Pagination'
 import SelectorGrid from './SelectorGrid'
-import { useSelectedBranchQuery } from '../../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface ForeignRowSelectorProps {
   visible: boolean
@@ -38,11 +37,9 @@ const ForeignRowSelector = ({
   closePanel,
 }: ForeignRowSelectorProps) => {
   const { id } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id: !!id ? Number(id) : undefined,
   })
 
@@ -55,8 +52,7 @@ const ForeignRowSelector = ({
   const isNullable = (columns ?? []).length === 1 && sourceColumn?.is_nullable
 
   const { data: table } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     id: tableId,
   })
 
@@ -95,8 +91,7 @@ const ForeignRowSelector = ({
 
   const { data, isLoading, isSuccess, isError, isRefetching } = useTableRowsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       tableId: table?.id,
       sorts,
       filters,
@@ -145,9 +140,9 @@ const ForeignRowSelector = ({
             </div>
           )}
 
-          {project?.ref && table && isSuccess && (
+          {branch && table && isSuccess && (
             <TableEditorTableStateContextProvider
-              projectRef={project.ref}
+              branch={branch}
               table={table}
               editable={false}
             >

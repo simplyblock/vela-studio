@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 import { useIndexAdvisorStatus } from 'components/interfaces/QueryPerformance/hooks/useIsIndexAdvisorStatus'
 import { useDatabaseExtensionEnableMutation } from 'data/database-extensions/database-extension-enable-mutation'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,10 +22,9 @@ import {
   TooltipTrigger,
 } from 'ui'
 import { getIndexAdvisorExtensions } from './index-advisor.utils'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const EnableIndexAdvisorButton = () => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const { isIndexAdvisorAvailable, isIndexAdvisorEnabled } = useIndexAdvisorStatus()
@@ -34,8 +32,7 @@ export const EnableIndexAdvisorButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   const { hypopg, indexAdvisor } = getIndexAdvisorExtensions(extensions)
 
@@ -43,14 +40,13 @@ export const EnableIndexAdvisorButton = () => {
     useDatabaseExtensionEnableMutation()
 
   const onEnableIndexAdvisor = async () => {
-    if (project === undefined) return toast.error('Project is required')
+    if (branch === undefined) return toast.error('Branch is required')
 
     try {
       // Enable hypopg extension if not already installed
       if (hypopg?.installed_version === null) {
         await enableExtension({
-          projectRef: project?.ref,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           name: hypopg.name,
           schema: hypopg?.schema ?? 'extensions',
           version: hypopg.default_version,
@@ -60,8 +56,7 @@ export const EnableIndexAdvisorButton = () => {
       // Enable index_advisor extension if not already installed
       if (indexAdvisor?.installed_version === null) {
         await enableExtension({
-          projectRef: project?.ref,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           name: indexAdvisor.name,
           schema: indexAdvisor?.schema ?? 'extensions',
           version: indexAdvisor.default_version,

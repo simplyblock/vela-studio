@@ -7,10 +7,10 @@ import {
   ZoomableGroup,
 } from 'react-simple-maps'
 
-import { useParams } from 'common'
 import { Database, useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { BASE_PATH } from 'lib/constants'
 import GeographyData from './MapData.json'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // [Joshen] Foresee that we'll skip this view for initial launch
 
@@ -22,7 +22,7 @@ interface MapViewProps {
 
 const MapView = ({
 }: MapViewProps) => {
-  const { slug, ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [mount, setMount] = useState(false)
   const [zoom, setZoom] = useState<number>(1.5)
@@ -35,7 +35,7 @@ const MapView = ({
   // FIXME: need permission implemented 
   const { can: canManageReplicas } = {can:true}
 
-  const { data } = useReadReplicasQuery({ orgSlug: slug, projectRef: ref })
+  const { data } = useReadReplicasQuery({ branch })
   const databases = data ?? []
 
   useEffect(() => {

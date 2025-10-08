@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 import { Organization } from '../../types'
-import { useOrganizationQuery } from '../../data/organizations/organization-query'
+import { useOrganizationQuery } from 'data/organizations/organization-query'
 
 export interface OrganizationContextType {
   organization?: Organization

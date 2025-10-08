@@ -4,10 +4,10 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { apiKeysKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type APIKeyCreateVariables = {
-  orgSlug?: string
-  projectRef?: string
+  branch?: Branch
   name: string
   description?: string
 } & (
@@ -23,12 +23,14 @@ export type APIKeyCreateVariables = {
 )
 
 export async function createAPIKey(payload: APIKeyCreateVariables) {
-  if (!payload.orgSlug) throw new Error('orgSlug is required')
-  if (!payload.projectRef) throw new Error('projectRef is required')
+  if (!payload.branch) throw new Error('Branch is required')
 
-  const { data, error } = await post('/v1/organizations/{slug}/projects/{ref}/api-keys', {
+  const { data, error } = await post('/platform/organizations/{slug}/projects/{ref}/api-keys', {
     params: {
-      path: { slug: payload.orgSlug, ref: payload.projectRef },
+      path: {
+        slug: payload.branch.organization_id,
+        ref: payload.branch.project_id,
+      },
       query: {
         reveal: false,
       },
@@ -69,9 +71,11 @@ export const useAPIKeyCreateMutation = ({
     (vars) => createAPIKey(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { branch } = variables
 
-        await queryClient.invalidateQueries(apiKeysKeys.list(projectRef))
+        await queryClient.invalidateQueries(
+          apiKeysKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
 
         await onSuccess?.(data, variables, context)
       },

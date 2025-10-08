@@ -12,12 +12,14 @@ import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating
 import { configKeys } from 'data/config/keys'
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const JWTKeysLegacyPage: NextPageWithLayout = () => {
-  const { slug: orgSlug, ref: projectRef, source } = useParams()
+  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const client = useQueryClient()
 
-  const { data } = useJwtSecretUpdatingStatusQuery({ orgSlug, projectRef })
+  const { data } = useJwtSecretUpdatingStatusQuery({ branch })
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
   const jwtSecretUpdateError = data?.jwtSecretUpdateError
 
@@ -32,7 +34,9 @@ const JWTKeysLegacyPage: NextPageWithLayout = () => {
         case Updated:
           client.invalidateQueries(configKeys.api(projectRef))
           client.invalidateQueries(configKeys.settings(projectRef))
-          client.invalidateQueries(configKeys.postgrest(orgSlug, projectRef))
+          client.invalidateQueries(
+            configKeys.postgrest(branch?.organization_id, branch?.project_id, branch?.id)
+          )
           toast.success('Successfully updated JWT secret')
           break
         case Failed:

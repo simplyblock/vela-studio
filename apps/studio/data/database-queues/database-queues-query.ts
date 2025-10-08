@@ -2,10 +2,10 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueuesVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type PostgresQueue = {
@@ -17,12 +17,11 @@ export type PostgresQueue = {
 
 const queueSqlQuery = `select * from pgmq.list_queues();`
 
-export async function getDatabaseQueues({ projectRef, connectionString }: DatabaseQueuesVariables) {
-  if (!projectRef) throw new Error('Project ref is required')
+export async function getDatabaseQueues({ branch }: DatabaseQueuesVariables) {
+  if (!branch) throw new Error('Branch is required')
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: queueSqlQuery,
   })
   return result
@@ -32,14 +31,14 @@ export type DatabaseQueueData = PostgresQueue[]
 export type DatabaseQueueError = ResponseError
 
 export const useQueuesQuery = <TData = DatabaseQueueData>(
-  { projectRef, connectionString }: DatabaseQueuesVariables,
+  { branch }: DatabaseQueuesVariables,
   { enabled = true, ...options }: UseQueryOptions<DatabaseQueueData, DatabaseQueueError, TData> = {}
 ) =>
   useQuery<DatabaseQueueData, DatabaseQueueError, TData>(
-    databaseQueuesKeys.list(projectRef),
-    () => getDatabaseQueues({ projectRef, connectionString }),
+    databaseQueuesKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+    () => getDatabaseQueues({ branch }),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

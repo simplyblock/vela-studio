@@ -4,25 +4,23 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseQueueMessageReadVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   queryName: string
   duration: number
   messageId: number
 }
 
 export async function readDatabaseQueueMessage({
-  projectRef,
-  connectionString,
+  branch,
   queryName,
   messageId,
   duration,
 }: DatabaseQueueMessageReadVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `select * from pgmq.set_vt('${queryName}', ${messageId}, ${duration})`,
     queryKey: databaseQueuesKeys.create(),
   })
@@ -52,9 +50,14 @@ export const useDatabaseQueueMessageReadMutation = ({
     DatabaseQueueMessageReadVariables
   >((vars) => readDatabaseQueueMessage(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef, queryName } = variables
+      const { branch, queryName } = variables
       await queryClient.invalidateQueries(
-        databaseQueuesKeys.getMessagesInfinite(projectRef, queryName)
+        databaseQueuesKeys.getMessagesInfinite(
+          branch?.organization_id,
+          branch?.project_id,
+          branch?.id,
+          queryName
+        )
       )
       await onSuccess?.(data, variables, context)
     },

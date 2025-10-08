@@ -5,7 +5,7 @@ import { Button, Modal } from 'ui'
 import { useNetworkRestrictionsQuery } from 'data/network-restrictions/network-restrictions-query'
 import { useNetworkRestrictionsApplyMutation } from 'data/network-restrictions/network-retrictions-apply-mutation'
 import { Admonition } from 'ui-patterns'
-import { getPathReferences } from '../../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 interface RemoveRestrictionModalProps {
   visible: boolean

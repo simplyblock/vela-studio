@@ -7,6 +7,7 @@ import { projectKeys } from './keys'
 import { getPathReferences } from '../vela/path-references'
 
 export type ProjectUpdateVariables = {
+  orgRef: string
   ref: string
   name: string
 }
@@ -17,9 +18,14 @@ export type ProjectUpdateResponse = {
   name: string
 }
 
-export async function updateProject({ ref, name }: ProjectUpdateVariables) {
-  const { data, error } = await patch('/platform/projects/{ref}', {
-    params: { path: { ref } },
+export async function updateProject({ orgRef, ref, name }: ProjectUpdateVariables) {
+  const { data, error } = await patch('/platform/organizations/{slug}/projects/{ref}', {
+    params: {
+      path: {
+        slug: orgRef,
+        ref,
+      },
+    },
     body: { name },
   })
   if (error) handleError(error)

@@ -15,17 +15,15 @@ import {
 import { useDiskAttributesQuery } from 'data/config/disk-attributes-query'
 import { useProjectDetailQuery } from 'data/projects/project-detail-query'
 import { Region, useReadReplicaSetUpMutation } from 'data/read-replicas/replica-setup-mutation'
-import {
-  MAX_REPLICAS_ABOVE_XL,
-  useReadReplicasQuery,
-} from 'data/read-replicas/replicas-query'
+import { MAX_REPLICAS_ABOVE_XL, useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatCurrency } from 'lib/helpers'
 import {
+  cn,
+  Collapsible_Shadcn_,
   CollapsibleContent_Shadcn_,
   CollapsibleTrigger_Shadcn_,
-  Collapsible_Shadcn_,
   SidePanel,
   Table,
   TableBody,
@@ -33,8 +31,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  cn,
 } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query' // [Joshen] FYI this is purely for AWS only, need to update to support Fly eventually
 
 // [Joshen] FYI this is purely for AWS only, need to update to support Fly eventually
 
@@ -44,16 +42,13 @@ interface DeployNewReplicaPanelProps {
   onClose: () => void
 }
 
-const DeployNewReplicaPanel = ({
-  visible,
-  onSuccess,
-  onClose,
-}: DeployNewReplicaPanelProps) => {
+const DeployNewReplicaPanel = ({ visible, onSuccess, onClose }: DeployNewReplicaPanelProps) => {
   const { slug, ref: projectRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
-  const { data } = useReadReplicasQuery({ orgSlug: slug, projectRef })
+  const { data } = useReadReplicasQuery({ branch })
   const { data: diskConfiguration } = useDiskAttributesQuery({ projectRef })
 
   // @ts-ignore
@@ -111,17 +106,14 @@ const DeployNewReplicaPanel = ({
   const isAWSProvider = project?.cloud_provider === 'AWS'
   const isWalgEnabled = project?.is_physical_backups_enabled
   const canDeployReplica =
-    !reachedMaxReplicas &&
-    currentPgVersion >= 15 &&
-    isAWSProvider &&
-    !isFreePlan &&
-    isWalgEnabled
+    !reachedMaxReplicas && currentPgVersion >= 15 && isAWSProvider && !isFreePlan && isWalgEnabled
 
   const onSubmit = async () => {
     if (!projectRef) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     const primary = data?.find((db) => db.identifier === projectRef)
-    setUpReplica({ projectRef, region: '' as Region, size: primary?.size ?? 't4g.small' })
+    setUpReplica({ branch, region: '' as Region, size: primary?.size ?? 't4g.small' })
   }
 
   return (
@@ -146,7 +138,7 @@ const DeployNewReplicaPanel = ({
                       New replica will cost an additional{' '}
                       <span translate="no">
                         {formatCurrency(
-                            additionalCostDiskSize +
+                          additionalCostDiskSize +
                             Number(additionalCostIOPS) +
                             Number(additionalCostThroughput)
                         )}

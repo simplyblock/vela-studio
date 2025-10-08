@@ -1,7 +1,6 @@
 import { Key } from 'lucide-react'
 import { useMemo } from 'react'
 
-import { useParams } from 'common'
 import type { showApiKey } from 'components/interfaces/Docs/Docs.types'
 import { useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import {
@@ -15,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const DEFAULT_KEY = { name: 'hide', key: 'SUPABASE_KEY' }
 
@@ -31,11 +31,10 @@ const LangSelector = ({
   setSelectedLang,
   setSelectedApiKey,
 }: LangSelectorProps) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: apiKeys = [], isLoading: isLoadingAPIKeys } = useAPIKeysQuery({
-    orgSlug,
-    projectRef,
+    branch,
     reveal: false,
   })
 

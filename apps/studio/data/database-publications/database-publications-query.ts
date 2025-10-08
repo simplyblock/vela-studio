@@ -3,32 +3,26 @@ import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { databasePublicationsKeys } from './keys'
 import { DEFAULT_PLATFORM_APPLICATION_NAME } from '@supabase/pg-meta/src/constants'
+import { Branch } from 'api-types/types'
 
 export type DatabasePublicationsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export async function getDatabasePublications(
-  { projectRef, connectionString }: DatabasePublicationsVariables,
+  { branch }: DatabasePublicationsVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('branch is required')
 
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
-  const { data, error } = await get('/platform/pg-meta/{ref}/publications', {
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/publications', {
     params: {
-      header: {
-        'x-connection-encrypted': connectionString!,
-        'x-pg-application-name': DEFAULT_PLATFORM_APPLICATION_NAME,
-      },
       path: {
-        ref: projectRef,
+        slug: branch.organization_id,
+        ref: branch.project_id,
+        branch: branch.id,
       },
     },
-    headers,
     signal,
   })
 
@@ -40,17 +34,17 @@ export type DatabasePublicationsData = Awaited<ReturnType<typeof getDatabasePubl
 export type DatabasePublicationsError = ResponseError
 
 export const useDatabasePublicationsQuery = <TData = DatabasePublicationsData>(
-  { projectRef, connectionString }: DatabasePublicationsVariables,
+  { branch }: DatabasePublicationsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<DatabasePublicationsData, DatabasePublicationsError, TData> = {}
 ) =>
   useQuery<DatabasePublicationsData, DatabasePublicationsError, TData>(
-    databasePublicationsKeys.list(projectRef),
-    ({ signal }) => getDatabasePublications({ projectRef, connectionString }, signal),
+    databasePublicationsKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getDatabasePublications({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

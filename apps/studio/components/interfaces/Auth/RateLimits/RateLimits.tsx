@@ -26,7 +26,7 @@ import {
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { isSmtpEnabled } from '../SmtpForm/SmtpForm.utils'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const RateLimits = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()

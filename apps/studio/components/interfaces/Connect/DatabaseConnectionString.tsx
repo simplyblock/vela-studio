@@ -35,8 +35,9 @@ import {
 import { CodeBlockFileHeader, ConnectionPanel } from './ConnectionPanel'
 import { getConnectionStrings } from './DatabaseSettings.utils'
 import examples, { Example } from './DirectConnectionExamples'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 import { ChevronDown } from 'lucide-react'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const StepLabel = ({
   number,
@@ -58,6 +59,7 @@ const StepLabel = ({
 export const DatabaseConnectionString = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
   const [selectedTab, setSelectedTab] = useState<DatabaseConnectionType>('uri')
@@ -80,7 +82,7 @@ export const DatabaseConnectionString = () => {
     isLoading: isLoadingReadReplicas,
     isError: isErrorReadReplicas,
     isSuccess: isSuccessReadReplicas,
-  } = useReadReplicasQuery({ orgSlug: orgRef, projectRef })
+  } = useReadReplicasQuery({ branch })
 
   const poolerError = pgbouncerError
   const isLoadingPoolerConfig =isLoadingPgbouncerConfig

@@ -10,9 +10,9 @@ import { withAuth } from 'hooks/misc/withAuth'
 import { useFlag } from 'hooks/ui/useFlag'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateDatabaseMenu } from './DatabaseMenu.utils'
-import { getOrganizationSlug } from '../../../data/vela/organization-path-slug'
+import { getOrganizationSlug } from 'data/vela/organization-path-slug'
 import { useParams } from 'common'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface DatabaseLayoutProps {
   title?: string
@@ -29,8 +29,7 @@ const DatabaseProductMenu = () => {
   const page = router.pathname.split('/')[6]
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const pitrEnabled = true

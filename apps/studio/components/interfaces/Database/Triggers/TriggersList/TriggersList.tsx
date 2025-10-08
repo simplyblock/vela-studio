@@ -27,7 +27,7 @@ import {
 } from 'ui'
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import TriggerList from './TriggerList'
-import { useSelectedBranchQuery } from '../../../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TriggersListProps {
   createTrigger: () => void
@@ -50,8 +50,7 @@ const TriggersList = ({
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedSchema })
 
   const { data = [] } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
   })
   const hasTables =
     data.filter((a) => !protectedSchemas.find((s) => s.name === a.schema)).length > 0
@@ -62,8 +61,7 @@ const TriggersList = ({
     isLoading,
     isError,
   } = useDatabaseTriggersQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
   // FIXME: need permission implemented 
   const { can: canCreateTriggers } = {can:true}

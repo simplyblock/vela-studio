@@ -29,7 +29,7 @@ import {
 } from 'ui'
 import { InfoTooltip } from 'ui-patterns/info-tooltip'
 import { getAvatarUrl, getDisplayName } from '../Auth/Users/Users.utils'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type AuthenticatorAssuranceLevels = 'aal1' | 'aal2'
 
@@ -56,8 +56,7 @@ const UserImpersonationSelector = () => {
   const { data, isSuccess, isLoading, isError, error, isFetching, isPreviousData } =
     useUsersInfiniteQuery(
       {
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         keywords: debouncedSearchText.trim().toLocaleLowerCase(),
       },
       {

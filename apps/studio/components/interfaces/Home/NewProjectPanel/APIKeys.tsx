@@ -10,6 +10,7 @@ import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { Input, SimpleCodeBlock } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const generateInitSnippet = (endpoint: string) => ({
   js: `
@@ -30,6 +31,7 @@ Future<void> main() async {
 
 export const APIKeys = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     projectConnectionJavascriptExample: javascriptExampleEnabled,
@@ -51,7 +53,7 @@ export const APIKeys = () => {
     isLoading: isProjectSettingsLoading,
   } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: orgRef, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { anonKey, serviceKey } = getKeys(apiKeys)
 
   // API keys should not be empty. However it can be populated with a delay on project creation
@@ -62,7 +64,7 @@ export const APIKeys = () => {
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
   } = useJwtSecretUpdatingStatusQuery(
-    { orgSlug: orgRef, projectRef },
+    { branch },
     { enabled: !isProjectSettingsLoading && isApiKeysEmpty }
   )
 

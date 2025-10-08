@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import type { components } from 'data/api'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
+import { Branch } from 'api-types/types'
 
 export type CreateColumnBody = Omit<components['schemas']['CreateColumnBody'], 'tableId'> & {
   schema: string
@@ -12,14 +13,12 @@ export type CreateColumnBody = Omit<components['schemas']['CreateColumnBody'], '
 }
 
 export type DatabaseColumnCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   payload: CreateColumnBody
 }
 
 export async function createDatabaseColumn({
-  projectRef,
-  connectionString,
+  branch,
   payload,
 }: DatabaseColumnCreateVariables) {
   const { sql } = pgMeta.columns.create({
@@ -39,8 +38,7 @@ export async function createDatabaseColumn({
   })
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['column', 'create'],
   })

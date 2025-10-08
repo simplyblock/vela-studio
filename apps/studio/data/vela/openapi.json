@@ -4448,30 +4448,28 @@
           },
           "database_size": {
             "type": "integer",
-            "multipleOf": 1073741824.0,
-            "maximum": 9.223372036854776e+18,
+            "multipleOf": 1000000000.0,
             "exclusiveMinimum": 0.0,
             "title": "Database Size"
           },
           "storage_size": {
             "type": "integer",
-            "multipleOf": 1073741824.0,
-            "maximum": 9.223372036854776e+18,
+            "multipleOf": 1000000000.0,
             "exclusiveMinimum": 0.0,
             "title": "Storage Size"
           },
           "vcpu": {
             "type": "integer",
-            "maximum": 2147483647.0,
-            "exclusiveMinimum": 0.0,
+            "multipleOf": 100.0,
+            "maximum": 64000.0,
+            "minimum": 1000.0,
             "title": "Vcpu"
           },
-          "memory": {
+          "memory_bytes": {
             "type": "integer",
-            "multipleOf": 1073741824.0,
-            "maximum": 9.223372036854776e+18,
-            "exclusiveMinimum": 0.0,
-            "title": "Memory"
+            "multipleOf": 100000000.0,
+            "minimum": 500000000.0,
+            "title": "Memory Bytes"
           },
           "iops": {
             "type": "integer",
@@ -4493,7 +4491,7 @@
           "database_size",
           "storage_size",
           "vcpu",
-          "memory",
+          "memory_bytes",
           "iops",
           "database_image_tag"
         ],
@@ -4773,7 +4771,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "multipleOf": 1073741824.0,
+                "multipleOf": 1000000000.0,
                 "exclusiveMinimum": 0.0
               },
               {
@@ -4786,7 +4784,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "multipleOf": 1073741824.0,
+                "multipleOf": 1000000000.0,
                 "exclusiveMinimum": 0.0
               },
               {
@@ -4807,27 +4805,30 @@
         "properties": {
           "vcpu": {
             "type": "integer",
-            "maximum": 2147483647.0,
-            "minimum": 0.0,
+            "multipleOf": 100.0,
+            "maximum": 64000.0,
+            "minimum": 1000.0,
             "title": "Vcpu",
             "description": "Measured vCPU consumption for the branch."
           },
           "ram_bytes": {
             "type": "integer",
-            "minimum": 0.0,
+            "multipleOf": 100000000.0,
+            "minimum": 500000000.0,
             "title": "Ram Bytes",
             "description": "Measured RAM usage in bytes."
           },
           "nvme_bytes": {
             "type": "integer",
-            "minimum": 0.0,
+            "multipleOf": 1000000000.0,
+            "exclusiveMinimum": 0.0,
             "title": "Nvme Bytes",
             "description": "Measured NVMe usage in bytes."
           },
           "iops": {
             "type": "integer",
             "maximum": 2147483647.0,
-            "minimum": 0.0,
+            "minimum": 100.0,
             "title": "Iops",
             "description": "Measured IOPS consumption."
           },
@@ -4835,7 +4836,8 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "multipleOf": 1000000000.0,
+                "exclusiveMinimum": 0.0
               },
               {
                 "type": "null"
@@ -4858,21 +4860,23 @@
         "properties": {
           "vcpu": {
             "type": "integer",
-            "maximum": 2147483647.0,
-            "minimum": 1.0,
+            "multipleOf": 100.0,
+            "maximum": 64000.0,
+            "minimum": 1000.0,
             "title": "Vcpu",
             "description": "Number of virtual CPUs provisioned (matches Branch.vcpu constraints)."
           },
           "ram_bytes": {
             "type": "integer",
-            "multipleOf": 1024.0,
-            "minimum": 1024.0,
+            "multipleOf": 100000000.0,
+            "minimum": 500000000.0,
             "title": "Ram Bytes",
             "description": "Guest memory expressed in bytes (mirrors Branch.memory)."
           },
           "nvme_bytes": {
             "type": "integer",
-            "minimum": 1073741824.0,
+            "multipleOf": 1000000000.0,
+            "exclusiveMinimum": 0.0,
             "title": "Nvme Bytes",
             "description": "Provisioned NVMe volume capacity in bytes (derived from Branch.database_size)."
           },
@@ -4887,7 +4891,8 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 1073741824.0
+                "multipleOf": 1000000000.0,
+                "exclusiveMinimum": 0.0
               },
               {
                 "type": "null"

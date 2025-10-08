@@ -28,7 +28,7 @@ import { IndexImprovementText } from './IndexImprovementText'
 import { QueryPanelContainer, QueryPanelScoreSection, QueryPanelSection } from './QueryPanel'
 import { useIndexInvalidation } from './hooks/useIndexInvalidation'
 import { calculateImprovement, createIndexes, hasIndexRecommendations } from './index-advisor.utils'
-import { useSelectedBranchQuery } from '../../../data/branches/selected-branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface QueryIndexesProps {
   selectedRow: any
@@ -52,14 +52,12 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     isError,
     error,
   } = useGetIndexesFromSelectQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     query: selectedRow?.['query'],
   })
 
   const { data: extensions, isLoading: isLoadingExtensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch
   })
 
   const { isIndexAdvisorEnabled } = useIndexAdvisorStatus()
@@ -73,8 +71,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     isLoading: isLoadingIndexAdvisorResult,
   } = useGetIndexAdvisorResult(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       query: selectedRow?.['query'],
     },
     { enabled: isIndexAdvisorEnabled }
@@ -102,8 +99,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
 
     try {
       await createIndexes({
-        projectRef: project?.ref,
-        connectionString: branch?.database.encrypted_connection_string,
+        branch,
         indexStatements: index_statements,
         onSuccess: () => refetch(),
       })

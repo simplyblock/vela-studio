@@ -38,7 +38,7 @@ import { ExportDialog } from './ExportDialog'
 import { FilterPopover } from './filter/FilterPopover'
 import { formatRowsForCSV } from './Header.utils'
 import { SortPopover } from './sort/SortPopover'
-import { useBranchQuery } from '../../../../data/branches/branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 // [Joshen] CSV exports require this guard as a fail-safe if the table is
 // just too large for a browser to keep all the rows in memory before
 // exporting. Either that or export as multiple CSV sheets with max n rows each
@@ -223,9 +223,8 @@ const DefaultHeader = () => {
 }
 
 const RowHeader = () => {
-  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useBranchQuery({orgRef, projectRef: project?.ref, branchRef})
+  const { data: branch } = useSelectedBranchQuery()
   const tableEditorSnap = useTableEditorStateSnapshot()
   const snap = useTableEditorTableStateSnapshot()
 
@@ -239,8 +238,7 @@ const RowHeader = () => {
   const [showExportModal, setShowExportModal] = useState(false)
 
   const { data } = useTableRowsQuery({
-    projectRef: project?.ref,
-    connectionString: branch?.database.encrypted_connection_string,
+    branch,
     tableId: snap.table.id,
     sorts,
     filters,
@@ -251,8 +249,7 @@ const RowHeader = () => {
 
   const { data: countData } = useTableRowsCountQuery(
     {
-      projectRef: project?.ref,
-      connectionString: branch?.database.encrypted_connection_string,
+      branch,
       tableId: snap.table.id,
       filters,
       enforceExactCount: snap.enforceExactCount,
@@ -316,6 +313,11 @@ const RowHeader = () => {
       return setIsExporting(false)
     }
 
+    if (!branch) {
+      toast.error('Branch is required')
+      return setIsExporting(false)
+    }
+
     const toastId = snap.allRowsSelected
       ? toast(
           <SonnerProgress progress={0} message={`Exporting all rows from ${snap.table.name}`} />,
@@ -330,8 +332,7 @@ const RowHeader = () => {
 
     const rows = snap.allRowsSelected
       ? await fetchAllTableRows({
-          projectRef: project.ref,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           table: snap.table,
           filters,
           sorts,
@@ -389,6 +390,11 @@ const RowHeader = () => {
       return setIsExporting(false)
     }
 
+    if (!branch) {
+      toast.error('Branch is required')
+      return setIsExporting(false)
+    }
+
     if (snap.allRowsSelected && totalRows === 0) {
       toast.error('Export failed, please try exporting again')
       return setIsExporting(false)
@@ -408,8 +414,7 @@ const RowHeader = () => {
 
     const rows = snap.allRowsSelected
       ? await fetchAllTableRows({
-          projectRef: project.ref,
-          connectionString: branch?.database.encrypted_connection_string,
+          branch,
           table: snap.table,
           filters,
           sorts,

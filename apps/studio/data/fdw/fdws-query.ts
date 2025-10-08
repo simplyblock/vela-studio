@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { fdwKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export const getFDWsSql = () => {
   const sql = /* SQL */ `
@@ -64,18 +65,18 @@ export type FDW = {
 }
 
 export type FDWsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
-export async function getFDWs(
-  { projectRef, connectionString }: FDWsVariables,
-  signal?: AbortSignal
-) {
+export async function getFDWs({ branch }: FDWsVariables, signal?: AbortSignal) {
   const sql = getFDWsSql()
 
   const { result } = await executeSql(
-    { projectRef, connectionString, sql, queryKey: ['fdws'] },
+    {
+      branch,
+      sql,
+      queryKey: ['fdws'],
+    },
     signal
   )
 
@@ -86,14 +87,14 @@ export type FDWsData = Awaited<ReturnType<typeof getFDWs>>
 export type FDWsError = ExecuteSqlError
 
 export const useFDWsQuery = <TData = FDWsData>(
-  { projectRef, connectionString }: FDWsVariables,
+  { branch }: FDWsVariables,
   { enabled = true, ...options }: UseQueryOptions<FDWsData, FDWsError, TData> = {}
 ) =>
   useQuery<FDWsData, FDWsError, TData>(
-    fdwKeys.list(projectRef),
-    ({ signal }) => getFDWs({ projectRef, connectionString }, signal),
+    fdwKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getFDWs({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

@@ -6,22 +6,21 @@ import type { components } from 'data/api'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { tableKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type CreateTableBody = components['schemas']['CreateTableBody']
 
 export type TableCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   // the schema is required field
   payload: CreateTableBody & { schema: string }
 }
 
-export async function createTable({ projectRef, connectionString, payload }: TableCreateVariables) {
+export async function createTable({ branch, payload }: TableCreateVariables) {
   const { sql } = pgMeta.tables.create(payload)
 
   const { result } = await executeSql<void>({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['table', 'create'],
   })
@@ -45,11 +44,27 @@ export const useTableCreateMutation = ({
     (vars) => createTable(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, payload } = variables
+        const { branch, payload } = variables
 
         await Promise.all([
-          queryClient.invalidateQueries(tableKeys.list(projectRef, payload.schema, true)),
-          queryClient.invalidateQueries(tableKeys.list(projectRef, payload.schema, false)),
+          queryClient.invalidateQueries(
+            tableKeys.list(
+              branch.organization_id,
+              branch.project_id,
+              branch.id,
+              payload.schema,
+              true
+            )
+          ),
+          queryClient.invalidateQueries(
+            tableKeys.list(
+              branch.organization_id,
+              branch.project_id,
+              branch.id,
+              payload.schema,
+              false
+            )
+          ),
         ])
         await onSuccess?.(data, variables, context)
       },

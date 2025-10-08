@@ -5,6 +5,7 @@ import CodeSnippet from 'components/interfaces/Docs/CodeSnippet'
 import GeneratingTypes from 'components/interfaces/Docs/GeneratingTypes'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import PublicSchemaNotEnabledAlert from '../../PublicSchemaNotEnabledAlert'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface IntroductionProps {
   selectedLang: 'bash' | 'js'
@@ -12,8 +13,9 @@ interface IntroductionProps {
 
 const Introduction = ({ selectedLang }: IntroductionProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
-  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ orgSlug: orgRef, projectRef })
+  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ branch })
 
   const isPublicSchemaEnabled = config?.db_schema
     .split(',')
