@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseIndexesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type GetIndexesArgs = {
   schema?: string
@@ -28,14 +29,10 @@ export type DatabaseIndex = {
 }
 
 export type IndexesVariables = GetIndexesArgs & {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
-export async function getIndexes(
-  { schema, projectRef, connectionString }: IndexesVariables,
-  signal?: AbortSignal
-) {
+export async function getIndexes({ schema, branch }: IndexesVariables, signal?: AbortSignal) {
   if (!schema) {
     throw new Error('schema is required')
   }
@@ -43,7 +40,11 @@ export async function getIndexes(
   const sql = getIndexesSql({ schema })
 
   const { result } = await executeSql(
-    { projectRef, connectionString, sql, queryKey: ['indexes', schema] },
+    {
+      branch,
+      sql,
+      queryKey: ['indexes', schema],
+    },
     signal
   )
 
@@ -54,14 +55,14 @@ export type IndexesData = Awaited<ReturnType<typeof getIndexes>>
 export type IndexesError = ExecuteSqlError
 
 export const useIndexesQuery = <TData = IndexesData>(
-  { projectRef, connectionString, schema }: IndexesVariables,
+  { branch, schema }: IndexesVariables,
   { enabled = true, ...options }: UseQueryOptions<IndexesData, IndexesError, TData> = {}
 ) =>
   useQuery<IndexesData, IndexesError, TData>(
-    databaseIndexesKeys.list(projectRef, schema),
-    ({ signal }) => getIndexes({ projectRef, connectionString, schema }, signal),
+    databaseIndexesKeys.list(branch?.organization_id, branch?.project_id, branch?.id, schema),
+    ({ signal }) => getIndexes({ branch, schema }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof schema !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined' && typeof schema !== 'undefined',
       ...options,
     }
   )

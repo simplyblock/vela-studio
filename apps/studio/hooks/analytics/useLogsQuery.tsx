@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-import { IS_PLATFORM } from 'common'
 import {
   EXPLORER_DATEPICKER_HELPERS,
   getDefaultHelper,
@@ -94,18 +93,16 @@ const useLogsQuery = (
     error = data?.error
   }
 
-  if (IS_PLATFORM) {
-    if (usesWith) {
-      error = {
-        message: 'The parser does not yet support WITH and subquery statements.',
-        docs: 'https://supabase.com/docs/guides/platform/advanced-log-filtering#the-with-keyword-and-subqueries-are-not-supported',
-      }
+  if (usesWith) {
+    error = {
+      message: 'The parser does not yet support WITH and subquery statements.',
+      docs: 'https://supabase.com/docs/guides/platform/advanced-log-filtering#the-with-keyword-and-subqueries-are-not-supported',
     }
-    if (usesILIKE) {
-      error = {
-        message: 'BigQuery does not support ILIKE. Use REGEXP_CONTAINS instead.',
-        docs: 'https://supabase.com/docs/guides/platform/advanced-log-filtering#the-ilike-and-similar-to-keywords-are-not-supported',
-      }
+  }
+  if (usesILIKE) {
+    error = {
+      message: 'BigQuery does not support ILIKE. Use REGEXP_CONTAINS instead.',
+      docs: 'https://supabase.com/docs/guides/platform/advanced-log-filtering#the-ilike-and-similar-to-keywords-are-not-supported',
     }
   }
   const changeQuery = (newQuery = '') => {

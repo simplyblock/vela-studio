@@ -28,6 +28,7 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface DeleteBucketModalProps {
   visible: boolean
@@ -39,8 +40,9 @@ const formId = `delete-storage-bucket-form`
 
 export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModalProps) => {
   const router = useRouter()
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const schema = z.object({
     confirm: z.literal(bucket.name, {
@@ -54,15 +56,14 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
 
   const { data } = useBucketsQuery({ projectRef })
   const { data: policies } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: 'storage',
   })
   const { mutateAsync: deletePolicy } = useDatabasePolicyDeleteMutation()
 
   const { mutate: deleteBucket, isLoading } = useBucketDeleteMutation({
     onSuccess: async () => {
-      if (!project) return console.error('Project is required')
+      if (!branch) return console.error('Branch is required')
 
       // Clean up policies from the corresponding bucket that was deleted
       const storageObjectsPolicies = (policies ?? []).filter((policy) => policy.table === 'objects')
@@ -80,15 +81,14 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
         await Promise.all(
           bucketPolicies.map((policy: any) =>
             deletePolicy({
-              projectRef: project?.ref,
-              connectionString: project?.connectionString,
+              branch,
               originalPolicy: policy,
             })
           )
         )
 
         toast.success(`Successfully deleted bucket ${bucket.name}`)
-        router.push(`/org/${slug}/project/${projectRef}/storage/buckets`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/buckets`)
         onClose()
       } catch (error) {
         toast.success(

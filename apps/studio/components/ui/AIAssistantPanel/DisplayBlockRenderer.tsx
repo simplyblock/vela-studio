@@ -1,12 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import type { UIDataTypes, UIMessagePart, UITools } from 'ai'
 import { useRouter } from 'next/router'
 import { DragEvent, PropsWithChildren, useMemo, useState } from 'react'
-
 import { useParams } from 'common'
 import { ChartConfig } from 'components/interfaces/SQLEditor/UtilityPanel/ChartConfig'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
@@ -48,10 +45,8 @@ export const DisplayBlockRenderer = ({
   const snap = useAiAssistantStateSnapshot()
 
   const { mutate: sendEvent } = useSendEventMutation()
-  const canCreateSQLSnippet = useCheckPermissions(PermissionAction.CREATE, 'user_content', {
-    resource: { type: 'sql', owner_id: profile?.id },
-    subject: { id: profile?.id },
-  })
+  // FIXME: need permission implemented   
+  const canCreateSQLSnippet = true
 
   const [chartConfig, setChartConfig] = useState<ChartConfig>(() => ({
     ...DEFAULT_CHART_CONFIG,

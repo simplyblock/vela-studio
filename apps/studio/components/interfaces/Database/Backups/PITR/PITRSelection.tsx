@@ -24,14 +24,16 @@ import type { Timezone } from './PITR.types'
 import { getClientTimezone } from './PITR.utils'
 import PITRStatus from './PITRStatus'
 import { PITRForm } from './pitr-form'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const PITRSelection = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const queryClient = useQueryClient()
 
-  const { data: backups } = useBackupsQuery({ orgSlug: slug, projectRef: ref })
-  const { data: databases } = useReadReplicasQuery({ orgSlug: slug, projectRef: ref })
+  const { data: backups } = useBackupsQuery({ orgSlug: orgRef, projectRef: projectRef })
+  const { data: databases } = useReadReplicasQuery({ branch })
   const [showConfiguration, setShowConfiguration] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [selectedTimezone, setSelectedTimezone] = useState<Timezone>(getClientTimezone())
@@ -51,8 +53,8 @@ const PITRSelection = () => {
     onSuccess: (res, variables) => {
       setTimeout(() => {
         setShowConfirmation(false)
-        setProjectStatus(queryClient, slug as string, variables.ref, PROJECT_STATUS.RESTORING)
-        router.push(`/org/${slug}/project/${variables.ref}`)
+        setProjectStatus(queryClient, orgRef!, variables.ref, PROJECT_STATUS.RESTORING)
+        router.push(`/org/${orgRef}/project/${variables.ref}/branch/${branchRef}/`)
       }, 3000)
     },
   })
@@ -62,12 +64,12 @@ const PITRSelection = () => {
   const hasNoBackupsAvailable = !earliestPhysicalBackupDateUnix || !latestPhysicalBackupDateUnix
 
   const onConfirmRestore = async () => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
     if (!selectedRecoveryPoint?.recoveryTimeTargetUnix)
       return console.error('Recovery time target unix is required')
 
     restoreFromPitr({
-      ref,
+      ref: projectRef,
       recovery_time_target_unix: selectedRecoveryPoint.recoveryTimeTargetUnix,
     })
   }
@@ -96,7 +98,7 @@ const PITRSelection = () => {
               <div className="flex items-center gap-x-2 mt-2">
                 {/* [Joshen] Ideally we have some links to a docs to explain why so */}
                 <Button type="default">
-                  <Link href={`/org/${slug}/project/${ref}/settings/infrastructure`}>
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/infrastructure`}>
                     Infrastructure settings
                   </Link>
                 </Button>

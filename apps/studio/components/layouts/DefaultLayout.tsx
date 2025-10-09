@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import { useParams } from 'common'
 import { AppBannerWrapper } from 'components/interfaces/App'
 import { AppBannerContextProvider } from 'components/interfaces/App/AppBannerWrapperContext'
 import { Sidebar } from 'components/interfaces/Sidebar'
@@ -10,21 +9,10 @@ import { SidebarProvider } from 'ui'
 import { LayoutHeader } from './ProjectLayout/LayoutHeader'
 import MobileNavigationBar from './ProjectLayout/NavigationBar/MobileNavigationBar'
 import { ProjectContextProvider } from './ProjectLayout/ProjectContext'
-import {
-  deleteOrganizationCookie,
-  deleteProjectCookie,
-  setOrganizationCookie,
-  setProjectCookie,
-} from '../../data/vela/vela'
-import { useOrganizationQuery } from '../../data/organizations/organization-query'
-import { useSelectedProjectQuery } from '../../hooks/misc/useSelectedProject'
-import { useProjectDetailQuery } from '../../data/projects/project-detail-query'
-import { useProjectsQuery } from '../../data/projects/projects-query'
 import { OrganizationContextProvider } from './OrganizationContext'
-import { getOrganizationSlug } from '../../data/vela/organization-path-slug'
-import { getProjectRef } from '../../data/vela/project-path-ref'
+import { getOrganizationSlug } from 'data/vela/organization-path-slug'
+import { getProjectRef } from 'data/vela/project-path-ref'
 import { RbacSubSideBar } from 'components/interfaces/RbacSidebar'
-
 export interface DefaultLayoutProps {
   headerTitle?: string
 }

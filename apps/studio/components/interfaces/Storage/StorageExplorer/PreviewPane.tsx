@@ -1,12 +1,10 @@
 import { Transition } from '@headlessui/react'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { isEmpty } from 'lodash'
 import { AlertCircle, ChevronDown, Clipboard, Download, Loader, Trash2, X } from 'lucide-react'
 import SVG from 'react-inlinesvg'
 
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { BASE_PATH } from 'lib/constants'
 import { formatBytes } from 'lib/helpers'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
@@ -126,8 +124,8 @@ const PreviewPane = () => {
     setSelectedFileCustomExpiry,
   } = useStorageExplorerStateSnapshot()
   const { onCopyUrl } = useCopyUrl()
-
-  const canUpdateFiles = useCheckPermissions(PermissionAction.STORAGE_WRITE, '*')
+  // FIXME: need permission implemented 
+  const canUpdateFiles = true
 
   if (!file) return null
 

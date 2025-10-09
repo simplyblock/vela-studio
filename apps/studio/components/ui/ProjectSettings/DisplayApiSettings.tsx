@@ -1,17 +1,15 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { JwtSecretUpdateStatus } from '@supabase/shared-types/out/events'
 import { AlertCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo } from 'react'
 import { toast } from 'sonner'
-
 import { useParams } from 'common'
 import Panel from 'components/ui/Panel'
 import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating-status-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { Input } from 'ui'
 import { getLastUsedAPIKeys, useLastUsedAPIKeysLogQuery } from './DisplayApiSettings.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const DisplayApiSettings = ({
   showTitle = true,
@@ -22,7 +20,8 @@ export const DisplayApiSettings = ({
   showNotice?: boolean
   showLegacyText?: boolean
 }) => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { slug: orgSlug, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     data: settings,
@@ -33,13 +32,10 @@ export const DisplayApiSettings = ({
     data,
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
-  } = useJwtSecretUpdatingStatusQuery({ projectRef })
+  } = useJwtSecretUpdatingStatusQuery({ branch })
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
-
-  const { isLoading: isLoadingPermissions, can: canReadAPIKeys } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'service_api_keys'
-  )
+  // FIXME: need permission implemented 
+  const { isLoading: isLoadingPermissions, can: canReadAPIKeys } = {can:true , isLoading:false}
 
   const isLoading = isProjectSettingsLoading || isLoadingPermissions
 
@@ -171,7 +167,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}
+                            href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Secret API keys
@@ -188,7 +184,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${orgSlug}/project/${projectRef}/settings/api-keys/new`}
+                            href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Publishable API keys

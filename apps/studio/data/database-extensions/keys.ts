@@ -1,4 +1,4 @@
 export const databaseExtensionsKeys = {
-  list: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'database-extensions'] as const,
+  list: (orgSlug: string | undefined, projectRef: string | undefined, branch: string | undefined) =>
+    ['branches', orgSlug, projectRef, branch, 'database-extensions'] as const,
 }

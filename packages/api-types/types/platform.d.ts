@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+  '/platform/service-urls': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['ServiceUrlsController_getServiceUrls']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/auth/{ref}/config': {
     parameters: {
       query?: never
@@ -1285,7 +1301,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/members/{gotrue_id}': {
+  '/platform/organizations/{slug}/members/{user_id}': {
     parameters: {
       query?: never
       header?: never
@@ -1303,7 +1319,7 @@ export interface paths {
     patch: operations['MembersController_assignMemberRoleV2']
     trace?: never
   }
-  '/platform/organizations/{slug}/members/{gotrue_id}/roles/{role_id}': {
+  '/platform/organizations/{slug}/members/{user_id}/roles/{role_id}': {
     parameters: {
       query?: never
       header?: never
@@ -1713,7 +1729,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/column-privileges': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/column-privileges': {
     parameters: {
       query?: never
       header?: never
@@ -1732,7 +1748,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/columns': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/columns': {
     parameters: {
       query?: never
       header?: never
@@ -1752,7 +1768,7 @@ export interface paths {
     patch: operations['ColumnsController_updateColumn']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/extensions': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/extensions': {
     parameters: {
       query?: never
       header?: never
@@ -1771,7 +1787,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/foreign-tables': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/foreign-tables': {
     parameters: {
       query?: never
       header?: never
@@ -1808,7 +1824,7 @@ export interface paths {
     patch: operations['FunctionsController_updateFunction']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/materialized-views': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/materialized-views': {
     parameters: {
       query?: never
       header?: never
@@ -1825,7 +1841,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/policies': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/policies': {
     parameters: {
       query?: never
       header?: never
@@ -1845,7 +1861,7 @@ export interface paths {
     patch: operations['PoliciesController_updatePolicy']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/publications': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/publications': {
     parameters: {
       query?: never
       header?: never
@@ -1865,7 +1881,7 @@ export interface paths {
     patch: operations['PublicationsController_updatePublication']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/query': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/query': {
     parameters: {
       query?: never
       header?: never
@@ -1936,7 +1952,7 @@ export interface paths {
     patch: operations['SchemasController_updateSchema']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/tables': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/tables': {
     parameters: {
       query?: never
       header?: never
@@ -1956,7 +1972,7 @@ export interface paths {
     patch: operations['TablesController_updateTable']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/triggers': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/triggers': {
     parameters: {
       query?: never
       header?: never
@@ -1976,7 +1992,7 @@ export interface paths {
     patch: operations['TriggersController_updateTrigger']
     trace?: never
   }
-  '/platform/pg-meta/{ref}/types': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/types': {
     parameters: {
       query?: never
       header?: never
@@ -1993,7 +2009,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/pg-meta/{ref}/views': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/views': {
     parameters: {
       query?: never
       header?: never
@@ -3017,7 +3033,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/load-balancers': {
+  '/platform/organizations/{slug}/projects/{ref}/load-balancers': {
     parameters: {
       query?: never
       header?: never
@@ -4331,7 +4347,7 @@ export interface components {
         | null
       organization_id: number | null
       organization_slug: string
-      project_ids: number[] | null
+      project_ids: string[] | null
       project_refs: string[] | null
       resources: string[] | null
       restrictive: boolean | null
@@ -4367,7 +4383,7 @@ export interface components {
       url: string
     }
     AssignMemberRoleBodyV2: {
-      role_id: number
+      role_id: string
       role_scoped_projects?: string[]
     }
     AuditLogsResponse: {
@@ -4432,7 +4448,7 @@ export interface components {
         id: number
         inserted_at: string
         isPhysicalBackup: boolean
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'REMOVED' | 'ARCHIVED' | 'CANCELLED'
       }[]
@@ -4469,7 +4485,7 @@ export interface components {
         id: number
         inserted_at: string
         isPhysicalBackup: boolean
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'REMOVED' | 'ARCHIVED' | 'CANCELLED'
       }[]
@@ -4704,7 +4720,7 @@ export interface components {
     }
     CreateInvitationBody: {
       email: string
-      role_id: number
+      role_id: string
       role_scoped_projects?: string[]
     }
     CreateNotificationExceptionsBody: {
@@ -4831,18 +4847,7 @@ export interface components {
         postal_code?: string | null
         state?: string | null
       }
-      billing_name?: string
-      kind?: string
       name: string
-      payment_method?: string
-      size?: string
-      tax_id?: {
-        country?: string
-        type: string
-        value: string
-      }
-      /** @enum {string} */
-      tier: 'tier_free' | 'tier_pro' | 'tier_payg' | 'tier_team' | 'tier_enterprise'
     }
     CreateOrganizationResponse:
       | {
@@ -4852,7 +4857,7 @@ export interface components {
           billing_email: string | null
           /** @enum {string|null} */
           billing_partner: 'fly' | 'aws' | 'aws_marketplace' | 'vercel_marketplace' | null
-          id: number
+          id: string
           is_owner: boolean
           name: string
           opt_in_tags: string[]
@@ -4891,7 +4896,6 @@ export interface components {
     CreateProjectBody: {
       auth_site_url?: string
       /** @enum {string} */
-      cloud_provider: 'AWS' | 'FLY' | 'AWS_K8S' | 'AWS_NIMBUS'
       custom_supabase_internal_requests?: {
         ami: {
           search_tags?: {
@@ -4937,7 +4941,7 @@ export interface components {
        * @description Postgres engine version. If not provided, the latest version will be used.
        * @enum {string}
        */
-      postgres_engine?: '13' | '14' | '15' | '17' | '17-oriole'
+      postgres_engine?: '13' | '14' | '15' | '17'
       /** @description Provider region selection. Only one of db_region or region_selection can be specified. */
       region_selection?:
         | {
@@ -4995,7 +4999,6 @@ export interface components {
       name: string
       organization_id: number
       organization_slug: string
-      preview_branch_refs: string[]
       ref: string
       region: string
       service_key: string
@@ -5211,7 +5214,7 @@ export interface components {
       name: string
       owner_id: number
       parent_id?: string | null
-      project_id: number
+      project_id: string
     }
     CreateUserResponse: {
       aud?: string
@@ -5299,7 +5302,6 @@ export interface components {
       }
       amount: number
       billing_name?: string
-      hcaptcha_token?: string
       payment_method_id: string
       tax_id?: {
         country: string
@@ -5490,7 +5492,7 @@ export interface components {
         id: number
         inserted_at: string
         isPhysicalBackup: boolean
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'REMOVED' | 'ARCHIVED' | 'CANCELLED'
       }[]
@@ -5927,7 +5929,7 @@ export interface components {
       last_updated_by?: number
       name: string
       owner_id: number
-      project_id: number
+      project_id: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'
       updated_at: string
@@ -5946,7 +5948,7 @@ export interface components {
           last_updated_by?: number
           name: string
           owner_id: number
-          project_id: number
+          project_id: string
           /** @enum {string} */
           type: 'sql' | 'report' | 'log_sql'
           updated_at: string
@@ -5958,7 +5960,7 @@ export interface components {
           name: string
           owner_id: number
           parent_id?: string | null
-          project_id: number
+          project_id: string
         }[]
       }
     }
@@ -5980,7 +5982,7 @@ export interface components {
           username: string
         }
         owner_id: number
-        project_id: number
+        project_id: string
         /** @enum {string} */
         type: 'sql' | 'report' | 'log_sql'
         updated_at: string
@@ -6051,6 +6053,9 @@ export interface components {
     }
     GitHubBranchResponse: {
       name: string
+    }
+    ServiceUrlsResponse: {
+      signInUrl: string
     }
     GoTrueConfigResponse: {
       API_MAX_REQUEST_DURATION: number | null
@@ -6484,7 +6489,6 @@ export interface components {
         name: string
         organization_id: number
         organization_slug: string
-        preview_branch_refs: string[]
         ref: string
         region: string
         status: string
@@ -6512,14 +6516,14 @@ export interface components {
       is_sensitive: boolean
     }
     Member: {
-      gotrue_id: string
+      user_id: string
       is_sso_user: boolean | null
       metadata: {
         [key: string]: unknown
       }
       mfa_enabled: boolean
       primary_email: string | null
-      role_ids: number[]
+      role_ids: string[]
       username: string
     }
     MemberWithFreeProjectLimit: {
@@ -6543,7 +6547,7 @@ export interface components {
       meta: unknown
       notification_name: string
       notification_status: string
-      project_id: number
+      project_id: string
     }
     NotificationResponseV2: {
       /** @description Any JSON-serializable value */
@@ -6683,7 +6687,7 @@ export interface components {
       }[]
     }
     OrganizationResponse: {
-      id: number
+      id: string
       is_owner: boolean
       name: string
       opt_in_tags: string[]
@@ -6702,29 +6706,28 @@ export interface components {
     }
     OrganizationRoleResponse: {
       org_scoped_roles: {
-        base_role_id: number
+        base_role_id: string
         description: string | null
-        id: number
+        id: string
         name: string
-        project_ids: number[] | null
+        project_ids: string[] | null
       }[]
       project_scoped_roles: {
-        base_role_id: number
+        base_role_id: string
         description: string | null
-        id: number
+        id: string
         name: string
-        project_ids: number[] | null
+        project_ids: string[] | null
       }[]
     }
     OrganizationSlugAvailableVersionsBody: {
       /** @enum {string} */
-      provider: 'AWS' | 'FLY' | 'AWS_K8S' | 'AWS_NIMBUS'
       region: string
     }
     OrganizationSlugAvailableVersionsResponse: {
       available_versions: {
         /** @enum {string} */
-        postgres_engine: '15' | '17' | '17-oriole'
+        postgres_engine: '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         version: string
@@ -6733,50 +6736,20 @@ export interface components {
     OrganizationSlugResponse: {
       billing_email: string | null
       /** @enum {string|null} */
-      billing_partner: 'fly' | 'aws' | 'aws_marketplace' | 'vercel_marketplace' | null
-      has_oriole_project: boolean
       id: number
       name: string
       opt_in_tags: string[]
-      plan: {
-        /** @enum {string} */
-        id: 'free' | 'pro' | 'team' | 'enterprise'
-        name: string
-      }
       projects: {
         cloud_provider: string
         disk_volume_size_gb?: number
         engine?: string
         id: number
-        /** @enum {string} */
-        infra_compute_size?:
-          | 'pico'
-          | 'nano'
-          | 'micro'
-          | 'small'
-          | 'medium'
-          | 'large'
-          | 'xlarge'
-          | '2xlarge'
-          | '4xlarge'
-          | '8xlarge'
-          | '12xlarge'
-          | '16xlarge'
-          | '24xlarge'
-          | '24xlarge_optimized_memory'
-          | '24xlarge_optimized_cpu'
-          | '24xlarge_high_memory'
-          | '48xlarge'
-          | '48xlarge_optimized_memory'
-          | '48xlarge_optimized_cpu'
-          | '48xlarge_high_memory'
         inserted_at: string | null
         is_branch_enabled: boolean
         is_physical_backups_enabled: boolean | null
         name: string
         organization_id: number
         organization_slug: string
-        preview_branch_refs: string[]
         ref: string
         region: string
         status: string
@@ -7258,7 +7231,7 @@ export interface components {
     }
     Profile: {
       first_name: string
-      gotrue_id: string
+      user_id: string
       id: number
       last_name: string
       username: string
@@ -7284,7 +7257,7 @@ export interface components {
       )[]
       first_name: string
       free_project_limit: number
-      gotrue_id: string
+      user_id: string
       id: number
       is_alpha_user: boolean
       last_name: string
@@ -7404,7 +7377,7 @@ export interface components {
     }
     ProjectClonedStatusResponse: {
       cloned_from?: {
-        project_id: number
+        project_id: string
         source_project: {
           name: string
           ref: string
@@ -7412,14 +7385,14 @@ export interface components {
       }
       clones: {
         inserted_at: string | null
-        project_id: number
+        project_id: string
         /** @enum {string} */
         status: 'COMPLETED' | 'IN_PROGRESS' | 'FAILED' | 'REMOVED'
         target_project: {
           name: string
           ref: string
         }
-        target_project_id: number
+        target_project_id: string
         updated_at: string | null
       }[]
       id: number
@@ -7431,7 +7404,7 @@ export interface components {
       connectionString?: string | null
       db_host: string
       dbVersion?: string
-      id: number
+      id: string
       /** @enum {string} */
       infra_compute_size?:
         | 'pico'
@@ -7460,7 +7433,7 @@ export interface components {
       lastDatabaseResizeAt?: string
       maxDatabasePreprovisionGb?: number
       name: string
-      organization_id: number
+      organization_id: string
       parent_project_ref?: string
       ref: string
       region: string
@@ -7484,11 +7457,12 @@ export interface components {
         | 'RESIZING'
       subscription_id: string
       volumeSizeGb?: number
+      default_branch: string
     }
     ProjectInfo: {
       cloud_provider: string
       disk_volume_size_gb?: number
-      id: number
+      id: string
       /** @enum {string} */
       infra_compute_size?:
         | 'pico'
@@ -7515,9 +7489,9 @@ export interface components {
       is_branch_enabled: boolean
       is_physical_backups_enabled: boolean | null
       name: string
-      organization_id: number
+      organization_id: string
       organization_slug: string
-      preview_branch_refs: string[]
+      default_branch: string
       ref: string
       region: string
       status: string
@@ -8083,7 +8057,6 @@ export interface components {
       'supabase-postgres': string
     }
     SetupIntentRequest: {
-      hcaptchaToken?: string
     }
     SetupIntentResponse: {
       client_secret: string
@@ -8266,7 +8239,7 @@ export interface components {
     UnpauseProjectAvailableVersionsResponse: {
       available_versions: {
         /** @enum {string} */
-        postgres_engine: '13' | '14' | '15' | '17' | '17-oriole'
+        postgres_engine: '13' | '14' | '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         version: string
@@ -8277,7 +8250,7 @@ export interface components {
        * @description Postgres engine version. If not provided, the latest version from the given release channel will be used.
        * @enum {string}
        */
-      postgres_engine?: '15' | '17' | '17-oriole'
+      postgres_engine?: '15' | '17'
       /**
        * @description Release channel version. If not provided, GeneralAvailability will be used.
        * @enum {string}
@@ -9226,7 +9199,7 @@ export interface components {
       id: string
       name: string
       owner_id: number
-      project_id?: number
+      project_id?: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'
       /** @enum {string} */
@@ -9291,7 +9264,7 @@ export interface components {
       last_updated_by?: number
       name: string
       owner_id: number
-      project_id: number
+      project_id: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'
       updated_at: string
@@ -9346,6 +9319,31 @@ export interface components {
 export type $defs = Record<string, never>
 
 export interface operations {
+  ServiceUrlsController_getServiceUrls: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        },
+        content: {
+          'application/json': components['schemas']['ServiceUrlsResponse']
+        }
+      },
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   GoTrueConfigController_getGoTrueConfig: {
     parameters: {
       query?: never
@@ -10618,7 +10616,7 @@ export interface operations {
   GitHubConnectionsController_listOrganizationGitHubConnections: {
     parameters: {
       query: {
-        organization_id: number
+        organization_id: string
       }
       header?: never
       path?: never
@@ -12303,7 +12301,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12331,7 +12329,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
+        user_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12363,8 +12361,8 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
-        role_id: number
+        user_id: string
+        role_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -12396,8 +12394,8 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        gotrue_id: string
-        role_id: number
+        user_id: string
+        role_id: string
         /** @description Organization slug */
         slug: string
       }
@@ -13554,14 +13552,11 @@ export interface operations {
   ColumnPrivilegesController_getColumnPrivileges: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13593,14 +13588,11 @@ export interface operations {
   ColumnPrivilegesController_grantColumnPrivileges: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13636,14 +13628,11 @@ export interface operations {
   ColumnPrivilegesController_revokeColumnPrivileges: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13682,14 +13671,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13721,14 +13707,11 @@ export interface operations {
   ColumnsController_createColumn: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13768,14 +13751,11 @@ export interface operations {
         cascade?: boolean
         id: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13809,14 +13789,11 @@ export interface operations {
       query: {
         id: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13852,14 +13829,11 @@ export interface operations {
   ExtensionsController_getExtensions: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13891,14 +13865,11 @@ export interface operations {
   ExtensionsController_createExtension: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13936,14 +13907,11 @@ export interface operations {
       query: {
         id: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -13980,14 +13948,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14198,14 +14163,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14240,14 +14202,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14279,14 +14238,11 @@ export interface operations {
   PoliciesController_createPolicy: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14324,14 +14280,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14365,14 +14318,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14408,14 +14358,11 @@ export interface operations {
   PublicationsController_getPublications: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14447,14 +14394,11 @@ export interface operations {
   PublicationsController_createPublication: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14492,14 +14436,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14533,14 +14474,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14576,14 +14514,11 @@ export interface operations {
   QueryController_runQuery: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14857,14 +14792,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14896,14 +14828,11 @@ export interface operations {
   TablesController_createTable: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14943,14 +14872,11 @@ export interface operations {
         cascade?: boolean
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -14984,14 +14910,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15030,14 +14953,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15069,14 +14989,11 @@ export interface operations {
   TriggersController_createTrigger: {
     parameters: {
       query?: never
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15114,14 +15031,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15155,14 +15069,11 @@ export interface operations {
       query: {
         id: number
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15201,14 +15112,11 @@ export interface operations {
         excluded_schemas?: string
         included_schemas?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -15248,14 +15156,11 @@ export interface operations {
         limit?: string
         offset?: string
       }
-      header: {
-        'x-connection-encrypted': string
-        /** @description PostgreSQL connection application name */
-        'x-pg-application-name'?: string
-      }
+      header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18415,6 +18320,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }

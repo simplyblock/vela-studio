@@ -1,16 +1,22 @@
 import type { AuthMFAGetAuthenticatorAssuranceLevelResponse } from '@supabase/supabase-js'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-import { auth } from 'lib/gotrue'
 import { profileKeys } from './keys'
 import type { Profile } from './types'
 
 export type ProfileResponse = Profile
 
 export async function getMfaAuthenticatorAssuranceLevel() {
-  const { error, data } = await auth.mfa.getAuthenticatorAssuranceLevel()
+  /*const { error, data } = await auth.mfa.getAuthenticatorAssuranceLevel()
 
   if (error) throw error
-  return data
+  return data*/ // FIXME: no idea what this does
+
+  const fakeResponse: CustomAuthMFAGetAuthenticatorAssuranceLevelData = {
+    currentLevel: null,
+    nextLevel: null,
+    currentAuthenticationMethods: [],
+  }
+  return fakeResponse
 }
 
 type CustomAuthMFAGetAuthenticatorAssuranceLevelData = NonNullable<

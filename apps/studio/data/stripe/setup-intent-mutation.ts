@@ -6,14 +6,13 @@ import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 
 export type SetupIntentVariables = {
-  hcaptchaToken: string
 }
 
 export type SetupIntentResponse = components['schemas']['SetupIntentResponse']
 
-export async function setupIntent({ hcaptchaToken }: SetupIntentVariables) {
+export async function setupIntent({}: SetupIntentVariables) {
   const { data, error } = await post('/platform/stripe/setup-intent', {
-    body: { hcaptchaToken },
+    body: {},
   })
   if (error) handleError(error)
   return data

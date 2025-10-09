@@ -13,6 +13,7 @@ import { isValidHttpUrl, uuidv4 } from 'lib/helpers'
 import { Button, Form, SidePanel } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormContents } from './FormContents'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface EditHookPanelProps {
   visible: boolean
@@ -86,9 +87,9 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
   })
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { mutate: createDatabaseTrigger } = useDatabaseTriggerCreateMutation({
@@ -189,8 +190,8 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
 
   const onSubmit = async (values: any) => {
     setIsSubmitting(true)
-    if (!project?.ref) {
-      return console.error('Project ref is required')
+    if (!branch) {
+      return console.error('Branch is required')
     }
     if (events.length === 0) {
       return setEventsError('Please select at least one event')
@@ -198,8 +199,7 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
 
     const selectedTable = await getTableEditor({
       id: values.table_id,
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
     })
     if (!selectedTable) {
       setIsSubmitting(false)
@@ -248,14 +248,12 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
 
     if (selectedHook === undefined) {
       createDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         payload,
       })
     } else {
       updateDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         originalTrigger: selectedHook,
         updatedTrigger: { ...payload, enabled_mode: 'ORIGIN' },
       })

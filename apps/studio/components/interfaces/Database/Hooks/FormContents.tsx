@@ -2,7 +2,6 @@ import type { PostgresTable, PostgresTrigger } from '@supabase/postgres-meta'
 import Image from 'next/legacy/image'
 import { MutableRefObject, useEffect } from 'react'
 
-import { useParams } from 'common'
 import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui/Forms/FormSection'
 import { useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
@@ -12,6 +11,7 @@ import { Checkbox, Input, Listbox, Radio, SidePanel } from 'ui'
 import { HTTPArgument, isEdgeFunction } from './EditHookPanel'
 import HTTPRequestFields from './HTTPRequestFields'
 import { AVAILABLE_WEBHOOK_TYPES, HOOK_EVENTS } from './Hooks.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface FormContentsProps {
   values: any
@@ -44,14 +44,14 @@ export const FormContents = ({
   setHttpParameters,
   submitRef,
 }: FormContentsProps) => {
-  const { slug, ref } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const restUrl = project?.restUrl
   const restUrlTld = restUrl ? new URL(restUrl).hostname.split('.').pop() : 'co'
 
-  const { data: keys = [] } = useAPIKeysQuery({ orgSlug: slug, projectRef: ref, reveal: true })
-  const { data: functions = [] } = useEdgeFunctionsQuery({ projectRef: ref })
+  const { data: keys = [] } = useAPIKeysQuery({ branch, reveal: true })
+  const { data: functions = [] } = useEdgeFunctionsQuery({ projectRef: project?.ref })
 
   const legacyServiceRole = keys.find((x) => x.name === 'service_role')?.api_key ?? '[YOUR API KEY]'
 
@@ -68,10 +68,10 @@ export const FormContents = ({
     } else if (values.function_type === 'supabase_function') {
       // Default to first edge function in the list
       const fnSlug = functions[0]?.slug
-      const defaultFunctionUrl = `https://${ref}.supabase.${restUrlTld}/functions/v1/${fnSlug}`
+      const defaultFunctionUrl = `https://${project?.ref}.supabase.${restUrlTld}/functions/v1/${fnSlug}` // FIXME: this url is hardcoded to supabase
       const updatedValues = {
         ...values,
-        http_url: isEdgeFunction({ ref, restUrlTld, url: values.http_url })
+        http_url: isEdgeFunction({ ref: project?.ref, restUrlTld, url: values.http_url })
           ? values.http_url
           : defaultFunctionUrl,
       }
@@ -81,7 +81,7 @@ export const FormContents = ({
   }, [values.function_type])
 
   useEffect(() => {
-    const isEdgeFunctionSelected = isEdgeFunction({ ref, restUrlTld, url: values.http_url })
+    const isEdgeFunctionSelected = isEdgeFunction({ ref: project?.ref, restUrlTld, url: values.http_url })
 
     if (values.http_url && isEdgeFunctionSelected) {
       const fnSlug = values.http_url.split('/').at(-1)

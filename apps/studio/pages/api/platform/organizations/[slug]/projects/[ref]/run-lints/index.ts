@@ -37,7 +37,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ResponseData>
       return res.status(200).json(response)
     }
   } catch (error: any) {
-    return res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message } as any)
   }
 }
 

@@ -1,15 +1,13 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { noop } from 'lodash'
 import { useState } from 'react'
 import { toast } from 'sonner'
-
 import AutoTextArea from 'components/to-be-cleaned/forms/AutoTextArea'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { timeout } from 'lib/helpers'
 import { Loader } from 'lucide-react'
 import { Button } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // Removes some auto-generated Postgrest text
 // Ideally PostgREST wouldn't add this if there is already a comment
@@ -36,17 +34,14 @@ const Description = ({ content, metadata, onChange = noop }: DescrptionProps) =>
   const [value, setValue] = useState(contentText)
   const [isUpdating, setIsUpdating] = useState(false)
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { table, column, rpc } = metadata
 
   const hasChanged = value != contentText
   const animateCss = `transition duration-150`
-
-  const { can: canUpdateDescription } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_QUERY,
-    '*'
-  )
-
+  // FIXME: need permission implemented 
+  const { can: canUpdateDescription } = {can:true}
   const updateDescription = async () => {
     if (isUpdating || !canUpdateDescription) return false
 
@@ -61,8 +56,7 @@ const Description = ({ content, metadata, onChange = noop }: DescrptionProps) =>
     if (query) {
       try {
         await executeSql({
-          projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          branch,
           sql: query,
         })
         // [Joshen] Temp fix, immediately refreshing the docs fetches stale state

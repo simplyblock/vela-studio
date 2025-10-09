@@ -1,12 +1,10 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { useDatabaseRolesQuery } from 'data/database-roles/database-roles-query'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+
 import {
   Button,
   CommandEmpty_Shadcn_,
@@ -34,6 +32,7 @@ import {
   Select_Shadcn_,
 } from 'ui'
 import { MultiSelectV2 } from 'ui-patterns/MultiSelectDeprecated/MultiSelectV2'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface PolicyDetailsV2Props {
   schema: string
@@ -60,24 +59,20 @@ export const PolicyDetailsV2 = ({
   onUpdateCommand,
   authContext,
 }: PolicyDetailsV2Props) => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
-  const { can: canUpdatePolicies } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'tables'
-  )
+    // FIXME: need permission implemented 
+  const { can: canUpdatePolicies } = {can:true}
 
   const { data: tables, isSuccess: isSuccessTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: schema,
     sortByProperty: 'name',
     includeColumns: true,
   })
 
   const { data: dbRoles } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const formattedRoles = (dbRoles ?? [])
     .map((role) => {

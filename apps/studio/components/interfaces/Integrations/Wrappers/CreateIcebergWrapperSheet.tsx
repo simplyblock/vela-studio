@@ -24,6 +24,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { CreateWrapperSheetProps } from './CreateWrapperSheet'
 import InputField from './InputField'
 import { makeValidateRequired } from './Wrappers.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const FORM_ID = 'create-wrapper-form'
 
@@ -62,8 +63,9 @@ export const CreateIcebergWrapperSheet = ({
   setIsClosing,
   onClose,
 }: CreateWrapperSheetProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { mutate: sendEvent } = useSendEventMutation()
 
   const [selectedTarget, setSelectedTarget] = useState<Target>('S3Tables')
@@ -98,9 +100,7 @@ export const CreateIcebergWrapperSheet = ({
   }, [wrapperMetaOriginal, selectedTarget])
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug: org?.slug,
-    projectRef: project?.ref!,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const initialValues = {
@@ -141,15 +141,12 @@ export const CreateIcebergWrapperSheet = ({
 
     try {
       await createSchema({
-        orgSlug: org?.slug,
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         name: values.target_schema,
       })
 
       await createFDW({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         wrapperMeta,
         formState: {
           ...values,

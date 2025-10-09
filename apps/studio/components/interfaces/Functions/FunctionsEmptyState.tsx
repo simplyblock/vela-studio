@@ -32,7 +32,7 @@ import { EDGE_FUNCTION_TEMPLATES } from './Functions.templates'
 import { TerminalInstructions } from './TerminalInstructions'
 
 export const FunctionsEmptyState = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const router = useRouter()
   const aiSnap = useAiAssistantStateSnapshot()
 
@@ -58,11 +58,11 @@ export const FunctionsEmptyState = () => {
             <Button
               type="default"
               onClick={() => {
-                router.push(`/org/${slug}/project/${ref}/functions/new`)
+                router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/new`)
                 sendEvent({
                   action: 'edge_function_via_editor_button_clicked',
                   properties: { origin: 'no_functions_block' },
-                  groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                  groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                 })
               }}
             >
@@ -110,7 +110,7 @@ export const FunctionsEmptyState = () => {
                 sendEvent({
                   action: 'edge_function_ai_assistant_button_clicked',
                   properties: { origin: 'no_functions_block' },
-                  groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                  groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                 })
               }}
             >
@@ -137,7 +137,7 @@ export const FunctionsEmptyState = () => {
                     sendEvent({
                       action: 'edge_function_via_cli_button_clicked',
                       properties: { origin: 'no_functions_block' },
-                      groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                     })
                   }
                 >
@@ -165,11 +165,11 @@ export const FunctionsEmptyState = () => {
               sendEvent({
                 action: 'edge_function_template_clicked',
                 properties: { templateName: template.name, origin: 'functions_page' },
-                groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
               })
             }}
           >
-            <Link href={`/org/${slug}/project/${ref}/functions/new?template=${template.value}`}>
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/new?template=${template.value}`}>
               <p>{template.name}</p>
               <p className="text-sm text-foreground-lighter">{template.description}</p>
             </Link>

@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 import { DatabaseExtension } from 'data/database-extensions/database-extensions-query'
 import { GetIndexAdvisorResultResponse } from 'data/database/retrieve-index-advisor-result-query'
 import { executeSql } from 'data/sql/execute-sql-query'
+import { Branch } from 'api-types/types'
 
 /**
  * Gets the required extensions for index advisor
@@ -39,8 +40,7 @@ export function calculateImprovement(
 }
 
 interface CreateIndexParams {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   indexStatements: string[]
   onSuccess?: () => void
   onError?: (error: any) => void
@@ -53,14 +53,13 @@ interface CreateIndexParams {
  * @returns Promise that resolves when the index creation completes
  */
 export async function createIndexes({
-  projectRef,
-  connectionString,
+  branch,
   indexStatements,
   onSuccess,
   onError,
 }: CreateIndexParams): Promise<void> {
-  if (!projectRef) {
-    const error = new Error('Project ref is required')
+  if (!branch) {
+    const error = new Error('Branch ref is required')
     if (onError) onError(error)
     return Promise.reject(error)
   }
@@ -73,8 +72,7 @@ export async function createIndexes({
 
   try {
     await executeSql({
-      projectRef,
-      connectionString,
+      branch,
       sql: indexStatements.join(';\n') + ';',
     })
 

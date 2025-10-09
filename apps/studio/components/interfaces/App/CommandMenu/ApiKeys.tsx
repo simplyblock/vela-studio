@@ -14,7 +14,8 @@ import {
 } from 'ui-patterns/CommandMenu'
 import { COMMAND_MENU_SECTIONS } from './CommandMenu.utils'
 import { orderCommandSectionsByPriority } from './ordering'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const API_KEYS_PAGE_NAME = 'API Keys'
 
@@ -22,11 +23,12 @@ export function useApiKeysCommands() {
   const setIsOpen = useSetCommandMenuOpen()
   const setPage = useSetPage()
 
-  const { slug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
-  const ref = project?.ref || '_'
+  const { data: branch } = useSelectedBranchQuery()
+  const projectRef = project?.ref || '_'
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef: project?.ref, reveal: true })
+  const { data: apiKeys } = useAPIKeysQuery({ branch, reveal: true })
   const { anonKey, serviceKey, publishableKey, allSecretKeys } = getKeys(apiKeys)
 
   const commands = useMemo(
@@ -102,7 +104,7 @@ export function useApiKeysCommands() {
         !(anonKey || serviceKey) && {
           id: 'api-keys-project-settings',
           name: 'See API keys in Project Settings',
-          route: `/org/${slug}/project/${ref}/settings/api`,
+          route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`,
           icon: () => <Key />,
         },
       ].filter(Boolean) as ICommand[],

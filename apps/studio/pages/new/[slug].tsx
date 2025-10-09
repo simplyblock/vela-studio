@@ -1,19 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { debounce } from 'lodash'
-import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { PropsWithChildren, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-
 import { components } from 'api-types'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
-import {
-  NotOrganizationOwnerWarning,
-} from 'components/interfaces/Organization/NewProject'
+import { NotOrganizationOwnerWarning } from 'components/interfaces/Organization/NewProject'
 import { OrgNotFound } from 'components/interfaces/Organization/OrgNotFound'
 import { AdvancedConfiguration } from 'components/interfaces/ProjectCreation/AdvancedConfiguration'
 import {
@@ -30,33 +25,23 @@ import Panel from 'components/ui/Panel'
 import PasswordStrengthBar from 'components/ui/PasswordStrengthBar'
 import { useAuthorizedAppsQuery } from 'data/oauth/authorized-apps-query'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
-import { DesiredInstanceSize, instanceSizeSpecs } from 'data/projects/new-project.constants'
+import { DesiredInstanceSize } from 'data/projects/new-project.constants'
 import {
   ProjectCreateVariables,
   useProjectCreateMutation,
 } from 'data/projects/project-create-mutation'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { withAuth } from 'hooks/misc/withAuth'
 import { useFlag } from 'hooks/ui/useFlag'
-import { getCloudProviderArchitecture } from 'lib/cloudprovider-utils'
-import {
-  DEFAULT_MINIMUM_PASSWORD_STRENGTH,
-  DEFAULT_PROVIDER,
-  MANAGED_BY,
-  PROJECT_STATUS,
-  PROVIDERS,
-} from 'lib/constants'
+import { DEFAULT_MINIMUM_PASSWORD_STRENGTH, PROJECT_STATUS } from 'lib/constants'
 import passwordStrength from 'lib/password-strength'
 import { generateStrongPassword } from 'lib/project'
-import type { CloudProvider } from 'shared-data'
 import type { NextPageWithLayout } from 'types'
 import {
-  Badge,
   Button,
   Form_Shadcn_,
   FormControl_Shadcn_,
@@ -72,7 +57,7 @@ import {
 import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { getPathReferences } from '../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
 
@@ -90,9 +75,6 @@ const FormSchema = z.object({
     .max(64, 'Project name must be no longer than 64 characters.'), // Maximum length check
   postgresVersion: z.string({
     required_error: 'Please enter a Postgres version.',
-  }),
-  cloudProvider: z.string({
-    required_error: 'Please select a cloud provider.',
   }),
   dbPassStrength: z.number(),
   dbPass: z
@@ -132,10 +114,7 @@ const Wizard: NextPageWithLayout = () => {
   const projectCreationDisabled = useFlag('disableProjectCreationAndUpdate')
   const showPostgresVersionSelector = useFlag('showPostgresVersionSelector')
 
-  const { data: approvedOAuthApps } = useAuthorizedAppsQuery(
-    { slug },
-    { enabled: slug !== '_' }
-  )
+  const { data: approvedOAuthApps } = useAuthorizedAppsQuery({ slug }, { enabled: slug !== '_' })
 
   const hasOAuthApps = approvedOAuthApps && approvedOAuthApps.length > 0
 
@@ -178,7 +157,8 @@ const Wizard: NextPageWithLayout = () => {
         project.organization_id === currentOrg?.id && project.status !== PROJECT_STATUS.INACTIVE
     ) ?? []
 
-  const isAdmin = useCheckPermissions(PermissionAction.CREATE, 'projects')
+  // FIXME: need permission implemented
+  const isAdmin = true
 
   const isInvalidSlug = isOrganizationsSuccess && currentOrg === undefined
   const orgNotFound = isOrganizationsSuccess && (organizations?.length ?? 0) > 0 && isInvalidSlug
@@ -220,7 +200,6 @@ const Wizard: NextPageWithLayout = () => {
       organization: slug,
       projectName: projectName || '',
       postgresVersion: '',
-      cloudProvider: PROVIDERS[DEFAULT_PROVIDER].id,
       dbPass: '',
       dbPassStrength: 0,
       instanceSize: sizes[0],
@@ -231,18 +210,6 @@ const Wizard: NextPageWithLayout = () => {
   })
 
   const { instanceSize } = form.watch()
-
-  // [kevin] This will eventually all be provided by a new API endpoint to preview and validate project creation, this is just for kaizen now
-  const monthlyComputeCosts =
-    // current project costs
-    organizationProjects.reduce(
-      (prev, acc) => prev + monthlyInstancePrice(acc.infra_compute_size),
-      0
-    ) +
-    // selected compute size
-    monthlyInstancePrice(instanceSize) -
-    // compute credits
-    10
 
   // [Refactor] DB Password could be a common component used in multiple pages with repeated logic
   function generatePassword() {
@@ -275,11 +242,9 @@ const Wizard: NextPageWithLayout = () => {
     if (!currentOrg) return console.error('Unable to retrieve current organization')
 
     const {
-      cloudProvider,
       projectName,
       dbPass,
       postgresVersion,
-      instanceSize,
       dataApi,
       useApiSchema,
       postgresVersionSelection,
@@ -290,7 +255,6 @@ const Wizard: NextPageWithLayout = () => {
 
     const data: ProjectCreateVariables = {
       dbPass,
-      cloudProvider,
       organizationSlug: currentOrg.slug,
       name: projectName,
       // gets ignored due to org billing subscription anyway
@@ -418,7 +382,6 @@ const Wizard: NextPageWithLayout = () => {
                                       className="flex justify-between"
                                     >
                                       <span className="mr-2">{x.name}</span>
-                                      <Badge>{x.plan.name}</Badge>
                                     </SelectItem_Shadcn_>
                                   ))}
                                 </SelectGroup_Shadcn_>
@@ -452,115 +415,51 @@ const Wizard: NextPageWithLayout = () => {
                       />
                     </Panel.Content>
 
-                    {currentOrg?.plan && currentOrg?.plan.id !== 'free' && (
-                      <Panel.Content>
-                        <FormField_Shadcn_
-                          control={form.control}
-                          name="instanceSize"
-                          render={({ field }) => (
-                            <FormItemLayout
-                              layout="horizontal"
-                              label={
-                                <div className="flex flex-col gap-y-4">
-                                  <span>Compute Size</span>
-
-                                  <div className="flex flex-col gap-y-2">
-                                    <Link
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href="https://supabase.com/docs/guides/platform/compute-add-ons"
-                                    >
-                                      <div className="flex items-center space-x-2 opacity-75 hover:opacity-100 transition">
-                                        <p className="text-sm m-0">Compute Add-Ons</p>
-                                        <ExternalLink size={16} strokeWidth={1.5} />
-                                      </div>
-                                    </Link>
-                                    <Link
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href="https://supabase.com/docs/guides/platform/manage-your-usage/compute"
-                                    >
-                                      <div className="flex items-center space-x-2 opacity-75 hover:opacity-100 transition">
-                                        <p className="text-sm m-0">Compute Billing</p>
-                                        <ExternalLink size={16} strokeWidth={1.5} />
-                                      </div>
-                                    </Link>
-                                  </div>
-                                </div>
-                              }
-                              description={
-                                <>
-                                  <p>
-                                    The size for your dedicated database. You can change this later.
-                                  </p>
-                                </>
-                              }
+                    <Panel.Content>
+                      <FormField_Shadcn_
+                        control={form.control}
+                        name="instanceSize"
+                        render={({ field }) => (
+                          <FormItemLayout
+                            layout="horizontal"
+                            label={
+                              <div className="flex flex-col gap-y-4">
+                                <span>Compute Size</span>
+                              </div>
+                            }
+                            description={
+                              <>
+                                <p>
+                                  The default size of your project's databases. You can change this later.
+                                </p>
+                              </>
+                            }
+                          >
+                            <Select_Shadcn_
+                              value={field.value}
+                              onValueChange={(value) => field.onChange(value)}
                             >
-                              <Select_Shadcn_
-                                value={field.value}
-                                onValueChange={(value) => field.onChange(value)}
-                              >
-                                <SelectTrigger_Shadcn_ className="[&_.instance-details]:hidden">
-                                  <SelectValue_Shadcn_ placeholder="Select a compute size" />
-                                </SelectTrigger_Shadcn_>
-                                <SelectContent_Shadcn_>
-                                  <SelectGroup_Shadcn_>
-                                    {sizes
-                                      .filter((option) =>
-                                        instanceSizeSpecs[option].cloud_providers.includes(
-                                          form.getValues('cloudProvider') as CloudProvider
-                                        )
-                                      )
-                                      .map((option) => {
-                                        return (
-                                          <SelectItem_Shadcn_ key={option} value={option}>
-                                            <div className="flex flex-row i gap-2">
-                                              <div className="text-center w-[80px]">
-                                                <Badge
-                                                  variant={option === 'micro' ? 'default' : 'brand'}
-                                                  className="rounded-md w-16 text-center flex justify-center font-mono uppercase"
-                                                >
-                                                  {instanceSizeSpecs[option].label}
-                                                </Badge>
-                                              </div>
-                                              <div className="text-sm">
-                                                <span className="text-foreground">
-                                                  {instanceSizeSpecs[option].ram} RAM /{' '}
-                                                  {instanceSizeSpecs[option].cpu}{' '}
-                                                  {getCloudProviderArchitecture(
-                                                    form.getValues('cloudProvider') as CloudProvider
-                                                  )}{' '}
-                                                  CPU
-                                                </span>
-                                                <p
-                                                  className="text-xs text-foreground-light instance-details"
-                                                  translate="no"
-                                                >
-                                                  ${instanceSizeSpecs[option].priceHourly}/hour (~$
-                                                  {instanceSizeSpecs[option].priceMonthly}/month)
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </SelectItem_Shadcn_>
-                                        )
-                                      })}
-                                    <SelectItem_Shadcn_
-                                      key={'disabled'}
-                                      value={'disabled'}
-                                      disabled
-                                    >
-                                      <div className="flex items-center justify-center w-full">
-                                        <span>Larger instance sizes available after creation</span>
-                                      </div>
-                                    </SelectItem_Shadcn_>
-                                  </SelectGroup_Shadcn_>
-                                </SelectContent_Shadcn_>
-                              </Select_Shadcn_>
-                            </FormItemLayout>
-                          )}
-                        />
-                      </Panel.Content>
-                    )}
+                              <SelectTrigger_Shadcn_ className="[&_.instance-details]:hidden">
+                                <SelectValue_Shadcn_ placeholder="Select a compute size" />
+                              </SelectTrigger_Shadcn_>
+                              <SelectContent_Shadcn_>
+                                <SelectGroup_Shadcn_>
+                                  <SelectItem_Shadcn_
+                                    key={'disabled'}
+                                    value={'disabled'}
+                                    disabled
+                                  >
+                                    <div className="flex items-center justify-center w-full">
+                                      <span>Larger instance sizes available after creation</span>
+                                    </div>
+                                  </SelectItem_Shadcn_>
+                                </SelectGroup_Shadcn_>
+                              </SelectContent_Shadcn_>
+                            </Select_Shadcn_>
+                          </FormItemLayout>
+                        )}
+                      />
+                    </Panel.Content>
 
                     <Panel.Content>
                       <FormField_Shadcn_
@@ -621,7 +520,6 @@ const Wizard: NextPageWithLayout = () => {
                             <PostgresVersionSelector
                               field={field}
                               form={form}
-                              cloudProvider={form.getValues('cloudProvider') as CloudProvider}
                               organizationSlug={slug}
                             />
                           )}
@@ -654,9 +552,11 @@ const Wizard: NextPageWithLayout = () => {
                     )}
 
                     <SecurityOptions form={form} />
-                    {/* //FIXME: Hard disabled for now */ false && showAdvancedConfig && (
-                      <AdvancedConfiguration form={form} />
-                    )}
+                    {
+                      /* //FIXME: Hard disabled for now */ false && showAdvancedConfig && (
+                        <AdvancedConfiguration form={form} />
+                      )
+                    }
                   </>
                 )}
               </div>
@@ -699,18 +599,8 @@ const Wizard: NextPageWithLayout = () => {
   )
 }
 
-/**
- * When launching new projects, they only get assigned a compute size once successfully launched,
- * this might assume wrong compute size, but only for projects being rapidly launched after one another on non-default compute sizes.
- *
- * Needs to be in the API in the future [kevin]
- */
-const monthlyInstancePrice = (instance: string | undefined): number => {
-  return instanceSizeSpecs[instance as DesiredInstanceSize]?.priceMonthly || 10
-}
-
 const instanceLabel = (instance: string | undefined): string => {
-  return instanceSizeSpecs[instance as DesiredInstanceSize]?.label || 'Micro'
+  return 'Micro'
 }
 
 const PageLayout = withAuth(({ children }: PropsWithChildren) => {

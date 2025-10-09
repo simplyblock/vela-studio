@@ -1,7 +1,6 @@
 import { components } from 'api-types'
-import apiWrapper from '../../../../../../../../lib/api/apiWrapper'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { apiBuilder } from '../../../../../../../../lib/api/apiBuilder'
+import { apiBuilder } from 'lib/api/apiBuilder'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const responseObj: components['schemas']['GetPostgrestConfigResponse'] = {

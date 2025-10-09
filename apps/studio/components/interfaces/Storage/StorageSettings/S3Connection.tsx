@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { AlertTitle } from '@ui/components/shadcn/ui/alert'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -22,18 +21,17 @@ import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query
 import { useProjectStorageConfigQuery } from 'data/config/project-storage-config-query'
 import { useProjectStorageConfigUpdateUpdateMutation } from 'data/config/project-storage-config-update-mutation'
 import { useStorageCredentialsQuery } from 'data/storage/s3-access-key-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
-  AlertDescription_Shadcn_,
   Alert_Shadcn_,
+  AlertDescription_Shadcn_,
   Button,
   Card,
   CardContent,
   CardFooter,
+  Form_Shadcn_,
   FormControl_Shadcn_,
   FormField_Shadcn_,
-  Form_Shadcn_,
   Switch,
   WarningIcon,
 } from 'ui'
@@ -44,18 +42,21 @@ import { CreateCredentialModal } from './CreateCredentialModal'
 import { RevokeCredentialModal } from './RevokeCredentialModal'
 import { StorageCredItem } from './StorageCredItem'
 import { getConnectionURL } from './StorageSettings.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const S3Connection = () => {
   const { slug, ref: projectRef } = useParams()
   const isProjectActive = useIsProjectActive()
   const { data: project, isLoading: projectIsLoading } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [openCreateCred, setOpenCreateCred] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [deleteCred, setDeleteCred] = useState<{ id: string; description: string }>()
-
-  const canReadS3Credentials = useCheckPermissions(PermissionAction.STORAGE_ADMIN_READ, '*')
-  const canUpdateStorageSettings = useCheckPermissions(PermissionAction.STORAGE_ADMIN_WRITE, '*')
+  // FIXME: need permission implemented
+  const canReadS3Credentials = true
+  // FIXME: need permission implemented
+  const canUpdateStorageSettings = true
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
   const {
@@ -63,7 +64,7 @@ export const S3Connection = () => {
     error: configError,
     isSuccess: isSuccessStorageConfig,
     isError: isErrorStorageConfig,
-  } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef })
+  } = useProjectStorageConfigQuery({ branch })
   const { data: storageCreds, isLoading: isLoadingStorageCreds } = useStorageCredentialsQuery(
     { projectRef },
     { enabled: canReadS3Credentials }
@@ -89,10 +90,10 @@ export const S3Connection = () => {
   const s3connectionUrl = getConnectionURL(projectRef ?? '', protocol, endpoint)
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (data) => {
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     if (!config) return console.error('Storage config is required')
     updateStorageConfig({
-      projectRef,
+      branch,
       features: {
         ...config?.features,
         s3Protocol: { enabled: data.s3ConnectionEnabled },

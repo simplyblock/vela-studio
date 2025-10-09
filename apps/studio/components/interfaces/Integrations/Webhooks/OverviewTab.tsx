@@ -1,36 +1,27 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { toast } from 'sonner'
-
-import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useHooksEnableMutation } from 'data/database/hooks-enable-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Admonition } from 'ui-patterns'
 import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const WebhooksOverviewTab = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     data: schemas,
     isSuccess: isSchemasLoaded,
     refetch,
   } = useSchemasQuery({
-    orgSlug: orgSlug,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const isHooksEnabled = schemas?.some((schema) => schema.name === 'supabase_functions')
-  const { can: canReadWebhooks, isLoading: isLoadingPermissions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_READ,
-    'triggers'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadWebhooks, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
 
   const { mutate: enableHooks, isLoading: isEnablingHooks } = useHooksEnableMutation({
     onSuccess: async () => {
@@ -40,9 +31,8 @@ export const WebhooksOverviewTab = () => {
   })
 
   const enableHooksForProject = async () => {
-    if (!orgSlug) return console.error('Organization slug is required')
-    if (!projectRef) return console.error('Project ref is required')
-    enableHooks({ slug: orgSlug, ref: projectRef })
+    if (!branch) return console.error('Branch is required')
+    enableHooks({ branch })
   }
 
   if (!isSchemasLoaded || isLoadingPermissions) {

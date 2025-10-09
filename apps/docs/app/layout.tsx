@@ -10,8 +10,7 @@ import { genFaviconData } from 'common/MetaFavicons/app-router'
 
 import { GlobalProviders } from '~/features/app.providers'
 import { TopNavSkeleton } from '~/layouts/MainSkeleton'
-import { BASE_PATH, IS_PRODUCTION } from '~/lib/constants'
-import { TelemetryTagManager } from 'common'
+import { BASE_PATH } from '~/lib/constants'
 
 const metadata: Metadata = {
   applicationName: 'Supabase Docs',
@@ -21,8 +20,8 @@ const metadata: Metadata = {
   metadataBase: new URL('https://supabase.com'),
   icons: genFaviconData(BASE_PATH),
   robots: {
-    index: IS_PRODUCTION,
-    follow: IS_PRODUCTION,
+    index: true,
+    follow: true,
   },
   openGraph: {
     type: 'article',
@@ -48,7 +47,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body>
-        <TelemetryTagManager />
         <GlobalProviders>
           <TopNavSkeleton>{children}</TopNavSkeleton>
         </GlobalProviders>

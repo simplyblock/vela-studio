@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -8,12 +7,8 @@ import * as z from 'zod'
 import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -67,19 +62,10 @@ const SessionsAuthSettingsForm = () => {
   // Separate loading states for each form
   const [isUpdatingRefreshTokens, setIsUpdatingRefreshTokens] = useState(false)
   const [isUpdatingUserSessions, setIsUpdatingUserSessions] = useState(false)
-
-  const { can: canReadConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'custom_config_gotrue'
-  )
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
-
-  const { data: organization } = useSelectedOrganizationQuery()
-  const isProPlanAndUp = organization?.plan?.id !== 'free'
-  const promptProPlanUpgrade = IS_PLATFORM && !isProPlanAndUp
+  // FIXME: need permission implemented 
+  const { can: canReadConfig } = {can:true}
+   // FIXME: need permission implemented  
+  const { can: canUpdateConfig } = {can:true}
 
   const refreshTokenForm = useForm<z.infer<typeof RefreshTokenSchema>>({
     resolver: zodResolver(RefreshTokenSchema),
@@ -262,15 +248,6 @@ const SessionsAuthSettingsForm = () => {
           >
             <Card>
               <CardContent>
-                {promptProPlanUpgrade && (
-                  <div className="mb-4">
-                    <UpgradeToPro
-                      primaryText="Upgrade to Pro"
-                      secondaryText="Configuring user sessions requires the Pro Plan."
-                    />
-                  </div>
-                )}
-
                 <FormField_Shadcn_
                   control={userSessionsForm.control}
                   name="SESSIONS_SINGLE_PER_USER"
@@ -284,7 +261,7 @@ const SessionsAuthSettingsForm = () => {
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
-                          disabled={!canUpdateConfig || !isProPlanAndUp}
+                          disabled={!canUpdateConfig}
                         />
                       </FormControl_Shadcn_>
                     </FormItemLayout>
@@ -309,7 +286,7 @@ const SessionsAuthSettingsForm = () => {
                               type="number"
                               min={0}
                               {...field}
-                              disabled={!canUpdateConfig || !isProPlanAndUp}
+                              disabled={!canUpdateConfig}
                             />
                           </PrePostTab>
                         </FormControl_Shadcn_>
@@ -335,7 +312,7 @@ const SessionsAuthSettingsForm = () => {
                             <Input_Shadcn_
                               type="number"
                               {...field}
-                              disabled={!canUpdateConfig || !isProPlanAndUp}
+                              disabled={!canUpdateConfig}
                             />
                           </PrePostTab>
                         </FormControl_Shadcn_>

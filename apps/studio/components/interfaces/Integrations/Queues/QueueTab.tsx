@@ -30,10 +30,12 @@ import {
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const QueueTab = () => {
-  const { slug, childId: queueName, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, childId: queueName } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [openRlsPopover, setOpenRlsPopover] = useState(false)
   const [rlsConfirmModalOpen, setRlsConfirmModalOpen] = useState(false)
@@ -43,29 +45,25 @@ export const QueueTab = () => {
   const [selectedTypes, setSelectedTypes] = useState<QUEUE_MESSAGE_TYPE[]>([])
 
   const { data: tables, isLoading: isLoadingTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = tables?.find((x) => x.name === `q_${queueName}`)
   const isRlsEnabled = queueTable?.rls_enabled ?? false
 
   const { data: policies } = useDatabasePoliciesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: 'pgmq',
   })
   const queuePolicies = (policies ?? []).filter((policy) => policy.table === `q_${queueName}`)
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const { data, error, isLoading, fetchNextPage, isFetching } = useQueueMessagesInfiniteQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       queueName: queueName!,
       // when no types are selected, include all types of messages
       status: selectedTypes.length === 0 ? ['archived', 'available', 'scheduled'] : selectedTypes,
@@ -82,17 +80,14 @@ export const QueueTab = () => {
   })
 
   const onToggleRLS = async () => {
-    if (!slug) return console.error('Organization slug is required')
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!queueTable) return toast.error('Unable to toggle RLS: Queue table not found')
     const payload = {
       id: queueTable.id,
       rls_enabled: true,
     }
     updateTable({
-      orgSlug: slug,
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       id: queueTable.id,
       name: queueTable.name,
       schema: 'pgmq',
@@ -145,8 +140,7 @@ export const QueueTab = () => {
                   }}
                 >
                   <Link
-                    passHref
-                    href={`/org/${slug}/project/${ref}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
+                    href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
                   >
                     Add RLS policy
                   </Link>
@@ -170,8 +164,7 @@ export const QueueTab = () => {
                   }
                 >
                   <Link
-                    passHref
-                    href={`/org/${slug}/project/${ref}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
+                    href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies?search=${queueTable?.id}&schema=pgmq`}
                   >
                     Auth {queuePolicies.length > 1 ? 'policies' : 'policy'}
                   </Link>

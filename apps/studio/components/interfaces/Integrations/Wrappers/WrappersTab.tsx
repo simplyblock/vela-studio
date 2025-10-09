@@ -1,33 +1,26 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { HTMLProps, ReactNode, useCallback, useState } from 'react'
-
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { FDW, useFDWsQuery } from 'data/fdw/fdws-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Sheet, SheetContent } from 'ui'
 import { CreateWrapperSheet } from './CreateWrapperSheet'
 import DeleteWrapperModal from './DeleteWrapperModal'
 import { WRAPPERS } from './Wrappers.constants'
 import { wrapperMetaComparator } from './Wrappers.utils'
 import { WrapperTable } from './WrapperTable'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const WrappersTab = () => {
   const { id } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [selectedWrapperForDelete, setSelectedWrapperForDelete] = useState<FDW | null>(null)
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
   const [isClosingCreateWrapper, setisClosingCreateWrapper] = useState(false)
-
-  const { can: canCreateWrapper } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'wrappers'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateWrapper } = {can:true}
 
   const { data } = useFDWsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const wrappers = data ?? []

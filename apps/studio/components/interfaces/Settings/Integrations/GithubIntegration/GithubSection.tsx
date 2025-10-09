@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useMemo } from 'react'
 
 import { useParams } from 'common'
@@ -9,12 +8,9 @@ import {
   ScaffoldSectionDetail,
 } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useGitHubConnectionsQuery } from 'data/integrations/github-connections-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
-import { cn } from 'ui'
+import { BASE_PATH } from 'lib/constants'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import GitHubIntegrationConnectionForm from './GitHubIntegrationConnectionForm'
 
@@ -31,12 +27,8 @@ const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
 const GitHubSection = () => {
   const { ref: projectRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
-
-  const { can: canReadGitHubConnection, isLoading: isLoadingPermissions } =
-    useAsyncCheckProjectPermissions(PermissionAction.READ, 'integrations.github_connections')
-
-  const isProPlanAndUp = organization?.plan?.id !== 'free'
-  const promptProPlanUpgrade = IS_PLATFORM && !isProPlanAndUp
+  // FIXME: need permission implemented 
+  const { can: canReadGitHubConnection, isLoading: isLoadingPermissions } = {can:true,isLoading:false}
 
   const { data: connections } = useGitHubConnectionsQuery(
     { organizationId: organization?.id },
@@ -71,16 +63,7 @@ const GitHubSection = () => {
                   branch, keep your production branch in sync, and automatically create preview
                   branches for every pull request.
                 </p>
-                {promptProPlanUpgrade && (
-                  <div className="mb-6">
-                    <UpgradeToPro
-                      primaryText="Upgrade to unlock GitHub integration"
-                      secondaryText="Connect your GitHub repository to automatically sync preview branches and deploy changes."
-                      source="github-integration"
-                    />
-                  </div>
-                )}
-                <div className={cn(promptProPlanUpgrade && 'opacity-25 pointer-events-none')}>
+                <div>
                   <GitHubIntegrationConnectionForm connection={existingConnection} />
                 </div>
               </div>

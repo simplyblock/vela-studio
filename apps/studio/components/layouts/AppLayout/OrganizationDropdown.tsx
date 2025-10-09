@@ -4,13 +4,11 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 import { useParams } from 'common'
-import PartnerIcon from 'components/ui/PartnerIcon'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
-  Badge,
   Button,
   CommandEmpty_Shadcn_,
   CommandGroup_Shadcn_,
@@ -25,7 +23,6 @@ import {
   ScrollArea,
   cn,
 } from 'ui'
-import { setOrganizationCookie } from '../../../data/vela/vela'
 
 export const OrganizationDropdown = () => {
   const router = useRouter()
@@ -79,7 +76,6 @@ export const OrganizationDropdown = () => {
               <CommandGroup_Shadcn_>
                 <ScrollArea className={(organizations || []).length > 7 ? 'h-[210px]' : ''}>
                   {organizations?.map((org) => {
-                    setOrganizationCookie(org.id)
                     const href = !!routeSlug
                       ? router.pathname.replace('[slug]', org.slug)
                       : `/org/${org.slug}`
@@ -98,7 +94,6 @@ export const OrganizationDropdown = () => {
                         <Link href={href} className="w-full flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span>{org.name}</span>
-                            <PartnerIcon organization={org} />
                           </div>
                           {org.slug === slug && <Check size={16} />}
                         </Link>

@@ -17,9 +17,9 @@ import {
 } from 'ui'
 
 import { useEntityTypesQuery } from 'data/entity-types/entity-types-infinite-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { debounce } from 'lodash'
 import { Check, Code, Loader } from 'lucide-react'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TableSelectorProps {
   className?: string
@@ -40,13 +40,12 @@ const TableSelector = ({
 }: TableSelectorProps) => {
   const [open, setOpen] = useState(false)
   const [initiallyLoaded, setInitiallyLoaded] = useState(false)
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [searchInput, setSearchInput] = useState('')
 
   const { data, isLoading, isSuccess, isError, error, refetch } = useEntityTypesQuery({
-    projectRef: project?.ref,
+    branch,
     search: searchInput,
-    connectionString: project?.connectionString,
     schemas: [selectedSchemaName],
   })
   useEffect(() => {

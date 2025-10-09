@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
@@ -15,7 +14,6 @@ import NoPermission from 'components/ui/NoPermission'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { TIME_PERIODS_BILLING, TIME_PERIODS_REPORTS } from 'lib/constants/metrics'
 import { cn, Listbox } from 'ui'
@@ -28,14 +26,11 @@ import SizeAndCounts from './SizeAndCounts'
 import TotalUsage from './TotalUsage'
 
 const Usage = () => {
-  const { slug, projectRef } = useParams()
+  const { slug: orgRef, projectRef, branch: branchRef } = useParams()
   const [dateRange, setDateRange] = useState<any>()
   const [selectedProjectRef, setSelectedProjectRef] = useState<string>()
-
-  const canReadSubscriptions = useCheckPermissions(
-    PermissionAction.BILLING_READ,
-    'stripe.subscriptions'
-  )
+  // FIXME: need permission implemented 
+  const canReadSubscriptions = true
 
   const { data: organization } = useSelectedOrganizationQuery()
   const { data: projects, isSuccess } = useProjectsQuery()
@@ -45,7 +40,7 @@ const Usage = () => {
     isLoading: isLoadingSubscription,
     isError: isErrorSubscription,
     isSuccess: isSuccessSubscription,
-  } = useOrgSubscriptionQuery({ orgSlug: slug })
+  } = useOrgSubscriptionQuery({ orgSlug: orgRef })
 
   const orgProjects = projects?.filter((project) => project.organization_id === organization?.id)
 
@@ -216,7 +211,7 @@ const Usage = () => {
       )}
 
       <TotalUsage
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
         subscription={subscription}
         startDate={startDate}
@@ -226,7 +221,7 @@ const Usage = () => {
 
       {subscription?.plan.id !== 'free' && (
         <Compute
-          orgSlug={slug as string}
+          orgSlug={orgRef!}
           projectRef={selectedProjectRef}
           subscription={subscription}
           startDate={startDate}
@@ -235,8 +230,9 @@ const Usage = () => {
       )}
 
       <Egress
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
+        branchRef={branchRef}
         subscription={subscription}
         startDate={startDate}
         endDate={endDate}
@@ -244,8 +240,9 @@ const Usage = () => {
       />
 
       <SizeAndCounts
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
+        branchRef={branchRef}
         subscription={subscription}
         startDate={startDate}
         endDate={endDate}
@@ -253,8 +250,9 @@ const Usage = () => {
       />
 
       <Activity
-        orgSlug={slug as string}
+        orgSlug={orgRef!}
         projectRef={selectedProjectRef}
+        branchRef={branchRef}
         subscription={subscription}
         startDate={startDate}
         endDate={endDate}

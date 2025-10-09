@@ -4,8 +4,8 @@ import type { CommandOptions } from 'ui-patterns/CommandMenu'
 import { useRegisterCommands } from 'ui-patterns/CommandMenu'
 
 export function useAdvisorsGoToCommands(options?: CommandOptions) {
-  let { ref, slug } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.NAVIGATE,
@@ -13,16 +13,16 @@ export function useAdvisorsGoToCommands(options?: CommandOptions) {
       {
         id: 'nav-advisors-security',
         name: 'Security Advisor',
-        route: `/org/${slug}/project/${ref}/advisors/security`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security`,
         defaultHidden: true,
       },
       {
         id: 'nav-advisors-performance',
         name: 'Performance Advisor',
-        route: `/org/${slug}/project/${ref}/advisors/performance`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/performance`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref, slug] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }

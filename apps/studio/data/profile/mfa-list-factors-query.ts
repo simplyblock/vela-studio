@@ -1,13 +1,13 @@
 import type { AuthMFAListFactorsResponse, Factor } from '@supabase/supabase-js'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-import { auth } from 'lib/gotrue'
 import { profileKeys } from './keys'
 
 export async function getMfaListFactors() {
-  const { error, data } = await auth.mfa.listFactors()
+  /*const { error, data } = await auth.mfa.listFactors()
 
   if (error) throw error
-  return data
+  return data*/
+  return {} as CustomMFAListFactorsData // FIXME: implement this
 }
 
 export type MFAFactor = Factor

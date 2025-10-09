@@ -1,6 +1,5 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import type { OrganizationMember } from 'data/organizations/organization-members-query'
-import { doPermissionsCheck, useGetPermissions } from 'hooks/misc/useCheckPermissions'
+import {  useGetPermissions } from 'hooks/misc/useCheckPermissions'
 import type { Permission, Role } from 'types'
 
 
@@ -8,18 +7,19 @@ export const useGetRolesManagementPermissions = (
   orgSlug?: string,
   roles?: Role[],
   permissions?: Permission[]
-): { rolesAddable: Number[]; rolesRemovable: Number[] } => {
+): { rolesAddable: string[]; rolesRemovable: string[] } => {
   const { permissions: allPermissions, organizationSlug } = useGetPermissions(
     permissions,
     orgSlug,
     permissions !== undefined && orgSlug !== undefined
   )
 
-  const rolesAddable: Number[] = []
-  const rolesRemovable: Number[] = []
+  const rolesAddable: string[] = []
+  const rolesRemovable: string[] = []
   if (!roles || !orgSlug) return { rolesAddable, rolesRemovable }
-
-  roles.forEach((role: Role) => {
+  // FIXME: need permission implemented   
+  /* roles.forEach((role: Role) => { 
+    
     const canAdd = doPermissionsCheck(
       allPermissions,
       PermissionAction.CREATE,
@@ -42,9 +42,10 @@ export const useGetRolesManagementPermissions = (
     )
     if (canRemove) rolesRemovable.push(role.id)
   })
-
+*/
   return { rolesAddable, rolesRemovable }
 }
+  
 
 export const hasMultipleOwners = (members: OrganizationMember[] = [], roles: Role[] = []) => {
   const membersWhoAreOwners = members.filter((member) => {

@@ -17,7 +17,7 @@ import { DOCS_CONTENT, DOCS_MENU } from './ProjectAPIDocs.constants'
 const Separator = () => <div className="border-t !mt-3 pb-1 mx-3" />
 
 const FirstLevelNav = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const snap = useAppStateSnapshot()
 
   const {
@@ -40,12 +40,12 @@ const FirstLevelNav = () => {
     return true
   })
 
-  const { data } = useOpenAPISpecQuery({ orgSlug: slug, projectRef: ref })
+  const { data } = useOpenAPISpecQuery({ orgSlug: orgRef, projectRef: projectRef })
   const tables = data?.tables ?? []
   const functions = data?.functions ?? []
 
-  const { data: buckets } = useBucketsQuery({ projectRef: ref })
-  const { data: edgeFunctions } = useEdgeFunctionsQuery({ projectRef: ref })
+  const { data: buckets } = useBucketsQuery({ projectRef: projectRef })
+  const { data: edgeFunctions } = useEdgeFunctionsQuery({ projectRef: projectRef })
 
   return (
     <>
@@ -165,7 +165,7 @@ const FirstLevelNav = () => {
           }
           onClick={() => snap.setShowProjectApiDocs(false)}
         >
-          <Link className="!justify-start" href={`/org/${slug}/project/${ref}/api/graphiql`}>
+          <Link className="!justify-start" href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api/graphiql`}>
             GraphiQL
           </Link>
         </Button>

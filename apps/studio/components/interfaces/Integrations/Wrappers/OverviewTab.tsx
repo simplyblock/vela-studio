@@ -1,11 +1,8 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import Link from 'next/link'
 import { useState } from 'react'
-
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Alert_Shadcn_,
@@ -21,21 +18,19 @@ import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
 import { CreateWrapperSheet } from './CreateWrapperSheet'
 import { WRAPPERS } from './Wrappers.constants'
 import { WrapperTable } from './WrapperTable'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const WrapperOverviewTab = () => {
-  const { id, slug } = useParams()
+  const { id, slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
   const [isClosingCreateWrapper, setisClosingCreateWrapper] = useState(false)
-
-  const { can: canCreateWrapper } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'wrappers'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateWrapper } = {can:true}
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
 
   const wrapperMeta = WRAPPERS.find((w) => w.name === id)
@@ -84,8 +79,8 @@ export const WrapperOverviewTab = () => {
                   <Link
                     href={
                       databaseNeedsUpgrading
-                        ? `/org/${slug}/project/${project?.ref}/settings/infrastructure`
-                        : `/org/${slug}/project/${project?.ref}/database/extensions?filter=wrappers`
+                        ? `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/infrastructure`
+                        : `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/database/extensions?filter=wrappers`
                     }
                   >
                     {databaseNeedsUpgrading ? 'Upgrade database' : 'View wrappers extension'}

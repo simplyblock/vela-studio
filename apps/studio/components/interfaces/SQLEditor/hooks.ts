@@ -1,10 +1,8 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useParams } from 'common'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { uuidv4 } from 'lib/helpers'
 import { useProfile } from 'lib/profile'
@@ -19,22 +17,15 @@ import {
 
 export const useNewQuery = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
-
-  const { can: canCreateSQLSnippet } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'user_content',
-    {
-      resource: { type: 'sql', owner_id: profile?.id },
-      subject: { id: profile?.id },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateSQLSnippet } = {can:true}
 
   const newQuery = async (sql: string, name: string, shouldRedirect: boolean = true) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
     if (!project) return console.error('Project is required')
     if (!profile) return console.error('Profile is required')
 
@@ -51,10 +42,10 @@ export const useNewQuery = () => {
         owner_id: profile?.id,
         project_id: project?.id,
       })
-      snapV2.addSnippet({ projectRef: ref, snippet })
+      snapV2.addSnippet({ projectRef, snippet })
       snapV2.addNeedsSaving(snippet.id)
       if (shouldRedirect) {
-        router.push(`/org/${slug}/project/${ref}/sql/${snippet.id}`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`)
         return undefined
       } else {
         return snippet.id

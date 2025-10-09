@@ -21,6 +21,7 @@ import { BlockViewConfiguration } from './BlockViewConfiguration'
 import { EditQueryButton } from './EditQueryButton'
 import { ParametersPopover } from './ParametersPopover'
 import { getCumulativeResults } from './QueryBlock.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const DEFAULT_CHART_CONFIG: ChartConfig = {
   type: 'bar',
@@ -122,7 +123,8 @@ export const QueryBlock = ({
   onDragStart,
   onResults,
 }: QueryBlockProps) => {
-  const { slug: orgSlug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [chartSettings, setChartSettings] = useState<ChartConfig>(chartConfig)
   const { xKey, yKey, view = 'table' } = chartSettings
@@ -155,7 +157,7 @@ export const QueryBlock = ({
   // [Joshen] This is for when we introduced the concept of parameters into our reports
   // const combinedParameterValues = { ...extParameterValues, ...parameterValues }
 
-  const { database: primaryDatabase } = usePrimaryDatabase({ orgSlug, projectRef: ref })
+  const { database: primaryDatabase } = usePrimaryDatabase({ branch })
   const postgresConnectionString = primaryDatabase?.connectionString
   const readOnlyConnectionString = primaryDatabase?.connection_string_read_only
 
@@ -203,8 +205,7 @@ export const QueryBlock = ({
       // [Joshen] This is for when we introduced the concept of parameters into our reports
       // const processedSql = processParameterizedSql(sql, combinedParameterValues)
       execute({
-        projectRef: ref,
-        connectionString: readOnlyConnectionString,
+        branch,
         sql,
       })
     } catch (error: any) {
@@ -315,7 +316,7 @@ export const QueryBlock = ({
                   side: 'bottom',
                   className: 'max-w-56 text-center',
                   text: isExecuting ? (
-                    <p>{`Query is running. You may cancel ongoing queries via the [SQL Editor](/project/${ref}/sql?viewOngoingQueries=true).`}</p>
+                    <p>{`Query is running. You may cancel ongoing queries via the [SQL Editor](/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql?viewOngoingQueries=true).`}</p>
                   ) : (
                     'Run query'
                   ),
@@ -339,8 +340,7 @@ export const QueryBlock = ({
             if (sql) {
               setShowWarning(undefined)
               execute({
-                projectRef: ref,
-                connectionString: postgresConnectionString,
+                branch,
                 sql,
               })
               onRunQuery?.('mutation')

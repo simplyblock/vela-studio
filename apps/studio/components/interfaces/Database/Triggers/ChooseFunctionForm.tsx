@@ -13,8 +13,8 @@ import {
   useDatabaseFunctionsQuery,
   type DatabaseFunction,
 } from 'data/database-functions/database-functions-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { ChevronDown, HelpCircle, Terminal } from 'lucide-react'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface ChooseFunctionFormProps {
   visible: boolean
@@ -23,11 +23,10 @@ export interface ChooseFunctionFormProps {
 }
 
 const ChooseFunctionForm = ({ visible, onChange, setVisible }: ChooseFunctionFormProps) => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data = [] } = useDatabaseFunctionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const triggerFunctions = data.filter((fn) => fn.return_type === 'trigger')
   const hasPublicSchemaFunctions = triggerFunctions.length >= 1
@@ -71,7 +70,7 @@ const ChooseFunctionForm = ({ visible, onChange, setVisible }: ChooseFunctionFor
 export default ChooseFunctionForm
 
 const NoticeBox = () => {
-  const { ref, slug } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   return (
     <div className="px-6">
@@ -81,7 +80,7 @@ const NoticeBox = () => {
         description={`You can make functions by using the Database Functions`}
         button={
           <Button asChild type="default">
-            <Link href={`/org/${slug}/project/${ref}/database/functions`}>Go to Functions</Link>
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/functions`}>Go to Functions</Link>
           </Button>
         }
       />
@@ -92,14 +91,14 @@ const NoticeBox = () => {
 const NoFunctionsState = () => {
   // for the empty 'no tables' state link
   const router = useRouter()
-  const { ref, slug } = router.query
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = router.query
 
   return (
     <ProductEmptyState
       title="No Trigger Functions found in database"
       ctaButtonLabel="Create a trigger function"
       onClickCta={() => {
-        router.push(`/org/${slug}/project/${ref}/database/functions`)
+        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/functions`)
       }}
     >
       <p className="text-sm text-foreground-light">

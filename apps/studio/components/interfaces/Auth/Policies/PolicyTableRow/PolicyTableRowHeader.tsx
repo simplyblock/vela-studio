@@ -1,11 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { noop } from 'lodash'
 import { Lock, Unlock } from 'lucide-react'
 
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { EditorTablePageLink } from 'data/prefetchers/project.$ref.editor.$id'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import { AiIconAnimation, Badge } from 'ui'
 
@@ -32,17 +30,12 @@ const PolicyTableRowHeader = ({
   onSelectToggleRLS = noop,
   onSelectCreatePolicy,
 }: PolicyTableRowHeaderProps) => {
-  const { slug, ref } = useParams() as { slug: string; ref: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref: string, branch: string }
   const aiSnap = useAiAssistantStateSnapshot()
-
-  const { can: canCreatePolicies } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'policies'
-  )
-  const { can: canToggleRLS } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'tables'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreatePolicies } = {can:true}
+  // FIXME: need permission implemented 
+  const { can: canToggleRLS } = {can:true}
 
   const isRealtimeSchema = table.schema === 'realtime'
   const isRealtimeMessagesTable = isRealtimeSchema && table.name === 'messages'
@@ -52,8 +45,9 @@ const PolicyTableRowHeader = ({
     <div id={table.id.toString()} className="flex w-full items-center justify-between">
       <div className="flex gap-x-4 text-left">
         <EditorTablePageLink
-          slug={slug}
-          projectRef={ref}
+          orgRef={orgRef}
+          projectRef={projectRef}
+          branchRef={branchRef}
           id={String(table.id)}
           className="flex items-center gap-x-2"
         >

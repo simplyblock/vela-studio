@@ -1,12 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
-
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import InformationBox from 'components/ui/InformationBox'
@@ -14,8 +12,6 @@ import { useOrganizationCreateInvitationMutation } from 'data/organization-membe
 import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useHasAccessToProjectLevelPermissions } from 'data/subscriptions/org-subscription-query'
-import { doPermissionsCheck, useGetPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
@@ -57,8 +53,8 @@ export const InviteMemberButton = () => {
   const { slug } = useParams()
   const { profile } = useProfile()
   const { data: organization } = useSelectedOrganizationQuery()
-  const { permissions: permissions } = useGetPermissions()
-
+  // FIXME: need permission implemented   
+  const { permission: permissions } = {permission:[]}
   const { organizationMembersCreate: organizationMembersCreationEnabled } = useIsFeatureEnabled([
     'organization_members:create',
   ])
@@ -76,9 +72,8 @@ export const InviteMemberButton = () => {
     .sort((a, b) => a.name.localeCompare(b.name))
 
   const currentPlan = organization?.plan
-  const hasAccessToProjectLevelPermissions = useHasAccessToProjectLevelPermissions(slug as string)
 
-  const userMemberData = members?.find((m) => m.gotrue_id === profile?.gotrue_id)
+  const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
     orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
@@ -88,19 +83,8 @@ export const InviteMemberButton = () => {
     orgScopedRoles,
     permissions ?? []
   )
-
-  const canInviteMembers =
-    hasOrgRole &&
-    rolesAddable.length > 0 &&
-    orgScopedRoles.some(({ id: role_id }) =>
-      doPermissionsCheck(
-        permissions,
-        PermissionAction.CREATE,
-        'user_invites',
-        { resource: { role_id } },
-        organization?.slug
-      )
-    )
+  // FIXME: need permission implemented 
+  const canInviteMembers = true
 
   const { mutate: inviteMember, isLoading: isInviting } = useOrganizationCreateInvitationMutation()
 
@@ -140,7 +124,7 @@ export const InviteMemberButton = () => {
       {
         slug,
         email: values.email.toLowerCase(),
-        roleId: Number(values.role),
+        roleId: values.role,
         ...(!values.applyToOrg && values.projectRef ? { projects: [values.projectRef] } : {}),
       },
       {
@@ -209,25 +193,23 @@ export const InviteMemberButton = () => {
             onSubmit={form.handleSubmit(onInviteMember)}
           >
             <DialogSection className="flex flex-col gap-y-4 pb-2">
-              {hasAccessToProjectLevelPermissions && (
-                <FormField_Shadcn_
-                  name="applyToOrg"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItemLayout
-                      layout="flex"
-                      label="Apply role to all projects in the organization"
-                    >
-                      <FormControl_Shadcn_>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(value) => form.setValue('applyToOrg', value)}
-                        />
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-              )}
+              <FormField_Shadcn_
+                name="applyToOrg"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItemLayout
+                    layout="flex"
+                    label="Apply role to all projects in the organization"
+                  >
+                    <FormControl_Shadcn_>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(value) => form.setValue('applyToOrg', value)}
+                      />
+                    </FormControl_Shadcn_>
+                  </FormItemLayout>
+                )}
+              />
               <FormField_Shadcn_
                 name="role"
                 control={form.control}
@@ -239,7 +221,7 @@ export const InviteMemberButton = () => {
                         onValueChange={(value) => form.setValue('role', value)}
                       >
                         <SelectTrigger_Shadcn_ className="text-sm capitalize">
-                          {orgScopedRoles.find((role) => role.id === Number(field.value))?.name ??
+                          {orgScopedRoles.find((role) => role.id === field.value)?.name ??
                             'Unknown'}
                         </SelectTrigger_Shadcn_>
                         <SelectContent_Shadcn_>

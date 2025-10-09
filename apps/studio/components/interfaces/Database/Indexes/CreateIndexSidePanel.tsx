@@ -4,13 +4,12 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import CodeEditor from 'components/ui/CodeEditor/CodeEditor'
-import { DocsButton } from 'components/ui/DocsButton'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useDatabaseIndexCreateMutation } from 'data/database-indexes/index-create-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useTableColumnsQuery } from 'data/database/table-columns-query'
 import { useEntityTypesQuery } from 'data/entity-types/entity-types-infinite-query'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   CommandEmpty_Shadcn_,
@@ -32,12 +31,12 @@ import {
   SidePanel,
   cn,
 } from 'ui'
-import { Admonition } from 'ui-patterns'
 import { MultiSelectOption } from 'ui-patterns/MultiSelectDeprecated'
 import { MultiSelectV2 } from 'ui-patterns/MultiSelectDeprecated/MultiSelectV2'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { INDEX_TYPES } from './Indexes.constants'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface CreateIndexSidePanelProps {
   visible: boolean
@@ -45,9 +44,9 @@ interface CreateIndexSidePanelProps {
 }
 
 const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) => {
-  const { slug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
-  const isOrioleDb = useIsOrioleDb()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [selectedSchema, setSelectedSchema] = useState('public')
   const [selectedEntity, setSelectedEntity] = useState<string | undefined>(undefined)
@@ -58,16 +57,13 @@ const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) =
   const [searchTerm, setSearchTerm] = useState('')
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug: slug,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const { data: entities, isLoading: isLoadingEntities } = useEntityTypesQuery({
     schemas: [selectedSchema],
     sort: 'alphabetical',
     search: searchTerm,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const {
     data: tableColumns,
@@ -76,8 +72,7 @@ const CreateIndexSidePanel = ({ visible, onClose }: CreateIndexSidePanelProps) =
   } = useTableColumnsQuery({
     schema: selectedSchema,
     table: selectedEntity,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const { mutate: createIndex, isLoading: isExecuting } = useDatabaseIndexCreateMutation({
@@ -114,11 +109,11 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
 
   const onSaveIndex = () => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!selectedEntity) return console.error('Entity is required')
 
     createIndex({
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
       payload: {
         schema: selectedSchema,
         entity: selectedEntity,
@@ -342,7 +337,6 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
                 isReactForm={false}
               >
                 <Select_Shadcn_
-                  disabled={isOrioleDb}
                   value={selectedIndexType}
                   onValueChange={setSelectedIndexType}
                   name="selected-index-type"
@@ -374,17 +368,6 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
                   </SelectContent_Shadcn_>
                 </Select_Shadcn_>
               </FormItemLayout>
-              {isOrioleDb && (
-                <Admonition
-                  type="default"
-                  className="!mt-2"
-                  title="OrioleDB currently only supports the B-tree index type"
-                  description="More index types may be supported when OrioleDB is no longer in preview"
-                >
-                  {/* [Joshen Oriole] Hook up proper docs URL */}
-                  <DocsButton className="mt-2" abbrev={false} href="https://supabase.com/docs" />
-                </Admonition>
-              )}
             </SidePanel.Content>
             <SidePanel.Separator />
             <SidePanel.Content>
@@ -394,7 +377,7 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
                   <Link
                     href={
                       project !== undefined
-                        ? `/org/${slug}/project/${project.ref}/sql/new?content=${generatedSQL}`
+                        ? `/org/${orgRef}/project/${project.ref}/branch/${branchRef}/sql/new?content=${generatedSQL}`
                         : '/'
                     }
                   >

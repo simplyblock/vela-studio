@@ -17,7 +17,8 @@ import { useDatabasePolicyDeleteMutation } from 'data/database-policies/database
 import { useTableUpdateMutation } from 'data/tables/table-update-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import ConfirmModal from 'ui-patterns/Dialogs/ConfirmDialog'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface PoliciesProps {
   schema: string
@@ -37,8 +38,9 @@ const Policies = ({
   onSelectEditPolicy: onSelectEditPolicyAI,
 }: PoliciesProps) => {
   const router = useRouter()
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
 
   const [selectedTableToToggleRLS, setSelectedTableToToggleRLS] = useState<{
     id: number
@@ -90,6 +92,7 @@ const Policies = ({
   // Methods that involve some API
   const onToggleRLS = async () => {
     if (!selectedTableToToggleRLS) return console.error('Table is required')
+    if (!branch) return console.error('Branch is required')
 
     const payload = {
       id: selectedTableToToggleRLS.id,
@@ -97,9 +100,7 @@ const Policies = ({
     }
 
     updateTable({
-      orgSlug: slug!,
-      projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      branch,
       id: selectedTableToToggleRLS.id,
       name: selectedTableToToggleRLS.name,
       schema: selectedTableToToggleRLS.schema,
@@ -109,9 +110,9 @@ const Policies = ({
 
   const onDeletePolicy = async () => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     deleteDatabasePolicy({
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
       originalPolicy: selectedPolicyToDelete,
     })
   }
@@ -125,7 +126,7 @@ const Policies = ({
           ctaButtonLabel="Create a table"
           infoButtonLabel="What is RLS?"
           infoButtonUrl="https://supabase.com/docs/guides/auth/row-level-security"
-          onClickCta={() => router.push(`/org/${slug}/project/${ref}/editor`)}
+          onClickCta={() => router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`)}
         >
           <div className="space-y-4">
             <InformationBox

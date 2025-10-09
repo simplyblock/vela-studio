@@ -10,6 +10,7 @@ import { useTablesQuery } from 'data/tables/tables-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { DATETIME_FORMAT } from 'lib/constants'
 import { useParams } from 'common'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface QueuesRowsProps {
   queues: PostgresQueue[]
@@ -18,12 +19,12 @@ interface QueuesRowsProps {
 
 const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: queueTables } = useTablesQuery({
-    projectRef: selectedProject?.ref,
-    connectionString: selectedProject?.connectionString,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = queueTables?.find((x) => x.name === `q_${queue.queue_name}`)
@@ -32,8 +33,7 @@ const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
   const { data: metrics, isLoading } = useQueuesMetricsQuery(
     {
       queueName: queue.queue_name,
-      projectRef: selectedProject?.ref,
-      connectionString: selectedProject?.connectionString,
+      branch,
     },
     {
       staleTime: 30 * 1000, // 30 seconds, talk with Oli whether this is ok to call every minute
@@ -47,7 +47,7 @@ const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
       key={queue.queue_name}
       onClick={() => {
         router.push(
-          `/org/${slug}/project/${selectedProject?.ref}/integrations/queues/queues/${queue.queue_name}`
+          `/org/${orgRef}/project/${selectedProject?.ref}/branch/${branchRef}/integrations/queues/queues/${queue.queue_name}`
         )
       }}
     >

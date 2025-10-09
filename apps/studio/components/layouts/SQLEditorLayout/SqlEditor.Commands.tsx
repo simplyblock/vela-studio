@@ -2,14 +2,11 @@ import { type PostgresColumn } from '@supabase/postgres-meta'
 import { AlertTriangle, Code, Loader2, Table2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef } from 'react'
-
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import { COMMAND_MENU_SECTIONS } from 'components/interfaces/App/CommandMenu/CommandMenu.utils'
 import { orderCommandSectionsByPriority } from 'components/interfaces/App/CommandMenu/ordering'
 import { useSqlSnippetsQuery, type SqlSnippet } from 'data/content/sql-snippets-query'
 import { usePrefetchTables, useTablesQuery, type TablesData } from 'data/tables/tables-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProtectedSchemas } from 'hooks/useProtectedSchemas'
 import { useProfile } from 'lib/profile'
@@ -37,11 +34,12 @@ import {
   useSetCommandMenuSize,
   useSetPage,
 } from 'ui-patterns/CommandMenu'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function useSqlEditorGotoCommands(options?: CommandOptions) {
-  let { slug, ref } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.NAVIGATE,
@@ -49,11 +47,11 @@ export function useSqlEditorGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-sql-editor',
         name: 'SQL Editor',
-        route: `/org/${slug}/project/${ref}/sql`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }
 
@@ -104,10 +102,8 @@ function RunSnippetPage() {
   const snippets = snippetPages?.pages.flatMap((page) => page.contents)
 
   const { profile } = useProfile()
-  const canCreateSQLSnippet = useCheckPermissions(PermissionAction.CREATE, 'user_content', {
-    resource: { type: 'sql', owner_id: profile?.id },
-    subject: { id: profile?.id },
-  })
+  // FIXME: need permission implemented   
+  const canCreateSQLSnippet = true
 
   useSetCommandMenuSize('xlarge')
 
@@ -159,7 +155,7 @@ function EmptyState({
   canCreateNew: boolean
 }) {
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   return (
     <div className="p-6">
@@ -169,7 +165,7 @@ function EmptyState({
           <CommandItem_Shadcn_
             id="create-snippet"
             className={generateCommandClassNames(false)}
-            onSelect={() => router.push(`/org/${slug}/project/${projectRef ?? '_'}/sql/new`)}
+            onSelect={() => router.push(`/org/${orgRef}/project/${projectRef ?? '_'}/branch/${branchRef}/sql/new`)}
           >
             {canCreateNew ? 'Create new snippet' : 'Run new SQL'}
           </CommandItem_Shadcn_>
@@ -189,7 +185,7 @@ function SnippetSelector({
   canCreateNew: boolean
 }) {
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   const selectedValue = useCommandFilterState((state) => state.value)
   const selectedSnippet = snippets?.find((snippet) => snippetValue(snippet) === selectedValue)
@@ -210,7 +206,7 @@ function SnippetSelector({
                 id={`${snippet.id}-${snippet.name}`}
                 className={generateCommandClassNames(false)}
                 value={snippetValue(snippet)}
-                onSelect={() => void router.push(`/org/${slug}/project/${projectRef ?? '_'}/sql/${snippet.id}`)}
+                onSelect={() => void router.push(`/org/${orgRef}/project/${projectRef ?? '_'}/branch/${branchRef}/sql/${snippet.id}`)}
               >
                 {snippet.name}
               </CommandItem_Shadcn_>
@@ -224,7 +220,7 @@ function SnippetSelector({
               <CommandItem_Shadcn_
                 id="create-snippet"
                 className={generateCommandClassNames(false)}
-                onSelect={() => router.push(`/org/${slug}/project/${projectRef ?? '_'}/sql/new`)}
+                onSelect={() => router.push(`/org/${orgRef}/project/${projectRef ?? '_'}/branch/${branchRef}/sql/new`)}
                 forceMount={true}
               >
                 Create new snippet
@@ -255,6 +251,7 @@ const QUERY_TABLE_PAGE_NAME = 'Query a table'
 
 export function useQueryTableCommands(options?: CommandOptions) {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const setPage = useSetPage()
 
   const commandMenuOpen = useCommandMenuOpen()
@@ -263,8 +260,7 @@ export function useQueryTableCommands(options?: CommandOptions) {
   commandMenuPreviouslyOpen.current = commandMenuOpen
 
   const prefetchTables = usePrefetchTables({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   useEffect(() => {
     if (project && commandMenuJustOpened) {
@@ -298,7 +294,8 @@ export function useQueryTableCommands(options?: CommandOptions) {
 function TableSelector() {
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
-  const { slug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: protectedSchemas } = useProtectedSchemas()
   const {
     data: tablesData,
@@ -306,8 +303,7 @@ function TableSelector() {
     isError,
     isSuccess,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     includeColumns: true,
   })
   const tables = useMemo(() => {
@@ -334,7 +330,7 @@ function TableSelector() {
                   value={escapeAttributeSelector(`${table.schema}.${table.name}`)}
                   onSelect={() => {
                     router.push(
-                      `/org/${slug}/project/${project?.ref ?? '_'}/sql/new?content=${encodeURIComponent(generateSelectStatement(table))}`
+                      `/org/${orgRef}/project/${project?.ref ?? '_'}/branch/${branchRef}/sql/new?content=${encodeURIComponent(generateSelectStatement(table))}`
                     )
                   }}
                 >

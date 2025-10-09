@@ -1,13 +1,13 @@
-import { UseInfiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query'
 import { last } from 'lodash'
 
 import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { databaseCronJobsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseCronJobRunsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   jobId: number
 }
 
@@ -28,12 +28,11 @@ export type CronJobRun = {
 export const CRON_JOB_RUNS_PAGE_SIZE = 30
 
 export async function getDatabaseCronJobRuns({
-  projectRef,
-  connectionString,
+  branch,
   jobId,
   afterTimestamp,
 }: DatabaseCronJobRunsVariables & { afterTimestamp: string }) {
-  if (!projectRef) throw new Error('Project ref is required')
+  if (!branch) throw new Error('Branch is required')
 
   let query = `
     SELECT * FROM cron.job_run_details
@@ -44,8 +43,7 @@ export async function getDatabaseCronJobRuns({
     LIMIT ${CRON_JOB_RUNS_PAGE_SIZE}`
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: query,
   })
   return result
@@ -55,25 +53,30 @@ type DatabaseCronJobRunData = CronJobRun[]
 type DatabaseCronJobError = ResponseError
 
 export const useCronJobRunsInfiniteQuery = <TData = DatabaseCronJobRunData>(
-  { projectRef, connectionString, jobId }: DatabaseCronJobRunsVariables,
+  { branch, jobId }: DatabaseCronJobRunsVariables,
   {
     enabled = true,
     ...options
   }: UseInfiniteQueryOptions<DatabaseCronJobRunData, DatabaseCronJobError, TData> = {}
 ) =>
   useInfiniteQuery<DatabaseCronJobRunData, DatabaseCronJobError, TData>(
-    databaseCronJobsKeys.runsInfinite(projectRef, jobId, { status }),
+    databaseCronJobsKeys.runsInfinite(
+      branch?.organization_id,
+      branch?.project_id,
+      branch?.id,
+      jobId,
+      { status }
+    ),
     ({ pageParam }) => {
       return getDatabaseCronJobRuns({
-        projectRef,
-        connectionString,
+        branch,
         jobId,
         afterTimestamp: pageParam,
       })
     },
     {
       staleTime: 0,
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
 
       getNextPageParam(lastPage) {
         const hasNextPage = lastPage.length <= CRON_JOB_RUNS_PAGE_SIZE

@@ -1,18 +1,19 @@
 import { QueryClient, useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query'
-import { executeSql, ExecuteSqlVariables } from 'data/sql/execute-sql-query'
+import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { ENTITY_TYPE } from './entity-type-constants'
 import { entityTypeKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type EntityTypesVariables = {
-  projectRef?: string
+  branch?: Branch
   schemas?: string[]
   search?: string
   limit?: number
   page?: number
   sort?: 'alphabetical' | 'grouped-alphabetical'
   filterTypes?: string[]
-} & Pick<ExecuteSqlVariables, 'connectionString'>
+}
 
 export interface Entity {
   id: number
@@ -32,8 +33,7 @@ export type EntityTypesResponse = {
 
 export async function getEntityTypes(
   {
-    projectRef,
-    connectionString,
+    branch,
     schemas = ['public'],
     search,
     limit = 100,
@@ -103,8 +103,7 @@ export async function getEntityTypes(
 
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['entity-types', ...schemas, page],
     },
@@ -119,8 +118,7 @@ export type EntityTypesError = ResponseError
 
 export const useEntityTypesQuery = <TData = EntityTypesData>(
   {
-    projectRef,
-    connectionString,
+    branch,
     schemas = ['public'],
     search,
     limit = 100,
@@ -133,12 +131,17 @@ export const useEntityTypesQuery = <TData = EntityTypesData>(
   }: UseInfiniteQueryOptions<EntityTypesData, EntityTypesError, TData> = {}
 ) => {
   return useInfiniteQuery<EntityTypesData, EntityTypesError, TData>(
-    entityTypeKeys.list(projectRef, { schemas, search, sort, limit, filterTypes }),
+    entityTypeKeys.list(branch?.organization_id, branch?.project_id, branch?.id, {
+      schemas,
+      search,
+      sort,
+      limit,
+      filterTypes,
+    }),
     ({ signal, pageParam }) =>
       getEntityTypes(
         {
-          projectRef,
-          connectionString,
+          branch,
           schemas,
           search,
           limit,
@@ -149,7 +152,7 @@ export const useEntityTypesQuery = <TData = EntityTypesData>(
         signal
       ),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       getNextPageParam(lastPage, pages) {
         const page = pages.length
         const currentTotalCount = page * limit
@@ -169,8 +172,7 @@ export const useEntityTypesQuery = <TData = EntityTypesData>(
 export function prefetchEntityTypes(
   client: QueryClient,
   {
-    projectRef,
-    connectionString,
+    branch,
     schemas = ['public'],
     search,
     limit = 100,
@@ -179,12 +181,17 @@ export function prefetchEntityTypes(
   }: Omit<EntityTypesVariables, 'page'>
 ) {
   return client.prefetchInfiniteQuery(
-    entityTypeKeys.list(projectRef, { schemas, search, sort, limit, filterTypes }),
+    entityTypeKeys.list(branch?.organization_id, branch?.project_id, branch?.id, {
+      schemas,
+      search,
+      sort,
+      limit,
+      filterTypes,
+    }),
     ({ signal, pageParam }) =>
       getEntityTypes(
         {
-          projectRef,
-          connectionString,
+          branch,
           schemas,
           search,
           limit,

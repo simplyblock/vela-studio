@@ -6,6 +6,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { invalidateTablePrivilegesQuery } from './table-privileges-query'
 import { privilegeKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type TablePrivilegesRevoke = Parameters<
   typeof pgMeta.tablePrivileges.revoke
@@ -14,20 +15,14 @@ export type TablePrivilegesRevoke = Parameters<
   : never
 
 export type TablePrivilegesRevokeVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   revokes: TablePrivilegesRevoke[]
 }
 
-export async function revokeTablePrivileges({
-  projectRef,
-  connectionString,
-  revokes,
-}: TablePrivilegesRevokeVariables) {
+export async function revokeTablePrivileges({ branch, revokes }: TablePrivilegesRevokeVariables) {
   const sql = pgMeta.tablePrivileges.revoke(revokes).sql
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['table-privileges', 'revoke'],
   })
@@ -50,11 +45,22 @@ export const useTablePrivilegesRevokeMutation = ({
     (vars) => revokeTablePrivileges(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { branch } = variables
 
         await Promise.all([
-          invalidateTablePrivilegesQuery(queryClient, projectRef),
-          queryClient.invalidateQueries(privilegeKeys.columnPrivilegesList(projectRef)),
+          invalidateTablePrivilegesQuery(
+            queryClient,
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id
+          ),
+          queryClient.invalidateQueries(
+            privilegeKeys.columnPrivilegesList(
+              branch?.organization_id,
+              branch?.project_id,
+              branch?.id
+            )
+          ),
         ])
 
         await onSuccess?.(data, variables, context)

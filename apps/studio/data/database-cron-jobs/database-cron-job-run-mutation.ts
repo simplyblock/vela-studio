@@ -4,10 +4,10 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseCronJobsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseCronJobRunVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   jobId: number
 }
 
@@ -15,13 +15,11 @@ export type DatabaseCronJobRunVariables = {
 // So this is just merely running the command from within the cron job, will not reset the cron job's timer
 // https://github.com/citusdata/pg_cron/issues/226
 export async function runDatabaseCronJobCommand({
-  projectRef,
-  connectionString,
+  branch,
   jobId,
 }: DatabaseCronJobRunVariables) {
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: `
 DO $$
 DECLARE

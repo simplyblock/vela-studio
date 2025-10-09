@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -21,8 +20,6 @@ import {
 } from 'data/database-queues/database-queues-toggle-postgrest-mutation'
 import { useTableUpdateMutation } from 'data/tables/table-update-mutation'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   Form_Shadcn_,
@@ -34,17 +31,14 @@ import {
 import { Admonition } from 'ui-patterns'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // [Joshen] Not convinced with the UI and layout but getting the functionality out first
 
 export const QueuesSettings = () => {
-  const { slug: orgSlug } = getPathReferences()
-  const { data: project } = useSelectedProjectQuery()
-  const { can: canUpdatePostgrestConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_postgrest'
-  )
+  const { data: branch } = useSelectedBranchQuery()
+    // FIXME: need permission implemented
+  const { can: canUpdatePostgrestConfig } = {can:true}
   const [isToggling, setIsToggling] = useState(false)
   const [rlsConfirmModalOpen, setRlsConfirmModalOpen] = useState(false)
   const [isUpdatingRls, setIsUpdatingRls] = useState(false)
@@ -59,16 +53,14 @@ export const QueuesSettings = () => {
   const { enable } = form.watch()
 
   const { data: queueTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: 'pgmq',
   })
   const tablesWithoutRLS =
     queueTables?.filter((x) => x.name.startsWith('q_') && !x.rls_enabled) ?? []
 
   const { data: config, error: configError } = useProjectPostgrestConfigQuery({
-    orgSlug,
-    projectRef: project?.ref,
+    branch,
   })
 
   const {
@@ -76,8 +68,7 @@ export const QueuesSettings = () => {
     isSuccess,
     isLoading,
   } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const schemas = config?.db_schema.replace(/ /g, '').split(',') ?? []
 
@@ -103,12 +94,11 @@ export const QueuesSettings = () => {
 
   const { mutate: toggleExposeQueuePostgrest } = useDatabaseQueueToggleExposeMutation({
     onSuccess: (_, values) => {
-      if (project && config) {
+      if (branch && config) {
         if (values.enable) {
           const updatedSchemas = schemas.concat([QUEUES_SCHEMA])
           updatePostgrestConfig({
-            orgSlug: orgSlug!,
-            projectRef: project?.ref,
+            branch,
             dbSchema: updatedSchemas.join(', '),
             maxRows: config.max_rows,
             dbExtraSearchPath: config.db_extra_search_path,
@@ -117,8 +107,7 @@ export const QueuesSettings = () => {
         } else {
           const updatedSchemas = schemas.filter((x) => x !== QUEUES_SCHEMA)
           updatePostgrestConfig({
-            orgSlug: orgSlug!,
-            projectRef: project?.ref,
+            branch,
             dbSchema: updatedSchemas.join(', '),
             maxRows: config.max_rows,
             dbExtraSearchPath: config.db_extra_search_path,
@@ -134,15 +123,13 @@ export const QueuesSettings = () => {
   })
 
   const onToggleRLS = async () => {
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     setIsUpdatingRls(true)
     try {
       await Promise.all(
         tablesWithoutRLS.map((x) =>
           updateTable({
-            orgSlug: orgSlug!,
-            projectRef: project?.ref,
-            connectionString: project?.connectionString,
+            branch,
             id: x.id,
             name: x.name,
             schema: x.schema,
@@ -161,8 +148,7 @@ export const QueuesSettings = () => {
   }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!project) return console.error('Project is required')
-    if (!orgSlug) return console.error('Organization context is required')
+    if (!branch) return console.error('Branch is required')
     if (configError) {
       return toast.error(
         `Failed to toggle queue exposure via PostgREST: Unable to retrieve PostgREST configuration (${configError.message})`
@@ -171,9 +157,7 @@ export const QueuesSettings = () => {
 
     setIsToggling(true)
     toggleExposeQueuePostgrest({
-      orgSlug: orgSlug,
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
       enable: values.enable,
     })
   }

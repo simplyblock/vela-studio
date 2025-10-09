@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { ExternalLink, PauseCircle } from 'lucide-react'
@@ -18,12 +17,10 @@ import { PostgresEngine, ReleaseChannel } from 'data/projects/new-project.consta
 import { useProjectPauseStatusQuery } from 'data/projects/project-pause-status-query'
 import { useProjectRestoreMutation } from 'data/projects/project-restore-mutation'
 import { setProjectStatus } from 'data/projects/projects-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useFlag } from 'hooks/ui/useFlag'
 import { PROJECT_STATUS } from 'lib/constants'
-import { AWS_REGIONS, CloudProvider } from 'shared-data'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -52,13 +49,11 @@ export const extractPostgresVersionDetails = (value: string): PostgresVersionDet
 }
 
 export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const showPostgresVersionSelector = useFlag('showPostgresVersionSelector')
-
-  const region = Object.values(AWS_REGIONS).find((x) => x.code === project?.region)
 
   const {
     data: pauseStatus,
@@ -66,7 +61,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
     isError,
     isSuccess,
     isLoading,
-  } = useProjectPauseStatusQuery({ ref }, { enabled: project?.status === PROJECT_STATUS.INACTIVE })
+  } = useProjectPauseStatusQuery({ ref: projectRef }, { enabled: project?.status === PROJECT_STATUS.INACTIVE })
 
   const finalDaysRemainingBeforeRestoreDisabled =
     pauseStatus?.remaining_days_till_restore_disabled ??
@@ -77,7 +72,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
   const isRestoreDisabled = isSuccess && !pauseStatus.can_restore
 
   const { data: membersExceededLimit } = useFreeProjectLimitCheckQuery(
-    { slug: slug },
+    { slug: orgRef },
     { enabled: isFreePlan }
   )
 
@@ -87,15 +82,13 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
 
   const { mutate: restoreProject, isLoading: isRestoring } = useProjectRestoreMutation({
     onSuccess: (_, variables) => {
-      setProjectStatus(queryClient, slug as string, variables.ref, PROJECT_STATUS.RESTORING)
+      setProjectStatus(queryClient, orgRef!, variables.ref, PROJECT_STATUS.RESTORING)
       toast.success('Restoring project')
     },
   })
 
-  const canResumeProject = useCheckPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'queue_jobs.projects.initialize_or_resume'
-  )
+  // FIXME: need permission implemented 
+  const canResumeProject = true
 
   const onSelectRestore = () => {
     if (!canResumeProject) {
@@ -236,14 +229,14 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                   {isFreePlan ? (
                     <Button asChild type="primary">
                       <Link
-                        href={`/org/${slug}/billing?panel=subscriptionPlan&source=projectPausedStateRestore`}
+                        href={`/org/${orgRef}/billing?panel=subscriptionPlan&source=projectPausedStateRestore`}
                       >
                         Upgrade to Pro
                       </Link>
                     </Button>
                   ) : (
                     <Button asChild type="default">
-                      <Link href={`/org/${slug}/project/${ref}/settings/general`}>View project settings</Link>
+                      <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`}>View project settings</Link>
                     </Button>
                   )}
                 </div>
@@ -277,8 +270,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                         type="unpause"
                         label="Select the version of Postgres to restore to"
                         layout="vertical"
-                        dbRegion={region?.displayName ?? ''}
-                        cloudProvider={(project?.cloud_provider ?? 'AWS') as CloudProvider}
+                        dbRegion="default"
                         organizationSlug={selectedOrganization?.slug}
                       />
                     )}

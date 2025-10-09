@@ -1,10 +1,7 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import { useState } from 'react'
 
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -23,7 +20,7 @@ import {
   ScrollArea,
   Skeleton,
 } from 'ui'
-import { getPathReferences } from '../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface SchemaSelectorProps {
   className?: string
@@ -51,13 +48,10 @@ const SchemaSelector = ({
   portal = true,
 }: SchemaSelectorProps) => {
   const [open, setOpen] = useState(false)
-  const { can: canCreateSchemas } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'schemas'
-  )
+  // FIXME: need permission implemented   
+  const { can: canCreateSchemas } = {can:true}
 
-  const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data,
     isLoading: isSchemasLoading,
@@ -66,9 +60,7 @@ const SchemaSelector = ({
     error: schemasError,
     refetch: refetchSchemas,
   } = useSchemasQuery({
-    orgSlug,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const schemas = (data || [])

@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronDown, Loader2, PlusIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -16,7 +15,6 @@ import { useGitHubConnectionDeleteMutation } from 'data/integrations/github-conn
 import { useGitHubConnectionUpdateMutation } from 'data/integrations/github-connection-update-mutation'
 import { useGitHubRepositoriesQuery } from 'data/integrations/github-repositories-query'
 import type { GitHubConnection } from 'data/integrations/integrations.types'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { openInstallGitHubIntegrationWindow } from 'lib/github'
@@ -44,6 +42,8 @@ import {
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const GITHUB_ICON = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 96" className="w-6">
@@ -65,21 +65,18 @@ const GitHubIntegrationConnectionForm = ({
   disabled = false,
   connection,
 }: GitHubIntegrationConnectionFormProps) => {
+  const { slug: orgRef } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [isConfirmingBranchChange, setIsConfirmingBranchChange] = useState(false)
   const [isConfirmingRepoChange, setIsConfirmingRepoChange] = useState(false)
   const [repoComboBoxOpen, setRepoComboboxOpen] = useState(false)
   const isParentProject = !Boolean(selectedProject?.parent_project_ref)
-
-  const { can: canUpdateGitHubConnection } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'integrations.github_connections'
-  )
-  const { can: canCreateGitHubConnection } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'integrations.github_connections'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateGitHubConnection } = {can:true}
+  // FIXME: need permission implemented   
+  const { can: canCreateGitHubConnection } = {can:true}
 
   const { data: gitHubAuthorization } = useGitHubAuthorizationQuery()
 
@@ -139,7 +136,7 @@ const GitHubIntegrationConnectionForm = ({
     [githubReposData]
   )
 
-  const prodBranch = existingBranches?.find((branch) => branch.is_default)
+  const prodBranch = existingBranches?.find((branch) => branch.name === 'main')
 
   // Combined GitHub Settings Form
   const GitHubSettingsSchema = z
@@ -227,7 +224,7 @@ const GitHubIntegrationConnectionForm = ({
     data: z.infer<typeof GitHubSettingsSchema>,
     selectedRepo: { id: string; installation_id: number }
   ) => {
-    if (!selectedProject?.ref || !selectedOrganization?.id) return
+    if (!selectedProject?.ref || !selectedOrganization?.id || !branch) return
 
     createConnection({
       organizationId: selectedOrganization.id,
@@ -244,16 +241,16 @@ const GitHubIntegrationConnectionForm = ({
 
     if (!prodBranch?.id) {
       createBranch({
-        projectRef: selectedProject.ref,
+        orgRef: branch.organization_id,
+        projectRef: branch.project_id,
+        branchRef: branch.id,
         branchName: 'main',
-        gitBranch: data.branchName,
-        is_default: true,
       })
     } else {
       updateBranch({
-        id: prodBranch.id,
+        orgSlug: orgRef!,
         projectRef: selectedProject.ref,
-        gitBranch: data.branchName,
+        branch: data.branchName,
       })
     }
   }
@@ -264,9 +261,7 @@ const GitHubIntegrationConnectionForm = ({
   ) => {
     if (!selectedProject?.ref || !selectedOrganization?.id) return
 
-    const originalBranchName = prodBranch?.git_branch
-
-    if (originalBranchName && data.branchName !== originalBranchName && data.enableProductionSync) {
+    if (data.enableProductionSync) {
       setIsConfirmingBranchChange(true)
       return
     }
@@ -293,10 +288,9 @@ const GitHubIntegrationConnectionForm = ({
 
     if (prodBranch?.id) {
       updateBranch({
-        id: prodBranch.id,
+        orgSlug: orgRef!,
         projectRef: selectedProject.ref,
-        gitBranch: data.enableProductionSync ? data.branchName : '',
-        branchName: data.branchName || 'main',
+        branch: data.branchName || 'main',
       })
     }
 
@@ -356,12 +350,9 @@ const GitHubIntegrationConnectionForm = ({
 
   useEffect(() => {
     if (connection) {
-      const hasGitBranch = Boolean(prodBranch?.git_branch?.trim())
-
       githubSettingsForm.reset({
         repositoryId: connection.repository.id.toString(),
-        enableProductionSync: hasGitBranch,
-        branchName: prodBranch?.git_branch || 'main',
+        branchName: 'main',
         new_branch_per_pr: connection.new_branch_per_pr,
         supabaseDirectory: connection.workdir || '',
         supabaseChangesOnly: connection.supabase_changes_only,

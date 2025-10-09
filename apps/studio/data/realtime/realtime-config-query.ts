@@ -1,12 +1,12 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { get, handleError } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { realtimeKeys } from './keys'
 
 export type RealtimeConfigurationVariables = {
-  projectRef?: string
+  orgId?: string
+  projectId?: string
 }
 
 export const REALTIME_DEFAULT_CONFIG = {
@@ -20,15 +20,24 @@ export const REALTIME_DEFAULT_CONFIG = {
 }
 
 export async function getRealtimeConfiguration(
-  { projectRef }: RealtimeConfigurationVariables,
+  { orgId, projectId }: RealtimeConfigurationVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('Project ref is required')
+  if (!orgId) throw new Error('Org id is required')
+  if (!projectId) throw new Error('Project id is required')
 
-  const { data, error } = await get(`/platform/projects/{ref}/config/realtime`, {
-    params: { path: { ref: projectRef } },
-    signal,
-  })
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/config/realtime`,
+    {
+      params: {
+        path: {
+          slug: orgId,
+          ref: projectId,
+        },
+      },
+      signal,
+    }
+  )
   if (error) {
     if ((error as ResponseError).message === 'Custom realtime config for a project not found') {
       return REALTIME_DEFAULT_CONFIG
@@ -43,17 +52,17 @@ export type RealtimeConfigurationData = Awaited<ReturnType<typeof getRealtimeCon
 export type RealtimeConfigurationError = ResponseError
 
 export const useRealtimeConfigurationQuery = <TData = RealtimeConfigurationData>(
-  { projectRef }: RealtimeConfigurationVariables,
+  { orgId, projectId }: RealtimeConfigurationVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<RealtimeConfigurationData, RealtimeConfigurationError, TData> = {}
 ) =>
   useQuery<RealtimeConfigurationData, RealtimeConfigurationError, TData>(
-    realtimeKeys.configuration(projectRef),
-    ({ signal }) => getRealtimeConfiguration({ projectRef }, signal),
+    realtimeKeys.configuration(projectId),
+    ({ signal }) => getRealtimeConfiguration({ orgId, projectId }, signal),
     {
-      enabled: enabled && IS_PLATFORM && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof orgId !== 'undefined' && typeof projectId !== 'undefined',
       ...options,
     }
   )

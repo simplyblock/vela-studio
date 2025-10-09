@@ -8,7 +8,7 @@ import { integrationKeys } from './keys'
 
 type GitHubConnectionUpdateVariables = {
   connectionId: string | number
-  organizationId: number
+  organizationId: string
   connection: components['schemas']['UpdateGitHubConnectionBody']
 }
 

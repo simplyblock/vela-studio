@@ -1,18 +1,17 @@
 import { useParams } from 'common'
 import { useQueuesExposePostgrestStatusQuery } from 'data/database-queues/database-queues-expose-postgrest-status-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import Link from 'next/link'
 import { Button } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const QueuesOverviewTab = () => {
-  const { slug, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   return (
@@ -28,7 +27,7 @@ export const QueuesOverviewTab = () => {
               settings
             </p>
             <Button asChild type="default">
-              <Link href={`/org/${slug}/project/${ref}/integrations/queues/settings`}>
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/queues/settings`}>
                 Manage queues settings
               </Link>
             </Button>

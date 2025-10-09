@@ -1,7 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { get, handleError } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { profileKeys } from './keys'
 import type { Profile } from './types'
@@ -14,14 +13,7 @@ export async function getProfile(signal?: AbortSignal) {
 
   if (error) handleError(error)
 
-  if (!IS_PLATFORM) {
-    return {
-      ...data,
-      disabled_features: process.env.NEXT_PUBLIC_DISABLED_FEATURES?.split(',') ?? [],
-    } as Profile
-  } else {
-    return data as Profile
-  }
+  return data as Profile
 }
 
 export type ProfileData = Awaited<ReturnType<typeof getProfile>>

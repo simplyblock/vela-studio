@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/v1/branches/{branch_id}': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}': {
     parameters: {
       query?: never
       header?: never
@@ -468,7 +468,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/branches': {
+  '/platform/organizations/{slug}/projects/{ref}/branches': {
     parameters: {
       query?: never
       header?: never
@@ -486,17 +486,13 @@ export interface paths {
      * @description Creates a database branch from the specified project.
      */
     post: operations['v1-create-a-branch']
-    /**
-     * Disables preview branching
-     * @description Disables preview branching for the specified project
-     */
-    delete: operations['v1-disable-preview-branching']
+    delete?: never
     options?: never
     head?: never
     patch?: never
     trace?: never
   }
-  '/v1/projects/{ref}/branches/{name}': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{name}': {
     parameters: {
       query?: never
       header?: never
@@ -1912,26 +1908,14 @@ export interface components {
         | 'RESIZING'
     }
     BranchResponse: {
-      /** Format: date-time */
-      created_at: string
-      git_branch?: string
-      /** Format: uuid */
       id: string
-      is_default: boolean
-      /**
-       * @deprecated
-       * @description This field is deprecated and will not be populated.
-       */
-      latest_check_run_id?: number
+      created_at: string
       name: string
+      is_default: boolean
       parent_project_ref: string
       persistent: boolean
-      /** Format: int32 */
-      pr_number?: number
-      project_ref: string
-      /** Format: date-time */
-      review_requested_at?: string
-      /** @enum {string} */
+      project_id: string
+      organization_id: string
       status:
         | 'CREATING_PROJECT'
         | 'RUNNING_MIGRATIONS'
@@ -1939,8 +1923,6 @@ export interface components {
         | 'MIGRATIONS_FAILED'
         | 'FUNCTIONS_DEPLOYED'
         | 'FUNCTIONS_FAILED'
-      /** Format: date-time */
-      updated_at: string
     }
     BranchUpdateResponse: {
       /** @enum {string} */
@@ -1992,6 +1974,7 @@ export interface components {
     }
     CreateBranchBody: {
       branch_name: string
+      source: string
       /** @enum {string} */
       desired_instance_size?:
         | 'pico'
@@ -2021,7 +2004,7 @@ export interface components {
        * @description Postgres engine version. If not provided, the latest version will be used.
        * @enum {string}
        */
-      postgres_engine?: '15' | '17' | '17-oriole'
+      postgres_engine?: '15' | '17'
       region?: string
       /**
        * @description Release channel. If not provided, GA will be used.
@@ -2269,7 +2252,7 @@ export interface components {
     GetProjectAvailableRestoreVersionsResponse: {
       available_versions: {
         /** @enum {string} */
-        postgres_engine: '13' | '14' | '15' | '17' | '17-oriole'
+        postgres_engine: '13' | '14' | '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
         version: string
@@ -2629,7 +2612,7 @@ export interface components {
       target_upgrade_versions: {
         app_version: string
         /** @enum {string} */
-        postgres_version: '13' | '14' | '15' | '17' | '17-oriole'
+        postgres_version: '13' | '14' | '15' | '17'
         /** @enum {string} */
         release_channel: 'internal' | 'alpha' | 'beta' | 'ga' | 'withdrawn' | 'preview'
       }[]
@@ -3617,8 +3600,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Branch ID */
-        branch_id: string
+        slug: string
+        ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -3646,8 +3630,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Branch ID */
-        branch_id: string
+        slug: string
+        ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -3675,8 +3660,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Branch ID */
-        branch_id: string
+        slug: string
+        ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -4715,6 +4701,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -4750,6 +4737,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
+        slug: string
       }
       cookie?: never
     }
@@ -6770,7 +6758,7 @@ export interface operations {
       path: {
         /** @description Project ref */
         ref: string
-        slug:string
+        slug: string
       }
       cookie?: never
     }

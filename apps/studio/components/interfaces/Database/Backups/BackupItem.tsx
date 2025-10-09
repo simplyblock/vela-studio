@@ -1,12 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Download } from 'lucide-react'
-
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { InlineLink } from 'components/ui/InlineLink'
 import { useBackupDownloadMutation } from 'data/database/backup-download-mutation'
 import type { DatabaseBackup } from 'data/database/backups-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { Badge, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
 
@@ -19,10 +16,8 @@ interface BackupItemProps {
 
 export const BackupItem = ({ index, isHealthy, backup, onSelectBackup }: BackupItemProps) => {
   const { ref: projectRef } = useParams()
-  const { can: canTriggerScheduledBackups } = useAsyncCheckProjectPermissions(
-    PermissionAction.INFRA_EXECUTE,
-    'queue_job.restore.prepare'
-  )
+    // FIXME: need permission implemented 
+  const { can: canTriggerScheduledBackups } = {can:true}
 
   const { mutate: downloadBackup, isLoading: isDownloading } = useBackupDownloadMutation({
     onSuccess: (res) => {

@@ -1,5 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -8,12 +7,9 @@ import { number, object, string } from 'yup'
 import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
+
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -89,19 +85,10 @@ const MfaAuthSettingsForm = () => {
   const [isUpdatingPhoneForm, setIsUpdatingPhoneForm] = useState(false)
 
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false)
-
-  const { can: canReadConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'custom_config_gotrue'
-  )
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
-
-  const { data: organization } = useSelectedOrganizationQuery()
-  const isProPlanAndUp = organization?.plan?.id !== 'free'
-  const promptProPlanUpgrade = IS_PLATFORM && !isProPlanAndUp
+  // FIXME: need permission implemented 
+  const { can: canReadConfig } = {can:true}
+  // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
 
   // For now, we support Twilio and Vonage. Twilio Verify is not supported and the remaining providers are community maintained.
   const sendSMSHookIsEnabled =
@@ -184,14 +171,12 @@ const MfaAuthSettingsForm = () => {
   const onSubmitPhoneForm = (values: any) => {
     let payload = { ...values }
 
-    if (isProPlanAndUp) {
-      const { verifyEnabled: MFA_PHONE_VERIFY_ENABLED, enrollEnabled: MFA_PHONE_ENROLL_ENABLED } =
-        MfaStatusToState(values.MFA_PHONE)
-      payload = {
-        ...payload,
-        MFA_PHONE_ENROLL_ENABLED,
-        MFA_PHONE_VERIFY_ENABLED,
-      }
+    const { verifyEnabled: MFA_PHONE_VERIFY_ENABLED, enrollEnabled: MFA_PHONE_ENROLL_ENABLED } =
+      MfaStatusToState(values.MFA_PHONE)
+    payload = {
+      ...payload,
+      MFA_PHONE_ENROLL_ENABLED,
+      MFA_PHONE_VERIFY_ENABLED,
     }
     delete payload.MFA_PHONE
 
@@ -341,15 +326,6 @@ const MfaAuthSettingsForm = () => {
           >
             <Card>
               <CardContent className="pt-6">
-                {promptProPlanUpgrade && (
-                  <div className="mb-4">
-                    <UpgradeToPro
-                      primaryText="Upgrade to Pro"
-                      secondaryText="Advanced MFA requires the Pro Plan"
-                    />
-                  </div>
-                )}
-
                 <FormField_Shadcn_
                   control={phoneForm.control}
                   name="MFA_PHONE"
@@ -363,7 +339,7 @@ const MfaAuthSettingsForm = () => {
                         <Select_Shadcn_
                           value={field.value}
                           onValueChange={field.onChange}
-                          disabled={!canUpdateConfig || !isProPlanAndUp}
+                          disabled={!canUpdateConfig}
                         >
                           <SelectTrigger_Shadcn_>
                             <SelectValue_Shadcn_ placeholder="Select status" />
@@ -407,7 +383,7 @@ const MfaAuthSettingsForm = () => {
                           min={6}
                           max={30}
                           {...field}
-                          disabled={!canUpdateConfig || !isProPlanAndUp}
+                          disabled={!canUpdateConfig}
                         />
                       </FormControl_Shadcn_>
                     </FormItemLayout>
@@ -429,7 +405,7 @@ const MfaAuthSettingsForm = () => {
                         <Input_Shadcn_
                           type="text"
                           {...field}
-                          disabled={!canUpdateConfig || !isProPlanAndUp}
+                          disabled={!canUpdateConfig}
                         />
                       </FormControl_Shadcn_>
                     </FormItemLayout>
@@ -449,8 +425,7 @@ const MfaAuthSettingsForm = () => {
                   disabled={
                     !canUpdateConfig ||
                     isUpdatingPhoneForm ||
-                    !phoneForm.formState.isDirty ||
-                    !isProPlanAndUp
+                    !phoneForm.formState.isDirty
                   }
                   loading={isUpdatingPhoneForm}
                 >

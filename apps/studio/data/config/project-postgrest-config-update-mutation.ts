@@ -5,10 +5,10 @@ import { components } from 'api-types'
 import { handleError, patch } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type ProjectPostgrestConfigUpdateVariables = {
-  orgSlug: string
-  projectRef: string
+  branch: Branch
   dbSchema: string
   maxRows: number
   dbExtraSearchPath: string
@@ -18,8 +18,7 @@ export type ProjectPostgrestConfigUpdateVariables = {
 type UpdatePostgrestConfigResponse = components['schemas']['UpdatePostgrestConfigBody']
 
 export async function updateProjectPostgrestConfig({
-  orgSlug,
-  projectRef,
+  branch,
   dbSchema,
   maxRows,
   dbExtraSearchPath,
@@ -32,10 +31,18 @@ export async function updateProjectPostgrestConfig({
   }
   if (dbPool) payload.db_pool = dbPool
 
-  const { data, error } = await patch('/platform/organizations/{slug}/projects/{ref}/config/postgrest', {
-    params: { path: { slug: orgSlug, ref: projectRef } },
-    body: payload,
-  })
+  const { data, error } = await patch(
+    '/platform/organizations/{slug}/projects/{ref}/config/postgrest',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+        },
+      },
+      body: payload,
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -63,8 +70,10 @@ export const useProjectPostgrestConfigUpdateMutation = ({
     ProjectPostgrestConfigUpdateVariables
   >((vars) => updateProjectPostgrestConfig(vars), {
     async onSuccess(data, variables, context) {
-      const { orgSlug, projectRef } = variables
-      queryClient.invalidateQueries(configKeys.postgrest(orgSlug, projectRef))
+      const { branch } = variables
+      queryClient.invalidateQueries(
+        configKeys.postgrest(branch.organization_id, branch.project_id, branch.id)
+      )
       await onSuccess?.(data, variables, context)
     },
     async onError(data, variables, context) {

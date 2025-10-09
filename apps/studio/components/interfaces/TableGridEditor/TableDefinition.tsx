@@ -15,27 +15,26 @@ import {
   isView,
   isViewLike,
 } from 'data/table-editor/table-editor-types'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatSql } from 'lib/formatSql'
 import { timeout } from 'lib/helpers'
 import { Button } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface TableDefinitionProps {
   entity?: Entity
 }
 
 const TableDefinition = ({ entity }: TableDefinitionProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const editorRef = useRef(null)
   const monacoRef = useRef(null)
   const { resolvedTheme } = useTheme()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const viewResult = useViewDefinitionQuery(
     {
+      branch,
       id: entity?.id,
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
     },
     {
       enabled: isViewLike(entity),
@@ -44,9 +43,8 @@ const TableDefinition = ({ entity }: TableDefinitionProps) => {
 
   const tableResult = useTableDefinitionQuery(
     {
+      branch,
       id: entity?.id,
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
     },
     {
       enabled: isTableLike(entity),
@@ -102,7 +100,7 @@ const TableDefinition = ({ entity }: TableDefinitionProps) => {
       <div className="flex-grow overflow-y-auto border-t border-muted relative">
         <Button asChild type="default" className="absolute top-2 right-5 z-10">
           <Link
-            href={`/org/${slug}/project/${ref}/sql/new?content=${encodeURIComponent(
+            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/new?content=${encodeURIComponent(
               formattedDefinition ?? ''
             )}`}
           >

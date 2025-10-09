@@ -5,11 +5,11 @@ import z from 'zod'
 import { useParams } from 'common'
 import CodeEditor from 'components/ui/CodeEditor/CodeEditor'
 import { useDatabaseQueueMessageSendMutation } from 'data/database-queues/database-queue-messages-send-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { Form_Shadcn_, FormControl_Shadcn_, FormField_Shadcn_, Input, Modal } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface SendMessageModalProps {
   visible: boolean
@@ -38,7 +38,7 @@ const FORM_ID = 'QUEUES_SEND_MESSAGE_FORM'
 
 export const SendMessageModal = ({ visible, onClose }: SendMessageModalProps) => {
   const { childId: queueName } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const form = useForm<SendMessageForm>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,9 +55,9 @@ export const SendMessageModal = ({ visible, onClose }: SendMessageModalProps) =>
   })
 
   const onSubmit: SubmitHandler<SendMessageForm> = (values) => {
+    if (!branch) return console.error('Branch is required')
     mutate({
-      projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      branch,
       queueName: queueName!,
       payload: values.payload,
       delay: values.delay,

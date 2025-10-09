@@ -4,35 +4,29 @@ import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { privilegeKeys } from './keys'
-import { DEFAULT_PLATFORM_APPLICATION_NAME } from '@supabase/pg-meta/src/constants'
+import { Branch } from 'api-types/types'
 
 export type ColumnPrivilegesVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type ColumnPrivilege = components['schemas']['PostgresColumnPrivileges']
 
 export async function getColumnPrivileges(
-  { projectRef, connectionString }: ColumnPrivilegesVariables,
+  { branch }: ColumnPrivilegesVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('branch is required')
 
-  const headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
-  const { data, error } = await get('/platform/pg-meta/{ref}/column-privileges', {
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/column-privileges', {
     params: {
-      path: { ref: projectRef },
-      // this is needed to satisfy the typescript, but it doesn't pass the actual header
-      header: {
-        'x-connection-encrypted': connectionString!,
-        'x-pg-application-name': DEFAULT_PLATFORM_APPLICATION_NAME,
+      path: {
+        slug: branch.organization_id,
+        ref: branch.project_id,
+        branch: branch.id
       },
     },
     signal,
-    headers,
   })
 
   if (error) handleError(error)
@@ -43,17 +37,17 @@ export type ColumnPrivilegesData = Awaited<ReturnType<typeof getColumnPrivileges
 export type ColumnPrivilegesError = ResponseError
 
 export const useColumnPrivilegesQuery = <TData = ColumnPrivilegesData>(
-  { projectRef, connectionString }: ColumnPrivilegesVariables,
+  { branch }: ColumnPrivilegesVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ColumnPrivilegesData, ColumnPrivilegesError, TData> = {}
 ) =>
   useQuery<ColumnPrivilegesData, ColumnPrivilegesError, TData>(
-    privilegeKeys.columnPrivilegesList(projectRef),
-    ({ signal }) => getColumnPrivileges({ projectRef, connectionString }, signal),
+    privilegeKeys.columnPrivilegesList(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getColumnPrivileges({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

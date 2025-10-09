@@ -38,7 +38,7 @@ export const LeaveTeamButton = () => {
   const { data: allRoles } = useOrganizationRolesV2Query({ slug })
 
   const roles = allRoles?.org_scoped_roles ?? []
-  const currentUserMember = members?.find((member) => member.gotrue_id === profile?.gotrue_id)
+  const currentUserMember = members?.find((member) => member.user_id === profile?.user_id)
   const currentUserRoleId = currentUserMember?.role_ids?.[0]
   const currentUserRole = roles.find((role) => role.id === currentUserRoleId)
   const isAdmin = currentUserRole?.name === 'Administrator'
@@ -68,7 +68,7 @@ export const LeaveTeamButton = () => {
     if (!profile) return console.error('Profile is required')
 
     setIsLeaving(true)
-    deleteMember({ slug, gotrueId: profile.gotrue_id })
+    deleteMember({ slug, userId: profile.user_id })
   }
 
   return (

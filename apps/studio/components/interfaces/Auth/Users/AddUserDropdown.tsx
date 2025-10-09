@@ -1,9 +1,7 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronDown, Mail, UserPlus } from 'lucide-react'
 import { useState } from 'react'
 
 import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'ui'
 import CreateUserModal from './CreateUserModal'
@@ -11,15 +9,10 @@ import InviteUserModal from './InviteUserModal'
 
 export const AddUserDropdown = () => {
   const showSendInvitation = useIsFeatureEnabled('authentication:show_send_invitation')
-
-  const { can: canInviteUsers } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'invite_user'
-  )
-  const { can: canCreateUsers } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'create_user'
-  )
+  // FIXME: need permission implemented 
+  const { can: canInviteUsers } = {can:true}
+   // FIXME: need permission implemented  
+  const { can: canCreateUsers } ={can:true}
 
   const [inviteVisible, setInviteVisible] = useState(false)
   const [createVisible, setCreateVisible] = useState(false)

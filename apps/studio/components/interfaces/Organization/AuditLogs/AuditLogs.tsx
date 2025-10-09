@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import dayjs from 'dayjs'
 import { ArrowDown, ArrowUp, RefreshCw, User } from 'lucide-react'
@@ -23,7 +22,6 @@ import {
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -49,11 +47,11 @@ const AuditLogs = () => {
   })
   const [selectedLog, setSelectedLog] = useState<AuditLog>()
   const [filters, setFilters] = useState<{ users: string[]; projects: string[] }>({
-    users: [], // gotrue_id[]
+    users: [], // user_id[]
     projects: [], // project_ref[]
   })
-
-  const canReadAuditLogs = useCheckPermissions(PermissionAction.READ, 'notifications')
+  // FIXME: need permission implemented 
+  const canReadAuditLogs = true
 
   const { data: projects } = useProjectsQuery()
   const { data: organizations } = useOrganizationsQuery()
@@ -138,7 +136,7 @@ const AuditLogs = () => {
                 name="Users"
                 options={activeMembers}
                 labelKey="username"
-                valueKey="gotrue_id"
+                valueKey="user_id"
                 activeOptions={filters.users}
                 onSaveFilters={(values) => setFilters({ ...filters, users: values })}
               />
@@ -306,7 +304,7 @@ const AuditLogs = () => {
                   body={
                     sortedLogs?.map((log) => {
                       const user = (members ?? []).find(
-                        (member) => member.gotrue_id === log.actor.id
+                        (member) => member.user_id === log.actor.id
                       )
                       const role = roles.find((role) => user?.role_ids?.[0] === role.id)
                       const project = projects?.find(

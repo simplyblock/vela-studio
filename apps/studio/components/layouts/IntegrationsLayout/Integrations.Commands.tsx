@@ -9,8 +9,8 @@ import type { CommandOptions } from 'ui-patterns/CommandMenu'
 import { useRegisterCommands } from 'ui-patterns/CommandMenu'
 
 export function useIntegrationsGotoCommands(options?: CommandOptions) {
-  let { slug, ref } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   const getName = (integration: IntegrationDefinition) => {
     switch (integration.id) {
@@ -32,11 +32,11 @@ export function useIntegrationsGotoCommands(options?: CommandOptions) {
         id: `nav-integrations-${x.id}`,
         name: x.name,
         value: `Integrations: ${x.name}`,
-        route: `/org/${slug}/project/${ref}/integrations/${x.id}/overview`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/${x.id}/overview`,
         defaultHidden: true,
       }
     }),
-    { ...options, deps: [ref] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 
   useRegisterCommands(
@@ -45,7 +45,7 @@ export function useIntegrationsGotoCommands(options?: CommandOptions) {
       return {
         id: `manage-${x.id}`,
         name: getName(x),
-        route: `/org/${slug}/project/${ref}/integrations/${x.id}/overview`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/${x.id}/overview`,
         icon: () => (
           <div className="w-6 h-6 relative bg-white border rounded-md flex items-center justify-center [&>img]:!p-1 [&>svg]:!p-1">
             {x.icon()}
@@ -55,7 +55,7 @@ export function useIntegrationsGotoCommands(options?: CommandOptions) {
     }),
     {
       ...options,
-      deps: [ref],
+      deps: [orgRef, projectRef, branchRef],
       orderSection: orderCommandSectionsByPriority,
       sectionMeta: { priority: 3 },
     }

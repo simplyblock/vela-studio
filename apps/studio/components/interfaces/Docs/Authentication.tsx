@@ -5,6 +5,7 @@ import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import CodeSnippet from './CodeSnippet'
 import Snippets from './Snippets'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface AuthenticationProps {
   selectedLang: 'bash' | 'js'
@@ -12,9 +13,10 @@ interface AuthenticationProps {
 }
 
 const Authentication = ({ selectedLang, showApiKey }: AuthenticationProps) => {
-  const { slug, ref: projectRef } = useParams()
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef })
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
+  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
 
   const { anonKey, serviceKey } = getKeys(apiKeys)
   const protocol = settings?.app_config?.protocol ?? 'https'
@@ -63,7 +65,7 @@ const Authentication = ({ selectedLang, showApiKey }: AuthenticationProps) => {
           <p>
             We have provided you a Client Key to get started. You will soon be able to add as many
             keys as you like. You can find the <code>anon</code> key in the{' '}
-            <Link href={`/org/${slug}/project/${projectRef}/settings/api`}>API Settings</Link> page.
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}>API Settings</Link> page.
           </p>
         </article>
         <article className="code">
@@ -94,7 +96,7 @@ const Authentication = ({ selectedLang, showApiKey }: AuthenticationProps) => {
           <p>
             We have provided you with a Service Key to get started. Soon you will be able to add as
             many keys as you like. You can find the <code>service_role</code> in the{' '}
-            <Link href={`/org/${slug}/project/${projectRef}/settings/api`}>API Settings</Link> page.
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}>API Settings</Link> page.
           </p>
         </article>
         <article className="code">

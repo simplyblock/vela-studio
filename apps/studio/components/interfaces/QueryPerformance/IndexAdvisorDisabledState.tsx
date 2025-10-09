@@ -5,17 +5,16 @@ import { useParams } from 'common'
 import { DocsButton } from 'components/ui/DocsButton'
 import { useDatabaseExtensionEnableMutation } from 'data/database-extensions/database-extension-enable-mutation'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
 import { Markdown } from '../Markdown'
 import { getIndexAdvisorExtensions } from './index-advisor.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const IndexAdvisorDisabledState = () => {
-  const { slug, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const { hypopg, indexAdvisor } = getIndexAdvisorExtensions(extensions)
 
@@ -23,13 +22,12 @@ export const IndexAdvisorDisabledState = () => {
     useDatabaseExtensionEnableMutation()
 
   const onEnableIndexAdvisor = async () => {
-    if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
 
     try {
       if (hypopg?.installed_version === null) {
         await enableExtension({
-          projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          branch,
           name: hypopg.name,
           schema: hypopg?.schema ?? 'extensions',
           version: hypopg.default_version,
@@ -37,8 +35,7 @@ export const IndexAdvisorDisabledState = () => {
       }
       if (indexAdvisor?.installed_version === null) {
         await enableExtension({
-          projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          branch,
           name: indexAdvisor.name,
           schema: indexAdvisor?.schema ?? 'extensions',
           version: indexAdvisor.default_version,
@@ -76,7 +73,7 @@ export const IndexAdvisorDisabledState = () => {
         <div className="flex items-center gap-x-2">
           {indexAdvisor === undefined ? (
             <Button asChild type="default">
-              <Link href={`/org/${slug}/project/${ref}/settings/infrastructure`}>Upgrade Postgres version</Link>
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/infrastructure`}>Upgrade Postgres version</Link>
             </Button>
           ) : (
             <Button

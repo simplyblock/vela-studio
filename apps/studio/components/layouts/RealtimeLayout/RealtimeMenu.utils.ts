@@ -1,10 +1,10 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 import type { Project } from 'data/projects/project-detail-query'
-import { IS_PLATFORM } from 'lib/constants'
 
 export const generateRealtimeMenu = (
   slug: string,
   project: Project,
+  branchRef: string,
   flags?: { enableRealtimeSettings: boolean }
 ): ProductMenuGroup[] => {
   const ref = project?.ref ?? 'default'
@@ -17,7 +17,7 @@ export const generateRealtimeMenu = (
         {
           name: 'Inspector',
           key: 'inspector',
-          url: `/org/${slug}/project/${ref}/realtime/inspector`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/inspector`,
           items: [],
         },
       ],
@@ -28,15 +28,15 @@ export const generateRealtimeMenu = (
         {
           name: 'Policies',
           key: 'policies',
-          url: `/org/${slug}/project/${ref}/realtime/policies`,
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/policies`,
           items: [],
         },
-        ...(IS_PLATFORM && enableRealtimeSettings
+        ...(enableRealtimeSettings
           ? [
               {
                 name: 'Settings',
                 key: 'settings',
-                url: `/org/${slug}/project/${ref}/realtime/settings`,
+                url: `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/settings`,
                 items: [],
               },
             ]

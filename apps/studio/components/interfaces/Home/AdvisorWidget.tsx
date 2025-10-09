@@ -27,6 +27,7 @@ import {
   TabsTrigger_Shadcn_ as TabsTrigger,
 } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface SlowQuery {
   rolname: string
@@ -36,9 +37,10 @@ interface SlowQuery {
 }
 
 export const AdvisorWidget = () => {
-  const { slug, ref: projectRef } = useParams() as { slug: string; ref?: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref?: string, branch?: string }
+  const { data: branch } = useSelectedBranchQuery()
   const [selectedTab, setSelectedTab] = useState<'security' | 'performance'>('security')
-  const { data: lints, isLoading: isLoadingLints } = useProjectLintsQuery({ orgSlug: slug, projectRef })
+  const { data: lints, isLoading: isLoadingLints } = useProjectLintsQuery({ branch })
   const { data: slowestQueriesData, isLoading: isLoadingSlowestQueries } = useQueryPerformanceQuery(
     {
       preset: 'slowestExecutionTime',
@@ -133,7 +135,7 @@ export const AdvisorWidget = () => {
                 >
                   <div className="flex items-center justify-between w-full group">
                     <Link
-                      href={`/org/${slug}/project/${projectRef}/advisors/${title.toLowerCase()}?id=${lint.cache_key}&preset=${lint.level}`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/${title.toLowerCase()}?id=${lint.cache_key}&preset=${lint.level}`}
                       className="flex items-center gap-2 transition truncate flex-1 min-w-0 py-3"
                     >
                       <EntityTypeIcon type={lint.metadata?.type} />
@@ -229,13 +231,13 @@ export const AdvisorWidget = () => {
                   },
                 }}
               >
-                <Link href={`/org/${slug}/project/${projectRef}/advisors/${selectedTab}`} />
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/${selectedTab}`} />
               </ButtonTooltip>
             </CardHeader>
             <CardContent className="!p-0 mt-0 flex-1 overflow-y-auto">
               <TabsContent value="security" className="p-0 mt-0 h-full">
                 {renderLintTabContent(
-                  slug,
+                  orgRef,
                   'Security',
                   securityLints,
                   securityErrorCount,
@@ -245,7 +247,7 @@ export const AdvisorWidget = () => {
               </TabsContent>
               <TabsContent value="performance" className="p-0 mt-0 h-full">
                 {renderLintTabContent(
-                  slug,
+                  orgRef,
                   'Performance',
                   performanceLints,
                   performanceErrorCount,
@@ -272,7 +274,7 @@ export const AdvisorWidget = () => {
                 },
               }}
             >
-              <Link href={`/org/${slug}/project/${projectRef}/advisors/query-performance`} />
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/query-performance`} />
             </ButtonTooltip>
           </CardHeader>
           <CardContent className="!p-0 flex-1 overflow-y-auto">

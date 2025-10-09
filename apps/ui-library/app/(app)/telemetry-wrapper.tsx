@@ -1,15 +1,17 @@
 'use client'
 
-import { API_URL } from '@/lib/constants'
-import { IS_PLATFORM, PageTelemetry } from 'common'
+import { PageTelemetry } from 'common'
+import { useServiceUrls } from 'common/hooks/useServiceUrls'
 
 export const TelemetryWrapper = () => {
   const { hasAcceptedConsent } = { hasAcceptedConsent: true } // FIXME if required, but I think it can be deleted
+  const { data: serviceUrls, loading } = useServiceUrls()
+
   return (
     <PageTelemetry
-      API_URL={API_URL}
+      API_URL={serviceUrls.platformApiServiceUrl}
       hasAcceptedConsent={hasAcceptedConsent}
-      enabled={IS_PLATFORM}
+      enabled={loading}
     />
   )
 }

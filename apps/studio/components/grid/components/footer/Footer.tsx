@@ -3,23 +3,22 @@ import { GridFooter } from 'components/ui/GridFooter'
 import TwoOptionToggle from 'components/ui/TwoOptionToggle'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
 import { isTableLike, isViewLike } from 'data/table-editor/table-editor-types'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
 import RefreshButton from '../header/RefreshButton'
 import { Pagination } from './pagination'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface FooterProps {
   isRefetching?: boolean
 }
 
 const Footer = ({ isRefetching }: FooterProps) => {
-  const { id: _id } = useParams()
+  const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: entity } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     id,
   })
 

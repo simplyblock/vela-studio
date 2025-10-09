@@ -5,6 +5,7 @@ import { useDatabaseQueueDeleteMutation } from 'data/database-queues/database-qu
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
 import { useParams } from 'common'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DeleteQueueProps {
   queueName: string
@@ -13,25 +14,25 @@ interface DeleteQueueProps {
 }
 
 const DeleteQueue = ({ queueName, visible, onClose }: DeleteQueueProps) => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: deleteDatabaseQueue, isLoading } = useDatabaseQueueDeleteMutation({
     onSuccess: () => {
       toast.success(`Successfully removed queue ${queueName}`)
-      router.push(`/org/${slug}/project/${project?.ref}/integrations/queues/queues`)
+      router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/queues`)
       onClose()
     },
   })
 
   async function handleDelete() {
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     deleteDatabaseQueue({
       queueName: queueName,
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
     })
   }
 

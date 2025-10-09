@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import { partition } from 'lodash'
 import { ChevronDown, Globe2, Loader2, Network } from 'lucide-react'
@@ -15,11 +14,9 @@ import {
   ReplicaInitializationStatus,
   useReadReplicasStatusesQuery,
 } from 'data/read-replicas/replicas-status-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { timeout } from 'lib/helpers'
 import Link from 'next/link'
-import { type AWS_REGIONS_KEYS } from 'shared-data'
 import {
   Button,
   DropdownMenu,
@@ -39,34 +36,31 @@ import { LoadBalancerNode, PrimaryNode, RegionNode, ReplicaNode } from './Instan
 import MapView from './MapView'
 import { RestartReplicaConfirmationModal } from './RestartReplicaConfirmationModal'
 import { useShowNewReplicaPanel } from './use-show-new-replica'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const InstanceConfigurationUI = () => {
   const reactFlow = useReactFlow()
-  const isOrioleDb = useIsOrioleDb()
   const { resolvedTheme } = useTheme()
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const numTransition = useRef<number>()
   const { data: project, isLoading: isLoadingProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [view, setView] = useState<'flow' | 'map'>('flow')
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false)
   const { showNewReplicaPanel, setShowNewReplicaPanel } = useShowNewReplicaPanel()
   const [refetchInterval, setRefetchInterval] = useState<number | boolean>(10000)
-  const [newReplicaRegion, setNewReplicaRegion] = useState<AWS_REGIONS_KEYS>()
   const [selectedReplicaToDrop, setSelectedReplicaToDrop] = useState<Database>()
   const [selectedReplicaToRestart, setSelectedReplicaToRestart] = useState<Database>()
-
-  const { can: canManageReplicas } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'projects'
-  )
+  // FIXME: need permission implemented 
+  const { can: canManageReplicas } = {can:true}
 
   const {
     data: loadBalancers,
     refetch: refetchLoadBalancers,
     isSuccess: isSuccessLoadBalancers,
   } = useLoadBalancersQuery({
-    projectRef,
+    projectRef, orgSlug: orgRef
   })
   const {
     data,
@@ -76,8 +70,7 @@ const InstanceConfigurationUI = () => {
     isError,
     isSuccess: isSuccessReplicas,
   } = useReadReplicasQuery({
-    orgSlug: slug,
-    projectRef,
+    branch,
   })
   const [[primary], replicas] = useMemo(
     () => partition(data ?? [], (db) => db.identifier === projectRef),
@@ -95,7 +88,7 @@ const InstanceConfigurationUI = () => {
           REPLICA_STATUS.ACTIVE_UNHEALTHY,
           REPLICA_STATUS.INIT_READ_REPLICA_FAILED,
         ]
-        const replicasInTransition = res.filter((db) => {
+        const replicasInTransition = res.filter((db: any) => {
           const { status } = db.replicaInitializationStatus || {}
           return (
             !fixedStatues.includes(db.status) || status === ReplicaInitializationStatus.InProgress
@@ -229,7 +222,7 @@ const InstanceConfigurationUI = () => {
               <div className="flex items-center justify-center">
                 <ButtonTooltip
                   type="default"
-                  disabled={!canManageReplicas || isOrioleDb}
+                  disabled={!canManageReplicas}
                   className={cn(replicas.length > 0 ? 'rounded-r-none' : '')}
                   onClick={() => setShowNewReplicaPanel(true)}
                   tooltip={{
@@ -237,9 +230,7 @@ const InstanceConfigurationUI = () => {
                       side: 'bottom',
                       text: !canManageReplicas
                         ? 'You need additional permissions to deploy replicas'
-                        : isOrioleDb
-                          ? 'Read replicas are not supported with OrioleDB'
-                          : undefined,
+                        : undefined,
                     },
                   }}
                 >
@@ -256,7 +247,7 @@ const InstanceConfigurationUI = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-52 *:space-x-2">
                       <DropdownMenuItem asChild>
-                        <Link href={`/org/${slug}/project/${projectRef}/settings/compute-and-disk`}>
+                        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/compute-and-disk`}>
                           Resize databases
                         </Link>
                       </DropdownMenuItem>
@@ -311,8 +302,7 @@ const InstanceConfigurationUI = () => {
               </ReactFlow>
             ) : (
               <MapView
-                onSelectDeployNewReplica={(region) => {
-                  setNewReplicaRegion(region)
+                onSelectDeployNewReplica={() => {
                   setShowNewReplicaPanel(true)
                 }}
                 onSelectRestartReplica={setSelectedReplicaToRestart}
@@ -325,10 +315,8 @@ const InstanceConfigurationUI = () => {
 
       <DeployNewReplicaPanel
         visible={showNewReplicaPanel}
-        selectedDefaultRegion={newReplicaRegion}
         onSuccess={() => setRefetchInterval(5000)}
         onClose={() => {
-          setNewReplicaRegion(undefined)
           setShowNewReplicaPanel(false)
         }}
       />

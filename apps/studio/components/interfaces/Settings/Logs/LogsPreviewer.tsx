@@ -12,8 +12,6 @@ import useLogsPreview from 'hooks/analytics/useLogsPreview'
 import { useLogsUrlState } from 'hooks/analytics/useLogsUrlState'
 import { useSelectedLog } from 'hooks/analytics/useSelectedLog'
 import useSingleLog from 'hooks/analytics/useSingleLog'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useUpgradePrompt } from 'hooks/misc/useUpgradePrompt'
 import { useFlag } from 'hooks/ui/useFlag'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { Button } from 'ui'
@@ -27,9 +25,8 @@ import {
   PREVIEWER_DATEPICKER_HELPERS,
 } from './Logs.constants'
 import type { Filters, LogSearchCallback, LogTemplate, QueryType } from './Logs.types'
-import { maybeShowUpgradePrompt } from './Logs.utils'
 import { PreviewFilterPanelWithUniversal } from './PreviewFilterPanelWithUniversal'
-import UpgradePrompt from './UpgradePrompt'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * Acts as a container component for the entire log display
@@ -63,8 +60,8 @@ export const LogsPreviewer = ({
   const useUniversalFilterBar = useFlag('universalFilterBar')
 
   const router = useRouter()
-  const { slug, db } = useParams()
-  const { data: organization } = useSelectedOrganizationQuery()
+  const { slug, db, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
   const [showChart, setShowChart] = useState(true)
@@ -87,7 +84,7 @@ export const LogsPreviewer = ({
   }, [timestampStart, timestampEnd])
 
   const [selectedLogId, setSelectedLogId] = useSelectedLog()
-  const { data: databases, isSuccess } = useReadReplicasQuery({ orgSlug: slug, projectRef })
+  const { data: databases, isSuccess } = useReadReplicasQuery({ branch })
 
   // TODO: Move this to useLogsUrlState to simplify LogsPreviewer. - Jordi
   function getDefaultDatePickerValue() {
@@ -137,8 +134,6 @@ export const LogsPreviewer = ({
     paramsToMerge: params,
   })
 
-  const { showUpgradePrompt, setShowUpgradePrompt } = useUpgradePrompt(timestampStart)
-
   const onSelectTemplate = (template: LogTemplate) => {
     setFilters({ ...filters, search_query: template.searchString })
   }
@@ -166,25 +161,9 @@ export const LogsPreviewer = ({
     } else if (event === 'event-chart-bar-click') {
       setTimeRange(from || '', to || '')
     } else if (event === 'datepicker-change') {
-      const shouldShowUpgradePrompt = maybeShowUpgradePrompt(from || '', organization?.plan?.id)
-
-      if (shouldShowUpgradePrompt) {
-        setShowUpgradePrompt(!showUpgradePrompt)
-      } else {
-        setTimeRange(from || '', to || '')
-      }
+      setTimeRange(from || '', to || '')
     }
   }
-
-  // Show the prompt on page load based on query params
-  useEffect(() => {
-    if (timestampStart) {
-      const shouldShowUpgradePrompt = maybeShowUpgradePrompt(timestampStart, organization?.plan?.id)
-      if (shouldShowUpgradePrompt) {
-        setShowUpgradePrompt(!showUpgradePrompt)
-      }
-    }
-  }, [timestampStart, organization])
 
   useEffect(() => {
     if (db !== undefined) {
@@ -213,7 +192,7 @@ export const LogsPreviewer = ({
     defaultSearchValue: search,
     defaultToValue: timestampEnd,
     defaultFromValue: timestampStart,
-    queryUrl: `/org/${slug}/project/${projectRef}/logs/explorer?q=${encodeURIComponent(
+    queryUrl: `/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/explorer?q=${encodeURIComponent(
       params.sql || ''
     )}&its=${encodeURIComponent(timestampStart)}&ite=${encodeURIComponent(timestampEnd)}`,
     onSelectTemplate,
@@ -313,9 +292,6 @@ export const LogsPreviewer = ({
           </Button>
           <div className="text-sm text-foreground-lighter">
             Showing <span className="font-mono">{logData.length}</span> results
-          </div>
-          <div className="flex flex-row justify-end mt-2">
-            <UpgradePrompt show={showUpgradePrompt} setShowUpgradePrompt={setShowUpgradePrompt} />
           </div>
         </div>
       )}

@@ -24,7 +24,7 @@ interface ProfileResponse {
 )[]
   first_name: string
   free_project_limit: number
-  gotrue_id: string
+  user_id: string
   id: number
   is_alpha_user: boolean
   last_name: string
@@ -46,11 +46,11 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ProfileRespon
     organizations: [
       {
         id: 1,
-        name: process.env.DEFAULT_ORGANIZATION_NAME || 'Default Organization',
+        name: 'Default Organization',
         slug: 'default-org-slug',
         projects: [
-          { ...DEFAULT_PROJECT, connectionString: '' },
-          { ...DEFAULT_PROJECT_2, connectionString: '' },
+          { ...DEFAULT_PROJECT },
+          { ...DEFAULT_PROJECT_2 },
         ],
       },
     ],
@@ -60,7 +60,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ProfileRespon
     free_project_limit: 0,
     mobile: '',
     is_alpha_user: true,
-    gotrue_id: '1234567890',
+    user_id: '1234567890',
   }
   return res.status(200).json(response)
 }

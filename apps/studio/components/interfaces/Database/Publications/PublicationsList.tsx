@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { AlertCircle, Info, Search } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -10,7 +9,6 @@ import InformationBox from 'components/ui/InformationBox'
 import NoSearchResults from 'components/ui/NoSearchResults'
 import { useDatabasePublicationsQuery } from 'data/database-publications/database-publications-query'
 import { useDatabasePublicationUpdateMutation } from 'data/database-publications/database-publications-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
@@ -29,6 +27,7 @@ import {
 import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { PublicationSkeleton } from './PublicationSkeleton'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface PublicationEvent {
   event: string
@@ -36,8 +35,9 @@ interface PublicationEvent {
 }
 
 export const PublicationsList = () => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [filterString, setFilterString] = useState<string>('')
 
   const {
@@ -47,8 +47,7 @@ export const PublicationsList = () => {
     isSuccess,
     isError,
   } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const { mutate: updatePublications } = useDatabasePublicationUpdateMutation({
     onSuccess: () => {
@@ -57,8 +56,8 @@ export const PublicationsList = () => {
     },
   })
 
-  const { can: canUpdatePublications, isSuccess: isPermissionsLoaded } =
-    useAsyncCheckProjectPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, 'publications')
+    // FIXME: need permission implemented 
+  const { can: canUpdatePublications, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
 
   const publicationEvents: PublicationEvent[] = [
     { event: 'Insert', key: 'publish_insert' },
@@ -79,12 +78,12 @@ export const PublicationsList = () => {
   } | null>(null)
 
   const toggleListenEvent = async () => {
-    if (!toggleListenEventValue || !project) return
+    if (!toggleListenEventValue || !project || !branch) return
 
     const { publication, event, currentStatus } = toggleListenEventValue
     const payload = {
       projectRef: project.ref,
-      connectionString: project.connectionString,
+      connectionString: branch.database.encrypted_connection_string,
       id: publication.id,
     } as any
     payload[`publish_${event.event.toLowerCase()}`] = !currentStatus
@@ -185,7 +184,7 @@ export const PublicationsList = () => {
                     <TableCell>
                       <div className="flex justify-end">
                         <Button asChild type="default" style={{ paddingTop: 3, paddingBottom: 3 }}>
-                          <Link href={`/project/${ref}/database/publications/${x.id}`}>
+                          <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/publications/${x.id}`}>
                             {x.tables === null
                               ? 'All tables'
                               : `${x.tables.length} ${x.tables.length === 1 ? 'table' : 'tables'}`}

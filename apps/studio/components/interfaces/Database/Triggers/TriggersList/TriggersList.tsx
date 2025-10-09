@@ -1,9 +1,7 @@
 import { PostgresTrigger } from '@supabase/postgres-meta'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { noop } from 'lodash'
 import { Plus, Search } from 'lucide-react'
 import { useState } from 'react'
-
 import AlphaPreview from 'components/to-be-cleaned/AlphaPreview'
 import ProductEmptyState from 'components/to-be-cleaned/ProductEmptyState'
 import AlertError from 'components/ui/AlertError'
@@ -12,7 +10,6 @@ import SchemaSelector from 'components/ui/SchemaSelector'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabaseTriggersQuery } from 'data/database-triggers/database-triggers-query'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema, useProtectedSchemas } from 'hooks/useProtectedSchemas'
@@ -30,6 +27,7 @@ import {
 } from 'ui'
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import TriggerList from './TriggerList'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TriggersListProps {
   createTrigger: () => void
@@ -43,6 +41,7 @@ const TriggersList = ({
   deleteTrigger = noop,
 }: TriggersListProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
   const [filterString, setFilterString] = useState<string>('')
@@ -51,8 +50,7 @@ const TriggersList = ({
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedSchema })
 
   const { data = [] } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const hasTables =
     data.filter((a) => !protectedSchemas.find((s) => s.name === a.schema)).length > 0
@@ -63,14 +61,10 @@ const TriggersList = ({
     isLoading,
     isError,
   } = useDatabaseTriggersQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
-
-  const { can: canCreateTriggers } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'triggers'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateTriggers } = {can:true}
 
   if (isLoading) {
     return <GenericSkeletonLoader />

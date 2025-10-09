@@ -1,7 +1,8 @@
 import { Query } from '@supabase/pg-meta/src/query'
-import { UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql } from '../sql/execute-sql-query'
 import { vaultSecretsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 const vaultSecretDecryptedValueQuery = (id: string) => {
   const sql = new Query()
@@ -24,22 +25,25 @@ const vaultSecretDecryptedValuesQuery = (ids: string[]) => {
 }
 
 export type VaultSecretsDecryptedValueVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   id: string
 }
 
 export const getDecryptedValue = async (
-  { projectRef, connectionString, id }: VaultSecretsDecryptedValueVariables,
+  { branch, id }: VaultSecretsDecryptedValueVariables,
   signal?: AbortSignal
 ) => {
   const sql = vaultSecretDecryptedValueQuery(id)
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
-      queryKey: vaultSecretsKeys.getDecryptedValue(projectRef, id),
+      queryKey: vaultSecretsKeys.getDecryptedValue(
+        branch?.organization_id,
+        branch?.project_id,
+        branch?.id,
+        id
+      ),
     },
     signal
   )
@@ -51,20 +55,20 @@ export type VaultSecretsDecryptedValueData = string
 export type VaultSecretsDecryptedValueError = unknown
 
 export const useVaultSecretDecryptedValueQuery = <TData = string>(
-  { projectRef, connectionString, id }: VaultSecretsDecryptedValueVariables,
+  { branch, id }: VaultSecretsDecryptedValueVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<getDecryptedValueResult, VaultSecretsDecryptedValueError, TData> = {}
 ) =>
   useQuery<getDecryptedValueResult, VaultSecretsDecryptedValueError, TData>(
-    vaultSecretsKeys.getDecryptedValue(projectRef, id),
-    ({ signal }) => getDecryptedValue({ projectRef, connectionString, id }, signal),
+    vaultSecretsKeys.getDecryptedValue(branch?.organization_id, branch?.project_id, branch?.id, id),
+    ({ signal }) => getDecryptedValue({ branch, id }, signal),
     {
       select(data) {
         return (data[0]?.decrypted_secret ?? '') as TData
       },
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )
@@ -74,18 +78,16 @@ export const useVaultSecretDecryptedValueQuery = <TData = string>(
 // which fetches all the decrypted secrets
 export const getDecryptedValues = async (
   {
-    projectRef,
-    connectionString,
+    branch,
     ids,
   }: {
-    projectRef?: string
-    connectionString?: string | null
+    branch?: Branch
     ids: string[]
   },
   signal?: AbortSignal
 ) => {
   const sql = vaultSecretDecryptedValuesQuery(ids)
-  const { result } = await executeSql({ projectRef, connectionString, sql }, signal)
+  const { result } = await executeSql({ branch, sql }, signal)
   return result.reduce((a: any, b: any) => {
     return { ...a, [b.id]: b.decrypted_secret }
   }, {})

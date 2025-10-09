@@ -31,6 +31,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { QUEUE_TYPES } from './Queues.constants'
 import { useParams } from 'common'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface CreateQueueSheetProps {
   isClosing: boolean
@@ -80,12 +81,12 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   //   'extensions'
   // )
   const router = useRouter()
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const { mutate: createQueue, isLoading } = useDatabaseQueueCreateMutation()
@@ -113,10 +114,10 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   }
 
   const onSubmit: SubmitHandler<CreateQueueForm> = async ({ name, enableRls, values }) => {
+    if (!branch) return console.error('Branch is required')
     createQueue(
       {
-        projectRef: project!.ref,
-        connectionString: project?.connectionString,
+        branch,
         name,
         enableRls,
         type: values.type,
@@ -131,7 +132,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
       {
         onSuccess: () => {
           toast.success(`Successfully created queue ${name}`)
-          router.push(`/org/${slug}/project/${project?.ref}/integrations/queues/queues/${name}`)
+          router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/queues/${name}`)
           onClose()
         },
       }
@@ -139,8 +140,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
   }
 
   const { data } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
 
   const pgPartmanExtension = (data ?? []).find((ext) => ext.name === 'pg_partman')

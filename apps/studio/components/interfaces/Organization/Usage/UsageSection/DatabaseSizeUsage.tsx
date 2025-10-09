@@ -1,10 +1,6 @@
-import AlertError from 'components/ui/AlertError'
-import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import type { OrgSubscription } from 'data/subscriptions/types'
 import SectionContent from '../SectionContent'
 import { CategoryAttribute } from '../Usage.constants'
-import { useOrgProjectsQuery } from 'data/projects/org-projects'
-import { PROJECT_STATUS } from 'lib/constants'
 import {
   Button,
   Alert_Shadcn_,
@@ -12,7 +8,6 @@ import {
   AlertTitle_Shadcn_,
   AlertDescription_Shadcn_,
 } from 'ui'
-import MotionNumber from '@number-flow/react'
 import Link from 'next/link'
 import { useMemo } from 'react'
 import { InfoTooltip } from 'ui-patterns/info-tooltip'
@@ -22,8 +17,9 @@ import Panel from 'components/ui/Panel'
 import { formatBytes } from 'lib/helpers'
 
 export interface DatabaseSizeUsageProps {
-  slug: string
+  orgRef: string
   projectRef?: string
+  branchRef?: string
   attribute: CategoryAttribute
   subscription?: OrgSubscription
   usage?: OrgUsageResponse
@@ -32,7 +28,8 @@ export interface DatabaseSizeUsageProps {
 }
 
 const DatabaseSizeUsage = ({
-  slug,
+  orgRef,
+  branchRef,
   attribute,
   subscription,
   usage,
@@ -119,7 +116,7 @@ const DatabaseSizeUsage = ({
                       </span>
                       <Button asChild type="default" size={'tiny'}>
                         <Link
-                          href={`/org/${slug}/project/${project.ref}/reports/database#database-size-report`}
+                          href={`/org/${orgRef}/project/${project.ref}/branch/${branchRef}/reports/database#database-size-report`}
                         >
                           Manage Database Size
                         </Link>

@@ -1,5 +1,4 @@
 import type { PostgresTable } from '@supabase/postgres-meta'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { noop } from 'lodash'
 import {
   Check,
@@ -19,7 +18,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
-import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
@@ -32,7 +30,6 @@ import { useMaterializedViewsQuery } from 'data/materialized-views/materialized-
 import { usePrefetchEditorTablePage } from 'data/prefetchers/project.$ref.editor.$id'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useViewsQuery } from 'data/views/views-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
@@ -63,7 +60,8 @@ import {
 } from 'ui'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import { formatAllEntities } from './Tables.utils'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TableListProps {
   onAddTable: () => void
@@ -79,8 +77,9 @@ export const TableList = ({
   onDeleteTable = noop,
 }: TableListProps) => {
   const router = useRouter()
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const prefetchEditorTablePage = usePrefetchEditorTablePage()
 
@@ -88,11 +87,8 @@ export const TableList = ({
 
   const [filterString, setFilterString] = useState<string>('')
   const [visibleTypes, setVisibleTypes] = useState<string[]>(Object.values(ENTITY_TYPE))
-
-  const { can: canUpdateTables } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'tables'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateTables } = {can:true}
 
   const {
     data: tables,
@@ -102,8 +98,7 @@ export const TableList = ({
     isSuccess: isSuccessTables,
   } = useTablesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       schema: selectedSchema,
       sortByProperty: 'name',
       includeColumns: true,
@@ -125,8 +120,7 @@ export const TableList = ({
     isSuccess: isSuccessViews,
   } = useViewsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       schema: selectedSchema,
     },
     {
@@ -146,8 +140,7 @@ export const TableList = ({
     isSuccess: isSuccessMaterializedViews,
   } = useMaterializedViewsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       schema: selectedSchema,
     },
     {
@@ -169,8 +162,7 @@ export const TableList = ({
     isSuccess: isSuccessForeignTables,
   } = useForeignTablesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       schema: selectedSchema,
     },
     {
@@ -185,8 +177,7 @@ export const TableList = ({
   )
 
   const { data: publications } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const realtimePublication = (publications ?? []).find(
     (publication) => publication.name === 'supabase_realtime'
@@ -475,7 +466,7 @@ export const TableList = ({
                               className="whitespace-nowrap hover:border-muted"
                               style={{ paddingTop: 3, paddingBottom: 3 }}
                             >
-                              <Link href={`/org/${slug}/project/${ref}/database/tables/${x.id}`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/tables/${x.id}`}>
                                 {x.columns.length} columns
                               </Link>
                             </Button>
@@ -489,7 +480,7 @@ export const TableList = ({
                                   <DropdownMenuItem
                                     className="flex items-center space-x-2"
                                     onClick={() =>
-                                      router.push(`/org/${slug}/project/${project?.ref}/editor/${x.id}`)
+                                      router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/editor/${x.id}`)
                                     }
                                     onMouseEnter={() =>
                                       prefetchEditorTablePage({

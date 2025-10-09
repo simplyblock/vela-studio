@@ -3,12 +3,11 @@ import { Database, ExternalLinkIcon, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useDatabaseExtensionEnableMutation } from 'data/database-extensions/database-extension-enable-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -20,10 +19,8 @@ import {
   Modal,
   WarningIcon,
 } from 'ui'
-import { Admonition } from 'ui-patterns'
-import { getPathReferences } from '../../../../data/vela/path-references'
-
-const orioleExtCallOuts = ['vector', 'postgis']
+import { getPathReferences } from 'data/vela/path-references'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 interface EnableExtensionModalProps {
   visible: boolean
@@ -33,16 +30,14 @@ interface EnableExtensionModalProps {
 
 const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionModalProps) => {
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
-  const isOrioleDb = useIsOrioleDb()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const [defaultSchema, setDefaultSchema] = useState()
   const [fetchingSchemaInfo, setFetchingSchemaInfo] = useState(false)
 
   const { data: schemas, isLoading: isSchemasLoading } = useSchemasQuery(
     {
-      orgSlug: orgSlug,
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
     },
     { enabled: visible }
   )
@@ -72,8 +67,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
         }
         try {
           const res = await executeSql({
-            projectRef: project?.ref,
-            connectionString: project?.connectionString,
+            branch,
             sql: `select * from pg_available_extension_versions where name = '${extension.name}'`,
           })
           if (!cancel) setDefaultSchema(res.result[0].schema)
@@ -96,7 +90,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
   }
 
   const onSubmit = async (values: any) => {
-    if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
 
     const schema =
       defaultSchema !== undefined && defaultSchema !== null
@@ -106,8 +100,7 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
           : values.schema
 
     enableExtension({
-      projectRef: project.ref,
-      connectionString: project?.connectionString,
+      branch,
       schema,
       name: extension.name,
       version: extension.default_version,
@@ -141,16 +134,6 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
           return (
             <>
               <Modal.Content className="flex flex-col gap-y-2">
-                {isOrioleDb && orioleExtCallOuts.includes(extension.name) && (
-                  <Admonition type="default" title="Extension is limited by OrioleDB">
-                    <span className="block">
-                      {extension.name} cannot be accelerated by indexes on tables that are using the
-                      OrioleDB access method
-                    </span>
-                    <DocsButton abbrev={false} className="mt-2" href="https://supabase.com/docs" />
-                  </Admonition>
-                )}
-
                 {fetchingSchemaInfo || isSchemasLoading ? (
                   <div className="space-y-2">
                     <ShimmeringLoader />

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { MoreVertical, Trash } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -16,7 +15,6 @@ import {
 } from 'data/organizations/organization-members-query'
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
@@ -49,12 +47,12 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
   const { data: members } = useOrganizationMembersQuery({ slug })
   const { data: allRoles } = useOrganizationRolesV2Query({ slug })
 
-  const memberIsUser = member.gotrue_id == profile?.gotrue_id
+  const memberIsUser = member.user_id == profile?.user_id
   const orgScopedRoles = allRoles?.org_scoped_roles ?? []
   const projectScopedRoles = allRoles?.project_scoped_roles ?? []
   const isPendingInviteAcceptance = !!member.invited_id
 
-  const userMemberData = members?.find((m) => m.gotrue_id === profile?.gotrue_id)
+  const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
     orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
@@ -67,14 +65,10 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
 
   const roleId = member.role_ids?.[0] ?? -1
   const canRemoveMember = member.role_ids.every((id) => rolesRemovable.includes(id))
-  const canResendInvite =
-    useCheckPermissions(PermissionAction.CREATE, 'user_invites', {
-      resource: { role_id: roleId },
-    }) && hasOrgRole
-  const canRevokeInvite =
-    useCheckPermissions(PermissionAction.DELETE, 'user_invites', {
-      resource: { role_id: roleId },
-    }) && hasOrgRole
+  // FIXME: need permission implemented 
+  const canResendInvite = true
+  // FIXME: need permission implemented   
+  const canRevokeInvite = true
 
   const { mutate: deleteOrganizationMember, isLoading: isDeletingMember } =
     useOrganizationMemberDeleteMutation({
@@ -101,8 +95,8 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
 
   const handleMemberDelete = () => {
     if (!slug) return console.error('slug is required')
-    if (!member.gotrue_id) return console.error('gotrue_id is required')
-    deleteOrganizationMember({ slug, gotrueId: member.gotrue_id })
+    if (!member.user_id) return console.error('user_id is required')
+    deleteOrganizationMember({ slug, userId: member.user_id })
   }
 
   const handleResendInvite = (member: OrganizationMember) => {

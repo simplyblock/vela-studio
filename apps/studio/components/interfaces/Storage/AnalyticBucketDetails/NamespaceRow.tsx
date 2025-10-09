@@ -11,6 +11,8 @@ import { useIcebergNamespaceTablesQuery } from 'data/storage/iceberg-namespace-t
 import { BASE_PATH } from 'lib/constants'
 import { Button, cn, TableCell, TableRow } from 'ui'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type NamespaceRowProps = {
   bucketName: string
@@ -34,7 +36,9 @@ export const NamespaceRow = ({
   wrapperMeta,
 }: NamespaceRowProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [importForeignSchemaShown, setImportForeignSchemaShown] = useState(false)
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
 
   const { data: tablesData, isLoading: isLoadingNamespaceTables } = useIcebergNamespaceTablesQuery(
     {
@@ -51,8 +55,7 @@ export const NamespaceRow = ({
 
   const rescanNamespace = async () => {
     await importForeignSchema({
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       serverName: wrapperInstance.server_name,
       sourceSchema: namespace,
       targetSchema: schema,
@@ -99,7 +102,7 @@ export const NamespaceRow = ({
               <a
                 target="_blank"
                 rel="noreferrer"
-                href={`${BASE_PATH}/project/${project?.ref}/editor?schema=${schema}`}
+                href={`${BASE_PATH}/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/editor?schema=${schema}`}
               >
                 Open in Table Editor
               </a>

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useParams } from 'common'
 import { ExternalLink, Plug } from 'lucide-react'
 import { parseAsBoolean, useQueryState } from 'nuqs'
@@ -9,7 +8,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import Panel from 'components/ui/Panel'
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import {
@@ -32,10 +30,12 @@ import { CONNECTION_TYPES, ConnectionType, FRAMEWORKS, MOBILES, ORMS } from './C
 import { getContentFilePath } from './Connect.utils'
 import ConnectDropdown from './ConnectDropdown'
 import ConnectTabContent from './ConnectTabContent'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const Connect = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const isActiveHealthy = selectedProject?.status === PROJECT_STATUS.ACTIVE_HEALTHY
 
   const [showConnect, setShowConnect] = useQueryState(
@@ -55,10 +55,8 @@ export const Connect = () => {
   )
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef }, { enabled: showConnect })
-  const { can: canReadAPIKeys } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'service_api_keys'
-  )
+    // FIXME: need permission implemented 
+  const { can: canReadAPIKeys } = {can:true}
 
   const handleParentChange = (value: string) => {
     setSelectedParent(value)
@@ -141,7 +139,7 @@ export const Connect = () => {
     return []
   }
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { anonKey, publishableKey } = canReadAPIKeys
     ? getKeys(apiKeys)
     : { anonKey: null, publishableKey: null }

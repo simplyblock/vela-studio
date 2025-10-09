@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type TableColumn = {
   schemaname: string
@@ -86,20 +87,23 @@ export const getTableColumnsSql = ({ table, schema }: { table?: string; schema?:
 }
 
 export type TableColumnsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   table?: string
   schema?: string
 }
 
 export async function getTableColumns(
-  { projectRef, connectionString, table, schema }: TableColumnsVariables,
+  { branch, table, schema }: TableColumnsVariables,
   signal?: AbortSignal
 ) {
   const sql = getTableColumnsSql({ table, schema })
 
   const { result } = await executeSql(
-    { projectRef, connectionString, sql, queryKey: ['table-columns', schema, table] },
+    {
+      branch,
+      sql,
+      queryKey: ['table-columns', schema, table],
+    },
     signal
   )
 
@@ -110,14 +114,20 @@ export type TableColumnsData = Awaited<ReturnType<typeof getTableColumns>>
 export type TableColumnsError = ExecuteSqlError
 
 export const useTableColumnsQuery = <TData = TableColumnsData>(
-  { projectRef, connectionString, schema, table }: TableColumnsVariables,
+  { branch, schema, table }: TableColumnsVariables,
   { enabled = true, ...options }: UseQueryOptions<TableColumnsData, TableColumnsError, TData> = {}
 ) =>
   useQuery<TableColumnsData, TableColumnsError, TData>(
-    databaseKeys.tableColumns(projectRef, schema, table),
-    ({ signal }) => getTableColumns({ projectRef, connectionString, schema, table }, signal),
+    databaseKeys.tableColumns(
+      branch?.organization_id,
+      branch?.project_id,
+      branch?.id,
+      schema,
+      table
+    ),
+    ({ signal }) => getTableColumns({ branch, schema, table }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

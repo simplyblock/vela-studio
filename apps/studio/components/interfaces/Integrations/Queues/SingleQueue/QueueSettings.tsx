@@ -44,6 +44,7 @@ import {
 import { Admonition } from 'ui-patterns/admonition'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { getQueueFunctionsMapping } from './Queue.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const ACTIONS = ['select', 'insert', 'update', 'delete']
 const ROLES = ['anon', 'authenticated', 'postgres', 'service_role']
@@ -52,37 +53,34 @@ type Privileges = { select?: boolean; insert?: boolean; update?: boolean; delete
 interface QueueSettingsProps {}
 
 export const QueueSettings = ({}: QueueSettingsProps) => {
-  const { childId: name, slug } = useParams()
+  const { childId: name, slug: orgRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [open, setOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [privileges, setPrivileges] = useState<{ [key: string]: Privileges }>({})
 
   const { data: isExposed } = useQueuesExposePostgrestStatusQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const { data, error, isLoading, isSuccess, isError } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const roles = (data ?? [])
     .filter((x) => ROLES.includes(x.name))
     .sort((a, b) => a.name.localeCompare(b.name))
 
   const { data: queueTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: 'pgmq',
   })
   const queueTable = queueTables?.find((x) => x.name === `q_${name}`)
   const archiveTable = queueTables?.find((x) => x.name === `a_${name}`)
 
   const { data: allTablePrivileges, isSuccess: isSuccessPrivileges } = useTablePrivilegesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const queuePrivileges = allTablePrivileges?.find(
     (x) => x.schema === 'pgmq' && x.name === `q_${name}`
@@ -98,6 +96,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
 
   const onSaveConfiguration = async () => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!queueTable) return console.error('Unable to find queue table')
     if (!archiveTable) return console.error('Unable to find archive table')
 
@@ -140,8 +139,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
         ...(revoke.length > 0
           ? [
               revokePrivilege({
-                projectRef: project.ref,
-                connectionString: project.connectionString,
+                branch,
                 revokes: revoke.map((x) => ({
                   grantee: x.role,
                   privilegeType: x.action.toUpperCase(),
@@ -154,8 +152,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
         ...(rolesNoLongerHavingPerms.length > 0
           ? [
               revokePrivilege({
-                projectRef: project.ref,
-                connectionString: project.connectionString,
+                branch,
                 revokes: [
                   ...rolesNoLongerHavingPerms.map((x) => ({
                     grantee: x,
@@ -174,8 +171,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
         ...(grant.length > 0
           ? [
               grantPrivilege({
-                projectRef: project.ref,
-                connectionString: project.connectionString,
+                branch,
                 grants: grant.map((x) => ({
                   grantee: x.role,
                   privilegeType: x.action.toUpperCase(),
@@ -184,8 +180,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
               }),
               // Just grant select + insert on archive table as long as we're granting any perms to the queue table for the role
               grantPrivilege({
-                projectRef: project.ref,
-                connectionString: project.connectionString,
+                branch,
                 grants: [
                   ...rolesBeingGrantedPerms.map((x) => ({
                     grantee: x,
@@ -260,7 +255,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
                   You may opt to manage your queues via any Supabase client libraries or PostgREST
                   endpoints by enabling this in the{' '}
                   <Link
-                    href={`/org/${slug}/project/${project?.ref}/integrations/queues/settings`}
+                    href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/settings`}
                     className="underline transition underline-offset-2 decoration-foreground-lighter hover:decoration-foreground"
                   >
                     queues settings

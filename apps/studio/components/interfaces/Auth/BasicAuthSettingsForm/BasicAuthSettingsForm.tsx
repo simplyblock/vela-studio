@@ -1,5 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect } from 'react'
@@ -7,13 +6,12 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { boolean, object, string } from 'yup'
 
-import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import { InlineLink } from 'components/ui/InlineLink'
 import NoPermission from 'components/ui/NoPermission'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
+
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -31,7 +29,7 @@ import {
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { NO_REQUIRED_CHARACTERS } from '../Auth.constants'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const schema = object({
   DISABLE_SIGNUP: boolean().required(),
@@ -42,7 +40,7 @@ const schema = object({
 })
 
 const BasicAuthSettingsForm = () => {
-  const { slug, ref: projectRef } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const {
     data: authConfig,
     error: authConfigError,
@@ -51,15 +49,10 @@ const BasicAuthSettingsForm = () => {
     isLoading,
   } = useAuthConfigQuery({ projectRef })
   const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
-
-  const { can: canReadConfig, isSuccess: isPermissionsLoaded } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'custom_config_gotrue'
-  )
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadConfig, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+    // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
 
   const form = useForm({
     resolver: yupResolver(schema),
@@ -138,7 +131,7 @@ const BasicAuthSettingsForm = () => {
                         the <code className="text-xs">public</code> and{' '}
                         <code className="text-xs">authenticated</code> roles. We strongly advise{' '}
                         <Link
-                          href={`/org/${slug}/project/${projectRef}/auth/policies`}
+                          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`}
                           className="text-foreground underline"
                         >
                           reviewing your RLS policies
@@ -284,7 +277,7 @@ const BasicAuthSettingsForm = () => {
                           to the <code className="text-xs">public</code> and{' '}
                           <code className="text-xs">authenticated</code> roles. We strongly advise{' '}
                           <Link
-                            href={`/org/${slug}/project/${projectRef}/auth/policies`}
+                            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`}
                             className="text-foreground underline"
                           >
                             reviewing your RLS policies
@@ -307,7 +300,7 @@ const BasicAuthSettingsForm = () => {
                       <WarningIcon />
                       <AlertTitle_Shadcn_>
                         We highly recommend{' '}
-                        <InlineLink href={`/project/${projectRef}/auth/protection`}>
+                        <InlineLink href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/protection`}>
                           enabling captcha
                         </InlineLink>{' '}
                         for anonymous sign-ins

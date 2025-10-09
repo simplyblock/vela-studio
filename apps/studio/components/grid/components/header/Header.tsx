@@ -1,4 +1,4 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
+
 import saveAs from 'file-saver'
 import { ArrowUp, ChevronDown, FileText, Trash } from 'lucide-react'
 import Link from 'next/link'
@@ -14,7 +14,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useTableRowsCountQuery } from 'data/table-rows/table-rows-count-query'
 import { fetchAllTableRows, useTableRowsQuery } from 'data/table-rows/table-rows-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { RoleImpersonationState } from 'lib/role-impersonation'
@@ -39,6 +38,7 @@ import { ExportDialog } from './ExportDialog'
 import { FilterPopover } from './filter/FilterPopover'
 import { formatRowsForCSV } from './Header.utils'
 import { SortPopover } from './sort/SortPopover'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 // [Joshen] CSV exports require this guard as a fail-safe if the table is
 // just too large for a browser to keep all the rows in memory before
 // exporting. Either that or export as multiple CSV sheets with max n rows each
@@ -85,10 +85,8 @@ const DefaultHeader = () => {
 
   const snap = useTableEditorTableStateSnapshot()
   const tableEditorSnap = useTableEditorStateSnapshot()
-  const { can: canCreateColumns } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'columns'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateColumns } = {can:true}
   const { mutate: sendEvent } = useSendEventMutation()
 
   const onAddRow =
@@ -226,6 +224,7 @@ const DefaultHeader = () => {
 
 const RowHeader = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const tableEditorSnap = useTableEditorStateSnapshot()
   const snap = useTableEditorTableStateSnapshot()
 
@@ -239,8 +238,7 @@ const RowHeader = () => {
   const [showExportModal, setShowExportModal] = useState(false)
 
   const { data } = useTableRowsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     tableId: snap.table.id,
     sorts,
     filters,
@@ -251,8 +249,7 @@ const RowHeader = () => {
 
   const { data: countData } = useTableRowsCountQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       tableId: snap.table.id,
       filters,
       enforceExactCount: snap.enforceExactCount,
@@ -316,6 +313,11 @@ const RowHeader = () => {
       return setIsExporting(false)
     }
 
+    if (!branch) {
+      toast.error('Branch is required')
+      return setIsExporting(false)
+    }
+
     const toastId = snap.allRowsSelected
       ? toast(
           <SonnerProgress progress={0} message={`Exporting all rows from ${snap.table.name}`} />,
@@ -330,8 +332,7 @@ const RowHeader = () => {
 
     const rows = snap.allRowsSelected
       ? await fetchAllTableRows({
-          projectRef: project.ref,
-          connectionString: project.connectionString,
+          branch,
           table: snap.table,
           filters,
           sorts,
@@ -389,6 +390,11 @@ const RowHeader = () => {
       return setIsExporting(false)
     }
 
+    if (!branch) {
+      toast.error('Branch is required')
+      return setIsExporting(false)
+    }
+
     if (snap.allRowsSelected && totalRows === 0) {
       toast.error('Export failed, please try exporting again')
       return setIsExporting(false)
@@ -408,8 +414,7 @@ const RowHeader = () => {
 
     const rows = snap.allRowsSelected
       ? await fetchAllTableRows({
-          projectRef: project.ref,
-          connectionString: project.connectionString,
+          branch,
           table: snap.table,
           filters,
           sorts,

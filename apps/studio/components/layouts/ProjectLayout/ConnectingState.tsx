@@ -1,5 +1,4 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useParams } from 'common'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import { Badge, Button } from 'ui'
@@ -9,14 +8,14 @@ import { invalidateProjectDetailsQuery, type Project } from 'data/projects/proje
 import { setProjectPostgrestStatus } from 'data/projects/projects-query'
 import pingPostgrest from 'lib/pingPostgrest'
 import { Loader, Monitor, Server, ExternalLink } from 'lucide-react'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export interface ConnectingStateProps {
   project: Project
 }
 
 const ConnectingState = ({ project }: ConnectingStateProps) => {
-  const { slug, ref } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const queryClient = useQueryClient()
   const checkProjectConnectionIntervalRef = useRef<number>()
 
@@ -35,8 +34,8 @@ const ConnectingState = ({ project }: ConnectingStateProps) => {
     const result = await pingPostgrest(project.ref)
     if (result) {
       clearInterval(checkProjectConnectionIntervalRef.current)
-      setProjectPostgrestStatus(queryClient, slug as string, project.ref, 'ONLINE')
-      await invalidateProjectDetailsQuery(queryClient, slug as string, project.ref)
+      setProjectPostgrestStatus(queryClient, orgRef!, project.ref, 'ONLINE')
+      await invalidateProjectDetailsQuery(queryClient, orgRef!, project.ref)
     }
   }
 
@@ -81,7 +80,7 @@ const ConnectingState = ({ project }: ConnectingStateProps) => {
 
               <div className="flex items-center justify-center space-x-2">
                 <Button asChild type="default">
-                  <Link href={`/org/${slug}/project/${ref}/settings/infrastructure`}>
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/infrastructure`}>
                     Check database health
                   </Link>
                 </Button>

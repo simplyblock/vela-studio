@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabaseMigration = {
   version: string
@@ -20,21 +21,14 @@ export const getMigrationsSql = () => {
 }
 
 export type MigrationsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
-export async function getMigrations(
-  { projectRef, connectionString }: MigrationsVariables,
-  signal?: AbortSignal
-) {
+export async function getMigrations({ branch }: MigrationsVariables, signal?: AbortSignal) {
   const sql = getMigrationsSql()
 
   try {
-    const { result } = await executeSql(
-      { projectRef, connectionString, sql, queryKey: ['migrations'] },
-      signal
-    )
+    const { result } = await executeSql({ branch, sql, queryKey: ['migrations'] }, signal)
 
     return result as DatabaseMigration[]
   } catch (error) {
@@ -54,14 +48,14 @@ export type MigrationsData = Awaited<ReturnType<typeof getMigrations>>
 export type MigrationsError = ExecuteSqlError
 
 export const useMigrationsQuery = <TData = MigrationsData>(
-  { projectRef, connectionString }: MigrationsVariables,
+  { branch }: MigrationsVariables,
   { enabled = true, ...options }: UseQueryOptions<MigrationsData, MigrationsError, TData> = {}
 ) =>
   useQuery<MigrationsData, MigrationsError, TData>(
-    databaseKeys.migrations(projectRef),
-    ({ signal }) => getMigrations({ projectRef, connectionString }, signal),
+    databaseKeys.migrations(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getMigrations({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

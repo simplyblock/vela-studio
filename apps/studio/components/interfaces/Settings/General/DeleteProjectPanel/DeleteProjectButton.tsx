@@ -1,8 +1,5 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useState } from 'react'
-
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { DeleteProjectModal } from './DeleteProjectModal'
 
@@ -13,14 +10,8 @@ export interface DeleteProjectButtonProps {
 const DeleteProjectButton = ({ type = 'danger' }: DeleteProjectButtonProps) => {
   const { data: project } = useSelectedProjectQuery()
   const [isOpen, setIsOpen] = useState(false)
-
-  const { can: canDeleteProject } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'projects',
-    {
-      resource: { project_id: project?.id },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canDeleteProject } = {can:true}
 
   return (
     <>

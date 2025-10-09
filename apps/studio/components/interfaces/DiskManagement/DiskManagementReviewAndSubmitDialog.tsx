@@ -1,9 +1,6 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronRight } from 'lucide-react'
 import { UseFormReturn } from 'react-hook-form'
-
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatCurrency } from 'lib/helpers'
 import {
@@ -148,16 +145,8 @@ export const DiskManagementReviewAndSubmitDialog = ({
   const { data: project } = useSelectedProjectQuery()
 
   const { formState, getValues } = form
-
-  const { can: canUpdateDiskConfiguration } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'projects',
-    {
-      resource: {
-        project_id: project?.id,
-      },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateDiskConfiguration } = {can:true}
 
   const planId = 'free'
   const isDirty = !!Object.keys(form.formState.dirtyFields).length

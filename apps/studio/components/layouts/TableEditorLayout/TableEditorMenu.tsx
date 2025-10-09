@@ -1,7 +1,5 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Filter, Plus } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-
 import { useParams } from 'common'
 import { useBreakpoint } from 'common/hooks/useBreakpoint'
 import { ExportDialog } from 'components/grid/components/header/ExportDialog'
@@ -16,7 +14,6 @@ import SchemaSelector from 'components/ui/SchemaSelector'
 import { ENTITY_TYPE } from 'data/entity-types/entity-type-constants'
 import { useEntityTypesQuery } from 'data/entity-types/entity-types-infinite-query'
 import { getTableEditor, useTableEditorQuery } from 'data/table-editor/table-editor-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useLocalStorage } from 'hooks/misc/useLocalStorage'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
@@ -40,9 +37,10 @@ import {
 import { useTableEditorTabsCleanUp } from '../Tabs/Tabs.utils'
 import EntityListItem from './EntityListItem'
 import { TableMenuEmptyState } from './TableMenuEmptyState'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const TableEditorMenu = () => {
-  const { slug, id: _id, ref: projectRef } = useParams()
+  const { slug, id: _id } = useParams()
   const id = _id ? Number(_id) : undefined
   const snap = useTableEditorStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
@@ -57,6 +55,7 @@ export const TableEditorMenu = () => {
   )
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data,
     isLoading,
@@ -68,8 +67,7 @@ export const TableEditorMenu = () => {
     fetchNextPage,
   } = useEntityTypesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       schemas: [selectedSchema],
       search: searchText.trim() || undefined,
       sort,
@@ -84,14 +82,13 @@ export const TableEditorMenu = () => {
     () => data?.pages.flatMap((page) => page.data.entities),
     [data?.pages]
   )
-
-  const canCreateTables = useCheckPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, 'tables')
+  // FIXME: need permission implemented 
+  const canCreateTables = true
 
   const { isSchemaLocked, reason } = useIsProtectedSchema({ schema: selectedSchema })
 
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     id,
   })
 
@@ -99,9 +96,8 @@ export const TableEditorMenu = () => {
 
   const onSelectExportCLI = async (id: number) => {
     const table = await getTableEditor({
+      branch,
       id: id,
-      projectRef,
-      connectionString: project?.connectionString,
     })
     const supaTable = table && parseSupaTable(table)
     setTableToExport(supaTable)

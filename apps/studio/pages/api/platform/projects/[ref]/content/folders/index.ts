@@ -43,7 +43,7 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse<GetRespons
       },
       inserted_at: '',
       updated_at: '',
-      project_id: 0,
+      project_id: '',
       favorite: false,
     },
   ]

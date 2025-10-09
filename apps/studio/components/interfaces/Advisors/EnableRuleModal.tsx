@@ -2,7 +2,6 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { useParams } from 'common'
 import { useLintRuleDeleteMutation } from 'data/lint/delete-lint-rule-mutation'
 import { LintException } from 'data/lint/lint-rules-query'
 import {
@@ -17,6 +16,7 @@ import {
   DialogTrigger,
 } from 'ui'
 import { LintInfo } from '../Linter/Linter.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface EnableRuleModalProps {
   lint: LintInfo
@@ -24,7 +24,7 @@ interface EnableRuleModalProps {
 }
 
 export const EnableRuleModal = ({ lint, rule }: EnableRuleModalProps) => {
-  const { slug, ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const router = useRouter()
 
   const [open, setOpen] = useState(false)
@@ -37,9 +37,8 @@ export const EnableRuleModal = ({ lint, rule }: EnableRuleModalProps) => {
   })
 
   const onDeleteRule = () => {
-    if (!slug) return console.error('Organization slug is required')
-    if (!ref) return console.error('Project ref is required')
-    deleteRule({ orgSlug: slug, projectRef: ref, ids: [rule.id] })
+    if (!branch) return console.error('Branch is required')
+    deleteRule({ branch, ids: [rule.id] })
   }
 
   return (

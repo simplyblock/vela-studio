@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import Link from 'next/link'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -17,9 +16,7 @@ import {
   REALTIME_DEFAULT_CONFIG,
   useRealtimeConfigurationQuery,
 } from 'data/realtime/realtime-config-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   Card,
@@ -34,33 +31,31 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const formId = 'realtime-configuration-form'
 
 export const RealtimeSettings = () => {
-  const { slug, ref: projectRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.REALTIME_ADMIN_READ,
-    '*'
-  )
+  const { data: branch } = useSelectedBranchQuery()
+  // FIXME: need permission implemented
+  const { can: canUpdateConfig } = {can:true}
 
   const { data: maxConn } = useMaxConnectionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const { data, error, isLoading, isError } = useRealtimeConfigurationQuery({
-    projectRef,
+    orgId: branch?.organization_id,
+    projectId: branch?.project_id
   })
 
   const { data: policies, isSuccess: isSuccessPolicies } = useDatabasePoliciesQuery({
-    projectRef,
-    connectionString: project?.connectionString,
+    branch,
     schema: 'realtime',
   })
 
-  const isUsageBillingEnabled = organization?.usage_billing_enabled
+  const isUsageBillingEnabled = false
 
   // Check if RLS policies exist for realtime.messages table
   const realtimeMessagesPolicies = policies?.filter(
@@ -108,9 +103,10 @@ export const RealtimeSettings = () => {
   const isSettingToPrivate = !data?.private_only && !allow_public
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = (data) => {
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     updateRealtimeConfig({
-      ref: projectRef,
+      orgId: branch.organization_id,
+      projectId: branch.project_id,
       private_only: !data.allow_public,
       connection_pool: data.connection_pool,
       max_concurrent_users: data.max_concurrent_users,
@@ -164,7 +160,7 @@ export const RealtimeSettings = () => {
                                 </p>
 
                                 <Button asChild type="default" className="mt-2">
-                                  <Link href={`/org/${slug}/project/${projectRef}/realtime/policies`}>
+                                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/realtime/policies`}>
                                     Create policy
                                   </Link>
                                 </Button>

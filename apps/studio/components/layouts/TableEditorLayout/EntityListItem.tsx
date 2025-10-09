@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Papa from 'papaparse'
 import { toast } from 'sonner'
 
-import { IS_PLATFORM, useParams } from 'common'
+import { useParams } from 'common'
 import {
   MAX_EXPORT_ROW_COUNT,
   MAX_EXPORT_ROW_COUNT_MESSAGE,
@@ -26,7 +26,6 @@ import { getTableEditor } from 'data/table-editor/table-editor-query'
 import { isTableLike } from 'data/table-editor/table-editor-types'
 import { fetchAllTableRows } from 'data/table-rows/table-rows-query'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatSql } from 'lib/formatSql'
 import { useTableEditorStateSnapshot } from 'state/table-editor'
 import { createTabId, useTabsStateSnapshot } from 'state/tabs'
@@ -48,12 +47,10 @@ import {
   TooltipTrigger,
   TreeViewItemVariant,
 } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface EntityListItemProps {
   id: number | string
-  slug: string
-  projectRef: string
   isLocked: boolean
   isActive?: boolean
   onExportCLI: () => void
@@ -66,15 +63,12 @@ function isTableLikeEntityListItem(entity: { type?: string }) {
 
 const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   id,
-  slug,
-  projectRef,
   item: entity,
   isLocked,
   isActive: _isActive,
   onExportCLI,
 }) => {
-  const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useTableEditorStateSnapshot()
   const { selectedSchema } = useQuerySchemaState()
 
@@ -87,7 +81,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   const canEdit = isActive && !isLocked
 
   const { data: lints = [] } = useProjectLintsQuery({
-    orgSlug: slug, projectRef: project?.ref,
+    branch,
   })
 
   const tableHasLints: boolean = getEntityLintDetails(
@@ -131,7 +125,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   }
 
   const exportTableAsCSV = async () => {
-    if (IS_PLATFORM && !project?.connectionString) {
+    if (!branch?.database.encrypted_connection_string) {
       return console.error('Connection string is required')
     }
     const toastId = toast.loading(`Exporting ${entity.name} as CSV...`)
@@ -139,8 +133,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
     try {
       const table = await getTableEditor({
         id: entity.id,
-        projectRef,
-        connectionString: project?.connectionString,
+        branch,
       })
       if (isTableLike(table) && table.live_rows_estimate > MAX_EXPORT_ROW_COUNT) {
         return toast.error(
@@ -156,8 +149,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
       }
 
       const rows = await fetchAllTableRows({
-        projectRef,
-        connectionString: project?.connectionString,
+        branch,
         table: supaTable,
       })
       const formattedRows = rows.map((row) => {
@@ -184,16 +176,15 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
   }
 
   const exportTableAsSQL = async () => {
-    if (IS_PLATFORM && !project?.connectionString) {
+    if (!branch?.database.encrypted_connection_string) {
       return console.error('Connection string is required')
     }
     const toastId = toast.loading(`Exporting ${entity.name} as SQL...`)
 
     try {
       const table = await getTableEditor({
+        branch,
         id: entity.id,
-        projectRef,
-        connectionString: project?.connectionString,
       })
 
       if (isTableLike(table) && table.live_rows_estimate > MAX_EXPORT_ROW_COUNT) {
@@ -210,8 +201,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
       }
 
       const rows = await fetchAllTableRows({
-        projectRef,
-        connectionString: project?.connectionString,
+        branch,
         table: supaTable,
       })
       const formattedRows = rows.map((row) => {
@@ -239,8 +229,10 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
     <EditorTablePageLink
       title={entity.name}
       id={String(entity.id)}
-      slug={slug}
-      href={`/org/${slug}/project/${projectRef}/editor/${entity.id}?schema=${entity.schema}`}
+      orgRef={branch?.organization_id}
+      projectRef={branch?.project_id}
+      branchRef={branch?.id}
+      href={`/org/${branch?.organization_id}/project/${branch?.project_id}/branch/${branch?.id}/editor/${entity.id}?schema=${entity.schema}`}
       role="button"
       aria-label={`View ${entity.name}`}
       className={cn(
@@ -325,9 +317,8 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
                     const toastId = toast.loading('Getting table schema...')
 
                     const tableDefinition = await getTableDefinition({
+                      branch,
                       id: entity.id,
-                      projectRef: project?.ref,
-                      connectionString: project?.connectionString,
                     })
                     if (!tableDefinition) {
                       return toast.error('Failed to get table schema', { id: toastId })
@@ -378,7 +369,7 @@ const EntityListItem: ItemRenderer<Entity, EntityListItemProps> = ({
                   <DropdownMenuItem key="view-policies" className="space-x-2" asChild>
                     <Link
                       key="view-policies"
-                      href={`/org/${slug}/project/${projectRef}/auth/policies?schema=${selectedSchema}&search=${entity.id}`}
+                      href={`/org/${branch?.organization_id}/project/${branch?.project_id}/branch/${branch?.id}/auth/policies?schema=${selectedSchema}&search=${entity.id}`}
                     >
                       <Lock size={12} />
                       <span>View policies</span>
@@ -459,13 +450,13 @@ const EntityTooltipTrigger = ({
   materializedViewHasLints: boolean
   foreignTableHasLints: boolean
 }) => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   let tooltipContent = null
   const accessWarning = 'Data is publicly accessible via API'
   const learnMoreCTA = (
     <InlineLink
-      href={`/project/${ref}/editor/${entity.id}?schema=${entity.schema}&showWarning=true`}
+      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${entity.id}?schema=${entity.schema}&showWarning=true`}
     >
       Learn more
     </InlineLink>

@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { apiBuilder } from '../../../../../lib/api/apiBuilder'
-import { IS_VELA_PLATFORM } from 'lib/constants'
+import { apiBuilder } from 'lib/api/apiBuilder'
 import { VELA_PLATFORM_GOTRUE_URL } from '../../../constants'
 
 interface InviteRequest {
@@ -30,12 +29,6 @@ interface goTrueInviteResponse {
 }
 
 const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!IS_VELA_PLATFORM) {
-    return res
-      .status(400)
-      .json({ error: { message: 'This endpoint is only available on Vela Platform' } })
-  }
-
   const request = req.body as InviteRequest
   const inviteRequest: goTrueInviteRequest = {
     email: request.email,

@@ -22,14 +22,16 @@ import { Button, cn, LoadingLine, Sheet, SheetContent } from 'ui'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { formatCronJobColumns } from './CronJobs.utils'
 import { DeleteCronJob } from './DeleteCronJob'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const EMPTY_CRON_JOB = { jobname: '', schedule: '', active: true, command: '' }
 
 export const CronjobsTab = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug, ref, branch: branchRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const xScroll = useRef<number>(0)
   const gridRef = useRef<DataGridHandle>(null)
@@ -60,8 +62,7 @@ export const CronjobsTab = () => {
     fetchNextPage,
   } = useCronJobsInfiniteQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       searchTerm: searchQuery,
     },
     { keepPreviousData: Boolean(searchQuery), staleTime: Infinity }
@@ -69,13 +70,11 @@ export const CronjobsTab = () => {
   const cronJobs = useMemo(() => data?.pages.flatMap((p) => p) || [], [data?.pages])
 
   const { data: count, isLoading: isLoadingCount } = useCronJobsCountQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const { data: extensions = [] } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
 
   const { mutate: sendEvent } = useSendEventMutation()
@@ -200,7 +199,7 @@ export const CronjobsTab = () => {
                     {...props}
                     onClick={(e) => {
                       const { jobid, jobname } = props.row
-                      const url = `/org/${slug}/project/${ref}/integrations/cron/jobs/${jobid}?child-label=${encodeURIComponent(jobname || `Job #${jobid}`)}`
+                      const url = `/org/${slug}/project/${ref}/branch/${branchRef}/integrations/cron/jobs/${jobid}?child-label=${encodeURIComponent(jobname || `Job #${jobid}`)}`
 
                       sendEvent({
                         action: 'cron_job_history_clicked',

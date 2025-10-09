@@ -3,14 +3,13 @@ import { getDecryptedValues } from 'data/vault/vault-secret-decrypted-value-quer
 import { INTEGRATIONS } from '../Integrations/Landing/Integrations.constants'
 import { WrapperMeta } from '../Integrations/Wrappers/Wrappers.types'
 import { convertKVStringArrayToJson } from '../Integrations/Wrappers/Wrappers.utils'
+import { Branch } from 'api-types/types'
 
 export const getDecryptedParameters = async ({
-  ref,
-  connectionString,
+  branch,
   wrapper,
 }: {
-  ref?: string
-  connectionString?: string
+  branch?: Branch
   wrapper: FDW
 }) => {
   const integration = INTEGRATIONS.find((i) => i.id === 'iceberg_wrapper' && i.type === 'wrapper')
@@ -28,8 +27,7 @@ export const getDecryptedParameters = async ({
   )
 
   const decryptedValues = await getDecryptedValues({
-    projectRef: ref,
-    connectionString: connectionString,
+    branch,
     ids: Object.values(paramsToBeDecrypted),
   })
 

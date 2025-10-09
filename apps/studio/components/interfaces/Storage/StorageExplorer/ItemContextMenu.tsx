@@ -1,10 +1,7 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronRight, Clipboard, Download, Edit, Move, Trash2 } from 'lucide-react'
 import { Item, Menu, Separator, Submenu } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.css'
-
 import { useParams } from 'common'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import { URL_EXPIRY_DURATION } from '../Storage.constants'
 import { StorageItemWithColumn } from '../Storage.types'
@@ -28,7 +25,8 @@ const ItemContextMenu = ({ id = '' }: ItemContextMenuProps) => {
   } = useStorageExplorerStateSnapshot()
   const { onCopyUrl } = useCopyUrl()
   const isPublic = selectedBucket.public
-  const canUpdateFiles = useCheckPermissions(PermissionAction.STORAGE_WRITE, '*')
+  // FIXME: need permission implemented 
+  const canUpdateFiles = true
 
   const onHandleClick = async (event: any, item: StorageItemWithColumn, expiresIn?: number) => {
     if (item.isCorrupted) return

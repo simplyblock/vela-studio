@@ -1,151 +1,79 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-  ? new URL(process.env.NEXT_PUBLIC_API_URL).origin
-  : ''
-const SUPABASE_URL = process.env.SUPABASE_URL
-  ? new URL(process.env.SUPABASE_URL).origin
-  : ''
-const GOTRUE_URL = process.env.NEXT_PUBLIC_GOTRUE_URL
-  ? new URL(process.env.NEXT_PUBLIC_GOTRUE_URL).origin
-  : ''
-const SUPABASE_PROJECTS_URL = 'https://*.supabase.co'
-const SUPABASE_PROJECTS_URL_WS = 'wss://*.supabase.co'
-
-// construct the URL for the Websocket Local URLs
-let SUPABASE_LOCAL_PROJECTS_URL_WS = []
-if (SUPABASE_URL) {
-  const url = new URL(SUPABASE_URL)
-  const hostWithPort = url.port ? `${url.hostname}:${url.port}` : url.hostname
-  SUPABASE_LOCAL_PROJECTS_URL_WS = [
-    `ws://${hostWithPort}`,
-    `wss://${hostWithPort}`,
-  ]
+const BASE_URL = process.env.VELA_PLATFORM_EXT_BASE_URL
+if (!BASE_URL) {
+  throw new Error("Environment variable VELA_PLATFORM_EXT_BASE_URL not set")
 }
 
-// Needed to test docs search in local dev
-const SUPABASE_DOCS_PROJECT_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin
-  : ''
+const API_URL = new URL(BASE_URL).origin
 
-// Needed to test docs content API in local dev
-const SUPABASE_CONTENT_API_URL = process.env.NEXT_PUBLIC_CONTENT_API_URL
-  ? new URL(process.env.NEXT_PUBLIC_CONTENT_API_URL).origin
-  : ''
+const url = new URL(BASE_URL)
+const hostWithPort = url.port ? `${url.hostname}:${url.port}` : url.hostname
+const PROJECTS_URL = `https://*.${hostWithPort}`
+const PROJECTS_URL_WS = `wss://*.${hostWithPort}`
+
+// construct the URL for the Websocket Local URLs
+const LOCAL_PROJECTS_URL_WS = []
+if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+  LOCAL_PROJECTS_URL_WS.push(
+    `ws://${hostWithPort}`,
+  )
+}
 
 const isDevOrStaging =
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'local' ||
   process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging'
 
-const SUPABASE_STAGING_PROJECTS_URL = 'https://*.supabase.red'
-const SUPABASE_STAGING_PROJECTS_URL_WS = 'wss://*.supabase.red'
-const SUPABASE_COM_URL = 'https://supabase.com'
 const CLOUDFLARE_CDN_URL = 'https://cdnjs.cloudflare.com'
-const HCAPTCHA_SUBDOMAINS_URL = 'https://*.hcaptcha.com'
-const HCAPTCHA_ASSET_URL = 'https://newassets.hcaptcha.com'
-const HCAPTCHA_JS_URL = 'https://js.hcaptcha.com'
-const CONFIGCAT_URL = 'https://cdn-global.configcat.com'
-const CONFIGCAT_PROXY_URL = ['staging', 'local'].includes(
-  process.env.NEXT_PUBLIC_ENVIRONMENT ?? ''
-)
-  ? 'https://configcat.supabase.green'
-  : 'https://configcat.supabase.com'
-const STRIPE_SUBDOMAINS_URL = 'https://*.stripe.com'
-const STRIPE_JS_URL = 'https://js.stripe.com'
-const STRIPE_NETWORK_URL = 'https://*.stripe.network'
 const CLOUDFLARE_URL = 'https://www.cloudflare.com'
 const GITHUB_API_URL = 'https://api.github.com'
 const GITHUB_USER_CONTENT_URL = 'https://raw.githubusercontent.com'
 const GITHUB_USER_AVATAR_URL = 'https://avatars.githubusercontent.com'
 const GOOGLE_USER_AVATAR_URL = 'https://lh3.googleusercontent.com'
 
-// This is a custom domain for Stape, which is used for GTM servers
-const STAPE_URL = 'https://ss.supabase.com'
-
-const SUPABASE_ASSETS_URL =
-  process.env.NEXT_PUBLIC_ENVIRONMENT === 'staging'
-    ? 'https://frontend-assets.supabase.green'
-    : 'https://frontend-assets.supabase.com'
-const POSTHOG_URL = isDevOrStaging
-  ? 'https://ph.supabase.green'
-  : 'https://ph.supabase.com'
-
-const USERCENTRICS_URLS = 'https://*.usercentrics.eu'
-const USERCENTRICS_APP_URL = 'https://app.usercentrics.eu'
+const ASSETS_URL = BASE_URL
 
 const GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com'
 
 module.exports.getCSP = function getCSP() {
   const DEFAULT_SRC_URLS = [
     API_URL,
-    SUPABASE_URL,
-    GOTRUE_URL,
-    ...SUPABASE_LOCAL_PROJECTS_URL_WS,
-    SUPABASE_PROJECTS_URL,
-    SUPABASE_PROJECTS_URL_WS,
-    HCAPTCHA_SUBDOMAINS_URL,
-    CONFIGCAT_URL,
-    CONFIGCAT_PROXY_URL,
-    STRIPE_SUBDOMAINS_URL,
-    STRIPE_NETWORK_URL,
+    BASE_URL,
+    ...LOCAL_PROJECTS_URL_WS,
+    PROJECTS_URL,
+    PROJECTS_URL_WS,
     CLOUDFLARE_URL,
     CLOUDFLARE_CDN_URL,
     GITHUB_API_URL,
     GITHUB_USER_CONTENT_URL,
-    SUPABASE_ASSETS_URL,
-    USERCENTRICS_URLS,
-    STAPE_URL,
-    GOOGLE_MAPS_API_URL,
-    POSTHOG_URL,
-    ...(isDevOrStaging
-      ? [
-          SUPABASE_STAGING_PROJECTS_URL,
-          SUPABASE_STAGING_PROJECTS_URL_WS,
-          SUPABASE_DOCS_PROJECT_URL,
-          SUPABASE_CONTENT_API_URL,
-        ]
-      : []),
+    ASSETS_URL,
+    GOOGLE_MAPS_API_URL
   ].filter(Boolean)
 
   const SCRIPT_SRC_URLS = [
     CLOUDFLARE_CDN_URL,
-    HCAPTCHA_JS_URL,
-    STRIPE_JS_URL,
-    SUPABASE_ASSETS_URL,
-    STAPE_URL,
-    POSTHOG_URL,
+    ASSETS_URL,
   ].filter(Boolean)
 
-  const FRAME_SRC_URLS = [HCAPTCHA_ASSET_URL, STRIPE_JS_URL, STAPE_URL].filter(Boolean)
+  const FRAME_SRC_URLS = [].filter(Boolean)
 
   const IMG_SRC_URLS = [
-    SUPABASE_URL,
-    SUPABASE_COM_URL,
-    SUPABASE_PROJECTS_URL,
+    BASE_URL,
+    PROJECTS_URL,
     GITHUB_USER_AVATAR_URL,
     GOOGLE_USER_AVATAR_URL,
-    SUPABASE_ASSETS_URL,
-    USERCENTRICS_APP_URL,
-    STAPE_URL,
-    ...(isDevOrStaging ? [SUPABASE_STAGING_PROJECTS_URL] : []),
+    ASSETS_URL
   ].filter(Boolean)
 
-  const STYLE_SRC_URLS = [CLOUDFLARE_CDN_URL, SUPABASE_ASSETS_URL].filter(Boolean)
-  const FONT_SRC_URLS = [CLOUDFLARE_CDN_URL, SUPABASE_ASSETS_URL].filter(Boolean)
+  const STYLE_SRC_URLS = [CLOUDFLARE_CDN_URL, ASSETS_URL].filter(Boolean)
+  const FONT_SRC_URLS = [CLOUDFLARE_CDN_URL, ASSETS_URL].filter(Boolean)
 
   const CONNECT_SRC_URLS = [
     API_URL,
-    SUPABASE_URL,
-    GOTRUE_URL,
-    SUPABASE_PROJECTS_URL,
-    SUPABASE_PROJECTS_URL_WS,
-    HCAPTCHA_SUBDOMAINS_URL,
-    CONFIGCAT_URL,
-    CONFIGCAT_PROXY_URL,
-    STRIPE_SUBDOMAINS_URL,
-    STRIPE_NETWORK_URL,
+    BASE_URL,
+    PROJECTS_URL,
+    PROJECTS_URL_WS,
     CLOUDFLARE_URL,
     CLOUDFLARE_CDN_URL, // <-- fixes Monaco .map CSP issue
     GITHUB_API_URL,
-    POSTHOG_URL,
     ...(isDevOrStaging ? ['ws://localhost:*', 'wss://localhost:*'] : []),
   ].filter(Boolean)
 
@@ -176,8 +104,7 @@ module.exports.getCSP = function getCSP() {
     `form-action 'self'`,
     `frame-ancestors 'none'`,
     `block-all-mixed-content`,
-    ...(process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' &&
-    process.env.NEXT_PUBLIC_ENVIRONMENT === 'prod'
+    ...(process.env.NEXT_PUBLIC_ENVIRONMENT === 'prod'
       ? [`upgrade-insecure-requests`]
       : []),
   ]

@@ -32,20 +32,7 @@ export const ComputeBadgeWrapper = ({ project }: ComputeBadgeWrapperProps) => {
   // once open it will fetch the addons
   const [open, setOpenState] = useState(false)
 
-  const { slug } = useParams()
-
-  // returns hardcoded values for infra
-  const cpuArchitecture = getCloudProviderArchitecture(project.cloud_provider)
-
-  const { data, isLoading: isLoadingSubscriptions } = useOrgSubscriptionQuery(
-    { orgSlug: project?.organization_slug },
-    { enabled: open }
-  )
-
-  const isEligibleForFreeUpgrade =
-    data?.plan.id !== 'free' && project?.infra_compute_size === 'nano'
-
-  const isLoading = isLoadingSubscriptions
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   if (!project?.infra_compute_size) return null
 
@@ -69,50 +56,31 @@ export const ComputeBadgeWrapper = ({ project }: ComputeBadgeWrapperProps) => {
             <ComputeBadge infraComputeSize={project?.infra_compute_size} />
           </div>
           <div className="flex flex-col gap-4">
-            {isLoading ? (
-              <>
-                <div className="flex flex-col gap-1">
-                  <ShimmeringLoader className="h-[20px] py-0 w-32" />
-                  <ShimmeringLoader className="h-[20px] py-0 w-32" />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex flex-col gap-1">
-                  {/* meta is only undefined for nano sized compute */}
-                  <Row label="CPU" stat="Shared" />
-                  <Row label="Memory" stat="Up to 0.5 GB" />
-                </div>
-              </>
-            )}
+            <div className="flex flex-col gap-1">
+              {/* meta is only undefined for nano sized compute */}
+              <Row label="CPU" stat="Shared" />
+              <Row label="Memory" stat="Up to 0.5 GB" />
+            </div>
           </div>
         </div>
-        {isEligibleForFreeUpgrade && (
-          <>
-            <Separator />
-            <div className="p-3 px-5 text-sm flex flex-col gap-2 bg-studio">
-              <div className="flex flex-col gap-0">
-                <p className="text-foreground">
-                  {isEligibleForFreeUpgrade
-                    ? 'Free upgrade to Micro available'
-                    : 'Unlock more compute'}
-                </p>
-                <p className="text-foreground-light">
-                  {isEligibleForFreeUpgrade
-                    ? 'Paid plans include a free upgrade to Micro compute.'
-                    : 'Scale your project up to 64 cores and 256 GB RAM.'}
-                </p>
-              </div>
-              <div>
-                <Button asChild type="default" htmlType="button" role="button">
-                  <Link href={`/org/${slug}/project/${project?.ref}/settings/compute-and-disk`}>
-                    Upgrade compute
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </>
-        )}
+        <Separator />
+        <div className="p-3 px-5 text-sm flex flex-col gap-2 bg-studio">
+          <div className="flex flex-col gap-0">
+            <p className="text-foreground">
+              Unlock more compute
+            </p>
+            <p className="text-foreground-light">
+              Scale your project up to 64 cores and 256 GB RAM.
+            </p>
+          </div>
+          <div>
+            <Button asChild type="default" htmlType="button" role="button">
+              <Link href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/compute-and-disk`}>
+                Upgrade compute
+              </Link>
+            </Button>
+          </div>
+        </div>
       </HoverCardContent>
     </HoverCard>
   )

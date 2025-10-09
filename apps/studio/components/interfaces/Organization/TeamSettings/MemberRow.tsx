@@ -1,7 +1,6 @@
 import { ArrowRight, Check, Minus, User, X } from 'lucide-react'
 import Link from 'next/link'
 
-import PartnerIcon from 'components/ui/PartnerIcon'
 import { ProfileImage } from 'components/ui/ProfileImage'
 import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
 import { OrganizationMember } from 'data/organizations/organization-members-query'
@@ -27,10 +26,6 @@ import { useParams } from 'common'
 interface MemberRowProps {
   member: OrganizationMember
 }
-
-const MEMBER_ORIGIN_TO_MANAGED_BY = {
-  vercel: 'vercel-marketplace',
-} as const
 
 export const MemberRow = ({ member }: MemberRowProps) => {
   const { profile } = useProfile()
@@ -91,20 +86,8 @@ export const MemberRow = ({ member }: MemberRowProps) => {
           />
           <div className="flex item-center gap-x-2">
             <p className="text-foreground-light truncate">{member.primary_email}</p>
-            {member.gotrue_id === profile?.gotrue_id && <Badge color="scale">You</Badge>}
+            {member.user_id === profile?.user_id && <Badge color="scale">You</Badge>}
           </div>
-
-          {(member.metadata as any)?.origin && (
-            <PartnerIcon
-              organization={{
-                managed_by:
-                  MEMBER_ORIGIN_TO_MANAGED_BY[
-                    (member.metadata as any).origin as keyof typeof MEMBER_ORIGIN_TO_MANAGED_BY
-                  ] ?? 'supabase',
-              }}
-              tooltipText="This user is managed by Vercel Marketplace."
-            />
-          )}
         </div>
       </TableCell>
 

@@ -1,11 +1,7 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { includes, sortBy } from 'lodash'
 import { Check, Edit, Edit2, MoreVertical, Trash, X } from 'lucide-react'
-
-import Table from 'components/to-be-cleaned/Table'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseTriggersQuery } from 'data/database-triggers/database-triggers-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
@@ -22,6 +18,7 @@ import {
   TableCell,
 } from 'ui'
 import { generateTriggerCreateSQL } from './TriggerList.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface TriggerListProps {
   schema: string
@@ -39,11 +36,11 @@ const TriggerList = ({
   deleteTrigger,
 }: TriggerListProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: triggers } = useDatabaseTriggersQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const filteredTriggers = (triggers ?? []).filter((x) =>
     includes(x.name.toLowerCase(), filterString.toLowerCase())
@@ -53,10 +50,7 @@ const TriggerList = ({
     filteredTriggers.filter((x) => x.schema == schema),
     (trigger) => trigger.name.toLocaleLowerCase()
   )
-  const { can: canUpdateTriggers } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'triggers'
-  )
+  const { can: canUpdateTriggers } = {can:true}
 
   if (_triggers.length === 0 && filterString.length === 0) {
     return (

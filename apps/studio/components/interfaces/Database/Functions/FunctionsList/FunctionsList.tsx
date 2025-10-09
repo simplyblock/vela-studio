@@ -1,5 +1,4 @@
 import type { PostgresFunction } from '@supabase/postgres-meta'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { noop } from 'lodash'
 import { Search } from 'lucide-react'
 import { useRouter } from 'next/router'
@@ -12,9 +11,7 @@ import SchemaSelector from 'components/ui/SchemaSelector'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabaseFunctionsQuery } from 'data/database-functions/database-functions-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
@@ -25,12 +22,11 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell,
   Card,
 } from 'ui'
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import FunctionList from './FunctionList'
-import { getPathReferences } from '../../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface FunctionsListProps {
   createFunction: () => void
@@ -45,10 +41,9 @@ const FunctionsList = ({
 }: FunctionsListProps) => {
   const router = useRouter()
   const { search } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
-  const { slug: orgSlug } = getPathReferences()
 
   const filterString = search ?? ''
 
@@ -61,19 +56,14 @@ const FunctionsList = ({
     }
     router.push(url)
   }
-
-  const { can: canCreateFunctions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'functions'
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateFunctions } = {can:true}
 
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedSchema })
 
   // [Joshen] This is to preload the data for the Schema Selector
   useSchemasQuery({
-    orgSlug: orgSlug,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const {
@@ -82,8 +72,7 @@ const FunctionsList = ({
     isLoading,
     isError,
   } = useDatabaseFunctionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   if (isLoading) return <GenericSkeletonLoader />

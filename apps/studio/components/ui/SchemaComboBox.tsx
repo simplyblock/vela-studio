@@ -2,7 +2,6 @@ import { Check, ChevronsUpDown } from 'lucide-react'
 import { useState } from 'react'
 
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -19,7 +18,7 @@ import {
   Popover_Shadcn_,
   ScrollArea,
 } from 'ui'
-import { getPathReferences } from '../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface SchemaComboBoxProps {
   className?: string
@@ -45,8 +44,7 @@ export const SchemaComboBox = ({
 }: SchemaComboBoxProps) => {
   const [open, setOpen] = useState(false)
 
-  const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data,
     isLoading: isSchemasLoading,
@@ -55,9 +53,7 @@ export const SchemaComboBox = ({
     error: schemasError,
     refetch: refetchSchemas,
   } = useSchemasQuery({
-    orgSlug,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const schemas = (data || [])

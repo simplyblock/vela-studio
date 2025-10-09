@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { paths } from 'api-types'
 import apiWrapper from 'lib/api/apiWrapper'
 import { PROJECT_REST_URL } from 'pages/api/constants'
-import CryptoJS from 'crypto-js'
-import { getPlatformQueryParams } from '../../../../../../../lib/api/platformQueryParams'
+import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
 export default (req: NextApiRequest, res: NextApiResponse) => apiWrapper(req, res, handler)
 
@@ -26,7 +24,6 @@ interface ResponseData {
   /** @default null */
   connection_string_read_only?: string | null
   /** @default null */
-  connectionString?: string | null
   db_host: string
   db_name: string
   db_port: number
@@ -54,16 +51,10 @@ interface ResponseData {
 
 // FIXME: Implementation missing
 const handleGet = async (req: NextApiRequest, res: NextApiResponse<ResponseData[]>) => {
-  const encryptedConnectionString = CryptoJS.AES.encrypt(
-    'postgresql://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/postgres', 'SAMPLE_KEY'
-  ).toString().trim() // FIXME: Encrypted connectionString needs to come from the outside
-
   const { ref } = getPlatformQueryParams(req, 'ref')
   return res.status(200).json([
     {
       cloud_provider: 'localhost' as any,
-      connectionString: encryptedConnectionString,
-      connection_string_read_only: encryptedConnectionString,
       db_host: '127.0.0.1',
       db_name: 'postgres',
       db_port: 5432,

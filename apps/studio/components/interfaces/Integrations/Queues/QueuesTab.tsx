@@ -6,13 +6,13 @@ import Table from 'components/to-be-cleaned/Table'
 import AlertError from 'components/ui/AlertError'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useQueuesQuery } from 'data/database-queues/database-queues-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Input, Sheet, SheetContent } from 'ui'
 import { CreateQueueSheet } from './CreateQueueSheet'
 import { QueuesRows } from './QueuesRows'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const QueuesTab = () => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   // used for confirmation prompt in the Create Queue Sheet
   const [isClosingCreateQueueSheet, setIsClosingCreateQueueSheet] = useState(false)
@@ -24,8 +24,7 @@ export const QueuesTab = () => {
     isLoading,
     isError,
   } = useQueuesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const [searchQuery, setSearchQuery] = useQueryState('search')

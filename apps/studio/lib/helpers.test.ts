@@ -7,7 +7,6 @@ import {
   getDatabaseMajorVersion,
   getDistanceLatLonKM,
   getSemanticVersion,
-  getURL,
   isValidHttpUrl,
   makeRandomString,
   minifyJSON,
@@ -74,14 +73,6 @@ describe('timeout', () => {
 
     expect(spy).toHaveBeenCalled()
     vi.useRealTimers()
-  })
-})
-
-describe('getURL', () => {
-  it('should return prod url by default', () => {
-    const result = getURL()
-
-    expect(result).toEqual('https://supabase.com/dashboard')
   })
 })
 
@@ -210,8 +201,8 @@ describe('detectBrowser', () => {
   }
 
   afterEach(() => {
-    vi.unstubAllGlobals()
-    global.navigator = originalNavigator
+    (vi as any).unstubAllGlobals()
+    (global as any).navigator = originalNavigator
   })
 
   it('detects Chrome', () => {

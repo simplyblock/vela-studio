@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { isNull, partition } from 'lodash'
 import { AlertCircle, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -9,20 +8,18 @@ import InformationBox from 'components/ui/InformationBox'
 import NoSearchResults from 'components/ui/NoSearchResults'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Card, Input, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui'
 import ExtensionRow from './ExtensionRow'
 import { HIDDEN_EXTENSIONS, SEARCH_TERMS } from './Extensions.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Extensions = () => {
   const { filter } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [filterString, setFilterString] = useState<string>('')
 
   const { data, isLoading } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const extensions =
@@ -40,9 +37,8 @@ const Extensions = () => {
     extensionsWithoutHidden,
     (ext) => !isNull(ext.installed_version)
   )
-
-  const { can: canUpdateExtensions, isSuccess: isPermissionsLoaded } =
-    useAsyncCheckProjectPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, 'extensions')
+  // FIXME: need permission implemented 
+  const { can: canUpdateExtensions, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
 
   useEffect(() => {
     if (filter !== undefined) setFilterString(filter as string)

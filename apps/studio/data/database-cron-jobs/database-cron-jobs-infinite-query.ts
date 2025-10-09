@@ -1,14 +1,14 @@
-import { UseInfiniteQueryOptions, useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query'
 
 import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { databaseCronJobsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 const CRON_JOBS_PAGE_LIMIT = 20
 
 type DatabaseCronJobRunsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
   searchTerm?: string
 }
 
@@ -62,16 +62,14 @@ OFFSET ${page * CRON_JOBS_PAGE_LIMIT};
 `.trim()
 
 export async function getDatabaseCronJobs({
-  projectRef,
-  connectionString,
+  branch,
   searchTerm,
   page = 0,
 }: DatabaseCronJobRunsVariables & { page: number }) {
-  if (!projectRef) throw new Error('Project ref is required')
+  if (!branch) throw new Error('Branch is required')
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql: getCronJobSql({ searchTerm, page }),
     queryKey: ['cron-jobs'],
   })
@@ -83,7 +81,7 @@ type DatabaseCronJobsInfiniteData = CronJob[]
 type DatabaseCronJobsInfiniteError = ResponseError
 
 export const useCronJobsInfiniteQuery = <TData = DatabaseCronJobsInfiniteData>(
-  { projectRef, connectionString, searchTerm }: DatabaseCronJobRunsVariables,
+  { branch, searchTerm }: DatabaseCronJobRunsVariables,
   {
     enabled = true,
     ...options
@@ -94,18 +92,22 @@ export const useCronJobsInfiniteQuery = <TData = DatabaseCronJobsInfiniteData>(
   > = {}
 ) =>
   useInfiniteQuery<DatabaseCronJobsInfiniteData, DatabaseCronJobsInfiniteError, TData>(
-    databaseCronJobsKeys.listInfinite(projectRef, searchTerm),
+    databaseCronJobsKeys.listInfinite(
+      branch?.organization_id,
+      branch?.project_id,
+      branch?.id,
+      searchTerm
+    ),
     ({ pageParam }) => {
       return getDatabaseCronJobs({
-        projectRef,
-        connectionString,
+        branch,
         searchTerm,
         page: pageParam,
       })
     },
     {
       staleTime: 0,
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       getNextPageParam(lastPage, pages) {
         const page = pages.length
         const hasNextPage = lastPage.length >= CRON_JOBS_PAGE_LIMIT

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { PlayCircle, StopCircle } from 'lucide-react'
 import { Dispatch, SetStateAction } from 'react'
 
@@ -6,7 +5,6 @@ import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { getTemporaryAPIKey } from 'data/api-keys/temp-api-keys-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { ChooseChannelPopover } from './ChooseChannelPopover'
 import { RealtimeFilterPopover } from './RealtimeFilterPopover'
@@ -22,11 +20,8 @@ export const Header = ({ config, onChangeConfig }: HeaderProps) => {
   const { mutate: sendEvent } = useSendEventMutation()
   const { ref } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
-
-  const { can: canReadAPIKeys } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'service_api_keys'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys } = {can:true}
 
   return (
     <div className="flex flex-row h-14 gap-2.5 items-center px-4">

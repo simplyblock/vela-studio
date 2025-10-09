@@ -3,9 +3,9 @@ import AlertError from 'components/ui/AlertError'
 
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useDatabaseRolesQuery } from 'data/database-roles/database-roles-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { sortBy } from 'lodash'
 import MultiSelect from 'ui-patterns/MultiSelectDeprecated'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface PolicyRolesProps {
   selectedRoles: string[]
@@ -14,10 +14,9 @@ interface PolicyRolesProps {
 type SystemRole = (typeof SYSTEM_ROLES)[number]
 
 const PolicyRoles = ({ selectedRoles, onUpdateSelectedRoles }: PolicyRolesProps) => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data, error, isLoading, isError, isSuccess } = useDatabaseRolesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const roles = sortBy(
     (data ?? []).filter((role) => !SYSTEM_ROLES.includes(role.name as SystemRole)),

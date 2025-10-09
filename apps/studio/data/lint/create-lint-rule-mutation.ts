@@ -5,18 +5,22 @@ import { components } from 'api-types'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { lintKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type ExceptionPayload = components['schemas']['CreateNotificationExceptionsBody']['exceptions'][0]
 
 export type LintRuleCreateVariables = {
-  orgSlug: string
-  projectRef: string
+  branch: Branch
   exception: ExceptionPayload
 }
 
-export async function createLintRule({ orgSlug, projectRef, exception }: LintRuleCreateVariables) {
+export async function createLintRule({ branch, exception }: LintRuleCreateVariables) {
   const { data, error } = await post('/platform/projects/{ref}/notifications/advisor/exceptions', {
-    params: { path: { ref: projectRef } },
+    params: {
+      path: {
+        ref: branch.project_id,
+      },
+    },
     body: {
       exceptions: [exception],
     },
@@ -41,10 +45,14 @@ export const useLintRuleCreateMutation = ({
     (vars) => createLintRule(vars),
     {
       async onSuccess(data, variables, context) {
-        const { orgSlug, projectRef } = variables
+        const { branch } = variables
         await Promise.all([
-          queryClient.invalidateQueries(lintKeys.lintRules(orgSlug, projectRef)),
-          queryClient.invalidateQueries(lintKeys.lint(orgSlug, projectRef)),
+          queryClient.invalidateQueries(
+            lintKeys.lintRules(branch.organization_id, branch.project_id, branch.id)
+          ),
+          queryClient.invalidateQueries(
+            lintKeys.lint(branch.organization_id, branch.project_id, branch.id)
+          ),
         ])
         await onSuccess?.(data, variables, context)
       },

@@ -1,6 +1,6 @@
 import { type PropsWithChildren } from 'react'
 
-import { FeatureFlagProvider, IS_PLATFORM, IS_VELA_PLATFORM, ThemeProvider } from 'common'
+import { FeatureFlagProvider, ThemeProvider } from 'common'
 import { SonnerToaster, TooltipProvider } from 'ui'
 import { CommandProvider } from 'ui-patterns/CommandMenu'
 import SiteLayout from '~/layouts/SiteLayout'
@@ -16,10 +16,11 @@ import { ThemeSandbox } from './ui/theme.client'
  * Global providers that wrap the entire app
  */
 function GlobalProviders({ children }: PropsWithChildren) {
+  const featureFlagsEnabled = false // FIXME: disabled for now
   return (
     <QueryClientProvider>
       <AuthContainer>
-        <FeatureFlagProvider API_URL={API_URL} enabled={IS_PLATFORM && !IS_VELA_PLATFORM}>
+        <FeatureFlagProvider enabled={featureFlagsEnabled}>
           <PageTelemetry />
           <ScrollRestoration />
           <ThemeProvider defaultTheme="system" enableSystem disableTransitionOnChange>

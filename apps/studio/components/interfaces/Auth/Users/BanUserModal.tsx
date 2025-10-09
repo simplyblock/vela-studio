@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-import { useParams } from 'common'
 import { useUserUpdateMutation } from 'data/auth/user-update-mutation'
 import { User } from 'data/auth/users-infinite-query'
 import {
@@ -23,6 +22,7 @@ import {
   Separator,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface BanUserModalProps {
   visible: boolean
@@ -31,7 +31,7 @@ interface BanUserModalProps {
 }
 
 export const BanUserModal = ({ visible, user, onClose }: BanUserModalProps) => {
-  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: updateUser, isLoading: isBanningUser } = useUserUpdateMutation({
     onSuccess: (_, vars) => {
@@ -60,7 +60,7 @@ export const BanUserModal = ({ visible, user, onClose }: BanUserModalProps) => {
   const bannedUntil = dayjs().add(Number(value), unit).format('DD MMM YYYY HH:mm (ZZ)')
 
   const onSubmit = (data: FormType) => {
-    if (projectRef === undefined) return console.error('Project ref is required')
+    if (branch === undefined) return console.error('Branch is required')
     if (user.id === undefined) {
       return toast.error(`Failed to ban user: User ID not found`)
     }
@@ -68,7 +68,7 @@ export const BanUserModal = ({ visible, user, onClose }: BanUserModalProps) => {
     const durationHours = data.unit === 'hours' ? Number(data.value) : Number(data.value) * 24
 
     updateUser({
-      projectRef,
+      branch,
       userId: user.id,
       banDuration: durationHours,
     })

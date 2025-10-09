@@ -10,7 +10,6 @@ import { useQueryAbortMutation } from 'data/sql/abort-query-mutation'
 import { useOngoingQueriesQuery } from 'data/sql/ongoing-queries-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
-import { IS_PLATFORM } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { ResponseError } from 'types'
@@ -29,16 +28,18 @@ import {
   cn,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const OngoingQueriesPanel = () => {
   const [_, setParams] = useUrlState({ replace: true })
-  const { slug: orgSlug, viewOngoingQueries } = useParams()
+  const { viewOngoingQueries } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
   const appState = useAppStateSnapshot()
   const [selectedId, setSelectedId] = useState<number>()
 
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef: project?.ref })
+  const { data: databases } = useReadReplicasQuery({ branch })
   const database = (databases ?? []).find((db) => db.identifier === state.selectedDatabaseId)
 
   const {
@@ -50,11 +51,10 @@ export const OngoingQueriesPanel = () => {
     refetch,
   } = useOngoingQueriesQuery(
     {
-      projectRef: project?.ref,
-      connectionString: database?.connectionString,
+      branch
     },
     {
-      enabled: !IS_PLATFORM || (IS_PLATFORM && database?.connectionString !== undefined),
+      enabled: database?.connectionString !== undefined,
       staleTime: 5000,
     }
   )
@@ -180,8 +180,7 @@ export const OngoingQueriesPanel = () => {
           if (selectedId !== undefined)
             abortQuery({
               pid: selectedId,
-              projectRef: project?.ref,
-              connectionString: database?.connectionString,
+              branch,
             })
         }}
       >

@@ -1,7 +1,7 @@
 export { default as passwordStrength } from './password-strength'
 export { default as uuidv4 } from './uuid'
 import { UIEvent } from 'react'
-import type { TablesData } from '../data/tables/tables-query'
+import type { TablesData } from 'data/tables/tables-query'
 
 export const isAtBottom = ({ currentTarget }: UIEvent<HTMLDivElement>): boolean => {
   return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight
@@ -56,17 +56,6 @@ export const removeJSONTrailingComma = (jsonString: string) => {
 
 export const timeout = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-export const getURL = () => {
-  const url =
-    process?.env?.NEXT_PUBLIC_SITE_URL && process.env.NEXT_PUBLIC_SITE_URL !== ''
-      ? process.env.NEXT_PUBLIC_SITE_URL
-      : process?.env?.NEXT_PUBLIC_VERCEL_BRANCH_URL &&
-          process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL !== ''
-        ? process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL
-        : 'https://supabase.com/dashboard'
-  return url.includes('http') ? url : `https://${url}`
 }
 
 /**

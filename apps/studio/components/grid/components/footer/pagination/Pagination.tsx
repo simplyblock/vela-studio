@@ -16,6 +16,7 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { DropdownControl } from '../../common/DropdownControl'
 import { formatEstimatedCount } from './Pagination.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const rowsPerPageOptions = [
   { value: 100, label: '100 rows' },
@@ -24,16 +25,16 @@ const rowsPerPageOptions = [
 ]
 
 const Pagination = () => {
-  const { id: _id } = useParams()
+  const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const tableEditorSnap = useTableEditorStateSnapshot()
   const snap = useTableEditorTableStateSnapshot()
 
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     id,
   })
 
@@ -57,8 +58,7 @@ const Pagination = () => {
 
   const { data, isLoading, isSuccess, isError, isFetching, error } = useTableRowsCountQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       tableId: snap.table.id,
       filters,
       enforceExactCount: snap.enforceExactCount,

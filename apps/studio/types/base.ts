@@ -1,8 +1,6 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { OrganizationBase } from 'data/organizations/organizations-query'
 import { PlanId } from 'data/subscriptions/types'
 import jsonLogic from 'json-logic-js'
-import { ManagedBy } from 'lib/constants/infrastructure'
 
 export interface Organization extends OrganizationBase {
   partner_id?: string
@@ -30,7 +28,6 @@ export interface ProjectBase {
  */
 export interface Project extends ProjectBase {
   // available after projects.fetchDetail
-  connectionString?: string | null
   dbVersion?: string
   restUrl?: string
   lastDatabaseResizeAt?: string | null
@@ -53,24 +50,24 @@ export interface Project extends ProjectBase {
 }
 
 export interface User {
-  id: number
-  mobile: string | null
+  id: string
+  mobile?: string | null
   primary_email: string
   username: string
-  first_name: string
-  last_name: string
-  gotrue_id: string
+  first_name?: string
+  last_name?: string
+  user_id: string
   is_alpha_user: boolean
   free_project_limit: number
 }
 
 export interface Role {
-  id: number
+  id: string
   name: string
 }
 
 export interface Permission {
-  actions: PermissionAction[]
+  actions: string[]
   condition: jsonLogic.RulesLogic
   organization_slug: string
   resources: string[]

@@ -12,7 +12,6 @@ import { useDatabaseIndexDeleteMutation } from 'data/database-indexes/index-dele
 import { DatabaseIndex, useIndexesQuery } from 'data/database-indexes/indexes-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import {
   Button,
@@ -29,9 +28,10 @@ import {
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import CreateIndexSidePanel from './CreateIndexSidePanel'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Indexes = () => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { schema: urlSchema, table } = useParams()
 
   const [search, setSearch] = useState('')
@@ -48,8 +48,7 @@ const Indexes = () => {
     isError: isErrorIndexes,
   } = useIndexesQuery({
     schema: selectedSchema,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const {
     data: schemas,
@@ -57,8 +56,7 @@ const Indexes = () => {
     isSuccess: isSuccessSchemas,
     isError: isErrorSchemas,
   } = useSchemasQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const { mutate: deleteIndex, isLoading: isExecuting } = useDatabaseIndexDeleteMutation({
@@ -77,11 +75,10 @@ const Indexes = () => {
       : sortedIndexes
 
   const onConfirmDeleteIndex = (index: DatabaseIndex) => {
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     deleteIndex({
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
       name: index.name,
       schema: selectedSchema,
     })

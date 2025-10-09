@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { AlertTriangle, Book, Github, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -7,15 +6,14 @@ import { toast } from 'sonner'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseExtensionDisableMutation } from 'data/database-extensions/database-extension-disable-mutation'
 import { DatabaseExtension } from 'data/database-extensions/database-extensions-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useIsOrioleDb, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { extensions } from 'shared-data'
 import { Button, Switch, Tooltip, TooltipContent, TooltipTrigger, TableRow, TableCell } from 'ui'
 import { Admonition } from 'ui-patterns'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import EnableExtensionModal from './EnableExtensionModal'
 import { EXTENSION_DISABLE_WARNINGS } from './Extensions.constants'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ExtensionRowProps {
   extension: DatabaseExtension
@@ -23,19 +21,14 @@ interface ExtensionRowProps {
 
 const ExtensionRow = ({ extension }: ExtensionRowProps) => {
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
   const isOn = extension.installed_version !== null
-  const isOrioleDb = useIsOrioleDb()
 
   const [isDisableModalOpen, setIsDisableModalOpen] = useState(false)
   const [showConfirmEnableModal, setShowConfirmEnableModal] = useState(false)
-
-  const { can: canUpdateExtensions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'extensions'
-  )
-  const orioleDbCheck = isOrioleDb && extension.name === 'orioledb'
-  const disabled = !canUpdateExtensions || orioleDbCheck
+  // FIXME: need permission implemented 
+  const { can: canUpdateExtensions } = {can:true}
+  const disabled = !canUpdateExtensions
 
   const extensionMeta = extensions.find((item) => item.name === extension.name)
   const docsUrl = extensionMeta?.link.startsWith('/guides')
@@ -50,13 +43,10 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
   })
 
   const onConfirmDisable = () => {
-    if (orgSlug === undefined) return console.error('Organization slug is required')
-    if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
 
     disableExtension({
-      orgSlug,
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
       id: extension.name,
     })
   }
@@ -167,9 +157,7 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
                 <TooltipContent side="bottom">
                   {!canUpdateExtensions
                     ? 'You need additional permissions to toggle extensions'
-                    : orioleDbCheck
-                      ? 'Project is using OrioleDB and cannot be disabled'
-                      : null}
+                    : null}
                 </TooltipContent>
               )}
             </Tooltip>

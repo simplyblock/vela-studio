@@ -8,9 +8,11 @@ import { FormHeader } from 'components/ui/Forms/FormHeader'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const RealtimePolicies = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [showPolicyEditor, setShowPolicyEditor] = useState(false)
   const [selectedPolicyToEdit, setSelectedPolicyToEdit] = useState<PostgresPolicy>()
@@ -22,8 +24,7 @@ export const RealtimePolicies = () => {
     isError,
     error,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: 'realtime',
   })
 

@@ -5,20 +5,16 @@ import { Query } from '@supabase/pg-meta/src/query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { vaultSecretsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type VaultSecretDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   id: string
 }
 
-export async function deleteVaultSecret({
-  projectRef,
-  connectionString,
-  id,
-}: VaultSecretDeleteVariables) {
+export async function deleteVaultSecret({ branch, id }: VaultSecretDeleteVariables) {
   const sql = new Query().from('secrets', 'vault').delete().match({ id }).toSql()
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -38,8 +34,10 @@ export const useVaultSecretDeleteMutation = ({
     (vars) => deleteVaultSecret(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(vaultSecretsKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          vaultSecretsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

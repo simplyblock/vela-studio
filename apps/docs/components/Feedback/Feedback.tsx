@@ -15,7 +15,6 @@ import {
 import { type Database, useConstant, useIsLoggedIn } from 'common'
 import { Button, cn } from 'ui'
 
-import { IS_PLATFORM } from '~/lib/constants'
 import { useSendFeedbackMutation } from '~/lib/fetch/feedback'
 import { useSendTelemetryEvent } from '~/lib/telemetry'
 import { getLinearTeam, getSanitizedTabParams } from './Feedback.utils'
@@ -81,12 +80,10 @@ function Feedback({ className }: { className?: string }) {
   const sendTelemetryEvent = useSendTelemetryEvent()
   const { mutate: sendFeedbackComment } = useSendFeedbackMutation()
   const supabase = useConstant(() =>
-    IS_PLATFORM
-      ? createClient<Database>(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        )
-      : undefined
+    createClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
   )
 
   const unanswered = state.type === 'unanswered'

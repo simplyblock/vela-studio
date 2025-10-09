@@ -6,31 +6,30 @@ import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
 
 export type BranchCreateVariables = {
-  is_default?: boolean
+  orgRef: string
   projectRef: string
+  branchRef: string
   branchName: string
-  gitBranch?: string
-  region?: string
   withData?: boolean
 }
 
 export async function createBranch({
-  is_default,
+  orgRef,
   projectRef,
+  branchRef,
   branchName,
-  gitBranch,
-  region,
   withData,
 }: BranchCreateVariables) {
-  const { data, error } = await post('/v1/projects/{ref}/branches', {
+  const { data, error } = await post('/platform/organizations/{slug}/projects/{ref}/branches', {
     params: {
-      path: { ref: projectRef },
+      path: {
+        slug: orgRef,
+        ref: projectRef,
+      },
     },
     body: {
-      is_default,
       branch_name: branchName,
-      git_branch: gitBranch,
-      region: region,
+      source: branchRef,
       with_data: withData,
     },
   })
@@ -54,8 +53,8 @@ export const useBranchCreateMutation = ({
     (vars) => createBranch(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(branchKeys.list(projectRef))
+        const { orgRef, projectRef } = variables
+        await queryClient.invalidateQueries(branchKeys.list(orgRef, projectRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

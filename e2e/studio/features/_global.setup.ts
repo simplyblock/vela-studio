@@ -13,8 +13,6 @@ dotenv.config({
   override: true,
 })
 
-const IS_PLATFORM = process.env.IS_PLATFORM
-
 const envHasAuth = env.AUTHENTICATION
 
 setup('Global Setup', async ({ page }) => {
@@ -22,7 +20,6 @@ setup('Global Setup', async ({ page }) => {
     - Studio URL: ${env.STUDIO_URL}
     - API URL: ${env.API_URL}
     - Auth: ${envHasAuth ? 'enabled' : 'disabled'}
-    - Is Platform: ${IS_PLATFORM}
     `)
 
   /**

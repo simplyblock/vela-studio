@@ -8,10 +8,10 @@ import { tableEditorKeys } from 'data/table-editor/keys'
 import { viewKeys } from 'data/views/keys'
 import type { ResponseError } from 'types'
 import { tableKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type TableDeleteVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   id: number
   name: string
   schema: string
@@ -19,8 +19,7 @@ export type TableDeleteVariables = {
 }
 
 export async function deleteTable({
-  projectRef,
-  connectionString,
+  branch,
   id,
   name,
   schema,
@@ -29,8 +28,7 @@ export async function deleteTable({
   const { sql } = pgMeta.tables.remove({ name, schema }, { cascade })
 
   const { result } = await executeSql<void>({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['table', 'delete', id],
   })
@@ -54,13 +52,21 @@ export const useTableDeleteMutation = ({
     (vars) => deleteTable(vars),
     {
       async onSuccess(data, variables, context) {
-        const { id, projectRef, schema } = variables
+        const { id, branch, schema } = variables
         await Promise.all([
-          queryClient.invalidateQueries(tableEditorKeys.tableEditor(projectRef, id)),
-          queryClient.invalidateQueries(tableKeys.list(projectRef, schema)),
-          queryClient.invalidateQueries(entityTypeKeys.list(projectRef)),
+          queryClient.invalidateQueries(
+            tableEditorKeys.tableEditor(branch.organization_id, branch.project_id, branch.id, id)
+          ),
+          queryClient.invalidateQueries(
+            tableKeys.list(branch.organization_id, branch.project_id, branch.id, schema)
+          ),
+          queryClient.invalidateQueries(
+            entityTypeKeys.list(branch.organization_id, branch.project_id, branch.id)
+          ),
           // invalidate all views from this schema
-          queryClient.invalidateQueries(viewKeys.listBySchema(projectRef, schema)),
+          queryClient.invalidateQueries(
+            viewKeys.listBySchema(branch.organization_id, branch.project_id, branch.id, schema)
+          ),
         ])
 
         await onSuccess?.(data, variables, context)

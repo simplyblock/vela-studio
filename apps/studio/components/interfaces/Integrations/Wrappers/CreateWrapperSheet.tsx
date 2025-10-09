@@ -29,6 +29,7 @@ import InputField from './InputField'
 import { WrapperMeta } from './Wrappers.types'
 import { makeValidateRequired } from './Wrappers.utils'
 import WrapperTableEditor from './WrapperTableEditor'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface CreateWrapperSheetProps {
   isClosing: boolean
@@ -47,8 +48,9 @@ export const CreateWrapperSheet = ({
 }: CreateWrapperSheetProps) => {
   const queryClient = useQueryClient()
 
-  const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { mutate: sendEvent } = useSendEventMutation()
 
   const [newTables, setNewTables] = useState<any[]>([])
@@ -60,8 +62,7 @@ export const CreateWrapperSheet = ({
   )
 
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const wrappersExtension = extensions?.find((ext) => ext.name === 'wrappers')
@@ -78,16 +79,15 @@ export const CreateWrapperSheet = ({
       setNewTables([])
 
       const hasNewSchema = newTables.some((table) => table.is_new_schema)
-      if (hasNewSchema) invalidateSchemasQuery(queryClient, org?.slug, project?.ref)
+      if (hasNewSchema)
+        invalidateSchemasQuery(queryClient, branch?.organization_id, branch?.project_id, branch?.id)
 
       onClose()
     },
   })
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug: org?.slug,
-    projectRef: project?.ref!,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const initialValues = {
@@ -150,16 +150,13 @@ export const CreateWrapperSheet = ({
     try {
       if (selectedMode === 'schema') {
         await createSchema({
-          orgSlug: org?.slug,
-          projectRef: project?.ref,
-          connectionString: project?.connectionString,
+          branch,
           name: values.target_schema,
         })
       }
 
       await createFDW({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         wrapperMeta,
         formState: {
           ...values,

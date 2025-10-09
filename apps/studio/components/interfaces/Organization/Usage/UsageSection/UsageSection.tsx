@@ -16,6 +16,7 @@ export interface ChartMeta {
 export interface UsageSectionProps {
   orgSlug: string
   projectRef?: string
+  branchRef?: string
   categoryKey: CategoryMetaKey
   subscription?: OrgSubscription
   chartMeta: ChartMeta
@@ -25,6 +26,7 @@ export interface UsageSectionProps {
 const UsageSection = ({
   orgSlug,
   projectRef,
+  branchRef,
   categoryKey,
   chartMeta,
   subscription,
@@ -55,8 +57,9 @@ const UsageSection = ({
         attribute.key === 'diskSize' ? (
           <DiskUsage
             key={attribute.name}
-            slug={orgSlug}
+            orgRef={orgSlug}
             projectRef={projectRef}
+            branchRef={branchRef}
             attribute={attribute}
             subscription={subscription}
             currentBillingCycleSelected={currentBillingCycleSelected}
@@ -65,8 +68,9 @@ const UsageSection = ({
         ) : attribute.key === PricingMetric.DATABASE_SIZE ? (
           <DatabaseSizeUsage
             key={attribute.name}
-            slug={orgSlug}
+            orgRef={orgSlug}
             projectRef={projectRef}
+            branchRef={branchRef}
             attribute={attribute}
             subscription={subscription}
             currentBillingCycleSelected={currentBillingCycleSelected}

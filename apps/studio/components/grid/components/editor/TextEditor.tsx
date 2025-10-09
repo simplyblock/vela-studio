@@ -16,6 +16,7 @@ import { EmptyValue } from '../common/EmptyValue'
 import { MonacoEditor } from '../common/MonacoEditor'
 import { NullValue } from '../common/NullValue'
 import { TruncatedWarningOverlay } from './TruncatedWarningOverlay'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const TextEditor = <TRow, TSummaryRow = unknown>({
   row,
@@ -29,13 +30,13 @@ export const TextEditor = <TRow, TSummaryRow = unknown>({
   isEditable?: boolean
   onExpandEditor: (column: string, row: TRow) => void
 }) => {
-  const { id: _id } = useParams()
+  const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: selectedTable } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     id,
   })
 
@@ -50,7 +51,7 @@ export const TextEditor = <TRow, TSummaryRow = unknown>({
   const isTruncated = isValueTruncated(initialValue)
 
   const loadFullValue = () => {
-    if (selectedTable === undefined || project === undefined || !isTableLike(selectedTable)) return
+    if (selectedTable === undefined || project === undefined || branch === undefined || !isTableLike(selectedTable)) return
     if (selectedTable.primary_keys.length === 0) {
       return toast('Unable to load value as table has no primary keys')
     }
@@ -64,8 +65,7 @@ export const TextEditor = <TRow, TSummaryRow = unknown>({
         table: { schema: selectedTable.schema, name: selectedTable.name },
         column: column.name as string,
         pkMatch,
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
       },
       { onSuccess: (data) => setValue(data) }
     )

@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { indexOf } from 'lodash'
 import { Lock } from 'lucide-react'
 import Link from 'next/link'
@@ -15,8 +14,6 @@ import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-co
 import { useProjectPostgrestConfigUpdateMutation } from 'data/config/project-postgrest-config-update-mutation'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -50,6 +47,7 @@ import {
   MultiSelectorTrigger,
 } from 'ui-patterns/multi-select'
 import { HardenAPIModal } from './HardenAPIModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const formSchema = z
   .object({
@@ -78,20 +76,17 @@ const formSchema = z
   )
 
 export const PostgrestConfig = () => {
-  const { slug, ref: projectRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [showModal, setShowModal] = useState(false)
 
-  const { data: config, isError, isLoading } = useProjectPostgrestConfigQuery({ orgSlug: slug, projectRef })
+  const { data: config, isError, isLoading } = useProjectPostgrestConfigQuery({ branch })
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const { data: schemas, isLoading: isLoadingSchemas } = useSchemasQuery({
-    orgSlug: slug,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const { mutate: updatePostgrestConfig, isLoading: isUpdating } =
     useProjectPostgrestConfigUpdateMutation({
@@ -102,9 +97,8 @@ export const PostgrestConfig = () => {
 
   const formId = 'project-postgres-config'
   const hiddenSchema = ['auth', 'pgbouncer', 'hooks', 'extensions']
-  const { can: canUpdatePostgrestConfig, isSuccess: isPermissionsLoaded } =
-    useAsyncCheckProjectPermissions(PermissionAction.UPDATE, 'custom_config_postgrest')
-
+    // FIXME: need permission implemented 
+  const { can: canUpdatePostgrestConfig, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
   const isGraphqlExtensionEnabled =
     (extensions ?? []).find((ext) => ext.name === 'pg_graphql')?.installed_version !== null
 
@@ -143,11 +137,10 @@ export const PostgrestConfig = () => {
   }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!projectRef) return console.error('Project ref is required') // is this needed ?
+    if (!branch) return console.error('Branch is required') // is this needed ?
 
     updatePostgrestConfig({
-      orgSlug: slug!,
-      projectRef,
+      branch,
       dbSchema: values.dbSchema.join(', '),
       maxRows: values.maxRows,
       dbExtraSearchPath: values.dbExtraSearchPath,
@@ -317,7 +310,7 @@ export const PostgrestConfig = () => {
                                           schema are still exposed over our GraphQL endpoints.
                                         </p>
                                         <Button asChild type="default" className="mt-2">
-                                          <Link href={`/project/${projectRef}/database/extensions`}>
+                                          <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/extensions`}>
                                             Disable the pg_graphql extension
                                           </Link>
                                         </Button>

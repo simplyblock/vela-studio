@@ -70,7 +70,7 @@ export const UpdateRolesConfirmationModal = ({
     if (slug === undefined) return console.error('Slug is required')
 
     setSaving(true)
-    const gotrueId = member.gotrue_id
+    const userId = member.user_id
     const existingRoles = member.role_ids
       .map((id) => {
         return [...org_scoped_roles, ...project_scoped_roles].find((r) => r.id === id)
@@ -85,7 +85,7 @@ export const UpdateRolesConfirmationModal = ({
       try {
         await assignRole({
           slug,
-          gotrueId,
+          userId,
           roleId: projectsRoleConfiguration[0].roleId,
         })
         toast.success(`Successfully updated role for ${member.username}`)
@@ -104,19 +104,19 @@ export const UpdateRolesConfirmationModal = ({
       for (const { roleId, projectIds } of toAssign) {
         await assignRole({
           slug,
-          gotrueId,
+          userId,
           roleId,
           projects: projectIds.map((id) => projects?.find((p) => p.id === id)?.ref) as string[],
           skipInvalidation: true,
         })
       }
       for (const roleId of toRemove) {
-        await removeRole({ slug, gotrueId, roleId, skipInvalidation: true })
+        await removeRole({ slug, userId, roleId, skipInvalidation: true })
       }
       for (const { roleId, projectIds } of toUpdate) {
         await updateRole({
           slug,
-          gotrueId,
+          userId,
           roleId,
           roleName: project_scoped_roles.find((r) => r.id === roleId)?.name as string,
           projects: projectIds.map((id) => projects?.find((p) => p.id === id)?.ref) as string[],

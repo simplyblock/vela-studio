@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { parseAsString, useQueryStates } from 'nuqs'
 import { useEffect, useMemo, useState } from 'react'
@@ -16,58 +15,31 @@ import {
   Button,
   Input_Shadcn_,
   Label_Shadcn_,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { useConfirmPendingSubscriptionCreateMutation } from 'data/subscriptions/org-subscription-confirm-pending-create'
-import { useTheme } from 'next-themes'
 import { SetupIntentResponse } from 'data/stripe/setup-intent-mutation'
 import { useProfile } from 'lib/profile'
-import type { CustomerAddress, CustomerTaxId } from 'data/organizations/types'
-const ORG_KIND_DEFAULT = 'PERSONAL'
-
-const ORG_SIZE_DEFAULT = '1'
 
 interface NewOrgFormProps {
-  onPaymentMethodReset: () => void
   setupIntent?: SetupIntentResponse
-  onPlanSelected: (plan: string) => void
 }
 
-const plans = ['FREE', 'PRO', 'TEAM'] as const
-
 const formSchema = z.object({
-  plan: z
-    .string()
-    .transform((val) => val.toUpperCase())
-    .pipe(z.enum(plans)),
   name: z.string().min(1),
-  kind: z
-    .string()
-    .transform((val) => val.toUpperCase())
-    .pipe(
-      z.enum(['PERSONAL', 'EDUCATIONAL', 'STARTUP', 'AGENCY', 'COMPANY', 'UNDISCLOSED'] as const)
-    ),
-  size: z.enum(['1', '10', '50', '100', '300'] as const),
   spend_cap: z.boolean(),
 })
 
 type FormState = z.infer<typeof formSchema>
 
-const newMandatoryAddressInput = true
-
 /**
  * No org selected yet, create a new one
  * [Joshen] Need to refactor to use Form_Shadcn here
  */
-const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOrgFormProps) => {
+const NewOrgForm = ({}: NewOrgFormProps) => {
   const router = useRouter()
   const user = useProfile()
   const { data: organizations, isSuccess } = useOrganizationsQuery()
   const { data: projects } = useProjectsQuery()
-  const { resolvedTheme } = useTheme()
 
   const [lastVisitedOrganization] = useLocalStorageQuery(
     LOCAL_STORAGE_KEYS.LAST_VISITED_ORGANIZATION,
@@ -84,10 +56,7 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
     useState(false)
 
   const [formState, setFormState] = useState<FormState>({
-    plan: 'FREE',
     name: '',
-    kind: ORG_KIND_DEFAULT,
-    size: ORG_SIZE_DEFAULT,
     spend_cap: true,
   })
 
@@ -103,16 +72,9 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
   useEffect(() => {
     if (!router.isReady) return
 
-    const { name, kind, plan, size, spend_cap } = router.query
+    const { name, spend_cap } = router.query
 
     if (typeof name === 'string') updateForm('name', name)
-    if (typeof kind === 'string') updateForm('kind', kind)
-    if (typeof plan === 'string' && plans.includes(plan.toUpperCase() as (typeof plans)[number])) {
-      const uppercasedPlan = plan.toUpperCase() as (typeof plans)[number]
-      updateForm('plan', uppercasedPlan)
-      onPlanSelected(uppercasedPlan)
-    }
-    if (typeof size === 'string') updateForm('size', size)
     if (typeof spend_cap === 'string') updateForm('spend_cap', spend_cap === 'true')
   }, [router.isReady])
 
@@ -135,14 +97,6 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
     },
   })
 
-  const { mutate: confirmPendingSubscriptionChange } = useConfirmPendingSubscriptionCreateMutation({
-    onSuccess: (data) => {
-      if (data && 'slug' in data) {
-        onOrganizationCreated({ slug: data.slug })
-      }
-    },
-  })
-
   const onOrganizationCreated = (org: { slug: string }) => {
     const prefilledProjectName = user.profile?.username
       ? user.profile.username + `'s Project`
@@ -162,29 +116,9 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
     return value.length >= 1
   }
 
-  async function createOrg(
-    paymentMethodId?: string,
-    customerData?: {
-      address: CustomerAddress | null
-      billing_name: string | null
-      tax_id: CustomerTaxId | null
-    }
-  ) {
-    const dbTier = formState.plan === 'PRO' && !formState.spend_cap ? 'PAYG' : formState.plan
-
+  async function createOrg() {
     createOrganization({
       name: formState.name,
-      kind: formState.kind,
-      tier: ('tier_' + dbTier.toLowerCase()) as
-        | 'tier_payg'
-        | 'tier_pro'
-        | 'tier_free'
-        | 'tier_team',
-      ...(formState.kind == 'COMPANY' ? { size: formState.size } : {}),
-      payment_method: paymentMethodId,
-      billing_name: dbTier === 'FREE' ? undefined : customerData?.billing_name,
-      address: dbTier === 'FREE' ? null : customerData?.address,
-      tax_id: dbTier === 'FREE' ? undefined : customerData?.tax_id ?? undefined,
     })
   }
 
@@ -201,14 +135,7 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
     if (!isOrgNameValid) {
       return toast.error('Organization name is empty')
     }
-
-    const hasFreeOrgWithProjects = freeOrgs.some((it) => projectsByOrg[it.slug]?.length > 0)
-
-    if (hasFreeOrgWithProjects && formState.plan !== 'FREE') {
-      setIsOrgCreationConfirmationModalVisible(true)
-    } else {
-      await handleSubmit()
-    }
+    await handleSubmit()
   }
 
   return (
@@ -294,63 +221,6 @@ const NewOrgForm = ({ onPaymentMethodReset, setupIntent, onPlanSelected }: NewOr
         }}
         variant={'warning'}
       >
-        <p className="text-sm text-foreground-light">
-          Supabase{' '}
-          <Link
-            className="underline"
-            href="/docs/guides/platform/billing-on-supabase"
-            target="_blank"
-          >
-            bills per organization
-          </Link>
-          . If you want to upgrade your existing projects, upgrade your existing organization
-          instead.
-        </p>
-
-        <ul className="mt-4 space-y-6">
-          {freeOrgs
-            .filter((it) => projectsByOrg[it.slug]?.length > 0)
-            .map((org) => {
-              const orgProjects = projectsByOrg[org.slug].map((it) => it.name)
-
-              return (
-                <li key={`org_${org.slug}`}>
-                  <div className="flex justify-between text-sm">
-                    <span>{org.name}</span>
-                    <Button asChild type="primary" size="tiny">
-                      <Link href={`/org/${org.slug}/billing?panel=subscriptionPlan`}>
-                        Change Plan
-                      </Link>
-                    </Button>
-                  </div>
-                  <div className="text-foreground-light text-xs">
-                    {orgProjects.length <= 2 ? (
-                      <span>{orgProjects.join('and ')}</span>
-                    ) : (
-                      <div>
-                        {orgProjects.slice(0, 2).join(', ')} and{' '}
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="underline decoration-dotted">
-                              {orgProjects.length - 2} other{' '}
-                              {orgProjects.length === 3 ? 'project' : 'project'}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <ul className="list-disc list-inside">
-                              {orgProjects.slice(2).map((project) => (
-                                <li>{project}</li>
-                              ))}
-                            </ul>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    )}
-                  </div>
-                </li>
-              )
-            })}
-        </ul>
       </ConfirmationModal>
     </form>
   )

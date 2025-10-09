@@ -10,12 +10,12 @@ import {
 import { convertByteaToHex } from 'components/interfaces/TableGridEditor/SidePanelEditor/RowEditor/RowEditor.utils'
 import { EditorTablePageLink } from 'data/prefetchers/project.$ref.editor.$id'
 import { useTableRowsQuery } from 'data/table-rows/table-rows-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { getPathReferences } from 'data/vela/path-references'
 import { useRouter } from 'next/router'
 import { DEFAULT_HOME } from '../../../../pages/api/constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ReferenceRecordPeekProps {
   table: PostgresTable
@@ -24,15 +24,14 @@ interface ReferenceRecordPeekProps {
 }
 
 export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPeekProps) => {
-  const { slug, ref } = getPathReferences()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
 
   const router = useRouter()
 
   const { data, error, isSuccess, isError, isLoading } = useTableRowsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       tableId: table.id,
       filters: [{ column, operator: '=', value }],
       page: 1,
@@ -95,7 +94,7 @@ export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPee
     return res
   })
 
-  if (!slug || !ref) {
+  if (!orgRef || !projectRef || !branchRef) {
     return router.push(DEFAULT_HOME)
   }
 
@@ -136,9 +135,10 @@ export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPee
       />
       <div className="flex items-center justify-end px-2 py-1">
         <EditorTablePageLink
-          href={`/org/${slug}/project/${ref}/editor/${table.id}?schema=${table.schema}&filter=${column}%3Aeq%3A${value}`}
-          slug={slug}
-          projectRef={ref}
+          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${table.id}?schema=${table.schema}&filter=${column}%3Aeq%3A${value}`}
+          orgRef={orgRef}
+          projectRef={projectRef}
+          branchRef={branchRef}
           id={String(table.id)}
           filters={[{ column, operator: '=', value: String(value) }]}
         >

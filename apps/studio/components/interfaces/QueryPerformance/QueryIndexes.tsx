@@ -28,6 +28,7 @@ import { IndexImprovementText } from './IndexImprovementText'
 import { QueryPanelContainer, QueryPanelScoreSection, QueryPanelSection } from './QueryPanel'
 import { useIndexInvalidation } from './hooks/useIndexInvalidation'
 import { calculateImprovement, createIndexes, hasIndexRecommendations } from './index-advisor.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface QueryIndexesProps {
   selectedRow: any
@@ -40,6 +41,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
   // [Joshen] TODO implement this logic once the linter rules are in
   const isLinterWarning = false
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [showStartupCosts, setShowStartupCosts] = useState(false)
   const [isExecuting, setIsExecuting] = useState(false)
 
@@ -50,14 +52,12 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     isError,
     error,
   } = useGetIndexesFromSelectQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     query: selectedRow?.['query'],
   })
 
   const { data: extensions, isLoading: isLoadingExtensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
 
   const { isIndexAdvisorEnabled } = useIndexAdvisorStatus()
@@ -71,8 +71,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
     isLoading: isLoadingIndexAdvisorResult,
   } = useGetIndexAdvisorResult(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       query: selectedRow?.['query'],
     },
     { enabled: isIndexAdvisorEnabled }
@@ -100,8 +99,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
 
     try {
       await createIndexes({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         indexStatements: index_statements,
         onSuccess: () => refetch(),
       })

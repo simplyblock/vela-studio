@@ -9,8 +9,7 @@ import { useParams } from 'common'
 import { Markdown } from 'components/interfaces/Markdown'
 import { REPLICA_STATUS } from 'components/interfaces/Settings/Infrastructure/InfrastructureConfiguration/InstanceConfiguration.constants'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
-import { formatDatabaseID, formatDatabaseRegion } from 'data/read-replicas/replicas.utils'
-import { IS_PLATFORM } from 'lib/constants'
+import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import {
   Button,
@@ -28,6 +27,7 @@ import {
   TooltipTrigger,
   cn,
 } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DatabaseSelectorProps {
   selectedDatabaseId?: string // To override initial state
@@ -49,21 +49,22 @@ const DatabaseSelector = ({
   portal = true,
 }: DatabaseSelectorProps) => {
   const router = useRouter()
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
   const [, setShowConnect] = useQueryState('showConnect', parseAsBoolean.withDefault(false))
 
   const state = useDatabaseSelectorStateSnapshot()
   const selectedDatabaseId = _selectedDatabaseId ?? state.selectedDatabaseId
 
-  const { data, isLoading, isSuccess } = useReadReplicasQuery({ orgSlug: slug, projectRef })
+  const { data, isLoading, isSuccess } = useReadReplicasQuery({ branch })
   const databases = data ?? []
   const sortedDatabases = databases
     .sort((a, b) => (a.inserted_at > b.inserted_at ? 1 : 0))
     .sort((database) => (database.identifier === projectRef ? -1 : 0))
 
   const selectedDatabase = databases.find((db) => db.identifier === selectedDatabaseId)
-  const selectedDatabaseRegion = formatDatabaseRegion(selectedDatabase?.region ?? '')
+  const selectedDatabaseRegion = 'default'
   const formattedDatabaseId = formatDatabaseID(selectedDatabaseId ?? '')
 
   const selectedAdditionalOption = additionalOptions.find((x) => x.id === selectedDatabaseId)
@@ -144,7 +145,7 @@ const DatabaseSelector = ({
             <CommandGroup_Shadcn_>
               <ScrollArea className={(databases || []).length > 7 ? 'h-[210px]' : ''}>
                 {sortedDatabases?.map((database) => {
-                  const region = formatDatabaseRegion(database.region)
+                  const region = 'default'
                   const id = formatDatabaseID(database.identifier)
 
                   if (database.status !== 'ACTIVE_HEALTHY') {
@@ -167,7 +168,7 @@ const DatabaseSelector = ({
                         <TooltipContent side="right" className="w-80">
                           <Markdown
                             className="text-xs text-foreground"
-                            content={`Replica unable to accept requests as its ${status}. [View infrastructure settings](/project/${projectRef}/settings/infrastructure) for more information.`}
+                            content={`Replica unable to accept requests as its ${status}. [View infrastructure settings](/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/infrastructure) for more information.`}
                           />
                         </TooltipContent>
                       </Tooltip>
@@ -203,32 +204,30 @@ const DatabaseSelector = ({
                 })}
               </ScrollArea>
             </CommandGroup_Shadcn_>
-            {IS_PLATFORM && (
-              <CommandGroup_Shadcn_ className="border-t">
-                <CommandItem_Shadcn_
-                  className="cursor-pointer w-full"
-                  onSelect={() => {
+            <CommandGroup_Shadcn_ className="border-t">
+              <CommandItem_Shadcn_
+                className="cursor-pointer w-full"
+                onSelect={() => {
+                  setOpen(false)
+                  router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/infrastructure`)
+                }}
+                onClick={() => setOpen(false)}
+              >
+                <Link
+                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/infrastructure`}
+                  onClick={() => {
                     setOpen(false)
-                    router.push(`/org/${slug}/project/${projectRef}/settings/infrastructure`)
+                    // [Joshen] This is used in the Connect UI which is available across all pages
+                    setShowConnect(null)
+                    onCreateReplicaClick?.()
                   }}
-                  onClick={() => setOpen(false)}
+                  className="w-full flex items-center gap-2"
                 >
-                  <Link
-                    href={`/org/${slug}/project/${projectRef}/settings/infrastructure`}
-                    onClick={() => {
-                      setOpen(false)
-                      // [Joshen] This is used in the Connect UI which is available across all pages
-                      setShowConnect(null)
-                      onCreateReplicaClick?.()
-                    }}
-                    className="w-full flex items-center gap-2"
-                  >
-                    <Plus size={14} strokeWidth={1.5} />
-                    <p>Create a new read replica</p>
-                  </Link>
-                </CommandItem_Shadcn_>
-              </CommandGroup_Shadcn_>
-            )}
+                  <Plus size={14} strokeWidth={1.5} />
+                  <p>Create a new read replica</p>
+                </Link>
+              </CommandItem_Shadcn_>
+            </CommandGroup_Shadcn_>
           </CommandList_Shadcn_>
         </Command_Shadcn_>
       </PopoverContent_Shadcn_>

@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-// import { useQueryState } from 'nuqs'
 import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -37,7 +36,8 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { LintInfo } from '../Linter/Linter.constants'
 import { lintInfoMap } from '../Linter/Linter.utils'
 import { generateRuleDescription } from './AdvisorRules.utils'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface CreateRuleSheetProps {
   lint?: LintInfo
@@ -67,7 +67,8 @@ const defaultValues = {
  */
 export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetProps) => {
   const router = useRouter()
-  const { slug, ref: projectRef } = getPathReferences()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
 
   const routeCategory = router.pathname.split('/').pop()
   const { data: organization } = useSelectedOrganizationQuery()
@@ -82,7 +83,7 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
       if (ruleLintMeta) {
         if (!!routeCategory && routeCategory !== ruleLintMeta.category) {
           router.push(
-            `/org/${slug}/project/${projectRef}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
+            `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
           )
         } else {
           // setExpandedLint(ruleLintMeta?.name)
@@ -103,12 +104,10 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
   const { lint_name, assigned_to, is_disabled } = form.watch()
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (values) => {
-    if (!slug) return console.error('Organization slug is required')
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
 
     createRule({
-      orgSlug: slug,
-      projectRef,
+      branch,
       exception: {
         ...values,
         lint_category: undefined,
@@ -188,7 +187,7 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
                       <SelectContent_Shadcn_>
                         <SelectItem_Shadcn_ value="all">All project members</SelectItem_Shadcn_>
                         {members.map((m) => (
-                          <SelectItem_Shadcn_ key={m.gotrue_id} value={m.gotrue_id}>
+                          <SelectItem_Shadcn_ key={m.user_id} value={m.user_id}>
                             {m.username || m.primary_email}
                           </SelectItem_Shadcn_>
                         ))}
@@ -204,7 +203,7 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
                     {generateRuleDescription({
                       name: lint_name,
                       disabled: is_disabled,
-                      member: members.find((x) => x.gotrue_id === assigned_to),
+                      member: members.find((x) => x.user_id === assigned_to),
                     })}
                   </Admonition>
                 </div>

@@ -39,11 +39,11 @@ import {
 import { InlineLink } from 'components/ui/InlineLink'
 import { useProjectStorageConfigQuery } from 'data/config/project-storage-config-query'
 import { useBucketUpdateMutation } from 'data/storage/bucket-update-mutation'
-import { IS_PLATFORM } from 'lib/constants'
 import { Admonition } from 'ui-patterns'
 import { Bucket } from 'data/storage/buckets-query'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { isNonNullable } from 'lib/isNonNullable'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface EditBucketModalProps {
   visible: boolean
@@ -65,10 +65,11 @@ const BucketSchema = z.object({
 const formId = 'edit-storage-bucket-form'
 
 export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: updateBucket, isLoading: isUpdating } = useBucketUpdateMutation()
-  const { data } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef: ref })
+  const { data } = useProjectStorageConfigQuery({ branch })
   const { value, unit } = convertFromBytes(data?.fileSizeLimit ?? 0)
   const formattedGlobalUploadLimit = `${value} ${unit}`
 
@@ -104,11 +105,11 @@ export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalPro
 
   const onSubmit: SubmitHandler<z.infer<typeof BucketSchema>> = async (values) => {
     if (bucket === undefined) return console.error('Bucket is required')
-    if (ref === undefined) return console.error('Project ref is required')
+    if (projectRef === undefined) return console.error('Project ref is required')
 
     updateBucket(
       {
-        projectRef: ref,
+        projectRef: projectRef,
         id: bucket.id,
         isPublic: values.public,
         file_size_limit: values.has_file_size_limit
@@ -309,20 +310,18 @@ export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalPro
                             ))}
                           </SelectContent_Shadcn_>
                         </Select_Shadcn_>
-                        {IS_PLATFORM && (
-                          <div className="col-span-12 mt-2">
-                            <p className="text-foreground-light text-sm">
-                              Note: Individual bucket upload will still be capped at the{' '}
-                              <Link
-                                href={`/project/${ref}/settings/storage`}
-                                className="font-bold underline"
-                              >
-                                global upload limit
-                              </Link>{' '}
-                              of {formattedGlobalUploadLimit}
-                            </p>
-                          </div>
-                        )}
+                        <div className="col-span-12 mt-2">
+                          <p className="text-foreground-light text-sm">
+                            Note: Individual bucket upload will still be capped at the{' '}
+                            <Link
+                              href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/storage`}
+                              className="font-bold underline"
+                            >
+                              global upload limit
+                            </Link>{' '}
+                            of {formattedGlobalUploadLimit}
+                          </p>
+                        </div>
                       </div>
                     )}
                   </div>

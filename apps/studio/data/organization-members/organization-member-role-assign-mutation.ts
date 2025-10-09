@@ -9,23 +9,23 @@ import { organizationKeys } from './keys'
 
 export type OrganizationMemberAssignRoleVariables = {
   slug: string
-  gotrueId: string
-  roleId: number
+  userId: string
+  roleId: string
   projects?: string[]
   skipInvalidation?: boolean
 }
 
 export async function assignOrganizationMemberRole({
   slug,
-  gotrueId,
+  userId,
   roleId,
   projects,
 }: OrganizationMemberAssignRoleVariables) {
   const payload: components['schemas']['AssignMemberRoleBodyV2'] = { role_id: roleId }
   if (projects !== undefined) payload.role_scoped_projects = projects
 
-  const { data, error } = await patch('/platform/organizations/{slug}/members/{gotrue_id}', {
-    params: { path: { slug, gotrue_id: gotrueId } },
+  const { data, error } = await patch('/platform/organizations/{slug}/members/{user_id}', {
+    params: { path: { slug, user_id: userId } },
     body: payload,
     headers: { Version: '2' },
   })

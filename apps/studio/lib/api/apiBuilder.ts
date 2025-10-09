@@ -1,6 +1,7 @@
 import apiWrapper from './apiWrapper'
 import { NextApiHandler } from 'next/dist/shared/lib/utils'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getKeycloakManager } from 'common/keycloak'
 
 export type ApiHandler = NextApiHandler
 
@@ -80,16 +81,30 @@ export function apiBuilder(builder: (builder: ApiBuilder) => void): ApiHandler {
       return res
         .status(405)
         .setHeader('Allow', methods)
-        .json({ data: null, error: { message: `Method ${method} not allowed` } })
+        .json({ message: `Method ${method} not allowed` })
     }
 
     const handler = handlers[method as keyof typeof handlers]
     if (!handler) {
-      return res.status(500).json({ data: null, error: { message: 'Internal server error' } })
+      return res.status(500).json({ message: 'Internal server error' })
     }
 
-    return handler(req, res)
+    try {
+      return await handler(req, res)
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message })
+      }
+      return res.status(500).json({ message: error ? error : 'Unknown internal server error' })
+    }
   }
 
-  return (req, res) => apiWrapper(req, res, handlerFunction, { withAuth: useAuth })
+  const keycloakManager = getKeycloakManager();
+  return async (req, res) => {
+    const session = await keycloakManager.getSession(req, res)
+    if (session) {
+      req.headers.authorization = `Bearer ${(session as any).access_token}`
+    }
+    return apiWrapper(req, res, handlerFunction, { withAuth: useAuth })
+  }
 }

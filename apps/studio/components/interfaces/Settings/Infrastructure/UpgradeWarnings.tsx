@@ -61,7 +61,7 @@ export const UnsupportedExtensionsWarning = ({
 }: {
   unsupportedExtensions: string[]
 }) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   return (
     <Alert_Shadcn_
@@ -77,7 +77,7 @@ export const UnsupportedExtensionsWarning = ({
             {unsupportedExtensions.map((obj: string) => (
               <li className="list-disc" key={obj}>
                 <Link
-                  href={`/org/${slug}/project/${ref}/database/extensions?filter=${obj}`}
+                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/extensions?filter=${obj}`}
                   className="hover:text-foreground transition"
                 >
                   {obj}

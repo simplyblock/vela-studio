@@ -7,8 +7,8 @@ import { orderCommandSectionsByPriority } from 'components/interfaces/App/Comman
 import { useParams } from 'common'
 
 export function useAuthGotoCommands(options?: CommandOptions) {
-  let { slug, ref } = useParams()
-  ref ||= '_'
+  let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  projectRef ||= '_'
 
   useRegisterCommands(
     'Actions',
@@ -17,14 +17,14 @@ export function useAuthGotoCommands(options?: CommandOptions) {
         id: 'create-rls-policy',
         name: 'Create RLS policy',
         value: 'Create RLS (Row Level Security) policy',
-        route: `/org/${slug}/project/${ref}/auth/policies`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`,
         icon: () => <Lock />,
       },
     ],
     {
       ...options,
-      deps: [ref],
-      enabled: (options?.enabled ?? true) && ref !== '_',
+      deps: [orgRef, projectRef, branchRef],
+      enabled: (options?.enabled ?? true) && projectRef !== '_',
       orderSection: orderCommandSectionsByPriority,
       sectionMeta: { priority: 3 },
     }
@@ -37,87 +37,87 @@ export function useAuthGotoCommands(options?: CommandOptions) {
         id: 'nav-auth-users',
         name: 'Users',
         value: 'Auth: Users',
-        route: `/org/${slug}/project/${ref}/auth/users`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/users`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-policies',
         name: 'Policies',
         value: 'Auth: Policies (RLS)',
-        route: `/org/${slug}/project/${ref}/auth/policies`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-providers',
         name: 'Providers',
         value: 'Auth: Providers (Social Login, SSO)',
-        route: `/org/${slug}/project/${ref}/auth/providers`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-providers',
         name: 'Providers (Third Party)',
         value: 'Auth: Providers (Third Party)',
-        route: `/org/${slug}/project/${ref}/auth/third-party`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/third-party`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-sessions',
         name: 'Sessions',
         value: 'Auth: Sessions (User Sessions)',
-        route: `/org/${slug}/project/${ref}/auth/sessions`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/sessions`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-rate-limits',
         name: 'Rate Limits',
         value: 'Auth: Rate Limits',
-        route: `/org/${slug}/project/${ref}/auth/rate-limits`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/rate-limits`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-templates',
         name: 'Email Templates',
         value: 'Auth: Email Templates',
-        route: `/org/${slug}/project/${ref}/auth/templates`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/templates`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-mfa',
         name: 'Multi Factor Authentication (MFA)',
         value: 'Auth: Multi Factor Authenticaiton (MFA)',
-        route: `/org/${slug}/project/${ref}/auth/mfa`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/mfa`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-url-configuration',
         name: 'URL Configuration',
         value: 'Auth: URL Configuration (Site URL, Redirect URLs)',
-        route: `/org/${slug}/project/${ref}/auth/url-configuration`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/url-configuration`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-attack-protection',
         name: 'Attack Protection',
         value: 'Auth: Attack Protection',
-        route: `/org/${slug}/project/${ref}/auth/protection`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/protection`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-auth-hooks',
         name: 'Auth Hooks',
         value: 'Auth: Auth Hooks',
-        route: `/org/${slug}/project/${ref}/auth/hooks`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/hooks`,
         defaultHidden: true,
       },
       {
         id: 'nav-auth-advanced-settings',
         name: 'Auth Advanced Settings',
         value: 'Auth: Advanced Settings',
-        route: `/org/${slug}/project/${ref}/auth/advanced`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/advanced`,
         defaultHidden: true,
       },
     ],
-    { ...options, deps: [ref] }
+    { ...options, deps: [orgRef, projectRef, branchRef] }
   )
 }

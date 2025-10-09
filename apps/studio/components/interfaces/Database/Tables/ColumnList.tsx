@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { noop } from 'lodash'
 import { Check, ChevronLeft, Edit, MoreVertical, Plus, Search, Trash, X } from 'lucide-react'
 import Link from 'next/link'
@@ -13,8 +12,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useTableEditorQuery } from 'data/table-editor/table-editor-query'
 import { isTableLike } from 'data/table-editor/table-editor-types'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import {
   Button,
@@ -28,6 +25,7 @@ import {
   TooltipTrigger,
 } from 'ui'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface ColumnListProps {
   onAddColumn: () => void
@@ -40,10 +38,10 @@ export const ColumnList = ({
   onEditColumn = noop,
   onDeleteColumn = noop,
 }: ColumnListProps) => {
-  const { slug, id: _id, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id: _id } = useParams()
   const id = _id ? Number(_id) : undefined
 
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data: selectedTable,
     error,
@@ -51,8 +49,7 @@ export const ColumnList = ({
     isLoading,
     isSuccess,
   } = useTableEditorQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     id,
   })
 
@@ -65,17 +62,15 @@ export const ColumnList = ({
       : selectedTable?.columns?.filter((column) => column.name.includes(filterString))) ?? []
 
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedTable?.schema ?? '' })
-  const { can: canUpdateColumns } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'columns'
-  )
+   // FIXME: need permission implemented 
+  const { can: canUpdateColumns } = {can:true}
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button asChild type="outline" icon={<ChevronLeft />} style={{ padding: '5px' }}>
-            <Link href={`/org/${slug}/project/${ref}/database/tables`} />
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/tables`} />
           </Button>
           <Input
             size="small"

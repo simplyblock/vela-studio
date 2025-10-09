@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
@@ -12,7 +11,6 @@ import {
   isTableLike,
   isView,
 } from 'data/table-editor/table-editor-types'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useUrlState } from 'hooks/ui/useUrlState'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import { useAppStateSnapshot } from 'state/app-state'
@@ -23,6 +21,7 @@ import { Admonition, GenericSkeletonLoader } from 'ui-patterns'
 import DeleteConfirmationDialogs from './DeleteConfirmationDialogs'
 import SidePanelEditor from './SidePanelEditor/SidePanelEditor'
 import TableDefinition from './TableDefinition'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface TableGridEditorProps {
   isLoadingSelectedTable?: boolean
@@ -35,19 +34,21 @@ export const TableGridEditor = ({
 }: TableGridEditorProps) => {
   const router = useRouter()
   const appSnap = useAppStateSnapshot()
-  const { slug, ref: projectRef, id } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const tabs = useTabsStateSnapshot()
 
   useLoadTableEditorStateFromLocalStorageIntoUrl({
-    projectRef,
+    branch,
     table: selectedTable,
   })
 
   const [{ view: selectedView = 'data' }] = useUrlState()
-
-  const canEditTables = useCheckPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, 'tables')
-  const canEditColumns = useCheckPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, 'columns')
+  // FIXME: need permission implemented 
+  const canEditTables = true
+   // FIXME: need permission implemented  
+  const canEditColumns = true
   const isReadOnly = !canEditTables && !canEditColumns
   const tabId = !!id ? tabs.openTabs.find((x) => x.endsWith(id)) : undefined
   const openTabs = tabs.openTabs.filter((x) => !x.startsWith('sql'))
@@ -58,7 +59,7 @@ export const TableGridEditor = ({
 
   const onTableCreated = useCallback(
     (table: { id: number }) => {
-      router.push(`/org/${slug}/project/${projectRef}/editor/${table.id}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${table.id}`)
     },
     [projectRef, router]
   )
@@ -118,7 +119,7 @@ export const TableGridEditor = ({
                 className="mt-2"
                 onClick={() => appSnap.setDashboardHistory(projectRef, 'editor', undefined)}
               >
-                <Link href={`/org/${slug}/project/${projectRef}/editor/${openTabs[0].split('-')[1]}`}>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${openTabs[0].split('-')[1]}`}>
                   Close tab
                 </Link>
               </Button>
@@ -129,7 +130,7 @@ export const TableGridEditor = ({
                 className="mt-2"
                 onClick={() => appSnap.setDashboardHistory(projectRef, 'editor', undefined)}
               >
-                <Link href={`/org/${slug}/project/${projectRef}/editor`}>Head back</Link>
+                <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`}>Head back</Link>
               </Button>
             )}
           </Admonition>
@@ -156,7 +157,7 @@ export const TableGridEditor = ({
     <div className="h-full" onClick={() => tabs.makeActiveTabPermanent()}>
       <TableEditorTableStateContextProvider
         key={`table-editor-table-${selectedTable.id}`}
-        projectRef={projectRef}
+        branch={branch!}
         table={selectedTable}
         editable={editable}
       >

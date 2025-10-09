@@ -1,11 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { SupportCategories } from '@supabase/shared-types/out/constants'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 
-import { useSendSupportTicketMutation } from 'data/feedback/support-ticket-send'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProfile } from 'lib/profile'
 import {
@@ -27,12 +25,6 @@ import {
   Separator,
 } from 'ui'
 import { LOCAL_STORAGE_KEYS } from 'common'
-
-const setDeletionRequestFlag = () => {
-  const expiryDate = new Date()
-  expiryDate.setDate(expiryDate.getDate() + 30)
-  localStorage.setItem(LOCAL_STORAGE_KEYS.ACCOUNT_DELETION_REQUEST, expiryDate.toString())
-}
 
 const hasActiveDeletionRequest = () => {
   const expiryDateStr = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCOUNT_DELETION_REQUEST)
@@ -64,38 +56,12 @@ export const DeleteAccountButton = () => {
   })
   const { account } = form.watch()
 
-  const { mutate: submitSupportTicket, isLoading } = useSendSupportTicketMutation({
-    onSuccess: () => {
-      setIsOpen(false)
-      setDeletionRequestFlag()
-      toast.success(
-        'Successfully submitted account deletion request - we will reach out to you via email once the request is completed!',
-        { duration: 8000 }
-      )
-    },
-    onError: (error) => {
-      toast.error(`Failed to submit account deletion request: ${error}`)
-    },
-  })
-
   const onConfirmDelete = async () => {
     if (!accountEmail) return console.error('Account information is required')
 
     if (hasActiveDeletionRequest()) {
       return toast.error('You have already submitted a deletion request within the last 30 days.')
     }
-
-    const payload = {
-      subject: 'Account Deletion Request',
-      message: 'I want to delete my account.',
-      category: SupportCategories.ACCOUNT_DELETION,
-      severity: 'Low',
-      allowSupportAccess: false,
-      verified: true,
-      projectRef: 'no-project',
-    }
-
-    submitSupportTicket(payload)
   }
 
   useEffect(() => {
@@ -170,7 +136,6 @@ export const DeleteAccountButton = () => {
                               autoFocus
                               {...field}
                               autoComplete="off"
-                              disabled={isLoading}
                               placeholder="Enter the account above"
                             />
                           </FormControl_Shadcn_>
@@ -185,8 +150,7 @@ export const DeleteAccountButton = () => {
                       size="small"
                       type="danger"
                       htmlType="submit"
-                      loading={isLoading}
-                      disabled={account !== accountEmail || isLoading}
+                      disabled={account !== accountEmail}
                     >
                       Submit request for account deletion
                     </Button>

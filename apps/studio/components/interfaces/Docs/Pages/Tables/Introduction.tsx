@@ -5,15 +5,17 @@ import CodeSnippet from 'components/interfaces/Docs/CodeSnippet'
 import GeneratingTypes from 'components/interfaces/Docs/GeneratingTypes'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import PublicSchemaNotEnabledAlert from '../../PublicSchemaNotEnabledAlert'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface IntroductionProps {
   selectedLang: 'bash' | 'js'
 }
 
 const Introduction = ({ selectedLang }: IntroductionProps) => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
-  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ orgSlug: slug, projectRef })
+  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ branch })
 
   const isPublicSchemaEnabled = config?.db_schema
     .split(',')
@@ -68,7 +70,7 @@ const Introduction = ({ selectedLang }: IntroductionProps) => {
             If you still want to use GraphQL, you can. Supabase provides you with a full Postgres
             database, so as long as your middleware can connect to the database then you can still
             use the tools you love. You can find the database connection details{' '}
-            <Link href={`/org/${slug}/project/${projectRef}/database/settings`}>in the settings.</Link>
+            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`}>in the settings.</Link>
           </p>
         </article>
         <article className="code">

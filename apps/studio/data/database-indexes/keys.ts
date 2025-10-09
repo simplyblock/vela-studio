@@ -1,4 +1,8 @@
 export const databaseIndexesKeys = {
-  list: (projectRef: string | undefined, schema?: string) =>
-    ['projects', projectRef, 'database-indexes', schema].filter(Boolean),
+  list: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    schema?: string
+  ) => ['branches', orgId, projectId, branchId, 'database-indexes', schema].filter(Boolean),
 }

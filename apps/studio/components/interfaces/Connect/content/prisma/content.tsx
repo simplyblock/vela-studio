@@ -7,7 +7,6 @@ import {
   ConnectTabTrigger,
   ConnectTabTriggers,
 } from 'components/interfaces/Connect/ConnectTabs'
-import { IS_PLATFORM } from 'lib/constants'
 
 const ContentFile = ({ connectionStringPooler }: ContentFileProps) => {
   return (
@@ -42,11 +41,11 @@ DIRECT_URL="${connectionStringPooler.sessionShared}"
 # DIRECT_URL="${connectionStringPooler.sessionDedicated}"
  `
               : `
-# Connect to Supabase ${IS_PLATFORM ? 'via connection pooling' : ''}
-DATABASE_URL="${IS_PLATFORM ? `${connectionStringPooler.transactionShared}?pgbouncer=true` : connectionStringPooler.direct}"
+# Connect to Supabase via connection pooling
+DATABASE_URL=${connectionStringPooler.transactionShared}?pgbouncer=true
 
 # Direct connection to the database. Used for migrations
-DIRECT_URL="${IS_PLATFORM ? connectionStringPooler.sessionShared : connectionStringPooler.direct}"
+DIRECT_URL="${connectionStringPooler.sessionShared}"
 `}
         </SimpleCodeBlock>
       </ConnectTabContent>

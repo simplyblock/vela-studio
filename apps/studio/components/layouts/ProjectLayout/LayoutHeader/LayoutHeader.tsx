@@ -4,26 +4,23 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import { useParams } from 'common'
 import { Connect } from 'components/interfaces/Connect/Connect'
-import { LocalDropdown } from 'components/interfaces/LocalDropdown'
 import { UserDropdown } from 'components/interfaces/UserDropdown'
 import { AssistantButton } from 'components/layouts/AppLayout/AssistantButton'
 import { InlineEditorButton } from 'components/layouts/AppLayout/InlineEditorButton'
 import { OrganizationDropdown } from 'components/layouts/AppLayout/OrganizationDropdown'
 import { ProjectDropdown } from 'components/layouts/AppLayout/ProjectDropdown'
+import { BranchDropdown } from 'components/layouts/AppLayout/BranchDropdown'
 import EditorPanel from 'components/ui/EditorPanel/EditorPanel'
 import { getResourcesExceededLimitsOrg } from 'components/ui/OveragesBanner/OveragesBanner.utils'
 import { useOrgUsageQuery } from 'data/usage/org-usage-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useHotKey } from 'hooks/ui/useHotKey'
-import { IS_PLATFORM } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import { Badge, cn } from 'ui'
 import { BreadcrumbsView } from './BreadcrumbsView'
-import { FeedbackDropdown } from './FeedbackDropdown'
 import { HelpPopover } from './HelpPopover'
 import { HomeIcon } from './HomeIcon'
-import { LocalVersionPopover } from './LocalVersionPopover'
 import { NotificationsPopoverV2 } from './NotificationsPopoverV2/NotificationsPopover'
 
 const LayoutHeaderDivider = ({ className, ...props }: React.HTMLProps<HTMLSpanElement>) => (
@@ -58,8 +55,8 @@ const LayoutHeader = ({
   showProductMenu,
 }: LayoutHeaderProps) => {
   const { ref: projectRef, slug } = useParams()
-  const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
+  const { data: selectedProject } = useSelectedProjectQuery()
   const { setMobileMenuOpen } = useAppStateSnapshot()
 
   const [showEditorPanel, setShowEditorPanel] = useState(false)
@@ -73,8 +70,7 @@ const LayoutHeader = ({
 
   // We only want to query the org usage and check for possible over-ages for plans without usage billing enabled (free or pro with spend cap)
   const { data: orgUsage } = useOrgUsageQuery(
-    { orgSlug: selectedOrganization?.slug },
-    { enabled: selectedOrganization?.usage_billing_enabled === false }
+    { orgSlug: selectedOrganization?.slug }
   )
 
   const exceedingLimits = useMemo(() => {
@@ -113,7 +109,7 @@ const LayoutHeader = ({
           <div className="flex items-center text-sm">
             <HomeIcon />
             <div className="flex items-center md:pl-2">
-              {showOrgSelection && IS_PLATFORM ? (
+              {showOrgSelection ? (
                 <>
                   <LayoutHeaderDivider className="hidden md:block" />
                   <OrganizationDropdown />
@@ -142,6 +138,13 @@ const LayoutHeader = ({
                           </Badge>
                         </Link>
                       </div>
+                    )}
+
+                    {selectedProject && (
+                      <>
+                        <LayoutHeaderDivider />
+                        <BranchDropdown />
+                      </>
                     )}
                   </motion.div>
                 )}
@@ -186,40 +189,20 @@ const LayoutHeader = ({
           </div>
           <div className="flex items-center gap-x-2">
             {customHeaderComponents && customHeaderComponents}
-            {IS_PLATFORM ? (
-              <>
-                <FeedbackDropdown />
 
-                <div className="overflow-hidden flex items-center rounded-full border">
-                  <HelpPopover />
-                  <NotificationsPopoverV2 />
-                  <AnimatePresence initial={false}>
-                    {!!projectRef && (
-                      <>
-                        <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
-                        <AssistantButton />
-                      </>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <UserDropdown />
-              </>
-            ) : (
-              <>
-                <LocalVersionPopover />
-                <div className="overflow-hidden flex items-center rounded-full border">
-                  <AnimatePresence initial={false}>
-                    {!!projectRef && (
-                      <>
-                        <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
-                        <AssistantButton />
-                      </>
-                    )}
-                  </AnimatePresence>
-                </div>
-                <LocalDropdown />
-              </>
-            )}
+            <div className="overflow-hidden flex items-center rounded-full border">
+              <HelpPopover />
+              <NotificationsPopoverV2 />
+              <AnimatePresence initial={false}>
+                {!!projectRef && (
+                  <>
+                    <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
+                    <AssistantButton />
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+            <UserDropdown />
           </div>
         </div>
       </header>

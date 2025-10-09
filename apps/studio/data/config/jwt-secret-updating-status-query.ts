@@ -2,10 +2,10 @@ import { JwtSecretUpdateStatus } from '@supabase/shared-types/out/events'
 import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import { configKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type JwtSecretUpdatingStatusVariables = {
-  orgSlug?: string
-  projectRef?: string
+  branch?: Branch
 }
 
 export type JwtSecretUpdatingStatusResponse = {
@@ -16,16 +16,23 @@ export type JwtSecretUpdatingStatusResponse = {
 }
 
 export async function getJwtSecretUpdatingStatus(
-  { orgSlug, projectRef }: JwtSecretUpdatingStatusVariables,
+  { branch }: JwtSecretUpdatingStatusVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('Branch is required')
 
-  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/config/secrets/update-status', {
-    params: { path: { slug: orgSlug, ref: projectRef } },
-    signal,
-  })
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/config/secrets/update-status',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+        },
+      },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
 
@@ -45,7 +52,7 @@ export type JwtSecretUpdatingStatusData = Awaited<ReturnType<typeof getJwtSecret
 export type JwtSecretUpdatingStatusError = unknown
 
 export const useJwtSecretUpdatingStatusQuery = <TData = JwtSecretUpdatingStatusData>(
-  { orgSlug, projectRef }: JwtSecretUpdatingStatusVariables,
+  { branch }: JwtSecretUpdatingStatusVariables,
   {
     enabled = true,
     ...options
@@ -54,10 +61,10 @@ export const useJwtSecretUpdatingStatusQuery = <TData = JwtSecretUpdatingStatusD
   const client = useQueryClient()
 
   return useQuery<JwtSecretUpdatingStatusData, JwtSecretUpdatingStatusError, TData>(
-    configKeys.jwtSecretUpdatingStatus(projectRef),
-    ({ signal }) => getJwtSecretUpdatingStatus({ orgSlug, projectRef }, signal),
+    configKeys.jwtSecretUpdatingStatus(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getJwtSecretUpdatingStatus({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       refetchInterval(data) {
         if (!data) {
           return false
@@ -70,7 +77,9 @@ export const useJwtSecretUpdatingStatusQuery = <TData = JwtSecretUpdatingStatusD
         return interval
       },
       onSuccess() {
-        client.invalidateQueries(configKeys.postgrest(orgSlug, projectRef))
+        client.invalidateQueries(
+          configKeys.postgrest(branch?.organization_id, branch?.project_id, branch?.id)
+        )
       },
       ...options,
     }

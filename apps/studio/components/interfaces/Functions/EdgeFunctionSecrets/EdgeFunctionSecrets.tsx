@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Search } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -9,7 +8,6 @@ import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useSecretsDeleteMutation } from 'data/secrets/secrets-delete-mutation'
 import { ProjectSecret, useSecretsQuery } from 'data/secrets/secrets-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { Badge, Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
@@ -20,15 +18,10 @@ const EdgeFunctionSecrets = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const [searchString, setSearchString] = useState('')
   const [selectedSecret, setSelectedSecret] = useState<ProjectSecret>()
-
-  const { can: canReadSecrets, isLoading: isLoadingPermissions } = useAsyncCheckProjectPermissions(
-    PermissionAction.SECRETS_READ,
-    '*'
-  )
-  const { can: canUpdateSecrets } = useAsyncCheckProjectPermissions(
-    PermissionAction.SECRETS_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadSecrets, isLoading: isLoadingPermissions } = {can:true,isLoading:false}
+   // FIXME: need permission implemented  
+  const { can: canUpdateSecrets } = {can:true}
 
   const { data, error, isLoading, isSuccess, isError } = useSecretsQuery({
     orgSlug, projectRef,

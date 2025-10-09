@@ -8,34 +8,23 @@ import { lintKeys } from 'data/lint/keys'
 import { tableEditorKeys } from 'data/table-editor/keys'
 import type { ResponseError } from 'types'
 import { tableKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type UpdateTableBody = components['schemas']['UpdateTableBody']
 
 export type TableUpdateVariables = {
-  orgSlug: string
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   id: number
   name: string
   schema: string
   payload: UpdateTableBody
 }
 
-export async function updateTable({
-  orgSlug,
-  projectRef,
-  connectionString,
-  id,
-  name,
-  schema,
-  payload,
-}: TableUpdateVariables) {
+export async function updateTable({ branch, id, name, schema, payload }: TableUpdateVariables) {
   const { sql } = pgMeta.tables.update({ id, name, schema }, payload)
 
   const { result } = await executeSql<void>({
-    orgSlug,
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['table', 'update', id],
   })
@@ -59,11 +48,15 @@ export const useTableUpdateMutation = ({
     (vars) => updateTable(vars),
     {
       async onSuccess(data, variables, context) {
-        const { orgSlug, projectRef, schema, id } = variables
+        const { branch, schema, id } = variables
         await Promise.all([
-          queryClient.invalidateQueries(tableEditorKeys.tableEditor(projectRef, id)),
-          queryClient.invalidateQueries(tableKeys.list(projectRef, schema)),
-          queryClient.invalidateQueries(lintKeys.lint(orgSlug, projectRef)),
+          queryClient.invalidateQueries(
+            tableEditorKeys.tableEditor(branch.organization_id, branch.project_id, branch.id, id)
+          ),
+          queryClient.invalidateQueries(
+            tableKeys.list(branch.organization_id, branch.project_id, branch.id, schema)
+          ),
+          queryClient.invalidateQueries(lintKeys.lint(branch.organization_id, branch.project_id, branch.id)),
         ])
         await onSuccess?.(data, variables, context)
       },

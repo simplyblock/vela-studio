@@ -5,10 +5,10 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { wrapWithTransaction } from 'data/sql/utils/transaction'
 import type { ResponseError } from 'types'
 import { enumeratedTypesKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type EnumeratedTypeCreateVariables = {
-  projectRef: string
-  connectionString: string | null
+  branch: Branch
   schema: string
   name: string
   description?: string
@@ -16,8 +16,7 @@ export type EnumeratedTypeCreateVariables = {
 }
 
 export async function createEnumeratedType({
-  projectRef,
-  connectionString,
+  branch,
   schema,
   name,
   description,
@@ -29,7 +28,7 @@ export async function createEnumeratedType({
   const commentSql =
     description !== undefined ? `comment on type "${schema}"."${name}" is '${description}';` : ''
   const sql = wrapWithTransaction(`${createSql} ${commentSql}`)
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -49,8 +48,10 @@ export const useEnumeratedTypeCreateMutation = ({
     (vars) => createEnumeratedType(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(enumeratedTypesKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          enumeratedTypesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

@@ -6,16 +6,18 @@ import { InlineLink } from 'components/ui/InlineLink'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import CodeSnippet from './CodeSnippet'
 import PublicSchemaNotEnabledAlert from './PublicSchemaNotEnabledAlert'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface Props {
   selectedLang: 'bash' | 'js'
 }
 
 export default function Introduction({ selectedLang }: Props) {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
-  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ orgSlug: slug, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
+  const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ branch })
 
   const protocol = settings?.app_config?.protocol ?? 'https'
   const hostEndpoint = settings?.app_config?.endpoint
@@ -34,7 +36,7 @@ export default function Introduction({ selectedLang }: Props) {
           <p>
             All projects have a RESTful endpoint that you can use with your project's API key to
             query and manage your database. These can be obtained from the{' '}
-            <InlineLink href={`/org/${slug}/project/${projectRef}/settings/api`}>API settings</InlineLink>.
+            <InlineLink href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}>API settings</InlineLink>.
           </p>
           <p>
             You can initialize a new Supabase client using the <code>createClient()</code> method.

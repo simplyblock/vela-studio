@@ -3,8 +3,8 @@ import { useState } from 'react'
 
 import { useParams } from 'common'
 import { useVaultSecretDecryptedValueQuery } from 'data/vault/vault-secret-decrypted-value-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Input, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const DecryptedReadOnlyInput = ({
   value,
@@ -17,15 +17,14 @@ export const DecryptedReadOnlyInput = ({
   descriptionText: string
   label: string
 }) => {
-  const { slug, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [showHidden, setShowHidden] = useState(false)
 
   const { data: decryptedValue, isLoading: isDecryptedValueLoading } =
     useVaultSecretDecryptedValueQuery(
       {
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         id: value ?? '',
       },
       { enabled: secureEntry && showHidden }
@@ -53,7 +52,7 @@ export const DecryptedReadOnlyInput = ({
               <a
                 target="_blank"
                 rel="noreferrer noopener"
-                href={`/org/${slug}/project/${ref}/integrations/vault/secrets?search=${value}`}
+                href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/vault/secrets?search=${value}`}
               >
                 <ExternalLink
                   size={14}

@@ -1,3 +1,4 @@
 export const fdwKeys = {
-  list: (projectRef: string | undefined) => ['projects', projectRef, 'fdws'] as const,
+  list: (orgId: string | undefined, projectId: string | undefined, branchId: string | undefined) =>
+    ['branches', orgId, projectId, branchId, 'fdws'] as const,
 }

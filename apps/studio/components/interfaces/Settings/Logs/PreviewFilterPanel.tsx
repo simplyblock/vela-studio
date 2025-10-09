@@ -8,7 +8,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import DatabaseSelector from 'components/ui/DatabaseSelector'
 import { DownloadResultsButton } from 'components/ui/DownloadResultsButton'
 import { useLoadBalancersQuery } from 'data/read-replicas/load-balancers-query'
-import { IS_PLATFORM } from 'lib/constants'
 import { Button, Input, Tooltip, TooltipContent, TooltipTrigger, cn } from 'ui'
 import { DatePickerValue, LogsDatePicker } from './Logs.DatePickers'
 import {
@@ -69,16 +68,15 @@ const PreviewFilterPanel = ({
   setSelectedDatePickerValue,
 }: PreviewFilterPanelProps) => {
   const router = useRouter()
-  const { ref } = useParams()
+  const { ref, slug } = useParams()
   const [search, setSearch] = useState('')
 
   const logName = router.pathname.split('/').pop()
 
-  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref })
+  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref, orgSlug: slug })
 
   // [Joshen] These are the routes tested that can show replica logs
-  const showDatabaseSelector =
-    IS_PLATFORM && LOG_ROUTES_WITH_REPLICA_SUPPORT.includes(router.pathname)
+  const showDatabaseSelector = LOG_ROUTES_WITH_REPLICA_SUPPORT.includes(router.pathname)
 
   const hasEdits = search !== defaultSearchValue
 

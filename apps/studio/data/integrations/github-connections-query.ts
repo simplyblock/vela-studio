@@ -5,7 +5,7 @@ import type { ResponseError } from 'types'
 import { integrationKeys } from './keys'
 
 export type GitHubConnectionsVariables = {
-  organizationId?: number
+  organizationId?: string
 }
 
 export async function getGitHubConnections(

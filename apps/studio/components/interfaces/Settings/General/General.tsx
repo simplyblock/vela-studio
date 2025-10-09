@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { BarChart2 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'
@@ -9,13 +8,12 @@ import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui
 import Panel from 'components/ui/Panel'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useProjectUpdateMutation } from 'data/projects/project-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProjectByRefQuery, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   Button,
   Form,
   Input,
@@ -23,7 +21,6 @@ import {
 } from 'ui'
 import PauseProjectButton from './Infrastructure/PauseProjectButton'
 import RestartServerButton from './Infrastructure/RestartServerButton'
-import { useParams } from 'common'
 
 const General = () => {
   const { data: project } = useSelectedProjectQuery()
@@ -34,15 +31,8 @@ const General = () => {
 
   const formId = 'project-general-settings'
   const initialValues = { name: project?.name ?? '', ref: project?.ref ?? '' }
-  const { can: canUpdateProject } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'projects',
-    {
-      resource: {
-        project_id: project?.id,
-      },
-    }
-  )
+  // FIXME: need permission implemented
+  const { can: canUpdateProject } = { can: true }
 
   const { mutate: updateProject, isLoading: isUpdating } = useProjectUpdateMutation()
 
@@ -51,7 +41,7 @@ const General = () => {
     if (!organization?.slug) return console.error('Slug is required')
 
     updateProject(
-      { ref: project.ref, name: values.name.trim() },
+      { orgRef: organization.slug, ref: project.ref, name: values.name.trim() },
       {
         onSuccess: ({ name }) => {
           resetForm({ values: { name }, initialValues: { name } })
@@ -72,7 +62,10 @@ const General = () => {
           <AlertDescription_Shadcn_>
             Certain settings are not available while you're on a preview branch. To adjust your
             project settings, you may return to your{' '}
-            <Link href={`/org/${organization?.slug}/project/${parentProject.ref}/settings/general`} className="text-brand">
+            <Link
+              href={`/org/${organization?.slug}/project/${parentProject.ref}/settings/general`}
+              className="text-brand"
+            >
               main branch
             </Link>
             .

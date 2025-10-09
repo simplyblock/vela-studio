@@ -17,13 +17,15 @@ import {
 } from 'ui'
 import { LintInfo } from '../Linter/Linter.constants'
 import { lintInfoMap } from '../Linter/Linter.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DisableRuleModalProps {
   lint: LintInfo
 }
 
 export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const router = useRouter()
   const routeCategory = router.pathname.split('/').pop()
 
@@ -38,7 +40,7 @@ export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
       if (ruleLintMeta) {
         if (!!routeCategory && routeCategory !== ruleLintMeta.category) {
           router.push(
-            `/org/${slug}/project/${ref}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
+            `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/${ruleLintMeta.category}?lint=${ruleLintMeta.name}`
           )
         }
       }
@@ -47,12 +49,10 @@ export const DisableRuleModal = ({ lint }: DisableRuleModalProps) => {
   })
 
   const onCreateRule = () => {
-    if (!slug) return console.error('Organization slug is required')
-    if (!ref) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
 
     createRule({
-      orgSlug: slug,
-      projectRef: ref,
+      branch,
       exception: {
         is_disabled: true,
         lint_category: undefined,

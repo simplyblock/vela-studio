@@ -1,13 +1,12 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
+
 import { useMemo } from 'react'
 
 import { InputVariants } from '@ui/components/shadcn/ui/input'
-import { useParams } from 'common'
 import CopyButton from 'components/ui/CopyButton'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import { useAPIKeysQuery } from 'data/api-keys/api-keys-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { cn, EyeOffIcon, Input_Shadcn_, Skeleton, WarningIcon } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // to add in later with follow up PR
 // import CreatePublishableAPIKeyDialog from './CreatePublishableAPIKeyDialog'
@@ -15,22 +14,19 @@ import { cn, EyeOffIcon, Input_Shadcn_, Skeleton, WarningIcon } from 'ui'
 // import ShowPublicJWTsDialogComposer from '../JwtSecrets/ShowPublicJWTsDialogComposer'
 
 export const PublishableAPIKeys = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data: apiKeysData,
     isLoading: isLoadingApiKeys,
     error,
-  } = useAPIKeysQuery({ orgSlug, projectRef, reveal: false })
+  } = useAPIKeysQuery({ branch, reveal: false })
 
   const publishableApiKeys = useMemo(
     () => apiKeysData?.filter(({ type }) => type === 'publishable') ?? [],
     [apiKeysData]
   )
-
-  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = {can:true , isLoading:false}
 
   // The default publisahble key will always be the first one
   const apiKey = publishableApiKeys[0]
@@ -73,23 +69,20 @@ export const PublishableAPIKeys = () => {
 }
 
 const ApiKeyInput = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     data: apiKeysData,
     isLoading: isApiKeysLoading,
     error,
-  } = useAPIKeysQuery({ orgSlug, projectRef, reveal: false })
+  } = useAPIKeysQuery({ branch, reveal: false })
 
   const publishableApiKeys = useMemo(
     () => apiKeysData?.filter(({ type }) => type === 'publishable') ?? [],
     [apiKeysData]
   )
-
-  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys, isLoading: isPermissionsLoading } = {can:true , isLoading:false}
   // The default publisahble key will always be the first one
   const apiKey = publishableApiKeys[0]
 

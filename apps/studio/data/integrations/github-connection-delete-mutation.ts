@@ -7,7 +7,7 @@ import { integrationKeys } from './keys'
 
 type DeleteVariables = {
   connectionId: string | number
-  organizationId: number
+  organizationId: string
 }
 
 export async function deleteConnection({ connectionId }: DeleteVariables, signal?: AbortSignal) {

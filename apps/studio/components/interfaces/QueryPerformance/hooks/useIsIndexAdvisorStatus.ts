@@ -1,6 +1,6 @@
 import { getIndexAdvisorExtensions } from 'components/interfaces/QueryPerformance/index-advisor.utils'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * Hook to get both index advisor availability and enabled status
@@ -9,10 +9,9 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
  * enabled if the index_advisor and hypopg extensions are installed (their versions are not null)
  */
 export function useIndexAdvisorStatus() {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: extensions } = useDatabaseExtensionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
 
   const { hypopg, indexAdvisor } = getIndexAdvisorExtensions(extensions ?? [])

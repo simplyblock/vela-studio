@@ -44,6 +44,7 @@ function useSingleLog({
   } = useQuery(
     ['projects', projectRef, 'single-log', id, queryType],
     async ({ signal }) => {
+      console.log(params.sql)
       const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
         params: {
           path: { ref: projectRef },

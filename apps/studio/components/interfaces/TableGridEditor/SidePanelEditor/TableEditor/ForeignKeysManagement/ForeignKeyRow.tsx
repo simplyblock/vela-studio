@@ -28,7 +28,7 @@ export const ForeignKeyRow = ({
   onSelectRemove,
   onSelectUndoRemove,
 }: ForeignKeyProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   return (
     <div
@@ -79,7 +79,7 @@ export const ForeignKeyRow = ({
               <Link
                 target="_blank"
                 rel="norefererer"
-                href={`/org/${slug}/project/${ref}/editor/${foreignKey.tableId}`}
+                href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${foreignKey.tableId}`}
               >
                 {foreignKey.schema}.{foreignKey.table}
               </Link>

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import dayjs from 'dayjs'
 import { Ban, Check, Copy, Mail, ShieldOff, Trash, X } from 'lucide-react'
 import Link from 'next/link'
@@ -15,7 +14,6 @@ import { useUserSendMagicLinkMutation } from 'data/auth/user-send-magic-link-mut
 import { useUserSendOTPMutation } from 'data/auth/user-send-otp-mutation'
 import { useUserUpdateMutation } from 'data/auth/user-update-mutation'
 import { User } from 'data/auth/users-infinite-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { BASE_PATH } from 'lib/constants'
 import { timeout } from 'lib/helpers'
 import { Button, cn, Separator } from 'ui'
@@ -27,6 +25,7 @@ import { DeleteUserModal } from './DeleteUserModal'
 import { UserHeader } from './UserHeader'
 import { PANEL_PADDING } from './Users.constants'
 import { providerIconMap } from './Users.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const DATE_FORMAT = 'DD MMM, YYYY HH:mm'
 const CONTAINER_CLASS = cn(
@@ -40,7 +39,8 @@ interface UserOverviewProps {
 }
 
 export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const isEmailAuth = user.email !== null
   const isPhoneAuth = user.phone !== null
   const isBanned = user.banned_until !== null
@@ -58,28 +58,18 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
       }
     }
   )
-
-  const { can: canUpdateUser } = useAsyncCheckProjectPermissions(PermissionAction.AUTH_EXECUTE, '*')
-  const { can: canSendMagicLink } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'send_magic_link'
-  )
-  const { can: canSendRecovery } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'send_recovery'
-  )
-  const { can: canSendOtp } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'send_otp'
-  )
-  const { can: canRemoveUser } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_DELETE,
-    'auth.users'
-  )
-  const { can: canRemoveMFAFactors } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_DELETE,
-    'auth.mfa_factors'
-  )
+  // FIXME: need permission implemented 
+  const { can: canUpdateUser } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canSendMagicLink } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canSendRecovery } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canSendOtp } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canRemoveUser } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canRemoveMFAFactors } = {can:true}
 
   const [successAction, setSuccessAction] = useState<
     'send_magic_link' | 'send_recovery' | 'send_otp'
@@ -143,13 +133,13 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   }
 
   const handleUnban = () => {
-    if (projectRef === undefined) return console.error('Project ref is required')
+    if (branch === undefined) return console.error('Branch is required')
     if (user.id === undefined) {
       return toast.error(`Failed to ban user: User ID not found`)
     }
 
     updateUser({
-      projectRef,
+      branch,
       userId: user.id,
       banDuration: 'none',
     })
@@ -240,7 +230,7 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
                   </p>
                   <Button asChild type="default" className="mt-2">
                     <Link
-                      href={`/org/${slug}/project/${projectRef}/auth/providers?provider=${provider.name === 'SAML' ? 'SAML 2.0' : provider.name}`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers?provider=${provider.name === 'SAML' ? 'SAML 2.0' : provider.name}`}
                     >
                       Configure {providerName} provider
                     </Link>

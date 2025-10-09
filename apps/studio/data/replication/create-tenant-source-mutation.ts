@@ -6,14 +6,23 @@ import { replicationKeys } from './keys'
 import { handleError, post } from 'data/fetchers'
 
 export type CreateTenantSourceParams = {
-  projectRef: string
+  orgId: string
+  projectId: string
 }
 
-async function createTenantSource({ projectRef }: CreateTenantSourceParams, signal?: AbortSignal) {
-  if (!projectRef) throw new Error('projectRef is required')
+async function createTenantSource(
+  { orgId, projectId }: CreateTenantSourceParams,
+  signal?: AbortSignal
+) {
+  if (!orgId) throw new Error('orgId is required')
+  if (!projectId) throw new Error('projectId is required')
 
   const { data, error } = await post('/platform/replication/{ref}/tenants-sources', {
-    params: { path: { ref: projectRef } },
+    params: {
+      path: {
+        ref: projectId,
+      },
+    },
     signal,
   })
   if (error) {
@@ -39,8 +48,8 @@ export const useCreateTenantSourceMutation = ({
     (vars) => createTenantSource(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(replicationKeys.sources(projectRef))
+        const { orgId, projectId } = variables
+        await queryClient.invalidateQueries(replicationKeys.sources(orgId, projectId))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

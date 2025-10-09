@@ -10,21 +10,23 @@ import { Loading } from 'components/ui/Loading'
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useSessionAccessTokenQuery } from 'data/auth/session-access-token-query'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
-import { API_URL, IS_PLATFORM } from 'lib/constants'
+import { API_URL } from 'lib/constants'
 import { getRoleImpersonationJWT } from 'lib/role-impersonation'
 import { useGetImpersonatedRoleState } from 'state/role-impersonation-state'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const GraphiQLTab = () => {
   const { resolvedTheme } = useTheme()
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const currentTheme = resolvedTheme?.includes('dark') ? 'dark' : 'light'
 
-  const { data: accessToken } = useSessionAccessTokenQuery({ enabled: IS_PLATFORM })
+  const { data: accessToken } = useSessionAccessTokenQuery({ enabled: true })
 
-  const { data: apiKeys, isFetched } = useAPIKeysQuery({ orgSlug, projectRef, reveal: true })
+  const { data: apiKeys, isFetched } = useAPIKeysQuery({ branch, reveal: true })
   const { serviceKey, secretKey } = getKeys(apiKeys)
 
-  const { data: config } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
+  const { data: config } = useProjectPostgrestConfigQuery({ branch })
   const jwtSecret = config?.jwt_secret
 
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
@@ -32,7 +34,7 @@ export const GraphiQLTab = () => {
   const fetcher = useMemo(() => {
     const fetcherFn = createGraphiQLFetcher({
       // [Joshen] Opting to hard code /platform for local to match the routes, so that it's clear what's happening
-      url: `${API_URL}${IS_PLATFORM ? '' : '/platform'}/projects/${projectRef}/api/graphql`,
+      url: `${API_URL}/projects/${projectRef}/api/graphql`,
       fetch,
     })
     const customFetcher: Fetcher = async (graphqlParams, opts) => {
@@ -72,7 +74,7 @@ export const GraphiQLTab = () => {
     return customFetcher
   }, [projectRef, getImpersonatedRoleState, jwtSecret, accessToken, serviceKey, secretKey?.api_key])
 
-  if ((IS_PLATFORM && !accessToken) || !isFetched) {
+  if ((!accessToken) || !isFetched) {
     return <Loading />
   }
 

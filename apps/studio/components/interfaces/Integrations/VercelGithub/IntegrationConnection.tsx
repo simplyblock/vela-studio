@@ -1,4 +1,4 @@
-import { ChevronDown, Loader2, RefreshCw, Trash } from 'lucide-react'
+import { ChevronDown, Trash } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { forwardRef, useCallback, useState } from 'react'
@@ -12,13 +12,11 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useIntegrationsVercelConnectionSyncEnvsMutation } from 'data/integrations/integrations-vercel-connection-sync-envs-mutation'
 import type { IntegrationProjectConnection } from 'data/integrations/integrations.types'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
@@ -32,8 +30,7 @@ interface IntegrationConnectionItemProps extends IntegrationConnectionProps {
 const IntegrationConnectionItem = forwardRef<HTMLLIElement, IntegrationConnectionItemProps>(
   ({ disabled, onDeleteConnection, ...props }, ref) => {
     const router = useRouter()
-    const { slug } = useParams()
-    const { data: org } = useSelectedOrganizationQuery()
+    const { slug: orgRef, branch: branchRef } = useParams()
 
     const { type, connection } = props
     const { data: projects } = useProjectsQuery()
@@ -72,7 +69,7 @@ const IntegrationConnectionItem = forwardRef<HTMLLIElement, IntegrationConnectio
       syncEnvs({ connectionId: connection.id })
     }, [connection, syncEnvs])
 
-    const projectIntegrationUrl = `/org/${slug}/project/[ref]/settings/integrations`
+    const projectIntegrationUrl = `/org/${orgRef}/project/[ref]/branch/${branchRef}/settings/integrations`
 
     return (
       <>
@@ -117,25 +114,6 @@ const IntegrationConnectionItem = forwardRef<HTMLLIElement, IntegrationConnectio
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  {type === 'Vercel' && org?.managed_by !== 'vercel-marketplace' && (
-                    <DropdownMenuItem
-                      className="space-x-2"
-                      onSelect={(event) => {
-                        event.preventDefault()
-                        onReSyncEnvVars()
-                      }}
-                      disabled={isSyncEnvLoading}
-                    >
-                      {isSyncEnvLoading ? (
-                        <Loader2 className="animate-spin" size={14} />
-                      ) : (
-                        <RefreshCw size={14} />
-                      )}
-                      <p>Resync environment variables</p>
-                    </DropdownMenuItem>
-                  )}
-                  {((type === 'Vercel' && org?.managed_by !== 'vercel-marketplace') ||
-                    router.pathname !== projectIntegrationUrl) && <DropdownMenuSeparator />}
                   <DropdownMenuItem className="space-x-2" onSelect={() => setIsOpen(true)}>
                     <Trash size={14} />
                     <p>Delete connection</p>

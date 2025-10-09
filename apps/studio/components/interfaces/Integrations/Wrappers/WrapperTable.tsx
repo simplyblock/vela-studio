@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { useParams } from 'common'
 import { useFDWsQuery } from 'data/fdw/fdws-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Card,
   CardContent,
@@ -16,19 +15,19 @@ import {
 import { INTEGRATIONS } from '../Landing/Integrations.constants'
 import WrapperRow from './WrapperRow'
 import { wrapperMetaComparator } from './Wrappers.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface WrapperTableProps {
   isLatest?: boolean
 }
 
 export const WrapperTable = ({ isLatest = false }: WrapperTableProps) => {
-  const { id, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { id } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const integration = INTEGRATIONS.find((i) => i.id === id)
 
   const { data } = useFDWsQuery({
-    projectRef: ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const wrappers = useMemo(

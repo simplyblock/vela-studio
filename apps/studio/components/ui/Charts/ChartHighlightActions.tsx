@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from 'ui'
 import { ChartHighlight } from './useChartHighlight'
-import { UpdateDateRange } from 'pages/org/[slug]/project/[ref]/reports/database'
+import { UpdateDateRange } from 'pages/org/[slug]/project/[ref]/branch/[branch]/reports/database'
 
 const ChartHighlightActions = ({
   chartHighlight,
@@ -22,7 +22,7 @@ const ChartHighlightActions = ({
   updateDateRange: UpdateDateRange
 }) => {
   const router = useRouter()
-  const { slug, ref } = router.query
+  const { slug, ref, branch: branchRef } = router.query
   const { left: selectedRangeStart, right: selectedRangeEnd, clearHighlight } = chartHighlight ?? {}
   const [isOpen, setIsOpen] = useState(!!chartHighlight?.popoverPosition)
 
@@ -39,7 +39,7 @@ const ChartHighlightActions = ({
 
   const handleOpenLogsExplorer = () => {
     const rangeQueryParams = `?its=${selectedRangeStart}&ite=${selectedRangeEnd}`
-    router.push(`/org/${slug}/project/${ref}/logs/postgres-logs${rangeQueryParams}`)
+    router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/logs/postgres-logs${rangeQueryParams}`)
     clearHighlight && clearHighlight()
   }
 

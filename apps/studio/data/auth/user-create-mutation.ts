@@ -4,9 +4,10 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { authKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type UserCreateVariables = {
-  projectRef: string
+  branch: Branch
   user: {
     email: string
     password: string
@@ -14,9 +15,13 @@ export type UserCreateVariables = {
   }
 }
 
-export async function createUser({ projectRef, user }: UserCreateVariables) {
+export async function createUser({ branch, user }: UserCreateVariables) {
   const { data, error } = await post('/platform/auth/{ref}/users', {
-    params: { path: { ref: projectRef } },
+    params: {
+      path: {
+        ref: branch.project_id,
+      },
+    },
     body: {
       email: user.email,
       password: user.password,
@@ -43,11 +48,15 @@ export const useUserCreateMutation = ({
     (vars) => createUser(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { branch } = variables
 
         await Promise.all([
-          queryClient.invalidateQueries(authKeys.usersInfinite(projectRef)),
-          queryClient.invalidateQueries(authKeys.usersCount(projectRef)),
+          queryClient.invalidateQueries(
+            authKeys.usersInfinite(branch.organization_id, branch.project_id, branch.id)
+          ),
+          queryClient.invalidateQueries(
+            authKeys.usersCount(branch.organization_id, branch.project_id, branch.id)
+          ),
         ])
 
         await onSuccess?.(data, variables, context)

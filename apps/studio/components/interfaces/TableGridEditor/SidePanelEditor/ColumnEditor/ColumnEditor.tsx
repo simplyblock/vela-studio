@@ -41,6 +41,7 @@ import {
 import ColumnForeignKey from './ColumnForeignKey'
 import ColumnType from './ColumnType'
 import HeaderTitle from './HeaderTitle'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface ColumnEditorProps {
   column?: Readonly<PostgresColumn>
@@ -69,8 +70,9 @@ const ColumnEditor = ({
   saveChanges = noop,
   updateEditorDirty = noop,
 }: ColumnEditorProps) => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [errors, setErrors] = useState<Dictionary<any>>({})
   const [columnFields, setColumnFields] = useState<ColumnField>()
@@ -80,8 +82,7 @@ const ColumnEditor = ({
   )
 
   const { data: types } = useEnumeratedTypesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const { data: protectedSchemas } = useProtectedSchemas({ excludeSchemas: ['extensions'] })
   const enumTypes = (types ?? []).filter(
@@ -89,8 +90,7 @@ const ColumnEditor = ({
   )
 
   const { data: constraints } = useTableConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     id: selectedTable?.id,
   })
   const primaryKey = (constraints ?? []).find(
@@ -98,8 +98,7 @@ const ColumnEditor = ({
   )
 
   const { data } = useForeignKeyConstraintsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
     schema: selectedTable?.schema,
   })
 
@@ -236,7 +235,7 @@ const ColumnEditor = ({
             description={
               <div className="space-y-2">
                 <Button asChild type="default" size="tiny" icon={<Plus strokeWidth={2} />}>
-                  <Link href={`/org/${slug}/project/${ref}/database/types`} target="_blank" rel="noreferrer">
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/types`} target="_blank" rel="noreferrer">
                     Create enum types
                   </Link>
                 </Button>

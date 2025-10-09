@@ -1,9 +1,9 @@
 import { toast } from 'sonner'
 
 import { useVaultSecretDeleteMutation } from 'data/vault/vault-secret-delete-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { VaultSecret } from 'types'
 import { Modal } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DeleteSecretModalProps {
   selectedSecret: VaultSecret | undefined
@@ -11,7 +11,7 @@ interface DeleteSecretModalProps {
 }
 
 const DeleteSecretModal = ({ selectedSecret, onClose }: DeleteSecretModalProps) => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { mutate: deleteSecret, isLoading: isDeleting } = useVaultSecretDeleteMutation({
     onSuccess: () => {
       toast.success(`Successfully deleted secret ${selectedSecret?.name}`)
@@ -23,12 +23,11 @@ const DeleteSecretModal = ({ selectedSecret, onClose }: DeleteSecretModalProps) 
   })
 
   const onConfirmDeleteSecret = async () => {
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     if (!selectedSecret) return
 
     deleteSecret({
-      projectRef: project.ref,
-      connectionString: project?.connectionString,
+      branch,
       id: selectedSecret.id,
     })
   }

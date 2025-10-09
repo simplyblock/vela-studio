@@ -2,7 +2,6 @@ import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 
 import { components } from 'api-types'
 import { handleError, post } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import type { ResponseError } from 'types'
 
 export type SendGroupsResetVariables = components['schemas']['TelemetryGroupsResetBody']
@@ -10,7 +9,7 @@ export type SendGroupsResetVariables = components['schemas']['TelemetryGroupsRes
 export async function sendGroupsReset({ body }: { body: SendGroupsResetVariables }) {
   const consent = true // FIXME: if required, but I doubt it
 
-  if (!consent || !IS_PLATFORM) return undefined
+  if (!consent) return undefined
 
   const { data, error } = await post(`/platform/telemetry/groups/reset`, {
     body,

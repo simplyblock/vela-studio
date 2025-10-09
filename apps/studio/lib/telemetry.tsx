@@ -1,10 +1,9 @@
 import { PageTelemetry } from 'common'
-import { API_URL, IS_PLATFORM } from 'lib/constants'
+import { API_URL } from 'lib/constants'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 
 export function Telemetry() {
   // Although this is "technically" breaking the rules of hooks
-  // IS_PLATFORM never changes within a session, so this won't cause any issues
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { hasAcceptedConsent } = { hasAcceptedConsent: true } // FIXME if required, but I think it can be deleted
 
@@ -16,7 +15,7 @@ export function Telemetry() {
     <PageTelemetry
       API_URL={API_URL}
       hasAcceptedConsent={hasAcceptedConsent}
-      enabled={IS_PLATFORM}
+      enabled={true}
       organizationSlug={organization?.slug}
     />
   )

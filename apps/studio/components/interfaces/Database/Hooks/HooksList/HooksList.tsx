@@ -1,5 +1,4 @@
 import { PostgresTrigger } from '@supabase/postgres-meta'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { includes, map as lodashMap, uniqBy } from 'lodash'
 import { Search } from 'lucide-react'
 import { useState } from 'react'
@@ -10,15 +9,12 @@ import { DocsButton } from 'components/ui/DocsButton'
 import NoSearchResults from 'components/ui/NoSearchResults'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabaseHooksQuery } from 'data/database-triggers/database-triggers-query'
-import {
-  useAsyncCheckProjectPermissions,
-  usePermissionsLoaded,
-} from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { noop } from 'lib/void'
 import { Input } from 'ui'
 import { HooksListEmpty } from './HooksListEmpty'
 import { SchemaTable } from './SchemaTable'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface HooksListProps {
   createHook: () => void
@@ -32,6 +28,7 @@ export const HooksList = ({
   deleteHook = noop,
 }: HooksListProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const {
     data: hooks,
     isLoading,
@@ -39,8 +36,7 @@ export const HooksList = ({
     isError,
     error,
   } = useDatabaseHooksQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const [filterString, setFilterString] = useState<string>('')
 
@@ -48,12 +44,10 @@ export const HooksList = ({
     includes(x.name.toLowerCase(), filterString.toLowerCase())
   )
   const filteredHookSchemas = lodashMap(uniqBy(filteredHooks, 'schema'), 'schema')
-
-  const { can: canCreateWebhooks } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'triggers'
-  )
-  const isPermissionsLoaded = usePermissionsLoaded()
+  // FIXME: need permission implemented 
+  const { can: canCreateWebhooks } = {can:true}
+  // FIXME: need permission implemented 
+  const isPermissionsLoaded = true
 
   return (
     <div className="w-full space-y-4">

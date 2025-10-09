@@ -8,6 +8,7 @@ import { isRoleImpersonationEnabled } from 'state/role-impersonation-state'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { tableRowKeys } from './keys'
 import { formatFilterValue } from './utils'
+import { Branch } from 'api-types/types'
 
 type GetTableRowsCountArgs = {
   table?: SupaTable
@@ -98,8 +99,7 @@ export type TableRowsCountVariables = Omit<GetTableRowsCountArgs, 'table'> & {
   queryClient: QueryClient
   tableId?: number
   roleImpersonationState?: RoleImpersonationState
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type TableRowsCountData = TableRowsCount
@@ -108,8 +108,7 @@ export type TableRowsCountError = ExecuteSqlError
 export async function getTableRowsCount(
   {
     queryClient,
-    projectRef,
-    connectionString,
+    branch,
     tableId,
     filters,
     roleImpersonationState,
@@ -118,8 +117,7 @@ export async function getTableRowsCount(
   signal?: AbortSignal
 ) {
   const entity = await prefetchTableEditor(queryClient, {
-    projectRef,
-    connectionString,
+    branch,
     id: tableId,
   })
   if (!entity) {
@@ -134,8 +132,7 @@ export async function getTableRowsCount(
   )
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['table-rows-count', table.id],
       isRoleImpersonationEnabled: isRoleImpersonationEnabled(roleImpersonationState?.role),
@@ -150,7 +147,7 @@ export async function getTableRowsCount(
 }
 
 export const useTableRowsCountQuery = <TData = TableRowsCountData>(
-  { projectRef, connectionString, tableId, ...args }: Omit<TableRowsCountVariables, 'queryClient'>,
+  { branch, tableId, ...args }: Omit<TableRowsCountVariables, 'queryClient'>,
   {
     enabled = true,
     ...options
@@ -158,11 +155,13 @@ export const useTableRowsCountQuery = <TData = TableRowsCountData>(
 ) => {
   const queryClient = useQueryClient()
   return useQuery<TableRowsCountData, TableRowsCountError, TData>(
-    tableRowKeys.tableRowsCount(projectRef, { table: { id: tableId }, ...args }),
-    ({ signal }) =>
-      getTableRowsCount({ queryClient, projectRef, connectionString, tableId, ...args }, signal),
+    tableRowKeys.tableRowsCount(branch?.organization_id, branch?.project_id, branch?.id, {
+      table: { id: tableId },
+      ...args,
+    }),
+    ({ signal }) => getTableRowsCount({ queryClient, branch, tableId, ...args }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof tableId !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined' && typeof tableId !== 'undefined',
       ...options,
     }
   )

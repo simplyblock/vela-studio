@@ -10,8 +10,6 @@ import { formatDatabaseID } from 'data/read-replicas/replicas.utils'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { DbQueryHook } from 'hooks/analytics/useDbQuery'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { IS_PLATFORM } from 'lib/constants'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import {
   Button,
@@ -32,6 +30,7 @@ import { PresetHookResult } from '../Reports/Reports.utils'
 import { QUERY_PERFORMANCE_REPORT_TYPES } from './QueryPerformance.constants'
 import { QueryPerformanceFilterBar } from './QueryPerformanceFilterBar'
 import { QueryPerformanceGrid } from './QueryPerformanceGrid'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface QueryPerformanceProps {
   queryHitRate: PresetHookResult
@@ -42,8 +41,8 @@ export const QueryPerformance = ({
   queryHitRate,
   queryPerformanceQuery,
 }: QueryPerformanceProps) => {
-  const { slug: orgSlug, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
   const [{ preset }, setSearchParams] = useQueryStates({
@@ -69,7 +68,7 @@ export const QueryPerformance = ({
     queryHitRate.runQuery()
   }
 
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef: ref })
+  const { data: databases } = useReadReplicasQuery({ branch })
 
   const { data: mostTimeConsumingQueries, isLoading: isLoadingMTC } = useQueryPerformanceQuery({
     preset: 'mostTimeConsuming',
@@ -260,18 +259,18 @@ export const QueryPerformance = ({
         confirmLabelLoading="Resetting report"
         onCancel={() => setShowResetgPgStatStatements(false)}
         onConfirm={async () => {
+          // FIXME: Connection string may be required
           const connectionString = databases?.find(
             (db) => db.identifier === state.selectedDatabaseId
           )?.connectionString
 
-          if (IS_PLATFORM && !connectionString) {
+          if (!connectionString) {
             return toast.error('Unable to run query: Connection string is missing')
           }
 
           try {
             await executeSql({
-              projectRef: project?.ref,
-              connectionString,
+              branch,
               sql: `SELECT pg_stat_statements_reset();`,
             })
             handleRefresh()

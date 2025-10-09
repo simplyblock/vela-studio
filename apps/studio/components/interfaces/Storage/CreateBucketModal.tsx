@@ -17,7 +17,7 @@ import { useBucketCreateMutation } from 'data/storage/bucket-create-mutation'
 import { useIcebergWrapperCreateMutation } from 'data/storage/iceberg-wrapper-create-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { BASE_PATH, IS_PLATFORM } from 'lib/constants'
+import { BASE_PATH } from 'lib/constants'
 import {
   Alert_Shadcn_,
   AlertDescription_Shadcn_,
@@ -54,10 +54,8 @@ import { Admonition } from 'ui-patterns/admonition'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { inverseValidBucketNameRegex, validBucketNameRegex } from './CreateBucketModal.utils'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { convertFromBytes, convertToBytes } from './StorageSettings/StorageSettings.utils'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 const FormSchema = z
   .object({
     name: z
@@ -101,14 +99,13 @@ export type CreateBucketForm = z.infer<typeof FormSchema>
 
 const CreateBucketModal = () => {
   const [visible, setVisible] = useState(false)
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { mutate: sendEvent } = useSendEventMutation()
   const router = useRouter()
-  const { can: canCreateBuckets } = useAsyncCheckProjectPermissions(
-    PermissionAction.STORAGE_WRITE,
-    '*'
-  )
+  // FIXME: need permission implemented   
+  const { can: canCreateBuckets } = {can:true}
 
   const { mutateAsync: createBucket, isLoading: isCreating } = useBucketCreateMutation({
     // [Joshen] Silencing the error here as it's being handled in onSubmit
@@ -117,7 +114,7 @@ const CreateBucketModal = () => {
   const { mutateAsync: createIcebergWrapper, isLoading: isCreatingIcebergWrapper } =
     useIcebergWrapperCreateMutation()
 
-  const { data } = useProjectStorageConfigQuery({ orgSlug: slug, projectRef: ref })
+  const { data } = useProjectStorageConfigQuery({ branch })
   const { value, unit } = convertFromBytes(data?.fileSizeLimit ?? 0)
   const formattedGlobalUploadLimit = `${value} ${unit}`
 
@@ -145,7 +142,7 @@ const CreateBucketModal = () => {
   const icebergCatalogEnabled = data?.features?.icebergCatalog?.enabled
 
   const onSubmit: SubmitHandler<CreateBucketForm> = async (values) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
 
     if (values.type === 'ANALYTICS' && !icebergCatalogEnabled) {
       toast.error(
@@ -165,7 +162,7 @@ const CreateBucketModal = () => {
           : undefined
 
       await createBucket({
-        projectRef: ref,
+        projectRef,
         id: values.name,
         type: values.type,
         isPublic: values.public,
@@ -175,7 +172,7 @@ const CreateBucketModal = () => {
       sendEvent({
         action: 'storage_bucket_created',
         properties: { bucketType: values.type },
-        groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
       })
 
       if (values.type === 'ANALYTICS' && icebergWrapperExtensionState === 'installed') {
@@ -186,7 +183,7 @@ const CreateBucketModal = () => {
       setShowConfiguration(false)
       setVisible(false)
       toast.success(`Successfully created bucket ${values.name}`)
-      router.push(`/project/${ref}/storage/buckets/${values.name}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/buckets/${values.name}`)
     } catch (error) {
       console.error(error)
       toast.error('Failed to create bucket')
@@ -277,35 +274,33 @@ const CreateBucketModal = () => {
                           description="Compatible with S3 buckets."
                           showIndicator={false}
                         />
-                        {IS_PLATFORM && (
-                          <RadioGroupStackedItem
-                            id="ANALYTICS"
-                            value="ANALYTICS"
-                            label="Analytics bucket"
-                            showIndicator={false}
-                            disabled={!icebergCatalogEnabled}
-                          >
-                            <>
-                              <p className="text-foreground-light text-left">
-                                Stores Iceberg files and is optimized for analytical workloads.
-                              </p>
+                        <RadioGroupStackedItem
+                          id="ANALYTICS"
+                          value="ANALYTICS"
+                          label="Analytics bucket"
+                          showIndicator={false}
+                          disabled={!icebergCatalogEnabled}
+                        >
+                          <>
+                            <p className="text-foreground-light text-left">
+                              Stores Iceberg files and is optimized for analytical workloads.
+                            </p>
 
-                              {icebergCatalogEnabled ? null : (
-                                <div className="w-full flex gap-x-2 py-2 items-center">
-                                  <WarningIcon />
-                                  <span className="text-xs text-left">
-                                    This feature is currently in alpha and not yet enabled for your
-                                    project. Sign up{' '}
-                                    <InlineLink href="https://forms.supabase.com/analytics-buckets">
-                                      here
-                                    </InlineLink>
-                                    .
-                                  </span>
-                                </div>
-                              )}
-                            </>
-                          </RadioGroupStackedItem>
-                        )}
+                            {icebergCatalogEnabled ? null : (
+                              <div className="w-full flex gap-x-2 py-2 items-center">
+                                <WarningIcon />
+                                <span className="text-xs text-left">
+                                  This feature is currently in alpha and not yet enabled for your
+                                  project. Sign up{' '}
+                                  <InlineLink href="https://forms.supabase.com/analytics-buckets">
+                                    here
+                                  </InlineLink>
+                                  .
+                                </span>
+                              </div>
+                            )}
+                          </>
+                        </RadioGroupStackedItem>
                       </RadioGroupStacked>
                     </FormControl_Shadcn_>
                   </FormItemLayout>
@@ -440,20 +435,18 @@ const CreateBucketModal = () => {
                                 ))}
                               </SelectContent_Shadcn_>
                             </Select_Shadcn_>
-                            {IS_PLATFORM && (
-                              <div className="col-span-12">
-                                <p className="text-foreground-light text-sm">
-                                  Note: Individual bucket uploads will still be capped at the{' '}
-                                  <Link
-                                    href={`/project/${ref}/settings/storage`}
-                                    className="font-bold underline"
-                                  >
-                                    global upload limit
-                                  </Link>{' '}
-                                  of {formattedGlobalUploadLimit}
-                                </p>
-                              </div>
-                            )}
+                            <div className="col-span-12">
+                              <p className="text-foreground-light text-sm">
+                                Note: Individual bucket uploads will still be capped at the{' '}
+                                <Link
+                                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/storage`}
+                                  className="font-bold underline"
+                                >
+                                  global upload limit
+                                </Link>{' '}
+                                of {formattedGlobalUploadLimit}
+                              </p>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -488,7 +481,7 @@ const CreateBucketModal = () => {
                       <p>
                         <span>Supabase will setup a </span>
                         <a
-                          href={`${BASE_PATH}/project/${ref}/integrations/iceberg_wrapper/overview`}
+                          href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/iceberg_wrapper/overview`}
                           target="_blank"
                           className="underline text-foreground-light"
                         >
@@ -499,7 +492,7 @@ const CreateBucketModal = () => {
                           {' '}
                           for easier access to the data. This action will also create{' '}
                           <a
-                            href={`${BASE_PATH}/project/${ref}/storage/access-keys`}
+                            href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/access-keys`}
                             target="_blank"
                             className="underline text-foreground-light"
                           >
@@ -513,7 +506,7 @@ const CreateBucketModal = () => {
                           </a>
                           <span> and </span>
                           <a
-                            href={`${BASE_PATH}/project/${ref}/integrations/vault/secrets`}
+                            href={`${BASE_PATH}/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/vault/secrets`}
                             target="_blank"
                             className="underline text-foreground-light"
                           >

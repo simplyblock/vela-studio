@@ -10,10 +10,10 @@ import { isRoleImpersonationEnabled } from 'state/role-impersonation-state'
 import type { ResponseError } from 'types'
 import { tableRowKeys } from './keys'
 import { formatFilterValue } from './utils'
+import { Branch } from 'api-types/types'
 
 export type TableRowDeleteAllVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   table: Entity
   filters: Filter[]
   roleImpersonationState?: RoleImpersonationState
@@ -36,8 +36,7 @@ export function getTableRowDeleteAllSql({
 }
 
 export async function deleteAllTableRow({
-  projectRef,
-  connectionString,
+  branch,
   table,
   filters,
   roleImpersonationState,
@@ -48,8 +47,7 @@ export async function deleteAllTableRow({
   )
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     isRoleImpersonationEnabled: isRoleImpersonationEnabled(roleImpersonationState?.role),
   })
@@ -76,8 +74,15 @@ export const useTableRowDeleteAllMutation = ({
     (vars) => deleteAllTableRow(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef, table } = variables
-        await queryClient.invalidateQueries(tableRowKeys.tableRowsAndCount(projectRef, table.id))
+        const { branch, table } = variables
+        await queryClient.invalidateQueries(
+          tableRowKeys.tableRowsAndCount(
+            branch?.organization_id,
+            branch?.project_id,
+            branch?.id,
+            table.id
+          )
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

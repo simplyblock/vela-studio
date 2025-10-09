@@ -31,7 +31,7 @@ const TableNode = ({
   sourcePosition,
   placeholder,
 }: NodeProps<TableNodeData> & { placeholder?: boolean }) => {
-  const { slug } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   // Important styles is a nasty hack to use Handles (required for edges calculations), but do not show them in the UI.
   // ref: https://github.com/wbkd/react-flow/discussions/2698
@@ -70,7 +70,7 @@ const TableNode = ({
             </div>
             {data.id && !placeholder && (
               <Button asChild type="text" className="px-0 w-[16px] h-[16px] rounded">
-                <Link href={`/org/${slug}/project/${data.ref}/editor/${data.id}`}>
+                <Link href={`/org/${orgRef}/project/${data.ref}/branch/${branchRef}/editor/${data.id}`}>
                   <ExternalLink size={10} className="text-foreground-light" />
                 </Link>
               </Button>

@@ -2,6 +2,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { CREATE_PG_GET_TABLEDEF_SQL } from './database-query-constants'
 import { databaseKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type GetTableDefinitionArgs = {
   id?: number
@@ -34,12 +35,11 @@ const getTableDefinitionSql = ({ id }: GetTableDefinitionArgs) => {
 }
 
 export type TableDefinitionVariables = GetTableDefinitionArgs & {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export async function getTableDefinition(
-  { projectRef, connectionString, id }: TableDefinitionVariables,
+  { branch, id }: TableDefinitionVariables,
   signal?: AbortSignal
 ) {
   if (!id) {
@@ -49,8 +49,7 @@ export async function getTableDefinition(
   const sql = getTableDefinitionSql({ id })
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql,
       queryKey: ['table-definition', id],
     },
@@ -64,18 +63,17 @@ export type TableDefinitionData = string
 export type TableDefinitionError = ExecuteSqlError
 
 export const useTableDefinitionQuery = <TData = TableDefinitionData>(
-  { projectRef, connectionString, id }: TableDefinitionVariables,
+  { branch, id }: TableDefinitionVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<TableDefinitionData, TableDefinitionError, TData> = {}
 ) =>
   useQuery<TableDefinitionData, TableDefinitionError, TData>(
-    databaseKeys.tableDefinition(projectRef, id),
-    ({ signal }) => getTableDefinition({ projectRef, connectionString, id }, signal),
+    databaseKeys.tableDefinition(branch?.organization_id, branch?.project_id, branch?.id, id),
+    ({ signal }) => getTableDefinition({ branch, id }, signal),
     {
-      enabled:
-        enabled && typeof projectRef !== 'undefined' && typeof id !== 'undefined' && !isNaN(id),
+      enabled: enabled && typeof branch !== 'undefined' && typeof id !== 'undefined' && !isNaN(id),
       ...options,
     }
   )

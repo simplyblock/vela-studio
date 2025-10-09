@@ -1,13 +1,11 @@
 import type { PostgresPublication, PostgresTable } from '@supabase/postgres-meta'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useDatabasePublicationUpdateMutation } from 'data/database-publications/database-publications-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProtectedSchemas } from 'hooks/useProtectedSchemas'
 import { Badge, Switch, TableCell, TableRow, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface PublicationsTableItemProps {
   table: PostgresTable
@@ -18,7 +16,7 @@ export const PublicationsTableItem = ({
   table,
   selectedPublication,
 }: PublicationsTableItemProps) => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: protectedSchemas } = useProtectedSchemas()
   const enabledForAllTables = selectedPublication.tables == null
 
@@ -27,19 +25,15 @@ export const PublicationsTableItem = ({
   const [checked, setChecked] = useState(
     selectedPublication.tables?.find((x: any) => x.id == table.id) != undefined
   )
-
-  const { can: canUpdatePublications } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'publications'
-  )
-
+  // FIXME: need permission implemented 
+  const { can: canUpdatePublications } = {can:true}
   const { mutate: updatePublications, isLoading } = useDatabasePublicationUpdateMutation()
 
   const toggleReplicationForTable = async (
     table: PostgresTable,
     publication: PostgresPublication
   ) => {
-    if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
 
     const originalChecked = checked
     setChecked(!checked)
@@ -56,8 +50,7 @@ export const PublicationsTableItem = ({
 
     updatePublications(
       {
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         id: publication.id,
         tables,
       },

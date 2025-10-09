@@ -1,18 +1,16 @@
-import { useParams } from 'common'
 import { Button, Input, copyToClipboard } from 'ui'
 
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
-import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { Copy } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import ContentSnippet from '../ContentSnippet'
 import { DOCS_CONTENT } from '../ProjectAPIDocs.constants'
 import type { ContentProps } from './Content.types'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Introduction = ({ showKeys, language, apikey, endpoint }: ContentProps) => {
-  const { slug: orgSlug, ref } = useParams()
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug, projectRef: ref })
-  const { data } = useProjectSettingsV2Query({ orgSlug, projectRef: ref })
+  const { data: branch } = useSelectedBranchQuery()
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
 
   const [copied, setCopied] = useState<'anon' | 'service'>()
 

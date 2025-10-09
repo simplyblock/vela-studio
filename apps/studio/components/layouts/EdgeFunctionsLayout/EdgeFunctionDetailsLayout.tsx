@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Download, FileArchive, Send } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState, type PropsWithChildren } from 'react'
@@ -15,7 +14,6 @@ import NoPermission from 'components/ui/NoPermission'
 import { useEdgeFunctionBodyQuery } from 'data/edge-functions/edge-function-body-query'
 import { useEdgeFunctionQuery } from 'data/edge-functions/edge-function-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { withAuth } from 'hooks/misc/withAuth'
 import {
@@ -39,14 +37,12 @@ const EdgeFunctionDetailsLayout = ({
 }: PropsWithChildren<EdgeFunctionDetailsLayoutProps>) => {
   const router = useRouter()
   const { data: org } = useSelectedOrganizationQuery()
-  const { slug, functionSlug, ref } = useParams()
+  const { slug: orgRef, functionSlug, ref: projectRef, branch: branchRef } = useParams()
   const { mutate: sendEvent } = useSendEventMutation()
 
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
-  const { isLoading, can: canReadFunctions } = useAsyncCheckProjectPermissions(
-    PermissionAction.FUNCTIONS_READ,
-    '*'
-  )
+  // FIXME: need permission implemented   
+  const { isLoading, can: canReadFunctions } = {can:true , isLoading:false}
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -54,11 +50,11 @@ const EdgeFunctionDetailsLayout = ({
     data: selectedFunction,
     error,
     isError,
-  } = useEdgeFunctionQuery({ projectRef: ref, slug: functionSlug })
+  } = useEdgeFunctionQuery({ projectRef, slug: functionSlug })
 
   const { data: functionFiles = [], error: filesError } = useEdgeFunctionBodyQuery(
     {
-      projectRef: ref,
+      projectRef,
       slug: functionSlug,
     },
     {
@@ -78,7 +74,7 @@ const EdgeFunctionDetailsLayout = ({
   const breadcrumbItems = [
     {
       label: 'Edge Functions',
-      href: `/org/${slug}/project/${ref}/functions`,
+      href: `/org/${orgRef}/project/${projectRef}/functions`,
     },
   ]
 
@@ -86,23 +82,23 @@ const EdgeFunctionDetailsLayout = ({
     ? [
         {
           label: 'Overview',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}`,
         },
         {
           label: 'Invocations',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/invocations`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/invocations`,
         },
         {
           label: 'Logs',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/logs`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/logs`,
         },
         {
           label: 'Code',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/code`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/code`,
         },
         {
           label: 'Details',
-          href: `/org/${slug}/project/${ref}/functions/${functionSlug}/details`,
+          href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${functionSlug}/details`,
         },
       ]
     : []
@@ -135,7 +131,7 @@ const EdgeFunctionDetailsLayout = ({
 
     if (!!functionSlug && isError && error.code === 404 && !cancel) {
       toast('Edge function cannot be found in your project')
-      router.push(`/org/${slug}/project/${ref}/functions`)
+      router.push(`/org/${orgRef}/project/${projectRef}/functions`)
     }
 
     return () => {
@@ -209,7 +205,7 @@ const EdgeFunctionDetailsLayout = ({
                   sendEvent({
                     action: 'edge_function_test_side_panel_opened',
                     groups: {
-                      project: ref ?? 'Unknown',
+                      project: projectRef ?? 'Unknown',
                       organization: org?.slug ?? 'Unknown',
                     },
                   })

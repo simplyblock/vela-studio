@@ -1,13 +1,10 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { partition } from 'lodash'
 import { useRouter } from 'next/router'
 import { toast } from 'sonner'
-
 import { useParams } from 'common'
 import { SQL_TEMPLATES } from 'components/interfaces/SQLEditor/SQLEditor.queries'
 import { ActionCard } from 'components/layouts/Tabs/ActionCard'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { uuidv4 } from 'lib/helpers'
@@ -18,27 +15,20 @@ import { createSqlSnippetSkeletonV2 } from '../SQLEditor.utils'
 
 const SQLTemplates = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
   const [sql] = partition(SQL_TEMPLATES, { type: 'template' })
 
   const snapV2 = useSqlEditorV2StateSnapshot()
-
-  const { can: canCreateSQLSnippet } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'user_content',
-    {
-      resource: { type: 'sql', owner_id: profile?.id },
-      subject: { id: profile?.id },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateSQLSnippet } = {can:true}
 
   const { mutate: sendEvent } = useSendEventMutation()
 
   const handleNewQuery = async (sql: string, name: string) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!projectRef) return console.error('Project ref is required')
     if (!project) return console.error('Project is required')
     if (!profile) return console.error('Profile is required')
 
@@ -54,10 +44,10 @@ const SQLTemplates = () => {
         owner_id: profile?.id,
         project_id: project?.id,
       })
-      snapV2.addSnippet({ projectRef: ref, snippet })
+      snapV2.addSnippet({ projectRef, snippet })
       snapV2.addNeedsSaving(snippet.id)
 
-      router.push(`/org/${slug}/project/${ref}/sql/${snippet.id}`)
+      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`)
     } catch (error: any) {
       toast.error(`Failed to create new query: ${error.message}`)
     }
@@ -87,7 +77,7 @@ const SQLTemplates = () => {
                 sendEvent({
                   action: 'sql_editor_template_clicked',
                   properties: { templateName: x.title },
-                  groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                  groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
                 })
               }}
             />

@@ -6,6 +6,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { invalidateTablePrivilegesQuery } from './table-privileges-query'
 import { privilegeKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type TablePrivilegesGrant = Parameters<
   typeof pgMeta.tablePrivileges.grant
@@ -14,20 +15,17 @@ export type TablePrivilegesGrant = Parameters<
   : never
 
 export type TablePrivilegesGrantVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   grants: TablePrivilegesGrant[]
 }
 
 export async function grantTablePrivileges({
-  projectRef,
-  connectionString,
+  branch,
   grants,
 }: TablePrivilegesGrantVariables) {
   const sql = pgMeta.tablePrivileges.grant(grants).sql
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['table-privileges', 'grant'],
   })
@@ -50,11 +48,11 @@ export const useTablePrivilegesGrantMutation = ({
     (vars) => grantTablePrivileges(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { branch } = variables
 
         await Promise.all([
-          invalidateTablePrivilegesQuery(queryClient, projectRef),
-          queryClient.invalidateQueries(privilegeKeys.columnPrivilegesList(projectRef)),
+          invalidateTablePrivilegesQuery(queryClient, branch?.organization_id, branch?.project_id, branch?.id),
+          queryClient.invalidateQueries(privilegeKeys.columnPrivilegesList(branch?.organization_id, branch?.project_id, branch?.id)),
         ])
 
         await onSuccess?.(data, variables, context)

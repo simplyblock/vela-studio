@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -9,12 +8,8 @@ import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import { StringNumberOrNull } from 'components/ui/Forms/Form.constants'
 import NoPermission from 'components/ui/NoPermission'
-import UpgradeToPro from 'components/ui/UpgradeToPro'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
@@ -42,15 +37,10 @@ const FormSchema = z.object({
 
 export const AdvancedAuthSettingsForm = () => {
   const { ref: projectRef } = useParams()
-  const { data: organization } = useSelectedOrganizationQuery()
-  const { can: canReadConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'custom_config_gotrue'
-  )
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
+    // FIXME: need permission implemented
+  const { can: canReadConfig } = {can:true}
+    // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
 
   const [isUpdatingRequestDurationForm, setIsUpdatingRequestDurationForm] = useState(false)
   const [isUpdatingDatabaseForm, setIsUpdatingDatabaseForm] = useState(false)
@@ -58,9 +48,6 @@ export const AdvancedAuthSettingsForm = () => {
   const { data: authConfig, error: authConfigError, isError } = useAuthConfigQuery({ projectRef })
 
   const { mutate: updateAuthConfig } = useAuthConfigUpdateMutation()
-
-  const isTeamsEnterprisePlan = organization?.plan.id !== 'free' && organization?.plan.id !== 'pro'
-  const promptTeamsEnterpriseUpgrade = IS_PLATFORM && !isTeamsEnterprisePlan
 
   const requestDurationForm = useForm({
     resolver: zodResolver(
@@ -103,7 +90,6 @@ export const AdvancedAuthSettingsForm = () => {
 
   const onSubmitRequestDurationForm = (values: any) => {
     if (!projectRef) return console.error('Project ref is required')
-    if (!isTeamsEnterprisePlan) return
 
     setIsUpdatingRequestDurationForm(true)
 
@@ -162,15 +148,6 @@ export const AdvancedAuthSettingsForm = () => {
 
   return (
     <>
-      {promptTeamsEnterpriseUpgrade && (
-        <div className="my-4">
-          <UpgradeToPro
-            primaryText="Upgrade to Team or Enterprise"
-            secondaryText="Advanced Auth server settings are only available on the Team Plan and up."
-            buttonText="Upgrade to Team"
-          />
-        </div>
-      )}
       <ScaffoldSection isFullWidth>
         <ScaffoldSectionTitle className="mb-4">Request Duration</ScaffoldSectionTitle>
 
@@ -198,7 +175,7 @@ export const AdvancedAuthSettingsForm = () => {
                               min={5}
                               max={30}
                               {...field}
-                              disabled={!canUpdateConfig || promptTeamsEnterpriseUpgrade}
+                              disabled={!canUpdateConfig}
                             />
                           </PrePostTab>
                         </div>
@@ -220,8 +197,7 @@ export const AdvancedAuthSettingsForm = () => {
                   disabled={
                     !canUpdateConfig ||
                     isUpdatingRequestDurationForm ||
-                    !requestDurationForm.formState.isDirty ||
-                    promptTeamsEnterpriseUpgrade
+                    !requestDurationForm.formState.isDirty
                   }
                   loading={isUpdatingRequestDurationForm}
                 >
@@ -254,7 +230,7 @@ export const AdvancedAuthSettingsForm = () => {
                           type="number"
                           placeholder="10"
                           {...field}
-                          disabled={!canUpdateConfig || promptTeamsEnterpriseUpgrade}
+                          disabled={!canUpdateConfig}
                         />
                       </FormControl_Shadcn_>
                     </FormItemLayout>

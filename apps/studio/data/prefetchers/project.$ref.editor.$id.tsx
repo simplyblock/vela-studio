@@ -17,11 +17,13 @@ import { useRoleImpersonationStateSnapshot } from 'state/role-impersonation-stat
 import { TABLE_EDITOR_DEFAULT_ROWS_PER_PAGE } from 'state/table-editor'
 import PrefetchableLink, { PrefetchableLinkProps } from './PrefetchableLink'
 import { getOrganizationSlug } from '../vela/organization-path-slug'
+import { getBranchRef } from '../vela/branch-path-ref'
+import { Branch } from 'api-types/types'
+import { useSelectedBranchQuery } from '../branches/selected-branch-query'
 
 interface PrefetchEditorTablePageArgs {
   queryClient: QueryClient
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   id: number
   sorts?: Sort[]
   filters?: Filter[]
@@ -30,27 +32,24 @@ interface PrefetchEditorTablePageArgs {
 
 export function prefetchEditorTablePage({
   queryClient,
-  projectRef,
-  connectionString,
+  branch,
   id,
   sorts,
   filters,
   roleImpersonationState,
 }: PrefetchEditorTablePageArgs) {
   return prefetchTableEditor(queryClient, {
-    projectRef,
-    connectionString,
+    branch,
     id,
   }).then((entity) => {
     if (entity) {
       const supaTable = parseSupaTable(entity)
 
       const { sorts: localSorts = [], filters: localFilters = [] } =
-        loadTableEditorStateFromLocalStorage(projectRef, entity.name, entity.schema) ?? {}
+        loadTableEditorStateFromLocalStorage(branch, entity.name, entity.schema) ?? {}
 
       prefetchTableRows(queryClient, {
-        projectRef,
-        connectionString,
+        branch,
         tableId: id,
         sorts: sorts ?? formatSortURLParams(supaTable.name, localSorts),
         filters: filters ?? formatFilterURLParams(localFilters),
@@ -64,7 +63,9 @@ export function prefetchEditorTablePage({
 
 export function usePrefetchEditorTablePage() {
   const router = useRouter()
-  const slug = getOrganizationSlug()
+  const orgRef = getOrganizationSlug()
+  const { data: branch } = useSelectedBranchQuery()
+  const branchRef = getBranchRef()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
   const roleImpersonationState = useRoleImpersonationStateSnapshot()
@@ -72,16 +73,15 @@ export function usePrefetchEditorTablePage() {
   return useCallback(
     ({ id: _id, filters, sorts }: { id?: string; filters?: Filter[]; sorts?: Sort[] }) => {
       const id = _id ? Number(_id) : undefined
-      if (!project || !id || isNaN(id)) return
+      if (!project || !branch || !id || isNaN(id)) return
 
       // Prefetch the code
-      router.prefetch(`/org/${slug}/project/${project.ref}/editor/${id}`)
+      router.prefetch(`/org/${orgRef}/project/${project.ref}/branch/${branchRef}/editor/${id}`)
 
       // Prefetch the data
       prefetchEditorTablePage({
         queryClient,
-        projectRef: project.ref,
-        connectionString: project.connectionString,
+        branch,
         id,
         sorts,
         filters,
@@ -96,7 +96,8 @@ export function usePrefetchEditorTablePage() {
 
 interface EditorTablePageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 'prefetcher'> {
   projectRef?: string
-  slug: string
+  orgRef?: string
+  branchRef?: string
   id?: string
   sorts?: Sort[]
   filters?: Filter[]
@@ -105,7 +106,8 @@ interface EditorTablePageLinkProps extends Omit<PrefetchableLinkProps, 'href' | 
 
 export function EditorTablePageLink({
   projectRef,
-  slug,
+  orgRef,
+  branchRef,
   id,
   sorts,
   filters,
@@ -117,7 +119,7 @@ export function EditorTablePageLink({
 
   return (
     <PrefetchableLink
-      href={href || `/org/${slug}/project/${projectRef}/editor/${id}`}
+      href={href || `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${id}`}
       prefetcher={() => prefetch({ id, sorts, filters })}
       {...props}
     >

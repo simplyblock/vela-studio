@@ -22,7 +22,7 @@ import {
   makeValidateRequired,
 } from './Wrappers.utils'
 import WrapperTableEditor from './WrapperTableEditor'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface EditWrapperSheetProps {
   wrapper: FDW
@@ -43,11 +43,10 @@ export const EditWrapperSheet = ({
 }: EditWrapperSheetProps) => {
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: secrets, isLoading: isSecretsLoading } = useVaultSecretsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const { mutate: updateFDW, isLoading: isSaving } = useFDWUpdateMutation({
@@ -56,7 +55,8 @@ export const EditWrapperSheet = ({
       setWrapperTables([])
 
       const hasNewSchema = wrapperTables.some((table) => table.is_new_schema)
-      if (hasNewSchema) invalidateSchemasQuery(queryClient, orgSlug, project?.ref)
+      if (hasNewSchema)
+        invalidateSchemasQuery(queryClient, branch?.organization_id, branch?.project_id, branch?.id)
     },
   })
 
@@ -102,8 +102,7 @@ export const EditWrapperSheet = ({
     if (!isEmpty(errors)) return setFormErrors(errors)
 
     updateFDW({
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       wrapper,
       wrapperMeta,
       formState: { ...values, server_name: `${wrapper_name}_server` },
@@ -167,8 +166,7 @@ export const EditWrapperSheet = ({
                     )
                     if (secret !== undefined) {
                       const value = await getDecryptedValue({
-                        projectRef: project?.ref,
-                        connectionString: project?.connectionString,
+                        branch,
                         id: secret.id,
                       })
                       return { [option.name]: value[0]?.decrypted_secret ?? '' }

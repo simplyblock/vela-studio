@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import {
   Copy,
   Download,
@@ -15,13 +14,11 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ComponentProps, useEffect } from 'react'
 
-import { IS_PLATFORM } from 'common'
 import { useParams } from 'common/hooks/useParams'
 import { createSqlSnippetSkeletonV2 } from 'components/interfaces/SQLEditor/SQLEditor.utils'
 import { getContentById } from 'data/content/content-id-query'
 import { useSQLSnippetFolderContentsQuery } from 'data/content/sql-folder-contents-query'
 import { Snippet } from 'data/content/sql-folders-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import useLatest from 'hooks/misc/useLatest'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProfile } from 'lib/profile'
@@ -93,7 +90,7 @@ export const SQLEditorTreeViewItem = ({
   ...props
 }: SQLEditorTreeViewItemProps) => {
   const router = useRouter()
-  const { slug, id, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const { className, onClick } = getNodeProps()
@@ -106,14 +103,8 @@ export const SQLEditorTreeViewItem = ({
   const isEditing = status === 'editing'
   const isSaving = status === 'saving'
 
-  const { can: canCreateSQLSnippet } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'user_content',
-    {
-      resource: { type: 'sql', owner_id: profile?.id },
-      subject: { id: profile?.id },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateSQLSnippet } = {can:true}
 
   const parentId = element.parent === 0 ? undefined : element.parent
 
@@ -212,7 +203,7 @@ export const SQLEditorTreeViewItem = ({
 
     snapV2.addSnippet({ projectRef, snippet: snippetCopy })
     snapV2.addNeedsSaving(snippetCopy.id!)
-    router.push(`/project/${projectRef}/sql/${snippetCopy.id}`)
+    router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippetCopy.id}`)
   }
 
   return (
@@ -234,11 +225,11 @@ export const SQLEditorTreeViewItem = ({
             onClick={(e) => {
               if (!isBranch) {
                 if (!e.shiftKey) {
-                  router.push(`/org/${slug}/project/${projectRef}/sql/${element.id}`)
+                  router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${element.id}`)
                 } else if (id !== 'new') {
                   onMultiSelect?.(element.id)
                 } else {
-                  router.push(`/org/${slug}/project/${projectRef}/sql/${element.id}`)
+                  router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${element.id}`)
                 }
               } else {
                 // Prevent expanding folder while editing text
@@ -326,7 +317,7 @@ export const SQLEditorTreeViewItem = ({
                 <Link
                   target="_self"
                   rel="noreferrer"
-                  href={`/org/${slug}/project/${projectRef}/sql/${element.id}`}
+                  href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${element.id}`}
                 >
                   <ExternalLink size={14} />
                   Open in new tab
@@ -396,7 +387,7 @@ export const SQLEditorTreeViewItem = ({
                 />
                 {isFavorite ? 'Remove from' : 'Add to'} favorites
               </ContextMenuItem_Shadcn_>
-              {onSelectDownload !== undefined && IS_PLATFORM && (
+              {onSelectDownload !== undefined && (
                 <ContextMenuItem_Shadcn_
                   className="gap-x-2"
                   onSelect={() => onSelectDownload()}

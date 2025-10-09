@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { isEqual } from 'lodash'
 import { Clipboard, Eye, EyeOff, Play } from 'lucide-react'
 import { Key, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
@@ -6,11 +5,10 @@ import { Item, Menu, useContextMenu } from 'react-contexify'
 import DataGrid, { Column, RenderRowProps, Row } from 'react-data-grid'
 import { createPortal } from 'react-dom'
 
-import { IS_PLATFORM, useParams } from 'common'
+import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DownloadResultsButton } from 'components/ui/DownloadResultsButton'
 import { useSelectedLog } from 'hooks/analytics/useSelectedLog'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useProfile } from 'lib/profile'
 import { toast } from 'sonner'
 import { ResponseError } from 'types'
@@ -93,15 +91,8 @@ const LogTable = ({
   const [cellPosition, setCellPosition] = useState<any>()
   const [selectionOpen, setSelectionOpen] = useState(false)
   const [selectedRow, setSelectedRow] = useState<LogData | null>(null)
-
-  const { can: canCreateLogQuery } = useAsyncCheckProjectPermissions(
-    PermissionAction.CREATE,
-    'user_content',
-    {
-      resource: { type: 'log_sql', owner_id: profile?.id },
-      subject: { id: profile?.id },
-    }
-  )
+  // FIXME: need permission implemented 
+  const { can: canCreateLogQuery } = {can:true}
 
   const firstRow = data[0]
 
@@ -277,24 +268,22 @@ const LogTable = ({
       )}
 
       <div className="space-x-2">
-        {IS_PLATFORM && (
-          <ButtonTooltip
-            type="default"
-            onClick={onSave}
-            loading={isSaving}
-            disabled={!canCreateLogQuery || !hasEditorValue}
-            tooltip={{
-              content: {
-                side: 'bottom',
-                text: !canCreateLogQuery
-                  ? 'You need additional permissions to save your query'
-                  : undefined,
-              },
-            }}
-          >
-            Save query
-          </ButtonTooltip>
-        )}
+        <ButtonTooltip
+          type="default"
+          onClick={onSave}
+          loading={isSaving}
+          disabled={!canCreateLogQuery || !hasEditorValue}
+          tooltip={{
+            content: {
+              side: 'bottom',
+              text: !canCreateLogQuery
+                ? 'You need additional permissions to save your query'
+                : undefined,
+            },
+          }}
+        >
+          Save query
+        </ButtonTooltip>
         <Button
           title="run-logs-query"
           type={hasEditorValue ? 'primary' : 'alternative'}

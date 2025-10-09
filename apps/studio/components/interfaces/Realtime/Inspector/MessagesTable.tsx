@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { isEqual } from 'lodash'
 import { ExternalLink, Loader2, Megaphone } from 'lucide-react'
 import Link from 'next/link'
@@ -10,7 +9,6 @@ import { DocsButton } from 'components/ui/DocsButton'
 import NoPermission from 'components/ui/NoPermission'
 import ShimmerLine from 'components/ui/ShimmerLine'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { Button, IconBroadcast, IconDatabaseChanges, IconPresence, cn } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
@@ -32,12 +30,9 @@ const NoResultAlert = ({
   hasChannelSet: boolean
   showSendMessage: () => void
 }) => {
-  const { slug, ref } = useParams()
-
-  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'service_api_keys'
-  )
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
 
   return (
     <div className="w-full max-w-md flex items-center flex-col">
@@ -71,7 +66,7 @@ const NoResultAlert = ({
                   Send messages between multiple clients
                 </p>
               </div>
-              <Link href={`/org/${slug}/project/${ref}/realtime/inspector`} target="_blank" rel="noreferrer">
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/realtime/inspector`} target="_blank" rel="noreferrer">
                 <Button type="default" iconRight={<ExternalLink />}>
                   Open inspector
                 </Button>
@@ -87,7 +82,7 @@ const NoResultAlert = ({
                 <p className="text-foreground">Listen to a table for changes</p>
                 <p className="text-foreground-lighter text-xs">Tables must have realtime enabled</p>
               </div>
-              <Link href={`/org/${slug}/project/${ref}/database/publications`} target="_blank" rel="noreferrer">
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/publications`} target="_blank" rel="noreferrer">
                 <Button type="default" iconRight={<ExternalLink />}>
                   Publications settings
                 </Button>

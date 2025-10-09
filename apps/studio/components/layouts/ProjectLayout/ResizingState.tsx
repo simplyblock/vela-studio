@@ -2,7 +2,7 @@ import { Loader2 } from 'lucide-react'
 
 import { useProjectDetailQuery } from 'data/projects/project-detail-query'
 import { PROJECT_STATUS } from 'lib/constants'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export const ResizingState = () => {
   const { slug, ref } = getPathReferences()

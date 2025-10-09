@@ -8,8 +8,8 @@ import { organizationKeys } from './keys'
 
 export type OrganizationMemberUpdateRoleVariables = {
   slug: string
-  gotrueId: string
-  roleId: number
+  userId: string
+  roleId: string
   roleName: string
   projects: string[]
   skipInvalidation?: boolean
@@ -17,15 +17,15 @@ export type OrganizationMemberUpdateRoleVariables = {
 
 export async function assignOrganizationMemberRole({
   slug,
-  gotrueId,
+  userId,
   roleId,
   roleName,
   projects,
 }: OrganizationMemberUpdateRoleVariables) {
   const { data, error } = await put(
-    '/platform/organizations/{slug}/members/{gotrue_id}/roles/{role_id}',
+    '/platform/organizations/{slug}/members/{user_id}/roles/{role_id}',
     {
-      params: { path: { slug, gotrue_id: gotrueId, role_id: roleId } },
+      params: { path: { slug, user_id: userId, role_id: roleId } },
       body: { name: roleName, role_scoped_projects: projects },
     }
   )

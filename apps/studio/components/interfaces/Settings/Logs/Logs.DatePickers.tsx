@@ -9,7 +9,6 @@ import { Label } from '@ui/components/shadcn/ui/label'
 import { RadioGroup, RadioGroupItem } from '@ui/components/shadcn/ui/radio-group'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { TimeSplitInput } from 'components/ui/DatePicker/TimeSplitInput'
-import { useCurrentOrgPlan } from 'hooks/misc/useCurrentOrgPlan'
 import {
   Button,
   ButtonProps,
@@ -231,13 +230,11 @@ export const LogsDatePicker = ({
     Math.abs(dayjs(startDate).diff(dayjs(endDate), 'days')) >
     LOGS_LARGE_DATE_RANGE_DAYS_THRESHOLD - 1
 
-  const { plan: orgPlan, isLoading: isOrgPlanLoading } = useCurrentOrgPlan()
   const showHelperBadge = (helper?: DatetimeHelper) => {
     if (!helper) return false
     if (!helper.availableIn?.length) return false
 
     if (helper.availableIn.includes('free')) return false
-    if (helper.availableIn.includes(orgPlan?.id || 'free') && !isOrgPlanLoading) return false
     return true
   }
 

@@ -8,15 +8,14 @@ import { useCreateAndExposeAPISchemaMutation } from 'data/api-settings/create-an
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { useProjectPostgrestConfigUpdateMutation } from 'data/config/project-postgrest-config-update-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   CodeBlock,
+  Collapsible_Shadcn_,
   CollapsibleContent_Shadcn_,
   CollapsibleTrigger_Shadcn_,
-  Collapsible_Shadcn_,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -26,7 +25,7 @@ import {
   DialogTitle,
   WarningIcon,
 } from 'ui'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface HardenAPIModalProps {
   visible: boolean
@@ -34,15 +33,12 @@ interface HardenAPIModalProps {
 }
 
 export const HardenAPIModal = ({ visible, onClose }: HardenAPIModalProps) => {
-  const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
 
   const { data: schemas } = useSchemasQuery({
-    orgSlug,
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
-  const { data: config } = useProjectPostgrestConfigQuery({ orgSlug, projectRef: project?.ref })
+  const { data: config } = useProjectPostgrestConfigQuery({ branch })
 
   const hasAPISchema = (schemas ?? []).find((schema) => schema.name === 'api')
   const exposedSchemas = config?.db_schema.split(',').map((x) => x.trim()) ?? []
@@ -64,12 +60,10 @@ export const HardenAPIModal = ({ visible, onClose }: HardenAPIModalProps) => {
     })
 
   const onSelectCreateAndExposeAPISchema = () => {
-    if (project === undefined) return console.error('Project is required')
-    if (config === undefined) return console.error('Postgrest config is required')
+    if (!branch) return console.error('Branch is required')
+    if (!config) return console.error('Postgrest config is required')
     createAndExposeAPISchema({
-      orgSlug: orgSlug!,
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       existingPostgrestConfig: {
         max_rows: config.max_rows,
         db_pool: config.db_pool,
@@ -80,7 +74,7 @@ export const HardenAPIModal = ({ visible, onClose }: HardenAPIModalProps) => {
   }
 
   const onSelectRemovePublicSchema = () => {
-    if (project === undefined) return console.error('Project is required')
+    if (branch === undefined) return console.error('Branch is required')
     if (config === undefined) return console.error('Postgrest config is required')
 
     const updatedDbExtraSearchPath = config.db_extra_search_path
@@ -94,8 +88,7 @@ export const HardenAPIModal = ({ visible, onClose }: HardenAPIModalProps) => {
       .filter((x) => x !== 'public')
       .join(', ')
     updatePostgrestConfig({
-      orgSlug: orgSlug!,
-      projectRef: project.ref,
+      branch,
       maxRows: config.max_rows,
       dbPool: config.db_pool,
       dbSchema: updatedDbSchema,

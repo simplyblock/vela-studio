@@ -4,33 +4,28 @@ import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { enumeratedTypesKeys } from './keys'
-import { DEFAULT_PLATFORM_APPLICATION_NAME } from '@supabase/pg-meta/src/constants'
+import { Branch } from 'api-types/types'
 
 export type EnumeratedTypesVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type EnumeratedType = components['schemas']['PostgresType']
 
 export async function getEnumeratedTypes(
-  { projectRef, connectionString }: EnumeratedTypesVariables,
+  { branch }: EnumeratedTypesVariables,
   signal?: AbortSignal
 ) {
-  if (!projectRef) throw new Error('projectRef is required')
+  if (!branch) throw new Error('branch is required')
 
-  let headers = new Headers()
-  if (connectionString) headers.set('x-connection-encrypted', connectionString)
-
-  const { data, error } = await get('/platform/pg-meta/{ref}/types', {
+  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/branches/{branch}/meta/types', {
     params: {
-      header: {
-        'x-connection-encrypted': connectionString!,
-        'x-pg-application-name': DEFAULT_PLATFORM_APPLICATION_NAME,
+      path: {
+        slug: branch.organization_id,
+        ref: branch.project_id,
+        branch: branch.id
       },
-      path: { ref: projectRef },
     },
-    headers: Object.fromEntries(headers),
     signal,
   })
 
@@ -42,17 +37,17 @@ export type EnumeratedTypesData = Awaited<ReturnType<typeof getEnumeratedTypes>>
 export type EnumeratedTypesError = ResponseError
 
 export const useEnumeratedTypesQuery = <TData = EnumeratedTypesData>(
-  { projectRef, connectionString }: EnumeratedTypesVariables,
+  { branch }: EnumeratedTypesVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<EnumeratedTypesData, EnumeratedTypesError, TData> = {}
 ) =>
   useQuery<EnumeratedTypesData, EnumeratedTypesError, TData>(
-    enumeratedTypesKeys.list(projectRef),
-    ({ signal }) => getEnumeratedTypes({ projectRef, connectionString }, signal),
+    enumeratedTypesKeys.list(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getEnumeratedTypes({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

@@ -1,13 +1,13 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 import type { Project } from 'data/projects/project-detail-query'
-import { IS_PLATFORM } from 'lib/constants'
 
 export const generateAdvisorsMenu = (
-  slug: string,
+  orgRef: string,
   project?: Project,
+  branchRef?: string,
   features?: { advisorRules: boolean }
 ): ProductMenuGroup[] => {
-  const ref = project?.ref ?? 'default'
+  const projectRef = project?.ref ?? 'default'
 
   return [
     {
@@ -16,24 +16,24 @@ export const generateAdvisorsMenu = (
         {
           name: 'Security Advisor',
           key: 'security',
-          url: `/org/${slug}/project/${ref}/advisors/security`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/security`,
           items: [],
         },
         {
           name: 'Performance Advisor',
           key: 'performance',
-          url: `/org/${slug}/project/${ref}/advisors/performance`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/performance`,
           items: [],
         },
         {
           name: 'Query Performance',
           key: 'query-performance',
-          url: `/org/${slug}/project/${ref}/advisors/query-performance`,
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/query-performance`,
           items: [],
         },
       ],
     },
-    ...(IS_PLATFORM && features?.advisorRules
+    ...(features?.advisorRules
       ? [
           {
             title: 'Configuration',
@@ -41,7 +41,7 @@ export const generateAdvisorsMenu = (
               {
                 name: 'Settings',
                 key: 'rules',
-                url: `/org/${slug}/project/${ref}/advisors/rules/security`,
+                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/security`,
                 items: [],
               },
             ],

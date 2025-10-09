@@ -18,7 +18,6 @@ import { useUsersCountQuery } from 'data/auth/users-count-query'
 import { User, useUsersInfiniteQuery } from 'data/auth/users-infinite-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { isAtBottom } from 'lib/helpers'
 import {
   Button,
@@ -54,6 +53,7 @@ import {
   USERS_TABLE_COLUMNS,
 } from './Users.constants'
 import { formatUserColumns, formatUsersData } from './Users.utils'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 export type Filter = 'all' | 'verified' | 'unverified' | 'anonymous'
 
@@ -61,8 +61,8 @@ export type Filter = 'all' | 'verified' | 'unverified' | 'anonymous'
 // Can change it to remove V2 thereafter
 export const UsersV2 = () => {
   const queryClient = useQueryClient()
-  const { ref: projectRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useBranchQuery({ orgRef, projectRef, branchRef })
   const gridRef = useRef<DataGridHandle>(null)
   const xScroll = useRef<number>(0)
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
@@ -117,8 +117,7 @@ export const UsersV2 = () => {
     fetchNextPage,
   } = useUsersInfiniteQuery(
     {
-      projectRef,
-      connectionString: project?.connectionString,
+      branch,
       keywords: filterKeywords,
       filter: filter === 'all' ? undefined : filter,
       providers: selectedProviders,
@@ -134,8 +133,7 @@ export const UsersV2 = () => {
   )
 
   const { data: countData, refetch: refetchCount } = useUsersCountQuery({
-    projectRef,
-    connectionString: project?.connectionString,
+    branch,
     keywords: filterKeywords,
     filter: filter === 'all' ? undefined : filter,
     providers: selectedProviders,
@@ -203,18 +201,22 @@ export const UsersV2 = () => {
   )
 
   const handleDeleteUsers = async () => {
-    if (!projectRef) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch is required')
     const userIds = [...selectedUsers]
 
     setIsDeletingUsers(true)
     try {
       await Promise.all(
-        userIds.map((id) => deleteUser({ projectRef, userId: id, skipInvalidation: true }))
+        userIds.map((id) => deleteUser({ branch, userId: id, skipInvalidation: true }))
       )
       // [Joshen] Skip invalidation within RQ to prevent multiple requests, then invalidate once at the end
       await Promise.all([
-        queryClient.invalidateQueries(authKeys.usersInfinite(projectRef)),
-        queryClient.invalidateQueries(authKeys.usersCount(projectRef)),
+        queryClient.invalidateQueries(
+          authKeys.usersInfinite(branch.organization_id, branch.project_id, branch.id)
+        ),
+        queryClient.invalidateQueries(
+          authKeys.usersCount(branch.organization_id, branch.project_id, branch.id)
+        ),
       ])
       toast.success(
         `Successfully deleted the selected ${selectedUsers.size} user${selectedUsers.size > 1 ? 's' : ''}`

@@ -10,12 +10,12 @@ import { generateAuthMenu } from './AuthLayout.utils'
 
 const AuthProductMenu = () => {
   const router = useRouter()
-  const { slug, ref: projectRef = 'default' } = useParams()
+  const { slug: orgRef, ref: projectRef = 'default', branch: branchRef } = useParams()
 
   useAuthConfigPrefetch({ projectRef })
   const page = router.pathname.split('/')[6]
 
-  return <ProductMenu page={page} menu={generateAuthMenu(slug!, projectRef)} />
+  return <ProductMenu page={page} menu={generateAuthMenu(orgRef!, projectRef, branchRef!)} />
 }
 
 const AuthLayout = ({ children }: PropsWithChildren<{}>) => {

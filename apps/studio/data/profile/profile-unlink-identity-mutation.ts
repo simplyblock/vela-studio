@@ -2,14 +2,14 @@ import type { UserIdentity } from '@supabase/supabase-js'
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { auth } from 'lib/gotrue'
 import { profileKeys } from './keys'
 
 const unlinkIdentity = async (identity: UserIdentity) => {
-  const { error, data } = await auth.unlinkIdentity(identity)
+  /*const { error, data } = await auth.unlinkIdentity(identity)
 
   if (error) throw error
-  return data
+  return data*/
+  return {} as UnlinkIdentityResponse // FIXME: implement this
 }
 
 type UnlinkIdentityResponse = any
@@ -27,7 +27,7 @@ export const useUnlinkIdentityMutation = ({
   return useMutation((vars) => unlinkIdentity(vars), {
     async onSuccess(data, variables, context) {
       await Promise.all([
-        auth.refreshSession(),
+        // auth.refreshSession(), FIXME: implement this
         queryClient.invalidateQueries(profileKeys.identities()),
       ])
       await onSuccess?.(data, variables, context)

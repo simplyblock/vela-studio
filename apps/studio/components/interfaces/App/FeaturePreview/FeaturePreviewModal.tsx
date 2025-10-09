@@ -5,7 +5,6 @@ import { ReactNode } from 'react'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import { Badge, Button, Modal, ScrollArea, cn } from 'ui'
 import { AdvisorRulesPreview } from './AdvisorRulesPreview'
 import { APISidePanelPreview } from './APISidePanelPreview'
@@ -47,9 +46,7 @@ const FeaturePreviewModal = () => {
     FEATURE_PREVIEWS.find((preview) => preview.key === selectedFeatureKey) ?? FEATURE_PREVIEWS[0]
   const isSelectedFeatureEnabled = flags[selectedFeatureKey]
 
-  const allFeaturePreviews = IS_PLATFORM
-    ? FEATURE_PREVIEWS
-    : FEATURE_PREVIEWS.filter((x) => !x.isPlatformOnly)
+  const allFeaturePreviews = FEATURE_PREVIEWS
 
   const toggleFeature = () => {
     onUpdateFlag(selectedFeature.key, !isSelectedFeatureEnabled)

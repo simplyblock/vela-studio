@@ -10,126 +10,94 @@ const nextConfig = {
     webpackBuildWorker: true,
   },
   async rewrites() {
-    return [
-      {
-        source: `/.well-known/vercel/flags`,
-        destination: `https://supabase.com/.well-known/vercel/flags`,
-        basePath: false,
-      },
-    ]
+    return []
   },
   async redirects() {
     return [
-      ...(process.env.NEXT_PUBLIC_IS_PLATFORM === 'true'
-        ? [
-            {
-              source: '/',
-              has: [
-                {
-                  type: 'query',
-                  key: 'next',
-                  value: 'new-project',
-                },
-              ],
-              destination: '/new/new-project',
-              permanent: false,
-            },
-            {
-              source: '/',
-              destination: '/org',
-              permanent: false,
-            },
-            {
-              source: '/register',
-              destination: '/sign-up',
-              permanent: false,
-            },
-            {
-              source: '/signup',
-              destination: '/sign-up',
-              permanent: false,
-            },
-            {
-              source: '/signin',
-              destination: '/sign-in',
-              permanent: false,
-            },
-            {
-              source: '/login',
-              destination: '/sign-in',
-              permanent: false,
-            },
-            {
-              source: '/log-in',
-              destination: '/sign-in',
-              permanent: false,
-            },
-          ]
-        : [
-            {
-              source: '/',
-              destination: '/organizations',
-              permanent: false,
-            },
-            {
-              source: '/register',
-              destination: '/organizations',
-              permanent: false,
-            },
-
-            {
-              source: '/login',
-              destination: '/organizations',
-              permanent: false,
-            },
-            {
-              source: '/log-in',
-              destination: '/organizations',
-              permanent: false,
-            },
-          ]),
       {
-        source: '/org/:slug/project/:ref/auth',
-        destination: '/org/:slug/project/:ref/auth/users',
+        source: '/',
+        has: [
+          {
+            type: 'query',
+            key: 'next',
+            value: 'new-project',
+          },
+        ],
+        destination: '/new/new-project',
+        permanent: false,
+      },
+      {
+        source: '/',
+        destination: '/org',
+        permanent: false,
+      },
+      {
+        source: '/register',
+        destination: '/sign-up',
+        permanent: false,
+      },
+      {
+        source: '/signup',
+        destination: '/sign-up',
+        permanent: false,
+      },
+      {
+        source: '/signin',
+        destination: '/sign-in',
+        permanent: false,
+      },
+      {
+        source: '/login',
+        destination: '/sign-in',
+        permanent: false,
+      },
+      {
+        source: '/log-in',
+        destination: '/sign-in',
+        permanent: false,
+      },
+      {
+        source: '/org/:slug/project/:ref/branch/:branch/auth',
+        destination: '/org/:slug/project/:ref/branch/:branch/auth/users',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database',
-        destination: '/org/:slug/project/:ref/database/tables',
+        source: '/org/:slug/project/:ref/branch/:branch/database',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/tables',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/graphiql',
-        destination: '/org/:slug/project/:ref/api/graphiql',
+        source: '/org/:slug/project/:ref/branch/:branch/database/graphiql',
+        destination: '/org/:slug/project/:ref/branch/:branch/api/graphiql',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/storage',
-        destination: '/org/:slug/project/:ref/storage/buckets',
+        source: '/org/:slug/project/:ref/branch/:branch/storage',
+        destination: '/org/:slug/project/:ref/branch/:branch/storage/buckets',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/storage',
-        destination: '/org/:slug/project/:ref/storage/settings',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/storage',
+        destination: '/org/:slug/project/:ref/branch/:branch/storage/settings',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/database',
-        destination: '/org/:slug/project/:ref/database/settings',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/database',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/settings',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings',
-        destination: '/org/:slug/project/:ref/settings/general',
+        source: '/org/:slug/project/:ref/branch/:branch/settings',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/general',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/auth/settings',
-        destination: '/org/:slug/project/:ref/auth/users',
+        source: '/org/:slug/project/:ref/branch/:branch/auth/settings',
+        destination: '/org/:slug/project/:ref/branch/:branch/auth/users',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -141,7 +109,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -149,11 +117,11 @@ const nextConfig = {
             value: 'pitr',
           },
         ],
-        destination: '/org/:slug/project/:ref/settings/addons?panel=pitr',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/addons?panel=pitr',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -161,11 +129,11 @@ const nextConfig = {
             value: 'computeInstance',
           },
         ],
-        destination: '/org/:slug/project/:ref/settings/compute-and-disk',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/compute-and-disk',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         has: [
           {
             type: 'query',
@@ -173,62 +141,62 @@ const nextConfig = {
             value: 'customDomain',
           },
         ],
-        destination: '/org/:slug/project/:ref/settings/addons?panel=customDomain',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/addons?panel=customDomain',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/subscription',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/subscription',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/api-logs',
-        destination: '/org/:slug/project/:ref/logs/edge-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/api-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/edge-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/postgres-logs',
-        destination: '/org/:slug/project/:ref/logs/postgres-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/postgres-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/postgres-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/postgrest-logs',
-        destination: '/org/:slug/project/:ref/logs/postgrest-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/postgrest-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/postgrest-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/pgbouncer-logs',
-        destination: '/org/:slug/project/:ref/logs/pooler-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/pgbouncer-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/pooler-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/logs/pgbouncer-logs',
-        destination: '/org/:slug/project/:ref/logs/pooler-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/logs/pgbouncer-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/pooler-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/database/realtime-logs',
-        destination: '/org/:slug/project/:ref/logs/realtime-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/database/realtime-logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/realtime-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/storage/logs',
-        destination: '/org/:slug/project/:ref/logs/storage-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/storage/logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/storage-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/auth/logs',
-        destination: '/org/:slug/project/:ref/logs/auth-logs',
+        source: '/org/:slug/project/:ref/branch/:branch/auth/logs',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/auth-logs',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/logs-explorer',
-        destination: '/org/:slug/project/:ref/logs/explorer',
+        source: '/org/:slug/project/:ref/branch/:branch/logs-explorer',
+        destination: '/org/:slug/project/:ref/branch/:branch/logs/explorer',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/sql/templates',
-        destination: '/org/:slug/project/:ref/sql',
+        source: '/org/:slug/project/:ref/branch/:branch/sql/templates',
+        destination: '/org/:slug/project/:ref/branch/:branch/sql',
         permanent: true,
       },
       {
@@ -237,109 +205,109 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/free',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/free',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/pro',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/pro',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/team',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/team',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
-        source: '/org/:slug/project/:ref/settings/billing/update/enterprise',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/billing/update/enterprise',
         destination: '/org/_/billing',
         permanent: true,
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/reports/linter',
-        destination: '/org/:slug/project/:ref/database/linter',
+        source: '/org/:slug/project/:ref/branch/:branch/reports/linter',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/linter',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/reports/query-performance',
-        destination: '/org/:slug/project/:ref/advisors/query-performance',
+        source: '/org/:slug/project/:ref/branch/:branch/reports/query-performance',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/query-performance',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/query-performance',
-        destination: '/org/:slug/project/:ref/advisors/query-performance',
+        source: '/org/:slug/project/:ref/branch/:branch/database/query-performance',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/query-performance',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/auth/column-privileges',
-        destination: '/org/:slug/project/:ref/database/column-privileges',
+        source: '/org/:slug/project/:ref/branch/:branch/auth/column-privileges',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/column-privileges',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/linter',
-        destination: '/org/:slug/project/:ref/database/security-advisor',
+        source: '/org/:slug/project/:ref/branch/:branch/database/linter',
+        destination: '/org/:slug/project/:ref/branch/:branch/database/security-advisor',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/security-advisor',
-        destination: '/org/:slug/project/:ref/advisors/security',
+        source: '/org/:slug/project/:ref/branch/:branch/database/security-advisor',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/security',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/performance-advisor',
-        destination: '/org/:slug/project/:ref/advisors/performance',
+        source: '/org/:slug/project/:ref/branch/:branch/database/performance-advisor',
+        destination: '/org/:slug/project/:ref/branch/:branch/advisors/performance',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/webhooks',
-        destination: '/org/:slug/project/:ref/integrations/webhooks/overview',
+        source: '/org/:slug/project/:ref/branch/:branch/database/webhooks',
+        destination: '/org/:slug/project/:ref/branch/:branch/integrations/webhooks/overview',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/wrappers',
-        destination: '/org/:slug/project/:ref/integrations?category=wrapper',
+        source: '/org/:slug/project/:ref/branch/:branch/database/wrappers',
+        destination: '/org/:slug/project/:ref/branch/:branch/integrations?category=wrapper',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/database/cron-jobs',
-        destination: '/org/:slug/project/:ref/integrations/cron',
+        source: '/org/:slug/project/:ref/branch/:branch/database/cron-jobs',
+        destination: '/org/:slug/project/:ref/branch/:branch/integrations/cron',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/api/graphiql',
-        destination: '/org/:slug/project/:ref/integrations/graphiql',
+        source: '/org/:slug/project/:ref/branch/:branch/api/graphiql',
+        destination: '/org/:slug/project/:ref/branch/:branch/integrations/graphiql',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/settings/vault/secrets',
-        destination: '/org/:slug/project/:ref/integrations/vault/secrets',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/vault/secrets',
+        destination: '/org/:slug/project/:ref/branch/:branch/integrations/vault/secrets',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/settings/vault/keys',
-        destination: '/org/:slug/project/:ref/integrations/vault/keys',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/vault/keys',
+        destination: '/org/:slug/project/:ref/branch/:branch/integrations/vault/keys',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/integrations/cron-jobs',
-        destination: '/org/:slug/project/:ref/integrations/cron',
+        source: '/org/:slug/project/:ref/branch/:branch/integrations/cron-jobs',
+        destination: '/org/:slug/project/:ref/branch/:branch/integrations/cron',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/settings/warehouse',
-        destination: '/org/:slug/project/:ref/settings/general',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/warehouse',
+        destination: '/org/:slug/project/:ref/branch/:branch/settings/general',
       },
       {
         permanent: true,
-        source: '/org/:slug/project/:ref/settings/functions',
-        destination: '/org/:slug/project/:ref/functions/secrets',
+        source: '/org/:slug/project/:ref/branch/:branch/settings/functions',
+        destination: '/org/:slug/project/:ref/branch/:branch/functions/secrets',
       },
       {
         source: '/org/:slug/invoices',
@@ -378,29 +346,12 @@ const nextConfig = {
             value: 'no-sniff',
           },
           {
-            key: 'Strict-Transport-Security',
-            value:
-              process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' && process.env.VERCEL === '1'
-                ? 'max-age=31536000; includeSubDomains; preload'
-                : '',
+            key: 'Content-Security-Policy',
+            value: getCSP(),
           },
-            {
-              key: 'Content-Security-Policy',
-              value:
-                process.env.NEXT_PUBLIC_IS_PLATFORM === 'true' ? getCSP() : "frame-ancestors 'none';",
-            },
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
-          },
-        ],
-      },
-      {
-        source: '/.well-known/vercel/flags',
-        headers: [
-          {
-            key: 'content-type',
-            value: 'application/json',
           },
         ],
       },
@@ -434,18 +385,6 @@ const nextConfig = {
         port: '',
         pathname: '/u/*',
       },
-      {
-        protocol: 'https',
-        hostname: 'api-frameworks.vercel.sh',
-        port: '',
-        pathname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'vercel.com',
-        port: '',
-        pathname: '**',
-      },
     ],
   },
   transpilePackages: [
@@ -465,6 +404,7 @@ const nextConfig = {
       },
     },
   },
+  serverExternalPackages: ["next-auth", "@auth/core"],
   // Both configs for turbopack and webpack need to exist (and sync) because Nextjs still uses webpack for production building
   webpack(config) {
     config.module?.rules

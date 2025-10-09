@@ -14,9 +14,13 @@ export async function deleteAPIKey(payload: APIKeyDeleteVariables) {
   if (!payload.orgSlug) throw new Error('orgSlug is required')
   if (!payload.projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await del('/v1/organizations/{slug}/projects/{ref}/api-keys/{id}', {
+  const { data, error } = await del('/platform/organizations/{slug}/projects/{ref}/api-keys/{id}', {
     params: {
-      path: { slug: payload.orgSlug, ref: payload.projectRef, id: payload.id },
+      path: {
+        slug: payload.orgSlug,
+        ref: payload.projectRef,
+        id: payload.id,
+      },
       query: { reveal: false },
     },
   })

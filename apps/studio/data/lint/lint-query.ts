@@ -1,4 +1,4 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
@@ -6,21 +6,25 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { ResponseError } from 'types'
 import { lintKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 type ProjectLintsVariables = {
-  orgSlug?: string
-  projectRef?: string
+  branch?: Branch
 }
 type ProjectLintResponse = components['schemas']['GetProjectLintsResponse']
 export type Lint = ProjectLintResponse[0]
 export type LINT_TYPES = ProjectLintResponse[0]['name']
 
-export async function getProjectLints({ orgSlug, projectRef }: ProjectLintsVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('Organization slug is required')
-  if (!projectRef) throw new Error('Project ref is required')
+export async function getProjectLints({ branch }: ProjectLintsVariables, signal?: AbortSignal) {
+  if (!branch) throw new Error('Branch is required')
 
   const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/run-lints`, {
-    params: { path: { slug: orgSlug, ref: projectRef } },
+    params: {
+      path: {
+        slug: branch.organization_id,
+        ref: branch.project_id,
+      },
+    },
     signal,
   })
 
@@ -33,17 +37,17 @@ export type ProjectLintsData = Awaited<ReturnType<typeof getProjectLints>>
 export type ProjectLintsError = ResponseError
 
 export const useProjectLintsQuery = <TData = ProjectLintsData>(
-  { orgSlug, projectRef }: ProjectLintsVariables,
+  { branch }: ProjectLintsVariables,
   { enabled = true, ...options }: UseQueryOptions<ProjectLintsData, ProjectLintsError, TData> = {}
 ) => {
   const { data: project } = useSelectedProjectQuery()
   const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
 
   return useQuery<ProjectLintsData, ProjectLintsError, TData>(
-    lintKeys.lint(orgSlug, projectRef),
-    ({ signal }) => getProjectLints({ orgSlug, projectRef }, signal),
+    lintKeys.lint(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getProjectLints({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined' && isActive,
+      enabled: enabled && typeof branch !== 'undefined' && isActive,
       ...options,
     }
   )

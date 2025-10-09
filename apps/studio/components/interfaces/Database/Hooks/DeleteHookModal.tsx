@@ -2,8 +2,8 @@ import type { PostgresTrigger } from '@supabase/postgres-meta'
 import { toast } from 'sonner'
 
 import { useDatabaseTriggerDeleteMutation } from 'data/database-triggers/database-trigger-delete-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DeleteHookModalProps {
   visible: boolean
@@ -14,7 +14,7 @@ interface DeleteHookModalProps {
 const DeleteHookModal = ({ selectedHook, visible, onClose }: DeleteHookModalProps) => {
   const { name, schema } = selectedHook ?? {}
 
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { mutate: deleteDatabaseTrigger, isLoading: isDeleting } = useDatabaseTriggerDeleteMutation(
     {
       onSuccess: () => {
@@ -25,8 +25,8 @@ const DeleteHookModal = ({ selectedHook, visible, onClose }: DeleteHookModalProp
   )
 
   async function handleDelete() {
-    if (!project) {
-      return console.error('Project ref is required')
+    if (!branch) {
+      return console.error('Branch ref is required')
     }
     if (!selectedHook) {
       return toast.error('Unable find selected hook')
@@ -34,8 +34,7 @@ const DeleteHookModal = ({ selectedHook, visible, onClose }: DeleteHookModalProp
 
     deleteDatabaseTrigger({
       trigger: selectedHook,
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
     })
   }
 

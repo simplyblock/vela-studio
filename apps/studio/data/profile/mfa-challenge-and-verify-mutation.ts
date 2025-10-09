@@ -2,7 +2,6 @@ import type { AuthMFAVerifyResponse, MFAChallengeAndVerifyParams } from '@supaba
 import { UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { auth } from 'lib/gotrue'
 import { profileKeys } from './keys'
 
 const WHITELIST_ERRORS = ['Invalid TOTP code entered']
@@ -12,9 +11,10 @@ interface MFAChallengeAndVerifyVariables extends MFAChallengeAndVerifyParams {
 }
 
 export const mfaChallengeAndVerify = async (params: MFAChallengeAndVerifyParams) => {
-  const { error, data } = await auth.mfa.challengeAndVerify(params)
+  /*const { error, data } = await auth.mfa.challengeAndVerify(params)
   if (error) throw error
-  return data
+  return data*/
+  return {} as CustomMFAVerifyResponse // FIXME: implement this
 }
 
 type CustomMFAVerifyResponse = NonNullable<AuthMFAVerifyResponse['data']>

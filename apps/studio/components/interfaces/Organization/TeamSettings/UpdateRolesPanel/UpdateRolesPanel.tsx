@@ -9,7 +9,6 @@ import { useOrganizationRolesV2Query } from 'data/organization-members/organizat
 import { OrganizationMember } from 'data/organizations/organization-members-query'
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { useHasAccessToProjectLevelPermissions } from 'data/subscriptions/org-subscription-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   AlertDescription_Shadcn_,
@@ -59,7 +58,6 @@ interface UpdateRolesPanelProps {
 export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelProps) => {
   const { slug } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
-  const isOptedIntoProjectLevelPermissions = useHasAccessToProjectLevelPermissions(slug as string)
 
   const { data: projects } = useProjectsQuery()
   const { data: permissions } = usePermissionsQuery()
@@ -126,14 +124,14 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
       setProjectsRoleConfiguration(
         projectsRoleConfiguration.map((p) => {
           if (p.ref === project.ref) {
-            return { ref: p.ref, projectId: p.projectId, roleId: Number(value) }
+            return { ref: p.ref, projectId: p.projectId, roleId: value }
           } else {
             return p
           }
         })
       )
     } else {
-      setProjectsRoleConfiguration([{ ref: undefined, roleId: Number(value) }])
+      setProjectsRoleConfiguration([{ ref: undefined, roleId: value }])
     }
   }
 
@@ -151,7 +149,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
         setProjectsRoleConfiguration(originalConfiguration)
       } else {
         setProjectsRoleConfiguration(
-          orgProjects.map((p) => {
+          orgProjects.map((p: any) => {
             return { ref: p.ref, projectId: p.id, roleId: roleIdToApply }
           })
         )
@@ -189,16 +187,14 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
             </SheetHeader>
 
             <SheetSection className="h-full overflow-auto flex flex-col gap-y-4">
-              {isOptedIntoProjectLevelPermissions && (
-                <div className="flex items-center gap-x-4">
-                  <Switch
-                    disabled={cannotAddAnyRoles}
-                    checked={isApplyingRoleToAllProjects}
-                    onCheckedChange={onToggleApplyToAllProjects}
-                  />
-                  <p className="text-sm">Apply roles to all projects in the organization</p>
-                </div>
-              )}
+              <div className="flex items-center gap-x-4">
+                <Switch
+                  disabled={cannotAddAnyRoles}
+                  checked={isApplyingRoleToAllProjects}
+                  onCheckedChange={onToggleApplyToAllProjects}
+                />
+                <p className="text-sm">Apply roles to all projects in the organization</p>
+              </div>
 
               {projectsRoleConfiguration.length === 0 && (
                 <Alert_Shadcn_>
@@ -236,7 +232,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
 
               <div className="flex flex-col gap-y-2">
                 {projectsRoleConfiguration
-                  .sort((a, b) => (a?.projectId ?? 0) - (b?.projectId ?? 0))
+                  .sort((a, b) => (a?.projectId ?? '').localeCompare(b?.projectId ?? ''))
                   .map((project) => {
                     const name =
                       project.ref === undefined
@@ -246,7 +242,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
                       if (project.baseRoleId !== undefined) return r.id === project.baseRoleId
                       else return r.id === project.roleId
                     })
-                    const canRemoveRole = rolesRemovable.includes(role?.id ?? 0)
+                    const canRemoveRole = rolesRemovable.includes(role?.id ?? '')
 
                     return (
                       <div

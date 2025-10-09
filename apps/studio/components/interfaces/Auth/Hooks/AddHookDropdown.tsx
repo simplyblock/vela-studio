@@ -1,10 +1,8 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronDown } from 'lucide-react'
 
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   Button,
@@ -33,10 +31,8 @@ export const AddHookDropdown = ({
   const { data: organization } = useSelectedOrganizationQuery()
 
   const { data: authConfig } = useAuthConfigQuery({ projectRef })
-  const { can: canUpdateAuthHook } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    '*'
-  )
+    // FIXME: need permission implemented 
+  const { can: canUpdateAuthHook } = {can:true}
 
   const hooks: Hook[] = HOOKS_DEFINITIONS.map((definition) => {
     return {

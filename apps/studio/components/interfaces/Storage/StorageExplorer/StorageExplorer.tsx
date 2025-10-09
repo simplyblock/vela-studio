@@ -1,10 +1,8 @@
 import { compact, get, isEmpty, uniqBy } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 
-import { useParams } from 'common'
 import { useProjectStorageConfigQuery } from 'data/config/project-storage-config-query'
 import type { Bucket } from 'data/storage/buckets-query'
-import { IS_PLATFORM } from 'lib/constants'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import { STORAGE_ROW_TYPES, STORAGE_VIEWS } from '../Storage.constants'
 import { ConfirmDeleteModal } from './ConfirmDeleteModal'
@@ -14,13 +12,14 @@ import FileExplorerHeader from './FileExplorerHeader'
 import FileExplorerHeaderSelection from './FileExplorerHeaderSelection'
 import MoveItemsModal from './MoveItemsModal'
 import PreviewPane from './PreviewPane'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface StorageExplorerProps {
   bucket: Bucket
 }
 
 const StorageExplorer = ({ bucket }: StorageExplorerProps) => {
-  const { slug, ref } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const storageExplorerRef = useRef(null)
   const {
     view,
@@ -47,7 +46,7 @@ const StorageExplorer = ({ bucket }: StorageExplorerProps) => {
     setSelectedItemsToDelete,
   } = useStorageExplorerStateSnapshot()
 
-  useProjectStorageConfigQuery({ orgSlug: slug, projectRef: ref })
+  useProjectStorageConfigQuery({ branch })
 
   // This state exists outside of the header because FileExplorerColumn needs to listen to these as well
   // Things like showing results from a search filter is "temporary", hence we use react state to manage

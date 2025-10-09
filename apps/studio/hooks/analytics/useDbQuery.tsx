@@ -10,7 +10,7 @@ import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
-import { getPathReferences } from '../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export interface DbQueryHook<T = any> {
   isLoading: boolean
@@ -37,11 +37,12 @@ const useDbQuery = ({
   where?: string
   orderBy?: string
 }): DbQueryHook => {
-  const { slug: orgSlug } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
-  const { data: databases } = useReadReplicasQuery({ orgSlug, projectRef: project?.ref })
+  const { data: databases } = useReadReplicasQuery({ branch })
+  // FIXME: How to handle this now?
   const connectionString = (databases || []).find(
     (db) => db.identifier === state.selectedDatabaseId
   )?.connectionString
@@ -60,8 +61,7 @@ const useDbQuery = ({
     ({ signal }) => {
       return executeSql(
         {
-          projectRef: project?.ref,
-          connectionString: connectionString || project?.connectionString,
+          branch,
           sql: resolvedSql,
         },
         signal

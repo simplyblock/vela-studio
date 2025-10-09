@@ -5,17 +5,13 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { quoteLiteral } from 'lib/pg-format'
 import type { ResponseError, VaultSecret } from 'types'
 import { vaultSecretsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type VaultSecretCreateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
 } & Partial<VaultSecret>
 
-export async function createVaultSecret({
-  projectRef,
-  connectionString,
-  ...newSecret
-}: VaultSecretCreateVariables) {
+export async function createVaultSecret({ branch, ...newSecret }: VaultSecretCreateVariables) {
   const { name, description, secret } = newSecret
   const sql = /* SQL */ `
 select vault.create_secret(
@@ -25,7 +21,7 @@ select vault.create_secret(
 )
 `
 
-  const { result } = await executeSql({ projectRef, connectionString, sql })
+  const { result } = await executeSql({ branch, sql })
   return result
 }
 
@@ -45,8 +41,10 @@ export const useVaultSecretCreateMutation = ({
     (vars) => createVaultSecret(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(vaultSecretsKeys.list(projectRef))
+        const { branch } = variables
+        await queryClient.invalidateQueries(
+          vaultSecretsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+        )
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

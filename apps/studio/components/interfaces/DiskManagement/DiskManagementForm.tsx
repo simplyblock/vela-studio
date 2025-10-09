@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
@@ -24,15 +23,9 @@ import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useProjectAddonUpdateMutation } from 'data/subscriptions/project-addon-update-mutation'
 import { AddonVariantId } from 'data/subscriptions/types'
 import { useResourceWarningsQuery } from 'data/usage/resource-warnings-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import {
-  useIsAwsCloudProvider,
-  useIsAwsK8sCloudProvider,
-  useSelectedProjectQuery,
-} from 'hooks/misc/useSelectedProject'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { GB, PROJECT_STATUS } from 'lib/constants'
-import { CloudProvider } from 'shared-data'
 import {
   Button,
   cn,
@@ -62,11 +55,13 @@ import {
 } from './ui/DiskManagement.constants'
 import { NoticeBar } from './ui/NoticeBar'
 import { SpendCapDisabledSection } from './ui/SpendCapDisabledSection'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export function DiskManagementForm() {
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
+  const { ref: projectRef } = useParams()
   const queryClient = useQueryClient()
 
   const { data: resourceWarnings } = useResourceWarningsQuery()
@@ -74,22 +69,13 @@ export function DiskManagementForm() {
     (warning) => warning.project === project?.ref
   )
   const isReadOnlyMode = projectResourceWarnings?.is_readonly_mode_enabled
-  const isAws = useIsAwsCloudProvider()
-  const isAwsK8s = useIsAwsK8sCloudProvider()
-
-  const { can: canUpdateDiskConfiguration, isSuccess: isPermissionsLoaded } =
-    useAsyncCheckProjectPermissions(PermissionAction.UPDATE, 'projects', {
-      resource: {
-        project_id: project?.id,
-      },
-    })
-
+  const { can: canUpdateDiskConfiguration, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const [refetchInterval, setRefetchInterval] = useState<number | false>(false)
   const [message, setMessageState] = useState<DiskManagementMessage | null>(null)
   const [advancedSettingsOpen, setAdvancedSettingsOpenState] = useState(false)
 
-  const { data: databases, isSuccess: isReadReplicasSuccess } = useReadReplicasQuery({ orgSlug, projectRef })
+  const { data: databases, isSuccess: isReadReplicasSuccess } = useReadReplicasQuery({ branch })
   const { data, isSuccess: isDiskAttributesSuccess } = useDiskAttributesQuery(
     { projectRef },
     {
@@ -115,23 +101,23 @@ export function DiskManagementForm() {
           setRefetchInterval(2000)
         }
       },
-      enabled: project != null && isAws,
+      enabled: project != null,
     }
   )
   const { isWithinCooldownWindow, isSuccess: isCooldownSuccess } =
     useRemainingDurationForDiskAttributeUpdate({
       projectRef,
-      enabled: project != null && isAws,
+      enabled: project != null,
     })
   const { data: diskUtil, isSuccess: isDiskUtilizationSuccess } = useDiskUtilizationQuery(
     {
       projectRef,
     },
-    { enabled: project != null && isAws }
+    { enabled: project != null }
   )
 
   const { data: diskAutoscaleConfig, isSuccess: isDiskAutoscaleConfigSuccess } =
-    useDiskAutoscaleCustomConfigQuery({ projectRef }, { enabled: project != null && isAws })
+    useDiskAutoscaleCustomConfigQuery({ projectRef }, { enabled: project != null })
 
   const computeSize = project?.infra_compute_size
     ? mapComputeSizeNameToAddonVariantId(project?.infra_compute_size)
@@ -153,7 +139,7 @@ export function DiskManagementForm() {
 
   const form = useForm<DiskStorageSchemaType>({
     resolver: zodResolver(
-      CreateDiskStorageSchema(defaultValues.totalSize, project?.cloud_provider as CloudProvider)
+      CreateDiskStorageSchema(defaultValues.totalSize)
     ),
     defaultValues,
     mode: 'onBlur',
@@ -194,16 +180,12 @@ export function DiskManagementForm() {
     RESTRICTED_COMPUTE_FOR_THROUGHPUT_ON_GP3.includes(form.watch('computeSize')) &&
     org?.plan.id !== 'free'
 
-  const isBranch = project?.parent_project_ref !== undefined
-
   const disableDiskInputs =
     isRequestingChanges ||
     isPlanUpgradeRequired ||
     isWithinCooldownWindow ||
-    !canUpdateDiskConfiguration ||
-    !isAws
+    !canUpdateDiskConfiguration
 
-  const disableComputeInputs = isPlanUpgradeRequired
   const isDirty = !!Object.keys(form.formState.dirtyFields).length
   const isProjectResizing = project?.status === PROJECT_STATUS.RESIZING
   const isProjectRequestingDiskChanges = isRequestingChanges && !isProjectResizing
@@ -341,119 +323,103 @@ export function DiskManagementForm() {
           ) : null}
           <Separator />
           <SpendCapDisabledSection />
-          <NoticeBar
-            type="default"
-            visible={!isAws}
-            title="Disk configuration is only available for projects in the AWS cloud provider"
-            description={
-              isAwsK8s
-                ? 'Configuring your disk for AWS (Revamped) projects is unavailable for now.'
-                : isBranch
-                  ? 'Delete and recreate your Preview Branch to configure disk size. It was deployed on an older branching infrastructure.'
-                  : 'The Fly Postgres offering is deprecated - please migrate your instance to the AWS cloud prov to configure your disk.'
-            }
-          />
-          {isAws && (
-            <>
-              <div className="flex flex-col gap-y-3">
-                <DiskCountdownRadial />
-                {!isReadOnlyMode && usedPercentage >= 90 && isWithinCooldownWindow && (
-                  <Admonition
-                    type="destructive"
-                    title="Database size is currently over 90% of disk size"
-                    description="Your project will enter read-only mode once you reach 95% of the disk space to prevent your database from exceeding the disk limitations"
-                  >
-                    <DocsButton
-                      abbrev={false}
-                      className="mt-2"
-                      href="https://supabase.com/docs/guides/platform/database-size#read-only-mode"
-                    />
-                  </Admonition>
-                )}
-                {isReadOnlyMode && (
-                  <Admonition
-                    type="destructive"
-                    title="Project is currently in read-only mode"
-                    description="You will need to manually override read-only mode and reduce the database size to below 95% of the disk size"
-                  >
-                    <DocsButton
-                      abbrev={false}
-                      className="mt-2"
-                      href="https://supabase.com/docs/guides/platform/database-size#disabling-read-only-mode"
-                    />
-                  </Admonition>
-                )}
-              </div>
-              <DiskSizeField
-                form={form}
-                disableInput={disableDiskInputs}
-                setAdvancedSettingsOpenState={setAdvancedSettingsOpenState}
-              />
-              <Separator />
-              <Collapsible_Shadcn_
-                // TO DO: wrap component into pattern
-                className="-space-y-px"
-                open={advancedSettingsOpen}
-                onOpenChange={() => setAdvancedSettingsOpenState((prev) => !prev)}
+          <div className="flex flex-col gap-y-3">
+            <DiskCountdownRadial />
+            {!isReadOnlyMode && usedPercentage >= 90 && isWithinCooldownWindow && (
+              <Admonition
+                type="destructive"
+                title="Database size is currently over 90% of disk size"
+                description="Your project will enter read-only mode once you reach 95% of the disk space to prevent your database from exceeding the disk limitations"
               >
-                <CollapsibleTrigger_Shadcn_ className="px-8 py-3 w-full border flex items-center gap-6 rounded-t data-[state=closed]:rounded-b group justify-between">
-                  <div className="flex flex-col items-start">
-                    <span className="text-sm text-foreground">Advanced disk settings</span>
-                    <span className="text-sm text-foreground-light text-left">
-                      Specify additional settings for your disk, including autoscaling
-                      configuration, IOPS, throughput, and disk type.
-                    </span>
-                  </div>
-                  <ChevronRight
-                    size={16}
-                    className="text-foreground-light transition-all group-data-[state=open]:rotate-90"
-                    strokeWidth={1}
-                  />
-                </CollapsibleTrigger_Shadcn_>
-                <CollapsibleContent_Shadcn_
-                  className={cn(
-                    'flex flex-col gap-8 py-8 transition-all',
-                    'data-[state=open]:border data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down'
-                  )}
-                >
-                  <div className="px-8 flex flex-col gap-y-8">
-                    <AutoScaleFields form={form} />
-                  </div>
-                  <Separator />
-                  <div className="px-8 flex flex-col gap-y-8">
-                    <NoticeBar
+                <DocsButton
+                  abbrev={false}
+                  className="mt-2"
+                  href="https://supabase.com/docs/guides/platform/database-size#read-only-mode"
+                />
+              </Admonition>
+            )}
+            {isReadOnlyMode && (
+              <Admonition
+                type="destructive"
+                title="Project is currently in read-only mode"
+                description="You will need to manually override read-only mode and reduce the database size to below 95% of the disk size"
+              >
+                <DocsButton
+                  abbrev={false}
+                  className="mt-2"
+                  href="https://supabase.com/docs/guides/platform/database-size#disabling-read-only-mode"
+                />
+              </Admonition>
+            )}
+          </div>
+          <DiskSizeField
+            form={form}
+            disableInput={disableDiskInputs}
+            setAdvancedSettingsOpenState={setAdvancedSettingsOpenState}
+          />
+          <Separator />
+          <Collapsible_Shadcn_
+            // TO DO: wrap component into pattern
+            className="-space-y-px"
+            open={advancedSettingsOpen}
+            onOpenChange={() => setAdvancedSettingsOpenState((prev) => !prev)}
+          >
+            <CollapsibleTrigger_Shadcn_ className="px-8 py-3 w-full border flex items-center gap-6 rounded-t data-[state=closed]:rounded-b group justify-between">
+              <div className="flex flex-col items-start">
+                <span className="text-sm text-foreground">Advanced disk settings</span>
+                <span className="text-sm text-foreground-light text-left">
+                  Specify additional settings for your disk, including autoscaling
+                  configuration, IOPS, throughput, and disk type.
+                </span>
+              </div>
+              <ChevronRight
+                size={16}
+                className="text-foreground-light transition-all group-data-[state=open]:rotate-90"
+                strokeWidth={1}
+              />
+            </CollapsibleTrigger_Shadcn_>
+            <CollapsibleContent_Shadcn_
+              className={cn(
+                'flex flex-col gap-8 py-8 transition-all',
+                'data-[state=open]:border data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down'
+              )}
+            >
+              <div className="px-8 flex flex-col gap-y-8">
+                <AutoScaleFields form={form} />
+              </div>
+              <Separator />
+              <div className="px-8 flex flex-col gap-y-8">
+                <NoticeBar
+                  type="default"
+                  visible={disableIopsThroughputConfig}
+                  title="Adjusting disk configuration requires LARGE Compute size or above"
+                  description={`Increase your compute size to adjust your disk's storage type, ${form.getValues('storageType') === 'gp3' ? 'IOPS, ' : ''} and throughput`}
+                  actions={
+                    <Button
                       type="default"
-                      visible={disableIopsThroughputConfig}
-                      title="Adjusting disk configuration requires LARGE Compute size or above"
-                      description={`Increase your compute size to adjust your disk's storage type, ${form.getValues('storageType') === 'gp3' ? 'IOPS, ' : ''} and throughput`}
-                      actions={
-                        <Button
-                          type="default"
-                          onClick={() => {
-                            form.setValue('computeSize', 'ci_large')
-                          }}
-                        >
-                          Change to LARGE Compute
-                        </Button>
-                      }
-                    />
-                    <StorageTypeField
-                      form={form}
-                      disableInput={disableIopsThroughputConfig || disableDiskInputs}
-                    />
-                    <IOPSField
-                      form={form}
-                      disableInput={disableIopsThroughputConfig || disableDiskInputs}
-                    />
-                    <ThroughputField
-                      form={form}
-                      disableInput={disableIopsThroughputConfig || disableDiskInputs}
-                    />
-                  </div>
-                </CollapsibleContent_Shadcn_>
-              </Collapsible_Shadcn_>
-            </>
-          )}
+                      onClick={() => {
+                        form.setValue('computeSize', 'ci_large')
+                      }}
+                    >
+                      Change to LARGE Compute
+                    </Button>
+                  }
+                />
+                <StorageTypeField
+                  form={form}
+                  disableInput={disableIopsThroughputConfig || disableDiskInputs}
+                />
+                <IOPSField
+                  form={form}
+                  disableInput={disableIopsThroughputConfig || disableDiskInputs}
+                />
+                <ThroughputField
+                  form={form}
+                  disableInput={disableIopsThroughputConfig || disableDiskInputs}
+                />
+              </div>
+            </CollapsibleContent_Shadcn_>
+          </Collapsible_Shadcn_>
         </ScaffoldContainer>
         <AnimatePresence>
           {isDirty ? (

@@ -4,6 +4,7 @@ import { useDatabaseFunctionDeleteMutation } from 'data/database-functions/datab
 import { DatabaseFunction } from 'data/database-functions/database-functions-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface DeleteFunctionProps {
   func?: DatabaseFunction
@@ -13,6 +14,7 @@ interface DeleteFunctionProps {
 
 const DeleteFunction = ({ func, visible, setVisible }: DeleteFunctionProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { name, schema } = func ?? {}
 
   const { mutate: deleteDatabaseFunction, isLoading } = useDatabaseFunctionDeleteMutation({
@@ -24,12 +26,11 @@ const DeleteFunction = ({ func, visible, setVisible }: DeleteFunctionProps) => {
 
   async function handleDelete() {
     if (!func) return console.error('Function is required')
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     deleteDatabaseFunction({
       func,
-      projectRef: project.ref,
-      connectionString: project.connectionString,
+      branch,
     })
   }
 

@@ -1,8 +1,6 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { ChevronLeft, Search } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-
 import { useParams } from 'common'
 import NoSearchResults from 'components/to-be-cleaned/NoSearchResults'
 import AlertError from 'components/ui/AlertError'
@@ -10,24 +8,22 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { Loading } from 'components/ui/Loading'
 import { useDatabasePublicationsQuery } from 'data/database-publications/database-publications-query'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Card, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { PublicationsTableItem } from './PublicationsTableItem'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const PublicationsTables = () => {
-  const { ref, id } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [filterString, setFilterString] = useState<string>('')
 
-  const { can: canUpdatePublications, isLoading: isLoadingPermissions } =
-    useAsyncCheckProjectPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, 'publications')
-
+  const { can: canUpdatePublications, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
   const { data: publications = [] } = useDatabasePublicationsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
   const selectedPublication = publications.find((pub) => pub.id === Number(id))
 
@@ -38,8 +34,7 @@ export const PublicationsTables = () => {
     isError,
     error,
   } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch
   })
 
   const tables = useMemo(() => {
@@ -60,7 +55,7 @@ export const PublicationsTables = () => {
               style={{ padding: '5px' }}
               tooltip={{ content: { side: 'bottom', text: 'Go back to publications list' } }}
             >
-              <Link href={`/project/${ref}/database/publications`} />
+              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/publications`} />
             </ButtonTooltip>
             <div>
               <Input

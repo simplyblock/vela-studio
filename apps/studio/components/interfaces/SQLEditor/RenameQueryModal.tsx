@@ -11,7 +11,7 @@ import type { SqlSnippet } from 'data/content/sql-snippets-query'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import { createTabId, useTabsStateSnapshot } from 'state/tabs'
 import { Button, Form, Input, Modal } from 'ui'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 export interface RenameQueryModalProps {
   snippet?: SqlSnippet | Snippet
@@ -26,7 +26,7 @@ const RenameQueryModal = ({
   onCancel,
   onComplete,
 }: RenameQueryModalProps) => {
-  const { slug: orgSlug, ref } = getPathReferences()
+  const { ref } = getPathReferences()
 
   const snapV2 = useSqlEditorV2StateSnapshot()
   const tabsSnap = useTabsStateSnapshot()
@@ -61,6 +61,7 @@ const RenameQueryModal = ({
       await upsertContent({
         projectRef: ref,
         payload: {
+          content: '',
           ...localSnippet,
           name: nameInput,
           description: descriptionInput,

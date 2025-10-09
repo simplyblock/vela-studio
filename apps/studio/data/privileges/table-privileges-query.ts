@@ -1,13 +1,13 @@
 import pgMeta from '@supabase/pg-meta'
-import { QueryClient, UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { QueryClient, useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { z } from 'zod'
 
 import { executeSql, ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { privilegeKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type TablePrivilegesVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type PgTablePrivileges = z.infer<typeof pgMeta.tablePrivileges.zod>
@@ -17,14 +17,10 @@ const pgMetaTablePrivilegesList = pgMeta.tablePrivileges.list()
 export type TablePrivilegesData = z.infer<typeof pgMetaTablePrivilegesList.zod>
 export type TablePrivilegesError = ExecuteSqlError
 
-async function getTablePrivileges(
-  { projectRef, connectionString }: TablePrivilegesVariables,
-  signal?: AbortSignal
-) {
+async function getTablePrivileges({ branch }: TablePrivilegesVariables, signal?: AbortSignal) {
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql: pgMetaTablePrivilegesList.sql,
       queryKey: ['table-privileges'],
     },
@@ -35,24 +31,26 @@ async function getTablePrivileges(
 }
 
 export const useTablePrivilegesQuery = <TData = TablePrivilegesData>(
-  { projectRef, connectionString }: TablePrivilegesVariables,
+  { branch }: TablePrivilegesVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<TablePrivilegesData, TablePrivilegesError, TData> = {}
 ) =>
   useQuery<TablePrivilegesData, TablePrivilegesError, TData>(
-    privilegeKeys.tablePrivilegesList(projectRef),
-    ({ signal }) => getTablePrivileges({ projectRef, connectionString }, signal),
+    privilegeKeys.tablePrivilegesList(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getTablePrivileges({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )
 
 export function invalidateTablePrivilegesQuery(
   client: QueryClient,
-  projectRef: string | undefined
+  orgId: string | undefined,
+  projectId: string | undefined,
+  branchId: string | undefined
 ) {
-  return client.invalidateQueries(privilegeKeys.tablePrivilegesList(projectRef))
+  return client.invalidateQueries(privilegeKeys.tablePrivilegesList(orgId, projectId, branchId))
 }

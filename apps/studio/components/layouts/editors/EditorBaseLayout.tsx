@@ -17,13 +17,13 @@ export interface ExplorerLayoutProps extends ComponentProps<typeof ProjectLayout
 }
 
 export const EditorBaseLayout = ({
-                                   children,
-                                   title,
-                                   product,
-                                   productMenuClassName,
-                                   productMenu,
-                                 }: ExplorerLayoutProps) => {
-  const { slug, ref } = useParams()
+  children,
+  title,
+  product,
+  productMenuClassName,
+  productMenu,
+}: ExplorerLayoutProps) => {
+  const { slug, ref, branch: branchRef } = useParams()
   const pathname = usePathname()
   const editor = useEditorType()
   const tabs = useTabsStateSnapshot()
@@ -31,7 +31,9 @@ export const EditorBaseLayout = ({
   const hasNoOpenTabs =
     editor === 'table' ? tabs.openTabs.filter((x) => !x.startsWith('sql')).length === 0 : false
   const hideTabs =
-    pathname === `/org/${slug}/project/${ref}/editor` || pathname === `/org/${slug}/project/${ref}/sql` || hasNoOpenTabs
+    pathname === `/org/${slug}/project/${ref}/branch/${branchRef}/editor` ||
+    pathname === `/org/${slug}/project/${ref}/branch/${branchRef}/sql` ||
+    hasNoOpenTabs
 
   return (
     <ProjectLayoutWithAuth

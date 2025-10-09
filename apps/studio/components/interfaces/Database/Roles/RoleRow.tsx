@@ -17,9 +17,9 @@ import {
 
 import { useDatabaseRoleUpdateMutation } from 'data/database-roles/database-role-update-mutation'
 import { PgRole } from 'data/database-roles/database-roles-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { ChevronUp, HelpCircle, MoreVertical, Trash } from 'lucide-react'
 import { ROLE_PERMISSIONS } from './Roles.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface RoleRowProps {
   role: PgRole
@@ -28,7 +28,8 @@ interface RoleRowProps {
 }
 
 export const RoleRow = ({ role, disabled = false, onSelectDelete }: RoleRowProps) => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
+
   const [isExpanded, setIsExpanded] = useState(false)
 
   const { mutate: updateDatabaseRole, isLoading: isUpdating } = useDatabaseRoleUpdateMutation()
@@ -37,7 +38,7 @@ export const RoleRow = ({ role, disabled = false, onSelectDelete }: RoleRowProps
     role
 
   const onSaveChanges = async (values: Partial<PgRole>, { resetForm }: any) => {
-    if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
 
     const changed = Object.fromEntries(
       Object.entries(values).filter(([k, v]) => v !== (role as any)[k])
@@ -45,8 +46,7 @@ export const RoleRow = ({ role, disabled = false, onSelectDelete }: RoleRowProps
 
     updateDatabaseRole(
       {
-        projectRef: project.ref,
-        connectionString: project.connectionString,
+        branch,
         id: role.id,
         payload: changed,
       },

@@ -10,14 +10,12 @@ import { useKeywordsQuery } from 'data/database/keywords-query'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useTableColumnsQuery } from 'data/database/table-columns-query'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatSql } from 'lib/formatSql'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
-import { getPathReferences } from '../../../data/vela/path-references'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const useAddDefinitions = (id: string, monaco: Monaco | null) => {
-  const { data: project } = useSelectedProjectQuery()
-  const { slug: orgSlug } = getPathReferences()
+  const { data: branch } = useSelectedBranchQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
 
   const [intellisenseEnabled] = useLocalStorageQuery(
@@ -27,30 +25,25 @@ export const useAddDefinitions = (id: string, monaco: Monaco | null) => {
 
   const { data: keywords, isSuccess: isKeywordsSuccess } = useKeywordsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
     },
     { enabled: intellisenseEnabled }
   )
   const { data: functions, isSuccess: isFunctionsSuccess } = useDatabaseFunctionsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
     },
     { enabled: intellisenseEnabled }
   )
   const { data: schemas, isSuccess: isSchemasSuccess } = useSchemasQuery(
     {
-      orgSlug,
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
     },
     { enabled: intellisenseEnabled }
   )
   const { data: tableColumns, isSuccess: isTableColumnsSuccess } = useTableColumnsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
     },
     { enabled: intellisenseEnabled }
   )

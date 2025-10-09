@@ -13,7 +13,6 @@ import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query
 import { useEdgeFunctionTestMutation } from 'data/edge-functions/edge-function-test-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { IS_PLATFORM } from 'lib/constants'
 import { prettifyJSON } from 'lib/helpers'
 import { getRoleImpersonationJWT } from 'lib/role-impersonation'
 import {
@@ -51,6 +50,7 @@ import {
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { HTTP_METHODS } from './EdgeFunctionDetails.constants'
 import { ErrorWithStatus, ResponseData } from './EdgeFunctionDetails.types'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface EdgeFunctionTesterSheetProps {
   visible: boolean
@@ -82,15 +82,16 @@ type FormValues = z.infer<typeof FormSchema>
 export const EdgeFunctionTesterSheet = ({ visible, onClose }: EdgeFunctionTesterSheetProps) => {
   const { data: org } = useSelectedOrganizationQuery()
   const { slug: orgSlug, ref: projectRef, functionSlug } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
 
   const [response, setResponse] = useState<ResponseData | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug, projectRef })
-  const { data: config } = useProjectPostgrestConfigQuery({ orgSlug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
+  const { data: config } = useProjectPostgrestConfigQuery({ branch })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
-  const { data: accessToken } = useSessionAccessTokenQuery({ enabled: IS_PLATFORM })
+  const { data: accessToken } = useSessionAccessTokenQuery({ enabled: true })
   const { serviceKey } = getKeys(apiKeys)
 
   const { mutate: sendEvent } = useSendEventMutation()

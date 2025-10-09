@@ -17,7 +17,7 @@ import { useParams } from 'common'
 interface NotificationRowProps {
   setRowHeight: (idx: number, height: number) => void
   getProject: (ref: string) => ProjectInfo
-  getOrganizationById: (id: number) => Organization
+  getOrganizationById: (id: string) => Organization
   getOrganizationBySlug: (slug: string) => Organization
   onUpdateNotificationStatus: (id: string, status: 'archived' | 'seen') => void
   queueMarkRead: (id: string) => void

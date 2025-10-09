@@ -18,6 +18,7 @@ import { GenericSkeletonLoader } from 'ui-patterns/ShimmeringLoader'
 import type { Filter, GridProps, SupaRow } from '../../types'
 import { useOnRowsChange } from './Grid.utils'
 import RowRenderer from './RowRenderer'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const rowKeyGetter = (row: SupaRow) => {
   return row?.idx ?? -1
@@ -58,6 +59,7 @@ export const Grid = memo(
 
       const { data: org } = useSelectedOrganizationQuery()
       const { data: project } = useSelectedProjectQuery()
+      const { data: branch } = useSelectedBranchQuery()
 
       const onRowsChange = useOnRowsChange(rows)
 
@@ -94,8 +96,7 @@ export const Grid = memo(
       })
 
       const { data } = useForeignKeyConstraintsQuery({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         schema: table?.schema ?? undefined,
       })
 

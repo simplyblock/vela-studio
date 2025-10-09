@@ -1,14 +1,13 @@
-import { useIsLoggedIn, useParams } from 'common'
+import { useIsLoggedIn } from 'common'
 import jsonLogic from 'json-logic-js'
 
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useProjectDetailQuery } from 'data/projects/project-detail-query'
-import { IS_PLATFORM } from 'lib/constants'
 import type { Permission } from 'types'
 import { useSelectedOrganizationQuery } from './useSelectedOrganization'
 import { useSelectedProjectQuery } from './useSelectedProject'
-import { getPathReferences } from '../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const toRegexpString = (actionOrResource: string) =>
   `^${actionOrResource.replace('.', '\\.').replace('%', '.*')}$`
@@ -45,19 +44,19 @@ export function doPermissionsCheck(
   }
 
   if (projectRef) {
-    const projectPermissions = permissions.filter(
+    const projectPermissions = (permissions ?? []).filter(
       (permission) =>
         permission.organization_slug === organizationSlug &&
         permission.actions.some((act) => (action ? action.match(toRegexpString(act)) : null)) &&
         permission.resources.some((res) => resource.match(toRegexpString(res))) &&
-        permission.project_refs?.includes(projectRef)
+        permission.project_refs?.includes(projectRef as string)
     )
     if (projectPermissions.length > 0) {
       return doPermissionConditionCheck(projectPermissions, { resource_name: resource, ...data })
     }
   }
 
-  const orgPermissions = permissions
+  const orgPermissions = (permissions ?? [])
     // filter out org-level permission
     .filter((permission) => !permission.project_refs || permission.project_refs.length === 0)
     .filter(
@@ -178,7 +177,6 @@ export function useCheckProjectPermissions(
   } = useGetProjectPermissions(permissions, organizationSlug, projectRef, isLoggedIn)
 
   if (!isLoggedIn) return false
-  if (!IS_PLATFORM) return true
 
   return doPermissionsCheck(allPermissions, action, resource, data, _organizationSlug, _projectRef)
 }
@@ -193,8 +191,6 @@ export function usePermissionsLoaded() {
     { slug, ref },
     { enabled: !!ref && isLoggedIn }
   )
-
-  if (!IS_PLATFORM) return true
 
   if (ref) {
     return isLoggedIn && isPermissionsFetched && isOrganizationsFetched && isProjectDetailFetched
@@ -230,13 +226,6 @@ export function useAsyncCheckProjectPermissions(
       isLoading: true,
       isSuccess: false,
       can: false,
-    }
-  }
-  if (!IS_PLATFORM) {
-    return {
-      isLoading: false,
-      isSuccess: true,
-      can: true,
     }
   }
 

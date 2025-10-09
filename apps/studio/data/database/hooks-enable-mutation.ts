@@ -4,15 +4,19 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { invalidateSchemasQuery } from './schemas-query'
+import { Branch } from 'api-types/types'
 
 export type HooksEnableVariables = {
-  slug: string
-  ref: string
+  branch: Branch
 }
 
-export async function enableDatabaseWebhooks({ ref }: HooksEnableVariables) {
+export async function enableDatabaseWebhooks({ branch }: HooksEnableVariables) {
   const { data, error } = await post('/platform/database/{ref}/hook-enable', {
-    params: { path: { ref } },
+    params: {
+      path: {
+        ref: branch.project_id,
+      },
+    },
   })
   if (error) handleError(error)
   return data
@@ -33,9 +37,14 @@ export const useHooksEnableMutation = ({
     (vars) => enableDatabaseWebhooks(vars),
     {
       async onSuccess(data, variables, context) {
-        const { slug, ref } = variables
+        const { branch } = variables
         await onSuccess?.(data, variables, context)
-        await invalidateSchemasQuery(queryClient, slug, ref)
+        await invalidateSchemasQuery(
+          queryClient,
+          branch.organization_id,
+          branch.project_id,
+          branch.id
+        )
       },
       async onError(data, variables, context) {
         if (onError === undefined) {

@@ -5,10 +5,10 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databasePublicationsKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type DatabasePublicationUpdateVariables = {
-  projectRef: string
-  connectionString?: string | null
+  branch: Branch
   id: number
   tables?: string[]
   publish_insert?: boolean
@@ -18,8 +18,7 @@ export type DatabasePublicationUpdateVariables = {
 }
 
 export async function updateDatabasePublication({
-  projectRef,
-  connectionString,
+  branch,
   id,
   tables,
   publish_insert,
@@ -36,8 +35,7 @@ export async function updateDatabasePublication({
   })
 
   const { result } = await executeSql({
-    projectRef,
-    connectionString,
+    branch,
     sql,
     queryKey: ['publication', 'update', id],
   })
@@ -67,8 +65,10 @@ export const useDatabasePublicationUpdateMutation = ({
     DatabasePublicationUpdateVariables
   >((vars) => updateDatabasePublication(vars), {
     async onSuccess(data, variables, context) {
-      const { projectRef } = variables
-      await queryClient.invalidateQueries(databasePublicationsKeys.list(projectRef))
+      const { branch } = variables
+      await queryClient.invalidateQueries(
+        databasePublicationsKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
+      )
       await onSuccess?.(data, variables, context)
     },
     async onError(data, variables, context) {

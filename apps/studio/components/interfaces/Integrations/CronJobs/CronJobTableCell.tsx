@@ -7,7 +7,6 @@ import { toast } from 'sonner'
 import { useDatabaseCronJobRunCommandMutation } from 'data/database-cron-jobs/database-cron-job-run-mutation'
 import { CronJob } from 'data/database-cron-jobs/database-cron-jobs-infinite-query'
 import { useDatabaseCronJobToggleMutation } from 'data/database-cron-jobs/database-cron-jobs-toggle-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Badge,
   Button,
@@ -42,6 +41,7 @@ import {
 } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
 import { getNextRun } from './CronJobs.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface CronJobTableCellProps {
   col: any
@@ -56,7 +56,7 @@ export const CronJobTableCell = ({
   onSelectEdit,
   onSelectDelete,
 }: CronJobTableCellProps) => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [searchQuery] = useQueryState('search', parseAsString.withDefault(''))
 
   const [showToggleModal, setShowToggleModal] = useState(false)
@@ -91,17 +91,17 @@ export const CronJobTableCell = ({
   )
 
   const onRunCronJob = () => {
+    if (branch === undefined) return console.error('Branch is required')
     runCronJob({
-      projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      branch,
       jobId: jobid,
     })
   }
 
   const onConfirmToggle = () => {
+    if (branch === undefined) return console.error('Branch is required')
     toggleDatabaseCronJob({
-      projectRef: project?.ref!,
-      connectionString: project?.connectionString,
+      branch,
       jobId: jobid,
       active: !active,
       searchTerm: searchQuery,

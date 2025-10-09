@@ -1,21 +1,19 @@
 import { useCallback } from 'react'
 
 import { saveTableEditorStateToLocalStorage } from 'components/grid/SupabaseGrid.utils'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useTableEditorTableStateSnapshot } from 'state/table-editor-table'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 /**
  * Hook for saving state and triggering side effects.
  */
 export function useSaveTableEditorState() {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const snap = useTableEditorTableStateSnapshot()
 
   const saveDataAndTriggerSideEffects = useCallback(
     (dataToSave: { filters?: string[]; sorts?: string[] }) => {
-      const projectRef = project?.ref
-
-      if (!projectRef) {
+      if (!branch) {
         return console.warn(
           '[useSaveTableEditorState] ProjectRef missing, cannot save or trigger side effects.'
         )
@@ -30,7 +28,7 @@ export function useSaveTableEditorState() {
 
         if (tableName) {
           saveTableEditorStateToLocalStorage({
-            projectRef,
+            branch,
             tableName,
             schema,
             ...dataToSave,
@@ -42,7 +40,7 @@ export function useSaveTableEditorState() {
         console.error('[useSaveTableEditorState] Error during interaction with snapshot:', error)
       }
     },
-    [snap, project]
+    [snap, branch]
   )
 
   const saveFiltersAndTriggerSideEffects = useCallback(

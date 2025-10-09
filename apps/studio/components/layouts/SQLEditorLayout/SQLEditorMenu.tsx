@@ -1,12 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useDebounce } from '@uidotdev/usehooks'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import { FilePlus, FolderPlus, Plus, X } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import { useLocalStorage } from 'hooks/misc/useLocalStorage'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProfile } from 'lib/profile'
@@ -33,7 +30,7 @@ import { SQLEditorNav } from './SQLEditorNavV2/SQLEditorNav'
 
 export const SQLEditorMenu = () => {
   const router = useRouter()
-  const { slug, ref } = useParams()
+  const { slug, ref, branch: branchRef } = useParams()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
@@ -48,10 +45,8 @@ export const SQLEditorMenu = () => {
   const appState = getAppStateSnapshot()
   const debouncedSearch = useDebounce(search, 500)
 
-  const canCreateSQLSnippet = useCheckPermissions(PermissionAction.CREATE, 'user_content', {
-    resource: { type: 'sql', owner_id: profile?.id },
-    subject: { id: profile?.id },
-  })
+  // FIXME: need permission implemented 
+  const canCreateSQLSnippet = true
 
   const createNewFolder = () => {
     if (!ref) return console.error('Project ref is required')
@@ -62,13 +57,14 @@ export const SQLEditorMenu = () => {
 
   const handleNewQuery = async () => {
     if (!ref) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
     if (!project) return console.error('Project is required')
     if (!profile) return console.error('Profile is required')
     if (!canCreateSQLSnippet) {
       return toast('Your queries will not be saved as you do not have sufficient permissions')
     }
     try {
-      router.push(`/org/${slug}/project/${ref}/sql/new?skip=true`)
+      router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/sql/new?skip=true`)
       setSearch('')
       setShowSearch(false)
     } catch (error: any) {

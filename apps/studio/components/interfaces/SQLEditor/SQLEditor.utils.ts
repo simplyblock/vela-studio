@@ -50,7 +50,7 @@ export const createSqlSnippetSkeletonV2 = ({
   name: string
   sql: string
   owner_id: number
-  project_id: number
+  project_id: string
   folder_id?: string
 }): SnippetWithContent => {
   return {

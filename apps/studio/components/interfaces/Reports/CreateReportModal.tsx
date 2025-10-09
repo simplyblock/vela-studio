@@ -21,7 +21,7 @@ export const CreateReportModal = ({ visible, onCancel, afterSubmit }: CreateRepo
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const ref = project?.ref ?? 'default'
-  const { slug } = useParams()
+  const { slug, branch: branchRef } = useParams()
 
   // Preserve date range query parameters when navigating to new report
   const preservedQueryParams = useMemo(() => {
@@ -41,7 +41,7 @@ export const CreateReportModal = ({ visible, onCancel, afterSubmit }: CreateRepo
     onSuccess: (_, vars) => {
       toast.success('Successfully created new report')
       const newReportId = vars.payload.id
-      router.push(`/org/${slug}/project/${ref}/reports/${newReportId}${preservedQueryParams}`)
+      router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/reports/${newReportId}${preservedQueryParams}`)
       afterSubmit()
     },
     onError: (error) => {

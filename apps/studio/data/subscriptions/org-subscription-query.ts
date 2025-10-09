@@ -1,8 +1,5 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-
 import { get, handleError } from 'data/fetchers'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import type { ResponseError } from 'types'
 import { subscriptionKeys } from './keys'
 
@@ -37,10 +34,8 @@ export const useOrgSubscriptionQuery = <TData = OrgSubscriptionData>(
 ) => {
   // [Joshen] Thinking it makes sense to add this check at the RQ level - prevent
   // unnecessary requests, although this behaviour still needs handling on the UI
-  const canReadSubscriptions = useCheckPermissions(
-    PermissionAction.BILLING_READ,
-    'stripe.subscriptions'
-  )
+  // FIXME: need permission implemented   
+  const canReadSubscriptions = true
 
   return useQuery<OrgSubscriptionData, OrgSubscriptionError, TData>(
     subscriptionKeys.orgSubscription(orgSlug),
@@ -51,9 +46,4 @@ export const useOrgSubscriptionQuery = <TData = OrgSubscriptionData>(
       ...options,
     }
   )
-}
-
-export const useHasAccessToProjectLevelPermissions = (slug: string) => {
-  const { data: subscription } = useOrgSubscriptionQuery({ orgSlug: slug })
-  return subscription?.plan.id === 'enterprise' || subscription?.plan.id === 'team'
 }

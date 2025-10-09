@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { constructHeaders, toSnakeCase } from './apiHelpers'
 
 vi.mock('lib/constants', () => ({
-  IS_PLATFORM: false,
 }))
 
 describe('apiHelpers', () => {

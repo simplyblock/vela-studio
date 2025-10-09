@@ -1,16 +1,16 @@
 import type { UserIdentity } from '@supabase/supabase-js'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
-import { auth } from 'lib/gotrue'
 import { profileKeys } from './keys'
 
 export async function getProfileIdentities() {
-  const { error, data } = await auth.getUser()
+  /*const { error, data } = await auth.getUser()
 
   if (error) throw error
 
   const { identities = [], new_email, email_change_sent_at } = data.user
-  return { identities, new_email, email_change_sent_at }
+  return { identities, new_email, email_change_sent_at }*/
+  return {} as ProfileIdentitiesData // FIXME: implement this
 }
 
 type ProfileIdentitiesData = {

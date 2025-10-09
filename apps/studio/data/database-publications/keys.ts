@@ -1,4 +1,4 @@
 export const databasePublicationsKeys = {
-  list: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'database-publications'] as const,
+  list: (orgId: string | undefined, projectId: string | undefined, branchId: string | undefined) =>
+    ['branches', orgId, projectId, branchId, 'database-publications'] as const,
 }

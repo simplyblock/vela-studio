@@ -7,7 +7,7 @@ import { proxy, useSnapshot } from 'valtio'
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { BlobReader, BlobWriter, ZipWriter } from '@zip.js/zip.js'
-import { LOCAL_STORAGE_KEYS } from 'common'
+import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import {
   inverseValidObjectKeyRegex,
   validObjectKeyRegex,
@@ -47,11 +47,11 @@ import { listBucketObjects, StorageObject } from 'data/storage/bucket-objects-li
 import { Bucket } from 'data/storage/buckets-query'
 import { moveStorageObject } from 'data/storage/object-move-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { IS_PLATFORM, PROJECT_STATUS } from 'lib/constants'
+import { PROJECT_STATUS } from 'lib/constants'
 import { tryParseJson } from 'lib/helpers'
 import { lookupMime } from 'lib/mime'
 import { Button, SONNER_DEFAULT_DURATION, SonnerProgress } from 'ui'
-import { getOrganizationSlug } from '../data/vela/organization-path-slug'
+import { getOrganizationSlug } from 'data/vela/organization-path-slug'
 
 type UploadProgress = {
   percentage: number
@@ -80,12 +80,14 @@ if (typeof window !== 'undefined') {
 
 function createStorageExplorerState({
   projectRef,
-  slug,
+  orgRef,
+  branchRef,
   resumableUploadUrl,
   supabaseClient,
 }: {
+  orgRef: string
   projectRef: string
-  slug: string
+  branchRef: string
   resumableUploadUrl: string
   supabaseClient?: () => Promise<SupabaseClient<any, 'public', any>>
 }) {
@@ -95,8 +97,9 @@ function createStorageExplorerState({
     DEFAULT_PREFERENCES
 
   const state = proxy({
+    orgRef,
     projectRef,
-    slug,
+    branchRef,
     supabaseClient,
     resumableUploadUrl,
     uploadProgresses: [] as UploadProgress[],
@@ -982,7 +985,7 @@ function createStorageExplorerState({
       const queryClient = getQueryClient()
       const storageConfiguration = queryClient
         .getQueryCache()
-        .find(configKeys.storage(state.projectRef))?.state.data as
+        .find(configKeys.storage(state.orgRef, state.projectRef, state.branchRef))?.state.data as
         | ProjectStorageConfigResponse
         | undefined
       const fileSizeLimit = storageConfiguration?.fileSizeLimit
@@ -1018,7 +1021,9 @@ function createStorageExplorerState({
             </p>
             <p className="text-foreground-light">
               You can change the global file size upload limit in{' '}
-              <InlineLink href={`/org/${slug}/project/${state.projectRef}/storage/settings`}>
+              <InlineLink
+                href={`/org/${orgRef}/project/${state.projectRef}/branch/${branchRef}/storage/settings`}
+              >
                 Storage settings
               </InlineLink>
               .
@@ -1792,7 +1797,8 @@ type StorageExplorerState = ReturnType<typeof createStorageExplorerState>
 const DEFAULT_STATE_CONFIG = {
   projectRef: '',
   resumableUploadUrl: '',
-  slug: '',
+  orgRef: '',
+  branchRef: '',
   supabaseClient: undefined,
 }
 
@@ -1806,13 +1812,17 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
 
   const [state, setState] = useState(() => createStorageExplorerState(DEFAULT_STATE_CONFIG))
   const stateRef = useLatest(state)
-  const slug = getOrganizationSlug()
+  const orgRef = getOrganizationSlug()
+  const { branch: branchRef } = useParams()
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef: project?.ref })
+  const { data: settings } = useProjectSettingsV2Query({
+    orgSlug: orgRef,
+    projectRef: project?.ref,
+  })
 
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.endpoint
-  const resumableUploadUrl = `${IS_PLATFORM ? 'https' : protocol}://${endpoint}/storage/v1/upload/resumable`
+  const resumableUploadUrl = `https://${endpoint}/storage/v1/upload/resumable`
 
   // [Joshen] JFYI opting with the useEffect here as the storage explorer state was being loaded
   // before the project details were ready, hence the store kept returning project ref as undefined
@@ -1826,11 +1836,12 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
       setState(
         createStorageExplorerState({
           projectRef: project?.ref ?? '',
-          slug: slug ?? '',
+          orgRef: orgRef ?? '',
+          branchRef: branchRef ?? '',
           supabaseClient: async () => {
             try {
               const data = await getTemporaryAPIKey({ projectRef: project.ref })
-              const clientEndpoint = `${IS_PLATFORM ? 'https' : protocol}://${endpoint}`
+              const clientEndpoint = `https://${endpoint}`
 
               return createClient(clientEndpoint, data.api_key, {
                 auth: {
@@ -1854,7 +1865,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
         })
       )
     }
-  }, [project?.ref, stateRef, isPaused, resumableUploadUrl, protocol, endpoint, slug])
+  }, [project?.ref, stateRef, isPaused, resumableUploadUrl, protocol, endpoint, orgRef])
 
   return (
     <StorageExplorerStateContext.Provider value={state}>

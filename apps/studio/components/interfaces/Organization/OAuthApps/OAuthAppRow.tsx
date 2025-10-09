@@ -1,10 +1,8 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Edit, MoreVertical, Trash } from 'lucide-react'
 
 import Table from 'components/to-be-cleaned/Table'
 import CopyButton from 'components/ui/CopyButton'
 import type { OAuthApp } from 'data/oauth/oauth-apps-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   Button,
   DropdownMenu,
@@ -25,8 +23,10 @@ export interface OAuthAppRowProps {
 }
 
 export const OAuthAppRow = ({ app, onSelectEdit, onSelectDelete }: OAuthAppRowProps) => {
-  const canUpdateOAuthApps = useCheckPermissions(PermissionAction.UPDATE, 'approved_oauth_apps')
-  const canDeleteOAuthApps = useCheckPermissions(PermissionAction.DELETE, 'approved_oauth_apps')
+    // FIXME: need permission implemented 
+  const canUpdateOAuthApps = true
+    // FIXME: need permission implemented 
+  const canDeleteOAuthApps = true
 
   return (
     <Table.tr>

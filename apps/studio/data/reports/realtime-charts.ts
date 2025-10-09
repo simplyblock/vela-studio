@@ -1,4 +1,4 @@
-export const getRealtimeReportAttributes = (isFreePlan: boolean) => [
+export const getRealtimeReportAttributes = () => [
   {
     id: 'client-to-realtime-connections',
     label: 'Realtime connections',

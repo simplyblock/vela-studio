@@ -1,11 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { Mail } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { useParams } from 'common'
 import { useUserInviteMutation } from 'data/auth/user-invite-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { Button, Form, Input, Modal } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export type InviteUserModalProps = {
   visible: boolean
@@ -13,7 +11,7 @@ export type InviteUserModalProps = {
 }
 
 const InviteUserModal = ({ visible, setVisible }: InviteUserModalProps) => {
-  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const handleToggle = () => setVisible(!visible)
   const { mutate: inviteUser, isLoading: isInviting } = useUserInviteMutation({
@@ -22,10 +20,8 @@ const InviteUserModal = ({ visible, setVisible }: InviteUserModalProps) => {
       setVisible(false)
     },
   })
-  const { can: canInviteUsers } = useAsyncCheckProjectPermissions(
-    PermissionAction.AUTH_EXECUTE,
-    'invite_user'
-  )
+    // FIXME: need permission implemented 
+  const { can: canInviteUsers } = {can:true}
 
   const validate = (values: any) => {
     const errors: any = {}
@@ -42,8 +38,8 @@ const InviteUserModal = ({ visible, setVisible }: InviteUserModalProps) => {
   }
 
   const onInviteUser = async (values: any) => {
-    if (!projectRef) return console.error('Project ref is required')
-    inviteUser({ projectRef, email: values.email })
+    if (!branch) return console.error('Branch is required')
+    inviteUser({ branch, email: values.email })
   }
 
   return (

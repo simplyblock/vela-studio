@@ -4,10 +4,10 @@ import { databaseKeys } from 'data/database/keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { z } from 'zod'
+import { Branch } from 'api-types/types'
 
 export type DatabaseFunctionsVariables = {
-  projectRef?: string
-  connectionString?: string | null
+  branch?: Branch
 }
 
 export type DatabaseFunction = z.infer<typeof pgMeta.functions.pgFunctionZod>
@@ -15,7 +15,7 @@ export type DatabaseFunction = z.infer<typeof pgMeta.functions.pgFunctionZod>
 const pgMetaFunctionsList = pgMeta.functions.list()
 
 export async function getDatabaseFunctions(
-  { projectRef, connectionString }: DatabaseFunctionsVariables,
+  { branch }: DatabaseFunctionsVariables,
   signal?: AbortSignal,
   headersInit?: HeadersInit
 ) {
@@ -23,13 +23,11 @@ export async function getDatabaseFunctions(
 
   const { result } = await executeSql(
     {
-      projectRef,
-      connectionString,
+      branch,
       sql: pgMetaFunctionsList.sql,
       queryKey: ['database-functions'],
     },
-    signal,
-    headers
+    signal
   )
 
   return result as DatabaseFunction[]
@@ -39,17 +37,17 @@ export type DatabaseFunctionsData = z.infer<typeof pgMetaFunctionsList.zod>
 export type DatabaseFunctionsError = ResponseError
 
 export const useDatabaseFunctionsQuery = <TData = DatabaseFunctionsData>(
-  { projectRef, connectionString }: DatabaseFunctionsVariables,
+  { branch }: DatabaseFunctionsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<DatabaseFunctionsData, DatabaseFunctionsError, TData> = {}
 ) =>
   useQuery<DatabaseFunctionsData, DatabaseFunctionsError, TData>(
-    databaseKeys.databaseFunctions(projectRef),
-    ({ signal }) => getDatabaseFunctions({ projectRef, connectionString }, signal),
+    databaseKeys.databaseFunctions(branch?.organization_id, branch?.project_id, branch?.id),
+    ({ signal }) => getDatabaseFunctions({ branch }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof branch !== 'undefined',
       ...options,
     }
   )

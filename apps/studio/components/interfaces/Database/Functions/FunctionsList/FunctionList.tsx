@@ -1,11 +1,9 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { includes, noop, sortBy } from 'lodash'
 import { Edit, Edit2, FileText, MoreVertical, Trash } from 'lucide-react'
 import { useRouter } from 'next/router'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseFunctionsQuery } from 'data/database-functions/database-functions-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   Button,
@@ -17,8 +15,9 @@ import {
   TableRow,
   TableCell,
 } from 'ui'
-import { getPathReferences } from '../../../../../data/vela/path-references'
-import { useSelectedProjectQuery } from '../../../../../hooks/misc/useSelectedProject'
+import { getPathReferences } from 'data/vela/path-references'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 interface FunctionListProps {
   schema: string
@@ -36,13 +35,13 @@ const FunctionList = ({
   deleteFunction = noop,
 }: FunctionListProps) => {
   const router = useRouter()
-  const { slug } = getPathReferences()
+  const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: functions } = useDatabaseFunctionsQuery({
-    projectRef: selectedProject?.ref,
-    connectionString: selectedProject?.connectionString,
+    branch,
   })
 
   const filteredFunctions = (functions ?? []).filter((x) =>
@@ -53,10 +52,8 @@ const FunctionList = ({
     (func) => func.name.toLocaleLowerCase()
   )
   const projectRef = selectedProject?.ref
-  const { can: canUpdateFunctions } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'functions'
-  )
+    // FIXME: need permission implemented 
+  const { can: canUpdateFunctions } = {can:true}
 
   if (_functions.length === 0 && filterString.length === 0) {
     return (
@@ -128,7 +125,7 @@ const FunctionList = ({
                         {isApiDocumentAvailable && (
                           <DropdownMenuItem
                             className="space-x-2"
-                            onClick={() => router.push(`/org/${slug}/project/${projectRef}/api?rpc=${x.name}`)}
+                            onClick={() => router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api?rpc=${x.name}`)}
                           >
                             <FileText size={14} />
                             <p>Client API docs</p>

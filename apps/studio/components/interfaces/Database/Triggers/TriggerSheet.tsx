@@ -40,6 +40,7 @@ import {
   TRIGGER_ORIENTATIONS,
   TRIGGER_TYPES,
 } from './Triggers.constants'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const formId = 'create-trigger'
 
@@ -81,6 +82,7 @@ interface TriggerSheetProps {
 
 export const TriggerSheet = ({ selectedTrigger, open, setOpen }: TriggerSheetProps) => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [showFunctionSelector, setShowFunctionSelector] = useState(false)
 
@@ -108,8 +110,7 @@ export const TriggerSheet = ({ selectedTrigger, open, setOpen }: TriggerSheetPro
   )
 
   const { data = [], isSuccess: isSuccessTables } = useTablesQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
   const { data: protectedSchemas, isSuccess: isSuccessProtectedSchemas } = useProtectedSchemas()
   const isSuccess = isSuccessTables && isSuccessProtectedSchemas
@@ -129,19 +130,18 @@ export const TriggerSheet = ({ selectedTrigger, open, setOpen }: TriggerSheetPro
 
   const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (values) => {
     if (!project) return console.error('Project is required')
+    if (!branch) return console.error('Branch is required')
     const { tableId, ...payload } = values
 
     if (isEditing) {
       updateDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         originalTrigger: selectedTrigger,
         payload: { name: payload.name, enabled_mode: payload.enabled_mode },
       })
     } else {
       createDatabaseTrigger({
-        projectRef: project?.ref,
-        connectionString: project?.connectionString,
+        branch,
         payload,
       })
     }

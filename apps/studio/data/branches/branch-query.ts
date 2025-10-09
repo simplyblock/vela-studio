@@ -1,39 +1,58 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { get, handleError } from 'data/fetchers'
-import { IS_PLATFORM } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type BranchVariables = {
+  orgRef?: string
   projectRef?: string
-  id?: string
+  branchRef?: string
 }
 
-export async function getBranch({ id }: BranchVariables, signal?: AbortSignal) {
-  if (!id) throw new Error('id is required')
+export async function getBranch(
+  { orgRef, projectRef, branchRef }: BranchVariables,
+  signal?: AbortSignal
+) {
+  if (!orgRef) throw new Error('Organization slug is required')
+  if (!projectRef) throw new Error('Project ref is required')
+  if (!branchRef) throw new Error('Branch id is required')
 
-  const { data, error } = await get(`/v1/branches/{branch_id}`, {
-    params: { path: { branch_id: id } },
-    signal,
-  })
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
-  return data
+  return data as unknown as BranchData
 }
 
-export type BranchData = Awaited<ReturnType<typeof getBranch>>
+export type BranchData = Branch
 export type BranchError = ResponseError
 
 export const useBranchQuery = <TData = BranchData>(
-  { projectRef, id }: BranchVariables,
+  { orgRef, projectRef, branchRef }: BranchVariables,
   { enabled = true, ...options }: UseQueryOptions<BranchData, BranchError, TData> = {}
 ) =>
   useQuery<BranchData, BranchError, TData>(
-    branchKeys.detail(projectRef, id),
-    ({ signal }) => getBranch({ id }, signal),
+    branchKeys.detail(projectRef, branchRef),
+    ({ signal }) => getBranch({ orgRef, projectRef, branchRef }, signal),
     {
-      enabled: IS_PLATFORM && enabled && typeof id !== 'undefined',
+      enabled:
+        enabled &&
+        typeof branchRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof orgRef !== 'undefined',
       ...options,
     }
   )

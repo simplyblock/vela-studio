@@ -12,7 +12,7 @@ import {
   isValidAddress,
   normalize,
 } from './NetworkRestrictions.utils'
-import { getPathReferences } from '../../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const IPV4_MAX_CIDR_BLOCK_SIZE = 32
 const IPV6_MAX_CIDR_BLOCK_SIZE = 128

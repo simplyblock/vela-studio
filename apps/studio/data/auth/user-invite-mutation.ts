@@ -4,15 +4,20 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { authKeys } from './keys'
+import { Branch } from 'api-types/types'
 
 export type UserInviteVariables = {
-  projectRef: string
+  branch: Branch
   email: string
 }
 
-export async function inviteUser({ projectRef, email }: UserInviteVariables) {
+export async function inviteUser({ branch, email }: UserInviteVariables) {
   const { data, error } = await post('/platform/auth/{ref}/invite', {
-    params: { path: { ref: projectRef } },
+    params: {
+      path: {
+        ref: branch.project_id,
+      },
+    },
     body: { email },
   })
   if (error) handleError(error)
@@ -35,11 +40,15 @@ export const useUserInviteMutation = ({
     (vars) => inviteUser(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { branch } = variables
 
         await Promise.all([
-          queryClient.invalidateQueries(authKeys.usersInfinite(projectRef)),
-          queryClient.invalidateQueries(authKeys.usersCount(projectRef)),
+          queryClient.invalidateQueries(
+            authKeys.usersInfinite(branch.organization_id, branch.project_id, branch.id)
+          ),
+          queryClient.invalidateQueries(
+            authKeys.usersCount(branch.organization_id, branch.project_id, branch.id)
+          ),
         ])
 
         await onSuccess?.(data, variables, context)

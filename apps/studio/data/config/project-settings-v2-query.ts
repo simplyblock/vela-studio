@@ -1,9 +1,6 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-
 import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
 
@@ -53,7 +50,8 @@ export const useProjectSettingsV2Query = <TData = ProjectSettingsData>(
 ) => {
   // [Joshen] Sync with API perms checking here - shouldReturnApiKeys
   // https://github.com/supabase/infrastructure/blob/develop/api/src/routes/platform/projects/ref/settings.controller.ts#L92
-  const canReadAPIKeys = useCheckPermissions(PermissionAction.TENANT_SQL_ADMIN_WRITE, '*')
+  // FIXME: need permission implemented 
+  const canReadAPIKeys = true
 
   return useQuery<ProjectSettingsData, ProjectSettingsError, TData>(
     configKeys.settingsV2(orgSlug, projectRef),

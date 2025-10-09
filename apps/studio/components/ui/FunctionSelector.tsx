@@ -26,7 +26,7 @@ import {
   Popover_Shadcn_,
   ScrollArea,
 } from 'ui'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type DatabaseFunction = DatabaseFunctionsData[number]
 
@@ -55,13 +55,12 @@ const FunctionSelector = ({
   noResultsLabel = <span>No functions found in this schema.</span>,
 }: FunctionSelectorProps) => {
   const router = useRouter()
-  const { slug,ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
 
   const { data, error, isLoading, isError, isSuccess, refetch } = useDatabaseFunctionsQuery({
-    projectRef: project?.ref,
-    connectionString: project?.connectionString,
+    branch,
   })
 
   const filteredFunctions = (data ?? [])
@@ -161,12 +160,12 @@ const FunctionSelector = ({
                     className="cursor-pointer w-full"
                     onSelect={() => {
                       setOpen(false)
-                      router.push(`/org/${slug}/project/${ref}/database/functions`)
+                      router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/functions`)
                     }}
                     onClick={() => setOpen(false)}
                   >
                     <Link
-                      href={`/org/${slug}/project/${ref}/database/functions`}
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/functions`}
                       onClick={() => {
                         setOpen(false)
                       }}

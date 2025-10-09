@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import DataGrid, { Row } from 'react-data-grid'
 import { sortBy } from 'lodash'
 import { Loader, RefreshCw, Search, X } from 'lucide-react'
@@ -8,8 +7,6 @@ import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DocsButton } from 'components/ui/DocsButton'
 import { useVaultSecretsQuery } from 'data/vault/vault-secrets-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { VaultSecret } from 'types'
 import {
   Button,
@@ -25,24 +22,21 @@ import {
 import AddNewSecretModal from './AddNewSecretModal'
 import DeleteSecretModal from './DeleteSecretModal'
 import { formatSecretColumns } from './Secrets.utils'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const SecretsManagement = () => {
   const { search } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
   const [searchValue, setSearchValue] = useState<string>('')
   const [showAddSecretModal, setShowAddSecretModal] = useState(false)
   const [selectedSecretToRemove, setSelectedSecretToRemove] = useState<VaultSecret>()
   const [selectedSort, setSelectedSort] = useState<'updated_at' | 'name'>('updated_at')
-
-  const { can: canManageSecrets } = useAsyncCheckProjectPermissions(
-    PermissionAction.TENANT_SQL_ADMIN_WRITE,
-    'tables'
-  )
+  // FIXME: need permission implemented 
+  const { can: canManageSecrets } = {can:true}
 
   const { data, isLoading, isRefetching, refetch, error, isError } = useVaultSecretsQuery({
-    projectRef: project?.ref!,
-    connectionString: project?.connectionString,
+    branch,
   })
   const allSecrets = useMemo(() => data || [], [data])
   const secrets = useMemo(() => {

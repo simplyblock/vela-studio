@@ -18,52 +18,31 @@ import {
   ScaffoldSectionDetail,
 } from 'components/layouts/Scaffold'
 import DatabaseSelector from 'components/ui/DatabaseSelector'
-import { DateRangePicker } from 'components/ui/DateRangePicker'
 import Panel from 'components/ui/Panel'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { DataPoint } from 'data/analytics/constants'
 import { useInfraMonitoringQuery } from 'data/analytics/infra-monitoring-query'
-import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
 import { useResourceWarningsQuery } from 'data/usage/resource-warnings-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { TIME_PERIODS_BILLING, TIME_PERIODS_REPORTS } from 'lib/constants/metrics'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { INFRA_ACTIVITY_METRICS } from './Infrastructure.constants'
 import { useShowNewReplicaPanel } from './InfrastructureConfiguration/use-show-new-replica'
 
 const InfrastructureActivity = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
   const state = useDatabaseSelectorStateSnapshot()
   const [dateRange, setDateRange] = useState<any>()
-
-  const { data: subscription, isLoading: isLoadingSubscription } = useOrgSubscriptionQuery({
-    orgSlug: organization?.slug,
-  })
 
   const { data: resourceWarnings } = useResourceWarningsQuery()
   const projectResourceWarnings = resourceWarnings?.find((x) => x.project === projectRef)
 
   const { setShowNewReplicaPanel } = useShowNewReplicaPanel()
 
-  const currentBillingCycleSelected = useMemo(() => {
-    // Selected by default
-    if (!dateRange?.period_start || !dateRange?.period_end || !subscription) return true
-
-    const { current_period_start, current_period_end } = subscription
-
-    return (
-      dayjs(dateRange.period_start.date).isSame(new Date(current_period_start * 1000)) &&
-      dayjs(dateRange.period_end.date).isSame(new Date(current_period_end * 1000))
-    )
-  }, [dateRange, subscription])
-
   const upgradeUrl =
     organization === undefined
       ? `/`
-      : organization.plan.id === 'free'
-        ? `/org/${organization?.slug ?? '[slug]'}/billing#subscription`
-        : `/org/${slug}/project/${projectRef}/settings/addons`
+      : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/addons`
 
   const categoryMeta = INFRA_ACTIVITY_METRICS.find((category) => category.key === 'infra')
 
@@ -181,21 +160,6 @@ const InfrastructureActivity = () => {
               setShowNewReplicaPanel(true)
             }}
           />
-          {!isLoadingSubscription && (
-            <>
-              <DateRangePicker
-                onChange={setDateRange}
-                value={TIME_PERIODS_REPORTS[0].key}
-                options={[...TIME_PERIODS_BILLING, ...TIME_PERIODS_REPORTS]}
-                loading={isLoadingSubscription}
-                currentBillingPeriodStart={subscription?.current_period_start}
-                currentBillingPeriodEnd={subscription?.current_period_end}
-              />
-              <p className="text-sm text-foreground-light">
-                {dayjs(startDate).format('DD MMM YYYY')} - {dayjs(endDate).format('DD MMM YYYY')}
-              </p>
-            </>
-          )}
         </div>
       </ScaffoldContainer>
 
@@ -242,7 +206,6 @@ const InfrastructureActivity = () => {
                         upgradeUrl={upgradeUrl}
                         isFreePlan={true}
                         hasLatest={hasLatest}
-                        currentBillingCycleSelected={currentBillingCycleSelected}
                         latestIoBudgetConsumption={latestIoBudgetConsumption}
                         highestIoBudgetConsumption={highestIoBudgetConsumption}
                       />

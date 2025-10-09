@@ -11,7 +11,6 @@ import type { OrgSubscription } from 'data/subscriptions/types'
 import { useOrgUsageQuery } from 'data/usage/org-usage-query'
 import { cn } from 'ui'
 import { BILLING_BREAKDOWN_METRICS } from '../BillingSettings/BillingBreakdown/BillingBreakdown.constants'
-import BillingMetric from '../BillingSettings/BillingBreakdown/BillingMetric'
 import ComputeMetric from '../BillingSettings/BillingBreakdown/ComputeMetric'
 import SectionContent from './SectionContent'
 
@@ -181,28 +180,6 @@ const TotalUsage = ({
               </p>
             )}
             <div className="grid grid-cols-12 mt-3">
-              {sortedBillingMetrics.map((metric, i) => {
-                return (
-                  <div
-                    className={cn(
-                      'col-span-12 md:col-span-6 space-y-4 py-4 border-overlay',
-                      i % 2 === 0 ? 'md:border-r md:pr-4' : 'md:pl-4',
-                      'border-b'
-                    )}
-                    key={metric.key}
-                  >
-                    <BillingMetric
-                      idx={i}
-                      slug={orgSlug}
-                      metric={metric}
-                      usage={usage}
-                      subscription={subscription!}
-                      relativeToSubscription={showRelationToSubscription}
-                    />
-                  </div>
-                )
-              })}
-
               {computeMetrics.map((metric, i) => (
                 <div
                   className={cn(

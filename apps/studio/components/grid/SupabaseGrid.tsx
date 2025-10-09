@@ -19,9 +19,9 @@ import Header, { HeaderProps } from './components/header/Header'
 import { RowContextMenu } from './components/menu'
 import { GridProps } from './types'
 
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useTableFilter } from './hooks/useTableFilter'
 import { useTableSort } from './hooks/useTableSort'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const SupabaseGrid = ({
   customHeader,
@@ -35,7 +35,7 @@ export const SupabaseGrid = ({
   const { id: _id } = useParams()
   const tableId = _id ? Number(_id) : undefined
 
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const tableEditorSnap = useTableEditorStateSnapshot()
   const snap = useTableEditorTableStateSnapshot()
 
@@ -49,8 +49,7 @@ export const SupabaseGrid = ({
 
   const { data, error, isSuccess, isError, isLoading, isRefetching } = useTableRowsQuery(
     {
-      projectRef: project?.ref,
-      connectionString: project?.connectionString,
+      branch,
       tableId,
       sorts,
       filters,

@@ -1,4 +1,3 @@
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import { JwtSecretUpdateStatus } from '@supabase/shared-types/out/events'
 import { AlertCircle, Loader } from 'lucide-react'
 import Link from 'next/link'
@@ -9,9 +8,9 @@ import Panel from 'components/ui/Panel'
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating-status-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { Input, SimpleCodeBlock } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const generateInitSnippet = (endpoint: string) => ({
   js: `
@@ -31,7 +30,8 @@ Future<void> main() async {
 })
 
 export const APIKeys = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
 
   const {
     projectConnectionJavascriptExample: javascriptExampleEnabled,
@@ -51,9 +51,9 @@ export const APIKeys = () => {
     data: settings,
     isError: isProjectSettingsError,
     isLoading: isProjectSettingsLoading,
-  } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
+  } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
 
-  const { data: apiKeys } = useAPIKeysQuery({ orgSlug: slug, projectRef })
+  const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { anonKey, serviceKey } = getKeys(apiKeys)
 
   // API keys should not be empty. However it can be populated with a delay on project creation
@@ -64,7 +64,7 @@ export const APIKeys = () => {
     isError: isJwtSecretUpdateStatusError,
     isLoading: isJwtSecretUpdateStatusLoading,
   } = useJwtSecretUpdatingStatusQuery(
-    { orgSlug: slug, projectRef },
+    { branch },
     { enabled: !isProjectSettingsLoading && isApiKeysEmpty }
   )
 
@@ -73,12 +73,8 @@ export const APIKeys = () => {
     isJwtSecretUpdateStatusLoading && !isProjectSettingsLoading && isApiKeysEmpty
 
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
-
-  const { can: canReadAPIKeys } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'service_api_keys'
-  )
-
+  // FIXME: need permission implemented 
+  const { can: canReadAPIKeys } = {can:true}
   const isNotUpdatingJwtSecret =
     jwtSecretUpdateStatus === undefined || jwtSecretUpdateStatus === JwtSecretUpdateStatus.Updated
 
@@ -178,7 +174,7 @@ export const APIKeys = () => {
                   for your tables and configured policies. You may also use the service key which
                   can be found{' '}
                   <Link
-                    href={`/org/${slug}/project/${projectRef}/settings/api`}
+                    href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}
                     className="transition text-brand hover:text-brand-600"
                   >
                     here

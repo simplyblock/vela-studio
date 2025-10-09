@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PermissionAction } from '@supabase/shared-types/out/constants'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -12,7 +11,6 @@ import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
-import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'
 import {
   Button,
   Card,
@@ -28,18 +26,14 @@ import {
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { isSmtpEnabled } from '../SmtpForm/SmtpForm.utils'
-import { getPathReferences } from '../../../../data/vela/path-references'
+import { getPathReferences } from 'data/vela/path-references'
 
 const RateLimits = () => {
-  const { slug, ref: projectRef } = getPathReferences()
-  const { can: canUpdateConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.UPDATE,
-    'custom_config_gotrue'
-  )
-  const { can: canReadConfig } = useAsyncCheckProjectPermissions(
-    PermissionAction.READ,
-    'custom_config_gotrue'
-  )
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
+  // FIXME: need permission implemented 
+  const { can: canUpdateConfig } = {can:true}
+   // FIXME: need permission implemented  
+  const { can: canReadConfig } = {can:true}
 
   const {
     data: authConfig,
@@ -192,7 +186,7 @@ const RateLimits = () => {
                               </p>
                               <div className="mt-3">
                                 <Button asChild type="default" size="tiny">
-                                  <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                     View auth providers
                                   </Link>
                                 </Button>
@@ -209,7 +203,7 @@ const RateLimits = () => {
                               </p>
                               <div className="mt-3">
                                 <Button asChild type="default" size="tiny">
-                                  <Link href={`/org/${slug}/project/${projectRef}/auth/smtp`}>
+                                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/smtp`}>
                                     View SMTP settings
                                   </Link>
                                 </Button>
@@ -256,7 +250,7 @@ const RateLimits = () => {
                           </p>
                           <div className="mt-3">
                             <Button asChild type="default" size="tiny">
-                              <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                 View auth providers
                               </Link>
                             </Button>
@@ -385,7 +379,7 @@ const RateLimits = () => {
                           </p>
                           <div className="mt-3">
                             <Button asChild type="default" size="tiny">
-                              <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                 View auth settings
                               </Link>
                             </Button>
@@ -471,7 +465,7 @@ const RateLimits = () => {
                           </p>
                           <div className="mt-3">
                             <Button asChild type="default" size="tiny">
-                              <Link href={`/org/${slug}/project/${projectRef}/auth/providers`}>
+                              <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}>
                                 View Auth provider settings
                               </Link>
                             </Button>
