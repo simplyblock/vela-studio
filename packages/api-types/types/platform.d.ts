@@ -28,7 +28,7 @@ export interface paths {
       cookie?: never
     },
     get?: never
-    put?: never
+    put: operations['BranchAuthController_updateProvider']
     post?: never
     delete: operations['BranchAuthController_deleteProvider']
     options?: never
@@ -4407,30 +4407,55 @@ export interface components {
         userName: string
       }[]
     }
+    AuthProviderUpdateBody: {
+      alias?: string;
+      displayName?: string;
+      internalId?: string;
+      providerId?: string;
+      enabled?: boolean;
+      trustEmail?: boolean;
+      storeToken?: boolean;
+      addReadTokenRoleOnCreate?: boolean;
+      authenticateByDefault?: boolean;
+      linkOnly?: boolean;
+      hideOnLogin?: boolean;
+      firstBrokerLoginFlowAlias?: string;
+      postBrokerLoginFlowAlias?: string;
+      organizationId?: string;
+      config?: {
+        authorizationUrl?: string
+        clientId?: string
+        issuer?: string
+        logoutUrl?: string
+        tokenUrl?: string
+        userInfoUrl?: string
+        [key: string]: string;
+      };
+    }
     AuthProviderResponse: {
-      /** Alias */
-      alias: string;
-      /**
-       * Providerid
-       * @constant
-       */
-      providerId: "oidc";
-      /** Clientid */
-      "clientId": string;
-      /**
-       * Authorizationurl
-       * Format: uri
-       */
-      "authorizationUrl": string;
-      /**
-       * Tokenurl
-       * Format: uri
-       */
-      "tokenUrl": string;
-      /** Issuer */
-      "issuer": string | null;
-      /** Userinfourl */
-      "userInfoUrl": string | null;
+      alias?: string;
+      displayName?: string;
+      internalId?: string;
+      providerId?: string;
+      enabled?: boolean;
+      trustEmail?: boolean;
+      storeToken?: boolean;
+      addReadTokenRoleOnCreate?: boolean;
+      authenticateByDefault?: boolean;
+      linkOnly?: boolean;
+      hideOnLogin?: boolean;
+      firstBrokerLoginFlowAlias?: string;
+      postBrokerLoginFlowAlias?: string;
+      organizationId?: string;
+      config?: {
+        authorizationUrl: string
+        clientId: string
+        issuer: string
+        logoutUrl: string
+        tokenUrl: string
+        userInfoUrl: string
+        [key: string]: string;
+      };
     }
     AccessControlPermission: {
       actions: string[] | null
@@ -9492,6 +9517,45 @@ export interface operations {
       }
     }
   },
+  BranchAuthController_updateProvider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        name: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AuthProviderUpdateBody']
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   BranchAuthController_deleteProvider: {
     parameters: {
       query?: never

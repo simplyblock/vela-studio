@@ -26,7 +26,6 @@ import {
   SheetTitle,
 } from 'ui'
 import { Admonition } from 'ui-patterns'
-import { NO_REQUIRED_CHARACTERS } from '../Auth.constants'
 import type { Provider } from './AuthProvidersForm.types'
 import FormField from './FormField'
 import {
@@ -39,7 +38,8 @@ import { PANEL_PADDING } from '../Users/Users.constants'
 import { RowAction } from '../Users/UserOverview'
 import { useAuthProviderDeleteMutation } from 'data/auth/auth-provider-delete-mutation'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { timeout } from '../../../../lib/helpers'
+import { timeout } from 'lib/helpers'
+import { useAuthProviderUpdateMutation } from 'data/auth/auth-provider-update-mutation'
 
 interface ProviderFormProps {
   config: components['schemas']['AuthProviderResponse']
@@ -56,10 +56,13 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
-  const { mutate: deleteAuthProvider, isLoading: isDeletingConfig } = useAuthProviderDeleteMutation()
+  const { mutate: deleteAuthProvider, isLoading: isDeletingConfig } =
+    useAuthProviderDeleteMutation()
+  const { mutate: updateAuthProvider, isLoading: isUpdatingProvider } =
+    useAuthProviderUpdateMutation()
 
-  // FIXME: need permission implemented 
-  const { can: canUpdateConfig } = {can:true}
+  // FIXME: need permission implemented
+  const { can: canUpdateConfig } = { can: true }
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgId, projectRef: projectId })
   const protocol = settings?.app_config?.protocol ?? 'https'
@@ -77,7 +80,7 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
       if (isDoubleNegative) {
         values[key] = !(config as any)[key]
       } else {
-        const configValue = (config as any)[key]
+        const configValue = (config as any).config[key]
         values[key] = configValue
           ? configValue
           : typeof (config as any)[key] === 'boolean'
@@ -93,26 +96,35 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
     if (!projectId) return console.error('Project id is required')
     if (!branchId) return console.error('Branch id is required')
     if (!config.alias) return console.error('Auth provider alias is required')
+
     await timeout(200)
     deleteAuthProvider({
-      orgId, projectId, branchId, authProviderName: config.providerId,
+      orgId,
+      projectId,
+      branchId,
+      authProviderName: config.alias,
     })
   }
 
   const onSubmit = (values: any, { resetForm }: any) => {
-    const payload = { ...values }
-    Object.keys(values).map((x: string) => {
-      if (doubleNegativeKeys.includes(x)) payload[x] = !values[x]
-      if (payload[x] === '') payload[x] = null
-    })
+    if (!orgId) return console.error('Org id is required')
+    if (!projectId) return console.error('Project id is required')
+    if (!branchId) return console.error('Branch id is required')
+    if (!config.alias) return console.error('Auth provider alias is required')
 
-    // The backend uses empty string to represent no required characters in the password
-    if (payload.PASSWORD_REQUIRED_CHARACTERS === NO_REQUIRED_CHARACTERS) {
-      payload.PASSWORD_REQUIRED_CHARACTERS = ''
+    const payload = {
+      ...config,
+      config: values,
     }
 
-    updateAuthConfig(
-      { projectRef: projectId!, config: payload },
+    updateAuthProvider(
+      {
+        orgId,
+        projectId,
+        branchId,
+        authProviderName: config.alias,
+        update: payload,
+      },
       {
         onSuccess: () => {
           resetForm({ values: { ...values }, initialValues: { ...values } })
@@ -125,7 +137,7 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
   }
 
   // Handle clicking on a provider in the list
-  const handleProviderClick = () => setUrlProvider(config.alias)
+  const handleProviderClick = () => setUrlProvider(config.alias!)
 
   const handleOpenChange = (isOpen: boolean) => {
     // Remove provider query param from URL when closed
@@ -134,7 +146,7 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
 
   // Open or close the form based on the query parameter
   useEffect(() => {
-    const isProviderInQuery = urlProvider.toLowerCase() === config.alias.toLowerCase()
+    const isProviderInQuery = urlProvider.toLowerCase() === config?.alias?.toLowerCase() ?? false
     setOpen(isProviderInQuery)
   }, [urlProvider, config.alias])
 
@@ -148,18 +160,14 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
               src={`${BASE_PATH}/img/icons/${providerIcon}.svg`}
               width={18}
               height={18}
-              alt={`${config.alias} auth icon`}
+              alt={`${config.displayName} auth icon`}
             />
           ) : (
-            <Lock
-              width={18}
-              height={18}
-              name={`${config.alias} auth icon`}
-            />
+            <Lock width={18} height={18} name={`${config.displayName} auth icon`} />
           )
         }
       >
-        {config.alias}
+        {config.displayName}
       </ResourceItem>
 
       <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -170,20 +178,16 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
                 src={`${BASE_PATH}/img/icons/${providerIcon}.svg`}
                 width={18}
                 height={18}
-                alt={`${config.alias} auth icon`}
+                alt={`${config.displayName} auth icon`}
               />
             ) : (
-              <Lock
-                width={18}
-                height={18}
-                name={`${config.alias} auth icon`}
-              />
+              <Lock width={18} height={18} name={`${config.displayName} auth icon`} />
             )}
-            <SheetTitle>{config.alias}</SheetTitle>
+            <SheetTitle>{config.displayName}</SheetTitle>
           </SheetHeader>
           <Form
-            id={`provider-${config.alias}-form`}
-            name={`provider-${config.alias}-form`}
+            id={`provider-${config.displayName}-form`}
+            name={`provider-${config.displayName}-form`}
             initialValues={initialValues}
             /*validationSchema={provider.validationSchema}*/
             onSubmit={onSubmit}
@@ -310,13 +314,13 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
         alert={{
           base: { variant: 'warning' },
           title:
-            "Removing the auth provider will render users unable to sign in with this provider. Users will be able to sign in with other providers, if configured.",
+            'Removing the auth provider will render users unable to sign in with this provider. Users will be able to sign in with other providers, if configured.',
           description: 'Note that this does not remove users',
         }}
       >
         <p className="text-sm text-foreground-light">
           Are you sure you want to remove the auth provider{' '}
-          <span className="text-foreground">{config.alias}</span>?
+          <span className="text-foreground">{config.displayName}</span>?
         </p>
       </ConfirmationModal>
     </>

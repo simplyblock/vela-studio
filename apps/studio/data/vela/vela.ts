@@ -130,6 +130,7 @@ const prepareOptions = (req: NextApiRequest, init: object | object[]) => {
   return {
     ...options,
     headers: headers,
+    body: req.body ? req.body : undefined,
   } as any
 }
 

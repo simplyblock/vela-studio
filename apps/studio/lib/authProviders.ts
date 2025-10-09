@@ -48,7 +48,7 @@ export const authProviderFieldProperties: Record<string, AuthProviderField> = {
     type: 'string',
     enum: [],
     show: {
-      key: 'alias',
+      key: 'displayName',
     },
   },
   clientId: {
@@ -100,7 +100,7 @@ export const authProviderFieldProperties: Record<string, AuthProviderField> = {
 
 export function authProviderIcon(provider: AuthProvider): string | undefined {
   const knownAuthProvider = knownAuthorizationUrls.find(
-    (config) => provider.authorizationUrl.indexOf(config.hostname) !== -1
+    (config) => provider?.config?.authorizationUrl.indexOf(config.hostname) !== -1
   )
   return knownAuthProvider?.icon
 }

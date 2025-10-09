@@ -4,20 +4,43 @@ import { getVelaClient } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
 const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { slug, ref, branch, name } = getPlatformQueryParams(req, "slug", "ref", "branch", "name")
+  const { slug, ref, branch, name } = getPlatformQueryParams(req, 'slug', 'ref', 'branch', 'name')
   const client = getVelaClient(req)
-  return client.proxyDelete(res, '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}', {
-    params: {
-      path: {
-        organization_id: slug,
-        project_id: ref,
-        branch_id: branch,
-        alias: name,
-      }
+  return client.proxyDelete(
+    res,
+    '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}',
+    {
+      params: {
+        path: {
+          organization_id: slug,
+          project_id: ref,
+          branch_id: branch,
+          alias: name,
+        },
+      },
     }
-  })
+  )
 }
 
-const apiHandler = apiBuilder(builder => builder.useAuth().delete(handleDelete))
+const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { slug, ref, branch, name } = getPlatformQueryParams(req, 'slug', 'ref', 'branch', 'name')
+  const client = getVelaClient(req)
+  return client.proxyPut(
+    res,
+    '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}',
+    {
+      params: {
+        path: {
+          organization_id: slug,
+          project_id: ref,
+          branch_id: branch,
+          alias: name,
+        },
+      },
+    }
+  )
+}
+
+const apiHandler = apiBuilder((builder) => builder.useAuth().delete(handleDelete).put(handlePut))
 
 export default apiHandler
