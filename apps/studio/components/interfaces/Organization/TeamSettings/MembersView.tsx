@@ -1,12 +1,4 @@
-import {
-  AlertCircle,
-  Calendar,
-  CheckCircle,
-  Clock,
-  HelpCircle,
-  MessageCircleWarning,
-  Users,
-} from 'lucide-react'
+import { AlertCircle, CheckCircle, MessageCircleWarning, Users } from 'lucide-react'
 import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
@@ -15,23 +7,20 @@ import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 // import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useProfile } from 'lib/profile'
 import { partition } from 'lodash'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
-  Button,
+  Badge,
   Loading,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   Table,
   TableHeader,
   TableHead,
   TableBody,
   TableCell,
   TableRow,
+  Switch,
   Card,
 } from 'ui'
 import { Admonition } from 'ui-patterns'
-import { MemberRow } from './MemberRow'
 import { StatsCard } from 'components/ui/StatsCard'
 
 export interface MembersViewProps {
@@ -45,27 +34,36 @@ const mockMembers = [
     gotrue_id: 'user-1',
     primary_email: 'admin@example.com',
     username: 'admin_user',
+    full_name: 'Admin User',
     invited_at: null,
     role_ids: [1],
     mfa_enabled: true,
+    is_active: true,
+    last_active_at: '2024-04-03T09:12:00Z',
   },
   {
     id: 2,
     gotrue_id: 'user-2',
     primary_email: 'developer@example.com',
     username: 'dev_user',
+    full_name: 'Developer User',
     invited_at: null,
     role_ids: [2],
     mfa_enabled: false,
+    is_active: true,
+    last_active_at: '2024-04-01T14:32:00Z',
   },
   {
     id: 3,
     gotrue_id: null,
     primary_email: 'pending@example.com',
     username: null,
+    full_name: 'Pending Invite',
     invited_at: '2023-10-15T12:00:00Z',
     role_ids: [3],
     mfa_enabled: false,
+    is_active: false,
+    last_active_at: null,
   },
 ]
 
@@ -148,6 +146,19 @@ const MembersView = ({ searchString }: MembersViewProps) => {
         })
   }, [members, searchString])
 
+  const [memberStatuses, setMemberStatuses] = useState<Record<string, boolean>>({})
+
+  useEffect(() => {
+    setMemberStatuses((previousStatuses) => {
+      const next: Record<string, boolean> = {}
+      members.forEach((member) => {
+        const key = String(member.gotrue_id ?? member.id)
+        next[key] = previousStatuses[key] ?? Boolean(member.is_active ?? !member.invited_at)
+      })
+      return next
+    })
+  }, [members])
+
   const [[user], otherMembers] = partition(
     filteredMembers,
     (m) => m.gotrue_id === effectiveProfile?.gotrue_id
@@ -159,6 +170,73 @@ const MembersView = ({ searchString }: MembersViewProps) => {
   const userMember = members.find((m) => m.gotrue_id === effectiveProfile?.gotrue_id)
   const orgScopedRoleIds = (roles?.org_scoped_roles ?? []).map((r) => r.id)
   const isOrgScopedRole = orgScopedRoleIds.includes(userMember?.role_ids?.[0] ?? -1)
+
+  const roleNameById = useMemo(() => {
+    const lookup: Record<number, string> = {}
+    ;(roles?.org_scoped_roles ?? []).forEach((role) => {
+      lookup[role.id] = role.name
+    })
+    ;(roles?.project_scoped_roles ?? []).forEach((role) => {
+      lookup[role.id] = role.name
+    })
+    return lookup
+  }, [roles])
+
+  const renderMemberRow = (member: (typeof members)[number]) => {
+    const memberKey = String(member.gotrue_id ?? member.id)
+    const isCurrentUser = member.gotrue_id === effectiveProfile?.gotrue_id
+    const isActive = memberStatuses[memberKey] ?? true
+    const rolesForMember = (member.role_ids ?? [])
+      .map((id) => roleNameById[id])
+      .filter((name): name is string => Boolean(name))
+
+    const toggleStatus = (next: boolean) => {
+      setMemberStatuses((previous) => ({ ...previous, [memberKey]: next }))
+    }
+    //@ts-ignore
+    const lastActiveSource = member.last_active_at ?? member.last_sign_in_at ?? member.updated_at ?? member.invited_at
+    const lastActiveDisplay = lastActiveSource
+      ? new Date(lastActiveSource).toLocaleDateString()
+      : '—'
+
+    return (
+      <TableRow key={memberKey}>
+        <TableCell>
+          <div className="flex items-center gap-x-3">
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">
+                {member.full_name || member.username || member.primary_email || 'Unknown user'}
+              </span>
+              {member.primary_email && (
+                <span className="text-xs text-foreground-light">{member.primary_email}</span>
+              )}
+            </div>
+            {isCurrentUser && <Badge color="scale">You</Badge>}
+          </div>
+        </TableCell>
+        <TableCell className="w-36">
+          <div className="flex items-center gap-x-2">
+            <Switch checked={isActive} onCheckedChange={toggleStatus} />
+            <span className="text-sm text-foreground-light">{isActive ? 'Active' : 'Inactive'}</span>
+          </div>
+        </TableCell>
+        <TableCell>
+          <div className="flex flex-wrap gap-2">
+            {rolesForMember.length > 0 ? (
+              rolesForMember.map((role) => (
+                <Badge key={`${memberKey}-${role}`} variant="default" className="whitespace-nowrap">
+                  {role}
+                </Badge>
+              ))
+            ) : (
+              <span className="text-sm text-foreground-light">No roles assigned</span>
+            )}
+          </div>
+        </TableCell>
+        <TableCell className="text-right text-sm text-foreground-light">{lastActiveDisplay}</TableCell>
+      </TableRow>
+    )
+  }
 
   return (
     <>
@@ -182,29 +260,18 @@ const MembersView = ({ searchString }: MembersViewProps) => {
               icon={<Users size={18} />}
             />
             <StatsCard
-              title="Activated"
+              title="Active"
               value="3"
               description="Fully activated users"
               icon={<CheckCircle size={18} />}
             />
             <StatsCard
-              title="Pending"
-              value="1"
-              description="Awaiting activation"
-              icon={<Clock size={18} />}
-            />
-            <StatsCard
-              title="Blocked"
+              title="InActive"
               value="1"
               description="Blocked accounts"
               icon={<MessageCircleWarning size={18} />}
             />
-            <StatsCard
-              title="Avg. Roles"
-              value="1"
-              description="Per user"
-              icon={<Calendar size={18} />}
-            />
+
           </div>
           <Card className="p-2">
             <Loading active={!filteredMembers}>
@@ -212,30 +279,13 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                 <TableHeader>
                   <TableRow>
                     <TableHead key="header-user">User</TableHead>
-                    <TableHead key="header-status" className="w-24" />
-                    <TableHead key="header-mfa" className="text-center w-32">
-                      Enabled MFA
+                    <TableHead key="header-status" className="w-36">
+                      Status
                     </TableHead>
-                    <TableHead key="header-role" className="flex items-center space-x-1">
-                      <span>Role</span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button asChild type="text" className="px-1">
-                            <a
-                              target="_blank"
-                              rel="noreferrer"
-                              href="https://supabase.com/docs/guides/platform/access-control"
-                            >
-                              <HelpCircle size={14} className="text-foreground-light" />
-                            </a>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">
-                          How to configure access control?
-                        </TooltipContent>
-                      </Tooltip>
+                    <TableHead key="header-roles">Roles</TableHead>
+                    <TableHead key="header-last-active" className="text-right w-40">
+                      Last active
                     </TableHead>
-                    <TableHead key="header-action" />
                   </TableRow>
                 </TableHeader>
 
@@ -244,7 +294,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                     ...(isSuccessRoles && isSuccessMembers && !isOrgScopedRole
                       ? [
                           <TableRow key="project-scope-notice">
-                            <TableCell colSpan={12} className="!p-0">
+                            <TableCell colSpan={4} className="!p-0">
                               <Admonition
                                 type="note"
                                 title="You are currently assigned with project scoped roles in this organization"
@@ -255,17 +305,13 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                           </TableRow>,
                         ]
                       : []),
-                    // @ts-ignore
-                    ...(!!user ? [<MemberRow key={user.gotrue_id} member={user} />] : []),
+                    ...(!!user ? [renderMemberRow(user)] : []),
 
-                    ...sortedMembers.map((member) => (
-                      // @ts-ignore
-                      <MemberRow key={member.gotrue_id || member.id} member={member} />
-                    )),
+                    ...sortedMembers.map((member) => renderMemberRow(member)),
                     ...(searchString.length > 0 && filteredMembers.length === 0
                       ? [
                           <TableRow key="no-results" className="bg-panel-secondary-light">
-                            <TableCell colSpan={12}>
+                            <TableCell colSpan={4}>
                               <div className="flex items-center space-x-3 opacity-75">
                                 <AlertCircle size={16} strokeWidth={2} />
                                 <p className="text-foreground-light">
@@ -277,7 +323,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                         ]
                       : []),
                     <TableRow key="footer" className="bg-panel-secondary-light">
-                      <TableCell colSpan={12}>
+                      <TableCell colSpan={4}>
                         <p className="text-foreground-light">
                           {searchString ? `${filteredMembers.length} of ` : ''}
                           {members.length || '0'} {members.length == 1 ? 'user' : 'users'}

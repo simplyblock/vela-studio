@@ -28,36 +28,36 @@ export const RbacSubSideBar = () => {
         },
       ],
     },
-    {
-      title: 'Configuration',
-      items: [
-        {
-          label: 'Policies',
-          href: `/org/${orgSlug}/rbac/policies`,
-          icon: FileText,
-        },
-        {
-          label: 'Sign In / Providers',
-          href: `/org/${orgSlug}/rbac/providers`,
-          icon: LogIn,
-        },
-        {
-          label: 'Emails',
-          href: `/org/${orgSlug}/rbac/emails`,
-          icon: Mail,
-        },
-        {
-          label: 'Multi-Factor',
-          href: `/org/${orgSlug}/rbac/multiFactor`,
-          icon: Lock,
-        },
-        {
-          label: 'URL Configuration',
-          href: `/org/${orgSlug}/rbac/urlConfig`,
-          icon: LinkIcon,
-        },
-      ],
-    },
+    // {
+    //   title: 'Configuration',
+    //   items: [
+    //     {
+    //       label: 'Policies',
+    //       href: `/org/${orgSlug}/rbac/policies`,
+    //       icon: FileText,
+    //     },
+    //     {
+    //       label: 'Sign In / Providers',
+    //       href: `/org/${orgSlug}/rbac/providers`,
+    //       icon: LogIn,
+    //     },
+    //     {
+    //       label: 'Emails',
+    //       href: `/org/${orgSlug}/rbac/emails`,
+    //       icon: Mail,
+    //     },
+    //     {
+    //       label: 'Multi-Factor',
+    //       href: `/org/${orgSlug}/rbac/multiFactor`,
+    //       icon: Lock,
+    //     },
+    //     {
+    //       label: 'URL Configuration',
+    //       href: `/org/${orgSlug}/rbac/urlConfig`,
+    //       icon: LinkIcon,
+    //     },
+    //   ],
+    // },
   ]
 
   return <SubSideBar title="Access control" sections={sections} />
