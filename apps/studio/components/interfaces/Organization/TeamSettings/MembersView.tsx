@@ -134,16 +134,16 @@ const MembersView = ({ searchString }: MembersViewProps) => {
     return !searchString
       ? members
       : members.filter((member) => {
-          if (member.invited_at) {
-            return member.primary_email?.includes(searchString)
-          }
-          if (member.user_id) {
-            return (
-              member.username.includes(searchString) || member.primary_email?.includes(searchString)
-            )
-          }
-          return false
-        })
+        if (member.invited_at) {
+          return member.primary_email?.includes(searchString)
+        }
+        if (member.user_id) {
+          return (
+            member.username.includes(searchString) || member.primary_email?.includes(searchString)
+          )
+        }
+        return false
+      })
   }, [members, searchString])
 
   const [memberStatuses, setMemberStatuses] = useState<Record<string, boolean>>({})
@@ -290,9 +290,9 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                 </TableHeader>
 
                 <TableBody>
-                {[
-                  ...(isSuccessRoles && isSuccessMembers && !isOrgScopedRole
-                    ? [
+                  {[
+                    ...(isSuccessRoles && isSuccessMembers && !isOrgScopedRole
+                      ? [
                         <TableRow key="project-scope-notice">
                           <TableCell colSpan={4} className="!p-0">
                             <Admonition
@@ -304,14 +304,14 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                           </TableCell>
                         </TableRow>,
                       ]
-                    : []),
+                      : []),
 
-                  ...(!!user ? [renderMemberRow(user)] : []),
+                    ...(!!user ? [renderMemberRow(user)] : []),
 
-                  ...sortedMembers.map((member) => renderMemberRow(member)),
+                    ...sortedMembers.map((member) => renderMemberRow(member)),
 
-                  ...(searchString.length > 0 && filteredMembers.length === 0
-                    ? [
+                    ...(searchString.length > 0 && filteredMembers.length === 0
+                      ? [
                         <TableRow key="no-results" className="bg-panel-secondary-light">
                           <TableCell colSpan={4}>
                             <div className="flex items-center space-x-3 opacity-75">
@@ -323,18 +323,18 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                           </TableCell>
                         </TableRow>,
                       ]
-                    : []),
+                      : []),
 
-                  <TableRow key="footer" className="bg-panel-secondary-light">
-                    <TableCell colSpan={4}>
-                      <p className="text-foreground-light">
-                        {searchString ? `${filteredMembers.length} of ` : ''}
-                        {members.length || '0'} {members.length == 1 ? 'user' : 'users'}
-                      </p>
-                    </TableCell>
-                  </TableRow>,
-                ]}
-              </TableBody>
+                    <TableRow key="footer" className="bg-panel-secondary-light">
+                      <TableCell colSpan={4}>
+                        <p className="text-foreground-light">
+                          {searchString ? `${filteredMembers.length} of ` : ''}
+                          {members.length || '0'} {members.length == 1 ? 'user' : 'users'}
+                        </p>
+                      </TableCell>
+                    </TableRow>,
+                  ]}
+                </TableBody>
 
               </Table>
             </Loading>

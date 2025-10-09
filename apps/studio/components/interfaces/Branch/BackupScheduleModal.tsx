@@ -422,10 +422,10 @@ const BackupScheduleModal = () => {
                 const isLastRow = index === rows.length - 1
                 const allowedUnits = isLastRow
                   ? TIME_UNITS.filter((unit) => {
-                      if (!previousRow) return true
-                      if (unit.value === row.unit) return true
-                      return unit.minutes > unitMinutesLookup[previousRow.unit]
-                    })
+                    if (!previousRow) return true
+                    if (unit.value === row.unit) return true
+                    return unit.minutes > unitMinutesLookup[previousRow.unit]
+                  })
                   : TIME_UNITS
 
                 return (
