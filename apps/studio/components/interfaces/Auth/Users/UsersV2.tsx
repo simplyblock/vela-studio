@@ -53,7 +53,7 @@ import {
   USERS_TABLE_COLUMNS,
 } from './Users.constants'
 import { formatUserColumns, formatUsersData } from './Users.utils'
-import { useBranchQuery } from 'data/branches/branch-query'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export type Filter = 'all' | 'verified' | 'unverified' | 'anonymous'
 
@@ -61,8 +61,8 @@ export type Filter = 'all' | 'verified' | 'unverified' | 'anonymous'
 // Can change it to remove V2 thereafter
 export const UsersV2 = () => {
   const queryClient = useQueryClient()
-  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: branch } = useBranchQuery({ orgRef, projectRef, branchRef })
+  const { ref: projectRef } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const gridRef = useRef<DataGridHandle>(null)
   const xScroll = useRef<number>(0)
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()

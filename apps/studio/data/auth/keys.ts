@@ -1,12 +1,14 @@
 export const authKeys = {
   users2: (
-    projectRef: string | undefined,
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
     params?: {
       page: number | undefined
       keywords: string | undefined
       filter: string | undefined
     }
-  ) => ['projects', projectRef, 'users', ...(params ? [params] : [])] as const,
+  ) => ['branches', orgId, projectId, branchId, 'users', ...(params ? [params] : [])] as const,
 
   usersInfinite: (
     orgId: string | undefined,
