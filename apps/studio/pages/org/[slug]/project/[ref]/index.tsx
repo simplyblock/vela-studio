@@ -19,17 +19,17 @@ const Home: NextPageWithLayout = () => {
   const { ref, slug } = useParams()
   const router = useRouter()
 
-  const [lastVisitedProjectBranch] = useLastVisitedBranch(project)
+  const { branchId: lastVisitedProjectBranch, isLoading: isBranchLoading } = useLastVisitedBranch(project)
 
   useEffect(() => {
-    if (isProjectLoading) return
+    if (isProjectLoading || isBranchLoading) return
 
     if (!project) {
       router.push('/organizations')
     } else {
       router.replace(`/org/${slug}/project/${ref}/branch/${lastVisitedProjectBranch}`)
     }
-  }, [router, project, isProjectLoading, lastVisitedProjectBranch, ref, slug])
+  }, [router, project, isProjectLoading, lastVisitedProjectBranch, isBranchLoading, ref, slug])
 
   return (
     <div className="w-full px-4">
