@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { Ban, Check, Copy, Mail, ShieldOff, Trash, X } from 'lucide-react'
 import Link from 'next/link'
-import { ComponentProps, ReactNode, useEffect, useState } from 'react'
+import { ComponentProps, ReactNode, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useParams } from 'common'
@@ -26,6 +26,7 @@ import { UserHeader } from './UserHeader'
 import { PANEL_PADDING } from './Users.constants'
 import { providerIconMap } from './Users.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useAuthUserSessions } from '../../../../data/auth/auth-user-sessions-query'
 
 const DATE_FORMAT = 'DD MMM, YYYY HH:mm'
 const CONTAINER_CLASS = cn(
@@ -42,10 +43,10 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const isEmailAuth = user.email !== null
-  const isPhoneAuth = user.phone !== null
-  const isBanned = user.banned_until !== null
+  const isPhoneAuth = user.attributes.phone !== null
+  const isBanned = !user.enabled
 
-  const providers = ((user.raw_app_meta_data?.providers as string[]) ?? []).map(
+  const providers = ((user.credentials?.map(credential => credential.type)) ?? []).map(
     (provider: string) => {
       return {
         name: provider.startsWith('sso') ? 'SAML' : provider,
@@ -58,6 +59,20 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
       }
     }
   )
+
+  const { data: userSessions, isLoading: isLoadingSessions } = useAuthUserSessions({ branch, userId: user.id })
+
+  const lastSessionAt = useMemo(() => {
+    if (isLoadingSessions) return undefined
+    if (userSessions === undefined) return undefined
+    if (userSessions.length === 0) return undefined
+    return userSessions.reduce((prev: number | undefined, curr) => {
+      if (prev === undefined) return curr.lastAccess
+      if (curr.lastAccess === undefined) return prev
+      return prev > curr.lastAccess ? prev : curr.lastAccess
+    }, undefined)
+  }, [userSessions, isLoadingSessions])
+
   // FIXME: need permission implemented 
   const { can: canUpdateUser } = {can:true}
     // FIXME: need permission implemented 
@@ -107,7 +122,7 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   const { mutate: sendOTP, isLoading: isSendingOTP } = useUserSendOTPMutation({
     onSuccess: (_, vars) => {
       setSuccessAction('send_otp')
-      toast.success(`Sent OTP to ${vars.user.phone}`)
+      toast.success(`Sent OTP to ${vars.user.attributes.phone}`)
     },
     onError: (err) => {
       toast.error(`Failed to send OTP: ${err.message}`)
@@ -160,7 +175,7 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
         {isBanned ? (
           <Admonition
             type="warning"
-            label={`User banned until ${dayjs(user.banned_until).format(DATE_FORMAT)}`}
+            label={"User is currently banned"}
             className="border-r-0 border-l-0 rounded-none -mt-px [&_svg]:ml-0.5 mb-0"
           />
         ) : (
@@ -171,25 +186,14 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
           <RowData property="User UID" value={user.id} />
           <RowData
             property="Created at"
-            value={user.created_at ? dayjs(user.created_at).format(DATE_FORMAT) : undefined}
-          />
-          <RowData
-            property="Updated at"
-            value={user.updated_at ? dayjs(user.updated_at).format(DATE_FORMAT) : undefined}
-          />
-          <RowData property="Invited at" value={user.invited_at} />
-          <RowData property="Confirmation sent at" value={user.confirmation_sent_at} />
-          <RowData
-            property="Confirmed at"
-            value={user.confirmed_at ? dayjs(user.confirmed_at).format(DATE_FORMAT) : undefined}
+            value={user.createdTimestamp ? dayjs(new Date(user.createdTimestamp)).format(DATE_FORMAT) : undefined}
           />
           <RowData
             property="Last signed in"
             value={
-              user.last_sign_in_at ? dayjs(user.last_sign_in_at).format(DATE_FORMAT) : undefined
+              lastSessionAt ? dayjs(new Date(lastSessionAt)).format(DATE_FORMAT) : undefined
             }
           />
-          <RowData property="SSO" value={user.is_sso_user} />
         </div>
 
         <div className={cn('flex flex-col !pt-0', PANEL_PADDING)}>
@@ -351,12 +355,12 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
           <RowAction
             title={
               isBanned
-                ? `User is banned until ${dayjs(user.banned_until).format(DATE_FORMAT)}`
+                ? 'User is currently banned'
                 : 'Ban user'
             }
             description={
               isBanned
-                ? 'User has no access to the project until after this date'
+                ? 'User has no access to the project'
                 : 'Revoke access to the project for a set duration'
             }
             button={{
@@ -415,7 +419,7 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
       >
         <p className="text-sm text-foreground-light">
           Are you sure you want to remove the MFA factors for the user{' '}
-          <span className="text-foreground">{user.email ?? user.phone ?? 'this user'}</span>?
+          <span className="text-foreground">{user.email ?? user.attributes.phone ?? 'this user'}</span>?
         </p>
       </ConfirmationModal>
 

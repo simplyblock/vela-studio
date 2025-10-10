@@ -52,6 +52,22 @@ export interface paths {
     patch?: never
     trace?: never
   },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/sessions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getUserSessions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/service-urls': {
     parameters: {
       query?: never
@@ -4380,6 +4396,21 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    AuthUserSessionResponse: {
+      id?: string;
+      username?: string;
+      userId?: string;
+      ipAddress?: string;
+      /** Format: int64 */
+      start?: number;
+      /** Format: int64 */
+      lastAccess?: number;
+      rememberMe?: boolean;
+      clients?: {
+        [key: string]: string;
+      };
+      transientUser?: boolean;
+    }
     AuthUserResponse: {
       id: string;
       username: string;
@@ -4388,24 +4419,126 @@ export interface components {
       email: string;
       emailVerified: boolean;
       attributes: {
-        [key: string]: unknown;
-      }
+        [key: string]: string[];
+      };
       userProfileMetadata: {
-        // TODO: Maybe fill in
+        attributes?: {
+          name: string;
+          displayName: string;
+          required: boolean;
+          readOnly: boolean;
+          annotations?: {
+            [key: string]: unknown;
+          };
+          validators?: {
+            [key: string]: {
+              [key: string]: unknown;
+            };
+          };
+          group: string;
+          multivalued: boolean;
+          defaultValue: string;
+        }[]
+        groups?: {
+          name: string;
+          displayHeader: string;
+          displayDescription: string;
+          annotations?: {
+            [key: string]: unknown;
+          };
+        }[]
       }
       enabled: boolean;
+      self: string;
+      origin: string;
+      /** Format: int64 */
+      createdTimestamp?: number;
       totp: boolean;
+      federationLink: string;
+      serviceAccountClientId: string;
       credentials: {
-        id: string
-        type: string
-        // ... TODO: fill in
-      }
-      requiredActions: string[]
+        id: string;
+        type: string;
+        userLabel?: string;
+        /** Format: int64 */
+        createdDate: number;
+        secretData: string;
+        credentialData: string;
+        /** Format: int32 */
+        priority: number;
+        value: string;
+        temporary: boolean;
+        /** @deprecated */
+        device?: string;
+        /** @deprecated */
+        hashedSaltedValue?: string;
+        /** @deprecated */
+        salt?: string;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        hashIterations?: number;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        counter?: number;
+        /** @deprecated */
+        algorithm?: string;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        digits?: number;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        period?: number;
+        /** @deprecated */
+        config?: {
+          [key: string]: string[];
+        }
+        federationLink?: string;
+      }[]
+      disableableCredentialTypes: string[];
+      requiredActions: string[];
       federatedIdentities: {
         identityProvider: string
         userId: string
         userName: string
       }[]
+      realmRoles?: string[];
+      clientRoles?: {
+        [key: string]: string[];
+      };
+      clientConsents?: {
+        clientId?: string;
+        grantedClientScopes?: string[];
+        /** Format: int64 */
+        createdDate?: number;
+        /** Format: int64 */
+        lastUpdatedDate?: number;
+        /** @deprecated */
+        grantedRealmRoles?: string[];
+      }[];
+      /** Format: int32 */
+      notBefore?: number;
+      /** @deprecated */
+      applicationRoles?: {
+        [key: string]: string[];
+      };
+      /** @deprecated */
+      socialLinks?: {
+        socialProvider?: string;
+        socialUserId?: string;
+        socialUsername?: string;
+      }[];
+      groups?: string[];
+      access?: {
+        [key: string]: boolean;
+      };
     }
     AuthProviderUpdateBody: {
       alias?: string;
@@ -9444,6 +9577,43 @@ export interface components {
 export type $defs = Record<string, never>
 
 export interface operations {
+  BranchAuthController_getUserSessions: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuthUserSessionResponse'][]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   BranchAuthController_getUsers: {
     parameters: {
       query?: never
@@ -9479,7 +9649,6 @@ export interface operations {
         content?: never
       }
     }
-
   },
   BranchAuthController_getProviders: {
     parameters: {

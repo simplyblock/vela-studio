@@ -69,4 +69,10 @@ export const authKeys = {
       'auth-providers',
       ...(params ? [params].filter(Boolean) : []),
     ] as const,
+  userSessions: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    userId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'users', userId, 'sessions'] as const,
 }
