@@ -112,7 +112,7 @@ const mergeHeaders = (req: NextApiRequest, headers: HeadersOptions[]) => {
   return newHeader as HeadersOptions
 }
 
-const prepareOptions = (req: NextApiRequest, init: object | object[]) => {
+const prepareOptions = (req: NextApiRequest, copyBody: boolean, init: object | object[]) => {
   const origOptions = Array.isArray(init) ? init : [init]
   const origHeaders = origOptions
     .filter((x) => x !== undefined && 'headers' in x)
@@ -128,9 +128,9 @@ const prepareOptions = (req: NextApiRequest, init: object | object[]) => {
   }, {})
 
   return {
+    body: copyBody && req.body ? req.body : undefined,
     ...options,
     headers: headers,
-    body: req.body ? req.body : undefined,
   } as any
 }
 
@@ -215,7 +215,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'delete'>,
       Init extends MaybeOptionalInit<Paths[Path], 'delete'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.DELETE(url, prepareOptions(req, init))
+      const response = await velaClient.DELETE(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -223,7 +223,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'get'>,
       Init extends MaybeOptionalInit<Paths[Path], 'get'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.GET(url, prepareOptions(req, init))
+      const response = await velaClient.GET(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -231,7 +231,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'head'>,
       Init extends MaybeOptionalInit<Paths[Path], 'head'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.HEAD(url, prepareOptions(req, init))
+      const response = await velaClient.HEAD(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -239,7 +239,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'options'>,
       Init extends MaybeOptionalInit<Paths[Path], 'options'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.OPTIONS(url, prepareOptions(req, init))
+      const response = await velaClient.OPTIONS(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -247,7 +247,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'patch'>,
       Init extends MaybeOptionalInit<Paths[Path], 'patch'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.PATCH(url, prepareOptions(req, init))
+      const response = await velaClient.PATCH(url, prepareOptions(req, true, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -255,7 +255,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'post'>,
       Init extends MaybeOptionalInit<Paths[Path], 'post'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.POST(url, prepareOptions(req, init))
+      const response = await velaClient.POST(url, prepareOptions(req, true, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -263,7 +263,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'put'>,
       Init extends MaybeOptionalInit<Paths[Path], 'put'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.PUT(url, prepareOptions(req, init))
+      const response = await velaClient.PUT(url, prepareOptions(req, true, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -271,7 +271,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'trace'>,
       Init extends MaybeOptionalInit<Paths[Path], 'trace'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.TRACE(url, prepareOptions(req, init))
+      const response = await velaClient.TRACE(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return
       return res.status(response.response.status).json(response.data)
     },
@@ -279,7 +279,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'delete'>,
       Init extends MaybeOptionalInit<Paths[Path], 'delete'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.DELETE(url, prepareOptions(req, init))
+      const response = await velaClient.DELETE(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -287,7 +287,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'get'>,
       Init extends MaybeOptionalInit<Paths[Path], 'get'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.GET(url, prepareOptions(req, init))
+      const response = await velaClient.GET(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -295,7 +295,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'head'>,
       Init extends MaybeOptionalInit<Paths[Path], 'head'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.HEAD(url, prepareOptions(req, init))
+      const response = await velaClient.HEAD(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -303,7 +303,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'options'>,
       Init extends MaybeOptionalInit<Paths[Path], 'options'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.OPTIONS(url, prepareOptions(req, init))
+      const response = await velaClient.OPTIONS(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -311,7 +311,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'patch'>,
       Init extends MaybeOptionalInit<Paths[Path], 'patch'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.PATCH(url, prepareOptions(req, init))
+      const response = await velaClient.PATCH(url, prepareOptions(req, true, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -319,7 +319,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'post'>,
       Init extends MaybeOptionalInit<Paths[Path], 'post'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.POST(url, prepareOptions(req, init))
+      const response = await velaClient.POST(url, prepareOptions(req, true, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -327,7 +327,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'put'>,
       Init extends MaybeOptionalInit<Paths[Path], 'put'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.PUT(url, prepareOptions(req, init))
+      const response = await velaClient.PUT(url, prepareOptions(req, true, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -335,7 +335,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       Path extends PathsWithMethod<Paths, 'trace'>,
       Init extends MaybeOptionalInit<Paths[Path], 'trace'>,
     >(res: NextApiResponse, url: Path, ...init: InitParam<Init>) {
-      const response = await velaClient.TRACE(url, prepareOptions(req, init))
+      const response = await velaClient.TRACE(url, prepareOptions(req, false, init))
       if (maybeHandleError(res, response)) return { success: false }
       return { success: true, data: response.data }
     },
@@ -346,7 +346,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['delete'], Init, `${string}/${string}`>> {
-      return velaClient.DELETE(url, prepareOptions(req, init))
+      return velaClient.DELETE(url, prepareOptions(req, false, init))
     },
     get<
       Path extends PathsWithMethod<Paths, 'get'>,
@@ -355,7 +355,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['get'], Init, `${string}/${string}`>> {
-      return velaClient.GET(url, prepareOptions(req, init))
+      return velaClient.GET(url, prepareOptions(req, false, init))
     },
     head<
       Path extends PathsWithMethod<Paths, 'head'>,
@@ -364,7 +364,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['head'], Init, `${string}/${string}`>> {
-      return velaClient.HEAD(url, prepareOptions(req, init))
+      return velaClient.HEAD(url, prepareOptions(req, false, init))
     },
     options<
       Path extends PathsWithMethod<Paths, 'options'>,
@@ -373,7 +373,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['options'], Init, `${string}/${string}`>> {
-      return velaClient.OPTIONS(url, prepareOptions(req, init))
+      return velaClient.OPTIONS(url, prepareOptions(req, false, init))
     },
     patch<
       Path extends PathsWithMethod<Paths, 'patch'>,
@@ -382,7 +382,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['patch'], Init, `${string}/${string}`>> {
-      return velaClient.PATCH(url, prepareOptions(req, init))
+      return velaClient.PATCH(url, prepareOptions(req, false, init))
     },
     post<
       Path extends PathsWithMethod<Paths, 'post'>,
@@ -391,7 +391,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['post'], Init, `${string}/${string}`>> {
-      return velaClient.POST(url, prepareOptions(req, init))
+      return velaClient.POST(url, prepareOptions(req, false, init))
     },
     put<
       Path extends PathsWithMethod<Paths, 'put'>,
@@ -400,7 +400,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['put'], Init, `${string}/${string}`>> {
-      return velaClient.PUT(url, prepareOptions(req, init))
+      return velaClient.PUT(url, prepareOptions(req, false, init))
     },
     trace<
       Path extends PathsWithMethod<Paths, 'trace'>,
@@ -409,7 +409,7 @@ export function getVelaClient(req: NextApiRequest): Client<`${string}/${string}`
       url: Path,
       ...init: InitParam<Init>
     ): Promise<FetchResponse<Paths[Path]['trace'], Init, `${string}/${string}`>> {
-      return velaClient.TRACE(url, prepareOptions(req, init))
+      return velaClient.TRACE(url, prepareOptions(req, false, init))
     },
   }
 }
