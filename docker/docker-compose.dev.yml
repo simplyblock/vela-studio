@@ -34,6 +34,7 @@ services:
     volumes:
       - '../apps:/app/apps'
       - '../packages:/app/packages'
+      - 'nextjs-compiler-cache:/app/apps/studio/.next/cache'
     environment:
       STUDIO_PG_META_URL: http://meta:8080
       PLATFORM_PG_META_URL: http://meta:8080
@@ -523,3 +524,4 @@ services:
 volumes:
   db-config:
   db-data:
+  nextjs-compiler-cache:
