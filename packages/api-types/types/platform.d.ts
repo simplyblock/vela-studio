@@ -4,6 +4,70 @@
  */
 
 export interface paths {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getProviders']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers/{name}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get?: never
+    put: operations['BranchAuthController_updateProvider']
+    post?: never
+    delete: operations['BranchAuthController_deleteProvider']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getUsers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/sessions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getUserSessions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/service-urls': {
     parameters: {
       query?: never
@@ -4332,6 +4396,200 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    AuthUserSessionResponse: {
+      id?: string;
+      username?: string;
+      userId?: string;
+      ipAddress?: string;
+      /** Format: int64 */
+      start?: number;
+      /** Format: int64 */
+      lastAccess?: number;
+      rememberMe?: boolean;
+      clients?: {
+        [key: string]: string;
+      };
+      transientUser?: boolean;
+    }
+    AuthUserResponse: {
+      id: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      emailVerified: boolean;
+      attributes: {
+        [key: string]: string[];
+      };
+      userProfileMetadata: {
+        attributes?: {
+          name: string;
+          displayName: string;
+          required: boolean;
+          readOnly: boolean;
+          annotations?: {
+            [key: string]: unknown;
+          };
+          validators?: {
+            [key: string]: {
+              [key: string]: unknown;
+            };
+          };
+          group: string;
+          multivalued: boolean;
+          defaultValue: string;
+        }[]
+        groups?: {
+          name: string;
+          displayHeader: string;
+          displayDescription: string;
+          annotations?: {
+            [key: string]: unknown;
+          };
+        }[]
+      }
+      enabled: boolean;
+      self: string;
+      origin: string;
+      /** Format: int64 */
+      createdTimestamp?: number;
+      totp: boolean;
+      federationLink: string;
+      serviceAccountClientId: string;
+      credentials: {
+        id: string;
+        type: string;
+        userLabel?: string;
+        /** Format: int64 */
+        createdDate: number;
+        secretData: string;
+        credentialData: string;
+        /** Format: int32 */
+        priority: number;
+        value: string;
+        temporary: boolean;
+        /** @deprecated */
+        device?: string;
+        /** @deprecated */
+        hashedSaltedValue?: string;
+        /** @deprecated */
+        salt?: string;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        hashIterations?: number;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        counter?: number;
+        /** @deprecated */
+        algorithm?: string;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        digits?: number;
+        /**
+         * Format: int32
+         * @deprecated
+         */
+        period?: number;
+        /** @deprecated */
+        config?: {
+          [key: string]: string[];
+        }
+        federationLink?: string;
+      }[]
+      disableableCredentialTypes: string[];
+      requiredActions: string[];
+      federatedIdentities: {
+        identityProvider: string
+        userId: string
+        userName: string
+      }[]
+      realmRoles?: string[];
+      clientRoles?: {
+        [key: string]: string[];
+      };
+      clientConsents?: {
+        clientId?: string;
+        grantedClientScopes?: string[];
+        /** Format: int64 */
+        createdDate?: number;
+        /** Format: int64 */
+        lastUpdatedDate?: number;
+        /** @deprecated */
+        grantedRealmRoles?: string[];
+      }[];
+      /** Format: int32 */
+      notBefore?: number;
+      /** @deprecated */
+      applicationRoles?: {
+        [key: string]: string[];
+      };
+      /** @deprecated */
+      socialLinks?: {
+        socialProvider?: string;
+        socialUserId?: string;
+        socialUsername?: string;
+      }[];
+      groups?: string[];
+      access?: {
+        [key: string]: boolean;
+      };
+    }
+    AuthProviderUpdateBody: {
+      alias?: string;
+      displayName?: string;
+      internalId?: string;
+      providerId?: string;
+      enabled?: boolean;
+      trustEmail?: boolean;
+      storeToken?: boolean;
+      addReadTokenRoleOnCreate?: boolean;
+      authenticateByDefault?: boolean;
+      linkOnly?: boolean;
+      hideOnLogin?: boolean;
+      firstBrokerLoginFlowAlias?: string;
+      postBrokerLoginFlowAlias?: string;
+      organizationId?: string;
+      config?: {
+        authorizationUrl?: string
+        clientId?: string
+        issuer?: string
+        logoutUrl?: string
+        tokenUrl?: string
+        userInfoUrl?: string
+        [key: string]: string;
+      };
+    }
+    AuthProviderResponse: {
+      alias?: string;
+      displayName?: string;
+      internalId?: string;
+      providerId?: string;
+      enabled?: boolean;
+      trustEmail?: boolean;
+      storeToken?: boolean;
+      addReadTokenRoleOnCreate?: boolean;
+      authenticateByDefault?: boolean;
+      linkOnly?: boolean;
+      hideOnLogin?: boolean;
+      firstBrokerLoginFlowAlias?: string;
+      postBrokerLoginFlowAlias?: string;
+      organizationId?: string;
+      config?: {
+        authorizationUrl: string
+        clientId: string
+        issuer: string
+        logoutUrl: string
+        tokenUrl: string
+        userInfoUrl: string
+        [key: string]: string;
+      };
+    }
     AccessControlPermission: {
       actions: string[] | null
       condition:
@@ -9319,6 +9577,189 @@ export interface components {
 export type $defs = Record<string, never>
 
 export interface operations {
+  BranchAuthController_getUserSessions: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuthUserSessionResponse'][]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchAuthController_getUsers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuthUserResponse'][]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_getProviders: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AuthProviderResponse'][]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_updateProvider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        name: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AuthProviderUpdateBody']
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchAuthController_deleteProvider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        name: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   ServiceUrlsController_getServiceUrls: {
     parameters: {
       query?: never

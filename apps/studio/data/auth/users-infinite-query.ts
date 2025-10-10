@@ -1,11 +1,10 @@
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query'
 
 import type { components } from 'data/api'
-import { executeSql, ExecuteSqlError } from 'data/sql/execute-sql-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { PROJECT_STATUS } from 'lib/constants'
+import { ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { authKeys } from './keys'
 import { Branch } from 'api-types/types'
+import { get, handleError } from '../fetchers'
 
 export type Filter = 'verified' | 'unverified' | 'anonymous'
 
@@ -20,68 +19,28 @@ export type UsersVariables = {
 }
 
 export const USERS_PAGE_LIMIT = 50
-export type User = components['schemas']['UserBody'] & {
-  providers: readonly string[]
-}
+export type User = components['schemas']['AuthUserResponse']
 
-export const getUsersSQL = ({
-  page = 0,
-  verified,
-  keywords,
-  providers,
-  sort,
-  order,
-}: {
-  page: number
-  verified?: Filter
-  keywords?: string
-  providers?: string[]
-  sort: string
-  order: 'asc' | 'desc'
-}) => {
-  const offset = page * USERS_PAGE_LIMIT
-  const hasValidKeywords = keywords && keywords !== ''
+const getBranchUsers = async ({ branch }: UsersVariables, signal?: AbortSignal) => {
+  if (!branch) throw new Error('Branch is required')
 
-  const conditions: string[] = []
-  const baseQueryUsers = `
-  select *, coalesce((select array_agg(distinct i.provider) from auth.identities i where i.user_id = auth.users.id), '{}'::text[]) as providers from auth.users
-  `.trim()
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+          branch: branch.id,
+        },
+      },
+      signal,
+    },
+  )
 
-  if (hasValidKeywords) {
-    // [Joshen] Escape single quotes properly
-    const formattedKeywords = keywords.replaceAll("'", "''")
-    conditions.push(
-      `id::text like '%${formattedKeywords}%' or email like '%${formattedKeywords}%' or phone like '%${formattedKeywords}%' or raw_user_meta_data->>'full_name' ilike '%${formattedKeywords}%' or raw_user_meta_data->>'first_name' ilike '%${formattedKeywords}%' or raw_user_meta_data->>'last_name' ilike '%${formattedKeywords}%' or raw_user_meta_data->>'display_name' ilike '%${formattedKeywords}%'`
-    )
-  }
+  if (error) handleError(error)
 
-  if (verified === 'verified') {
-    conditions.push(`email_confirmed_at IS NOT NULL or phone_confirmed_at IS NOT NULL`)
-  } else if (verified === 'anonymous') {
-    conditions.push(`is_anonymous is true`)
-  } else if (verified === 'unverified') {
-    conditions.push(`email_confirmed_at IS NULL AND phone_confirmed_at IS NULL`)
-  }
-
-  if (providers && providers.length > 0) {
-    // [Joshen] This is arguarbly not fully optimized, but at the same time not commonly used
-    // JFYI in case we do eventually run into performance issues here when filtering for SAML provider
-    if (providers.includes('saml 2.0')) {
-      conditions.push(
-        `(select jsonb_agg(case when value ~ '^sso' then 'sso' else value end) from jsonb_array_elements_text((raw_app_meta_data ->> 'providers')::jsonb)) ?| array[${providers.map((p) => (p === 'saml 2.0' ? `'sso'` : `'${p}'`)).join(', ')}]`.trim()
-      )
-    } else {
-      conditions.push(
-        `(raw_app_meta_data->>'providers')::jsonb ?| array[${providers.map((p) => `'${p}'`).join(', ')}]`
-      )
-    }
-  }
-
-  const combinedConditions = conditions.map((x) => `(${x})`).join(' and ')
-  const sortOn = sort ?? 'created_at'
-  const sortOrder = order ?? 'desc'
-
-  return `${baseQueryUsers}${conditions.length > 0 ? ` where ${combinedConditions}` : ''} order by "${sortOn}" ${sortOrder} nulls last limit ${USERS_PAGE_LIMIT} offset ${offset};`
+  return { result: data } as UsersData
 }
 
 export type UsersData = { result: User[] }
@@ -91,8 +50,7 @@ export const useUsersInfiniteQuery = <TData = UsersData>(
   { branch, keywords, filter, providers, sort, order }: UsersVariables,
   { enabled = true, ...options }: UseInfiniteQueryOptions<UsersData, UsersError, TData> = {}
 ) => {
-  const { data: project } = useSelectedProjectQuery()
-  const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  const isActive = branch?.status === 'ACTIVE_HEALTHY'
 
   return useInfiniteQuery<UsersData, UsersError, TData>(
     authKeys.usersInfinite(branch?.organization_id, branch?.project_id, branch?.id, {
@@ -103,21 +61,7 @@ export const useUsersInfiniteQuery = <TData = UsersData>(
       order,
     }),
     ({ signal, pageParam }) => {
-      return executeSql(
-        {
-          branch,
-          sql: getUsersSQL({
-            page: pageParam,
-            verified: filter,
-            keywords,
-            providers,
-            sort: sort ?? 'created_at',
-            order: order ?? 'desc',
-          }),
-          queryKey: authKeys.usersInfinite(branch?.organization_id, branch?.project_id, branch?.id),
-        },
-        signal
-      )
+      return getBranchUsers({ branch, page: pageParam }, signal)
     },
     {
       enabled: enabled && typeof branch !== 'undefined' && isActive,

@@ -130,7 +130,55 @@ const prepareOptions = (req: NextApiRequest, init: object | object[]) => {
   return {
     ...options,
     headers: headers,
+    body: req.body ? req.body : undefined,
   } as any
+}
+
+export async function proxyWithMapping<
+  Method extends HttpMethod,
+  Path extends PathsWithMethod<Paths, Method>,
+  Init extends MaybeOptionalInit<Paths[Path], Method>,
+  Media extends MediaType,
+  ReturnValue extends {} = Paths[Path][Method],
+>(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  method: Method,
+  path: Path,
+  mapper: (
+    value: ParseAsResponse<SuccessResponse<ResponseObjectMap<ReturnValue>, Media>, Init> | undefined
+  ) => any,
+  ...init: InitParam<Init>
+) {
+  const getClientMethod = (method: Method): ErrorAwareClientMethod<Paths, Method> => {
+    const client = getVelaClient(req)
+    switch (method) {
+      case 'head':
+        return client.headOrFail
+      case 'trace':
+        return client.traceOrFail
+      case 'options':
+        return client.optionsOrFail
+      case 'patch':
+        return client.patchOrFail
+      case 'delete':
+        return client.deleteOrFail
+      case 'put':
+        return client.putOrFail
+      case 'post':
+        return client.postOrFail
+    }
+    return client.getOrFail
+  }
+
+  const clientMethod = getClientMethod(method)
+  const { success, data } = await clientMethod(res, path, ...(init as any))
+
+  if (!success) {
+    return
+  }
+
+  return res.status(200).json(mapper(data as any))
 }
 
 export function validStatusCodes(...statusCodes: number[]) {

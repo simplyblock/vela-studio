@@ -6,4 +6,3 @@ export { default as MfaAuthSettingsForm } from './MfaAuthSettingsForm/MfaAuthSet
 export { default as ProtectionAuthSettingsForm } from './ProtectionAuthSettingsForm/ProtectionAuthSettingsForm'
 export { default as SessionsAuthSettingsForm } from './SessionsAuthSettingsForm/SessionsAuthSettingsForm'
 export { default as SmtpForm } from './SmtpForm/SmtpForm'
-export { ThirdPartyAuthForm } from './ThirdPartyAuthForm'

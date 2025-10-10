@@ -1,12 +1,14 @@
 export const authKeys = {
   users2: (
-    projectRef: string | undefined,
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
     params?: {
       page: number | undefined
       keywords: string | undefined
       filter: string | undefined
     }
-  ) => ['projects', projectRef, 'users', ...(params ? [params] : [])] as const,
+  ) => ['branches', orgId, projectId, branchId, 'users', ...(params ? [params] : [])] as const,
 
   usersInfinite: (
     orgId: string | undefined,
@@ -49,4 +51,28 @@ export const authKeys = {
 
   authConfig: (projectRef: string | undefined) => ['projects', projectRef, 'auth-config'] as const,
   accessToken: () => ['access-token'] as const,
+  authProviders: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    params?: {
+      keywords: string | undefined
+      filter: string | undefined
+      providers: string[] | undefined
+    }
+  ) =>
+    [
+      'branches',
+      orgId,
+      projectId,
+      branchId,
+      'auth-providers',
+      ...(params ? [params].filter(Boolean) : []),
+    ] as const,
+  userSessions: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+    userId: string | undefined
+  ) => ['branches', orgId, projectId, branchId, 'users', userId, 'sessions'] as const,
 }

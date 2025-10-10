@@ -7,6 +7,7 @@ export interface PlatformQueryParams {
   user_id?: string
   role_id?: string
   id?: string
+  name?: string
 }
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }

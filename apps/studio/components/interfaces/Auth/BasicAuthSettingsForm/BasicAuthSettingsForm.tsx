@@ -32,11 +32,11 @@ import { NO_REQUIRED_CHARACTERS } from '../Auth.constants'
 import { getPathReferences } from 'data/vela/path-references'
 
 const schema = object({
-  DISABLE_SIGNUP: boolean().required(),
-  EXTERNAL_ANONYMOUS_USERS_ENABLED: boolean().required(),
-  SECURITY_MANUAL_LINKING_ENABLED: boolean().required(),
-  MAILER_AUTOCONFIRM: boolean().required(),
-  SITE_URL: string().required('Must have a Site URL'),
+  disableSignup: boolean().required(),
+  externalAnonymousUsersEnabled: boolean().required(),
+  securityManualLinkingEnabled: boolean().required(),
+  mailerAutoconfirm: boolean().required(),
+  siteUrl: string().required('Must have a Site URL'),
 })
 
 const BasicAuthSettingsForm = () => {
@@ -57,30 +57,30 @@ const BasicAuthSettingsForm = () => {
   const form = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      DISABLE_SIGNUP: true,
-      EXTERNAL_ANONYMOUS_USERS_ENABLED: false,
-      SECURITY_MANUAL_LINKING_ENABLED: false,
-      MAILER_AUTOCONFIRM: true,
-      SITE_URL: '',
+      disableSignup: true,
+      externalAnonymousUsersEnabled: false,
+      securityManualLinkingEnabled: false,
+      mailerAutoconfirm: true,
+      siteUrl: '',
     },
   })
 
   useEffect(() => {
     if (authConfig) {
       form.reset({
-        DISABLE_SIGNUP: !authConfig.DISABLE_SIGNUP,
-        EXTERNAL_ANONYMOUS_USERS_ENABLED: authConfig.EXTERNAL_ANONYMOUS_USERS_ENABLED,
-        SECURITY_MANUAL_LINKING_ENABLED: authConfig.SECURITY_MANUAL_LINKING_ENABLED,
+        disableSignup: !authConfig.DISABLE_SIGNUP,
+        externalAnonymousUsersEnabled: authConfig.EXTERNAL_ANONYMOUS_USERS_ENABLED,
+        securityManualLinkingEnabled: authConfig.SECURITY_MANUAL_LINKING_ENABLED,
         // The backend uses false to represent that email confirmation is required
-        MAILER_AUTOCONFIRM: !authConfig.MAILER_AUTOCONFIRM,
-        SITE_URL: authConfig.SITE_URL,
+        mailerAutoconfirm: !authConfig.MAILER_AUTOCONFIRM,
+        siteUrl: authConfig.SITE_URL,
       })
     }
   }, [authConfig])
 
   const onSubmit = (values: any) => {
     const payload = { ...values }
-    payload.DISABLE_SIGNUP = !values.DISABLE_SIGNUP
+    payload.disableSignup = !values.disableSignup
     // The backend uses empty string to represent no required characters in the password
     if (payload.PASSWORD_REQUIRED_CHARACTERS === NO_REQUIRED_CHARACTERS) {
       payload.PASSWORD_REQUIRED_CHARACTERS = ''
@@ -114,7 +114,7 @@ const BasicAuthSettingsForm = () => {
         </Alert_Shadcn_>
       )}
 
-              {form.watch('EXTERNAL_ANONYMOUS_USERS_ENABLED') && (
+              {form.watch('externalAnonymousUsersEnabled') && (
                 <Alert_Shadcn_
                   className="flex w-full items-center justify-between mt-4"
                   variant="warning"
@@ -178,7 +178,7 @@ const BasicAuthSettingsForm = () => {
               <CardContent>
                 <FormField_Shadcn_
                   control={form.control}
-                  name="DISABLE_SIGNUP"
+                  name="disableSignup"
                   render={({ field }) => (
                     <FormItemLayout
                       layout="flex-row-reverse"
@@ -199,7 +199,7 @@ const BasicAuthSettingsForm = () => {
               <CardContent>
                 <FormField_Shadcn_
                   control={form.control}
-                  name="SECURITY_MANUAL_LINKING_ENABLED"
+                  name="securityManualLinkingEnabled"
                   render={({ field }) => (
                     <FormItemLayout
                       layout="flex-row-reverse"
@@ -231,7 +231,7 @@ const BasicAuthSettingsForm = () => {
               <CardContent>
                 <FormField_Shadcn_
                   control={form.control}
-                  name="EXTERNAL_ANONYMOUS_USERS_ENABLED"
+                  name="externalAnonymousUsersEnabled"
                   render={({ field }) => (
                     <FormItemLayout
                       layout="flex-row-reverse"
@@ -260,7 +260,7 @@ const BasicAuthSettingsForm = () => {
                   )}
                 />
 
-                {form.watch('EXTERNAL_ANONYMOUS_USERS_ENABLED') && (
+                {form.watch('externalAnonymousUsersEnabled') && (
                   <Alert_Shadcn_
                     className="flex w-full items-center justify-between mt-4"
                     variant="warning"
@@ -295,7 +295,7 @@ const BasicAuthSettingsForm = () => {
                 )}
 
                 {!authConfig?.SECURITY_CAPTCHA_ENABLED &&
-                  form.watch('EXTERNAL_ANONYMOUS_USERS_ENABLED') && (
+                  form.watch('externalAnonymousUsersEnabled') && (
                     <Alert_Shadcn_ className="mt-4">
                       <WarningIcon />
                       <AlertTitle_Shadcn_>
@@ -315,7 +315,7 @@ const BasicAuthSettingsForm = () => {
               <CardContent>
                 <FormField_Shadcn_
                   control={form.control}
-                  name="MAILER_AUTOCONFIRM"
+                  name="mailerAutoconfirm"
                   render={({ field }) => (
                     <FormItemLayout
                       layout="flex-row-reverse"

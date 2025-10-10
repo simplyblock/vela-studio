@@ -165,7 +165,7 @@ export const lintInfoMap: LintInfo[] = [
     title: 'Auth OTP Long Expiry',
     icon: <Clock className="text-foreground-muted" size={15} strokeWidth={1} />,
     link: ({ orgRef, projectRef, branchRef }) =>
-      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/signup`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/going-into-prod#security',
     category: 'security',
@@ -175,7 +175,7 @@ export const lintInfoMap: LintInfo[] = [
     title: 'Auth OTP Short Length',
     icon: <Ruler className="text-foreground-muted" size={15} strokeWidth={1} />,
     link: ({ orgRef, projectRef, branchRef }) =>
-      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
+      `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/signup`,
     linkText: 'View settings',
     docsLink: 'https://supabase.com/docs/guides/platform/going-into-prod#security',
     category: 'security',

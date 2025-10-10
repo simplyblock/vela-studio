@@ -9,19 +9,19 @@ export const AuthProvidersLayout = ({ children }: PropsWithChildren<{}>) => {
 
   const navItems = [
     {
-      label: 'Supabase Auth',
-      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
+      label: 'User Signup',
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/signup`,
     },
     {
-      label: 'Third Party Auth',
-      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/third-party`,
+      label: 'Auth Providers',
+      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
     },
   ]
 
   return (
     <AuthLayout>
       <PageLayout
-        title="Sign In / Providers"
+        title="Sign Up / Providers"
         subtitle="Configure authentication providers and login methods for your users"
         navigationItems={navItems}
       >

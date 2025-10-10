@@ -33,7 +33,8 @@ export interface Branch {
     anon: string
     service_role: string
   }
-  status: {
+  status: string
+  service_health: {
     database:
       | 'ACTIVE_HEALTHY'
       | 'STOPPED'

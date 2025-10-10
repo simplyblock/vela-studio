@@ -1,15 +1,10 @@
-import { ExternalLink } from 'lucide-react'
-import Link from 'next/link'
-
 import { useParams } from 'common'
 import {
   ScaffoldSection,
-  ScaffoldSectionDescription,
   ScaffoldSectionTitle,
 } from 'components/layouts/Scaffold'
 import { ResourceList } from 'components/ui/Resource/ResourceList'
 import { HorizontalShimmerWithIcon } from 'components/ui/Shimmers/Shimmers'
-import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import {
   Alert_Shadcn_,
   AlertDescription_Shadcn_,
@@ -17,100 +12,72 @@ import {
   Button,
   WarningIcon,
 } from 'ui'
-import { getPhoneProviderValidationSchema, PROVIDERS_SCHEMAS } from '../AuthProvidersFormValidation'
 import type { Provider } from './AuthProvidersForm.types'
 import { ProviderForm } from './ProviderForm'
+import { useAuthProvidersQuery } from 'data/auth/auth-providers-query'
+import type { components } from 'api-types'
+
+type AuthProvider = components['schemas']['AuthProviderResponse']
 
 export const AuthProvidersForm = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgId, ref: projectId, branch: branchId } = useParams()
+
   const {
-    data: authConfig,
-    error: authConfigError,
+    data: authProviders,
+    error: authProvidersError,
     isLoading,
     isError,
     isSuccess,
-  } = useAuthConfigQuery({ projectRef })
+  } = useAuthProvidersQuery({ orgId, projectId, branchId })
 
   return (
     <ScaffoldSection isFullWidth>
-      <ScaffoldSectionTitle>Auth Providers</ScaffoldSectionTitle>
-      <ScaffoldSectionDescription className="mb-4">
-        Authenticate your users through a suite of providers and login methods
-      </ScaffoldSectionDescription>
+      <div className="flex justify-between items-center mb-4">
+        <ScaffoldSectionTitle>Auth Providers</ScaffoldSectionTitle>
+        <Button
+          type="primary"
+          htmlType="submit"
+        >
+          Add Auth Provider
+        </Button>
+      </div>
 
       <div className="-space-y-px">
-        {authConfig?.EXTERNAL_EMAIL_ENABLED && authConfig?.MAILER_OTP_EXP > 3600 && (
-          <Alert_Shadcn_
-            className="flex w-full items-center justify-between my-3"
-            variant="warning"
-          >
-            <WarningIcon />
-            <div>
-              <AlertTitle_Shadcn_>OTP expiry exceeds recommended threshold</AlertTitle_Shadcn_>
-              <AlertDescription_Shadcn_ className="flex flex-col gap-y-3">
-                <p>
-                  We have detected that you have enabled the email provider with the OTP expiry set
-                  to more than an hour. It is recommended to set this value to less than an hour.
-                </p>
-                <Button asChild type="default" className="w-min" icon={<ExternalLink />}>
-                  <Link href="https://supabase.com/docs/guides/platform/going-into-prod#security">
-                    View security recommendations
-                  </Link>
-                </Button>
-              </AlertDescription_Shadcn_>
-            </div>
-          </Alert_Shadcn_>
-        )}
         <ResourceList>
-          {isLoading &&
-            PROVIDERS_SCHEMAS.map((provider) => (
-              <div
-                key={`provider_${provider.title}`}
-                className="py-4 px-6 border-b last:border-b-none"
-              >
-                <HorizontalShimmerWithIcon />
-              </div>
-            ))}
-          {isSuccess &&
-            PROVIDERS_SCHEMAS.map((provider) => {
-              const providerSchema =
-                provider.title === 'Phone'
-                  ? { ...provider, validationSchema: getPhoneProviderValidationSchema(authConfig) }
-                  : provider
-              let isActive = false
-              if (providerSchema.title === 'SAML 2.0') {
-                isActive = authConfig && (authConfig as any)['SAML_ENABLED']
-              } else if (providerSchema.title === 'LinkedIn (OIDC)') {
-                isActive = authConfig && (authConfig as any)['EXTERNAL_LINKEDIN_OIDC_ENABLED']
-              } else if (providerSchema.title === 'Slack (OIDC)') {
-                isActive = authConfig && (authConfig as any)['EXTERNAL_SLACK_OIDC_ENABLED']
-              } else if (providerSchema.title.includes('Web3')) {
-                isActive = authConfig && (authConfig as any)['EXTERNAL_WEB3_SOLANA_ENABLED']
-              } else {
-                isActive =
-                  authConfig &&
-                  (authConfig as any)[`EXTERNAL_${providerSchema.title.toUpperCase()}_ENABLED`]
-              }
-              return (
-                <ProviderForm
-                  key={`provider_${providerSchema.title}`}
-                  config={authConfig!}
-                  provider={providerSchema as unknown as Provider}
-                  isActive={isActive}
-                />
-              )
-            })}
+          {isLoading || isSuccess && (
+            <AuthProvider authProviders={authProviders} isLoading={isLoading} />
+          )}
           {isError && (
             <Alert_Shadcn_ variant="destructive">
               <WarningIcon />
               <AlertTitle_Shadcn_>Failed to retrieve auth configuration</AlertTitle_Shadcn_>
-              <AlertDescription_Shadcn_>
-                {(authConfigError as any)?.message}
-              </AlertDescription_Shadcn_>
+              <AlertDescription_Shadcn_>{authProvidersError?.message}</AlertDescription_Shadcn_>
             </Alert_Shadcn_>
           )}
         </ResourceList>
       </div>
     </ScaffoldSection>
   )
+}
+
+const AuthProvider = ({
+  authProviders,
+  isLoading,
+}: {
+  authProviders: AuthProvider[]
+  isLoading: boolean
+}) => {
+  if (isLoading) {
+    return [1, 2, 3].map(() => (
+      <div className="py-4 px-6 border-b last:border-b-none">
+        <HorizontalShimmerWithIcon />
+      </div>
+    ))
+  }
+
+  return authProviders.map((provider) => {
+    return (
+      <ProviderForm config={provider} provider={provider as unknown as Provider} />
+    )
+  })
 }

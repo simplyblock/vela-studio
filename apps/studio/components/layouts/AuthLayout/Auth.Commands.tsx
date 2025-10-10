@@ -51,7 +51,7 @@ export function useAuthGotoCommands(options?: CommandOptions) {
         id: 'nav-auth-providers',
         name: 'Providers',
         value: 'Auth: Providers (Social Login, SSO)',
-        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`,
+        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/signup`,
         defaultHidden: true,
       },
       {
@@ -85,7 +85,7 @@ export function useAuthGotoCommands(options?: CommandOptions) {
       {
         id: 'nav-auth-mfa',
         name: 'Multi Factor Authentication (MFA)',
-        value: 'Auth: Multi Factor Authenticaiton (MFA)',
+        value: 'Auth: Multi Factor Authentication (MFA)',
         route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/mfa`,
         defaultHidden: true,
       },
