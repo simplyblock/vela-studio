@@ -26,7 +26,7 @@ import { UserHeader } from './UserHeader'
 import { PANEL_PADDING } from './Users.constants'
 import { providerIconMap } from './Users.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
-import { useAuthUserSessions } from '../../../../data/auth/auth-user-sessions-query'
+import { useAuthUserSessions } from 'data/auth/auth-user-sessions-query'
 
 const DATE_FORMAT = 'DD MMM, YYYY HH:mm'
 const CONTAINER_CLASS = cn(
