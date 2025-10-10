@@ -16,14 +16,14 @@ const ProjectSettings: NextPageWithLayout = () => {
           All settings are now under configuration within the Authentication page.
         </p>
         <Link
-          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}
+          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/signup`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           General user signup
           <ChevronRight strokeWidth={1.5} size={16} />
         </Link>
         <Link
-          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers`}
+          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/signup`}
           className="py-2 hover:text-foreground border-b flex items-center justify-between"
         >
           Password settings in email provider
