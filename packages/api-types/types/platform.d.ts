@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/client': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getClient']
+    put: operations['BranchAuthController_updateClient']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers': {
     parameters: {
       query?: never
@@ -4564,6 +4580,68 @@ export interface components {
         userInfoUrl?: string
         [key: string]: string;
       };
+    }
+    BranchAuthClientResponse: {
+      id?: string;
+      clientId?: string;
+      name?: string;
+      description?: string;
+      type?: string;
+      rootUrl?: string;
+      adminUrl?: string;
+      baseUrl?: string;
+      surrogateAuthRequired?: boolean;
+      enabled?: boolean;
+      alwaysDisplayInConsole?: boolean;
+      clientAuthenticatorType?: string;
+      secret?: string;
+      registrationAccessToken?: string;
+      /** @deprecated */
+      defaultRoles?: string[];
+      redirectUris?: string[];
+      webOrigins?: string[];
+      /** Format: int32 */
+      notBefore?: number;
+      bearerOnly?: boolean;
+      consentRequired?: boolean;
+      standardFlowEnabled?: boolean;
+      implicitFlowEnabled?: boolean;
+      directAccessGrantsEnabled?: boolean;
+      serviceAccountsEnabled?: boolean;
+      authorizationServicesEnabled?: boolean;
+      /** @deprecated */
+      directGrantsOnly?: boolean;
+      publicClient?: boolean;
+      frontchannelLogout?: boolean;
+      protocol?: string;
+      attributes?: {
+        [key: string]: string;
+      };
+      authenticationFlowBindingOverrides?: {
+        [key: string]: string;
+      };
+      fullScopeAllowed?: boolean;
+      /** Format: int32 */
+      nodeReRegistrationTimeout?: number;
+      registeredNodes?: {
+        [key: string]: number;
+      };
+      protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+      /** @deprecated */
+      clientTemplate?: string;
+      /** @deprecated */
+      useTemplateConfig?: boolean;
+      /** @deprecated */
+      useTemplateScope?: boolean;
+      /** @deprecated */
+      useTemplateMappers?: boolean;
+      defaultClientScopes?: string[];
+      optionalClientScopes?: string[];
+      authorizationSettings?: components["schemas"]["ResourceServerRepresentation"];
+      access?: {
+        [key: string]: boolean;
+      };
+      origin?: string;
     }
     AuthProviderResponse: {
       alias?: string;
@@ -9633,6 +9711,82 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['AuthUserResponse'][]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_getClient: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BranchAuthClientResponse']
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_updateClient: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BranchAuthClientResponse']
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BranchAuthClientResponse']
         }
       }
       403: {
