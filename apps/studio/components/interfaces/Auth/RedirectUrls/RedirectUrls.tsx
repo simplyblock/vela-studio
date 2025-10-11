@@ -9,56 +9,89 @@ import {
 } from 'components/layouts/Scaffold'
 import { DocsButton } from 'components/ui/DocsButton'
 import { HorizontalShimmerWithIcon } from 'components/ui/Shimmers/Shimmers'
-import { useAuthConfigQuery } from 'data/auth/auth-config-query'
-import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   Button,
+  cn,
   Modal,
   ScrollArea,
   WarningIcon,
-  cn,
 } from 'ui'
 import { AddNewURLModal } from './AddNewURLModal'
 import { RedirectUrlList } from './RedirectUrlList'
 import { ValueContainer } from './ValueContainer'
-
-const MAX_URLS_LENGTH = 2 * 1024
+import { useAuthClientQuery } from 'data/auth/auth-client-query'
+import { useAuthClientUpdateMutation } from 'data/auth/auth-client-update-mutation'
+import { ResponseError } from 'types'
 
 export const RedirectUrls = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgId, ref: projectId, branch: branchId } = useParams()
+
   const {
-    data: authConfig,
-    error: authConfigError,
+    data: client,
+    error: clientError,
     isLoading,
     isError,
     isSuccess,
-  } = useAuthConfigQuery({ projectRef })
-  const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
+  } = useAuthClientQuery({ orgId, projectId, branchId })
+  const { mutate: updateAuthClient, isLoading: isUpdatingConfig } = useAuthClientUpdateMutation()
 
   const URI_ALLOW_LIST_ARRAY = useMemo(() => {
-    return authConfig?.URI_ALLOW_LIST
-      ? authConfig.URI_ALLOW_LIST.split(/\s*[,]+\s*/).filter((url: string) => url)
-      : []
-  }, [authConfig?.URI_ALLOW_LIST])
+    return client?.redirectUris || []
+  }, [client])
 
   const [open, setOpen] = useState(false)
   const [openRemoveSelected, setOpenRemoveSelected] = useState(false)
   const [selectedUrls, setSelectedUrls] = useState<string[]>([])
 
+  const onSaveAddUrl = async (
+    newUrls: string[],
+    onError: (error: ResponseError) => void,
+    onSuccess: () => void
+  ) => {
+    if (!newUrls || newUrls.length === 0) return
+    if (!orgId) return
+    if (!projectId) return
+    if (!branchId) return
+
+    const urlList = [...URI_ALLOW_LIST_ARRAY, ...newUrls]
+    const payload = [...new Set(urlList.map((url) => url))]
+    updateAuthClient(
+      {
+        orgId,
+        projectId,
+        branchId,
+        client: {
+          ...client,
+          redirectUris: payload,
+        },
+      }, {
+        onError,
+        onSuccess,
+      }
+    )
+  }
+
   const onConfirmDeleteUrl = async (urls?: string[]) => {
     if (!urls || urls.length === 0) return
+    if (!orgId) return
+    if (!projectId) return
+    if (!branchId) return
 
     // Remove selectedUrl from array and update
     const payload = URI_ALLOW_LIST_ARRAY.filter((url: string) => !selectedUrls.includes(url))
-    const payloadString = payload.join(',')
-    if (payloadString.length > MAX_URLS_LENGTH) {
-      return toast.error('Too many redirect URLs, please remove some or try to use wildcards')
-    }
-    updateAuthConfig(
-      { projectRef: projectRef!, config: { URI_ALLOW_LIST: payloadString } },
+    updateAuthClient(
+      {
+        orgId,
+        projectId,
+        branchId,
+        client: {
+          ...client,
+          redirectUris: payload,
+        },
+      },
       {
         onError: (error) => {
           toast.error(`Failed to remove URL(s): ${error?.message}`)
@@ -100,7 +133,7 @@ export const RedirectUrls = () => {
         <Alert_Shadcn_ variant="destructive">
           <WarningIcon />
           <AlertTitle_Shadcn_>Failed to retrieve auth configuration</AlertTitle_Shadcn_>
-          <AlertDescription_Shadcn_>{authConfigError.message}</AlertDescription_Shadcn_>
+          <AlertDescription_Shadcn_>{clientError.message}</AlertDescription_Shadcn_>
         </Alert_Shadcn_>
       )}
 
@@ -118,6 +151,8 @@ export const RedirectUrls = () => {
       <AddNewURLModal
         visible={open}
         allowList={URI_ALLOW_LIST_ARRAY}
+        onSave={onSaveAddUrl}
+        isSaving={isUpdatingConfig}
         onClose={() => setOpen(false)}
       />
 

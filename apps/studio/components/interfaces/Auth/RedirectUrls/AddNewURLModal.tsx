@@ -2,11 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus, Trash } from 'lucide-react'
 import { useEffect } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import * as z from 'zod'
 
-import { useParams } from 'common'
-import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
 import {
   Button,
   cn,
@@ -21,19 +18,28 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { Label } from '@ui/components/shadcn/ui/label'
 import { urlRegex } from '../Auth.constants'
-
-const MAX_URLS_LENGTH = 2 * 1024
+import { ResponseError } from 'types'
+import { toast } from 'sonner'
 
 interface AddNewURLModalProps {
   visible: boolean
   allowList: string[]
+  onSave: (
+    newUrls: string[],
+    onError: (error: ResponseError) => void,
+    onSuccess: () => void
+  ) => Promise<void>
   onClose: () => void
+  isSaving: boolean
 }
 
-export const AddNewURLModal = ({ visible, allowList, onClose }: AddNewURLModalProps) => {
-  const { ref } = useParams()
-  const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
-
+export const AddNewURLModal = ({
+  visible,
+  allowList,
+  onClose,
+  onSave,
+  isSaving,
+}: AddNewURLModalProps) => {
   const FormSchema = z.object({
     urls: z
       .object({
@@ -61,26 +67,17 @@ export const AddNewURLModal = ({ visible, allowList, onClose }: AddNewURLModalPr
   })
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    const dedupedData = [...new Set(data.urls.map((url) => url.value))]
-    const payload = allowList.concat(dedupedData.map((url) => url.replace(/,\s*$/, ''))).toString()
-
-    if (payload.length > MAX_URLS_LENGTH) {
-      return toast.error('Too many redirect URLs, please remove some or try to use wildcards')
-    } else {
-      updateAuthConfig(
-        { projectRef: ref!, config: { URI_ALLOW_LIST: payload } },
-        {
-          onError: (error) => {
-            toast.error(`Failed to add URL(s): ${error?.message}`)
-          },
-          onSuccess: () => {
-            toast.success(`Successfully added ${fields.length} URL${fields.length > 1 ? 's' : ''}`)
-            form.reset(initialValues)
-            onClose()
-          },
-        }
-      )
-    }
+    onSave(
+      data.urls.map((url) => url.value),
+      (error) => {
+        toast.error(`Failed to add URL(s): ${error?.message}`)
+      },
+      () => {
+        toast.success(`Successfully added ${fields.length} URL${fields.length > 1 ? 's' : ''}`)
+        form.reset(initialValues)
+        onClose()
+      }
+    )
   }
 
   useEffect(() => {
@@ -145,13 +142,7 @@ export const AddNewURLModal = ({ visible, allowList, onClose }: AddNewURLModalPr
           </Modal.Content>
           <DialogSectionSeparator />
           <Modal.Content>
-            <Button
-              block
-              htmlType="submit"
-              size="small"
-              disabled={isUpdatingConfig}
-              loading={isUpdatingConfig}
-            >
+            <Button block htmlType="submit" size="small" disabled={isSaving} loading={isSaving}>
               Save URLs
             </Button>
           </Modal.Content>
