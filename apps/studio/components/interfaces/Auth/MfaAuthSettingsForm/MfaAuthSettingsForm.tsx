@@ -7,8 +7,8 @@ import { number, object, string } from 'yup'
 import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
-import { useAuthConfigQuery } from 'data/auth/auth-config-query'
-import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
+import { useAuthMFAQuery } from 'data/auth/auth-mfa-query'
+import { useAuthMFAUpdateMutation } from 'data/auth/auth-mfa-update-mutation'
 
 import {
   AlertDescription_Shadcn_,
@@ -40,34 +40,26 @@ function determineMFAStatus(verifyEnabled: boolean, enrollEnabled: boolean) {
 const MFAFactorSelectionOptions = [
   {
     label: 'Enabled',
-    value: 'Enabled',
+    value: 'enabled',
   },
   {
     label: 'Verify Enabled',
-    value: 'Verify Enabled',
+    value: 'verify-enabled',
   },
   {
     label: 'Disabled',
-    value: 'Disabled',
+    value: 'disabled',
   },
 ]
-
-const MfaStatusToState = (status: (typeof MFAFactorSelectionOptions)[number]['value']) => {
-  return status === 'Enabled'
-    ? { verifyEnabled: true, enrollEnabled: true }
-    : status === 'Verify Enabled'
-      ? { verifyEnabled: true, enrollEnabled: false }
-      : { verifyEnabled: false, enrollEnabled: false }
-}
 
 const totpSchema = object({
   MFA_TOTP: string().required(),
 })
 
 const MfaAuthSettingsForm = () => {
-  const { ref: projectRef } = useParams()
-  const { data: authConfig, error: authConfigError, isError } = useAuthConfigQuery({ projectRef })
-  const { mutate: updateAuthConfig } = useAuthConfigUpdateMutation()
+  const { slug: orgId, ref: projectId, branch: branchId } = useParams()
+  const { data: authMFA, error: authConfigError, isError } = useAuthMFAQuery({ orgId, projectId, branchId })
+  const { mutate: updateMFAConfig } = useAuthMFAUpdateMutation()
 
   // Separate loading states for each form
   const [isUpdatingTotpForm, setIsUpdatingTotpForm] = useState(false)
@@ -86,34 +78,20 @@ const MfaAuthSettingsForm = () => {
   })
 
   useEffect(() => {
-    if (authConfig) {
+    if (authMFA) {
       if (!isUpdatingTotpForm) {
-        totpForm.reset({
-          MFA_TOTP:
-            determineMFAStatus(
-              authConfig?.MFA_TOTP_VERIFY_ENABLED ?? true,
-              authConfig?.MFA_TOTP_ENROLL_ENABLED ?? true
-            ) || 'Enabled',
-        })
+        totpForm.reset({ MFA_TOTP: authMFA.status })
       }
     }
-  }, [authConfig, isUpdatingTotpForm])
+  }, [authMFA, isUpdatingTotpForm])
 
   const onSubmitTotpForm = (values: any) => {
-    const { verifyEnabled: MFA_TOTP_VERIFY_ENABLED, enrollEnabled: MFA_TOTP_ENROLL_ENABLED } =
-      MfaStatusToState(values.MFA_TOTP)
-
-    const payload = {
-      ...values,
-      MFA_TOTP_ENROLL_ENABLED,
-      MFA_TOTP_VERIFY_ENABLED,
-    }
-    delete payload.MFA_TOTP
+    if (orgId === undefined || projectId === undefined || branchId === undefined) return;
 
     setIsUpdatingTotpForm(true)
 
-    updateAuthConfig(
-      { projectRef: projectRef!, config: payload },
+    updateMFAConfig(
+      { orgId: orgId, projectId: projectId, branchId: branchId, status: values.MFA_TOTP },
       {
         onError: (error) => {
           toast.error(`Failed to update TOTP settings: ${error?.message}`)
