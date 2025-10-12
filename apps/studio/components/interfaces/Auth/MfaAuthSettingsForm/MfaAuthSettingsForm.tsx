@@ -62,9 +62,6 @@ const MfaStatusToState = (status: (typeof MFAFactorSelectionOptions)[number]['va
 
 const totpSchema = object({
   MFA_TOTP: string().required(),
-  MFA_MAX_ENROLLED_FACTORS: number()
-    .min(0, 'Must be a value 0 or larger')
-    .max(30, 'Must be a value no greater than 30'),
 })
 
 const MfaAuthSettingsForm = () => {
@@ -85,7 +82,6 @@ const MfaAuthSettingsForm = () => {
     resolver: yupResolver(totpSchema),
     defaultValues: {
       MFA_TOTP: 'Enabled',
-      MFA_MAX_ENROLLED_FACTORS: 10,
     },
   })
 
@@ -98,7 +94,6 @@ const MfaAuthSettingsForm = () => {
               authConfig?.MFA_TOTP_VERIFY_ENABLED ?? true,
               authConfig?.MFA_TOTP_ENROLL_ENABLED ?? true
             ) || 'Enabled',
-          MFA_MAX_ENROLLED_FACTORS: authConfig?.MFA_MAX_ENROLLED_FACTORS ?? 10,
         })
       }
     }
@@ -183,32 +178,6 @@ const MfaAuthSettingsForm = () => {
                             ))}
                           </SelectContent_Shadcn_>
                         </Select_Shadcn_>
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-              </CardContent>
-
-              <CardContent>
-                <FormField_Shadcn_
-                  control={totpForm.control}
-                  name="MFA_MAX_ENROLLED_FACTORS"
-                  render={({ field }) => (
-                    <FormItemLayout
-                      layout="flex-row-reverse"
-                      label="Maximum number of per-user MFA factors"
-                      description="How many MFA factors can be enrolled at once per user."
-                    >
-                      <FormControl_Shadcn_>
-                        <PrePostTab postTab="factors">
-                          <Input_Shadcn_
-                            type="number"
-                            min={0}
-                            max={30}
-                            {...field}
-                            disabled={!canUpdateConfig}
-                          />
-                        </PrePostTab>
                       </FormControl_Shadcn_>
                     </FormItemLayout>
                   )}
