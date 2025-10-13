@@ -9938,7 +9938,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': vela_components['schemas']['FederatedIdentityRepresentation'][];
+          'application/json': VelaType<'FederatedIdentityRepresentation'>[];
         };
       }
       403: {
@@ -9972,7 +9972,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': vela_components['schemas']['EventRepresentation'][];
+          'application/json': VelaType<'EventRepresentation'>[];
         };
       }
       403: {
