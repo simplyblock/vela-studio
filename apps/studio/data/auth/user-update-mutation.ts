@@ -1,27 +1,32 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { handleError, patch } from 'data/fetchers'
+import { handleError, put } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { authKeys } from './keys'
 import { Branch } from 'api-types/types'
 
 export type UserUpdateVariables = {
-  branch: Branch
-  userId: string
-  // For now just support updating banning the user
-  banDuration: number | 'none' // In hours,  "none" to unban, otherwise a string in hours e.g "24h"
+  organization_id: string
+  project_id: string
+  branch_id: string
+  user_id: string
+  enabled: boolean
 }
 
-export async function updateUser({ branch, userId, banDuration }: UserUpdateVariables) {
-  const { data, error } = await patch('/platform/auth/{ref}/users/{id}', {
+export async function updateUser({ organization_id, project_id, branch_id, user_id, enabled }: UserUpdateVariables) {
+  const { data, error } = await put('/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}', {
     params: {
       path: {
-        ref: branch.project_id,
-        id: userId,
+        slug: organization_id,
+        ref: project_id,
+        branch: branch_id,
+        id: user_id,
       },
     },
-    body: { ban_duration: typeof banDuration === 'number' ? `${banDuration}h` : banDuration },
+    body: {
+      enabled
+    },
   })
 
   if (error) handleError(error)
@@ -44,9 +49,9 @@ export const useUserUpdateMutation = ({
     (vars) => updateUser(vars),
     {
       async onSuccess(data, variables, context) {
-        const { branch } = variables
+        const { organization_id, project_id, branch_id } = variables
         await queryClient.invalidateQueries(
-          authKeys.usersInfinite(branch.organization_id, branch.project_id, branch.id)
+          authKeys.usersInfinite(organization_id, project_id, branch_id)
         )
         await onSuccess?.(data, variables, context)
       },

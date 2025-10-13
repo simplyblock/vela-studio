@@ -147,15 +147,19 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   }
 
   const handleUnban = () => {
-    if (branch === undefined) return console.error('Branch is required')
+    if ((branch?.organization_id === undefined) || (branch?.project_id === undefined) || (branch?.id === undefined)) {
+      return console.error('Branch is required')
+    }
     if (user.id === undefined) {
       return toast.error(`Failed to ban user: User ID not found`)
     }
 
     updateUser({
-      branch,
-      userId: user.id,
-      banDuration: 'none',
+      organization_id: branch.organization_id!,
+      project_id: branch.project_id!,
+      branch_id: branch.id!,
+      user_id: user.id,
+      enabled: true,
     })
   }
 
