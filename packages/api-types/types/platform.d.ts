@@ -118,6 +118,22 @@ export interface paths {
     patch?: never
     trace?: never
   },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/factors': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get?: never
+    put?: never
+    post?: never
+    delete: operations['BranchAuthController_deleteUserFactors']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/sessions': {
     parameters: {
       query?: never
@@ -265,23 +281,6 @@ export interface paths {
     put?: never
     post?: never
     delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/auth/{ref}/users/{id}/factors': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    /** Delete all factors associated to a user */
-    delete: operations['FactorsController_deleteFactors']
     options?: never
     head?: never
     patch?: never
@@ -9824,6 +9823,34 @@ export interface operations {
       }
     }
   },
+  BranchAuthController_deleteUserFactors: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   BranchAuthController_getMFA: {
     parameters: {
       query?: never
@@ -10383,40 +10410,6 @@ export interface operations {
         content?: never
       }
       /** @description Failed to retrieve GoTrue template */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  FactorsController_deleteFactors: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: string
-        /** @description Project ref */
-        ref: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Failed to delete factors */
       500: {
         headers: {
           [name: string]: unknown

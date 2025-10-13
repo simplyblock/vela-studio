@@ -142,8 +142,15 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
 
   const handleDeleteFactors = async () => {
     await timeout(200)
-    if (!projectRef) return console.error('Project ref is required')
-    deleteUserMFAFactors({ projectRef, userId: user.id as string })
+    if ((branch?.organization_id === undefined) || (branch?.project_id === undefined) || (branch?.id === undefined)) {
+      return console.error('Branch is required')
+    }
+    deleteUserMFAFactors({
+      organization_id: branch.organization_id!,
+      project_id: branch.project_id!,
+      branch_id: branch.id!,
+      user_id: user.id,
+    })
   }
 
   const handleUnban = () => {
