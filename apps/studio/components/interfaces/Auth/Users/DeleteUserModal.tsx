@@ -34,7 +34,12 @@ export const DeleteUserModal = ({
     if (selectedUser?.id === undefined) {
       return toast.error(`Failed to delete user: User ID not found`)
     }
-    deleteUser({ branch, userId: selectedUser.id })
+    deleteUser({
+      orgId: branch.organization_id,
+      projectId: branch.project_id,
+      branchId: branch.id,
+      userId: selectedUser.id
+    })
   }
 
   return (
@@ -54,7 +59,7 @@ export const DeleteUserModal = ({
     >
       <p className="text-sm text-foreground-light">
         This is permanent! Are you sure you want to delete the user{' '}
-        {selectedUser?.email ?? selectedUser?.phone ?? 'this user'}?
+        {selectedUser?.email ?? 'this user'}?
       </p>
     </ConfirmationModal>
   )
