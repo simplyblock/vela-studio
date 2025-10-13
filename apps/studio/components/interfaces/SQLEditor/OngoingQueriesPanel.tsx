@@ -8,7 +8,6 @@ import AlertError from 'components/ui/AlertError'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useQueryAbortMutation } from 'data/sql/abort-query-mutation'
 import { useOngoingQueriesQuery } from 'data/sql/ongoing-queries-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
 import { useAppStateSnapshot } from 'state/app-state'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
@@ -33,7 +32,6 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 export const OngoingQueriesPanel = () => {
   const [_, setParams] = useUrlState({ replace: true })
   const { viewOngoingQueries } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
   const appState = useAppStateSnapshot()
@@ -86,7 +84,7 @@ export const OngoingQueriesPanel = () => {
           <SheetHeader>
             <SheetTitle className="flex items-center gap-x-2">
               Running queries on{' '}
-              {database?.identifier === project?.ref ? 'primary database' : 'read replica'}
+              {database?.identifier === branch?.id ? 'primary database' : 'read replica'}
               <Button
                 type="default"
                 className="px-1.5"
@@ -99,7 +97,7 @@ export const OngoingQueriesPanel = () => {
               There {queries.length === 1 ? 'is' : 'are'}{' '}
               <span className="text-foreground-light">{queries.length}</span> quer
               {queries.length === 1 ? 'y' : 'ies'} currently running{' '}
-              {database?.identifier !== project?.ref ? `on replica ${database?.identifier}` : ''}
+              {database?.identifier !== branch?.id ? `on replica ${database?.identifier}` : ''}
             </SheetDescription>
           </SheetHeader>
           <div className="max-h-full h-full divide-y overflow-y-auto">
@@ -115,7 +113,7 @@ export const OngoingQueriesPanel = () => {
               <div className="flex flex-col gap-y-2 items-center justify-center h-full text-foreground-light text-sm">
                 <span>
                   No queries are currently running on the{' '}
-                  {database?.identifier !== project?.ref
+                  {database?.identifier !== branch?.id
                     ? `read replica ${database?.identifier}`
                     : (databases ?? []).length > 1
                       ? 'primary database'

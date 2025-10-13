@@ -2991,7 +2991,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/databases': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/databases': {
     parameters: {
       query?: never
       header?: never
@@ -18604,8 +18604,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }

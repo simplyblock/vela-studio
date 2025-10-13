@@ -61,7 +61,7 @@ const DatabaseSelector = ({
   const databases = data ?? []
   const sortedDatabases = databases
     .sort((a, b) => (a.inserted_at > b.inserted_at ? 1 : 0))
-    .sort((database) => (database.identifier === projectRef ? -1 : 0))
+    .sort((database) => (database.identifier === branchRef ? -1 : 0))
 
   const selectedDatabase = databases.find((db) => db.identifier === selectedDatabaseId)
   const selectedDatabaseRegion = 'default'
@@ -99,11 +99,11 @@ const DatabaseSelector = ({
             ) : (
               <>
                 <span className="capitalize">
-                  {isLoading || selectedDatabase?.identifier === projectRef
+                  {isLoading || selectedDatabase?.identifier === branchRef
                     ? 'Primary database'
                     : 'Read replica'}
                 </span>{' '}
-                {isSuccess && selectedDatabase?.identifier !== projectRef && (
+                {isSuccess && selectedDatabase?.identifier !== branchRef && (
                   <span>
                     ({selectedDatabaseRegion} - {formattedDatabaseId})
                   </span>
@@ -193,7 +193,7 @@ const DatabaseSelector = ({
                     >
                       <div className="w-full flex items-center justify-between">
                         <p>
-                          {database.identifier === projectRef
+                          {database.identifier === branchRef
                             ? 'Primary database'
                             : `Read replica (${region} - ${id})`}
                         </p>

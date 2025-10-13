@@ -41,7 +41,6 @@ const UtilityActions = ({
   const { ref } = useParams()
   const snapV2 = useSqlEditorV2StateSnapshot()
 
-  const [isAiOpen] = useLocalStorageQuery(LOCAL_STORAGE_KEYS.SQL_EDITOR_AI_OPEN, true)
   const [intellisenseEnabled, setIntellisenseEnabled] = useLocalStorageQuery(
     LOCAL_STORAGE_KEYS.SQL_EDITOR_INTELLISENSE,
     true
@@ -79,7 +78,7 @@ const UtilityActions = ({
           <Button
             data-testid="sql-editor-utility-actions"
             type="default"
-            className={cn('px-1', isAiOpen ? 'block 2xl:hidden' : 'hidden')}
+            className={cn('px-1', 'hidden')}
             icon={<MoreVertical className="text-foreground-light" />}
           />
         </DropdownMenuTrigger>
@@ -115,7 +114,7 @@ const UtilityActions = ({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <div className={cn('items-center gap-x-2', isAiOpen ? 'hidden 2xl:flex' : 'flex')}>
+      <div className={cn('items-center gap-x-2', 'flex')}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
