@@ -6,6 +6,22 @@
 import type { components as vela_components } from 'data/vela/vela-schema';
 
 export interface paths {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/count': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getUserCount']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/mfa': {
     parameters: {
       query?: never
@@ -9732,6 +9748,40 @@ export interface operations {
         }
         content: {
           'application/json': vela_components['schemas']['UserRepresentation']
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_getUserCount: {
+    parameters: {
+      query?: {
+        /** @description whether the email has been verified */
+        emailVerified?: boolean;
+        /** @description A query to search for custom attributes, in the format 'key1:value2 key2:value2' */
+        q?: string;
+      }
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": number;
         }
       }
       403: {

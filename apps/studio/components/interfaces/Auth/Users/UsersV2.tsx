@@ -586,7 +586,7 @@ export const UsersV2 = () => {
           {selectedUsers.size === 1 ? (
             <span className="text-foreground">
               {' '}
-              {selectedUserFromCheckbox?.email ?? selectedUserFromCheckbox?.phone ?? 'this user'}
+              {selectedUserFromCheckbox?.email ?? 'this user'}
             </span>
           ) : null}
           ?
