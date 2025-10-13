@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/mfa': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getMFA']
+    put: operations['BranchAuthController_updateMFA']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/client': {
     parameters: {
       query?: never
@@ -4580,6 +4596,9 @@ export interface components {
         userInfoUrl?: string
         [key: string]: string;
       };
+    }
+    BranchAuthMFAConfig: {
+      status: 'enabled' | 'verify-enabled' | 'disabled';
     }
     BranchAuthClientResponse: {
       id?: string;
@@ -9721,6 +9740,68 @@ export interface operations {
       }
       /** @description Failed to update GoTrue config hooks */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_getMFA: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BranchAuthMFAConfig']
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_updateMFA: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BranchAuthMFAConfig']
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {}
+        }
+      }
+      403: {
         headers: {
           [name: string]: unknown
         }

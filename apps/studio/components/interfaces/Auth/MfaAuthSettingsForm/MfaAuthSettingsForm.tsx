@@ -7,8 +7,8 @@ import { number, object, string } from 'yup'
 import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
-import { useAuthConfigQuery } from 'data/auth/auth-config-query'
-import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
+import { useAuthMFAQuery } from 'data/auth/auth-mfa-query'
+import { useAuthMFAUpdateMutation } from 'data/auth/auth-mfa-update-mutation'
 
 import {
   AlertDescription_Shadcn_,
@@ -40,49 +40,29 @@ function determineMFAStatus(verifyEnabled: boolean, enrollEnabled: boolean) {
 const MFAFactorSelectionOptions = [
   {
     label: 'Enabled',
-    value: 'Enabled',
+    value: 'enabled',
   },
   {
     label: 'Verify Enabled',
-    value: 'Verify Enabled',
+    value: 'verify-enabled',
   },
   {
     label: 'Disabled',
-    value: 'Disabled',
+    value: 'disabled',
   },
 ]
 
-const MfaStatusToState = (status: (typeof MFAFactorSelectionOptions)[number]['value']) => {
-  return status === 'Enabled'
-    ? { verifyEnabled: true, enrollEnabled: true }
-    : status === 'Verify Enabled'
-      ? { verifyEnabled: true, enrollEnabled: false }
-      : { verifyEnabled: false, enrollEnabled: false }
-}
-
 const totpSchema = object({
   MFA_TOTP: string().required(),
-  MFA_MAX_ENROLLED_FACTORS: number()
-    .min(0, 'Must be a value 0 or larger')
-    .max(30, 'Must be a value no greater than 30'),
-})
-
-const phoneSchema = object({
-  MFA_PHONE: string().required(),
-  MFA_PHONE_OTP_LENGTH: number()
-    .min(6, 'Must be a value 6 or larger')
-    .max(30, 'must be a value no greater than 30'),
-  MFA_PHONE_TEMPLATE: string().required('SMS template is required.'),
 })
 
 const MfaAuthSettingsForm = () => {
-  const { ref: projectRef } = useParams()
-  const { data: authConfig, error: authConfigError, isError } = useAuthConfigQuery({ projectRef })
-  const { mutate: updateAuthConfig } = useAuthConfigUpdateMutation()
+  const { slug: orgId, ref: projectId, branch: branchId } = useParams()
+  const { data: authMFA, error: authConfigError, isError } = useAuthMFAQuery({ orgId, projectId, branchId })
+  const { mutate: updateMFAConfig } = useAuthMFAUpdateMutation()
 
   // Separate loading states for each form
   const [isUpdatingTotpForm, setIsUpdatingTotpForm] = useState(false)
-  const [isUpdatingPhoneForm, setIsUpdatingPhoneForm] = useState(false)
 
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false)
   // FIXME: need permission implemented 
@@ -90,71 +70,28 @@ const MfaAuthSettingsForm = () => {
   // FIXME: need permission implemented 
   const { can: canUpdateConfig } = {can:true}
 
-  // For now, we support Twilio and Vonage. Twilio Verify is not supported and the remaining providers are community maintained.
-  const sendSMSHookIsEnabled =
-    authConfig?.HOOK_SEND_SMS_URI !== null && authConfig?.HOOK_SEND_SMS_ENABLED === true
-  const hasValidMFAPhoneProvider = authConfig?.EXTERNAL_PHONE_ENABLED === true
-  const hasValidMFAProvider = hasValidMFAPhoneProvider || sendSMSHookIsEnabled
-
   const totpForm = useForm({
     resolver: yupResolver(totpSchema),
     defaultValues: {
       MFA_TOTP: 'Enabled',
-      MFA_MAX_ENROLLED_FACTORS: 10,
-    },
-  })
-
-  const phoneForm = useForm({
-    resolver: yupResolver(phoneSchema),
-    defaultValues: {
-      MFA_PHONE: 'Disabled',
-      MFA_PHONE_OTP_LENGTH: 6,
-      MFA_PHONE_TEMPLATE: 'Your code is {{ .Code }}',
     },
   })
 
   useEffect(() => {
-    if (authConfig) {
+    if (authMFA) {
       if (!isUpdatingTotpForm) {
-        totpForm.reset({
-          MFA_TOTP:
-            determineMFAStatus(
-              authConfig?.MFA_TOTP_VERIFY_ENABLED ?? true,
-              authConfig?.MFA_TOTP_ENROLL_ENABLED ?? true
-            ) || 'Enabled',
-          MFA_MAX_ENROLLED_FACTORS: authConfig?.MFA_MAX_ENROLLED_FACTORS ?? 10,
-        })
-      }
-
-      if (!isUpdatingPhoneForm) {
-        phoneForm.reset({
-          MFA_PHONE:
-            determineMFAStatus(
-              authConfig?.MFA_PHONE_VERIFY_ENABLED || false,
-              authConfig?.MFA_PHONE_ENROLL_ENABLED || false
-            ) || 'Disabled',
-          MFA_PHONE_OTP_LENGTH: authConfig?.MFA_PHONE_OTP_LENGTH || 6,
-          MFA_PHONE_TEMPLATE: authConfig?.MFA_PHONE_TEMPLATE || 'Your code is {{ .Code }}',
-        })
+        totpForm.reset({ MFA_TOTP: authMFA.status })
       }
     }
-  }, [authConfig, isUpdatingTotpForm, isUpdatingPhoneForm])
+  }, [authMFA, isUpdatingTotpForm])
 
   const onSubmitTotpForm = (values: any) => {
-    const { verifyEnabled: MFA_TOTP_VERIFY_ENABLED, enrollEnabled: MFA_TOTP_ENROLL_ENABLED } =
-      MfaStatusToState(values.MFA_TOTP)
-
-    const payload = {
-      ...values,
-      MFA_TOTP_ENROLL_ENABLED,
-      MFA_TOTP_VERIFY_ENABLED,
-    }
-    delete payload.MFA_TOTP
+    if (orgId === undefined || projectId === undefined || branchId === undefined) return;
 
     setIsUpdatingTotpForm(true)
 
-    updateAuthConfig(
-      { projectRef: projectRef!, config: payload },
+    updateMFAConfig(
+      { orgId: orgId, projectId: projectId, branchId: branchId, status: values.MFA_TOTP },
       {
         onError: (error) => {
           toast.error(`Failed to update TOTP settings: ${error?.message}`)
@@ -163,35 +100,6 @@ const MfaAuthSettingsForm = () => {
         onSuccess: () => {
           toast.success('Successfully updated TOTP settings')
           setIsUpdatingTotpForm(false)
-        },
-      }
-    )
-  }
-
-  const onSubmitPhoneForm = (values: any) => {
-    let payload = { ...values }
-
-    const { verifyEnabled: MFA_PHONE_VERIFY_ENABLED, enrollEnabled: MFA_PHONE_ENROLL_ENABLED } =
-      MfaStatusToState(values.MFA_PHONE)
-    payload = {
-      ...payload,
-      MFA_PHONE_ENROLL_ENABLED,
-      MFA_PHONE_VERIFY_ENABLED,
-    }
-    delete payload.MFA_PHONE
-
-    setIsUpdatingPhoneForm(true)
-
-    updateAuthConfig(
-      { projectRef: projectRef!, config: payload },
-      {
-        onError: (error) => {
-          toast.error(`Failed to update phone MFA settings: ${error?.message}`)
-          setIsUpdatingPhoneForm(false)
-        },
-        onSuccess: () => {
-          toast.success('Successfully updated phone MFA settings')
-          setIsUpdatingPhoneForm(false)
         },
       }
     )
@@ -209,19 +117,6 @@ const MfaAuthSettingsForm = () => {
 
   if (!canReadConfig) {
     return <NoPermission resourceText="view auth configuration settings" />
-  }
-
-  const phoneMFAIsEnabled =
-    phoneForm.watch('MFA_PHONE') === 'Enabled' || phoneForm.watch('MFA_PHONE') === 'Verify Enabled'
-  const hasUpgradedPhoneMFA =
-    authConfig && !authConfig.MFA_PHONE_VERIFY_ENABLED && phoneMFAIsEnabled
-
-  const maybeConfirmPhoneMFAOrSubmit = () => {
-    if (hasUpgradedPhoneMFA) {
-      setIsConfirmationModalVisible(true)
-    } else {
-      phoneForm.handleSubmit(onSubmitPhoneForm)()
-    }
   }
 
   return (
@@ -267,32 +162,6 @@ const MfaAuthSettingsForm = () => {
                 />
               </CardContent>
 
-              <CardContent>
-                <FormField_Shadcn_
-                  control={totpForm.control}
-                  name="MFA_MAX_ENROLLED_FACTORS"
-                  render={({ field }) => (
-                    <FormItemLayout
-                      layout="flex-row-reverse"
-                      label="Maximum number of per-user MFA factors"
-                      description="How many MFA factors can be enrolled at once per user."
-                    >
-                      <FormControl_Shadcn_>
-                        <PrePostTab postTab="factors">
-                          <Input_Shadcn_
-                            type="number"
-                            min={0}
-                            max={30}
-                            {...field}
-                            disabled={!canUpdateConfig}
-                          />
-                        </PrePostTab>
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-              </CardContent>
-
               <CardFooter className="justify-end space-x-2">
                 {totpForm.formState.isDirty && (
                   <Button type="default" onClick={() => totpForm.reset()}>
@@ -312,149 +181,6 @@ const MfaAuthSettingsForm = () => {
           </form>
         </Form_Shadcn_>
       </ScaffoldSection>
-
-      <ScaffoldSection isFullWidth>
-        <ScaffoldSectionTitle className="mb-4">SMS MFA</ScaffoldSectionTitle>
-
-        <Form_Shadcn_ {...phoneForm}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              maybeConfirmPhoneMFAOrSubmit()
-            }}
-            className="space-y-4"
-          >
-            <Card>
-              <CardContent className="pt-6">
-                <FormField_Shadcn_
-                  control={phoneForm.control}
-                  name="MFA_PHONE"
-                  render={({ field }) => (
-                    <FormItemLayout
-                      layout="flex-row-reverse"
-                      label="Phone"
-                      description="Control use of phone factors"
-                    >
-                      <FormControl_Shadcn_>
-                        <Select_Shadcn_
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          disabled={!canUpdateConfig}
-                        >
-                          <SelectTrigger_Shadcn_>
-                            <SelectValue_Shadcn_ placeholder="Select status" />
-                          </SelectTrigger_Shadcn_>
-                          <SelectContent_Shadcn_>
-                            {MFAFactorSelectionOptions.map((option) => (
-                              <SelectItem_Shadcn_ key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem_Shadcn_>
-                            ))}
-                          </SelectContent_Shadcn_>
-                        </Select_Shadcn_>
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-
-                {!hasValidMFAProvider && phoneMFAIsEnabled && (
-                  <Alert_Shadcn_ variant="warning" className="mt-3">
-                    <WarningIcon />
-                    <AlertTitle_Shadcn_>
-                      To use MFA with Phone you should set up a Phone provider or Send SMS Hook.
-                    </AlertTitle_Shadcn_>
-                  </Alert_Shadcn_>
-                )}
-              </CardContent>
-
-              <CardContent>
-                <FormField_Shadcn_
-                  control={phoneForm.control}
-                  name="MFA_PHONE_OTP_LENGTH"
-                  render={({ field }) => (
-                    <FormItemLayout
-                      layout="flex-row-reverse"
-                      label="Phone OTP Length"
-                      description="Number of digits in OTP"
-                    >
-                      <FormControl_Shadcn_>
-                        <Input_Shadcn_
-                          type="number"
-                          min={6}
-                          max={30}
-                          {...field}
-                          disabled={!canUpdateConfig}
-                        />
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-              </CardContent>
-
-              <CardContent>
-                <FormField_Shadcn_
-                  control={phoneForm.control}
-                  name="MFA_PHONE_TEMPLATE"
-                  render={({ field }) => (
-                    <FormItemLayout
-                      layout="flex-row-reverse"
-                      label="Phone verification message"
-                      description="To format the OTP code use `{{ .Code }}`"
-                    >
-                      <FormControl_Shadcn_>
-                        <Input_Shadcn_
-                          type="text"
-                          {...field}
-                          disabled={!canUpdateConfig}
-                        />
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-              </CardContent>
-
-              <CardFooter className="justify-end space-x-2">
-                {phoneForm.formState.isDirty && (
-                  <Button type="default" onClick={() => phoneForm.reset()}>
-                    Cancel
-                  </Button>
-                )}
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={
-                    !canUpdateConfig ||
-                    isUpdatingPhoneForm ||
-                    !phoneForm.formState.isDirty
-                  }
-                  loading={isUpdatingPhoneForm}
-                >
-                  Save changes
-                </Button>
-              </CardFooter>
-            </Card>
-          </form>
-        </Form_Shadcn_>
-      </ScaffoldSection>
-      <ConfirmationModal
-        visible={isConfirmationModalVisible}
-        title="Confirm SMS MFA"
-        confirmLabel="Confirm and save"
-        onCancel={() => setIsConfirmationModalVisible(false)}
-        onConfirm={() => {
-          setIsConfirmationModalVisible(false)
-          phoneForm.handleSubmit(onSubmitPhoneForm)()
-        }}
-        variant="warning"
-      >
-        Enabling SMS MFA will result in an additional charge of <span translate="no">$75</span> per
-        month for the first project in the organization and an additional{' '}
-        <span translate="no">$10</span> per month for additional projects.
-        <p className="mt-2">
-          Billing will start immediately upon enabling this add-on, regardless of whether your
-          customers are using SMS MFA.
-        </p>
-      </ConfirmationModal>
     </>
   )
 }

@@ -50,6 +50,11 @@ export const authKeys = {
     ] as const,
 
   authConfig: (projectRef: string | undefined) => ['projects', projectRef, 'auth-config'] as const,
+  authMFA: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+  ) => ['branches', orgId, projectId, branchId, 'mfa-config'] as const,
   accessToken: () => ['access-token'] as const,
   authProviders: (
     orgId: string | undefined,
