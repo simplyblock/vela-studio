@@ -18,106 +18,16 @@ import { PROVIDERS_SCHEMAS } from '../AuthProvidersFormValidation'
 import { ColumnConfiguration, USERS_TABLE_COLUMNS } from './Users.constants'
 import { HeaderCell } from './UsersGridComponents'
 
-const GITHUB_AVATAR_URL = 'https://avatars.githubusercontent.com'
-const SUPPORTED_CSP_AVATAR_URLS = [GITHUB_AVATAR_URL, 'https://lh3.googleusercontent.com']
-
 export const formatUsersData = (users: User[]) => {
   return users.map((user) => {
-    const provider: string = (user.raw_app_meta_data?.provider as string) ?? ''
-    const providers: string[] = user.providers.map((x: string) => {
-      if (x.startsWith('sso')) return 'SAML'
-      return x
-    })
-
     return {
       id: user.id,
       email: user.email,
-      phone: user.phone,
-      created_at: user.created_at,
-      last_sign_in_at: user.last_sign_in_at,
-      providers: user.is_anonymous ? '-' : providers,
-      provider_icons: providers
-        .map((p) => {
-          return p === 'email'
-            ? `${BASE_PATH}/img/icons/email-icon2.svg`
-            : p === 'SAML'
-              ? `${BASE_PATH}/img/icons/saml-icon.svg`
-              : providerIconMap[p]
-                ? `${BASE_PATH}/img/icons/${providerIconMap[p]}.svg`
-                : undefined
-        })
-        .filter(Boolean),
-      // I think it's alright to just check via the main provider since email and phone should be mutually exclusive
-      provider_type: user.is_anonymous
-        ? 'Anonymous'
-        : provider === 'email'
-          ? '-'
-          : socialProviders.includes(provider)
-            ? 'Social'
-            : phoneProviders.includes(provider)
-              ? 'Phone'
-              : '-',
-      // [Joshen] Note that the images might not load due to CSP issues
-      img: getAvatarUrl(user),
+      created_at: user.createdTimestamp,
       name: getDisplayName(user),
     }
   })
 }
-
-const providers = {
-  social: [
-    { email: 'email-icon2' },
-    { apple: 'apple-icon' },
-    { azure: 'microsoft-icon' },
-    { bitbucket: 'bitbucket-icon' },
-    { discord: 'discord-icon' },
-    { facebook: 'facebook-icon' },
-    { figma: 'figma-icon' },
-    { github: 'github-icon' },
-    { gitlab: 'gitlab-icon' },
-    { google: 'google-icon' },
-    { kakao: 'kakao-icon' },
-    { keycloak: 'keycloak-icon' },
-    { linkedin_oidc: 'linkedin-icon' },
-    { notion: 'notion-icon' },
-    { twitch: 'twitch-icon' },
-    { twitter: 'twitter-icon' },
-    { slack_oidc: 'slack-icon' },
-    { slack: 'slack-icon' },
-    { spotify: 'spotify-icon' },
-    { workos: 'workos-icon' },
-    { zoom: 'zoom-icon' },
-  ],
-  phone: [
-    { twilio: 'twilio-icon' },
-    { messagebird: 'messagebird-icon' },
-    { textlocal: 'messagebird-icon' },
-    { vonage: 'messagebird-icon' },
-    { twilioverify: 'twilio-verify-icon' },
-  ],
-}
-
-// [Joshen] Just FYI this is not stress tested as I'm not sure what
-// all the potential values for each provider is under user.raw_app_meta_data.provider
-// Will need to go through one by one to properly verify https://supabase.com/docs/guides/auth/social-login
-// But I've made the UI handle to not render any icon if nothing matches in this map
-export const providerIconMap: { [key: string]: string } = Object.values([
-  ...providers.social,
-  ...providers.phone,
-]).reduce((a, b) => {
-  const [[key, value]] = Object.entries(b)
-  return { ...a, [key]: value }
-}, {})
-
-const socialProviders = providers.social.map((x) => {
-  const [key] = Object.keys(x)
-  return key
-})
-
-const phoneProviders = providers.phone.map((x) => {
-  const [key] = Object.keys(x)
-  return key
-})
 
 function toPrettyJsonString(value: unknown): string | undefined {
   if (!value) return undefined
@@ -134,119 +44,13 @@ function toPrettyJsonString(value: unknown): string | undefined {
 }
 
 export function getDisplayName(user: User, fallback = '-'): string {
-  const {
-    custom_claims,
-    displayName,
-    display_name,
-    fullName,
-    full_name,
-    familyName,
-    family_name,
-    givenName,
-    given_name,
-    surname,
-    lastName,
-    last_name,
-    firstName,
-    first_name,
-  } = user.raw_user_meta_data ?? {}
-
-  const {
-    displayName: ccDisplayName,
-    display_name: cc_display_name,
-    fullName: ccFullName,
-    full_name: cc_full_name,
-    familyName: ccFamilyName,
-    family_name: cc_family_name,
-    givenName: ccGivenName,
-    given_name: cc_given_name,
-    surname: ccSurname,
-    lastName: ccLastName,
-    last_name: cc_last_name,
-    firstName: ccFirstName,
-    first_name: cc_first_name,
-  } = (custom_claims ?? {}) as any
-
-  const last = toPrettyJsonString(
-    familyName ||
-      family_name ||
-      surname ||
-      lastName ||
-      last_name ||
-      ccFamilyName ||
-      cc_family_name ||
-      ccSurname ||
-      ccLastName ||
-      cc_last_name
-  )
-
-  const first = toPrettyJsonString(
-    givenName ||
-      given_name ||
-      firstName ||
-      first_name ||
-      ccGivenName ||
-      cc_given_name ||
-      ccFirstName ||
-      cc_first_name
-  )
-
   return (
-    toPrettyJsonString(
-      displayName ||
-        display_name ||
-        ccDisplayName ||
-        cc_display_name ||
-        fullName ||
-        full_name ||
-        ccFullName ||
-        cc_full_name ||
-        (first && last && `${first} ${last}`) ||
-        last ||
-        first
-    ) || fallback
+    toPrettyJsonString(`${user.firstName} ${user.lastName}`) || fallback
   )
 }
 
 export function getAvatarUrl(user: User): string | undefined {
-  const {
-    avatarUrl,
-    avatarURL,
-    avatar_url,
-    profileUrl,
-    profileURL,
-    profile_url,
-    profileImage,
-    profile_image,
-    profileImageUrl,
-    profileImageURL,
-    profile_image_url,
-  } = user.raw_user_meta_data ?? {}
-
-  const url = (avatarUrl ||
-    avatarURL ||
-    avatar_url ||
-    profileImage ||
-    profile_image ||
-    profileUrl ||
-    profileURL ||
-    profile_url ||
-    profileImageUrl ||
-    profileImageURL ||
-    profile_image_url ||
-    '') as unknown
-
-  if (typeof url !== 'string') return undefined
-  const isSupported = SUPPORTED_CSP_AVATAR_URLS.some((x) => url.startsWith(x))
-
-  // [Joshen] Only for GH, not entirely sure whats the image transformation equiv for Google
-  try {
-    const _url = new URL(url)
-    _url.searchParams.set('s', '24')
-    return isSupported ? (url.startsWith(GITHUB_AVATAR_URL) ? _url.href : url) : undefined
-  } catch (error) {
-    return isSupported ? url : undefined
-  }
+  return undefined
 }
 
 export const formatUserColumns = ({
@@ -305,7 +109,7 @@ export const formatUserColumns = ({
                     .join(', ')
                 : value.join(', ')
               : value
-        const isConfirmed = !!user?.confirmed_at
+        const isConfirmed = user?.emailVerified
 
         if (col.id === 'img') {
           return (
@@ -346,7 +150,7 @@ export const formatUserColumns = ({
               >
                 {/* [Joshen] Not convinced this is the ideal way to display the icons, but for now */}
                 {col.id === 'providers' &&
-                  row.provider_icons.map((icon: string, idx: number) => {
+                  row.provider_icons?.map((icon: string, idx: number) => {
                     const provider = row.providers[idx]
                     return (
                       <div

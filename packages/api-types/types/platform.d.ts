@@ -3,6 +3,8 @@
  * Do not make direct changes to the file.
  */
 
+import type { components as vela_components } from 'data/vela/vela-schema';
+
 export interface paths {
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/mfa': {
     parameters: {
@@ -9729,17 +9731,10 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AuthUserResponse'][]
+          'application/json': vela_components['schemas']['UserRepresentation']
         }
       }
       403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Failed to update GoTrue config hooks */
-      500: {
         headers: {
           [name: string]: unknown
         }
