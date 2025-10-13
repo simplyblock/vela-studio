@@ -43,7 +43,6 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const isEmailAuth = user.email !== null
-  const isPhoneAuth = user.attributes.phone !== null
   const isBanned = !user.enabled
 
   const providers = ((user.credentials?.map(credential => credential.type)) ?? []).map(
@@ -305,29 +304,6 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
                 }
               />
             </>
-          )}
-          {isPhoneAuth && (
-            <RowAction
-              title="Send OTP"
-              description="Passwordless login via phone for the user"
-              button={{
-                icon: <Mail />,
-                text: 'Send OTP',
-                isLoading: isSendingOTP,
-                disabled: !canSendOtp,
-                onClick: () => {
-                  if (projectRef) sendOTP({ projectRef, user })
-                },
-              }}
-              success={
-                successAction === 'send_otp'
-                  ? {
-                      title: 'OTP sent',
-                      description: `The link in the OTP SMS is valid for ${formattedExpiry}`,
-                    }
-                  : undefined
-              }
-            />
           )}
         </div>
 

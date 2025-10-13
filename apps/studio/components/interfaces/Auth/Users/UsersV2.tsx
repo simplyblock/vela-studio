@@ -49,7 +49,6 @@ import { UserPanel } from './UserPanel'
 import {
   ColumnConfiguration,
   MAX_BULK_DELETE,
-  PROVIDER_FILTER_OPTIONS,
   USERS_TABLE_COLUMNS,
 } from './Users.constants'
 import { formatUserColumns, formatUsersData } from './Users.utils'
@@ -68,12 +67,10 @@ export const UsersV2 = () => {
   const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
 
   const {
-    authenticationShowProviderFilter: showProviderFilter,
     authenticationShowSortByEmail: showSortByEmail,
     authenticationShowSortByPhone: showSortByPhone,
     authenticationShowUserTypeFilter: showUserTypeFilter,
   } = useIsFeatureEnabled([
-    'authentication:show_provider_filter',
     'authentication:show_sort_by_email',
     'authentication:show_sort_by_phone',
     'authentication:show_user_type_filter',
@@ -84,7 +81,6 @@ export const UsersV2 = () => {
   const [filter, setFilter] = useState<Filter>('all')
   const [filterKeywords, setFilterKeywords] = useState('')
   const [selectedColumns, setSelectedColumns] = useState<string[]>([])
-  const [selectedProviders, setSelectedProviders] = useState<string[]>([])
   const [sortByValue, setSortByValue] = useState<string>('created_at:desc')
 
   const [selectedUser, setSelectedUser] = useState<string>()
@@ -120,7 +116,6 @@ export const UsersV2 = () => {
       branch,
       keywords: filterKeywords,
       filter: filter === 'all' ? undefined : filter,
-      providers: selectedProviders,
       sort: sortColumn as 'created_at' | 'email' | 'phone',
       order: sortOrder as 'asc' | 'desc',
     },
@@ -136,7 +131,6 @@ export const UsersV2 = () => {
     branch,
     keywords: filterKeywords,
     filter: filter === 'all' ? undefined : filter,
-    providers: selectedProviders,
   })
 
   const { mutateAsync: deleteUser } = useUserDeleteMutation()
@@ -337,21 +331,6 @@ export const UsersV2 = () => {
                       </SelectGroup_Shadcn_>
                     </SelectContent_Shadcn_>
                   </Select_Shadcn_>
-                )}
-
-                {showProviderFilter && (
-                  <FilterPopover
-                    name="Provider"
-                    options={PROVIDER_FILTER_OPTIONS}
-                    labelKey="name"
-                    valueKey="value"
-                    iconKey="icon"
-                    activeOptions={selectedProviders}
-                    labelClass="text-xs"
-                    maxHeightClass="h-[190px]"
-                    className="w-52"
-                    onSaveFilters={setSelectedProviders}
-                  />
                 )}
 
                 <div className="border-r border-strong h-6" />

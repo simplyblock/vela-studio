@@ -50,8 +50,6 @@ export const useUsersInfiniteQuery = <TData = UsersData>(
   { branch, keywords, filter, providers, sort, order }: UsersVariables,
   { enabled = true, ...options }: UseInfiniteQueryOptions<UsersData, UsersError, TData> = {}
 ) => {
-  const isActive = branch?.status === 'ACTIVE_HEALTHY'
-
   return useInfiniteQuery<UsersData, UsersError, TData>(
     authKeys.usersInfinite(branch?.organization_id, branch?.project_id, branch?.id, {
       keywords,
@@ -64,7 +62,7 @@ export const useUsersInfiniteQuery = <TData = UsersData>(
       return getBranchUsers({ branch, page: pageParam }, signal)
     },
     {
-      enabled: enabled && typeof branch !== 'undefined' && isActive,
+      enabled: enabled && typeof branch !== 'undefined',
       getNextPageParam(lastPage, pages) {
         const page = pages.length
         const hasNextPage = lastPage.result.length >= USERS_PAGE_LIMIT
