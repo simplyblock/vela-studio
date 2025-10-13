@@ -18,11 +18,12 @@ export type Database = components['schemas']['DatabaseDetailResponse']
 export async function getReadReplicas({ branch }: ReadReplicasVariables, signal?: AbortSignal) {
   if (!branch) throw new Error('Branch is required')
 
-  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/databases`, {
+  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/branches/{branch}/databases`, {
     params: {
       path: {
         slug: branch.organization_id,
         ref: branch.project_id,
+        branch: branch.id,
       },
     },
     signal,

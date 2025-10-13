@@ -60,7 +60,7 @@ import {
 } from './SQLEditor.utils'
 import { useAddDefinitions } from './useAddDefinitions'
 import UtilityPanel from './UtilityPanel/UtilityPanel'
-import { useSelectedBranchQuery } from 'data/branches/selected-branch-query' // Load the monaco editor client-side only (does not behave well server-side)
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 // Load the monaco editor client-side only (does not behave well server-side)
 const MonacoEditor = dynamic(() => import('./MonacoEditor'), { ssr: false })
@@ -578,12 +578,11 @@ export const SQLEditor = () => {
 
   useEffect(() => {
     if (isSuccessReadReplicas) {
-      console.log(projectRef, 'isSuccessReadReplicas')
-      const primaryDatabase = databases.find((db) => db.identifier === projectRef)
+      const primaryDatabase = databases.find((db) => db.identifier === branchRef)
       databaseSelectorState.setSelectedDatabaseId(primaryDatabase?.identifier)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessReadReplicas, databases, projectRef])
+  }, [isSuccessReadReplicas, databases, branchRef])
 
   useEffect(() => {
     if (snapV2.diffContent !== undefined) {
