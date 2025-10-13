@@ -54,6 +54,22 @@ export interface paths {
     patch?: never
     trace?: never
   },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/logs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getLogs']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers': {
     parameters: {
       query?: never
@@ -9842,6 +9858,40 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_getLogs: {
+    parameters: {
+      query: {
+        user?: string
+        dateFrom?: number
+        dateTo?: number
+        errors_only?: boolean
+      }
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': vela_components['schemas']['EventRepresentation'][];
+        };
       }
       403: {
         headers: {
