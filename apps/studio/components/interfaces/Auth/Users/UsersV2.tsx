@@ -46,11 +46,7 @@ import { GenericSkeletonLoader } from 'ui-patterns/ShimmeringLoader'
 import { AddUserDropdown } from './AddUserDropdown'
 import { DeleteUserModal } from './DeleteUserModal'
 import { UserPanel } from './UserPanel'
-import {
-  ColumnConfiguration,
-  MAX_BULK_DELETE,
-  USERS_TABLE_COLUMNS,
-} from './Users.constants'
+import { ColumnConfiguration, MAX_BULK_DELETE, USERS_TABLE_COLUMNS } from './Users.constants'
 import { formatUserColumns, formatUsersData } from './Users.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
@@ -201,7 +197,15 @@ export const UsersV2 = () => {
     setIsDeletingUsers(true)
     try {
       await Promise.all(
-        userIds.map((id) => deleteUser({ branch, userId: id, skipInvalidation: true }))
+        userIds.map((id) =>
+          deleteUser({
+            orgId: branch.organization_id,
+            projectId: branch.project_id,
+            branchId: branch.id,
+            userId: id,
+            skipInvalidation: true,
+          })
+        )
       )
       // [Joshen] Skip invalidation within RQ to prevent multiple requests, then invalidate once at the end
       await Promise.all([
