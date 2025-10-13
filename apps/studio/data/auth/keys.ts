@@ -35,9 +35,8 @@ export const authKeys = {
     projectId: string | undefined,
     branchId: string | undefined,
     params?: {
-      keywords: string | undefined
       filter: string | undefined
-      providers: string[] | undefined
+      keywords: string | undefined
     }
   ) =>
     [
