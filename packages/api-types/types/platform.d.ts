@@ -102,6 +102,22 @@ export interface paths {
     patch?: never
     trace?: never
   },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get?: never
+    put?: never
+    post?: never
+    delete: operations['BranchAuthController_deleteUser']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/sessions': {
     parameters: {
       query?: never
@@ -282,7 +298,7 @@ export interface paths {
     put?: never
     post?: never
     /** Delete user with given ID */
-    delete: operations['UsersController_deleteUserById']
+    delete?: never
     options?: never
     head?: never
     /** Updates user with given ID */
@@ -9792,6 +9808,34 @@ export interface operations {
       }
     }
   },
+  BranchAuthController_deleteUser: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   BranchAuthController_getMFA: {
     parameters: {
       query?: never
@@ -10390,43 +10434,6 @@ export interface operations {
         content?: never
       }
       /** @description Failed to create user */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  UsersController_deleteUserById: {
-    parameters: {
-      query?: {
-        /** @description Boolean string, true or false */
-        soft_delete?: boolean
-      }
-      header?: never
-      path: {
-        id: string
-        /** @description Project ref */
-        ref: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Failed to delete user */
       500: {
         headers: {
           [name: string]: unknown

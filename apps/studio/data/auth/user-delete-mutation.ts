@@ -7,16 +7,20 @@ import { authKeys } from './keys'
 import { Branch } from 'api-types/types'
 
 export type UserDeleteVariables = {
-  branch: Branch
+  orgId: string
+  projectId: string
+  branchId: string
   userId: string
   skipInvalidation?: boolean
 }
 
-export async function deleteUser({ branch, userId }: UserDeleteVariables) {
-  const { data, error } = await del('/platform/auth/{ref}/users/{id}', {
+export async function deleteUser({ orgId, projectId, branchId, userId }: UserDeleteVariables) {
+  const { data, error } = await del('/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}', {
     params: {
       path: {
-        ref: branch.project_id,
+        slug: orgId,
+        ref: projectId,
+        branch: branchId,
         id: userId,
       },
     },
@@ -41,15 +45,15 @@ export const useUserDeleteMutation = ({
     (vars) => deleteUser(vars),
     {
       async onSuccess(data, variables, context) {
-        const { branch, skipInvalidation = false } = variables
+        const { orgId, projectId, branchId, skipInvalidation = false } = variables
 
         if (!skipInvalidation) {
           await Promise.all([
             queryClient.invalidateQueries(
-              authKeys.usersInfinite(branch.organization_id, branch.project_id, branch.id)
+              authKeys.usersInfinite(orgId, projectId, branchId)
             ),
             queryClient.invalidateQueries(
-              authKeys.usersCount(branch.organization_id, branch.project_id, branch.id)
+              authKeys.usersCount(orgId, projectId, branchId)
             ),
           ])
         }
