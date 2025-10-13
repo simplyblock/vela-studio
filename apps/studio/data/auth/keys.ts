@@ -79,4 +79,9 @@ export const authKeys = {
     branchId: string | undefined,
     userId: string | undefined
   ) => ['branches', orgId, projectId, branchId, 'users', userId, 'sessions'] as const,
+  logs: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+  ) => ['branches', orgId, projectId, branchId, 'logs'] as const,
 }
