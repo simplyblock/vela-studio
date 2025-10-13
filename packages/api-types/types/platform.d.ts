@@ -110,7 +110,7 @@ export interface paths {
       cookie?: never
     },
     get?: never
-    put?: never
+    put: operations['BranchAuthController_updateUser']
     post?: never
     delete: operations['BranchAuthController_deleteUser']
     options?: never
@@ -285,24 +285,6 @@ export interface paths {
     options?: never
     head?: never
     patch?: never
-    trace?: never
-  }
-  '/platform/auth/{ref}/users/{id}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    /** Delete user with given ID */
-    delete?: never
-    options?: never
-    head?: never
-    /** Updates user with given ID */
-    patch: operations['UsersController_updateUserById']
     trace?: never
   }
   '/platform/auth/{ref}/users/{id}/factors': {
@@ -9529,50 +9511,7 @@ export interface components {
       table_id?: number
     }
     UpdateUserBody: {
-      ban_duration?: string
-    }
-    UpdateUserReponse: {
-      aud?: string
-      banned_until?: string
-      confirmation_sent_at?: string
-      confirmation_token?: string
-      confirmed_at?: string
-      created_at?: string
-      deleted_at?: string
-      email?: string
-      email_change?: string
-      email_change_confirm_status?: number
-      email_change_sent_at?: string
-      email_change_token_current?: string
-      email_change_token_new?: string
-      email_confirmed_at?: string
-      encrypted_password?: string
-      /** Format: uuid */
-      id?: string
-      /** Format: uuid */
-      instance_id?: string
-      invited_at?: string
-      is_anonymous?: boolean
-      is_sso_user?: boolean
-      is_super_admin?: boolean
-      last_sign_in_at?: string
-      phone?: string
-      phone_change?: string
-      phone_change_sent_at?: string
-      phone_change_token?: string
-      phone_confirmed_at?: string
-      raw_app_meta_data?: {
-        [key: string]: unknown
-      }
-      raw_user_meta_data?: {
-        [key: string]: unknown
-      }
-      reauthentication_sent_at?: string
-      reauthentication_token?: string
-      recovery_sent_at?: string
-      recovery_token?: string
-      role?: string
-      updated_at?: string
+      enabled: boolean
     }
     UpdateVercelConnectionsBody: {
       env_sync_targets?: ('production' | 'preview' | 'development')[]
@@ -9799,6 +9738,38 @@ export interface operations {
         content: {
           "application/json": number;
         }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_updateUser: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateUserBody']
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       403: {
         headers: {
@@ -10434,46 +10405,6 @@ export interface operations {
         content?: never
       }
       /** @description Failed to create user */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  UsersController_updateUserById: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        id: string
-        /** @description Project ref */
-        ref: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateUserBody']
-      }
-    }
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['UpdateUserReponse']
-        }
-      }
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Failed to update user with given ID */
       500: {
         headers: {
           [name: string]: unknown
