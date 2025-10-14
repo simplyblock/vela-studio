@@ -12,22 +12,29 @@ export type UserCreateVariables = {
     email: string
     password: string
     autoConfirmUser: boolean
+    forcePasswordUpdate: boolean
   }
 }
 
 export async function createUser({ branch, user }: UserCreateVariables) {
-  const { data, error } = await post('/platform/auth/{ref}/users', {
-    params: {
-      path: {
-        ref: branch.project_id,
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users',
+    {
+      params: {
+        path: {
+          slug: branch.organization_id,
+          ref: branch.project_id,
+          branch: branch.id,
+        },
       },
-    },
-    body: {
-      email: user.email,
-      password: user.password,
-      email_confirm: user.autoConfirmUser,
-    },
-  })
+      body: {
+        email: user.email,
+        password: user.password,
+        email_confirm: user.autoConfirmUser,
+        force_password_update: user.forcePasswordUpdate
+      },
+    }
+  )
   if (error) handleError(error)
   return data
 }

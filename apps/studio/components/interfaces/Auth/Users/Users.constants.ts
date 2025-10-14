@@ -1,6 +1,3 @@
-import { BASE_PATH } from 'lib/constants'
-import { PROVIDER_PHONE, PROVIDERS_SCHEMAS } from '../AuthProvidersFormValidation'
-
 export const PANEL_PADDING = 'px-5 py-5'
 
 // [Joshen] Temporary fix as bulk delete will fire n requests since Auth + API do not have a bulk delete endpoint yet
@@ -20,5 +17,4 @@ export const USERS_TABLE_COLUMNS: UsersTableColumn[] = [
   { id: 'name', name: 'Display name', minWidth: 0, width: 150 },
   { id: 'email', name: 'Email', width: 300 },
   { id: 'created_at', name: 'Created at', width: 260 },
-  { id: 'last_sign_in_at', name: 'Last sign in at', width: 260 },
 ]
