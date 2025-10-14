@@ -3,7 +3,6 @@ import { Clipboard, Trash, UserIcon } from 'lucide-react'
 import { Column, useRowSelection } from 'react-data-grid'
 
 import { User } from 'data/auth/users-infinite-query'
-import { BASE_PATH } from 'lib/constants'
 import {
   Checkbox_Shadcn_,
   cn,
@@ -44,9 +43,12 @@ function toPrettyJsonString(value: unknown): string | undefined {
 }
 
 export function getDisplayName(user: User, fallback = '-'): string {
-  return (
-    toPrettyJsonString(`${user.firstName} ${user.lastName}`) || fallback
-  )
+  if (typeof user.firstName === 'undefined' && typeof user.lastName === 'undefined') return fallback
+  if (typeof user.firstName === 'undefined' && typeof user.lastName !== 'undefined')
+    return user.lastName || fallback
+  if (typeof user.lastName === 'undefined' && typeof user.firstName !== 'undefined')
+    return user.firstName || fallback
+  return toPrettyJsonString(`${user.firstName} ${user.lastName}`) || fallback
 }
 
 export function getAvatarUrl(user: User): string | undefined {

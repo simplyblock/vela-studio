@@ -24,7 +24,6 @@ import { BanUserModal } from './BanUserModal'
 import { DeleteUserModal } from './DeleteUserModal'
 import { UserHeader } from './UserHeader'
 import { PANEL_PADDING } from './Users.constants'
-import { providerIconMap } from './Users.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 import { useAuthUserSessions } from 'data/auth/auth-user-sessions-query'
 
@@ -45,21 +44,22 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   const isEmailAuth = user.email !== null
   const isBanned = !user.enabled
 
-  const providers = ((user.credentials?.map(credential => credential.type)) ?? []).map(
+  const providers = (user.credentials?.map((credential) => credential.type) ?? []).map(
     (provider: string) => {
       return {
         name: provider.startsWith('sso') ? 'SAML' : provider,
         icon:
           provider === 'email'
             ? `${BASE_PATH}/img/icons/email-icon2.svg`
-            : providerIconMap[provider]
-              ? `${BASE_PATH}/img/icons/${providerIconMap[provider]}.svg`
-              : undefined,
+            : undefined,
       }
     }
   )
 
-  const { data: userSessions, isLoading: isLoadingSessions } = useAuthUserSessions({ branch, userId: user.id })
+  const { data: userSessions, isLoading: isLoadingSessions } = useAuthUserSessions({
+    branch,
+    userId: user.id,
+  })
 
   const lastSessionAt = useMemo(() => {
     if (isLoadingSessions) return undefined
@@ -72,18 +72,18 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
     }, undefined)
   }, [userSessions, isLoadingSessions])
 
-  // FIXME: need permission implemented 
-  const { can: canUpdateUser } = {can:true}
-    // FIXME: need permission implemented 
-  const { can: canSendMagicLink } = {can:true}
-    // FIXME: need permission implemented 
-  const { can: canSendRecovery } = {can:true}
-    // FIXME: need permission implemented 
-  const { can: canSendOtp } = {can:true}
-    // FIXME: need permission implemented 
-  const { can: canRemoveUser } = {can:true}
-    // FIXME: need permission implemented 
-  const { can: canRemoveMFAFactors } = {can:true}
+  // FIXME: need permission implemented
+  const { can: canUpdateUser } = { can: true }
+  // FIXME: need permission implemented
+  const { can: canSendMagicLink } = { can: true }
+  // FIXME: need permission implemented
+  const { can: canSendRecovery } = { can: true }
+  // FIXME: need permission implemented
+  const { can: canSendOtp } = { can: true }
+  // FIXME: need permission implemented
+  const { can: canRemoveUser } = { can: true }
+  // FIXME: need permission implemented
+  const { can: canRemoveMFAFactors } = { can: true }
 
   const [successAction, setSuccessAction] = useState<
     'send_magic_link' | 'send_recovery' | 'send_otp'
@@ -147,7 +147,11 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   }
 
   const handleUnban = () => {
-    if ((branch?.organization_id === undefined) || (branch?.project_id === undefined) || (branch?.id === undefined)) {
+    if (
+      branch?.organization_id === undefined ||
+      branch?.project_id === undefined ||
+      branch?.id === undefined
+    ) {
       return console.error('Branch is required')
     }
     if (user.id === undefined) {
@@ -178,7 +182,7 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
         {isBanned ? (
           <Admonition
             type="warning"
-            label={"User is currently banned"}
+            label={'User is currently banned'}
             className="border-r-0 border-l-0 rounded-none -mt-px [&_svg]:ml-0.5 mb-0"
           />
         ) : (
@@ -189,13 +193,15 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
           <RowData property="User UID" value={user.id} />
           <RowData
             property="Created at"
-            value={user.createdTimestamp ? dayjs(new Date(user.createdTimestamp)).format(DATE_FORMAT) : undefined}
+            value={
+              user.createdTimestamp
+                ? dayjs(new Date(user.createdTimestamp)).format(DATE_FORMAT)
+                : undefined
+            }
           />
           <RowData
             property="Last signed in"
-            value={
-              lastSessionAt ? dayjs(new Date(lastSessionAt)).format(DATE_FORMAT) : undefined
-            }
+            value={lastSessionAt ? dayjs(new Date(lastSessionAt)).format(DATE_FORMAT) : undefined}
           />
         </div>
 
@@ -333,11 +339,7 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
             className="!bg border-destructive-400"
           />
           <RowAction
-            title={
-              isBanned
-                ? 'User is currently banned'
-                : 'Ban user'
-            }
+            title={isBanned ? 'User is currently banned' : 'Ban user'}
             description={
               isBanned
                 ? 'User has no access to the project'
@@ -399,7 +401,10 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
       >
         <p className="text-sm text-foreground-light">
           Are you sure you want to remove the MFA factors for the user{' '}
-          <span className="text-foreground">{user.email ?? user.attributes.phone ?? 'this user'}</span>?
+          <span className="text-foreground">
+            {user.email ?? user.attributes.phone ?? 'this user'}
+          </span>
+          ?
         </p>
       </ConfirmationModal>
 

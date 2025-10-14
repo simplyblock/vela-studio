@@ -64,11 +64,9 @@ export const UsersV2 = () => {
 
   const {
     authenticationShowSortByEmail: showSortByEmail,
-    authenticationShowSortByPhone: showSortByPhone,
     authenticationShowUserTypeFilter: showUserTypeFilter,
   } = useIsFeatureEnabled([
     'authentication:show_sort_by_email',
-    'authentication:show_sort_by_phone',
     'authentication:show_user_type_filter',
   ])
 
@@ -112,7 +110,7 @@ export const UsersV2 = () => {
       branch,
       keywords: filterKeywords,
       filter: filter === 'all' ? undefined : filter,
-      sort: sortColumn as 'created_at' | 'email' | 'phone',
+      sort: sortColumn as 'created_at' | 'email',
       order: sortOrder as 'asc' | 'desc',
     },
     {
@@ -403,17 +401,6 @@ export const UsersV2 = () => {
                           </DropdownMenuRadioItem>
                         </DropdownMenuSubContent>
                       </DropdownMenuSub>
-                      <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>Sort by last sign in at</DropdownMenuSubTrigger>
-                        <DropdownMenuSubContent>
-                          <DropdownMenuRadioItem value="last_sign_in_at:asc">
-                            Ascending
-                          </DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="last_sign_in_at:desc">
-                            Descending
-                          </DropdownMenuRadioItem>
-                        </DropdownMenuSubContent>
-                      </DropdownMenuSub>
                       {showSortByEmail && (
                         <DropdownMenuSub>
                           <DropdownMenuSubTrigger>Sort by email</DropdownMenuSubTrigger>
@@ -422,19 +409,6 @@ export const UsersV2 = () => {
                               Ascending
                             </DropdownMenuRadioItem>
                             <DropdownMenuRadioItem value="email:desc">
-                              Descending
-                            </DropdownMenuRadioItem>
-                          </DropdownMenuSubContent>
-                        </DropdownMenuSub>
-                      )}
-                      {showSortByPhone && (
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger>Sort by phone</DropdownMenuSubTrigger>
-                          <DropdownMenuSubContent>
-                            <DropdownMenuRadioItem value="phone:asc">
-                              Ascending
-                            </DropdownMenuRadioItem>
-                            <DropdownMenuRadioItem value="phone:desc">
                               Descending
                             </DropdownMenuRadioItem>
                           </DropdownMenuSubContent>
