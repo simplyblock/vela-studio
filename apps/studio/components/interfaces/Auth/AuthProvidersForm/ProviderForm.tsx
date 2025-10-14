@@ -8,7 +8,6 @@ import { Markdown } from 'components/interfaces/Markdown'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { ResourceItem } from 'components/ui/Resource/ResourceItem'
 import type { components } from 'data/api'
-import { useAuthConfigUpdateMutation } from 'data/auth/auth-config-update-mutation'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useCustomDomainsQuery } from 'data/custom-domains/custom-domains-query'
 
@@ -55,7 +54,6 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
   const [open, setOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
-  const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
   const { mutate: deleteAuthProvider, isLoading: isDeletingConfig } =
     useAuthProviderDeleteMutation()
   const { mutate: updateAuthProvider, isLoading: isUpdatingProvider } =
@@ -189,7 +187,6 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
             id={`provider-${config.displayName}-form`}
             name={`provider-${config.displayName}-form`}
             initialValues={initialValues}
-            /*validationSchema={provider.validationSchema}*/
             onSubmit={onSubmit}
             className="flex-1 overflow-hidden flex flex-col"
           >
@@ -275,14 +272,14 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
                             setOpen(false)
                             setUrlProvider(null)
                           }}
-                          disabled={isUpdatingConfig}
+                          disabled={isDeletingConfig || isUpdatingProvider}
                         >
                           Cancel
                         </Button>
                         <ButtonTooltip
                           htmlType="submit"
-                          loading={isUpdatingConfig}
-                          disabled={isUpdatingConfig || !canUpdateConfig || noChanges}
+                          loading={isDeletingConfig || isUpdatingProvider}
+                          disabled={isDeletingConfig || isUpdatingProvider || !canUpdateConfig || noChanges}
                           tooltip={{
                             content: {
                               side: 'bottom',
