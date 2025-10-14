@@ -275,57 +275,6 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
 
         <Separator />
 
-        <div className={cn('flex flex-col -space-y-1', PANEL_PADDING)}>
-          {isEmailAuth && (
-            <>
-              <RowAction
-                title="Reset password"
-                description="Send a password recovery email to the user"
-                button={{
-                  icon: <Mail />,
-                  text: 'Send password recovery',
-                  isLoading: isResettingPassword,
-                  disabled: !canSendRecovery,
-                  onClick: () => {
-                    if (projectRef) resetPassword({ projectRef, user })
-                  },
-                }}
-                success={
-                  successAction === 'send_recovery'
-                    ? {
-                        title: 'Password recovery sent',
-                        description: `The link in the email is valid for ${formattedExpiry}`,
-                      }
-                    : undefined
-                }
-              />
-              <RowAction
-                title="Send magic link"
-                description="Passwordless login via email for the user"
-                button={{
-                  icon: <Mail />,
-                  text: 'Send magic link',
-                  isLoading: isSendingMagicLink,
-                  disabled: !canSendMagicLink,
-                  onClick: () => {
-                    if (projectRef) sendMagicLink({ projectRef, user })
-                  },
-                }}
-                success={
-                  successAction === 'send_magic_link'
-                    ? {
-                        title: 'Magic link sent',
-                        description: `The link in the email is valid for ${formattedExpiry}`,
-                      }
-                    : undefined
-                }
-              />
-            </>
-          )}
-        </div>
-
-        <Separator />
-
         <div className={cn('flex flex-col', PANEL_PADDING)}>
           <p>Danger zone</p>
           <p className="text-sm text-foreground-light">
