@@ -95,7 +95,7 @@ export interface paths {
     },
     get: operations['BranchAuthController_getUsers']
     put?: never
-    post?: never
+    post: operations['BranchAuthController_createUsers']
     delete?: never
     options?: never
     head?: never
@@ -264,23 +264,6 @@ export interface paths {
     get: operations['TemplateController_getTemplate']
     put?: never
     post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/auth/{ref}/users': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Creates user */
-    post: operations['UsersController_createUser']
     delete?: never
     options?: never
     head?: never
@@ -5579,6 +5562,7 @@ export interface components {
       email: string
       email_confirm: boolean
       password: string
+      force_password_update: boolean
     }
     CreateUserContentFolderResponse: {
       id: string
@@ -9713,6 +9697,39 @@ export interface operations {
       }
     }
   },
+  BranchAuthController_createUsers: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateUserBody']
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': vela_components['schemas']['UserRepresentation']
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
   BranchAuthController_getUserCount: {
     parameters: {
       query?: {
@@ -10366,45 +10383,6 @@ export interface operations {
         content?: never
       }
       /** @description Failed to retrieve GoTrue template */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  UsersController_createUser: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description Project ref */
-        ref: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateUserBody']
-      }
-    }
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['CreateUserResponse']
-        }
-      }
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Failed to create user */
       500: {
         headers: {
           [name: string]: unknown

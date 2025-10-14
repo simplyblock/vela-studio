@@ -13,12 +13,12 @@ import {
   DialogHeader,
   DialogSectionSeparator,
   DialogTitle,
+  Form_Shadcn_,
   FormControl_Shadcn_,
   FormField_Shadcn_,
   FormItem_Shadcn_,
   FormLabel_Shadcn_,
   FormMessage_Shadcn_,
-  Form_Shadcn_,
   Input_Shadcn_,
 } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
@@ -32,17 +32,18 @@ const CreateUserFormSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Must be a valid email address'),
   password: z.string().min(1, 'Password is required'),
   autoConfirmUser: z.boolean(),
+  forcePasswordUpdate: z.boolean(),
 })
 
 const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
   const { data: branch } = useSelectedBranchQuery()
-   // FIXME: need permission implemented  
-  const { can: canCreateUsers } = {can:true}
+  // FIXME: need permission implemented
+  const { can: canCreateUsers } = { can: true }
 
   const { mutate: createUser, isLoading: isCreatingUser } = useUserCreateMutation({
     onSuccess(res) {
       toast.success(`Successfully created user: ${res.email}`)
-      form.reset({ email: '', password: '', autoConfirmUser: true })
+      form.reset({ email: '', password: '', autoConfirmUser: true, forcePasswordUpdate: true })
       setVisible(false)
     },
   })
@@ -55,7 +56,7 @@ const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
 
   const form = useForm<z.infer<typeof CreateUserFormSchema>>({
     resolver: zodResolver(CreateUserFormSchema),
-    defaultValues: { email: '', password: '', autoConfirmUser: true },
+    defaultValues: { email: '', password: '', autoConfirmUser: true, forcePasswordUpdate: true },
   })
 
   return (
@@ -142,6 +143,22 @@ const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
                     />
                   </FormControl_Shadcn_>
                   <FormLabel_Shadcn_>Auto Confirm User?</FormLabel_Shadcn_>
+                </FormItem_Shadcn_>
+              )}
+            />
+
+            <FormField_Shadcn_
+              name="forcePasswordUpdate"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem_Shadcn_ className="flex items-center gap-x-2">
+                  <FormControl_Shadcn_>
+                    <Checkbox_Shadcn_
+                      checked={field.value}
+                      onCheckedChange={(value) => field.onChange(value)}
+                    />
+                  </FormControl_Shadcn_>
+                  <FormLabel_Shadcn_>User must update password on first login?</FormLabel_Shadcn_>
                 </FormItem_Shadcn_>
               )}
             />
