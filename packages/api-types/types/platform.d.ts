@@ -64,7 +64,7 @@ export interface paths {
     get: operations['BackupSchedulesController_getOrgSchedules']
     put: operations['BackupSchedulesController_updateOrgSchedule']
     post?: never
-    delete?: never
+    delete: operations['BackupSchedulesController_deleteOrgSchedule']
     options?: never
     head?: never
     patch?: never
@@ -80,7 +80,7 @@ export interface paths {
     get: operations['BackupSchedulesController_getBranchSchedules']
     put: operations['BackupSchedulesController_updateBranchSchedule']
     post?: never
-    delete?: never
+    delete: operations['BackupSchedulesController_deleteBranchSchedule']
     options?: never
     head?: never
     patch?: never
@@ -10725,6 +10725,76 @@ export interface operations {
         }
         content: {
           "application/json": vela_components["schemas"]["BackupSchedule"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_deleteOrgSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupScheduleDeletePublic"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_deleteBranchSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupScheduleDeletePublic"];
         }
       }
       403: {
