@@ -21,11 +21,11 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const client = getVelaClient(req)
   const { data: schedules, success } = await client.getOrFail(
     res,
-    '/backup/organizations/{org_ref}/schedule',
+    '/backup/organizations/{organization_id}/schedule',
     {
       params: {
         path: {
-          org_ref: slug,
+          organization_id: slug,
         },
       },
     }
@@ -37,7 +37,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     return {
       backup_schedule_id: schedule.id,
       organization_id: slug,
-      env_type: schedule.env_type,
+      env_type: schedule.env_type ?? undefined,
       rows: schedule.rows,
     }
   })
@@ -49,11 +49,11 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const client = getVelaClient(req)
   const { data, success } = await client.postOrFail(
     res,
-    '/backup/organizations/{org_ref}/schedule',
+    '/backup/organizations/{organization_id}/schedule',
     {
       params: {
         path: {
-          org_ref: slug,
+          organization_id: slug,
         },
       },
       body: req.body,

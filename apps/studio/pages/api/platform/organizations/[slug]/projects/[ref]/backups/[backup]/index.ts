@@ -7,10 +7,10 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   const { backup } = getPlatformQueryParams(req, 'backup')
 
   const client = getVelaClient(req)
-  return client.proxyDelete(res, '/backup/{backup_ref}', {
+  return client.proxyDelete(res, '/backup/{backup_id}', {
     params: {
       path: {
-        backup_ref: backup,
+        backup_id: backup,
       },
     },
   })

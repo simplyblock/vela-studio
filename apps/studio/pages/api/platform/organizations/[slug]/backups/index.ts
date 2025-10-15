@@ -19,11 +19,11 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Backup>) => {
   const client = getVelaClient(req)
   const { data: backups, success: backupSuccess } = await client.getOrFail(
     res,
-    '/backup/organizations/{org_ref}/',
+    '/backup/organizations/{organization_id}/',
     {
       params: {
         path: {
-          org_ref: slug,
+          organization_id: slug,
         },
       },
     }

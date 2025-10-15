@@ -549,53 +549,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/backup/branches/{branch_ref}/schedule": {
+    "/backup/organizations/{organization_id}/schedule": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List Schedules */
-        get: operations["list_schedules"];
-        /** Add Or Replace Backup Schedule */
-        put: operations["add_or_replace_backup_schedule"];
-        /** Add Or Replace Backup Schedule */
-        post: operations["add_or_replace_backup_schedule"];
+        /** List Org Schedules */
+        get: operations["list_org_schedules"];
+        /** Add Or Replace Org Backup Schedule */
+        put: operations["add_or_replace_org_backup_schedule"];
+        /** Add Or Replace Org Backup Schedule */
+        post: operations["add_or_replace_org_backup_schedule"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/backup/organizations/{org_ref}/schedule": {
+    "/backup/branches/{branch_id}/schedule": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List Schedules */
-        get: operations["list_schedules"];
-        /** Add Or Replace Backup Schedule */
-        put: operations["add_or_replace_backup_schedule"];
-        /** Add Or Replace Backup Schedule */
-        post: operations["add_or_replace_backup_schedule"];
+        /** List Branch Schedules */
+        get: operations["list_branch_schedules"];
+        /** Add Or Replace Branch Backup Schedule */
+        put: operations["add_or_replace_branch_backup_schedule"];
+        /** Add Or Replace Branch Backup Schedule */
+        post: operations["add_or_replace_branch_backup_schedule"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/backup/branches/{branch_ref}/": {
+    "/backup/organizations/{organization_id}/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List Backups */
-        get: operations["list_backups"];
+        /** List Org Backups */
+        get: operations["list_org_backups"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/backup/branches/{branch_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Branch Backups */
+        get: operations["list_branch_backups"];
         put?: never;
         /** Manual Backup */
         post: operations["manual_backup"];
@@ -605,24 +622,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/backup/organizations/{org_ref}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List Backups */
-        get: operations["list_backups"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/backup/schedule/{schedule_ref}/": {
+    "/backup/schedule/{schedule_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -639,7 +639,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/backup/{backup_ref}": {
+    "/backup/{backup_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -18674,20 +18674,12 @@ export interface components {
              * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
              */
             id: string;
-            /**
-             * ULID
-             * Format: ulid
-             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
-             */
-            organization_id: string;
-            /**
-             * ULID
-             * Format: ulid
-             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
-             */
-            branch_id: string;
+            /** Organization Id */
+            organization_id: string | null;
+            /** Branch Id */
+            branch_id: string | null;
             /** Env Type */
-            env_type: string;
+            env_type: string | null;
             /** Rows */
             rows: components["schemas"]["BackupScheduleRowPublic"][];
         };
@@ -18902,6 +18894,10 @@ export interface components {
              * @default false
              */
             require_mfa?: boolean;
+            /** Max Backups */
+            max_backups: number;
+            /** Environments */
+            environments: string;
         };
         /** OrganizationAuditLog */
         OrganizationAuditLog: {
@@ -18926,8 +18922,8 @@ export interface components {
             require_mfa?: boolean;
             /** Max Backups */
             max_backups: number;
-            /** Envs */
-            envs: string;
+            /** Environments */
+            environments: string;
         };
         /** OrganizationUpdate */
         OrganizationUpdate: {
@@ -18939,8 +18935,8 @@ export interface components {
             require_mfa?: boolean | null;
             /** Max Backups */
             max_backups?: number | null;
-            /** Envs */
-            envs?: string | null;
+            /** Environments */
+            environments?: string | null;
         };
         /** ProjectCreate */
         ProjectCreate: {
@@ -23416,15 +23412,14 @@ export interface operations {
             };
         };
     };
-    list_schedules: {
+    list_org_schedules: {
         parameters: {
             query?: {
-                org_ref?: string | null;
                 env_type?: string | null;
             };
             header?: never;
             path: {
-                branch_ref: string | null;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -23450,14 +23445,12 @@ export interface operations {
             };
         };
     };
-    add_or_replace_backup_schedule: {
+    add_or_replace_org_backup_schedule: {
         parameters: {
-            query?: {
-                org_ref?: string | null;
-            };
+            query?: never;
             header?: never;
             path: {
-                branch_ref: string | null;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -23487,14 +23480,12 @@ export interface operations {
             };
         };
     };
-    add_or_replace_backup_schedule: {
+    add_or_replace_org_backup_schedule: {
         parameters: {
-            query?: {
-                org_ref?: string | null;
-            };
+            query?: never;
             header?: never;
             path: {
-                branch_ref: string | null;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -23524,15 +23515,14 @@ export interface operations {
             };
         };
     };
-    list_schedules: {
+    list_branch_schedules: {
         parameters: {
             query?: {
-                branch_ref?: string | null;
                 env_type?: string | null;
             };
             header?: never;
             path: {
-                org_ref: string | null;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -23558,14 +23548,12 @@ export interface operations {
             };
         };
     };
-    add_or_replace_backup_schedule: {
+    add_or_replace_branch_backup_schedule: {
         parameters: {
-            query?: {
-                branch_ref?: string | null;
-            };
+            query?: never;
             header?: never;
             path: {
-                org_ref: string | null;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -23595,14 +23583,12 @@ export interface operations {
             };
         };
     };
-    add_or_replace_backup_schedule: {
+    add_or_replace_branch_backup_schedule: {
         parameters: {
-            query?: {
-                branch_ref?: string | null;
-            };
+            query?: never;
             header?: never;
             path: {
-                org_ref: string | null;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -23632,15 +23618,47 @@ export interface operations {
             };
         };
     };
-    list_backups: {
+    list_org_backups: {
         parameters: {
             query?: {
-                org_ref?: string | null;
                 env_type?: string | null;
             };
             header?: never;
             path: {
-                branch_ref: string | null;
+                organization_id: string | null;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackupPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_branch_backups: {
+        parameters: {
+            query?: {
+                env_type?: string | null;
+            };
+            header?: never;
+            path: {
+                branch_id: string | null;
             };
             cookie?: never;
         };
@@ -23671,7 +23689,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                branch_ref: string;
+                branch_id: string;
             };
             cookie?: never;
         };
@@ -23697,46 +23715,12 @@ export interface operations {
             };
         };
     };
-    list_backups: {
-        parameters: {
-            query?: {
-                branch_ref?: string | null;
-                env_type?: string | null;
-            };
-            header?: never;
-            path: {
-                org_ref: string | null;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BackupPublic"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     delete_schedule: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                schedule_ref: string | null;
+                schedule_id: string | null;
             };
             cookie?: never;
         };
@@ -23767,7 +23751,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                backup_ref: string;
+                backup_id: string;
             };
             cookie?: never;
         };
