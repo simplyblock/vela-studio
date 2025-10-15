@@ -8,6 +8,7 @@ import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import CopyButton from 'components/ui/CopyButton'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
+import { useUserProvidersQuery } from 'data/auth/user-providers-query'
 import { useUserDeleteMFAFactorsMutation } from 'data/auth/user-delete-mfa-factors-mutation'
 import { useUserResetPasswordMutation } from 'data/auth/user-reset-password-mutation'
 import { useUserSendMagicLinkMutation } from 'data/auth/user-send-magic-link-mutation'
@@ -44,17 +45,13 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
   const isEmailAuth = user.email !== null
   const isBanned = !user.enabled
 
-  const providers = (user.credentials?.map((credential) => credential.type) ?? []).map(
-    (provider: string) => {
-      return {
-        name: provider.startsWith('sso') ? 'SAML' : provider,
-        icon:
-          provider === 'email'
-            ? `${BASE_PATH}/img/icons/email-icon2.svg`
-            : undefined,
-      }
-    }
-  )
+  const { data: userProviders, isLoading: isLoadingProviders } = useUserProvidersQuery({
+    orgId: branch?.organization_id,
+    projectId: branch?.project_id,
+    branchId: branch?.id,
+    userId: user.id,
+  })
+  console.log(userProviders, typeof userProviders)
 
   const { data: userSessions, isLoading: isLoadingSessions } = useAuthUserSessions({
     branch,
@@ -218,59 +215,28 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
         </div>
 
         <div className={cn('flex flex-col -space-y-1 !pt-0', PANEL_PADDING)}>
-          {providers.map((provider) => {
-            const providerMeta = PROVIDERS_SCHEMAS.find(
-              (x) =>
-                ('key' in x && x.key === provider.name) || x.title.toLowerCase() === provider.name
-            )
-            const enabledProperty = Object.keys(providerMeta?.properties ?? {}).find((x) =>
-              x.toLowerCase().endsWith('_enabled')
-            )
-            const providerName =
-              provider.name === 'email'
-                ? provider.name.toLowerCase()
-                : providerMeta?.title ?? provider.name
-            const isActive = data?.[enabledProperty as keyof typeof data] ?? false
-
-            return (
-              <div key={provider.name} className={cn(CONTAINER_CLASS, 'items-start justify-start')}>
-                {provider.icon && (
-                  <img
-                    width={16}
-                    src={provider.icon}
-                    alt={`${provider.name} auth icon`}
-                    className={cn('mt-1.5', provider.name === 'github' ? 'dark:invert' : '')}
-                  />
-                )}
-                <div className="flex-grow mt-0.5">
-                  <p className="capitalize">{providerName}</p>
-                  <p className="text-xs text-foreground-light">
-                    Signed in with a {providerName} account via{' '}
-                    {providerName === 'SAML' ? 'SSO' : 'OAuth'}
-                  </p>
-                  <Button asChild type="default" className="mt-2">
-                    <Link
-                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/providers?provider=${provider.name === 'SAML' ? 'SAML 2.0' : provider.name}`}
-                    >
-                      Configure {providerName} provider
-                    </Link>
-                  </Button>
+          {isLoadingProviders ? (
+            <div className={cn(CONTAINER_CLASS)}>
+              <p className="text-foreground-light">Loading providers...</p>
+            </div>
+          ) : userProviders && (userProviders.length > 0) ? (
+            userProviders.map((provider) => {
+              return (
+                <div key={provider.identityProvider} className={cn(CONTAINER_CLASS, 'items-start justify-start')}>
+                  <div className="flex-grow mt-0.5">
+                    <p className="capitalize">{provider.identityProvider}</p>
+                    <p className="text-xs text-foreground-light">
+                      Linked as "{provider.userName}" ("{provider.userId}").
+                    </p>
+                  </div>
                 </div>
-                {isActive ? (
-                  <div className="flex items-center gap-1 rounded-full border border-brand-400 bg-brand-200 py-1 px-1 text-xs text-brand">
-                    <span className="rounded-full bg-brand p-0.5 text-xs text-brand-200">
-                      <Check strokeWidth={2} size={12} />
-                    </span>
-                    <span className="px-1">Enabled</span>
-                  </div>
-                ) : (
-                  <div className="rounded-md border border-strong bg-surface-100 py-1 px-3 text-xs text-foreground-lighter">
-                    Disabled
-                  </div>
-                )}
-              </div>
-            )
-          })}
+              )
+            })
+          ) : (
+            <div className={cn(CONTAINER_CLASS)}>
+              <p className="text-foreground-light">No providers found</p>
+            </div>
+          )}
         </div>
 
         <Separator />

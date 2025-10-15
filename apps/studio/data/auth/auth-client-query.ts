@@ -2,15 +2,10 @@ import { get, handleError } from '../fetchers'
 import { ResponseError } from 'types'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { authKeys } from './keys'
-
-export type AuthClientVariables = {
-  orgId?: string
-  projectId?: string
-  branchId?: string
-}
+import { AuthVariables } from './types'
 
 export async function getAuthClient(
-  { orgId, projectId, branchId }: AuthClientVariables,
+  { orgId, projectId, branchId }: AuthVariables,
   signal?: AbortSignal
 ) {
   if (!orgId) throw new Error('orgId is required')
@@ -39,7 +34,7 @@ export type AuthClientData = Awaited<ReturnType<typeof getAuthClient>>
 export type AuthClientError = ResponseError
 
 export const useAuthClientQuery = <TData = AuthClientData>(
-  { orgId, projectId, branchId }: AuthClientVariables,
+  { orgId, projectId, branchId }: AuthVariables,
   { enabled = true, ...options }: UseQueryOptions<AuthClientData, AuthClientError, TData> = {}
 ) =>
   useQuery<AuthClientData, AuthClientError, TData>(
