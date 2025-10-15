@@ -54,6 +54,11 @@ export const authKeys = {
     projectId: string | undefined,
     branchId: string | undefined,
   ) => ['branches', orgId, projectId, branchId, 'mfa-config'] as const,
+  authSMTP: (
+    orgId: string | undefined,
+    projectId: string | undefined,
+    branchId: string | undefined,
+  ) => ['branches', orgId, projectId, branchId, 'smtp'] as const,
   accessToken: () => ['access-token'] as const,
   authProviders: (
     orgId: string | undefined,

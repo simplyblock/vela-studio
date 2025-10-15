@@ -152,6 +152,22 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/smtp': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['BranchAuthController_getSMTP']
+    put: operations['BranchAuthController_updateSMTP']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/logs': {
     parameters: {
@@ -10116,6 +10132,83 @@ export interface operations {
       }
       /** @description Failed to update GoTrue config hooks */
       500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchAuthController_getSMTP: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            host: string
+            from: string
+            port?: number
+            fromDisplayName?: string
+            username?: string
+            encryption?: 'SSL' | 'StartTLS'
+          }
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchAuthController_updateSMTP: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          host: string
+          from: string
+          port?: number
+          fromDisplayName?: string
+          username?: string
+          password?: string
+          encryption?: 'SSL' | 'StartTLS'
+        }
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {}
+        }
+      }
+      403: {
         headers: {
           [name: string]: unknown
         }
