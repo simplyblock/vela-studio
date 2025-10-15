@@ -6,6 +6,86 @@
 import type { components as vela_components } from 'data/vela/vela-schema';
 
 export interface paths {
+  '/platform/organizations/{slug}/backups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BackupsController_getOrgBackups']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BackupsController_getBranchBackups']
+    put?: never
+    post: operations['BackupsController_createManualBranchBackup']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/{backup}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get?: never
+    put?: never
+    post?: never
+    delete: operations['BackupsController_deleteBranchBackup']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/backups/schedules': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BackupSchedulesController_getOrgSchedules']
+    put: operations['BackupSchedulesController_updateOrgSchedule']
+    post?: never
+    delete: operations['BackupSchedulesController_deleteOrgSchedule']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BackupSchedulesController_getBranchSchedules']
+    put: operations['BackupSchedulesController_updateBranchSchedule']
+    post?: never
+    delete: operations['BackupSchedulesController_deleteBranchSchedule']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/count': {
     parameters: {
       query?: never
@@ -331,91 +411,6 @@ export interface paths {
     get: operations['CliLoginController_getCliLoginSession']
     put?: never
     post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/cloud-marketplace/buyers/{buyer_id}/onboarding-info': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Get info needed for AWS Marketplace onboarding */
-    get: operations['ClazarController_getCloudMarketplaceOnboardingInfo']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/organizations/{slug}/projects/{ref}/backups': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Gets project backups */
-    get: operations['BackupsController_getBackups']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/database/{ref}/backups/download': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Download project backup */
-    post: operations['BackupsController_downloadBackup']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/database/{ref}/backups/downloadable-backups': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Gets backups that might be downloadable, but potentially not restorable. */
-    get: operations['BackupsController_getDownloadableBackups']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/database/{ref}/backups/enable-physical-backups': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /** Enable usage of physical backups */
-    post: operations['BackupsController_enablePhysicalBackup']
     delete?: never
     options?: never
     head?: never
@@ -4796,23 +4791,43 @@ export interface components {
         title: string
       }[]
     }
+    BackupSchedule: {
+      /**
+       * ULID
+       * Format: ulid
+       * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+       */
+      id: string;
+      /**
+       * ULID
+       * Format: ulid
+       * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+       */
+      organization_id: string;
+      /**
+       * ULID
+       * Format: ulid
+       * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+       */
+      branch_id: string;
+      /** Env Type */
+      env_type: string;
+      /** Rows */
+      rows: vela_components["schemas"]["BackupScheduleRowPublic"][];
+    }
+    BackupScheduleUpdate: {
+      /** Env Type */
+      env_type?: string;
+      /** Rows */
+      rows?: vela_components["schemas"]["BackupScheduleRowPublic"][];
+    }
     BackupsResponse: {
-      backups: {
-        id: number
-        inserted_at: string
-        isPhysicalBackup: boolean
-        project_id: string
-        /** @enum {string} */
-        status: 'COMPLETED' | 'FAILED' | 'PENDING' | 'REMOVED' | 'ARCHIVED' | 'CANCELLED'
-      }[]
-      physicalBackupData: {
-        earliestPhysicalBackupDateUnix?: number
-        latestPhysicalBackupDateUnix?: number
-      }
-      pitr_enabled: boolean
-      region: string
-      tierKey: string
-      walg_enabled: boolean
+      id: string
+      organization_id: string
+      project_id: string
+      branch_id: string
+      row_index: number
+      created_at: string
     }
     BillingCustomerUpdateBody: {
       additional_emails?: string[]
@@ -10538,13 +10553,11 @@ export interface operations {
       }
     }
   }
-  BackupsController_getBackups: {
+  BackupsController_getOrgBackups: {
     parameters: {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
-        ref: string
         slug: string
       }
       cookie?: never
@@ -10556,7 +10569,334 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
+          'application/json': components['schemas']['BackupsResponse'][]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_getOrgSchedules: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupSchedule"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_getBranchSchedules: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupSchedule"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_updateOrgSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["BackupScheduleUpdate"]
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupScheduleUpdate"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_updateBranchSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["BackupScheduleUpdate"]
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupSchedule"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_deleteOrgSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupScheduleDeletePublic"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_deleteBranchSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupScheduleDeletePublic"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupsController_deleteBranchBackup: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        backup: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          "application/json": vela_components["schemas"]["BackupDeletePublic"];
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupsController_createManualBranchBackup: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
           'application/json': components['schemas']['BackupsResponse']
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupsController_getBranchBackups: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BackupsResponse'][]
         }
       }
       403: {
