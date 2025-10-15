@@ -230,6 +230,22 @@ export interface paths {
     patch?: never
     trace?: never
   },
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/providers': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    },
+    get: operations['BranchAuthController_getUserProviders']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  },
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/sessions': {
     parameters: {
       query?: never
@@ -9873,6 +9889,36 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  },
+  BranchAuthController_getUserProviders: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': vela_components['schemas']['FederatedIdentityRepresentation'][];
+        };
       }
       403: {
         headers: {
