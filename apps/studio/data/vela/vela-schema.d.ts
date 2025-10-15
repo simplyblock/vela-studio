@@ -18639,6 +18639,18 @@ export interface components {
              * Format: ulid
              * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
              */
+            organization_id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            project_id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
             branch_id: string;
             /** Row Index */
             row_index: number;
