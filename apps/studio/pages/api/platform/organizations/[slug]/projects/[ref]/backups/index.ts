@@ -3,13 +3,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getVelaClient } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
-interface VelaBackup {
-  branch_id: string
-  backup_uuid: string
-  row_index: number
-  created_at: string
-}
-
 interface Backup {
   id: string
   organization_id: string
@@ -23,7 +16,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Backup>) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
-  const { data, success } = await client.getOrFail(res, '/backup/branches/{branch_ref}/', {
+  const { data: backups, success } = await client.getOrFail(res, '/backup/branches/{branch_ref}/', {
     params: {
       path: {
         branch_ref: branch,
@@ -33,9 +26,9 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Backup>) => {
 
   if (!success) return
 
-  return (data as VelaBackup[]).map((backup): Backup => {
+  return backups.map((backup): Backup => {
     return {
-      id: backup.backup_uuid,
+      id: backup.id,
       organization_id: slug,
       project_id: ref,
       branch_id: backup.branch_id,
@@ -65,7 +58,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
     project_id: ref,
     branch_id: branch,
     backup_id: backupId,
-    row_index: 0,
+    row_index: -1,
     created_at: new Date().toISOString(),
   }
 }

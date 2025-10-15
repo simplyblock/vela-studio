@@ -3,19 +3,6 @@ import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { getVelaClient } from 'data/vela/vela'
 import { apiBuilder } from 'lib/api/apiBuilder'
 
-interface VelaBackupSchedule {
-  ref: string
-  organization_id: string
-  branch_id: string
-  env_type: string
-  rows: {
-    row_index: number
-    interval: number
-    unit: string
-    retention: number
-  }
-}
-
 interface BackupSchedule {
   backup_schedule_id: string
   organization_id: string
@@ -25,14 +12,14 @@ interface BackupSchedule {
     interval: number
     unit: string
     retention: number
-  }
+  }[]
 }
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
 
   const client = getVelaClient(req)
-  const { data, success } = await client.getOrFail(
+  const { data: schedules, success } = await client.getOrFail(
     res,
     '/backup/organizations/{org_ref}/schedule',
     {
@@ -46,13 +33,13 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!success) return
 
-  return (data as VelaBackupSchedule[]).map((schedule): BackupSchedule => {
+  return schedules.map((schedule): BackupSchedule => {
     return {
-      backup_schedule_id: schedule.ref,
+      backup_schedule_id: schedule.id,
       organization_id: slug,
       env_type: schedule.env_type,
       rows: schedule.rows,
-    } as BackupSchedule
+    }
   })
 }
 

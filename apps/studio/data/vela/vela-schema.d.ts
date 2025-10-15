@@ -344,6 +344,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/backup/branches/{branch_id}/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Branch Backup Info */
+        get: operations["get_branch_backup_info_backup_branches__branch_id__info_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/resources/branches/{branch_id}/provision": {
         parameters: {
             query?: never;
@@ -694,6 +711,17683 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the top-level representation of the realm It will not include nested information like User and Client representations. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RealmRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /**
+         * Update the top-level information of the realm Any user, roles or client information in the representation will be ignored.
+         * @description This will only update top-level attributes of the realm.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RealmRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the realm */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/admin-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get admin events Returns all admin events, or filters events based on URL query parameters listed here */
+        get: {
+            parameters: {
+                query?: {
+                    authClient?: string;
+                    authIpAddress?: string;
+                    authRealm?: string;
+                    /** @description user id */
+                    authUser?: string;
+                    /** @description From (inclusive) date (yyyy-MM-dd) or time in Epoch timestamp millis (number of milliseconds since January 1, 1970, 00:00:00 GMT) */
+                    dateFrom?: string;
+                    /** @description To (inclusive) date (yyyy-MM-dd) or time in Epoch timestamp millis (number of milliseconds since January 1, 1970, 00:00:00 GMT) */
+                    dateTo?: string;
+                    /** @description The direction to sort events by (asc or desc) */
+                    direction?: string;
+                    first?: number;
+                    /** @description Maximum results size (defaults to 100) */
+                    max?: number;
+                    operationTypes?: string[];
+                    resourcePath?: string;
+                    resourceTypes?: string[];
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdminEventRepresentation"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete all admin events */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/attack-detection/brute-force/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Clear any user login failures for all users This can release temporary disabled users */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/attack-detection/brute-force/users/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get status of a username in brute force detection */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Clear any user login failures for the user This can release temporary disabled user */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    userId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/authenticator-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get authenticator providers Returns a stream of authenticator providers. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/client-authenticator-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client authenticator providers Returns a stream of client authenticator providers. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create new authenticator configuration
+         * @deprecated
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AuthenticatorConfigRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/config-description/{providerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get authenticator provider's configuration description */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    providerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticatorConfigInfoRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/config/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get authenticator configuration */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Configuration id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticatorConfigRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update authenticator configuration */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Configuration id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AuthenticatorConfigRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete authenticator configuration */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Configuration id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add new authentication execution */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AuthenticationExecutionRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/executions/{executionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get Single Execution */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    executionId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationExecutionRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete execution */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Execution id */
+                    executionId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/executions/{executionId}/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Update execution with new configuration */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Execution id */
+                    executionId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AuthenticatorConfigRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/executions/{executionId}/config/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get execution's configuration
+         * @deprecated
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Execution id */
+                    executionId: string;
+                    /** @description Configuration id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticatorConfigRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/executions/{executionId}/lower-priority": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lower execution's priority */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Execution id */
+                    executionId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/executions/{executionId}/raise-priority": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Raise execution's priority */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Execution id */
+                    executionId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get authentication flows Returns a stream of authentication flows. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationFlowRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a new authentication flow */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AuthenticationFlowRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{flowAlias}/copy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Copy existing authentication flow under a new name The new name is given as 'newName' attribute of the passed JSON object */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description name of the existing authentication flow */
+                    flowAlias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{flowAlias}/executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get authentication executions for a flow */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Flow alias */
+                    flowAlias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationExecutionInfoRepresentation"][];
+                    };
+                };
+            };
+        };
+        /** Update authentication executions of a Flow */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Flow alias */
+                    flowAlias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AuthenticationExecutionInfoRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{flowAlias}/executions/execution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add new authentication execution to a flow */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of parent flow */
+                    flowAlias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{flowAlias}/executions/flow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add new flow with new execution to existing flow */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of parent authentication flow */
+                    flowAlias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get authentication flow for id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Flow id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AuthenticationFlowRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update an authentication flow */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AuthenticationFlowRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete an authentication flow */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Flow id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/form-action-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get form action providers Returns a stream of form action providers. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/form-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get form providers Returns a stream of form providers. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        }[];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/per-client-config-description": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get configuration descriptions for all clients */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: components["schemas"]["ConfigPropertyRepresentation"][];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/register-required-action": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register a new required actions */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get required actions Returns a stream of required actions. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RequiredActionProviderRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get required action for alias */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RequiredActionProviderRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update required action */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RequiredActionProviderRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete required action */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get RequiredAction configuration */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RequiredActionConfigRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update RequiredAction configuration */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RequiredActionConfigRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete RequiredAction configuration */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}/config-description": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get RequiredAction provider configuration description */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RequiredActionConfigInfoRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}/lower-priority": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lower required action's priority */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}/raise-priority": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Raise required action's priority */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Alias of required action */
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/unregistered-required-actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get unregistered required actions Returns a stream of unregistered required actions. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: string;
+                        }[];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-description-converter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Base path for importing clients under this realm. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": string;
+                    "application/xml": string;
+                    "text/plain": string;
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-policies/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    "include-global-policies"?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientPoliciesRepresentation"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientPoliciesRepresentation"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-policies/profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    "include-global-profiles"?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientProfilesRepresentation"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientProfilesRepresentation"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-registration-policy/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Base path for retrieve providers with the configProperties properly filled */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ComponentTypeRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client scopes belonging to the realm Returns a list of client scopes belonging to the realm */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Create a new client scope Client Scope’s name must be unique! */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientScopeRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get representation of the client scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Update the client scope */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientScopeRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the client scope */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/protocol-mappers/add-models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create multiple mappers */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/protocol-mappers/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mappers */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a mapper */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/protocol-mappers/models/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mapper by id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update the mapper */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the mapper */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/protocol-mappers/protocol/{protocol}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mappers by name for a specific protocol */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    protocol: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/scope-mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get all scope mappings for the client
+         * @deprecated
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MappingsRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/scope-mappings/clients/{client}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the roles associated with a client's scope Returns roles for the client. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add client-level roles to the client's scope */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove client-level roles from the client's scope. */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/scope-mappings/clients/{client}/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** The available client-level roles Returns the roles for the client that can be associated with the client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/scope-mappings/clients/{client}/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get effective client roles Returns the roles for the client that are associated with the client's scope. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/scope-mappings/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles associated with the client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add a set of realm-level roles to the client's scope */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove a set of realm-level roles from the client's scope */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/scope-mappings/realm/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles that are available to attach to this client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-scopes/{client-scope-id}/scope-mappings/realm/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get effective realm-level roles associated with the client’s scope What this does is recurse any composite roles associated with the client’s scope and adds the roles to this lists.
+         * @description The method is really to show a comprehensive total view of realm-level roles associated with the client.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-session-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get client session stats Returns a JSON map.
+         * @description The key is the client id, the value is the number of sessions that currently are active with that client. Only clients that actually have a session associated with them will be in this map.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: string;
+                        }[];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client scopes belonging to the realm Returns a list of client scopes belonging to the realm */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Create a new client scope Client Scope’s name must be unique! */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientScopeRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get representation of the client scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Update the client scope */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientScopeRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the client scope */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/protocol-mappers/add-models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create multiple mappers */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/protocol-mappers/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mappers */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a mapper */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/protocol-mappers/models/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mapper by id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update the mapper */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the mapper */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/protocol-mappers/protocol/{protocol}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mappers by name for a specific protocol */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    protocol: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/scope-mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get all scope mappings for the client
+         * @deprecated
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MappingsRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/scope-mappings/clients/{client}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the roles associated with a client's scope Returns roles for the client. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add client-level roles to the client's scope */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove client-level roles from the client's scope. */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/scope-mappings/clients/{client}/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** The available client-level roles Returns the roles for the client that can be associated with the client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/scope-mappings/clients/{client}/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get effective client roles Returns the roles for the client that are associated with the client's scope. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/scope-mappings/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles associated with the client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add a set of realm-level roles to the client's scope */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove a set of realm-level roles from the client's scope */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/scope-mappings/realm/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles that are available to attach to this client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-templates/{client-scope-id}/scope-mappings/realm/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "client-scope-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get effective realm-level roles associated with the client’s scope What this does is recurse any composite roles associated with the client’s scope and adds the roles to this lists.
+         * @description The method is really to show a comprehensive total view of realm-level roles associated with the client.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "client-scope-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/client-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * List all client types available in the current realm
+         * @description This endpoint returns a list of both global and realm level client types and the attributes they set
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientTypesRepresentation"];
+                    };
+                };
+            };
+        };
+        /**
+         * Update a client type
+         * @description This endpoint allows you to update a realm level client type
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientTypesRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get clients belonging to the realm.
+         * @description If a client can’t be retrieved from the storage due to a problem with the underlying storage, it is silently removed from the returned list. This ensures that concurrent modifications to the list don’t prevent callers from retrieving this list.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description filter by clientId */
+                    clientId?: string;
+                    /** @description the first result */
+                    first?: number;
+                    /** @description the max results to return */
+                    max?: number;
+                    q?: string;
+                    /** @description whether this is a search query or a getClientById query */
+                    search?: boolean;
+                    /** @description filter clients that cannot be viewed in full by admin */
+                    viewableOnly?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a new client Client’s client_id must be unique! */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients-initial-access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientInitialAccessPresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a new initial access token. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientInitialAccessCreatePresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientInitialAccessCreatePresentation"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients-initial-access/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get representation of the client */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update the client */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ClientRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the client */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResourceServerRepresentation"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ResourceServerRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ResourceServerRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/permission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fields?: string;
+                    first?: number;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    permission?: boolean;
+                    policyId?: string;
+                    resource?: string;
+                    resourceType?: string;
+                    scope?: string;
+                    type?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AbstractPolicyRepresentation"][];
+                    };
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": string;
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/permission/evaluate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PolicyEvaluationRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PolicyEvaluationResponse"];
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/permission/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PolicyProviderRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/permission/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fields?: string;
+                    name?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AbstractPolicyRepresentation"];
+                    };
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fields?: string;
+                    first?: number;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    permission?: boolean;
+                    policyId?: string;
+                    resource?: string;
+                    resourceType?: string;
+                    scope?: string;
+                    type?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AbstractPolicyRepresentation"][];
+                    };
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": string;
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/policy/evaluate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["PolicyEvaluationRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PolicyEvaluationResponse"];
+                    };
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/policy/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PolicyProviderRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/policy/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fields?: string;
+                    name?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AbstractPolicyRepresentation"];
+                    };
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/resource": {
+        parameters: {
+            query?: {
+                _id?: string;
+                deep?: boolean;
+                exactName?: boolean;
+                first?: number;
+                matchingUri?: boolean;
+                max?: number;
+                name?: string;
+                owner?: string;
+                scope?: string;
+                type?: string;
+                uri?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResourceRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ResourceRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResourceRepresentation"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/resource/search": {
+        parameters: {
+            query?: {
+                _id?: string;
+                deep?: boolean;
+                exactName?: boolean;
+                first?: number;
+                matchingUri?: boolean;
+                max?: number;
+                name?: string;
+                owner?: string;
+                scope?: string;
+                type?: string;
+                uri?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResourceRepresentation"];
+                    };
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/resource/{resource-id}": {
+        parameters: {
+            query?: {
+                _id?: string;
+                deep?: boolean;
+                exactName?: boolean;
+                first?: number;
+                matchingUri?: boolean;
+                max?: number;
+                name?: string;
+                owner?: string;
+                scope?: string;
+                type?: string;
+                uri?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "resource-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResourceRepresentation"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "resource-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ResourceRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "resource-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/resource/{resource-id}/attributes": {
+        parameters: {
+            query?: {
+                _id?: string;
+                deep?: boolean;
+                exactName?: boolean;
+                first?: number;
+                matchingUri?: boolean;
+                max?: number;
+                name?: string;
+                owner?: string;
+                scope?: string;
+                type?: string;
+                uri?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "resource-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/resource/{resource-id}/permissions": {
+        parameters: {
+            query?: {
+                _id?: string;
+                deep?: boolean;
+                exactName?: boolean;
+                first?: number;
+                matchingUri?: boolean;
+                max?: number;
+                name?: string;
+                owner?: string;
+                scope?: string;
+                type?: string;
+                uri?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "resource-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PolicyRepresentation"][];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/resource/{resource-id}/scopes": {
+        parameters: {
+            query?: {
+                _id?: string;
+                deep?: boolean;
+                exactName?: boolean;
+                first?: number;
+                matchingUri?: boolean;
+                max?: number;
+                name?: string;
+                owner?: string;
+                scope?: string;
+                type?: string;
+                uri?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    _id?: string;
+                    deep?: boolean;
+                    exactName?: boolean;
+                    first?: number;
+                    matchingUri?: boolean;
+                    max?: number;
+                    name?: string;
+                    owner?: string;
+                    scope?: string;
+                    type?: string;
+                    uri?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "resource-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ScopeRepresentation"][];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/scope": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    first?: number;
+                    max?: number;
+                    name?: string;
+                    scopeId?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ScopeRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ScopeRepresentation"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/scope/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    name?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ScopeRepresentation"][];
+                    };
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/scope/{scope-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "scope-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ScopeRepresentation"];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "scope-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ScopeRepresentation"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "scope-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/scope/{scope-id}/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "scope-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PolicyRepresentation"][];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/scope/{scope-id}/resources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "scope-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResourceRepresentation"][];
+                    };
+                };
+                /** @description Not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/authz/resource-server/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ResourceServerRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/certificates/{attr}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                attr: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get key info */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    attr: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CertificateRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/certificates/{attr}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                attr: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Get a keystore file for the client, containing private key and public certificate */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    attr: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["KeyStoreConfig"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/octet-stream": string;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/certificates/{attr}/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                attr: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate a new certificate with new key pair */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    attr: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CertificateRepresentation"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/certificates/{attr}/generate-and-download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                attr: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate a new keypair and certificate, and get the private key file
+         *
+         *     Generates a keypair and certificate and serves the private key in a specified keystore format.
+         *     Only generated public certificate is saved in Keycloak DB - the private key is not. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    attr: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["KeyStoreConfig"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/octet-stream": string;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/certificates/{attr}/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                attr: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload certificate and eventually private key */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    attr: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CertificateRepresentation"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/certificates/{attr}/upload-certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                attr: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload only certificate, not private key */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    attr: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CertificateRepresentation"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/client-secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the client secret */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CredentialRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Generate a new secret for the client */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CredentialRepresentation"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/client-secret/rotated": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the rotated client secret */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CredentialRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Invalidate the rotated secret for the client */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/default-client-scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get default client scopes.  Only name and ids are returned. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/default-client-scopes/{clientScopeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/evaluate-scopes/generate-example-access-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Create JSON with payload of example access token */
+        get: {
+            parameters: {
+                query?: {
+                    audience?: string;
+                    scope?: string;
+                    userId?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AccessToken"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/evaluate-scopes/generate-example-id-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Create JSON with payload of example id token */
+        get: {
+            parameters: {
+                query?: {
+                    audience?: string;
+                    scope?: string;
+                    userId?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IDToken"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/evaluate-scopes/generate-example-userinfo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Create JSON with payload of example user info */
+        get: {
+            parameters: {
+                query?: {
+                    scope?: string;
+                    userId?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": Record<string, never>;
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/evaluate-scopes/protocol-mappers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Return list of all protocol mappers, which will be used when generating tokens issued for particular client.
+         * @description This means protocol mappers assigned to this client directly and protocol mappers assigned to all client scopes of this client.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    scope?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperEvaluationRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/evaluate-scopes/scope-mappings/{roleContainerId}/granted": {
+        parameters: {
+            query?: {
+                scope?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                /** @description either realm name OR client UUID */
+                roleContainerId: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get effective scope mapping of all roles of particular role container, which this client is defacto allowed to have in the accessToken issued for him.
+         * @description This contains scope mappings, which this client has directly, as well as scope mappings, which are granted to all client scopes, which are linked with this client.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    scope?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    /** @description either realm name OR client UUID */
+                    roleContainerId: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/evaluate-scopes/scope-mappings/{roleContainerId}/not-granted": {
+        parameters: {
+            query?: {
+                scope?: string;
+            };
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                /** @description either realm name OR client UUID */
+                roleContainerId: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get roles, which this client doesn't have scope for and can't have them in the accessToken issued for him.
+         * @description Defacto all the other roles of particular role container, which are not in {@link #getGrantedScopeMappings()}
+         */
+        get: {
+            parameters: {
+                query?: {
+                    scope?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    /** @description either realm name OR client UUID */
+                    roleContainerId: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/installation/providers/{providerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    providerId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/management/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Return object stating whether client Authorization permissions have been initialized or not and a reference */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+            };
+        };
+        /** Return object stating whether client Authorization permissions have been initialized or not and a reference */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ManagementPermissionReference"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/nodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Register a cluster node with the client Manually register cluster node to this client - usually it’s not needed to call this directly as adapter should handle by sending registration request to Keycloak */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/nodes/{node}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Unregister a cluster node from the client */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    node: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/offline-session-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get application offline session count Returns a number of offline user sessions associated with this client { "count": number } */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: number;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/offline-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get offline sessions for client Returns a list of offline user sessions associated with this client */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Paging offset */
+                    first?: number;
+                    /** @description Maximum results size (defaults to 100) */
+                    max?: number;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserSessionRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/optional-client-scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get optional client scopes.  Only name and ids are returned. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/optional-client-scopes/{clientScopeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/protocol-mappers/add-models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create multiple mappers */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/protocol-mappers/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mappers */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a mapper */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/protocol-mappers/models/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mapper by id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update the mapper */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ProtocolMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the mapper */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/protocol-mappers/protocol/{protocol}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mappers by name for a specific protocol */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    protocol: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProtocolMapperRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/push-revocation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Push the client's revocation policy to its admin URL If the client has an admin URL, push revocation policy to it. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GlobalRequestResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/registration-access-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate a new registration access token for the client */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientRepresentation"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get all roles for the realm or client */
+        get: {
+            parameters: {
+                query?: {
+                    briefRepresentation?: boolean;
+                    first?: number;
+                    max?: number;
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Create a new role for the realm or client */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles/{role-name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get a role by name */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Update a role by name */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete a role by name */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles/{role-name}/composites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get composites of the role */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Add a composite to the role */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove roles from the role's composite */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles/{role-name}/composites/clients/{client-uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client-level roles for the client that are in the role's composite */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "client-uuid": string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles/{role-name}/composites/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles of the role's composite */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles/{role-name}/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns a stream of groups that have the specified role name */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return a full representation of the {@code GroupRepresentation} objects. */
+                    briefRepresentation?: boolean;
+                    /** @description first result to return. Ignored if negative or {@code null}. */
+                    first?: number;
+                    /** @description maximum number of results to return. Ignored if negative or {@code null}. */
+                    max?: number;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description the role name. */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles/{role-name}/management/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Return object stating whether role Authorization permissions have been initialized or not and a reference */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Return object stating whether role Authorization permissions have been initialized or not and a reference */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ManagementPermissionReference"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/roles/{role-name}/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns a stream of users that have the specified role name. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Boolean which defines whether brief representations are returned (default: false) */
+                    briefRepresentation?: boolean;
+                    /** @description first result to return. Ignored if negative or {@code null}. */
+                    first?: number;
+                    /** @description maximum number of results to return. Ignored if negative or {@code null}. */
+                    max?: number;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description the role name. */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/scope-mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get all scope mappings for the client
+         * @deprecated
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MappingsRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/scope-mappings/clients/{client}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the roles associated with a client's scope Returns roles for the client. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add client-level roles to the client's scope */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove client-level roles from the client's scope. */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/scope-mappings/clients/{client}/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** The available client-level roles Returns the roles for the client that can be associated with the client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/scope-mappings/clients/{client}/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                client: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get effective client roles Returns the roles for the client that are associated with the client's scope. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    client: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/scope-mappings/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles associated with the client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add a set of realm-level roles to the client's scope */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove a set of realm-level roles from the client's scope */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/scope-mappings/realm/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles that are available to attach to this client's scope */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/scope-mappings/realm/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Get effective realm-level roles associated with the client’s scope What this does is recurse any composite roles associated with the client’s scope and adds the roles to this lists.
+         * @description The method is really to show a comprehensive total view of realm-level roles associated with the client.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/service-account-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get a user dedicated to the service account */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/session-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get application session count Returns a number of user sessions associated with this client { "count": number } */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: number;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/test-nodes-available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Test if registered cluster nodes are available Tests availability by sending 'ping' request to all cluster nodes. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GlobalRequestResult"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/clients/{client-uuid}/user-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description id of client (not client-id!) */
+                "client-uuid": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get user sessions for client Returns a list of user sessions associated with this client
+         *      */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Paging offset */
+                    first?: number;
+                    /** @description Maximum results size (defaults to 100) */
+                    max?: number;
+                };
+                header?: never;
+                path: {
+                    /** @description id of client (not client-id!) */
+                    "client-uuid": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserSessionRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/components": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    name?: string;
+                    parent?: string;
+                    type?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ComponentRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ComponentRepresentation"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/components/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ComponentRepresentation"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ComponentRepresentation"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/components/{id}/sub-component-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** List of subcomponent types that are available to configure for a particular parent component. */
+        get: {
+            parameters: {
+                query?: {
+                    type?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ComponentTypeRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/credential-registrators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/default-default-client-scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm default client scopes. Only name and ids are returned. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/default-default-client-scopes/{clientScopeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/default-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get group hierarchy.  Only name and ids are returned. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GroupRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/default-groups/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    groupId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    groupId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/default-optional-client-scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm optional client scopes. Only name and ids are returned. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClientScopeRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/default-optional-client-scopes/{clientScopeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientScopeId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get events Returns all events, or filters them based on URL query parameters listed here */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description App or oauth client name */
+                    client?: string;
+                    /** @description From (inclusive) date (yyyy-MM-dd) or time in Epoch timestamp millis (number of milliseconds since January 1, 1970, 00:00:00 GMT) */
+                    dateFrom?: string;
+                    /** @description To (inclusive) date (yyyy-MM-dd) or time in Epoch timestamp millis (number of milliseconds since January 1, 1970, 00:00:00 GMT) */
+                    dateTo?: string;
+                    /** @description The direction to sort events by (asc or desc) */
+                    direction?: string;
+                    /** @description Paging offset */
+                    first?: number;
+                    /** @description IP Address */
+                    ipAddress?: string;
+                    /** @description Maximum results size (defaults to 100) */
+                    max?: number;
+                    /** @description The types of events to return */
+                    type?: string[];
+                    /** @description User id */
+                    user?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EventRepresentation"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete all events */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/events/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the events provider configuration Returns JSON object with events provider configuration */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RealmEventsConfigRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** @description Update the events provider Change the events provider and/or its configuration */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RealmEventsConfigRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/group-by-path/{path}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    path: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GroupRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get group hierarchy.  Only `name` and `id` are returned.  `subGroups` are only returned when using the `search` or `q` parameter. If none of these parameters is provided, the top-level groups are returned without `subGroups` being filled. */
+        get: {
+            parameters: {
+                query?: {
+                    briefRepresentation?: boolean;
+                    exact?: boolean;
+                    first?: number;
+                    max?: number;
+                    populateHierarchy?: boolean;
+                    q?: string;
+                    search?: string;
+                    /** @description Boolean which defines whether to return the count of subgroups for each group (default: true */
+                    subGroupsCount?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GroupRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * create or add a top level realm groupSet or create child.
+         * @description This will update the group and set the parent if it exists. Create it and set the parent if the group doesn’t exist.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["GroupRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns the groups counts. */
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    top?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: number;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GroupRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update group, ignores subgroups. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["GroupRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/children": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Return a paginated list of subgroups that have a parent group corresponding to the group on the URL */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Boolean which defines whether brief groups representations are returned or not (default: false) */
+                    briefRepresentation?: boolean;
+                    /** @description Boolean which defines whether the params "search" must match exactly or not */
+                    exact?: boolean;
+                    /** @description The position of the first result to be returned (pagination offset). */
+                    first?: number;
+                    /** @description The maximum number of results that are to be returned. Defaults to 10 */
+                    max?: number;
+                    /** @description A String representing either an exact group name or a partial name */
+                    search?: string;
+                    /** @description Boolean which defines whether to return the count of subgroups for each subgroup of this group (default: true */
+                    subGroupsCount?: boolean;
+                };
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GroupRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Set or create child.
+         * @description This will just set the parent if it exists. Create it and set the parent if the group doesn’t exist.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["GroupRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/management/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Return object stating whether client Authorization permissions have been initialized or not and a reference */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+            };
+        };
+        /** Return object stating whether client Authorization permissions have been initialized or not and a reference */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ManagementPermissionReference"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get users Returns a stream of users, filtered according to query parameters */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Only return basic information (only guaranteed to return id, username, created, first and last name, email, enabled state, email verification state, federation link, and access. Note that it means that namely user attributes, required actions, and not before are not returned.) */
+                    briefRepresentation?: boolean;
+                    /** @description Pagination offset */
+                    first?: number;
+                    /** @description Maximum results size (defaults to 100) */
+                    max?: number;
+                };
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/role-mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get role mappings */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MappingsRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/role-mappings/clients/{client-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                /** @description client id (not clientId!) */
+                "client-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client-level role mappings for the user or group, and the app */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add client-level roles to the user or group role mapping */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Delete client-level roles from user or group role mapping */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/role-mappings/clients/{client-id}/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                /** @description client id (not clientId!) */
+                "client-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get available client-level roles that can be mapped to the user or group */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/role-mappings/clients/{client-id}/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                /** @description client id (not clientId!) */
+                "client-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get effective client-level role mappings This recurses any composite roles */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "group-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/role-mappings/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level role mappings */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Add realm-level role mappings to the user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Delete realm-level role mappings */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/role-mappings/realm/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles that can be mapped */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/groups/{group-id}/role-mappings/realm/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "group-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get effective realm-level role mappings This will recurse all composite roles to get the result. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "group-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/import-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import identity provider from JSON body
+         * @description Import identity provider from uploaded JSON file
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** List identity providers */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Boolean which defines whether brief representations are returned (default: false) */
+                    briefRepresentation?: boolean;
+                    /** @description Pagination offset */
+                    first?: number;
+                    /** @description Maximum results size (defaults to 100) */
+                    max?: number;
+                    /** @description Boolean which defines if only realm-level IDPs (not associated with orgs) should be returned (default: false) */
+                    realmOnly?: boolean;
+                    /** @description Filter specific providers by name. Search can be prefix (name*), contains (*name*) or exact ("name"). Default prefixed. */
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IdentityProviderRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create a new identity provider */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["IdentityProviderRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alias: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the identity provider */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IdentityProviderRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update the identity provider */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["IdentityProviderRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the identity provider */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alias: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Export public broker configuration for identity provider */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Format to use */
+                    format?: string;
+                };
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}/management/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alias: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Return object stating whether client Authorization permissions have been initialized or not and a reference */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+            };
+        };
+        /** Return object stating whether client Authorization permissions have been initialized or not and a reference */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ManagementPermissionReference"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}/mapper-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alias: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mapper types for identity provider */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "*/*": {
+                            [key: string]: components["schemas"]["IdentityProviderMapperTypeRepresentation"];
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}/mappers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alias: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mappers for identity provider */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IdentityProviderMapperRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add a mapper to identity provider */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["IdentityProviderMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}/mappers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alias: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get mapper by id for the identity provider */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IdentityProviderMapperRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Update a mapper for the identity provider */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["IdentityProviderMapperRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete a mapper for the identity provider */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Mapper id */
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/instances/{alias}/reload-keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alias: string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Reaload keys for the identity provider if the provider supports it, "true" is returned if reload was performed, "false" if not. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    alias: string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": boolean;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/identity-provider/providers/{provider_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get the identity provider factory for that provider id */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description The provider id to get the factory */
+                    provider_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": Record<string, never>;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["KeysMetadataRepresentation"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/localization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/localization/{locale}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    /** @deprecated */
+                    useRealmDefaultLocaleFallback?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    locale: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: string;
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Import localization from uploaded JSON file */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    locale: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    locale: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/localization/{locale}/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    key: string;
+                    locale: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": string;
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    key: string;
+                    locale: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "text/plain": string;
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    key: string;
+                    locale: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/logout-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Removes all user sessions.
+         * @description Any client that has an admin url will also be told to invalidate any sessions they have.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GlobalRequestResult"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns a paginated list of organizations filtered according to the specified parameters */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return the full representation. Otherwise, only the basic fields are returned. */
+                    briefRepresentation?: boolean;
+                    /** @description Boolean which defines whether the param 'search' must match exactly or not */
+                    exact?: boolean;
+                    /** @description The position of the first result to be processed (pagination offset) */
+                    first?: number;
+                    /** @description The maximum number of results to be returned - defaults to 10 */
+                    max?: number;
+                    /** @description A query to search for custom attributes, in the format 'key1:value2 key2:value2' */
+                    q?: string;
+                    /** @description A String representing either an organization name or domain */
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrganizationRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Creates a new organization */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OrganizationRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns the organizations counts. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Boolean which defines whether the param 'search' must match exactly or not */
+                    exact?: boolean;
+                    /** @description A query to search for custom attributes, in the format 'key1:value2 key2:value2' */
+                    q?: string;
+                    /** @description A String representing either an organization name or domain */
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": number;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/members/{member-id}/organizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns the organizations associated with the user that has the specified id */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return the full representation. Otherwise, only the basic fields are returned. */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "member-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrganizationRepresentation"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns the organization representation */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrganizationRepresentation"];
+                    };
+                };
+            };
+        };
+        /** Updates the organization */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OrganizationRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Deletes the organization */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/identity-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns all identity providers associated with the organization */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IdentityProviderRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Adds the identity provider with the specified id to the organization
+         * @description Adds, or associates, an existing identity provider with the organization. If no identity provider is found, or if it is already associated with the organization, an error response is returned
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            /** @description Payload should contain only id or alias of the identity provider to be associated with the organization (id or alias with or without quotes). Surrounding whitespace characters will be trimmed. */
+            requestBody: {
+                content: {
+                    "application/json": string;
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/identity-providers/{alias}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Returns the identity provider associated with the organization that has the specified alias
+         * @description Searches for an identity provider with the given alias. If one is found and is associated with the organization, it is returned. Otherwise, an error response with status NOT_FOUND is returned
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IdentityProviderRepresentation"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Removes the identity provider with the specified alias from the organization
+         * @description Breaks the association between the identity provider and the organization. The provider itself is not deleted. If no provider is found, or if it is not currently associated with the org, an error response is returned
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    alias: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns a paginated list of organization members filtered according to the specified parameters */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Boolean which defines whether the param 'search' must match exactly or not */
+                    exact?: boolean;
+                    /** @description The position of the first result to be processed (pagination offset) */
+                    first?: number;
+                    /** @description The maximum number of results to be returned. Defaults to 10 */
+                    max?: number;
+                    /** @description The membership type */
+                    membershipType?: string;
+                    /** @description A String representing either a member's username, e-mail, first name, or last name. */
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MemberRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Adds the user with the specified id as a member of the organization
+         * @description Adds, or associates, an existing user with the organization. If no user is found, or if it is already associated with the organization, an error response is returned
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            /** @description Payload should contain only id of the user to be added to the organization (UUID with or without quotes). Surrounding whitespace characters will be trimmed. */
+            requestBody: {
+                content: {
+                    "application/json": string;
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/members/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns number of members in the organization. */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": number;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/members/invite-existing-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Invites an existing user to the organization, using the specified user id */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/x-www-form-urlencoded": {
+                        id?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/members/invite-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Invites an existing user or sends a registration link to a new user, based on the provided e-mail address.
+         * @description If the user with the given e-mail address exists, it sends an invitation link, otherwise it sends a registration link.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/x-www-form-urlencoded": {
+                        email?: string;
+                        firstName?: string;
+                        lastName?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/members/{member-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Returns the member of the organization with the specified id
+         * @description Searches for auser with the given id. If one is found, and is currently a member of the organization, returns it. Otherwise,an error response with status NOT_FOUND is returned
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "member-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MemberRepresentation"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        /**
+         * Removes the user with the specified id from the organization
+         * @description Breaks the association between the user and organization. The user itself is deleted in case the membership is managed, otherwise the user is not deleted. If no user is found, or if they are not a member of the organization, an error response is returned
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "member-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/organizations/{org-id}/members/{member-id}/organizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "org-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns the organizations associated with the user that has the specified id */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return the full representation. Otherwise, only the basic fields are returned. */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "org-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "member-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OrganizationRepresentation"][];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/partial-export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Partial export of existing realm into a JSON file. */
+        post: {
+            parameters: {
+                query?: {
+                    exportClients?: boolean;
+                    exportGroupsAndRoles?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RealmRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/partialImport": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Partial import from a JSON file to an existing realm. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": string;
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": Record<string, never>;
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/push-revocation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Push the realm's revocation policy to any client that has an admin url associated with it. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GlobalRequestResult"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get all roles for the realm or client */
+        get: {
+            parameters: {
+                query?: {
+                    briefRepresentation?: boolean;
+                    first?: number;
+                    max?: number;
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Create a new role for the realm or client */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles-by-id/{role-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get a specific role's representation */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description id of role */
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Update the role */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description id of role */
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the role */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description id of role */
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles-by-id/{role-id}/composites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get role's children Returns a set of role's children provided the role is a composite. */
+        get: {
+            parameters: {
+                query?: {
+                    first?: number;
+                    max?: number;
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Make the role a composite role by associating some child roles */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove a set of roles from the role's composite */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Role id */
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles-by-id/{role-id}/composites/clients/{clientUuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client-level roles for the client that are in the role's composite */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientUuid: string;
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles-by-id/{role-id}/composites/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles that are in the role's composite */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles-by-id/{role-id}/management/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Return object stating whether role Authorization permissions have been initialized or not and a reference */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Return object stating whether role Authorization permissions have been initialized or not and a reference */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-id": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ManagementPermissionReference"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles/{role-name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get a role by name */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Update a role by name */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete a role by name */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles/{role-name}/composites": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get composites of the role */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Add a composite to the role */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove roles from the role's composite */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles/{role-name}/composites/clients/{client-uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client-level roles for the client that are in the role's composite */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "client-uuid": string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles/{role-name}/composites/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles of the role's composite */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description role's name (not id!) */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles/{role-name}/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns a stream of groups that have the specified role name */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return a full representation of the {@code GroupRepresentation} objects. */
+                    briefRepresentation?: boolean;
+                    /** @description first result to return. Ignored if negative or {@code null}. */
+                    first?: number;
+                    /** @description maximum number of results to return. Ignored if negative or {@code null}. */
+                    max?: number;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description the role name. */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles/{role-name}/management/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Return object stating whether role Authorization permissions have been initialized or not and a reference */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Return object stating whether role Authorization permissions have been initialized or not and a reference */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ManagementPermissionReference"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/roles/{role-name}/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Returns a stream of users that have the specified role name. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Boolean which defines whether brief representations are returned (default: false) */
+                    briefRepresentation?: boolean;
+                    /** @description first result to return. Ignored if negative or {@code null}. */
+                    first?: number;
+                    /** @description maximum number of results to return. Ignored if negative or {@code null}. */
+                    max?: number;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description the role name. */
+                    "role-name": string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/sessions/{session}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a specific user session.
+         * @description Any client that has an admin url will also be told to invalidate this particular session.
+         */
+        delete: {
+            parameters: {
+                query?: {
+                    isOffline?: boolean;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    session: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/testSMTPConnection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Test SMTP connection with current logged in user
+         * @deprecated
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                    "application/x-www-form-urlencoded": {
+                        config?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get users Returns a stream of users, filtered according to query parameters. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Boolean which defines whether brief representations are returned (default: false) */
+                    briefRepresentation?: boolean;
+                    /** @description A String contained in email, or the complete email, if param "exact" is true */
+                    email?: string;
+                    /** @description whether the email has been verified */
+                    emailVerified?: boolean;
+                    /** @description Boolean representing if user is enabled or not */
+                    enabled?: boolean;
+                    /** @description Boolean which defines whether the params "last", "first", "email" and "username" must match exactly */
+                    exact?: boolean;
+                    /** @description Pagination offset */
+                    first?: number;
+                    /** @description A String contained in firstName, or the complete firstName, if param "exact" is true */
+                    firstName?: string;
+                    /** @description The alias of an Identity Provider linked to the user */
+                    idpAlias?: string;
+                    /** @description The userId at an Identity Provider linked to the user */
+                    idpUserId?: string;
+                    /** @description A String contained in lastName, or the complete lastName, if param "exact" is true */
+                    lastName?: string;
+                    /** @description Maximum results size (defaults to 100) */
+                    max?: number;
+                    /** @description A query to search for custom attributes, in the format 'key1:value2 key2:value2' */
+                    q?: string;
+                    /** @description A String contained in username, first or last name, or email. Default search behavior is prefix-based (e.g., foo or foo*). Use *foo* for infix search and "foo" for exact search. */
+                    search?: string;
+                    /** @description A String contained in username, or the complete username, if param "exact" is true */
+                    username?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Create a new user Username must be unique. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["UserRepresentation"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users-management-permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ManagementPermissionReference"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ManagementPermissionReference"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Returns the number of users that match the given criteria.
+         * @description It can be called in three different ways. 1. Don’t specify any criteria and pass {@code null}. The number of all users within that realm will be returned. <p> 2. If {@code search} is specified other criteria such as {@code last} will be ignored even though you set them. The {@code search} string will be matched against the first and last name, the username and the email of a user. <p> 3. If {@code search} is unspecified but any of {@code last}, {@code first}, {@code email} or {@code username} those criteria are matched against their respective fields on a user entity. Combined with a logical and.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description A String contained in email, or the complete email, if param "exact" is true */
+                    email?: string;
+                    /** @description whether the email has been verified */
+                    emailVerified?: boolean;
+                    /** @description Boolean representing if user is enabled or not */
+                    enabled?: boolean;
+                    /** @description Boolean which defines whether the params "last", "first", "email" and "username" must match exactly */
+                    exact?: boolean;
+                    /** @description A String contained in firstName, or the complete firstName, if param "exact" is true */
+                    firstName?: string;
+                    /** @description The alias of an Identity Provider linked to the user */
+                    idpAlias?: string;
+                    /** @description The userId at an Identity Provider linked to the user */
+                    idpUserId?: string;
+                    /** @description A String contained in lastName, or the complete lastName, if param "exact" is true */
+                    lastName?: string;
+                    /** @description A query to search for custom attributes, in the format 'key1:value2 key2:value2' */
+                    q?: string;
+                    /** @description A String contained in username, first or last name, or email. Default search behavior is prefix-based (e.g., foo or foo*). Use *foo* for infix search and "foo" for exact search. */
+                    search?: string;
+                    /** @description A String contained in username, or the complete username, if param "exact" is true */
+                    username?: string;
+                };
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": number;
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description Get the configuration for the user profile */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UPConfig"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** @description Set the configuration for the user profile */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["UPConfig"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UPConfig"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/profile/metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** @description Get the UserProfileMetadata from the configuration */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserProfileMetadata"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get representation of the user */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Indicates if the user profile metadata should be added to the response */
+                    userProfileMetadata?: boolean;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Update the user */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["UserRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        /** Delete the user */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/configured-user-storage-credential-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Return credential types, which are provided by the user storage where user is stored.
+         * @description Returned values can contain for example "password", "otp" etc. This will always return empty list for "local" users, which are not backed by any user storage
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get consents granted by the user */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        }[];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/consents/{client}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Revoke consent and offline tokens for particular client from user */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Client id */
+                    client: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CredentialRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/credentials/{credentialId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a credential for a user */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    credentialId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/credentials/{credentialId}/moveAfter/{newPreviousCredentialId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a credential to a position behind another credential */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description The credential to move */
+                    credentialId: string;
+                    /** @description The credential that will be the previous element in the list. If set to null, the moved credential will be the first element in the list. */
+                    newPreviousCredentialId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/credentials/{credentialId}/moveToFirst": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Move a credential to a first position in the credentials list of the user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description The credential to move */
+                    credentialId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/credentials/{credentialId}/userLabel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a credential label for a user */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    credentialId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "text/plain": string;
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/disable-credential-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Disable all credentials for a user of a specific type */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": string[];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/execute-actions-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Send an email to the user with a link they can click to execute particular actions.
+         * @description An email contains a link the user can click to perform a set of required actions. The redirectUri and clientId parameters are optional. If no redirect is given, then there will be no link back to click after actions have completed. Redirect uri must be a valid uri for the particular clientId.
+         */
+        put: {
+            parameters: {
+                query?: {
+                    /** @description Client id */
+                    client_id?: string;
+                    /** @description Number of seconds after which the generated token expires */
+                    lifespan?: number;
+                    /** @description Redirect uri */
+                    redirect_uri?: string;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": string[];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/federated-identity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get social logins associated with the user */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["FederatedIdentityRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/federated-identity/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a social login provider to the user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Social login provider id */
+                    provider: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["FederatedIdentityRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Conflict */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Remove a social login provider from user */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    /** @description Social login provider id */
+                    provider: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    briefRepresentation?: boolean;
+                    first?: number;
+                    max?: number;
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["GroupRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/groups/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: number;
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/groups/{groupId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    groupId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    groupId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/impersonation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Impersonate the user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ErrorRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Remove all user sessions associated with the user Also send notification to all clients that have an admin URL to invalidate the sessions for the particular user. */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/offline-sessions/{clientUuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get offline sessions associated with the user and client */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                    clientUuid: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserSessionRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** Set up a new password for the user. */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CredentialRepresentation"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/reset-password-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Send an email to the user with a link they can click to reset their password.
+         * @deprecated
+         * @description The redirectUri and clientId parameters are optional. The default for the redirect is the account client. This endpoint has been deprecated.  Please use the execute-actions-email passing a list with UPDATE_PASSWORD within it.
+         */
+        put: {
+            parameters: {
+                query?: {
+                    /** @description client id */
+                    client_id?: string;
+                    /** @description redirect uri */
+                    redirect_uri?: string;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/role-mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get role mappings */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MappingsRepresentation"];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/role-mappings/clients/{client-id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                /** @description client id (not clientId!) */
+                "client-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get client-level role mappings for the user or group, and the app */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Add client-level roles to the user or group role mapping */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Delete client-level roles from user or group role mapping */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/role-mappings/clients/{client-id}/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                /** @description client id (not clientId!) */
+                "client-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get available client-level roles that can be mapped to the user or group */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/role-mappings/clients/{client-id}/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                /** @description client id (not clientId!) */
+                "client-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get effective client-level role mappings This recurses any composite roles */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    /** @description client id (not clientId!) */
+                    "client-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/role-mappings/realm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level role mappings */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /** Add realm-level role mappings to the user */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /** Delete realm-level role mappings */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RoleRepresentation"][];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/role-mappings/realm/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get realm-level roles that can be mapped */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/role-mappings/realm/composite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get effective realm-level role mappings This will recurse all composite roles to get the result. */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description if false, return roles with their attributes */
+                    briefRepresentation?: boolean;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RoleRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/send-verify-email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Send an email-verification email to the user An email contains a link the user can click to verify their email address.
+         * @description The redirectUri, clientId and lifespan parameters are optional. The default for the redirect is the account client. The default for the lifespan is 12 hours
+         */
+        put: {
+            parameters: {
+                query?: {
+                    /** @description Client id */
+                    client_id?: string;
+                    /** @description Number of seconds after which the generated token expires */
+                    lifespan?: number;
+                    /** @description Redirect uri */
+                    redirect_uri?: string;
+                };
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Internal Server Error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        /** Get sessions associated with the user */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserSessionRepresentation"][];
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/unmanagedAttributes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                "user-id": string;
+                organization_id: string;
+                branch_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    "user-id": string;
+                    organization_id: string;
+                    branch_id: string;
+                    project_id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            [key: string]: string[];
+                        };
+                    };
+                };
+                /** @description Forbidden */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -753,6 +18447,122 @@ export interface components {
              * Format: date-time
              */
             occurred_at: string;
+        };
+        /** BackupCreatePublic */
+        BackupCreatePublic: {
+            /** Status */
+            status: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            backup_id: string;
+        };
+        /** BackupDeletePublic */
+        BackupDeletePublic: {
+            /** Status */
+            status: string;
+            /** Message */
+            message: string | null;
+        };
+        /** BackupInfoPublic */
+        BackupInfoPublic: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            schedule_id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            branch_id: string;
+            /** Level */
+            level: string;
+            /**
+             * Next Backup
+             * Format: date-time
+             */
+            next_backup: string;
+        };
+        /** BackupPublic */
+        BackupPublic: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            branch_id: string;
+            /** Row Index */
+            row_index: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** BackupScheduleCreatePublic */
+        BackupScheduleCreatePublic: {
+            /** Status */
+            status: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            schedule_id: string;
+        };
+        /** BackupScheduleDeletePublic */
+        BackupScheduleDeletePublic: {
+            /** Status */
+            status: string;
+            /** Message */
+            message: string;
+        };
+        /** BackupSchedulePublic */
+        BackupSchedulePublic: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            organization_id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            branch_id: string;
+            /** Env Type */
+            env_type: string;
+            /** Rows */
+            rows: components["schemas"]["BackupScheduleRowPublic"][];
+        };
+        /** BackupScheduleRowPublic */
+        BackupScheduleRowPublic: {
+            /** Row Index */
+            row_index: number;
+            /** Interval */
+            interval: number;
+            /** Unit */
+            unit: string;
+            /** Retention */
+            retention: number;
         };
         /** BranchApiKeys */
         BranchApiKeys: {
@@ -1034,11 +18844,14 @@ export interface components {
             /** Database Size */
             database_size?: number | null;
         };
-        /**
-         * ResourceType
-         * @enum {string}
-         */
-        ResourceType: "milli_vcpu" | "ram" | "iops" | "storage_size" | "database_size";
+        ResourceType: {
+            type?: string;
+            scopes?: string[];
+            scopeAliases?: {
+                [key: string]: string[];
+            };
+            groupType?: string;
+        };
         /** ResourcesDefinition */
         ResourcesDefinition: {
             /**
@@ -1203,6 +19016,1536 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        AbstractPolicyRepresentation: {
+            id?: string;
+            name?: string;
+            description?: string;
+            type?: string;
+            policies?: string[];
+            resources?: string[];
+            scopes?: string[];
+            logic?: components["schemas"]["Logic"];
+            decisionStrategy?: components["schemas"]["DecisionStrategy"];
+            owner?: string;
+            resourceType?: string;
+            resourcesData?: components["schemas"]["ResourceRepresentation"][];
+            scopesData?: components["schemas"]["ScopeRepresentation"][];
+        };
+        Access: {
+            roles?: string[];
+            verify_caller?: boolean;
+        };
+        AccessToken: {
+            jti?: string;
+            /** Format: int64 */
+            exp?: number;
+            /** Format: int64 */
+            nbf?: number;
+            /** Format: int64 */
+            iat?: number;
+            iss?: string;
+            sub?: string;
+            typ?: string;
+            azp?: string;
+            otherClaims?: {
+                [key: string]: unknown;
+            };
+            nonce?: string;
+            /** Format: int64 */
+            auth_time?: number;
+            sid?: string;
+            at_hash?: string;
+            c_hash?: string;
+            name?: string;
+            given_name?: string;
+            family_name?: string;
+            middle_name?: string;
+            nickname?: string;
+            preferred_username?: string;
+            profile?: string;
+            picture?: string;
+            website?: string;
+            email?: string;
+            email_verified?: boolean;
+            gender?: string;
+            birthdate?: string;
+            zoneinfo?: string;
+            locale?: string;
+            phone_number?: string;
+            phone_number_verified?: boolean;
+            address?: components["schemas"]["AddressClaimSet"];
+            /** Format: int64 */
+            updated_at?: number;
+            claims_locales?: string;
+            acr?: string;
+            s_hash?: string;
+            "trusted-certs"?: string[];
+            "allowed-origins"?: string[];
+            realm_access?: components["schemas"]["Access"];
+            resource_access?: {
+                [key: string]: components["schemas"]["Access"];
+            };
+            authorization?: components["schemas"]["Authorization"];
+            cnf?: components["schemas"]["Confirmation"];
+            scope?: string;
+        };
+        AddressClaimSet: {
+            formatted?: string;
+            street_address?: string;
+            locality?: string;
+            region?: string;
+            postal_code?: string;
+            country?: string;
+        };
+        AdminEventRepresentation: {
+            id?: string;
+            /** Format: int64 */
+            time?: number;
+            realmId?: string;
+            authDetails?: components["schemas"]["AuthDetailsRepresentation"];
+            operationType?: string;
+            resourceType?: string;
+            resourcePath?: string;
+            representation?: string;
+            error?: string;
+            details?: {
+                [key: string]: string;
+            };
+        };
+        /** @deprecated */
+        ApplicationRepresentation: {
+            id?: string;
+            clientId?: string;
+            description?: string;
+            type?: string;
+            rootUrl?: string;
+            adminUrl?: string;
+            baseUrl?: string;
+            surrogateAuthRequired?: boolean;
+            enabled?: boolean;
+            alwaysDisplayInConsole?: boolean;
+            clientAuthenticatorType?: string;
+            secret?: string;
+            registrationAccessToken?: string;
+            /** @deprecated */
+            defaultRoles?: string[];
+            redirectUris?: string[];
+            webOrigins?: string[];
+            /** Format: int32 */
+            notBefore?: number;
+            bearerOnly?: boolean;
+            consentRequired?: boolean;
+            standardFlowEnabled?: boolean;
+            implicitFlowEnabled?: boolean;
+            directAccessGrantsEnabled?: boolean;
+            serviceAccountsEnabled?: boolean;
+            authorizationServicesEnabled?: boolean;
+            /** @deprecated */
+            directGrantsOnly?: boolean;
+            publicClient?: boolean;
+            frontchannelLogout?: boolean;
+            protocol?: string;
+            attributes?: {
+                [key: string]: string;
+            };
+            authenticationFlowBindingOverrides?: {
+                [key: string]: string;
+            };
+            fullScopeAllowed?: boolean;
+            /** Format: int32 */
+            nodeReRegistrationTimeout?: number;
+            registeredNodes?: {
+                [key: string]: number;
+            };
+            protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+            /** @deprecated */
+            clientTemplate?: string;
+            /** @deprecated */
+            useTemplateConfig?: boolean;
+            /** @deprecated */
+            useTemplateScope?: boolean;
+            /** @deprecated */
+            useTemplateMappers?: boolean;
+            defaultClientScopes?: string[];
+            optionalClientScopes?: string[];
+            authorizationSettings?: components["schemas"]["ResourceServerRepresentation"];
+            access?: {
+                [key: string]: boolean;
+            };
+            origin?: string;
+            name?: string;
+            /** @deprecated */
+            claims?: components["schemas"]["ClaimRepresentation"];
+        };
+        AuthDetailsRepresentation: {
+            realmId?: string;
+            clientId?: string;
+            userId?: string;
+            ipAddress?: string;
+        };
+        AuthenticationExecutionExportRepresentation: {
+            authenticatorConfig?: string;
+            authenticator?: string;
+            authenticatorFlow?: boolean;
+            requirement?: string;
+            /** Format: int32 */
+            priority?: number;
+            /** @deprecated */
+            autheticatorFlow?: boolean;
+            flowAlias?: string;
+            userSetupAllowed?: boolean;
+        };
+        AuthenticationExecutionInfoRepresentation: {
+            id?: string;
+            requirement?: string;
+            displayName?: string;
+            alias?: string;
+            description?: string;
+            requirementChoices?: string[];
+            configurable?: boolean;
+            authenticationFlow?: boolean;
+            providerId?: string;
+            authenticationConfig?: string;
+            flowId?: string;
+            /** Format: int32 */
+            level?: number;
+            /** Format: int32 */
+            index?: number;
+            /** Format: int32 */
+            priority?: number;
+        };
+        AuthenticationExecutionRepresentation: {
+            authenticatorConfig?: string;
+            authenticator?: string;
+            authenticatorFlow?: boolean;
+            requirement?: string;
+            /** Format: int32 */
+            priority?: number;
+            /** @deprecated */
+            autheticatorFlow?: boolean;
+            id?: string;
+            flowId?: string;
+            parentFlow?: string;
+        };
+        AuthenticationFlowRepresentation: {
+            id?: string;
+            alias?: string;
+            description?: string;
+            providerId?: string;
+            topLevel?: boolean;
+            builtIn?: boolean;
+            authenticationExecutions?: components["schemas"]["AuthenticationExecutionExportRepresentation"][];
+        };
+        AuthenticatorConfigInfoRepresentation: {
+            name?: string;
+            providerId?: string;
+            helpText?: string;
+            properties?: components["schemas"]["ConfigPropertyRepresentation"][];
+        };
+        AuthenticatorConfigRepresentation: {
+            id?: string;
+            alias?: string;
+            config?: {
+                [key: string]: string;
+            };
+        };
+        Authorization: {
+            permissions?: components["schemas"]["Permission"][];
+        };
+        AuthorizationSchema: {
+            resourceTypes?: {
+                [key: string]: components["schemas"]["ResourceType"];
+            };
+        };
+        /** @enum {string} */
+        BruteForceStrategy: "LINEAR" | "MULTIPLE";
+        CertificateRepresentation: {
+            privateKey?: string;
+            publicKey?: string;
+            certificate?: string;
+            kid?: string;
+        };
+        ClaimRepresentation: {
+            name?: boolean;
+            username?: boolean;
+            profile?: boolean;
+            picture?: boolean;
+            website?: boolean;
+            email?: boolean;
+            gender?: boolean;
+            locale?: boolean;
+            address?: boolean;
+            phone?: boolean;
+        };
+        ClientInitialAccessCreatePresentation: {
+            /** Format: int32 */
+            expiration?: number;
+            /** Format: int32 */
+            count?: number;
+        };
+        ClientInitialAccessPresentation: {
+            id?: string;
+            token?: string;
+            /** Format: int32 */
+            timestamp?: number;
+            /** Format: int32 */
+            expiration?: number;
+            /** Format: int32 */
+            count?: number;
+            /** Format: int32 */
+            remainingCount?: number;
+        };
+        ClientMappingsRepresentation: {
+            id?: string;
+            client?: string;
+            mappings?: components["schemas"]["RoleRepresentation"][];
+        };
+        ClientPoliciesRepresentation: {
+            policies?: components["schemas"]["ClientPolicyRepresentation"][];
+            globalPolicies?: components["schemas"]["ClientPolicyRepresentation"][];
+        };
+        ClientPolicyConditionRepresentation: {
+            condition?: string;
+            /** @description Configuration settings as a JSON object */
+            configuration?: {
+                [key: string]: unknown;
+            };
+        };
+        ClientPolicyExecutorRepresentation: {
+            executor?: string;
+            /** @description Configuration settings as a JSON object */
+            configuration?: {
+                [key: string]: unknown;
+            };
+        };
+        ClientPolicyRepresentation: {
+            name?: string;
+            description?: string;
+            enabled?: boolean;
+            conditions?: components["schemas"]["ClientPolicyConditionRepresentation"][];
+            profiles?: string[];
+        };
+        ClientProfileRepresentation: {
+            name?: string;
+            description?: string;
+            executors?: components["schemas"]["ClientPolicyExecutorRepresentation"][];
+        };
+        ClientProfilesRepresentation: {
+            profiles?: components["schemas"]["ClientProfileRepresentation"][];
+            globalProfiles?: components["schemas"]["ClientProfileRepresentation"][];
+        };
+        ClientRepresentation: {
+            id?: string;
+            clientId?: string;
+            name?: string;
+            description?: string;
+            type?: string;
+            rootUrl?: string;
+            adminUrl?: string;
+            baseUrl?: string;
+            surrogateAuthRequired?: boolean;
+            enabled?: boolean;
+            alwaysDisplayInConsole?: boolean;
+            clientAuthenticatorType?: string;
+            secret?: string;
+            registrationAccessToken?: string;
+            /** @deprecated */
+            defaultRoles?: string[];
+            redirectUris?: string[];
+            webOrigins?: string[];
+            /** Format: int32 */
+            notBefore?: number;
+            bearerOnly?: boolean;
+            consentRequired?: boolean;
+            standardFlowEnabled?: boolean;
+            implicitFlowEnabled?: boolean;
+            directAccessGrantsEnabled?: boolean;
+            serviceAccountsEnabled?: boolean;
+            authorizationServicesEnabled?: boolean;
+            /** @deprecated */
+            directGrantsOnly?: boolean;
+            publicClient?: boolean;
+            frontchannelLogout?: boolean;
+            protocol?: string;
+            attributes?: {
+                [key: string]: string;
+            };
+            authenticationFlowBindingOverrides?: {
+                [key: string]: string;
+            };
+            fullScopeAllowed?: boolean;
+            /** Format: int32 */
+            nodeReRegistrationTimeout?: number;
+            registeredNodes?: {
+                [key: string]: number;
+            };
+            protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+            /** @deprecated */
+            clientTemplate?: string;
+            /** @deprecated */
+            useTemplateConfig?: boolean;
+            /** @deprecated */
+            useTemplateScope?: boolean;
+            /** @deprecated */
+            useTemplateMappers?: boolean;
+            defaultClientScopes?: string[];
+            optionalClientScopes?: string[];
+            authorizationSettings?: components["schemas"]["ResourceServerRepresentation"];
+            access?: {
+                [key: string]: boolean;
+            };
+            origin?: string;
+        };
+        ClientScopeRepresentation: {
+            id?: string;
+            name?: string;
+            description?: string;
+            protocol?: string;
+            attributes?: {
+                [key: string]: string;
+            };
+            protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+        };
+        /** @deprecated */
+        ClientTemplateRepresentation: {
+            id?: string;
+            name?: string;
+            description?: string;
+            protocol?: string;
+            fullScopeAllowed?: boolean;
+            bearerOnly?: boolean;
+            consentRequired?: boolean;
+            standardFlowEnabled?: boolean;
+            implicitFlowEnabled?: boolean;
+            directAccessGrantsEnabled?: boolean;
+            serviceAccountsEnabled?: boolean;
+            publicClient?: boolean;
+            frontchannelLogout?: boolean;
+            attributes?: {
+                [key: string]: string;
+            };
+            protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+        };
+        ClientTypeRepresentation: {
+            name?: string;
+            provider?: string;
+            parent?: string;
+            config?: {
+                [key: string]: components["schemas"]["PropertyConfig"];
+            };
+        };
+        ClientTypesRepresentation: {
+            "client-types"?: components["schemas"]["ClientTypeRepresentation"][];
+            "global-client-types"?: components["schemas"]["ClientTypeRepresentation"][];
+        };
+        ComponentExportRepresentation: {
+            id?: string;
+            name?: string;
+            providerId?: string;
+            subType?: string;
+            subComponents?: components["schemas"]["MultivaluedHashMapStringComponentExportRepresentation"];
+            config?: components["schemas"]["MultivaluedHashMapStringString"];
+        };
+        ComponentRepresentation: {
+            id?: string;
+            name?: string;
+            providerId?: string;
+            providerType?: string;
+            parentId?: string;
+            subType?: string;
+            config?: components["schemas"]["MultivaluedHashMapStringString"];
+        };
+        ComponentTypeRepresentation: {
+            id?: string;
+            helpText?: string;
+            properties?: components["schemas"]["ConfigPropertyRepresentation"][];
+            clientProperties?: components["schemas"]["ConfigPropertyRepresentation"][];
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        Composites: {
+            realm?: string[];
+            client?: {
+                [key: string]: string[];
+            };
+            /** @deprecated */
+            application?: {
+                [key: string]: string[];
+            };
+        };
+        ConfigPropertyRepresentation: {
+            name?: string;
+            label?: string;
+            helpText?: string;
+            type?: string;
+            defaultValue?: unknown;
+            options?: string[];
+            secret?: boolean;
+            required?: boolean;
+            readOnly?: boolean;
+        };
+        Confirmation: {
+            "x5t#S256"?: string;
+            jkt?: string;
+        };
+        CredentialRepresentation: {
+            id?: string;
+            type?: string;
+            userLabel?: string;
+            /** Format: int64 */
+            createdDate?: number;
+            secretData?: string;
+            credentialData?: string;
+            /** Format: int32 */
+            priority?: number;
+            value?: string;
+            temporary?: boolean;
+            /** @deprecated */
+            device?: string;
+            /** @deprecated */
+            hashedSaltedValue?: string;
+            /** @deprecated */
+            salt?: string;
+            /**
+             * Format: int32
+             * @deprecated
+             */
+            hashIterations?: number;
+            /**
+             * Format: int32
+             * @deprecated
+             */
+            counter?: number;
+            /** @deprecated */
+            algorithm?: string;
+            /**
+             * Format: int32
+             * @deprecated
+             */
+            digits?: number;
+            /**
+             * Format: int32
+             * @deprecated
+             */
+            period?: number;
+            /** @deprecated */
+            config?: components["schemas"]["MultivaluedHashMapStringString"];
+            federationLink?: string;
+        };
+        /** @enum {string} */
+        DecisionEffect: "PERMIT" | "DENY";
+        /** @enum {string} */
+        DecisionStrategy: "AFFIRMATIVE" | "UNANIMOUS" | "CONSENSUS";
+        /** @enum {string} */
+        EnforcementMode: "PERMISSIVE" | "ENFORCING" | "DISABLED";
+        ErrorRepresentation: {
+            field?: string;
+            errorMessage?: string;
+            params?: unknown[];
+            errors?: components["schemas"]["ErrorRepresentation"][];
+        };
+        EvaluationResultRepresentation: {
+            resource?: components["schemas"]["ResourceRepresentation"];
+            scopes?: components["schemas"]["ScopeRepresentation"][];
+            policies?: components["schemas"]["PolicyResultRepresentation"][];
+            status?: components["schemas"]["DecisionEffect"];
+            allowedScopes?: components["schemas"]["ScopeRepresentation"][];
+            deniedScopes?: components["schemas"]["ScopeRepresentation"][];
+        };
+        EventRepresentation: {
+            id?: string;
+            /** Format: int64 */
+            time?: number;
+            type?: string;
+            realmId?: string;
+            clientId?: string;
+            userId?: string;
+            sessionId?: string;
+            ipAddress?: string;
+            error?: string;
+            details?: {
+                [key: string]: string;
+            };
+        };
+        FederatedIdentityRepresentation: {
+            identityProvider?: string;
+            userId?: string;
+            userName?: string;
+        };
+        GlobalRequestResult: {
+            successRequests?: string[];
+            failedRequests?: string[];
+        };
+        GroupRepresentation: {
+            id?: string;
+            name?: string;
+            description?: string;
+            path?: string;
+            parentId?: string;
+            /** Format: int64 */
+            subGroupCount?: number;
+            subGroups?: components["schemas"]["GroupRepresentation"][];
+            attributes?: {
+                [key: string]: string[];
+            };
+            realmRoles?: string[];
+            clientRoles?: {
+                [key: string]: string[];
+            };
+            access?: {
+                [key: string]: boolean;
+            };
+        };
+        IDToken: {
+            jti?: string;
+            /** Format: int64 */
+            exp?: number;
+            /** Format: int64 */
+            nbf?: number;
+            /** Format: int64 */
+            iat?: number;
+            iss?: string;
+            sub?: string;
+            typ?: string;
+            azp?: string;
+            otherClaims?: {
+                [key: string]: unknown;
+            };
+            nonce?: string;
+            /** Format: int64 */
+            auth_time?: number;
+            sid?: string;
+            at_hash?: string;
+            c_hash?: string;
+            name?: string;
+            given_name?: string;
+            family_name?: string;
+            middle_name?: string;
+            nickname?: string;
+            preferred_username?: string;
+            profile?: string;
+            picture?: string;
+            website?: string;
+            email?: string;
+            email_verified?: boolean;
+            gender?: string;
+            birthdate?: string;
+            zoneinfo?: string;
+            locale?: string;
+            phone_number?: string;
+            phone_number_verified?: boolean;
+            address?: components["schemas"]["AddressClaimSet"];
+            /** Format: int64 */
+            updated_at?: number;
+            claims_locales?: string;
+            acr?: string;
+            s_hash?: string;
+        };
+        IdentityProviderMapperRepresentation: {
+            id?: string;
+            name?: string;
+            identityProviderAlias?: string;
+            identityProviderMapper?: string;
+            config?: {
+                [key: string]: string;
+            };
+        };
+        IdentityProviderMapperTypeRepresentation: {
+            id?: string;
+            name?: string;
+            category?: string;
+            helpText?: string;
+            properties?: components["schemas"]["ConfigPropertyRepresentation"][];
+        };
+        IdentityProviderRepresentation: {
+            alias?: string;
+            displayName?: string;
+            internalId?: string;
+            providerId?: string;
+            enabled?: boolean;
+            /** @deprecated */
+            updateProfileFirstLoginMode?: string;
+            trustEmail?: boolean;
+            storeToken?: boolean;
+            addReadTokenRoleOnCreate?: boolean;
+            authenticateByDefault?: boolean;
+            linkOnly?: boolean;
+            hideOnLogin?: boolean;
+            firstBrokerLoginFlowAlias?: string;
+            postBrokerLoginFlowAlias?: string;
+            organizationId?: string;
+            config?: {
+                [key: string]: string;
+            };
+            /** @deprecated */
+            updateProfileFirstLogin?: boolean;
+        };
+        InstallationAdapterConfig: {
+            realm?: string;
+            "realm-public-key"?: string;
+            "auth-server-url"?: string;
+            "ssl-required"?: string;
+            "bearer-only"?: boolean;
+            resource?: string;
+            "public-client"?: boolean;
+            "verify-token-audience"?: boolean;
+            credentials?: {
+                [key: string]: unknown;
+            };
+            "use-resource-role-mappings"?: boolean;
+            /** Format: int32 */
+            "confidential-port"?: number;
+            "policy-enforcer"?: components["schemas"]["PolicyEnforcerConfig"];
+        };
+        KeyMetadataRepresentation: {
+            providerId?: string;
+            /** Format: int64 */
+            providerPriority?: number;
+            kid?: string;
+            status?: string;
+            type?: string;
+            algorithm?: string;
+            publicKey?: string;
+            certificate?: string;
+            use?: components["schemas"]["KeyUse"];
+            /** Format: int64 */
+            validTo?: number;
+        };
+        KeyStoreConfig: {
+            realmCertificate?: boolean;
+            storePassword?: string;
+            keyPassword?: string;
+            keyAlias?: string;
+            realmAlias?: string;
+            format?: string;
+            /** Format: int32 */
+            keySize?: number;
+            /** Format: int32 */
+            validity?: number;
+        };
+        /** @enum {string} */
+        KeyUse: "SIG" | "ENC" | "JWT_SVID";
+        KeysMetadataRepresentation: {
+            active?: {
+                [key: string]: string;
+            };
+            keys?: components["schemas"]["KeyMetadataRepresentation"][];
+        };
+        /** @enum {string} */
+        Logic: "POSITIVE" | "NEGATIVE";
+        ManagementPermissionReference: {
+            enabled?: boolean;
+            resource?: string;
+            scopePermissions?: {
+                [key: string]: string;
+            };
+        };
+        MappingsRepresentation: {
+            realmMappings?: components["schemas"]["RoleRepresentation"][];
+            clientMappings?: {
+                [key: string]: components["schemas"]["ClientMappingsRepresentation"];
+            };
+        };
+        MemberRepresentation: {
+            id?: string;
+            username?: string;
+            firstName?: string;
+            lastName?: string;
+            email?: string;
+            emailVerified?: boolean;
+            attributes?: {
+                [key: string]: string[];
+            };
+            userProfileMetadata?: components["schemas"]["UserProfileMetadata"];
+            enabled?: boolean;
+            self?: string;
+            origin?: string;
+            /** Format: int64 */
+            createdTimestamp?: number;
+            totp?: boolean;
+            federationLink?: string;
+            serviceAccountClientId?: string;
+            credentials?: components["schemas"]["CredentialRepresentation"][];
+            disableableCredentialTypes?: string[];
+            requiredActions?: string[];
+            federatedIdentities?: components["schemas"]["FederatedIdentityRepresentation"][];
+            realmRoles?: string[];
+            clientRoles?: {
+                [key: string]: string[];
+            };
+            clientConsents?: components["schemas"]["UserConsentRepresentation"][];
+            /** Format: int32 */
+            notBefore?: number;
+            /** @deprecated */
+            applicationRoles?: {
+                [key: string]: string[];
+            };
+            /** @deprecated */
+            socialLinks?: components["schemas"]["SocialLinkRepresentation"][];
+            groups?: string[];
+            access?: {
+                [key: string]: boolean;
+            };
+            membershipType?: components["schemas"]["MembershipType"];
+        };
+        /** @enum {string} */
+        MembershipType: "UNMANAGED" | "MANAGED";
+        MethodConfig: {
+            method?: string;
+            scopes?: string[];
+            "scopes-enforcement-mode"?: components["schemas"]["ScopeEnforcementMode"];
+        };
+        MultivaluedHashMapStringComponentExportRepresentation: {
+            [key: string]: components["schemas"]["ComponentExportRepresentation"][];
+        };
+        MultivaluedHashMapStringString: {
+            [key: string]: string[];
+        };
+        /** @deprecated */
+        OAuthClientRepresentation: {
+            id?: string;
+            clientId?: string;
+            description?: string;
+            type?: string;
+            rootUrl?: string;
+            adminUrl?: string;
+            baseUrl?: string;
+            surrogateAuthRequired?: boolean;
+            enabled?: boolean;
+            alwaysDisplayInConsole?: boolean;
+            clientAuthenticatorType?: string;
+            secret?: string;
+            registrationAccessToken?: string;
+            /** @deprecated */
+            defaultRoles?: string[];
+            redirectUris?: string[];
+            webOrigins?: string[];
+            /** Format: int32 */
+            notBefore?: number;
+            bearerOnly?: boolean;
+            consentRequired?: boolean;
+            standardFlowEnabled?: boolean;
+            implicitFlowEnabled?: boolean;
+            directAccessGrantsEnabled?: boolean;
+            serviceAccountsEnabled?: boolean;
+            authorizationServicesEnabled?: boolean;
+            /** @deprecated */
+            directGrantsOnly?: boolean;
+            publicClient?: boolean;
+            frontchannelLogout?: boolean;
+            protocol?: string;
+            attributes?: {
+                [key: string]: string;
+            };
+            authenticationFlowBindingOverrides?: {
+                [key: string]: string;
+            };
+            fullScopeAllowed?: boolean;
+            /** Format: int32 */
+            nodeReRegistrationTimeout?: number;
+            registeredNodes?: {
+                [key: string]: number;
+            };
+            protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+            /** @deprecated */
+            clientTemplate?: string;
+            /** @deprecated */
+            useTemplateConfig?: boolean;
+            /** @deprecated */
+            useTemplateScope?: boolean;
+            /** @deprecated */
+            useTemplateMappers?: boolean;
+            defaultClientScopes?: string[];
+            optionalClientScopes?: string[];
+            authorizationSettings?: components["schemas"]["ResourceServerRepresentation"];
+            access?: {
+                [key: string]: boolean;
+            };
+            origin?: string;
+            name?: string;
+            /** @deprecated */
+            claims?: components["schemas"]["ClaimRepresentation"];
+        };
+        OrganizationDomainRepresentation: {
+            name?: string;
+            verified?: boolean;
+        };
+        OrganizationRepresentation: {
+            id?: string;
+            name?: string;
+            alias?: string;
+            enabled?: boolean;
+            description?: string;
+            redirectUrl?: string;
+            attributes?: {
+                [key: string]: string[];
+            };
+            domains?: components["schemas"]["OrganizationDomainRepresentation"][];
+            members?: components["schemas"]["MemberRepresentation"][];
+            identityProviders?: components["schemas"]["IdentityProviderRepresentation"][];
+        };
+        PathCacheConfig: {
+            /** Format: int32 */
+            "max-entries"?: number;
+            /** Format: int64 */
+            lifespan?: number;
+        };
+        PathConfig: {
+            name?: string;
+            type?: string;
+            path?: string;
+            methods?: components["schemas"]["MethodConfig"][];
+            scopes?: string[];
+            id?: string;
+            "enforcement-mode"?: components["schemas"]["EnforcementMode"];
+            "claim-information-point"?: {
+                [key: string]: {
+                    [key: string]: unknown;
+                };
+            };
+            invalidated?: boolean;
+            staticPath?: boolean;
+            static?: boolean;
+        };
+        Permission: {
+            rsid?: string;
+            rsname?: string;
+            scopes?: string[];
+            claims?: {
+                [key: string]: string[];
+            };
+        };
+        /** @enum {string} */
+        PolicyEnforcementMode: "ENFORCING" | "PERMISSIVE" | "DISABLED";
+        PolicyEnforcerConfig: {
+            "enforcement-mode"?: components["schemas"]["EnforcementMode"];
+            paths?: components["schemas"]["PathConfig"][];
+            "path-cache"?: components["schemas"]["PathCacheConfig"];
+            "lazy-load-paths"?: boolean;
+            "on-deny-redirect-to"?: string;
+            "user-managed-access"?: components["schemas"]["UserManagedAccessConfig"];
+            "claim-information-point"?: {
+                [key: string]: {
+                    [key: string]: unknown;
+                };
+            };
+            "http-method-as-scope"?: boolean;
+            realm?: string;
+            "auth-server-url"?: string;
+            credentials?: {
+                [key: string]: unknown;
+            };
+            resource?: string;
+        };
+        PolicyEvaluationRequest: {
+            context?: {
+                [key: string]: {
+                    [key: string]: string;
+                };
+            };
+            resources?: components["schemas"]["ResourceRepresentation"][];
+            resourceType?: string;
+            clientId?: string;
+            userId?: string;
+            roleIds?: string[];
+            entitlements?: boolean;
+        };
+        PolicyEvaluationResponse: {
+            results?: components["schemas"]["EvaluationResultRepresentation"][];
+            entitlements?: boolean;
+            status?: components["schemas"]["DecisionEffect"];
+            rpt?: components["schemas"]["AccessToken"];
+        };
+        PolicyProviderRepresentation: {
+            type?: string;
+            name?: string;
+            group?: string;
+        };
+        PolicyRepresentation: {
+            id?: string;
+            name?: string;
+            description?: string;
+            type?: string;
+            policies?: string[];
+            resources?: string[];
+            scopes?: string[];
+            logic?: components["schemas"]["Logic"];
+            decisionStrategy?: components["schemas"]["DecisionStrategy"];
+            owner?: string;
+            resourceType?: string;
+            resourcesData?: components["schemas"]["ResourceRepresentation"][];
+            scopesData?: components["schemas"]["ScopeRepresentation"][];
+            config?: {
+                [key: string]: string;
+            };
+        };
+        PolicyResultRepresentation: {
+            policy?: components["schemas"]["PolicyRepresentation"];
+            status?: components["schemas"]["DecisionEffect"];
+            associatedPolicies?: components["schemas"]["PolicyResultRepresentation"][];
+            scopes?: string[];
+            resourceType?: string;
+        };
+        PropertyConfig: {
+            applicable?: boolean;
+            value?: unknown;
+        };
+        ProtocolMapperEvaluationRepresentation: {
+            mapperId?: string;
+            mapperName?: string;
+            containerId?: string;
+            containerName?: string;
+            containerType?: string;
+            protocolMapper?: string;
+        };
+        ProtocolMapperRepresentation: {
+            id?: string;
+            name?: string;
+            protocol?: string;
+            protocolMapper?: string;
+            /** @deprecated */
+            consentRequired?: boolean;
+            /** @deprecated */
+            consentText?: string;
+            config?: {
+                [key: string]: string;
+            };
+        };
+        PublishedRealmRepresentation: {
+            realm?: string;
+            public_key?: string;
+            "token-service"?: string;
+            "account-service"?: string;
+            /** Format: int32 */
+            "tokens-not-before"?: number;
+        };
+        RealmEventsConfigRepresentation: {
+            eventsEnabled?: boolean;
+            /** Format: int64 */
+            eventsExpiration?: number;
+            eventsListeners?: string[];
+            enabledEventTypes?: string[];
+            adminEventsEnabled?: boolean;
+            adminEventsDetailsEnabled?: boolean;
+        };
+        RealmRepresentation: {
+            id?: string;
+            realm?: string;
+            displayName?: string;
+            displayNameHtml?: string;
+            /** Format: int32 */
+            notBefore?: number;
+            defaultSignatureAlgorithm?: string;
+            revokeRefreshToken?: boolean;
+            /** Format: int32 */
+            refreshTokenMaxReuse?: number;
+            /** Format: int32 */
+            accessTokenLifespan?: number;
+            /** Format: int32 */
+            accessTokenLifespanForImplicitFlow?: number;
+            /** Format: int32 */
+            ssoSessionIdleTimeout?: number;
+            /** Format: int32 */
+            ssoSessionMaxLifespan?: number;
+            /** Format: int32 */
+            ssoSessionIdleTimeoutRememberMe?: number;
+            /** Format: int32 */
+            ssoSessionMaxLifespanRememberMe?: number;
+            /** Format: int32 */
+            offlineSessionIdleTimeout?: number;
+            offlineSessionMaxLifespanEnabled?: boolean;
+            /** Format: int32 */
+            offlineSessionMaxLifespan?: number;
+            /** Format: int32 */
+            clientSessionIdleTimeout?: number;
+            /** Format: int32 */
+            clientSessionMaxLifespan?: number;
+            /** Format: int32 */
+            clientOfflineSessionIdleTimeout?: number;
+            /** Format: int32 */
+            clientOfflineSessionMaxLifespan?: number;
+            /** Format: int32 */
+            accessCodeLifespan?: number;
+            /** Format: int32 */
+            accessCodeLifespanUserAction?: number;
+            /** Format: int32 */
+            accessCodeLifespanLogin?: number;
+            /** Format: int32 */
+            actionTokenGeneratedByAdminLifespan?: number;
+            /** Format: int32 */
+            actionTokenGeneratedByUserLifespan?: number;
+            /** Format: int32 */
+            oauth2DeviceCodeLifespan?: number;
+            /** Format: int32 */
+            oauth2DevicePollingInterval?: number;
+            enabled?: boolean;
+            sslRequired?: string;
+            /** @deprecated */
+            passwordCredentialGrantAllowed?: boolean;
+            registrationAllowed?: boolean;
+            registrationEmailAsUsername?: boolean;
+            rememberMe?: boolean;
+            verifyEmail?: boolean;
+            loginWithEmailAllowed?: boolean;
+            duplicateEmailsAllowed?: boolean;
+            resetPasswordAllowed?: boolean;
+            editUsernameAllowed?: boolean;
+            /** @deprecated */
+            userCacheEnabled?: boolean;
+            /** @deprecated */
+            realmCacheEnabled?: boolean;
+            bruteForceProtected?: boolean;
+            permanentLockout?: boolean;
+            /** Format: int32 */
+            maxTemporaryLockouts?: number;
+            bruteForceStrategy?: components["schemas"]["BruteForceStrategy"];
+            /** Format: int32 */
+            maxFailureWaitSeconds?: number;
+            /** Format: int32 */
+            minimumQuickLoginWaitSeconds?: number;
+            /** Format: int32 */
+            waitIncrementSeconds?: number;
+            /** Format: int64 */
+            quickLoginCheckMilliSeconds?: number;
+            /** Format: int32 */
+            maxDeltaTimeSeconds?: number;
+            /** Format: int32 */
+            failureFactor?: number;
+            /** @deprecated */
+            privateKey?: string;
+            /** @deprecated */
+            publicKey?: string;
+            /** @deprecated */
+            certificate?: string;
+            /** @deprecated */
+            codeSecret?: string;
+            roles?: components["schemas"]["RolesRepresentation"];
+            groups?: components["schemas"]["GroupRepresentation"][];
+            /** @deprecated */
+            defaultRoles?: string[];
+            defaultRole?: components["schemas"]["RoleRepresentation"];
+            adminPermissionsClient?: components["schemas"]["ClientRepresentation"];
+            defaultGroups?: string[];
+            /** @deprecated */
+            requiredCredentials?: string[];
+            passwordPolicy?: string;
+            otpPolicyType?: string;
+            otpPolicyAlgorithm?: string;
+            /** Format: int32 */
+            otpPolicyInitialCounter?: number;
+            /** Format: int32 */
+            otpPolicyDigits?: number;
+            /** Format: int32 */
+            otpPolicyLookAheadWindow?: number;
+            /** Format: int32 */
+            otpPolicyPeriod?: number;
+            otpPolicyCodeReusable?: boolean;
+            otpSupportedApplications?: string[];
+            localizationTexts?: {
+                [key: string]: {
+                    [key: string]: string;
+                };
+            };
+            webAuthnPolicyRpEntityName?: string;
+            webAuthnPolicySignatureAlgorithms?: string[];
+            webAuthnPolicyRpId?: string;
+            webAuthnPolicyAttestationConveyancePreference?: string;
+            webAuthnPolicyAuthenticatorAttachment?: string;
+            webAuthnPolicyRequireResidentKey?: string;
+            webAuthnPolicyUserVerificationRequirement?: string;
+            /** Format: int32 */
+            webAuthnPolicyCreateTimeout?: number;
+            webAuthnPolicyAvoidSameAuthenticatorRegister?: boolean;
+            webAuthnPolicyAcceptableAaguids?: string[];
+            webAuthnPolicyExtraOrigins?: string[];
+            webAuthnPolicyPasswordlessRpEntityName?: string;
+            webAuthnPolicyPasswordlessSignatureAlgorithms?: string[];
+            webAuthnPolicyPasswordlessRpId?: string;
+            webAuthnPolicyPasswordlessAttestationConveyancePreference?: string;
+            webAuthnPolicyPasswordlessAuthenticatorAttachment?: string;
+            webAuthnPolicyPasswordlessRequireResidentKey?: string;
+            webAuthnPolicyPasswordlessUserVerificationRequirement?: string;
+            /** Format: int32 */
+            webAuthnPolicyPasswordlessCreateTimeout?: number;
+            webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister?: boolean;
+            webAuthnPolicyPasswordlessAcceptableAaguids?: string[];
+            webAuthnPolicyPasswordlessExtraOrigins?: string[];
+            webAuthnPolicyPasswordlessPasskeysEnabled?: boolean;
+            clientProfiles?: components["schemas"]["ClientProfilesRepresentation"];
+            clientPolicies?: components["schemas"]["ClientPoliciesRepresentation"];
+            users?: components["schemas"]["UserRepresentation"][];
+            federatedUsers?: components["schemas"]["UserRepresentation"][];
+            scopeMappings?: components["schemas"]["ScopeMappingRepresentation"][];
+            clientScopeMappings?: {
+                [key: string]: components["schemas"]["ScopeMappingRepresentation"][];
+            };
+            clients?: components["schemas"]["ClientRepresentation"][];
+            clientScopes?: components["schemas"]["ClientScopeRepresentation"][];
+            defaultDefaultClientScopes?: string[];
+            defaultOptionalClientScopes?: string[];
+            browserSecurityHeaders?: {
+                [key: string]: string;
+            };
+            smtpServer?: {
+                [key: string]: string;
+            };
+            userFederationProviders?: components["schemas"]["UserFederationProviderRepresentation"][];
+            userFederationMappers?: components["schemas"]["UserFederationMapperRepresentation"][];
+            loginTheme?: string;
+            accountTheme?: string;
+            adminTheme?: string;
+            emailTheme?: string;
+            eventsEnabled?: boolean;
+            /** Format: int64 */
+            eventsExpiration?: number;
+            eventsListeners?: string[];
+            enabledEventTypes?: string[];
+            adminEventsEnabled?: boolean;
+            adminEventsDetailsEnabled?: boolean;
+            identityProviders?: components["schemas"]["IdentityProviderRepresentation"][];
+            identityProviderMappers?: components["schemas"]["IdentityProviderMapperRepresentation"][];
+            protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+            components?: components["schemas"]["MultivaluedHashMapStringComponentExportRepresentation"];
+            internationalizationEnabled?: boolean;
+            supportedLocales?: string[];
+            defaultLocale?: string;
+            authenticationFlows?: components["schemas"]["AuthenticationFlowRepresentation"][];
+            authenticatorConfig?: components["schemas"]["AuthenticatorConfigRepresentation"][];
+            requiredActions?: components["schemas"]["RequiredActionProviderRepresentation"][];
+            browserFlow?: string;
+            registrationFlow?: string;
+            directGrantFlow?: string;
+            resetCredentialsFlow?: string;
+            clientAuthenticationFlow?: string;
+            dockerAuthenticationFlow?: string;
+            firstBrokerLoginFlow?: string;
+            attributes?: {
+                [key: string]: string;
+            };
+            keycloakVersion?: string;
+            userManagedAccessAllowed?: boolean;
+            organizationsEnabled?: boolean;
+            organizations?: components["schemas"]["OrganizationRepresentation"][];
+            verifiableCredentialsEnabled?: boolean;
+            adminPermissionsEnabled?: boolean;
+            /** @deprecated */
+            social?: boolean;
+            /** @deprecated */
+            updateProfileOnInitialSocialLogin?: boolean;
+            /** @deprecated */
+            socialProviders?: {
+                [key: string]: string;
+            };
+            /** @deprecated */
+            applicationScopeMappings?: {
+                [key: string]: components["schemas"]["ScopeMappingRepresentation"][];
+            };
+            /** @deprecated */
+            applications?: components["schemas"]["ApplicationRepresentation"][];
+            /** @deprecated */
+            oauthClients?: components["schemas"]["OAuthClientRepresentation"][];
+            /** @deprecated */
+            clientTemplates?: components["schemas"]["ClientTemplateRepresentation"][];
+        };
+        RequiredActionConfigInfoRepresentation: {
+            properties?: components["schemas"]["ConfigPropertyRepresentation"][];
+        };
+        RequiredActionConfigRepresentation: {
+            config?: {
+                [key: string]: string;
+            };
+        };
+        RequiredActionProviderRepresentation: {
+            alias?: string;
+            name?: string;
+            providerId?: string;
+            enabled?: boolean;
+            defaultAction?: boolean;
+            /** Format: int32 */
+            priority?: number;
+            config?: {
+                [key: string]: string;
+            };
+        };
+        ResourceOwnerRepresentation: {
+            id?: string;
+            name?: string;
+        };
+        ResourceRepresentation: {
+            _id?: string;
+            name?: string;
+            uris?: string[];
+            type?: string;
+            scopes?: components["schemas"]["ScopeRepresentation"][];
+            icon_uri?: string;
+            readonly owner?: components["schemas"]["ResourceOwnerRepresentation"];
+            ownerManagedAccess?: boolean;
+            displayName?: string;
+            attributes?: {
+                [key: string]: string[];
+            };
+            /** @deprecated */
+            uri?: string;
+            scopesUma?: components["schemas"]["ScopeRepresentation"][];
+        };
+        ResourceServerRepresentation: {
+            id?: string;
+            clientId?: string;
+            name?: string;
+            allowRemoteResourceManagement?: boolean;
+            policyEnforcementMode?: components["schemas"]["PolicyEnforcementMode"];
+            resources?: components["schemas"]["ResourceRepresentation"][];
+            policies?: components["schemas"]["PolicyRepresentation"][];
+            scopes?: components["schemas"]["ScopeRepresentation"][];
+            decisionStrategy?: components["schemas"]["DecisionStrategy"];
+            authorizationSchema?: components["schemas"]["AuthorizationSchema"];
+        };
+        RoleRepresentation: {
+            id?: string;
+            name?: string;
+            description?: string;
+            /** @deprecated */
+            scopeParamRequired?: boolean;
+            composite?: boolean;
+            composites?: components["schemas"]["Composites"];
+            clientRole?: boolean;
+            containerId?: string;
+            attributes?: {
+                [key: string]: string[];
+            };
+        };
+        RolesRepresentation: {
+            realm?: components["schemas"]["RoleRepresentation"][];
+            client?: {
+                [key: string]: components["schemas"]["RoleRepresentation"][];
+            };
+            /** @deprecated */
+            application?: {
+                [key: string]: components["schemas"]["RoleRepresentation"][];
+            };
+        };
+        /** @enum {string} */
+        ScopeEnforcementMode: "ALL" | "ANY" | "DISABLED";
+        ScopeMappingRepresentation: {
+            self?: string;
+            client?: string;
+            /** @deprecated */
+            clientTemplate?: string;
+            clientScope?: string;
+            roles?: string[];
+        };
+        ScopeRepresentation: {
+            id?: string;
+            name?: string;
+            iconUri?: string;
+            policies?: components["schemas"]["PolicyRepresentation"][];
+            resources?: components["schemas"]["ResourceRepresentation"][];
+            displayName?: string;
+        };
+        SocialLinkRepresentation: {
+            socialProvider?: string;
+            socialUserId?: string;
+            socialUsername?: string;
+        };
+        UPAttribute: {
+            name?: string;
+            displayName?: string;
+            validations?: {
+                [key: string]: {
+                    [key: string]: unknown;
+                };
+            };
+            annotations?: {
+                [key: string]: unknown;
+            };
+            required?: components["schemas"]["UPAttributeRequired"];
+            permissions?: components["schemas"]["UPAttributePermissions"];
+            selector?: components["schemas"]["UPAttributeSelector"];
+            group?: string;
+            multivalued?: boolean;
+            defaultValue?: string;
+        };
+        UPAttributePermissions: {
+            view?: string[];
+            edit?: string[];
+        };
+        UPAttributeRequired: {
+            roles?: string[];
+            scopes?: string[];
+        };
+        UPAttributeSelector: {
+            scopes?: string[];
+        };
+        UPConfig: {
+            attributes?: components["schemas"]["UPAttribute"][];
+            groups?: components["schemas"]["UPGroup"][];
+            unmanagedAttributePolicy?: components["schemas"]["UnmanagedAttributePolicy"];
+        };
+        UPGroup: {
+            name?: string;
+            displayHeader?: string;
+            displayDescription?: string;
+            annotations?: {
+                [key: string]: unknown;
+            };
+        };
+        /** @enum {string} */
+        UnmanagedAttributePolicy: "ENABLED" | "ADMIN_VIEW" | "ADMIN_EDIT";
+        UserConsentRepresentation: {
+            clientId?: string;
+            grantedClientScopes?: string[];
+            /** Format: int64 */
+            createdDate?: number;
+            /** Format: int64 */
+            lastUpdatedDate?: number;
+            /** @deprecated */
+            grantedRealmRoles?: string[];
+        };
+        UserFederationMapperRepresentation: {
+            id?: string;
+            name?: string;
+            federationProviderDisplayName?: string;
+            federationMapperType?: string;
+            config?: {
+                [key: string]: string;
+            };
+        };
+        UserFederationProviderRepresentation: {
+            id?: string;
+            displayName?: string;
+            providerName?: string;
+            config?: {
+                [key: string]: string;
+            };
+            /** Format: int32 */
+            priority?: number;
+            /** Format: int32 */
+            fullSyncPeriod?: number;
+            /** Format: int32 */
+            changedSyncPeriod?: number;
+            /** Format: int32 */
+            lastSync?: number;
+        };
+        UserManagedAccessConfig: Record<string, never>;
+        UserProfileAttributeGroupMetadata: {
+            name?: string;
+            displayHeader?: string;
+            displayDescription?: string;
+            annotations?: {
+                [key: string]: unknown;
+            };
+        };
+        UserProfileAttributeMetadata: {
+            name?: string;
+            displayName?: string;
+            required?: boolean;
+            readOnly?: boolean;
+            annotations?: {
+                [key: string]: unknown;
+            };
+            validators?: {
+                [key: string]: {
+                    [key: string]: unknown;
+                };
+            };
+            group?: string;
+            multivalued?: boolean;
+            defaultValue?: string;
+        };
+        UserProfileMetadata: {
+            attributes?: components["schemas"]["UserProfileAttributeMetadata"][];
+            groups?: components["schemas"]["UserProfileAttributeGroupMetadata"][];
+        };
+        UserRepresentation: {
+            id?: string;
+            username?: string;
+            firstName?: string;
+            lastName?: string;
+            email?: string;
+            emailVerified?: boolean;
+            attributes?: {
+                [key: string]: string[];
+            };
+            userProfileMetadata?: components["schemas"]["UserProfileMetadata"];
+            enabled?: boolean;
+            self?: string;
+            origin?: string;
+            /** Format: int64 */
+            createdTimestamp?: number;
+            totp?: boolean;
+            federationLink?: string;
+            serviceAccountClientId?: string;
+            credentials?: components["schemas"]["CredentialRepresentation"][];
+            disableableCredentialTypes?: string[];
+            requiredActions?: string[];
+            federatedIdentities?: components["schemas"]["FederatedIdentityRepresentation"][];
+            realmRoles?: string[];
+            clientRoles?: {
+                [key: string]: string[];
+            };
+            clientConsents?: components["schemas"]["UserConsentRepresentation"][];
+            /** Format: int32 */
+            notBefore?: number;
+            /** @deprecated */
+            applicationRoles?: {
+                [key: string]: string[];
+            };
+            /** @deprecated */
+            socialLinks?: components["schemas"]["SocialLinkRepresentation"][];
+            groups?: string[];
+            access?: {
+                [key: string]: boolean;
+            };
+        };
+        UserSessionRepresentation: {
+            id?: string;
+            username?: string;
+            userId?: string;
+            ipAddress?: string;
+            /** Format: int64 */
+            start?: number;
+            /** Format: int64 */
+            lastAccess?: number;
+            rememberMe?: boolean;
+            clients?: {
+                [key: string]: string;
+            };
+            transientUser?: boolean;
+        };
+        WorkflowConditionRepresentation: {
+            uses?: string;
+            id?: string;
+            config?: components["schemas"]["MultivaluedHashMapStringString"];
+        };
+        WorkflowRepresentation: {
+            id?: string;
+            name?: string;
+            uses?: string;
+            enabled?: boolean;
+            on?: unknown;
+            "reset-on"?: unknown;
+            recurring?: boolean;
+            if?: components["schemas"]["WorkflowConditionRepresentation"][];
+            steps?: components["schemas"]["WorkflowStepRepresentation"][];
+            state?: components["schemas"]["WorkflowStateRepresentation"];
+            with?: components["schemas"]["MultivaluedHashMapStringString"];
+            onValues?: string[];
+            onEventsReset?: string[];
+        };
+        WorkflowSetRepresentation: {
+            workflows?: components["schemas"]["WorkflowRepresentation"][];
+        };
+        WorkflowStateRepresentation: {
+            errors?: string[];
+        };
+        WorkflowStepRepresentation: {
+            id?: string;
+            uses?: string;
+            after?: string;
+            priority?: string;
+            config?: components["schemas"]["MultivaluedHashMapStringString"];
         };
     };
     responses: never;
@@ -1730,7 +21073,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupSchedulePublic"][];
                 };
             };
             /** @description Validation Error */
@@ -1767,7 +21110,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
                 };
             };
             /** @description Validation Error */
@@ -1804,7 +21147,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
                 };
             };
             /** @description Validation Error */
@@ -1838,7 +21181,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupSchedulePublic"][];
                 };
             };
             /** @description Validation Error */
@@ -1875,7 +21218,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
                 };
             };
             /** @description Validation Error */
@@ -1912,7 +21255,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
                 };
             };
             /** @description Validation Error */
@@ -1946,7 +21289,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupPublic"][];
                 };
             };
             /** @description Validation Error */
@@ -1977,7 +21320,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupCreatePublic"];
                 };
             };
             /** @description Validation Error */
@@ -2011,7 +21354,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupPublic"][];
                 };
             };
             /** @description Validation Error */
@@ -2042,7 +21385,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupScheduleDeletePublic"];
                 };
             };
             /** @description Validation Error */
@@ -2073,7 +21416,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BackupDeletePublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_branch_backup_info_backup_branches__branch_id__info_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackupInfoPublic"];
                 };
             };
             /** @description Validation Error */

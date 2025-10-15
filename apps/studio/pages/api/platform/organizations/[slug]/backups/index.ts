@@ -4,13 +4,6 @@ import { getVelaClient } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { buildProjectByBranchLookup } from 'lib/api/projectByBranchLookup'
 
-interface VelaBackup {
-  branch_id: string
-  backup_uuid: string
-  row_index: number
-  created_at: string
-}
-
 interface Backup {
   id: string
   organization_id: string
@@ -45,9 +38,9 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Backup>) => {
     return cached
   }
 
-  return (backups as VelaBackup[]).map((backup): Backup => {
+  return backups.map((backup): Backup => {
     return {
-      id: backup.backup_uuid,
+      id: backup.id,
       organization_id: slug,
       project_id: getProjectId(backup.branch_id),
       branch_id: backup.branch_id,
