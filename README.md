@@ -46,11 +46,11 @@ Learn more at [vela.simplyblock.io](https://vela.simplyblock.io).
 Vela is built on open-source components, combining Postgres and modern infrastructure automation to provide a complete, self-hostable platform.
 
 - [Postgres](https://www.postgresql.org/) is a proven, object-relational database system known for reliability, feature depth, and performance.  
-- [Realtime](https://github.com/supabase/realtime) provides WebSocket-based subscriptions to Postgres inserts, updates, and deletes.  
+- [Realtime] provides WebSocket-based subscriptions to Postgres inserts, updates, and deletes.  
 - [PostgREST](http://postgrest.org/) turns your PostgreSQL database directly into a RESTful API.  
-- [GoTrue](https://github.com/supabase/gotrue) is a JWT-based authentication API for sign-ups, logins, and session management.  
-- [Storage](https://github.com/supabase/storage-api) offers a RESTful API for file management with Postgres-driven permissions.  
-- [pg_graphql](https://github.com/supabase/pg_graphql) exposes a GraphQL API directly from your Postgres schema.  
+- [Keycloak]is a JWT-based authentication API for sign-ups, logins, and session management used globally for all orgs/projects.
+- [Storage](https://github.com/simplyblock/sbcli) distributed copy-on-write high-perfromance block storage layer.
+- [pg_graphql] exposes a GraphQL API directly from your Postgres schema.  
 - [postgres-meta](https://github.com/supabase/postgres-meta) provides administrative APIs to manage Postgres objects such as tables and roles.  
 - [Kong](https://github.com/Kong/kong) serves as a cloud-native API gateway for routing and access control.  
 
