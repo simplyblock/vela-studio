@@ -19,14 +19,14 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
     body: {
       // FIXME: get correct values from the UI (after implemented in new/[slug].tsx
       name: creationRequest.name,
+      max_backups: 10, // TODO: Get actual value
+      env_type: '', // TODO: Get actual value
       deployment: {
-        database: '',
-        database_user: '',
         database_password: '',
         database_size: 10000000000000,
         storage_size: 1000000000000,
         milli_vcpu: 10000,
-        memory_bytes: 500000000,
+        memory_bytes: 4000000000,
         iops: 1000000,
         database_image_tag: '15.1.0.147',
       },

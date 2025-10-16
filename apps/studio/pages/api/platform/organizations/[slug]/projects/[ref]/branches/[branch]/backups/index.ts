@@ -16,10 +16,10 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Backup>) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
-  const { data: backups, success } = await client.getOrFail(res, '/backup/branches/{branch_ref}/', {
+  const { data: backups, success } = await client.getOrFail(res, '/backup/branches/{branch_id}/', {
     params: {
       path: {
-        branch_ref: branch,
+        branch_id: branch,
       },
     },
   })
@@ -42,10 +42,10 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
-  const { data, success } = await client.postOrFail(res, '/backup/branches/{branch_ref}/', {
+  const { data, success } = await client.postOrFail(res, '/backup/branches/{branch_id}/', {
     params: {
       path: {
-        branch_ref: branch,
+        branch_id: branch,
       },
     },
   })
