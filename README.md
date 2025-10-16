@@ -23,8 +23,6 @@ It provides instant database branching, independent scaling of compute and stora
 - [x] AI + Vector / Embeddings Toolkit
 - [x] Dashboard
 
-![Vela Studio Dashboard](https://raw.githubusercontent.com/simplyblock/vela-studio/master/apps/www/public/images/github/vela-studio-dashboard.png)
-
 ---
 
 ## What is Vela
