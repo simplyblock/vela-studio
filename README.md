@@ -48,7 +48,7 @@ Vela is built on open-source components, combining Postgres and modern infrastru
 - [Postgres](https://www.postgresql.org/) is a proven, object-relational database system known for reliability, feature depth, and performance.  
 - [Realtime] provides WebSocket-based subscriptions to Postgres inserts, updates, and deletes.  
 - [PostgREST](http://postgrest.org/) turns your PostgreSQL database directly into a RESTful API.  
-- [Keycloak]is a JWT-based authentication API for sign-ups, logins, and session management used globally for all orgs/projects.
+- [Keycloak] centralized authentication and identity provider, shared globally across all organizations and projects
 - [Storage](https://github.com/simplyblock/sbcli) distributed copy-on-write high-perfromance block storage layer.
 - [pg_graphql] exposes a GraphQL API directly from your Postgres schema.  
 - [postgres-meta](https://github.com/supabase/postgres-meta) provides administrative APIs to manage Postgres objects such as tables and roles.  
