@@ -6,8 +6,7 @@
         </a>
 </p>
 
-[Vela](https://vela.simplyblock.io) is a self-hostable, serverless Postgres development platform.  
-It provides instant database branching, independent scaling of compute and storage, and enterprise-grade access control — all deployable in your own cloud.
+[Vela](https://vela.simplyblock.io) is a self-hostable, serverless Postgres development platform. Built on a high-performance distributed storage layer, it provides instant database branching, independent scaling of compute and storage, and enterprise-grade access control — all deployable in your own cloud. Enterprise-grade features and toolkit developers love in one product.
 
 **Vela Studio** is the web interface for managing projects, databases, and resources across your Vela environment.
 
