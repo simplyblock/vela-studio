@@ -1,6 +1,10 @@
 # Vela Studio
 
-![Vela Logo](apps/docs/public/vela-logo-white.png)
+<p align="center">
+    <a href="https://vela.simplyblock.io">
+<img src="apps/docs/public/Vela-logo-white.png" alt="Vela Logo" width="250" height="100">
+        </a>
+</p>
 
 [Vela](https://vela.simplyblock.io) is a self-hostable, serverless Postgres development platform.  
 It provides instant database branching, independent scaling of compute and storage, and enterprise-grade access control — all deployable in your own cloud.
@@ -37,9 +41,14 @@ Use Vela to:
 - Run isolated QA, CI/CD, or staging environments  
 - Test schema changes and migrations safely  
 - Scale compute, RAM, and IOPS independently  
-- Integrate RBAC, IAM, and observability in one place  
+- Integrate RBAC, IAM, and observability in one place
 
-Learn more at [vela.simplyblock.io](https://vela.simplyblock.io).
+### Vela Explained in 50 seconds
+<video width="600" controls>
+  <source src="apps/docs/public/what-is-vela-postgres.mp4" type="video/mp4">
+</video>
+
+Learn more at [vela.simplyblock.io](https://vela.simplyblock.io)
 
 ---
 
