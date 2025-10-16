@@ -13,7 +13,7 @@ import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { hasMultipleOwners } from './TeamSettings.utils'
+import { hasMultipleOwners } from './UserSettings.utils'
 
 export const LeaveTeamButton = () => {
   const router = useRouter()

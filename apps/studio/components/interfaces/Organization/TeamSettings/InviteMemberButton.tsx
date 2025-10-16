@@ -1,3 +1,4 @@
+//TODO:
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import Link from 'next/link'
@@ -47,7 +48,7 @@ import {
   cn,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { useGetRolesManagementPermissions } from './TeamSettings.utils'
+import { useGetRolesManagementPermissions } from './UserSettings.utils'
 
 export const InviteMemberButton = () => {
   const { slug } = useParams()

@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react'
 import { useParams } from 'common'
 import { useCurrentPath } from 'hooks/misc/useCurrentPath'
 import { NavMenu, NavMenuItem } from 'ui'
-import { ScaffoldContainerLegacy, ScaffoldTitle } from '../Scaffold'
+import { ScaffoldContainer, ScaffoldContainerLegacy, ScaffoldTitle } from '../Scaffold'
 
 function OrganizationSettingsLayout({ children }: PropsWithChildren) {
   const { slug } = useParams()
@@ -15,14 +15,14 @@ function OrganizationSettingsLayout({ children }: PropsWithChildren) {
   // Hide these settings in the new layout on the following paths
   const isHidden = (path: string) => {
     return (
-      path === `/org/${slug}/team` ||
-      path === `/org/${slug}/integrations` ||
-      path === `/org/${slug}/usage` ||
-      path === `/org/${slug}/billing`
+      path === `/org/${slug}/general` ||
+      path === `/org/${slug}/security` ||
+      path === `/org/${slug}/sso` ||
+      path === `/org/${slug}/audit`
     )
   }
 
-  if (isHidden(currentPath)) {
+  if (!isHidden(currentPath)) {
     return children
   }
 
@@ -43,12 +43,12 @@ function OrganizationSettingsLayout({ children }: PropsWithChildren) {
     {
       label: 'Audit Logs',
       href: `/org/${slug}/audit`,
-    }
+    },
   ]
 
   return (
     <>
-      <ScaffoldContainerLegacy className="mb-0">
+      <ScaffoldContainer className="mb-0">
         <ScaffoldTitle>Organization Settings</ScaffoldTitle>
         <NavMenu className="overflow-x-auto" aria-label="Organization menu navigation">
           {(navMenuItems.filter(Boolean) as { label: string; href: string }[]).map((item) => (
@@ -57,7 +57,7 @@ function OrganizationSettingsLayout({ children }: PropsWithChildren) {
             </NavMenuItem>
           ))}
         </NavMenu>
-      </ScaffoldContainerLegacy>
+      </ScaffoldContainer>
       <main className="h-full w-full overflow-y-auto">{children}</main>
     </>
   )

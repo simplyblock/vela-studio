@@ -1,9 +1,9 @@
 import { Search } from 'lucide-react'
 import { useState } from 'react'
-
 import {
   ScaffoldActionsContainer,
   ScaffoldActionsGroup,
+  ScaffoldContainer,
   ScaffoldContainerLegacy,
   ScaffoldFilterAndContent,
   ScaffoldSectionContent,
@@ -13,13 +13,17 @@ import { DocsButton } from 'components/ui/DocsButton'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { InviteMemberButton } from './InviteMemberButton'
 import MembersView from './MembersView'
+import CreateBranchModal from 'components/interfaces/Branch/CreateBranchModal'
+import CreateProjectModal from 'components/interfaces/Branch/CreateProjectModal'
+import ResizeBranchModal from 'components/interfaces/Branch/ResizeBranchModal'
+import BackupScheduleModal from 'components/interfaces/Branch/BackupScheduleModal'
 
-export const TeamSettings = () => {
+export const UserSettings = () => {
   const [searchString, setSearchString] = useState('')
 
   return (
-    <ScaffoldContainerLegacy>
-      <ScaffoldTitle>Team</ScaffoldTitle>
+    <ScaffoldContainer>
+      <ScaffoldTitle>Users</ScaffoldTitle>
       <ScaffoldFilterAndContent>
         <ScaffoldActionsContainer className="w-full flex-col md:flex-row gap-2 justify-between">
           <Input
@@ -41,6 +45,6 @@ export const TeamSettings = () => {
           <MembersView searchString={searchString} />
         </ScaffoldSectionContent>
       </ScaffoldFilterAndContent>
-    </ScaffoldContainerLegacy>
+    </ScaffoldContainer>
   )
 }

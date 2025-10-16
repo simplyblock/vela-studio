@@ -1,4 +1,4 @@
-import { TeamSettings } from 'components/interfaces/Organization/TeamSettings/TeamSettings'
+import Metering from 'components/interfaces/Organization/Metering/Metering'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import OrganizationLayout from 'components/layouts/OrganizationLayout'
 import OrganizationSettingsLayout from 'components/layouts/ProjectLayout/OrganizationSettingsLayout'
@@ -7,14 +7,14 @@ import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import type { NextPageWithLayout } from 'types'
 
-const OrgTeamSettings: NextPageWithLayout = () => {
+const OrgMetering: NextPageWithLayout = () => {
   const { isLoading: isLoadingPermissions } = usePermissionsQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
 
-  return selectedOrganization === undefined && isLoadingPermissions ? <Loading /> : <TeamSettings />
+  return selectedOrganization === undefined && isLoadingPermissions ? <Loading /> : <Metering />
 }
 
-OrgTeamSettings.getLayout = (page) => (
+OrgMetering.getLayout = (page) => (
   <DefaultLayout>
     <OrganizationLayout>
       <OrganizationSettingsLayout>{page}</OrganizationSettingsLayout>
@@ -22,4 +22,4 @@ OrgTeamSettings.getLayout = (page) => (
   </DefaultLayout>
 )
 
-export default OrgTeamSettings
+export default OrgMetering

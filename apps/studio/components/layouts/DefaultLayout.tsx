@@ -12,7 +12,7 @@ import { ProjectContextProvider } from './ProjectLayout/ProjectContext'
 import { OrganizationContextProvider } from './OrganizationContext'
 import { getOrganizationSlug } from 'data/vela/organization-path-slug'
 import { getProjectRef } from 'data/vela/project-path-ref'
-
+import { RbacSubSideBar } from 'components/interfaces/RbacSidebar'
 export interface DefaultLayoutProps {
   headerTitle?: string
 }
@@ -39,6 +39,8 @@ const DefaultLayout = ({ children, headerTitle }: PropsWithChildren<DefaultLayou
   const router = useRouter()
   const showProductMenu = !!ref && router.pathname !== '/org/[slug]/project/[ref]'
 
+  const isRbacPath = router.pathname.includes('/rbac')
+
   useCheckLatestDeploy()
 
   if (!isInitialized) {
@@ -61,6 +63,9 @@ const DefaultLayout = ({ children, headerTitle }: PropsWithChildren<DefaultLayou
               <div className="flex flex-1 w-full overflow-y-hidden">
                 {/* Sidebar */}
                 <Sidebar />
+
+                {/* Conditionally render Team SubSideBar */}
+                {isRbacPath && <RbacSubSideBar />}
                 {/* Main Content */}
                 <div className="flex-grow h-full overflow-y-auto">{children}</div>
               </div>
