@@ -51,7 +51,9 @@ Learn more at [vela.simplyblock.io](https://vela.simplyblock.io)
 ---
 
 ## Architecture
-
+<p align="left">
+<img src="apps/docs/public/img/vela-architecture-background.png" alt="Vela Architecture">
+</p>
 Vela is built on open-source components, combining Postgres and modern infrastructure automation to provide a complete, self-hostable platform.
 
 - [Postgres](https://www.postgresql.org/) is a proven, object-relational database system known for reliability, feature depth, and performance.  
