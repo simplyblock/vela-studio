@@ -15,7 +15,7 @@ It provides instant database branching, independent scaling of compute and stora
 
 ## Features
 
-- [x] Hosted Postgres Database. [Docs](https://vela.simplyblock.io/docs)
+- [x] Self-Hosted Postgres Database
 - [x] Authentication and Authorization
 - [x] Full Role-based Access Control (RBAC)
 - [x] Auto-generated APIs  
