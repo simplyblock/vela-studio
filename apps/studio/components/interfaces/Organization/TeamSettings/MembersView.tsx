@@ -152,7 +152,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
     setMemberStatuses((previousStatuses) => {
       const next: Record<string, boolean> = {}
       members.forEach((member) => {
-        const key = String(member.gotrue_id ?? member.id)
+        const key = String(member.id)
         next[key] = previousStatuses[key] ?? Boolean(member.is_active ?? !member.invited_at)
       })
       return next
@@ -183,8 +183,8 @@ const MembersView = ({ searchString }: MembersViewProps) => {
   }, [roles])
 
   const renderMemberRow = (member: (typeof members)[number]) => {
-    const memberKey = String(member.gotrue_id ?? member.id)
-    const isCurrentUser = member.gotrue_id === effectiveProfile?.gotrue_id
+    const memberKey = String(member.user_id)
+    const isCurrentUser = member.user_id === effectiveProfile?.user_id
     const isActive = memberStatuses[memberKey] ?? true
     const rolesForMember = (member.role_ids ?? [])
       .map((id) => roleNameById[id])
@@ -290,52 +290,52 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                 </TableHeader>
 
                 <TableBody>
-                  {[
-                    ...(isSuccessRoles && isSuccessMembers && !isOrgScopedRole
-                      ? [
-                          <TableRow key="project-scope-notice">
-                            <TableCell colSpan={4} className="!p-0">
-                              <Admonition
-                                type="note"
-                                title="You are currently assigned with project scoped roles in this organization"
-                                description="All the members within the organization will not be visible to you"
-                                className="m-0 bg-alternative border-0 rounded-none"
-                              />
-                            </TableCell>
-                          </TableRow>,
-                        ]
-                      : []),
-                    // @ts-ignore
-                    ...(!!user ? [<MemberRow key={user.user_id} member={user} />] : []),
+                {[
+                  ...(isSuccessRoles && isSuccessMembers && !isOrgScopedRole
+                    ? [
+                        <TableRow key="project-scope-notice">
+                          <TableCell colSpan={4} className="!p-0">
+                            <Admonition
+                              type="note"
+                              title="You are currently assigned with project scoped roles in this organization"
+                              description="All the members within the organization will not be visible to you"
+                              className="m-0 bg-alternative border-0 rounded-none"
+                            />
+                          </TableCell>
+                        </TableRow>,
+                      ]
+                    : []),
 
-                    ...sortedMembers.map((member) => (
-                      // @ts-ignore
-                      <MemberRow key={member.user_id || member.id} member={member} />
-                    )),
-                    ...(searchString.length > 0 && filteredMembers.length === 0
-                      ? [
-                          <TableRow key="no-results" className="bg-panel-secondary-light">
-                            <TableCell colSpan={4}>
-                              <div className="flex items-center space-x-3 opacity-75">
-                                <AlertCircle size={16} strokeWidth={2} />
-                                <p className="text-foreground-light">
-                                  No users matched the search query "{searchString}"
-                                </p>
-                              </div>
-                            </TableCell>
-                          </TableRow>,
-                        ]
-                      : []),
-                    <TableRow key="footer" className="bg-panel-secondary-light">
-                      <TableCell colSpan={4}>
-                        <p className="text-foreground-light">
-                          {searchString ? `${filteredMembers.length} of ` : ''}
-                          {members.length || '0'} {members.length == 1 ? 'user' : 'users'}
-                        </p>
-                      </TableCell>
-                    </TableRow>,
-                  ]}
-                </TableBody>
+                  ...(!!user ? [renderMemberRow(user)] : []),
+
+                  ...sortedMembers.map((member) => renderMemberRow(member)),
+
+                  ...(searchString.length > 0 && filteredMembers.length === 0
+                    ? [
+                        <TableRow key="no-results" className="bg-panel-secondary-light">
+                          <TableCell colSpan={4}>
+                            <div className="flex items-center space-x-3 opacity-75">
+                              <AlertCircle size={16} strokeWidth={2} />
+                              <p className="text-foreground-light">
+                                No users matched the search query "{searchString}"
+                              </p>
+                            </div>
+                          </TableCell>
+                        </TableRow>,
+                      ]
+                    : []),
+
+                  <TableRow key="footer" className="bg-panel-secondary-light">
+                    <TableCell colSpan={4}>
+                      <p className="text-foreground-light">
+                        {searchString ? `${filteredMembers.length} of ` : ''}
+                        {members.length || '0'} {members.length == 1 ? 'user' : 'users'}
+                      </p>
+                    </TableCell>
+                  </TableRow>,
+                ]}
+              </TableBody>
+
               </Table>
             </Loading>
           </Card>

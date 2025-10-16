@@ -390,7 +390,7 @@ const OrganizationLinks = () => {
     },
     {
       label: 'Metering',
-      href: `/org/${slug}/usage`,
+      href: `/org/${slug}/metering`,
       key: 'usage', // Changed to match the path
       icon: <ChartArea size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },

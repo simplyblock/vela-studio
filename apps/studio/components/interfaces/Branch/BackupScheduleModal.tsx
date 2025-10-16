@@ -20,6 +20,7 @@ import {
 } from 'ui'
 
 const LABEL_OPTIONS = [
+  { label: 'All', value: 'all' },
   { label: 'Development', value: 'development' },
   { label: 'Staging', value: 'staging' },
   { label: 'Production', value: 'production' },
@@ -469,7 +470,7 @@ const BackupScheduleModal = () => {
                       </Select_Shadcn_>
                     </div>
                     <div className="space-y-2">
-                      <Label_Shadcn_ htmlFor={`${row.id}-repeat`}>Repeat</Label_Shadcn_>
+                      <Label_Shadcn_ htmlFor={`${row.id}-repeat`}>Retention</Label_Shadcn_>
                       <div className="flex items-center gap-2">
                         <Button
                           type="text"
@@ -533,7 +534,7 @@ const BackupScheduleModal = () => {
                   htmlType="button"
                   aria-label="Add schedule"
                 >
-                  Add schedule
+                  Add Row
                 </Button>
               </div>
             </div>
