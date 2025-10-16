@@ -1,10 +1,10 @@
-# Contributing to Supabase docs
+# Contributing to Vela docs
 
-Our docs help developers to get started and keep succeeding with Supabase. We welcome contributions from everyone.
+Our docs help developers to get started and keep succeeding with Vela. We welcome contributions from everyone.
 
-If you'd like to contribute, see our list of [recommended issues](https://github.com/supabase/supabase/issues?q=is%3Aopen+is%3Aissue+label%3Adocumentation+label%3A%22help+wanted%22). We also welcome you to open a PR or a new issue with your question.
+If you'd like to contribute, see our list of [recommended issues](https://github.com/simplyblock/vela-studio/issues?q=is%3Aopen+is%3Aissue+label%3Adocumentation+label%3A%22help+wanted%22). We also welcome you to open a PR or a new issue with your question.
 
-Here are some general guidelines on writing docs for Supabase.
+Here are some general guidelines on writing docs for Vela.
 
 ## General principles
 
@@ -16,11 +16,11 @@ To make docs as clear as possible:
 - Write like you talk. Use words and sentences that sound natural when speaking. Cut unnecessary words. Read your writing out loud to help you choose the clearest and simplest phrases.
 - Each paragraph should have one topic only. Start a new paragraph whenever you change the topic. Don't worry about paragraphs being too short.
 - Avoid using idioms and colloquialisms, such as `piece of cake`. These phrases are often specific to a region or culture.
-- Refer to the reader as `you`. Don't use `we` to refer to the reader. Use `we` only to refer to the Supabase team.
+- Refer to the reader as `you`. Don't use `we` to refer to the reader. Use `we` only to refer to the Vela team.
 
 ## Document types
 
-Supabase docs contain 4 types of documents. Before you start writing, think about what type of doc you need.
+Vela docs contain 4 types of documents. Before you start writing, think about what type of doc you need.
 
 ### Explainers
 
@@ -37,7 +37,7 @@ They shouldn't include:
 
 ### Tutorials
 
-Tutorials are goal-oriented. They help a reader to finish a large, complex goal, such as setting up a web app that uses multiple Supabase features.
+Tutorials are goal-oriented. They help a reader to finish a large, complex goal, such as setting up a web app that uses multiple Vela features.
 
 Tutorials mix prose explanations with procedures (lists of steps for the reader to follow). They provide context for why certain instructions are given.
 
@@ -94,7 +94,7 @@ Check the sections for [guide structure](#guide-structure) and [reference struct
 
 ## Guide structure
 
-The Supabase docs use [MDX](https://mdxjs.com/). Guides are written in unstructured prose as MDX documents.
+The Vela docs use [MDX](https://mdxjs.com/). Guides are written in unstructured prose as MDX documents.
 
 Adding a new guide requires:
 
@@ -110,7 +110,7 @@ hideToc: true
 ---
 ```
 
-The navigation is defined in [`NavigationMenu.constants.ts`](https://github.com/supabase/supabase/blob/master/apps/docs/components/Navigation/NavigationMenu/NavigationMenu.constants.ts).
+The navigation is defined in [`NavigationMenu.constants.ts`](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/components/Navigation/NavigationMenu/NavigationMenu.constants.ts).
 
 Add an entry with the `name`, `url`, and (optional) `icon` for your page.
 
@@ -120,19 +120,19 @@ Reference docs are produced from the reference specs and library source code. A 
 
 ### Common spec file
 
-Each type of library (for example, language SDK or CLI) has a common spec file. For example, see the [spec file for the language SDKs](https://github.com/supabase/supabase/blob/master/apps/docs/spec/common-client-libs-sections.json). This file contains definitions for the common SDK functions:
+Each type of library (for example, language SDK or CLI) has a common spec file. For example, see the [spec file for the language SDKs](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/spec/common-client-libs-sections.json). This file contains definitions for the common SDK functions:
 
 - **id** - Identifies the function
 - **title** - Human-readable title
 - **slug** - URL slug
-- **product** - Supabase product that owns the function. For example, database operations are owned by `database`, and auth functions are owned by`auth`
+- **product** - Vela product that owns the function. For example, database operations are owned by `database`, and auth functions are owned by`auth`
 - **type** - `function` for a structured function definition or `markdown` for a prose explainer section.
 
 To add a new function, manually add an entry to this common file.
 
 ### Specific spec file
 
-Each library also has its own spec file containing library-specific details. For example, see the [JavaScript SDK spec file](https://github.com/supabase/supabase/blob/master/apps/docs/spec/supabase_js_v2.yml).
+Each library also has its own spec file containing library-specific details. For example, see the [JavaScript SDK spec file](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/spec/supabase_js_v2.yml).
 
 The functions listed in this file match the ones defined in the common spec file.
 
