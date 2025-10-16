@@ -44,9 +44,7 @@ Use Vela to:
 - Integrate RBAC, IAM, and observability in one place
 
 ### Vela Explained in 50 seconds
-<video width="600" controls>
-  <source src="apps/docs/public/what-is-vela-postgres.mp4" type="video/mp4">
-</video>
+[![Watch the video](https://img.youtube.com/vi/mh9psM0gTzI.jpg)](https://www.youtube.com/watch?v=mh9psM0gTzI)
 
 Learn more at [vela.simplyblock.io](https://vela.simplyblock.io)
 
