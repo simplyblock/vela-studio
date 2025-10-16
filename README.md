@@ -50,7 +50,7 @@ Learn more at [vela.simplyblock.io](https://vela.simplyblock.io)
 
 ---
 
-## How it Works
+## Architecture
 
 Vela is built on open-source components, combining Postgres and modern infrastructure automation to provide a complete, self-hostable platform.
 
@@ -64,6 +64,15 @@ Vela is built on open-source components, combining Postgres and modern infrastru
 - [Kong](https://github.com/Kong/kong) serves as a cloud-native API gateway for routing and access control.  
 
 ---
+
+## Screenshots
+<p align="left">
+<img src="apps/docs/public/img/screenshot-backups.png" alt="Backups Schedule">
+<img src="apps/docs/public/img/screenshot-edge functions.png" alt="Edge Functions">
+<img src="apps/docs/public/img/screenshot-projects.png" alt="Projects">
+<img src="apps/docs/public/img/screenshot-schema-visualizer.png" alt="Schema Visualizer">
+<img src="apps/docs/public/img/screenshots-table-editor.png" alt="Table Editor">
+</p>
 
 ## Getting Started
 
