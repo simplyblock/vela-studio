@@ -44,7 +44,7 @@ Use Vela to:
 - Integrate RBAC, IAM, and observability in one place
 
 ### Vela Explained in 50 seconds
-[![Watch the video](https://img.youtube.com/vi/mh9psM0gTzI.jpg)](https://www.youtube.com/watch?v=mh9psM0gTzI)
+[![Watch the video](https://img.youtube.com/vi/mh9psM0gTzI/0.jpg)](https://www.youtube.com/watch?v=mh9psM0gTzI)
 
 Learn more at [vela.simplyblock.io](https://vela.simplyblock.io)
 
