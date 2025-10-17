@@ -7110,6 +7110,8 @@ export interface components {
       id: string
       is_owner: boolean
       name: string
+      env_types: string[]
+      max_backups: number
       opt_in_tags: string[]
       organization_requires_mfa: boolean
       plan: {
@@ -7123,7 +7125,6 @@ export interface components {
       /** @enum {string|null} */
       restriction_status: 'grace_period' | 'grace_period_over' | 'restricted' | null
       slug: string
-      environments: string[]
     }
     OrganizationRoleResponse: {
       org_scoped_roles: {
@@ -7827,6 +7828,7 @@ export interface components {
       dbVersion?: string
       id: string
       /** @enum {string} */
+      max_backups: number
       infra_compute_size?:
         | 'pico'
         | 'nano'

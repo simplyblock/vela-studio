@@ -20,6 +20,7 @@ export interface ResourcesDefinition {
 export interface Branch {
   id: string
   name: string
+  env_type: string
   project_id: string
   organization_id: string
   database: DatabaseInformation & {
