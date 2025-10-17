@@ -3,13 +3,11 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useParams } from 'common'
-import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
-import { useBackupDownloadMutation } from 'data/database/backup-download-mutation'
 import { useProjectPauseStatusQuery } from 'data/projects/project-pause-status-query'
 import { useStorageArchiveCreateMutation } from 'data/storage/storage-archive-create-mutation'
 import { useStorageArchiveQuery } from 'data/storage/storage-archive-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { Database, Storage } from 'icons'
+import { Storage } from 'icons'
 import { PROJECT_STATUS } from 'lib/constants'
 import {
   Alert_Shadcn_,
@@ -29,13 +27,10 @@ export const PauseDisabledState = () => {
   const [toastId, setToastId] = useState<string | number>()
   const [refetchInterval, setRefetchInterval] = useState<number | false>(false)
 
-  const dbVersion = project?.dbVersion?.replace('supabase-postgres-', '')
-
   const { data: pauseStatus } = useProjectPauseStatusQuery(
     { ref },
     { enabled: project?.status === PROJECT_STATUS.INACTIVE }
   )
-  const latestBackup = pauseStatus?.latest_downloadable_backup_id
 
   const { data: storageArchive } = useStorageArchiveQuery(
     { projectRef: ref },
@@ -54,19 +49,6 @@ export const PauseDisabledState = () => {
   )
   const storageArchiveUrl = storageArchive?.fileUrl
 
-  const { mutate: downloadBackup } = useBackupDownloadMutation({
-    onSuccess: (res) => {
-      const { fileUrl } = res
-
-      // Trigger browser download by create,trigger and remove tempLink
-      const tempLink = document.createElement('a')
-      tempLink.href = fileUrl
-      document.body.appendChild(tempLink)
-      tempLink.click()
-      document.body.removeChild(tempLink)
-    },
-  })
-
   const { mutate: createStorageArchive } = useStorageArchiveCreateMutation({
     onSuccess: () => {
       const toastId = toast.loading(
@@ -76,27 +58,6 @@ export const PauseDisabledState = () => {
       setRefetchInterval(5000)
     },
   })
-
-  const onSelectDownloadBackup = () => {
-    if (ref === undefined) return console.error('Project ref is required')
-    if (!latestBackup) return toast.error('No backups available for download')
-
-    const toastId = toast.loading('Fetching database backup')
-
-    downloadBackup(
-      {
-        ref,
-        backup: {
-          id: latestBackup,
-        },
-      },
-      {
-        onSuccess: () => {
-          toast.success('Downloading database backup', { id: toastId })
-        },
-      }
-    )
-  }
 
   const downloadStorageArchive = (url: string) => {
     const tempLink = document.createElement('a')
@@ -135,20 +96,6 @@ export const PauseDisabledState = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="start">
-            <DropdownMenuItemTooltip
-              className="gap-x-2"
-              disabled={!latestBackup}
-              onClick={() => onSelectDownloadBackup()}
-              tooltip={{
-                content: {
-                  side: 'right',
-                  text: 'No backups available, please reach out via support for assistance',
-                },
-              }}
-            >
-              <Database size={16} />
-              Database backup (PG: {dbVersion})
-            </DropdownMenuItemTooltip>
             <DropdownMenuItem className="gap-x-2" onClick={() => onSelectDownloadStorageArchive()}>
               <Storage size={16} />
               Storage objects

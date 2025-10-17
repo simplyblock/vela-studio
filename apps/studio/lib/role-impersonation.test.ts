@@ -169,8 +169,7 @@ describe('wrapWithRoleImpersonation', () => {
           user: {
             email: 'test@email.com',
             id: 'abc',
-            providers: [],
-          },
+          } as any,
         },
         claims,
       }

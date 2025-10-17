@@ -53,18 +53,18 @@ export function getPostgrestClaims(projectRef: string, role: PostgrestImpersonat
       return {
         aal: role.aal ?? 'aal1',
         amr: [{ method: 'password', timestamp: nowTimestamp }],
-        app_metadata: user.raw_app_meta_data,
+        app_metadata: {},
         aud: 'authenticated',
         email: user.email,
         exp,
         iat: nowTimestamp,
         iss: `https://${projectRef}.supabase.co/auth/v1`,
-        phone: user.phone,
-        role: user.role ?? role.role,
+        phone: '',
+        role: role.role,
         session_id: uuidv4(),
         sub: user.id,
-        user_metadata: user.raw_user_meta_data,
-        is_anonymous: user.is_anonymous,
+        user_metadata: {},
+        is_anonymous: false,
       }
     }
 

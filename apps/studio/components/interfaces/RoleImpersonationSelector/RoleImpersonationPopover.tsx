@@ -58,7 +58,7 @@ const RoleImpersonationPopover = ({
             {state.role?.type === 'postgrest' && state.role.role === 'authenticated' && (
               <>
                 {state.role.userType === 'native' && state.role.user ? (
-                  <UserRoleButtonSection user={state.role.user} />
+                  <UserRoleButtonSection user={state.role.user as any} />
                 ) : state.role.userType === 'external' && state.role.externalAuth ? (
                   <ExternalAuthButtonSection sub={state.role.externalAuth.sub} />
                 ) : null}
@@ -90,7 +90,7 @@ export default RoleImpersonationPopover
 
 const UserRoleButtonSection = ({ user }: { user: User }) => {
   const avatarUrl = getAvatarUrl(user)
-  const displayName = getDisplayName(user, user.email ?? user.phone ?? user.id ?? 'Unknown')
+  const displayName = getDisplayName(user, user.email ?? user.id ?? 'Unknown')
 
   return (
     <div className="flex gap-1 items-center pl-0.5 pr-1.5 h-[21px] bg-surface-200 rounded-full overflow-hidden">

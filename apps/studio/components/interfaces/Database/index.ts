@@ -2,8 +2,6 @@ export { default as RolesList } from './Roles/RolesList'
 
 export { default as Extensions } from './Extensions/Extensions'
 
-export { default as BackupsList } from './Backups/BackupsList'
-
 export { default as CreateFunction } from './Functions/CreateFunction'
 export { default as DeleteFunction } from './Functions/DeleteFunction'
 

@@ -19,14 +19,10 @@ import { useEditorType } from '../editors/EditorsLayout.hooks'
 import BuildingState from './BuildingState'
 import ConnectingState from './ConnectingState'
 import LoadingState from './LoadingState'
-import { ProjectPausedState } from './PausedState/ProjectPausedState'
-import PauseFailedState from './PauseFailedState'
 import PausingState from './PausingState'
 import ProductMenuBar from './ProductMenuBar'
 import { ResizingState } from './ResizingState'
 import RestartingState from './RestartingState'
-import RestoreFailedState from './RestoreFailedState'
-import RestoringState from './RestoringState'
 import { UpgradingState } from './UpgradingState'
 import { CreateBranchModal } from '../../interfaces/BranchManagement/CreateBranchModal'
 
@@ -186,18 +182,10 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
                     className="h-full flex flex-col flex-1 w-full overflow-y-auto overflow-x-hidden @container"
                     ref={ref}
                   >
-                    {showPausedState ? (
-                      <div className="mx-auto my-16 w-full h-full max-w-7xl flex items-center">
-                        <div className="w-full">
-                          <ProjectPausedState product={product} />
-                        </div>
-                      </div>
-                    ) : (
-                      <ContentWrapper isLoading={isLoading} isBlocking={isBlocking}>
-                        <ResourceExhaustionWarningBanner />
-                        {children}
-                      </ContentWrapper>
-                    )}
+                    <ContentWrapper isLoading={isLoading} isBlocking={isBlocking}>
+                      <ResourceExhaustionWarningBanner />
+                      {children}
+                    </ContentWrapper>
                   </main>
                 </ResizablePanel>
               </ResizablePanelGroup>
@@ -323,20 +311,8 @@ const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapp
     return <PausingState project={selectedProject} />
   }
 
-  if (isProjectPauseFailed) {
-    return <PauseFailedState />
-  }
-
   if (requiresPostgrestConnection && isProjectOffline) {
     return <ConnectingState project={selectedProject} />
-  }
-
-  if (requiresDbConnection && isProjectRestoring) {
-    return <RestoringState />
-  }
-
-  if (isProjectRestoreFailed && !isBackupsPage) {
-    return <RestoreFailedState />
   }
 
   if (requiresDbConnection && isProjectBuilding && !isBranchesPage) {
