@@ -118,7 +118,7 @@ export function useSubscribeToImpersonatedRole(
 
   useEffect(() => {
     return subscribe(roleImpersonationState, () => {
-      onChangeRef.current(snapshot(roleImpersonationState).role)
+      onChangeRef.current(snapshot(roleImpersonationState).role as any)
     })
   }, [roleImpersonationState])
 }

@@ -161,8 +161,8 @@ const UserImpersonationSelector = () => {
 
   const displayName = impersonatingUser
     ? getDisplayName(
-        impersonatingUser,
-        impersonatingUser.email ?? impersonatingUser.phone ?? impersonatingUser.id ?? 'Unknown'
+        impersonatingUser as any,
+        impersonatingUser.email ?? impersonatingUser.id ?? 'Unknown'
       )
     : isExternalAuthImpersonating
       ? state.role.externalAuth.sub
@@ -187,7 +187,7 @@ const UserImpersonationSelector = () => {
 
         {impersonatingUser && (
           <UserImpersonatingRow
-            user={impersonatingUser}
+            user={impersonatingUser as any}
             onClick={stopImpersonating}
             isImpersonating={true}
             aal={aal}
@@ -472,8 +472,7 @@ const UserImpersonatingRow = ({
 }: UserRowProps & { aal: AuthenticatorAssuranceLevels }) => {
   const avatarUrl = getAvatarUrl(user)
   const displayName =
-    getDisplayName(user, user.email ?? user.phone ?? user.id ?? 'Unknown') +
-    (user.is_anonymous ? ' (anonymous)' : '')
+    getDisplayName(user, user.email ?? user.id ?? 'Unknown')
 
   return (
     <BaseImpersonatingRow
@@ -520,9 +519,8 @@ interface UserRowProps {
 
 const UserRow = ({ user, onClick, isImpersonating = false, isLoading = false }: UserRowProps) => {
   const avatarUrl = getAvatarUrl(user)
-  const emailOrPhone = user.email || user.phone
+  const emailOrPhone = user.email
   const displayName = getDisplayName(user, '')
-  const isAnonymous = user.is_anonymous
   const showDisplayName = displayName && displayName !== emailOrPhone
 
   return (
@@ -542,7 +540,6 @@ const UserRow = ({ user, onClick, isImpersonating = false, isLoading = false }: 
             <>
               <span className="text-foreground-lighter">
                 {displayName}
-                {isAnonymous ? ' (anonymous)' : ''}
               </span>
             </>
           )}

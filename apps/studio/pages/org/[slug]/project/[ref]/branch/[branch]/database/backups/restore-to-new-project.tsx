@@ -2,7 +2,6 @@ import { ChevronRightIcon, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import DatabaseBackupsNav from 'components/interfaces/Database/Backups/DatabaseBackupsNav'
-import { PITRForm } from 'components/interfaces/Database/Backups/PITR/pitr-form'
 import { BackupsList } from 'components/interfaces/Database/Backups/RestoreToNewProject/BackupsList'
 import { ConfirmRestoreDialog } from 'components/interfaces/Database/Backups/RestoreToNewProject/ConfirmRestoreDialog'
 import { CreateNewProjectDialog } from 'components/interfaces/Database/Backups/RestoreToNewProject/CreateNewProjectDialog'
@@ -340,31 +339,13 @@ const RestoreToNewProject = () => {
           </Panel>
         </div>
       ) : null}
-      {PITR_ENABLED ? (
-        <>
-          <PITRForm
-            disabled={isRestoring}
-            onSubmit={(v) => {
-              setShowConfirmationDialog(true)
-              setRecoveryTimeTarget(v.recoveryTimeTargetUnix)
-            }}
-            earliestAvailableBackupUnix={
-              cloneBackups?.physicalBackupData.earliestPhysicalBackupDateUnix || 0
-            }
-            latestAvailableBackupUnix={
-              cloneBackups?.physicalBackupData.latestPhysicalBackupDateUnix || 0
-            }
-          />
-        </>
-      ) : (
-        <BackupsList
-          disabled={isRestoring}
-          onSelectRestore={(id) => {
-            setSelectedBackupId(id)
-            setShowConfirmationDialog(true)
-          }}
-        />
-      )}
+      <BackupsList
+        disabled={isRestoring}
+        onSelectRestore={(id) => {
+          setSelectedBackupId(id)
+          setShowConfirmationDialog(true)
+        }}
+      />
     </div>
   )
 }

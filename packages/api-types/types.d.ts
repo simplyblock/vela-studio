@@ -20,6 +20,7 @@ export interface ResourcesDefinition {
 export interface Branch {
   id: string
   name: string
+  env_type: string
   project_id: string
   organization_id: string
   database: DatabaseInformation & {
@@ -30,8 +31,8 @@ export interface Branch {
   used_resources: ResourcesDefinition
   max_resources: ResourcesDefinition
   api_keys: {
-    anon: string
-    service_role: string
+    anon?: string
+    service_role?: string
   }
   status: string
   service_health: {

@@ -10,11 +10,10 @@ import { ScaffoldContainerLegacy } from 'components/layouts/Scaffold'
 import Table from 'components/to-be-cleaned/Table'
 import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { DatePicker } from 'components/ui/DatePicker'
 import { FilterPopover } from 'components/ui/FilterPopover'
 import NoPermission from 'components/ui/NoPermission'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
-import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
+import { useOrganizationRolesQuery } from 'data/organization-members/organization-roles-query'
 import {
   AuditLog,
   useOrganizationAuditLogsQuery,
@@ -56,7 +55,7 @@ const AuditLogs = () => {
   const { data: projects } = useProjectsQuery()
   const { data: organizations } = useOrganizationsQuery()
   const { data: members } = useOrganizationMembersQuery({ slug })
-  const { data: rolesData } = useOrganizationRolesV2Query({ slug })
+  const { data: rolesData } = useOrganizationRolesQuery({ slug })
   const { data, error, isLoading, isSuccess, isError, isRefetching, refetch } =
     useOrganizationAuditLogsQuery(
       {
@@ -306,7 +305,7 @@ const AuditLogs = () => {
                       const user = (members ?? []).find(
                         (member) => member.user_id === log.actor.id
                       )
-                      const role = roles.find((role) => user?.role_ids?.[0] === role.id)
+                      const role = roles.find((role) => user?.role_ids?.[0] === role.role_id)
                       const project = projects?.find(
                         (project) => project.ref === log.target.metadata.project_ref
                       )

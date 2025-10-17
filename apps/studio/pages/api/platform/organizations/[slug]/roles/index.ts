@@ -1,18 +1,17 @@
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
+import { getVelaClient } from 'data/vela/vela'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  return res.status(200).json({
-    org_scoped_roles: [
-      {
-        base_role_id: 0,
-        description: 'Test Role',
-        id: 0,
-        name: 'Test',
-        project_ids: [1, 2],
-      },
-    ],
-    project_scoped_roles: [],
+  const { slug } = getPlatformQueryParams(req, 'slug')
+  const client = getVelaClient(req)
+  return client.proxyGet(res, '/organizations/{organization_id}/roles/', {
+    params: {
+      path: {
+        organization_id: slug
+      }
+    }
   })
 }
 

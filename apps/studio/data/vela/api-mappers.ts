@@ -18,6 +18,8 @@ export function mapOrganization(organization: VelaOrganization): Organization {
   return {
     id: organization.id!,
     name: organization.name!,
+    env_types: organization.environments.split(','),
+    max_backups: organization.max_backups,
     slug: organization.id!,
     plan: {
       id: 'enterprise',
@@ -36,6 +38,7 @@ export function mapProject(project: VelaProject): Project {
     id: project.id!,
     name: project.name!,
     ref: project.id!,
+    max_backups: project.max_backups,
     organization_id: project.organization_id!,
     cloud_provider: 'vela',
     status: 'ACTIVE_HEALTHY',
@@ -82,6 +85,7 @@ export function mapProjectBranch(branch: VelaBranch): Branch {
     created_at: branch.created_at,
     created_by: branch.created_by,
     name: branch.name,
+    env_type: branch.env_type || '',
     project_id: branch.project_id,
     organization_id: branch.organization_id,
     status: branch.status,
@@ -119,8 +123,8 @@ export function mapProjectBranch(branch: VelaBranch): Branch {
       storage_bytes: branch.max_resources.storage_bytes ?? undefined,
     },
     api_keys: {
-      anon: branch.api_keys.anon,
-      service_role: branch.api_keys.service_role,
+      anon: branch.api_keys.anon ?? undefined,
+      service_role: branch.api_keys.service_role ?? undefined,
     },
   }
 }

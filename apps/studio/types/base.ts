@@ -1,6 +1,9 @@
 import { OrganizationBase } from 'data/organizations/organizations-query'
 import { PlanId } from 'data/subscriptions/types'
-import jsonLogic from 'json-logic-js'
+import { components as vela_components } from '../data/vela/vela-schema'
+import { PermissionsData } from '../data/permissions/permissions-query'
+
+type ArrayElement<T> = T extends (infer U)[] ? U : never
 
 export interface Organization extends OrganizationBase {
   partner_id?: string
@@ -61,18 +64,14 @@ export interface User {
   free_project_limit: number
 }
 
-export interface Role {
-  id: string
-  name: string
-}
+export type Role = vela_components['schemas']['RolePermissionAssignmentPublic']
+
+export type ResourcePermission = ArrayElement<PermissionsData>
 
 export interface Permission {
-  actions: string[]
-  condition: jsonLogic.RulesLogic
-  organization_slug: string
-  resources: string[]
-  restrictive?: boolean
-  project_refs: string[]
+  entity: "org" | "env" | "project" | "branch"
+  resource: string
+  action: string
 }
 
 export interface ResponseFailure {

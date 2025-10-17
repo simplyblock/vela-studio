@@ -1,4 +1,4 @@
-import { handleError, put } from '../fetchers'
+import { handleError, post, put } from '../fetchers'
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { ResponseError } from '../../types'
 import { toast } from 'sonner'
@@ -12,6 +12,8 @@ export interface UpdateOrgBackupScheduleVariables {
     env_type?: string
     /** Rows */
     rows: components['schemas']['BackupScheduleRowPublic'][]
+    /** Existing objects will have an id */
+    id?: string
   }
 }
 
@@ -19,13 +21,34 @@ export async function updateOrgBackupSchedule(
   { orgId, schedule }: UpdateOrgBackupScheduleVariables,
   signal?: AbortSignal
 ) {
-  const { data, error } = await put('/platform/organizations/{slug}/backups/schedules', {
+  if (schedule.id !== undefined) {
+    const { data, error } = await put('/platform/organizations/{slug}/backups/schedules', {
+      params: {
+        path: {
+          slug: orgId,
+        },
+      },
+      body: {
+        env_type: schedule.env_type,
+        rows: schedule.rows,
+      },
+      signal,
+    })
+
+    if (error) handleError(error)
+    return data
+  }
+
+  const { data, error } = await post('/platform/organizations/{slug}/backups/schedules', {
     params: {
       path: {
         slug: orgId,
       },
     },
-    body: schedule,
+    body: {
+      env_type: schedule.env_type,
+      rows: schedule.rows,
+    },
     signal,
   })
 

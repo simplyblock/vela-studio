@@ -1,5 +1,5 @@
 import type { OrganizationMember } from 'data/organizations/organization-members-query'
-import {  useGetPermissions } from 'hooks/misc/useCheckPermissions'
+import { useGetPermissions } from 'hooks/misc/useCheckPermissions'
 import type { Permission, Role } from 'types'
 
 
@@ -25,32 +25,32 @@ export const useGetRolesManagementPermissions = (
       PermissionAction.CREATE,
       'auth.subject_roles',
       {
-        resource: { role_id: role.id },
+        resource: { role_id: role.role_id },
       },
       organizationSlug
     )
-    if (canAdd) rolesAddable.push(role.id)
+    if (canAdd) rolesAddable.push(role.role_id)
 
     const canRemove = doPermissionsCheck(
       allPermissions,
       PermissionAction.DELETE,
       'auth.subject_roles',
       {
-        resource: { role_id: role.id },
+        resource: { role_id: role.role_id },
       },
       organizationSlug
     )
-    if (canRemove) rolesRemovable.push(role.id)
+    if (canRemove) rolesRemovable.push(role.role_id)
   })
 */
   return { rolesAddable, rolesRemovable }
 }
-  
+
 
 export const hasMultipleOwners = (members: OrganizationMember[] = [], roles: Role[] = []) => {
   const membersWhoAreOwners = members.filter((member) => {
     const [memberRoleId] = member.role_ids ?? []
-    const role = roles.find((role: Role) => role.id === memberRoleId)
+    const role = roles.find((role: Role) => role.role_id === memberRoleId)
     return role?.name === 'Owner' && !member.invited_at
   })
   return membersWhoAreOwners.length > 1

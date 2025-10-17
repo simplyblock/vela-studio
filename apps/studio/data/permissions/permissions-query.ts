@@ -2,17 +2,23 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { useIsLoggedIn } from 'common'
 import { get, handleError } from 'data/fetchers'
-import type { Permission, ResponseError } from 'types'
+import type { ResponseError } from 'types'
 import { permissionKeys } from './keys'
-
-export type PermissionsResponse = Permission[]
+import { transformToPermission } from '../../hooks/misc/useCheckPermissions'
 
 export async function getPermissions(signal?: AbortSignal) {
   const { data, error } = await get('/platform/profile/permissions', { signal })
   if (error) handleError(error)
 
-  // [Joshen] TODO: Type this properly from the API
-  return data as unknown as PermissionsResponse
+  return data.map(item => {
+    return {
+      organization_id: item.organization_id,
+      project_id: item.project_id,
+      branch_id: item.branch_id,
+      env_type: item.env_type,
+      permission: transformToPermission(item.permission),
+    }
+  })
 }
 
 export type PermissionsData = Awaited<ReturnType<typeof getPermissions>>

@@ -345,11 +345,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Organizations:Roles:List */
-        get: operations["organizations:roles:list"];
+        /**
+         * List Roles
+         * @description List all roles and their access rights within an organization
+         */
+        get: operations["list_roles"];
         put?: never;
-        /** Organizations:Roles:Create */
-        post: operations["organizations:roles:create"];
+        /** Create Role */
+        post: operations["create_role"];
         delete?: never;
         options?: never;
         head?: never;
@@ -365,11 +368,11 @@ export interface paths {
         };
         /** Organizations:Roles:Detail */
         get: operations["organizations:roles:detail"];
-        /** Organizations:Roles:Update */
-        put: operations["organizations:roles:update"];
+        /** Modify Role */
+        put: operations["modify_role"];
         post?: never;
-        /** Organizations:Roles:Delete */
-        delete: operations["organizations:roles:delete"];
+        /** Delete Role */
+        delete: operations["delete_role"];
         options?: never;
         head?: never;
         patch?: never;
@@ -673,42 +676,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/roles/organizations/{org_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create Role */
-        post: operations["create_role"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/roles/organizations/{org_id}/{role_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Modify Role */
-        put: operations["modify_role"];
-        post?: never;
-        /** Delete Role */
-        delete: operations["delete_role"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/roles/organizations/{org_id}/{role_id}/assign/{user_id}/": {
+    "/organizations/{organization_id}/roles/{role_id}/assign/{user_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -728,7 +696,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/roles/organizations/{org_id}/{role_id}/unassign/{user_id}/": {
+    "/organizations/{organization_id}/roles/{role_id}/unassign/{user_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -749,7 +717,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/roles/organizations/{org_id}/check_access/{user_id}/": {
+    "/organizations/{organization_id}/roles/check_access/{user_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -773,27 +741,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/roles/organizations/{org_id}/roles/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List Roles
-         * @description List all roles and their access rights within an organization
-         */
-        get: operations["list_roles"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/roles/organizations/{org_id}/role-assignments/": {
+    "/organizations/{organization_id}/roles/role-assignments/": {
         parameters: {
             query?: never;
             header?: never;
@@ -814,7 +762,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/roles/access-rights/": {
+    "/users/{user_id}/permissions/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List User Permissions */
+        get: operations["list_user_permissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/available-permissions/": {
         parameters: {
             query?: never;
             header?: never;
@@ -822,10 +787,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List Access Rights
+         * List Available Permissions
          * @description List all access rights defined in the system.
          */
-        get: operations["list_access_rights"];
+        get: operations["list_available_permissions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -18523,8 +18488,8 @@ export interface components {
             project_id?: string | null;
             /** Branch Id */
             branch_id?: string | null;
-            /** Environment Id */
-            environment_id?: string | null;
+            /** Env Type */
+            env_type?: string | null;
         };
         /** Action */
         Action: {
@@ -18601,8 +18566,6 @@ export interface components {
         BackupDeletePublic: {
             /** Status */
             status: string;
-            /** Message */
-            message: string | null;
         };
         /** BackupInfoPublic */
         BackupInfoPublic: {
@@ -18717,6 +18680,8 @@ export interface components {
         BranchCreate: {
             /** Name */
             name: string;
+            /** Env Type */
+            env_type?: string | null;
             source?: components["schemas"]["BranchSourceParameters"] | null;
             deployment?: components["schemas"]["DeploymentParameters"] | null;
         };
@@ -18736,7 +18701,7 @@ export interface components {
             /** Name */
             name: string;
             /** Env Type */
-            env_type: string;
+            env_type: string | null;
             /**
              * ULID
              * Format: ulid
@@ -18950,6 +18915,23 @@ export interface components {
             /** Environments */
             environments?: string | null;
         };
+        /** PermissionAccessCheckPublic */
+        PermissionAccessCheckPublic: {
+            /** Access Granted */
+            access_granted: boolean;
+            context: components["schemas"]["PermissionCheckContextPublic"];
+        };
+        /** PermissionCheckContextPublic */
+        PermissionCheckContextPublic: {
+            /** Organization Id */
+            organization_id: string | null;
+            /** Project Id */
+            project_id: string | null;
+            /** Branch Id */
+            branch_id: string | null;
+            /** Env Type */
+            env_type: string | null;
+        };
         /** ProjectCreate */
         ProjectCreate: {
             /** Name */
@@ -19084,8 +19066,10 @@ export interface components {
              * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
              */
             id?: string;
+            /** Name */
+            name: string;
             /** Organization Id */
-            organization_id?: number | null;
+            organization_id?: string | null;
             role_type: components["schemas"]["RoleType"];
             /** Is Active */
             is_active: boolean;
@@ -19096,15 +19080,45 @@ export interface components {
             project_ids?: string[] | null;
             /** Branch Ids */
             branch_ids?: string[] | null;
-            /** Environment Ids */
-            environment_ids?: string[] | null;
+            /** Env Types */
+            env_types?: string[] | null;
+        };
+        /** RoleAssignmentPublic */
+        RoleAssignmentPublic: {
+            /** Status */
+            status: string;
+            /** Count */
+            count: number;
+            /** Links */
+            links: components["schemas"]["RoleUserLinkPublic"][];
+        };
+        /** RoleAssignmentsPublic */
+        RoleAssignmentsPublic: {
+            /** Count */
+            count: number;
+            /** Links */
+            links: components["schemas"]["RoleUserLinkPublic"][];
+        };
+        /** RoleDeletePublic */
+        RoleDeletePublic: {
+            /** Status */
+            status: string;
         };
         /** RolePayload */
         RolePayload: {
-            /** Role Id */
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
             role_id: string;
-            /** Role Type */
-            role_type: string;
+            /** Name */
+            name: string;
+            /**
+             * Role Type
+             * @enum {string}
+             */
+            role_type: "organization" | "environment" | "project" | "branch";
             /**
              * Is Active
              * @default true
@@ -19118,8 +19132,13 @@ export interface components {
         };
         /** RolePayloadUpdate */
         RolePayloadUpdate: {
-            /** Role Type */
-            role_type: string;
+            /** Name */
+            name: string;
+            /**
+             * Role Type
+             * @enum {string}
+             */
+            role_type: "organization" | "environment" | "project" | "branch";
             /**
              * Is Active
              * @default true
@@ -19131,11 +19150,98 @@ export interface components {
              */
             access_rights?: string[] | null;
         };
+        /** RolePermissionAssignmentPublic */
+        RolePermissionAssignmentPublic: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            role_id: string;
+            /** Name */
+            name: string;
+            /**
+             * Role Type
+             * @enum {string}
+             */
+            role_type: "organization" | "environment" | "project" | "branch";
+            /**
+             * Is Active
+             * @default true
+             */
+            is_active?: boolean;
+            /** Access Rights */
+            access_rights: string[] | null;
+        };
+        /** RolePermissionsPublic */
+        RolePermissionsPublic: {
+            /** Count */
+            count: number;
+            /** Links */
+            links: components["schemas"]["RolePermissionAssignmentPublic"][];
+        };
+        /** RolePublic */
+        RolePublic: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            id: string;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            organization_id: string;
+            /** Name */
+            name: string;
+            /**
+             * Role Type
+             * @enum {string}
+             */
+            role_type: "organization" | "environment" | "project" | "branch";
+            /** Is Active */
+            is_active: boolean;
+        };
         /**
          * RoleType
          * @enum {integer}
          */
         RoleType: 0 | 1 | 2 | 3;
+        /** RoleUnassignmentPublic */
+        RoleUnassignmentPublic: {
+            /** Status */
+            status: string;
+            /** Count */
+            count: number;
+        };
+        /** RoleUserLinkPublic */
+        RoleUserLinkPublic: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            organization_id: string;
+            /** Project Id */
+            project_id: string | null;
+            /** Branch Id */
+            branch_id: string | null;
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            role_id: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Env Type */
+            env_type: string | null;
+        };
         /** SchedulePayload */
         SchedulePayload: {
             /** Rows */
@@ -19213,6 +19319,19 @@ export interface components {
             first_name: string;
             /** Last Name */
             last_name: string;
+        };
+        /** UserPermissionPublic */
+        UserPermissionPublic: {
+            /** Permission */
+            permission: string;
+            /** Organization Id */
+            organization_id: string | null;
+            /** Project Id */
+            project_id: string | null;
+            /** Branch Id */
+            branch_id: string | null;
+            /** Env Type */
+            env_type: string | null;
         };
         /** UserPublic */
         UserPublic: {
@@ -22553,7 +22672,7 @@ export interface operations {
             };
         };
     };
-    "organizations:roles:list": {
+    list_roles: {
         parameters: {
             query?: never;
             header?: never;
@@ -22570,34 +22689,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Role"][];
-                };
-            };
-            /** @description Not authenticated */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
+                    "application/json": components["schemas"]["RolePermissionsPublic"];
                 };
             };
             /** @description Validation Error */
@@ -22611,56 +22703,28 @@ export interface operations {
             };
         };
     };
-    "organizations:roles:create": {
+    create_role: {
         parameters: {
-            query: {
-                response?: "empty" | "full";
-                user_id: string;
-            };
+            query?: never;
             header?: never;
             path: {
                 organization_id: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RolePayload"];
+            };
+        };
         responses: {
             /** @description Successful Response */
-            201: {
-                headers: {
-                    /** @description URL of the created item */
-                    Location?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Role"] | null;
-                };
-            };
-            /** @description Not authenticated */
-            401: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
+                    "application/json": components["schemas"]["RolePublic"];
                 };
             };
             /** @description Validation Error */
@@ -22733,7 +22797,7 @@ export interface operations {
             };
         };
     };
-    "organizations:roles:update": {
+    modify_role: {
         parameters: {
             query?: never;
             header?: never;
@@ -22743,40 +22807,19 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RolePayloadUpdate"];
+            };
+        };
         responses: {
             /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Not authenticated */
-            401: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
+                    "application/json": components["schemas"]["RolePublic"];
                 };
             };
             /** @description Validation Error */
@@ -22790,7 +22833,7 @@ export interface operations {
             };
         };
     };
-    "organizations:roles:delete": {
+    delete_role: {
         parameters: {
             query?: never;
             header?: never;
@@ -22803,37 +22846,12 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Successful Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Not authenticated */
-            401: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Forbidden */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
-                };
-            };
-            /** @description Not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPError"];
+                    "application/json": components["schemas"]["RoleDeletePublic"];
                 };
             };
             /** @description Validation Error */
@@ -23562,7 +23580,10 @@ export interface operations {
     };
     add_or_replace_branch_backup_schedule: {
         parameters: {
-            query?: never;
+            query: {
+                project_id: string;
+                organization_id: string;
+            };
             header?: never;
             path: {
                 branch_id: string;
@@ -23597,7 +23618,10 @@ export interface operations {
     };
     add_or_replace_branch_backup_schedule: {
         parameters: {
-            query?: never;
+            query: {
+                project_id: string;
+                organization_id: string;
+            };
             header?: never;
             path: {
                 branch_id: string;
@@ -23820,117 +23844,14 @@ export interface operations {
             };
         };
     };
-    create_role: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                org_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RolePayload"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    modify_role: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                org_id: string;
-                role_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RolePayloadUpdate"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_role: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                org_id: string;
-                role_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     assign_role: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                role_id: string;
-                org_id: string;
                 user_id: string;
+                organization_id: string;
+                role_id: string;
             };
             cookie?: never;
         };
@@ -23946,7 +23867,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["RoleAssignmentPublic"];
                 };
             };
             /** @description Validation Error */
@@ -23966,7 +23887,7 @@ export interface operations {
             header?: never;
             path: {
                 role_id: string;
-                org_id: string;
+                organization_id: string;
                 user_id: string;
             };
             cookie?: never;
@@ -23985,7 +23906,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["RoleUnassignmentPublic"];
                 };
             };
             /** @description Validation Error */
@@ -24004,7 +23925,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                org_id: string;
+                organization_id: string;
                 user_id: string;
             };
             cookie?: never;
@@ -24021,38 +23942,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    list_roles: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                org_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RolePayload"][];
+                    "application/json": components["schemas"]["PermissionAccessCheckPublic"];
                 };
             };
             /** @description Validation Error */
@@ -24073,7 +23963,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                org_id: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -24085,7 +23975,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["RoleAssignmentsPublic"];
                 };
             };
             /** @description Validation Error */
@@ -24099,7 +23989,38 @@ export interface operations {
             };
         };
     };
-    list_access_rights: {
+    list_user_permissions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPermissionPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_available_permissions: {
         parameters: {
             query?: never;
             header?: never;

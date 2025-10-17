@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DocsButton } from 'components/ui/DocsButton'
-import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
+import { useOrganizationRolesQuery } from 'data/organization-members/organization-roles-query'
 import { OrganizationMember } from 'data/organizations/organization-members-query'
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
@@ -61,7 +61,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
 
   const { data: projects } = useProjectsQuery()
   const { data: permissions } = usePermissionsQuery()
-  const { data: allRoles, isSuccess: isSuccessRoles } = useOrganizationRolesV2Query({ slug })
+  const { data: allRoles, isSuccess: isSuccessRoles } = useOrganizationRolesQuery({ slug })
 
   // [Joshen] We use the org scoped roles as the source for available roles
   const orgScopedRoles = allRoles?.org_scoped_roles ?? []
@@ -72,7 +72,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
     orgScopedRoles.concat(projectScopedRoles),
     permissions ?? []
   )
-  const cannotAddAnyRoles = orgScopedRoles.every((r) => !rolesAddable.includes(r.id))
+  const cannotAddAnyRoles = orgScopedRoles.every((r) => !rolesAddable.includes(r.role_id))
 
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [showProjectDropdown, setShowProjectDropdown] = useState(false)
@@ -86,7 +86,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
       : []
   const originalConfigurationType =
     originalConfiguration.length === 1 &&
-    !!orgScopedRoles.find((r) => r.id === originalConfiguration[0].roleId)
+    !!orgScopedRoles.find((r) => r.role_id === originalConfiguration[0].roleId)
       ? 'org-scope'
       : 'project-scope'
 
@@ -95,7 +95,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
     projectsRoleConfiguration.length === 1 && projectsRoleConfiguration[0]?.ref === undefined
   const canSaveRoles = projectsRoleConfiguration.length > 0
 
-  const lowerPermissionsRole = orgScopedRoles.find((r) => r.name === 'Developer')?.id
+  const lowerPermissionsRole = orgScopedRoles.find((r) => r.name === 'Developer')?.role_id
   const noAccessProjects = orgProjects.filter((project) => {
     return !projectsRoleConfiguration.some((p) => p.ref === project.ref)
   })
@@ -108,7 +108,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
     setProjectsRoleConfiguration(
       projectsRoleConfiguration.concat({
         ref,
-        roleId: lowerPermissionsRole ?? orgScopedRoles[0].id,
+        roleId: lowerPermissionsRole ?? orgScopedRoles[0].role_id,
       })
     )
     setShowProjectDropdown(false)
@@ -136,7 +136,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
   }
 
   const onToggleApplyToAllProjects = (isApplyAllProjects: boolean) => {
-    const roleIdToApply = lowerPermissionsRole ?? orgScopedRoles[0].id
+    const roleIdToApply = lowerPermissionsRole ?? orgScopedRoles[0].role_id
 
     if (isApplyAllProjects) {
       if (originalConfigurationType === 'org-scope') {
@@ -239,10 +239,10 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
                         ? 'All projects'
                         : projects?.find((p) => p.ref === project.ref)?.name
                     const role = orgScopedRoles.find((r) => {
-                      if (project.baseRoleId !== undefined) return r.id === project.baseRoleId
-                      else return r.id === project.roleId
+                      if (project.baseRoleId !== undefined) return r.role_id === project.baseRoleId
+                      else return r.role_id === project.roleId
                     })
-                    const canRemoveRole = rolesRemovable.includes(role?.id ?? '')
+                    const canRemoveRole = rolesRemovable.includes(role?.role_id ?? '')
 
                     return (
                       <div
@@ -279,12 +279,12 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
                               <SelectContent_Shadcn_>
                                 <SelectGroup_Shadcn_>
                                   {(orgScopedRoles ?? []).map((role) => {
-                                    const canAssignRole = rolesAddable.includes(role.id)
+                                    const canAssignRole = rolesAddable.includes(role.role_id)
 
                                     return (
                                       <SelectItem_Shadcn_
-                                        key={role.id}
-                                        value={role.id.toString()}
+                                        key={role.role_id}
+                                        value={role.role_id.toString()}
                                         className="text-sm hover:bg-selection cursor-pointer"
                                         disabled={!canAssignRole}
                                       >
