@@ -3,11 +3,14 @@ import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { getVelaClient } from 'data/vela/vela'
 
+const totp_path = '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}'
+const flow_execution_path = '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{flowAlias}/executions'
+
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, "slug", "ref", "branch")
   const client = getVelaClient(req)
 
-  const { success: totp_success, data: totp_data } = await client.getOrFail(res, '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}', {
+  const { success: totp_success, data: totp_data } = await client.getOrFail(res, totp_path, {
     params: {
       path: {
         organization_id: slug,
@@ -22,7 +25,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const totp_enabled = totp_data.enabled;
 
-  const { success: flow_execution_success, data: flow_execution_data } = await client.getOrFail(res, '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{flowAlias}/executions', {
+  const { success: flow_execution_success, data: flow_execution_data } = await client.getOrFail(res, flow_execution_path, {
     params: {
       path: {
         organization_id: slug,
@@ -61,7 +64,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const totp_enabled = req.body.status === 'enabled'
   const totp_verification_requirement = (req.body.status !== 'disabled') ? 'ALTERNATIVE' : 'DISABLED'
 
-  const { success: totp_success, data: totp_data } = await client.getOrFail(res, '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}', {
+  const { success: totp_success, data: totp_data } = await client.getOrFail(res, totp_path, {
     params: {
       path: {
         organization_id: slug,
@@ -75,7 +78,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 
 
   if (totp_data.enabled !== totp_enabled) {
-    const { success: totp_update_success } = await client.putOrFail(res, '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/required-actions/{alias}', {
+    const { success: totp_update_success } = await client.putOrFail(res, totp_path, {
       params: {
         path: {
           organization_id: slug,
@@ -92,9 +95,22 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!totp_update_success) { return }
   }
 
+  const { success: flow_execution_success, data: flow_execution_data } = await client.getOrFail(res, flow_execution_path, {
+    params: {
+      path: {
+        organization_id: slug,
+        project_id: ref,
+        branch_id: branch,
+        flowAlias: 'forms'
+      }
+    }
+  })
+
+  if (!flow_execution_success) return;
+
   const flow_execution_step = flow_execution_data?.find(step => step.providerId === 'auth-otp-form')
   if (flow_execution_step?.requirement !== totp_verification_requirement) {
-    const { success: totp_verification_update_success } = await client.putOrFail(res, '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/authentication/flows/{flowAlias}/executions', {
+    const { success: totp_verification_update_success } = await client.putOrFail(res, flow_execution_path, {
       params: {
         path: {
           organization_id: slug,
