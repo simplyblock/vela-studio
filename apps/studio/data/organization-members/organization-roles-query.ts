@@ -5,7 +5,6 @@ import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
 
-export const FIXED_ROLE_ORDER = ['Owner', 'Administrator', 'Developer', 'Read-only']
 export type OrganizationRolesVariables = { slug?: string }
 export type OrganizationRolesResponse = components['schemas']['OrganizationRoleResponse']
 export type OrganizationRole =
@@ -41,14 +40,6 @@ export const useOrganizationRolesV2Query = <TData = OrganizationRolesData>(
     ({ signal }) => getOrganizationRoles({ slug }, signal),
     {
       enabled: enabled && typeof slug !== 'undefined',
-      select: (data) => {
-        return {
-          ...data,
-          org_scoped_roles: data.org_scoped_roles.sort((a, b) => {
-            return FIXED_ROLE_ORDER.indexOf(a.name) - FIXED_ROLE_ORDER.indexOf(b.name)
-          }),
-        } as any
-      },
       ...options,
     }
   )

@@ -28,6 +28,7 @@ export function mapOrganization(organization: VelaOrganization): Organization {
     organization_requires_mfa: false,
     restriction_data: {},
     restriction_status: null,
+    environments: organization.environments.split(",")
   }
 }
 
@@ -119,8 +120,8 @@ export function mapProjectBranch(branch: VelaBranch): Branch {
       storage_bytes: branch.max_resources.storage_bytes ?? undefined,
     },
     api_keys: {
-      anon: branch.api_keys.anon,
-      service_role: branch.api_keys.service_role,
+      anon: branch.api_keys.anon ?? undefined,
+      service_role: branch.api_keys.service_role ?? undefined,
     },
   }
 }
