@@ -25,20 +25,31 @@ export async function getOrganizationRoles(
   return data
 }
 
-export type OrganizationRolesData = Awaited<ReturnType<typeof getOrganizationRoles>>
+type OrganizationRoles = Awaited<ReturnType<typeof getOrganizationRoles>>
+
+export type OrganizationRolesData = {
+  org_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>['links']
+  project_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>['links']
+}
 export type OrganizationRolesError = ResponseError
 
-export const useOrganizationRolesV2Query = <TData = OrganizationRolesData>(
+export const useOrganizationRolesQuery = (
   { slug }: OrganizationRolesVariables,
   {
     enabled = true,
     ...options
-  }: UseQueryOptions<OrganizationRolesData, OrganizationRolesError, TData> = {}
+  }: UseQueryOptions<OrganizationRoles, OrganizationRolesError, OrganizationRolesData> = {}
 ) =>
-  useQuery<OrganizationRolesData, OrganizationRolesError, TData>(
-    organizationKeys.rolesV2(slug),
+  useQuery<OrganizationRoles, OrganizationRolesError, OrganizationRolesData>(
+    organizationKeys.roles(slug),
     ({ signal }) => getOrganizationRoles({ slug }, signal),
     {
+      select: (data) => {
+        return {
+          org_scoped_roles: data.links,
+          project_scoped_roles: [],
+        } as OrganizationRolesData
+      },
       enabled: enabled && typeof slug !== 'undefined',
       ...options,
     }

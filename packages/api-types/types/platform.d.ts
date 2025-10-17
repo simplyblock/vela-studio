@@ -5281,6 +5281,8 @@ export interface components {
           name: string
           opt_in_tags: string[]
           organization_requires_mfa: boolean
+          max_backups: number
+          env_types: string[]
           plan: {
             /** @enum {string} */
             id: 'free' | 'pro' | 'team' | 'enterprise'
@@ -10851,8 +10853,6 @@ export interface operations {
       header?: never
       path: {
         slug: string
-        ref: string
-        branch: string
       }
       cookie?: never
     }

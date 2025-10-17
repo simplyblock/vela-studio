@@ -60,7 +60,7 @@ export const useOrganizationMemberAssignRoleMutation = ({
 
       if (!skipInvalidation) {
         await Promise.all([
-          queryClient.invalidateQueries(organizationKeys.rolesV2(slug)),
+          queryClient.invalidateQueries(organizationKeys.roles(slug)),
           queryClient.invalidateQueries(organizationKeysV1.members(slug)),
         ])
       }
