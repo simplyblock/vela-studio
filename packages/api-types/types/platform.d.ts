@@ -7125,6 +7125,7 @@ export interface components {
       /** @enum {string|null} */
       restriction_status: 'grace_period' | 'grace_period_over' | 'restricted' | null
       slug: string
+      environments: string[]
     }
     OrganizationRoleResponse: {
       org_scoped_roles: {
