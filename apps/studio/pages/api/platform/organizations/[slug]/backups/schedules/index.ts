@@ -71,6 +71,39 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 
-const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet).post(handlePost))
+const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { slug } = getPlatformQueryParams(req, 'slug')
+
+  const client = getVelaClient(req)
+  const { data, success } = await client.putOrFail(
+    res,
+    '/backup/organizations/{organization_id}/schedule',
+    {
+      params: {
+        path: {
+          organization_id: slug,
+        },
+      },
+      body: {
+        env_type: req.body.env_type,
+        rows: req.body.rows,
+      },
+    }
+  )
+
+  if (!success) return
+
+  const schedule = data as { status: string; schedule_id: string }
+  return {
+    backup_schedule_id: schedule.schedule_id,
+    organization_id: slug,
+    env_type: req.body.env_type,
+    rows: req.body.rows,
+  }
+}
+
+const apiHandler = apiBuilder((builder) =>
+  builder.useAuth().get(handleGet).post(handlePost).put(handlePut)
+)
 
 export default apiHandler
