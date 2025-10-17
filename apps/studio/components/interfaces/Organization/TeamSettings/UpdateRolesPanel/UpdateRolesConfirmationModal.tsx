@@ -75,7 +75,7 @@ export const UpdateRolesConfirmationModal = ({
       .map((id) => {
         return [...org_scoped_roles, ...project_scoped_roles].find((r) => r.role_id === id)
       })
-      .filter(Boolean)
+      .filter(role => role !== undefined)
     const isChangeWithinOrgScope =
       projectsRoleConfiguration.length === 1 && projectsRoleConfiguration[0].ref === undefined
 

@@ -10,7 +10,7 @@ import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import InformationBox from 'components/ui/InformationBox'
 import { useOrganizationCreateInvitationMutation } from 'data/organization-members/organization-invitation-create-mutation'
-import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
+import { useOrganizationRolesQuery } from 'data/organization-members/organization-roles-query'
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
@@ -65,7 +65,7 @@ export const InviteMemberButton = () => {
 
   const { data: projects } = useProjectsQuery()
   const { data: members } = useOrganizationMembersQuery({ slug })
-  const { data: allRoles, isSuccess } = useOrganizationRolesV2Query({ slug })
+  const { data: allRoles, isSuccess } = useOrganizationRolesQuery({ slug })
   const orgScopedRoles = allRoles?.org_scoped_roles ?? []
 
   const orgProjects = (projects ?? [])
@@ -77,7 +77,7 @@ export const InviteMemberButton = () => {
   const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
-    orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
+    orgScopedRoles.some((r) => r.role_id === userMemberData?.role_ids[0])
 
   const { rolesAddable } = useGetRolesManagementPermissions(
     organization?.slug,
@@ -222,13 +222,13 @@ export const InviteMemberButton = () => {
                         onValueChange={(value) => form.setValue('role', value)}
                       >
                         <SelectTrigger_Shadcn_ className="text-sm capitalize">
-                          {orgScopedRoles.find((role) => role.id === field.value)?.name ??
+                          {orgScopedRoles.find((role) => role.role_id === field.value)?.name ??
                             'Unknown'}
                         </SelectTrigger_Shadcn_>
                         <SelectContent_Shadcn_>
                           <SelectGroup_Shadcn_>
                             {orgScopedRoles.map((role) => {
-                              const canAssignRole = rolesAddable.includes(role.id)
+                              const canAssignRole = rolesAddable.includes(role.role_id)
 
                               return (
                                 <SelectItem_Shadcn_

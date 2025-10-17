@@ -1,5 +1,5 @@
 import type { OrganizationMember } from 'data/organizations/organization-members-query'
-import {  useGetPermissions } from 'hooks/misc/useCheckPermissions'
+import { useGetPermissions } from 'hooks/misc/useCheckPermissions'
 import type { Permission, Role } from 'types'
 
 
