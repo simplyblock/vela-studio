@@ -108,7 +108,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
     setProjectsRoleConfiguration(
       projectsRoleConfiguration.concat({
         ref,
-        roleId: lowerPermissionsRole ?? orgScopedRoles[0].id,
+        roleId: lowerPermissionsRole ?? orgScopedRoles[0].role_id,
       })
     )
     setShowProjectDropdown(false)
@@ -136,7 +136,7 @@ export const UpdateRolesPanel = ({ visible, member, onClose }: UpdateRolesPanelP
   }
 
   const onToggleApplyToAllProjects = (isApplyAllProjects: boolean) => {
-    const roleIdToApply = lowerPermissionsRole ?? orgScopedRoles[0].id
+    const roleIdToApply = lowerPermissionsRole ?? orgScopedRoles[0].role_id
 
     if (isApplyAllProjects) {
       if (originalConfigurationType === 'org-scope') {

@@ -135,7 +135,7 @@ export const InviteMemberButton = () => {
 
           form.reset({
             email: '',
-            role: developerRole?.id.toString() ?? '',
+            role: developerRole?.role_id.toString() ?? '',
             applyToOrg: true,
             projectRef: '',
           })
@@ -147,7 +147,7 @@ export const InviteMemberButton = () => {
   useEffect(() => {
     if (isSuccess && isOpen) {
       const developerRole = orgScopedRoles.find((role) => role.name === 'Developer')
-      if (developerRole !== undefined) form.setValue('role', developerRole.id.toString())
+      if (developerRole !== undefined) form.setValue('role', developerRole.role_id.toString())
     }
   }, [isSuccess, isOpen])
 
@@ -232,8 +232,8 @@ export const InviteMemberButton = () => {
 
                               return (
                                 <SelectItem_Shadcn_
-                                  key={role.id}
-                                  value={role.id.toString()}
+                                  key={role.role_id}
+                                  value={role.role_id.toString()}
                                   className="text-sm [&>span:nth-child(2)]:w-full [&>span:nth-child(2)]:flex [&>span:nth-child(2)]:items-center [&>span:nth-child(2)]:justify-between"
                                   disabled={!canAssignRole}
                                 >

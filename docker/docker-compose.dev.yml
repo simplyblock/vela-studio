@@ -50,8 +50,6 @@ services:
       LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
       LOGFLARE_URL: http://analytics:4000
 
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-      PUBLIC_PLATFORM: ${PUBLIC_PLATFORM}
       VELA_PLATFORM_KEYCLOAK_ISSUER: 'http://localhost:8000/auth/realms/vela'
       VELA_PLATFORM_KEYCLOAK_CLIENT_ID: frontend
       VELA_PLATFORM_KEYCLOAK_CLIENT_SECRET: super-long-random-keycloak-secret
@@ -64,8 +62,6 @@ services:
       VELA_PLATFORM_EXT_BASE_URL: http://localhost:8000/
       VELA_PLATFORM_EXT_API_SERVICE_URL: http://localhost:8000/api
       NEXTAUTH_SECRET: 'super-long-random-nextauth-secret'
-      NEXTAUTH_URL: ${NEXT_PUBLIC_SITE_URL}
-      NEXTAUTH_URL_INTERNAL: 'http://vela-studio:3000'
 
   controller:
     container_name: vela-controller
@@ -97,6 +93,8 @@ services:
       VELA_CLOUDFLARE_DOMAIN_SUFFIX: 'example.com'
       VELA_KEYCLOAK_ADMIN_NAME: 'admin'
       VELA_KEYCLOAK_ADMIN_SECRET: 'admin'
+      VELA_LOGFLARE_URL: 'http://analytics:4000'
+      VELA_LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
 
   kong:
     container_name: vela-kong

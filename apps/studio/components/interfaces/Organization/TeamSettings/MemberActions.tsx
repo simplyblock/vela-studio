@@ -114,12 +114,12 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
           const projectScopedRole = projectScopedRoles.find((role) => role.role_id === roleId)
           if (projectScopedRole !== undefined) {
             const projects = (projectScopedRole?.project_ids ?? [])
-              .map((id) => allProjects?.find((p) => p.role_id === id)?.ref)
+              .map((id) => allProjects?.find((p) => p.id === id)?.ref)
               .filter(Boolean) as string[]
             inviteMember({
               slug,
               email: member.primary_email,
-              roleId: projectScopedRole.base_role_id,
+              roleId: projectScopedRole.role_id,
               projects,
             })
           } else {
