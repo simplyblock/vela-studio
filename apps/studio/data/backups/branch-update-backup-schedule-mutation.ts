@@ -1,4 +1,4 @@
-import { handleError, put } from '../fetchers'
+import { handleError, post, put } from '../fetchers'
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { ResponseError } from '../../types'
 import { toast } from 'sonner'
@@ -14,6 +14,8 @@ export interface UpdateBranchBackupScheduleVariables {
     env_type?: string
     /** Rows */
     rows: components['schemas']['BackupScheduleRowPublic'][]
+    /** Existing objects will have an id */
+    id?: string
   }
 }
 
@@ -21,7 +23,31 @@ export async function updateBranchBackupSchedule(
   { orgId, projectId, branchId, schedule }: UpdateBranchBackupScheduleVariables,
   signal?: AbortSignal
 ) {
-  const { data, error } = await put(
+  // If id is set, run an update, otherwise create a new schedule
+  if (schedule.id !== undefined) {
+    const { data, error } = await put(
+      '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules',
+      {
+        params: {
+          path: {
+            slug: orgId,
+            ref: projectId,
+            branch: branchId,
+          },
+        },
+        body: {
+          env_type: schedule.env_type,
+          rows: schedule.rows
+        },
+        signal,
+      }
+    )
+
+    if (error) handleError(error)
+    return data
+  }
+
+  const { data, error } = await post(
     '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules',
     {
       params: {
@@ -31,7 +57,10 @@ export async function updateBranchBackupSchedule(
           branch: branchId,
         },
       },
-      body: schedule,
+      body: {
+        env_type: schedule.env_type,
+        rows: schedule.rows
+      },
       signal,
     }
   )
