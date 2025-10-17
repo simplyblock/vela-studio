@@ -1,184 +1,91 @@
 import { useIsLoggedIn } from 'common'
-import jsonLogic from 'json-logic-js'
 
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
-import { usePermissionsQuery } from 'data/permissions/permissions-query'
+import {
+  PermissionsData,
+  PermissionsError,
+  usePermissionsQuery,
+} from 'data/permissions/permissions-query'
 import { useProjectDetailQuery } from 'data/projects/project-detail-query'
-import type { Permission } from 'types'
-import { useSelectedOrganizationQuery } from './useSelectedOrganization'
-import { useSelectedProjectQuery } from './useSelectedProject'
+import { Permission, ResourcePermission, Role } from 'types'
 import { getPathReferences } from 'data/vela/path-references'
+import { UseQueryOptions } from '@tanstack/react-query'
+import { useProjectsQuery } from '../../data/projects/projects-query'
+import { useBranchesQuery } from '../../data/branches/branches-query'
 
-const toRegexpString = (actionOrResource: string) =>
-  `^${actionOrResource.replace('.', '\\.').replace('%', '.*')}$`
-
-function doPermissionConditionCheck(permissions: Permission[], data?: object) {
-  const isRestricted = permissions
-    .filter((permission) => permission.restrictive)
-    .some(
-      ({ condition }: { condition: jsonLogic.RulesLogic }) =>
-        condition === null || jsonLogic.apply(condition, data)
+function hasPermission(required: Permission, userPermissions: ResourcePermission[]): boolean {
+  for (const userPermission of userPermissions) {
+    if (userPermission.permission.entity !== required.entity) continue
+    if (
+      userPermission.permission.resource !== '*' &&
+      userPermission.permission.resource !== required.resource
     )
-  if (isRestricted) return false
-
-  return permissions
-    .filter((permission) => !permission.restrictive)
-    .some(
-      ({ condition }: { condition: jsonLogic.RulesLogic }) =>
-        condition === null || jsonLogic.apply(condition, data)
+      continue
+    if (
+      userPermission.permission.action !== '*' &&
+      userPermission.permission.action !== required.action
     )
-}
-
-export function doPermissionsCheck(
-  permissions: Permission[] | undefined,
-  action: string,
-  resource: string,
-  data?: object,
-  organizationSlug?: string,
-  projectRef?: string
-) {
-  return true; // FIXME: Reenable the permission check when ready!
-
-  if (!permissions || !Array.isArray(permissions)) {
-    return false
+      continue
+    return true
   }
-
-  if (projectRef) {
-    const projectPermissions = (permissions ?? []).filter(
-      (permission) =>
-        permission.organization_slug === organizationSlug &&
-        permission.actions.some((act) => (action ? action.match(toRegexpString(act)) : null)) &&
-        permission.resources.some((res) => resource.match(toRegexpString(res))) &&
-        permission.project_refs?.includes(projectRef as string)
-    )
-    if (projectPermissions.length > 0) {
-      return doPermissionConditionCheck(projectPermissions, { resource_name: resource, ...data })
-    }
-  }
-
-  const orgPermissions = (permissions ?? [])
-    // filter out org-level permission
-    .filter((permission) => !permission.project_refs || permission.project_refs.length === 0)
-    .filter(
-      (permission) =>
-        permission.organization_slug === organizationSlug &&
-        permission.actions.some((act) => (action ? action.match(toRegexpString(act)) : null)) &&
-        permission.resources.some((res) => resource.match(toRegexpString(res)))
-    )
-  return doPermissionConditionCheck(orgPermissions, { resource_name: resource, ...data })
+  return false
 }
 
-export function useGetPermissions(
-  permissionsOverride?: Permission[],
-  organizationSlugOverride?: string,
-  enabled = true
-) {
-  return useGetProjectPermissions(permissionsOverride, organizationSlugOverride, undefined, enabled)
-}
-
-export function useGetProjectPermissions(
-  permissionsOverride?: Permission[],
-  organizationSlugOverride?: string,
-  projectRefOverride?: string,
-  enabled = true
-) {
-  const {
-    data,
-    isLoading: isLoadingPermissions,
-    isSuccess: isSuccessPermissions,
-  } = usePermissionsQuery({
-    enabled: permissionsOverride === undefined && enabled,
-  })
-  const permissions = permissionsOverride === undefined ? data : permissionsOverride
-
-  const organizationsQueryEnabled = organizationSlugOverride === undefined && enabled
-  const {
-    data: organizationData,
-    isLoading: isLoadingOrganization,
-    isSuccess: isSuccessOrganization,
-  } = useSelectedOrganizationQuery({
-    enabled: organizationsQueryEnabled,
-  })
-  const organization =
-    organizationSlugOverride === undefined ? organizationData : { slug: organizationSlugOverride }
-  const organizationSlug = organization?.slug
-
-  const projectsQueryEnabled = projectRefOverride === undefined && enabled
-  const {
-    data: projectData,
-    isLoading: isLoadingProject,
-    isSuccess: isSuccessProject,
-  } = useSelectedProjectQuery({
-    enabled: projectsQueryEnabled,
-  })
-  const project =
-    projectRefOverride === undefined || projectData?.parent_project_ref
-      ? projectData
-      : { ref: projectRefOverride, parent_project_ref: undefined }
-  const projectRef = project?.parent_project_ref ? project.parent_project_ref : project?.ref
-
-  const isLoading =
-    isLoadingPermissions ||
-    (organizationsQueryEnabled && isLoadingOrganization) ||
-    (projectsQueryEnabled && isLoadingProject)
-  const isSuccess =
-    isSuccessPermissions &&
-    (!organizationsQueryEnabled || isSuccessOrganization) &&
-    (!projectsQueryEnabled || isSuccessProject)
-
+export function transformToPermission(permission: string): Permission {
+  const [entity, resource, action] = permission.split(':')
   return {
-    permissions,
-    organizationSlug,
-    projectRef,
-    isLoading,
-    isSuccess,
+    entity: entity as any,
+    resource,
+    action,
   }
 }
 
-/**
- * @deprecated If checking for project permissions, use useAsyncCheckProjectPermissions instead so that we can always
- * check for loading states to not prematurely show "no perms" UIs. We'll also need a separate async check for org perms too
- *
- * Use `import { useAsyncCheckProjectPermissions } from 'hooks/misc/useCheckPermissions'` instead
- */
-export function useCheckPermissions(
-  action: string,
-  resource: string,
-  data?: object,
-  // [Joshen] Pass the variables if you want to avoid hooks in this
-  // e.g If you want to use useCheckPermissions in a loop like organization settings
-  organizationSlug?: string,
-  permissions?: Permission[]
-) {
-  return useCheckProjectPermissions(action, resource, data, {
-    organizationSlug,
-    projectRef: undefined,
-    permissions,
-  })
+export function isOrganizationResourcePermission(permission: ResourcePermission): boolean {
+  return typeof permission.organization_id === 'string'
 }
 
-export function useCheckProjectPermissions(
-  action: string,
-  resource: string,
-  data?: object,
-  overrides?: {
-    organizationSlug?: string
-    projectRef?: string
-    permissions?: Permission[]
-  }
-) {
-  const isLoggedIn = useIsLoggedIn()
-  const { organizationSlug, projectRef, permissions } = overrides ?? {}
+export function isEnvironmentResourcePermission(permission: ResourcePermission): boolean {
+  return typeof permission.env_type === 'string'
+}
 
-  const {
-    permissions: allPermissions,
-    organizationSlug: _organizationSlug,
-    projectRef: _projectRef,
-  } = useGetProjectPermissions(permissions, organizationSlug, projectRef, isLoggedIn)
+export function isProjectResourcePermission(permission: ResourcePermission): boolean {
+  return typeof permission.project_id === 'string'
+}
 
-  if (!isLoggedIn) return false
+export function isBranchResourcePermission(permission: ResourcePermission): boolean {
+  return typeof permission.branch_id === 'string'
+}
 
-  return doPermissionsCheck(allPermissions, action, resource, data, _organizationSlug, _projectRef)
+export function isOrganizationPermission(permission: Permission): boolean {
+  return permission.entity === 'org'
+}
+
+export function isEnvironmentPermission(permission: Permission): boolean {
+  return permission.entity === 'env'
+}
+
+export function isProjectPermission(permission: Permission): boolean {
+  return permission.entity === 'project'
+}
+
+export function isBranchPermission(permission: Permission): boolean {
+  return permission.entity === 'branch'
+}
+
+export function isOrganizationRole(role: Role): boolean {
+  return role.role_type === 'organization'
+}
+
+export function isEnvironmentRole(role: Role): boolean {
+  return role.role_type === 'environment'
+}
+
+export function isProjectRole(role: Role): boolean {
+  return role.role_type === 'project'
+}
+
+export function isBranchRole(role: Role): boolean {
+  return role.role_type === 'branch'
 }
 
 export function usePermissionsLoaded() {
@@ -199,27 +106,167 @@ export function usePermissionsLoaded() {
   return isLoggedIn && isPermissionsFetched && isOrganizationsFetched
 }
 
-// Useful when you want to avoid layout changes while waiting for permissions to load
-export function useAsyncCheckProjectPermissions(
-  action: string,
-  resource: string,
-  data?: object,
-  overrides?: {
-    organizationSlug?: string
-    projectRef?: string
-    permissions?: Permission[]
-  }
+function useFilteredPermissionsQuery(
+  {
+    filter,
+  }: {
+    filter?: (permission: ResourcePermission) => boolean
+  },
+  {
+    enabled = true,
+    ...options
+  }: UseQueryOptions<PermissionsData, PermissionsError, PermissionsData> = {}
 ) {
   const isLoggedIn = useIsLoggedIn()
-  const { organizationSlug, projectRef, permissions } = overrides ?? {}
 
   const {
-    permissions: allPermissions,
-    organizationSlug: _organizationSlug,
-    projectRef: _projectRef,
-    isLoading: isPermissionsLoading,
-    isSuccess: isPermissionsSuccess,
-  } = useGetProjectPermissions(permissions, organizationSlug, projectRef, isLoggedIn)
+    data: userPermissions,
+    isLoading,
+    isSuccess,
+  } = usePermissionsQuery({ enabled: isLoggedIn && enabled, ...options })
+
+  if (!isLoggedIn) {
+    return {
+      isLoading: true,
+      isSuccess: false,
+      permissions: [],
+    }
+  }
+
+  const filteredPermissions = filter ? userPermissions?.filter(filter) : userPermissions
+  return {
+    isLoading,
+    isSuccess,
+    permissions: filteredPermissions || [],
+  }
+}
+
+export function useOrganizationPermissionQuery({
+  enabled = true,
+  ...options
+}: UseQueryOptions<PermissionsData, PermissionsError, PermissionsData> = {}) {
+  const { slug: orgId } = getPathReferences()
+
+  const { permissions, isLoading, isSuccess } = useFilteredPermissionsQuery(
+    {
+      filter: (permission) =>
+        isOrganizationResourcePermission(permission) && permission.organization_id === orgId,
+    },
+    {
+      enabled: enabled && !!orgId,
+      ...options,
+    }
+  )
+  return { isLoading, isSuccess, permissions }
+}
+
+export function useEnvironmentPermissionQuery({
+  enabled = true,
+  ...options
+}: UseQueryOptions<PermissionsData, PermissionsError, PermissionsData> = {}) {
+  const { slug: orgId } = getPathReferences()
+
+  const { permissions, isLoading, isSuccess } = useFilteredPermissionsQuery(
+    {
+      filter: (permission) =>
+        isEnvironmentResourcePermission(permission) && permission.organization_id === orgId,
+    },
+    {
+      enabled: enabled && !!orgId,
+      ...options,
+    }
+  )
+  return { isLoading, isSuccess, permissions }
+}
+
+export function useProjectPermissionQuery({
+  enabled = true,
+  ...options
+}: UseQueryOptions<PermissionsData, PermissionsError, PermissionsData> = {}) {
+  const {
+    data: projects,
+    isLoading: isProjectsLoading,
+    isSuccess: isProjectsSuccess,
+  } = useProjectsQuery()
+
+  const { permissions, isLoading, isSuccess } = useFilteredPermissionsQuery(
+    {
+      filter: (permission) =>
+        isProjectResourcePermission(permission) &&
+        (projects || []).some((project) => project.id === permission.project_id),
+    },
+    {
+      enabled: enabled && !isProjectsLoading && isProjectsLoading,
+      ...options,
+    }
+  )
+  return {
+    isLoading: isLoading || isProjectsLoading,
+    isSuccess: isSuccess && isProjectsSuccess,
+    permissions,
+  }
+}
+
+export function useBranchPermissionQuery({
+  enabled = true,
+  ...options
+}: UseQueryOptions<PermissionsData, PermissionsError, PermissionsData> = {}) {
+  const { slug: orgId, ref: projectId } = getPathReferences()
+
+  const {
+    data: branches,
+    isLoading: isBranchesLoading,
+    isSuccess: isBranchesSuccess,
+  } = useBranchesQuery({
+    orgSlug: orgId,
+    projectRef: projectId,
+  })
+
+  const { permissions, isLoading, isSuccess } = useFilteredPermissionsQuery(
+    {
+      filter: (permission) =>
+        isBranchResourcePermission(permission) &&
+        (branches || []).some((branch) => branch.id === permission.branch_id),
+    },
+    {
+      enabled: enabled && !!orgId && !!projectId && !isBranchesLoading && isBranchesSuccess,
+      ...options,
+    }
+  )
+  return {
+    isLoading: isLoading || isBranchesLoading,
+    isSuccess: isSuccess && isBranchesSuccess,
+    permissions,
+  }
+}
+
+export function usePermissionsCheck(requiredPermission: Permission) {
+  const { slug: orgId, ref: projectId, branch: branchId } = getPathReferences()
+
+  const isLoggedIn = useIsLoggedIn()
+  const {
+    permissions: organizationPermissions,
+    isLoading: isOrganizationPermissionsLoading,
+    isSuccess: isOrganizationPermissionsSuccess,
+  } = useOrganizationPermissionQuery()
+
+  const {
+    permissions: environmentPermissions,
+    isLoading: isEnvironmentPermissionsLoading,
+    isSuccess: isEnvironmentPermissionsSuccess,
+  } = useProjectPermissionQuery()
+
+  const {
+    permissions: projectPermissions,
+    isLoading: isProjectPermissionsLoading,
+    isSuccess: isProjectPermissionsSuccess,
+  } = useProjectPermissionQuery()
+
+  const {
+    permissions: branchPermissions,
+    isLoading: isBranchPermissionsLoading,
+    isSuccess: isBranchPermissionsSuccess,
+  } = useProjectPermissionQuery()
 
   if (!isLoggedIn) {
     return {
@@ -229,18 +276,25 @@ export function useAsyncCheckProjectPermissions(
     }
   }
 
-  const can = doPermissionsCheck(
-    allPermissions,
-    action,
-    resource,
-    data,
-    _organizationSlug,
-    _projectRef
-  )
+  const permissions = [
+    ...organizationPermissions,
+    ...(isEnvironmentPermission(requiredPermission) ? environmentPermissions : []),
+    ...(isProjectPermission(requiredPermission) ? projectPermissions : []),
+    ...(isBranchPermission(requiredPermission) ? branchPermissions : []),
+  ]
 
+  const can = hasPermission(requiredPermission, permissions)
   return {
-    isLoading: isPermissionsLoading,
-    isSuccess: isPermissionsSuccess,
+    isLoading:
+      isOrganizationPermissionsLoading ||
+      isEnvironmentPermissionsLoading ||
+      isProjectPermissionsLoading ||
+      isBranchPermissionsLoading,
+    isSuccess:
+      isOrganizationPermissionsSuccess &&
+      isEnvironmentPermissionsSuccess &&
+      isProjectPermissionsSuccess &&
+      isBranchPermissionsSuccess,
     can,
   }
 }
