@@ -3,16 +3,35 @@
  * Do not make direct changes to the file.
  */
 
-import type { components as vela_components } from 'data/vela/vela-schema';
+import type { components as vela_components } from 'data/vela/vela-schema'
+
+type VelaType<Name extends keyof vela_components['schemas']> = vela_components['schemas'][Name]
+type PlatformType<Name extends keyof components['schemas']> = components['schemas'][Name]
 
 export interface paths {
+  '/platform/permissions': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['PermissionController_getAvailablePermissions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/backups': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BackupsController_getOrgBackups']
     put?: never
     post?: never
@@ -21,14 +40,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BackupsController_getBranchBackups']
     put?: never
     post: operations['BackupsController_createManualBranchBackup']
@@ -37,14 +56,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/{backup}': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get?: never
     put?: never
     post?: never
@@ -60,10 +79,10 @@ export interface paths {
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BackupSchedulesController_getOrgSchedules']
     put: operations['BackupSchedulesController_updateOrgSchedule']
-    post?: never
+    post: operations['BackupSchedulesController_createOrgSchedule']
     delete: operations['BackupSchedulesController_deleteOrgSchedule']
     options?: never
     head?: never
@@ -76,10 +95,10 @@ export interface paths {
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BackupSchedulesController_getBranchSchedules']
     put: operations['BackupSchedulesController_updateBranchSchedule']
-    post?: never
+    post: operations['BackupSchedulesController_createBranchSchedule']
     delete: operations['BackupSchedulesController_deleteBranchSchedule']
     options?: never
     head?: never
@@ -92,7 +111,7 @@ export interface paths {
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getUserCount']
     put?: never
     post?: never
@@ -101,14 +120,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/mfa': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getMFA']
     put: operations['BranchAuthController_updateMFA']
     post?: never
@@ -117,14 +136,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/config/client': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getClient']
     put: operations['BranchAuthController_updateClient']
     post?: never
@@ -156,7 +175,7 @@ export interface paths {
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getProviders']
     put?: never
     post?: never
@@ -165,14 +184,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers/{name}': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get?: never
     put: operations['BranchAuthController_updateProvider']
     post?: never
@@ -181,14 +200,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getUsers']
     put?: never
     post: operations['BranchAuthController_createUsers']
@@ -197,14 +216,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get?: never
     put: operations['BranchAuthController_updateUser']
     post?: never
@@ -252,7 +271,7 @@ export interface paths {
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getUserSessions']
     put?: never
     post?: never
@@ -268,7 +287,7 @@ export interface paths {
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['ServiceUrlsController_getServiceUrls']
     put?: never
     post?: never
@@ -277,7 +296,7 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/auth/{ref}/config': {
     parameters: {
       query?: never
@@ -4454,164 +4473,164 @@ export type webhooks = Record<string, never>
 export interface components {
   schemas: {
     AuthUserSessionResponse: {
-      id?: string;
-      username?: string;
-      userId?: string;
-      ipAddress?: string;
+      id?: string
+      username?: string
+      userId?: string
+      ipAddress?: string
       /** Format: int64 */
-      start?: number;
+      start?: number
       /** Format: int64 */
-      lastAccess?: number;
-      rememberMe?: boolean;
+      lastAccess?: number
+      rememberMe?: boolean
       clients?: {
-        [key: string]: string;
-      };
-      transientUser?: boolean;
+        [key: string]: string
+      }
+      transientUser?: boolean
     }
     AuthUserResponse: {
-      id: string;
-      username: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      emailVerified: boolean;
+      id: string
+      username: string
+      firstName: string
+      lastName: string
+      email: string
+      emailVerified: boolean
       attributes: {
-        [key: string]: string[];
-      };
+        [key: string]: string[]
+      }
       userProfileMetadata: {
         attributes?: {
-          name: string;
-          displayName: string;
-          required: boolean;
-          readOnly: boolean;
+          name: string
+          displayName: string
+          required: boolean
+          readOnly: boolean
           annotations?: {
-            [key: string]: unknown;
-          };
+            [key: string]: unknown
+          }
           validators?: {
             [key: string]: {
-              [key: string]: unknown;
-            };
-          };
-          group: string;
-          multivalued: boolean;
-          defaultValue: string;
+              [key: string]: unknown
+            }
+          }
+          group: string
+          multivalued: boolean
+          defaultValue: string
         }[]
         groups?: {
-          name: string;
-          displayHeader: string;
-          displayDescription: string;
+          name: string
+          displayHeader: string
+          displayDescription: string
           annotations?: {
-            [key: string]: unknown;
-          };
+            [key: string]: unknown
+          }
         }[]
       }
-      enabled: boolean;
-      self: string;
-      origin: string;
+      enabled: boolean
+      self: string
+      origin: string
       /** Format: int64 */
-      createdTimestamp?: number;
-      totp: boolean;
-      federationLink: string;
-      serviceAccountClientId: string;
+      createdTimestamp?: number
+      totp: boolean
+      federationLink: string
+      serviceAccountClientId: string
       credentials: {
-        id: string;
-        type: string;
-        userLabel?: string;
+        id: string
+        type: string
+        userLabel?: string
         /** Format: int64 */
-        createdDate: number;
-        secretData: string;
-        credentialData: string;
+        createdDate: number
+        secretData: string
+        credentialData: string
         /** Format: int32 */
-        priority: number;
-        value: string;
-        temporary: boolean;
+        priority: number
+        value: string
+        temporary: boolean
         /** @deprecated */
-        device?: string;
+        device?: string
         /** @deprecated */
-        hashedSaltedValue?: string;
+        hashedSaltedValue?: string
         /** @deprecated */
-        salt?: string;
+        salt?: string
         /**
          * Format: int32
          * @deprecated
          */
-        hashIterations?: number;
+        hashIterations?: number
         /**
          * Format: int32
          * @deprecated
          */
-        counter?: number;
+        counter?: number
         /** @deprecated */
-        algorithm?: string;
+        algorithm?: string
         /**
          * Format: int32
          * @deprecated
          */
-        digits?: number;
+        digits?: number
         /**
          * Format: int32
          * @deprecated
          */
-        period?: number;
+        period?: number
         /** @deprecated */
         config?: {
-          [key: string]: string[];
+          [key: string]: string[]
         }
-        federationLink?: string;
+        federationLink?: string
       }[]
-      disableableCredentialTypes: string[];
-      requiredActions: string[];
+      disableableCredentialTypes: string[]
+      requiredActions: string[]
       federatedIdentities: {
         identityProvider: string
         userId: string
         userName: string
       }[]
-      realmRoles?: string[];
+      realmRoles?: string[]
       clientRoles?: {
-        [key: string]: string[];
-      };
+        [key: string]: string[]
+      }
       clientConsents?: {
-        clientId?: string;
-        grantedClientScopes?: string[];
+        clientId?: string
+        grantedClientScopes?: string[]
         /** Format: int64 */
-        createdDate?: number;
+        createdDate?: number
         /** Format: int64 */
-        lastUpdatedDate?: number;
+        lastUpdatedDate?: number
         /** @deprecated */
-        grantedRealmRoles?: string[];
-      }[];
+        grantedRealmRoles?: string[]
+      }[]
       /** Format: int32 */
-      notBefore?: number;
+      notBefore?: number
       /** @deprecated */
       applicationRoles?: {
-        [key: string]: string[];
-      };
+        [key: string]: string[]
+      }
       /** @deprecated */
       socialLinks?: {
-        socialProvider?: string;
-        socialUserId?: string;
-        socialUsername?: string;
-      }[];
-      groups?: string[];
+        socialProvider?: string
+        socialUserId?: string
+        socialUsername?: string
+      }[]
+      groups?: string[]
       access?: {
-        [key: string]: boolean;
-      };
+        [key: string]: boolean
+      }
     }
     AuthProviderUpdateBody: {
-      alias?: string;
-      displayName?: string;
-      internalId?: string;
-      providerId?: string;
-      enabled?: boolean;
-      trustEmail?: boolean;
-      storeToken?: boolean;
-      addReadTokenRoleOnCreate?: boolean;
-      authenticateByDefault?: boolean;
-      linkOnly?: boolean;
-      hideOnLogin?: boolean;
-      firstBrokerLoginFlowAlias?: string;
-      postBrokerLoginFlowAlias?: string;
-      organizationId?: string;
+      alias?: string
+      displayName?: string
+      internalId?: string
+      providerId?: string
+      enabled?: boolean
+      trustEmail?: boolean
+      storeToken?: boolean
+      addReadTokenRoleOnCreate?: boolean
+      authenticateByDefault?: boolean
+      linkOnly?: boolean
+      hideOnLogin?: boolean
+      firstBrokerLoginFlowAlias?: string
+      postBrokerLoginFlowAlias?: string
+      organizationId?: string
       config?: {
         authorizationUrl?: string
         clientId?: string
@@ -4619,89 +4638,89 @@ export interface components {
         logoutUrl?: string
         tokenUrl?: string
         userInfoUrl?: string
-        [key: string]: string;
-      };
+        [key: string]: string
+      }
     }
     BranchAuthMFAConfig: {
-      status: 'enabled' | 'verify-enabled' | 'disabled';
+      status: 'enabled' | 'verify-enabled' | 'disabled'
     }
     BranchAuthClientResponse: {
-      id?: string;
-      clientId?: string;
-      name?: string;
-      description?: string;
-      type?: string;
-      rootUrl?: string;
-      adminUrl?: string;
-      baseUrl?: string;
-      surrogateAuthRequired?: boolean;
-      enabled?: boolean;
-      alwaysDisplayInConsole?: boolean;
-      clientAuthenticatorType?: string;
-      secret?: string;
-      registrationAccessToken?: string;
+      id?: string
+      clientId?: string
+      name?: string
+      description?: string
+      type?: string
+      rootUrl?: string
+      adminUrl?: string
+      baseUrl?: string
+      surrogateAuthRequired?: boolean
+      enabled?: boolean
+      alwaysDisplayInConsole?: boolean
+      clientAuthenticatorType?: string
+      secret?: string
+      registrationAccessToken?: string
       /** @deprecated */
-      defaultRoles?: string[];
-      redirectUris?: string[];
-      webOrigins?: string[];
+      defaultRoles?: string[]
+      redirectUris?: string[]
+      webOrigins?: string[]
       /** Format: int32 */
-      notBefore?: number;
-      bearerOnly?: boolean;
-      consentRequired?: boolean;
-      standardFlowEnabled?: boolean;
-      implicitFlowEnabled?: boolean;
-      directAccessGrantsEnabled?: boolean;
-      serviceAccountsEnabled?: boolean;
-      authorizationServicesEnabled?: boolean;
+      notBefore?: number
+      bearerOnly?: boolean
+      consentRequired?: boolean
+      standardFlowEnabled?: boolean
+      implicitFlowEnabled?: boolean
+      directAccessGrantsEnabled?: boolean
+      serviceAccountsEnabled?: boolean
+      authorizationServicesEnabled?: boolean
       /** @deprecated */
-      directGrantsOnly?: boolean;
-      publicClient?: boolean;
-      frontchannelLogout?: boolean;
-      protocol?: string;
+      directGrantsOnly?: boolean
+      publicClient?: boolean
+      frontchannelLogout?: boolean
+      protocol?: string
       attributes?: {
-        [key: string]: string;
-      };
+        [key: string]: string
+      }
       authenticationFlowBindingOverrides?: {
-        [key: string]: string;
-      };
-      fullScopeAllowed?: boolean;
+        [key: string]: string
+      }
+      fullScopeAllowed?: boolean
       /** Format: int32 */
-      nodeReRegistrationTimeout?: number;
+      nodeReRegistrationTimeout?: number
       registeredNodes?: {
-        [key: string]: number;
-      };
-      protocolMappers?: components["schemas"]["ProtocolMapperRepresentation"][];
+        [key: string]: number
+      }
+      protocolMappers?: PlatformType<'ProtocolMapperRepresentation'>[]
       /** @deprecated */
-      clientTemplate?: string;
+      clientTemplate?: string
       /** @deprecated */
-      useTemplateConfig?: boolean;
+      useTemplateConfig?: boolean
       /** @deprecated */
-      useTemplateScope?: boolean;
+      useTemplateScope?: boolean
       /** @deprecated */
-      useTemplateMappers?: boolean;
-      defaultClientScopes?: string[];
-      optionalClientScopes?: string[];
-      authorizationSettings?: components["schemas"]["ResourceServerRepresentation"];
+      useTemplateMappers?: boolean
+      defaultClientScopes?: string[]
+      optionalClientScopes?: string[]
+      authorizationSettings?: PlatformType<'ResourceServerRepresentation'>
       access?: {
-        [key: string]: boolean;
-      };
-      origin?: string;
+        [key: string]: boolean
+      }
+      origin?: string
     }
     AuthProviderResponse: {
-      alias?: string;
-      displayName?: string;
-      internalId?: string;
-      providerId?: string;
-      enabled?: boolean;
-      trustEmail?: boolean;
-      storeToken?: boolean;
-      addReadTokenRoleOnCreate?: boolean;
-      authenticateByDefault?: boolean;
-      linkOnly?: boolean;
-      hideOnLogin?: boolean;
-      firstBrokerLoginFlowAlias?: string;
-      postBrokerLoginFlowAlias?: string;
-      organizationId?: string;
+      alias?: string
+      displayName?: string
+      internalId?: string
+      providerId?: string
+      enabled?: boolean
+      trustEmail?: boolean
+      storeToken?: boolean
+      addReadTokenRoleOnCreate?: boolean
+      authenticateByDefault?: boolean
+      linkOnly?: boolean
+      hideOnLogin?: boolean
+      firstBrokerLoginFlowAlias?: string
+      postBrokerLoginFlowAlias?: string
+      organizationId?: string
       config?: {
         authorizationUrl: string
         clientId: string
@@ -4709,8 +4728,8 @@ export interface components {
         logoutUrl: string
         tokenUrl: string
         userInfoUrl: string
-        [key: string]: string;
-      };
+        [key: string]: string
+      }
     }
     AccessControlPermission: {
       actions: string[] | null
@@ -4829,29 +4848,29 @@ export interface components {
        * Format: ulid
        * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
        */
-      id: string;
+      id: string
       /**
        * ULID
        * Format: ulid
        * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
        */
-      organization_id: string;
+      organization_id: string
       /**
        * ULID
        * Format: ulid
        * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
        */
-      branch_id: string;
+      branch_id: string
       /** Env Type */
-      env_type: string;
+      env_type: string
       /** Rows */
-      rows: vela_components["schemas"]["BackupScheduleRowPublic"][];
+      rows: VelaType<'BackupScheduleRowPublic'>[]
     }
     BackupScheduleUpdate: {
       /** Env Type */
-      env_type?: string;
+      env_type?: string
       /** Rows */
-      rows?: vela_components["schemas"]["BackupScheduleRowPublic"][];
+      rows?: VelaType<'BackupScheduleRowPublic'>[]
     }
     BackupsResponse: {
       id: string
@@ -7104,6 +7123,7 @@ export interface components {
       /** @enum {string|null} */
       restriction_status: 'grace_period' | 'grace_period_over' | 'restricted' | null
       slug: string
+      environments: string[]
     }
     OrganizationRoleResponse: {
       org_scoped_roles: {
@@ -8457,8 +8477,7 @@ export interface components {
       postgrest?: string
       'supabase-postgres': string
     }
-    SetupIntentRequest: {
-    }
+    SetupIntentRequest: {}
     SetupIntentResponse: {
       client_secret: string
       pending_subscription_flow_enabled_for_creation: boolean
@@ -9696,7 +9715,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AuthUserSessionResponse'][]
+          'application/json': PlatformType<'AuthUserSessionResponse'>[]
         }
       }
       403: {
@@ -9732,7 +9751,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': vela_components['schemas']['UserRepresentation']
+          'application/json': VelaType<'UserRepresentation'>
         }
       }
       403: {
@@ -9742,7 +9761,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_createUsers: {
     parameters: {
       query?: never
@@ -9756,7 +9775,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateUserBody']
+        'application/json': PlatformType<'CreateUserBody'>
       }
     }
     responses: {
@@ -9765,7 +9784,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': vela_components['schemas']['UserRepresentation']
+          'application/json': VelaType<'UserRepresentation'>
         }
       }
       403: {
@@ -9775,14 +9794,14 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_getUserCount: {
     parameters: {
       query?: {
         /** @description whether the email has been verified */
-        emailVerified?: boolean;
+        emailVerified?: boolean
         /** @description A query to search for custom attributes, in the format 'key1:value2 key2:value2' */
-        q?: string;
+        q?: string
       }
       header?: never
       path: {
@@ -9799,7 +9818,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": number;
+          'application/json': number
         }
       }
       403: {
@@ -9809,7 +9828,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_updateUser: {
     parameters: {
       query?: never
@@ -9824,7 +9843,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateUserBody']
+        'application/json': PlatformType<'UpdateUserBody'>
       }
     }
     responses: {
@@ -9841,7 +9860,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_deleteUser: {
     parameters: {
       query?: never
@@ -9980,7 +9999,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BranchAuthMFAConfig']
+          'application/json': PlatformType<'BranchAuthMFAConfig'>
         }
       }
       403: {
@@ -9990,7 +10009,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_updateMFA: {
     parameters: {
       query?: never
@@ -10004,7 +10023,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['BranchAuthMFAConfig']
+        'application/json': PlatformType<'BranchAuthMFAConfig'>
       }
     }
     responses: {
@@ -10023,7 +10042,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_getClient: {
     parameters: {
       query?: never
@@ -10042,7 +10061,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BranchAuthClientResponse']
+          'application/json': PlatformType<'BranchAuthClientResponse'>
         }
       }
       403: {
@@ -10059,7 +10078,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_updateClient: {
     parameters: {
       query?: never
@@ -10073,7 +10092,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['BranchAuthClientResponse']
+        'application/json': PlatformType<'BranchAuthClientResponse'>
       }
     }
     responses: {
@@ -10082,7 +10101,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BranchAuthClientResponse']
+          'application/json': PlatformType<'BranchAuthClientResponse'>
         }
       }
       403: {
@@ -10099,7 +10118,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_getProviders: {
     parameters: {
       query?: never
@@ -10118,7 +10137,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AuthProviderResponse'][]
+          'application/json': PlatformType<'AuthProviderResponse'>[]
         }
       }
       403: {
@@ -10135,7 +10154,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_updateProvider: {
     parameters: {
       query?: never
@@ -10150,7 +10169,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['AuthProviderUpdateBody']
+        'application/json': PlatformType<'AuthProviderUpdateBody'>
       }
     }
     responses: {
@@ -10209,24 +10228,24 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   ServiceUrlsController_getServiceUrls: {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     requestBody?: never
     responses: {
       200: {
         headers: {
           [name: string]: unknown
-        },
-        content: {
-          'application/json': components['schemas']['ServiceUrlsResponse']
         }
-      },
+        content: {
+          'application/json': PlatformType<'ServiceUrlsResponse'>
+        }
+      }
       500: {
         headers: {
           [name: string]: unknown
@@ -10234,7 +10253,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   GoTrueConfigController_getGoTrueConfig: {
     parameters: {
       query?: never
@@ -10252,7 +10271,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GoTrueConfigResponse']
+          'application/json': PlatformType<'GoTrueConfigResponse'>
         }
       }
       403: {
@@ -10282,7 +10301,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateGoTrueConfigBody']
+        'application/json': PlatformType<'UpdateGoTrueConfigBody'>
       }
     }
     responses: {
@@ -10291,7 +10310,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GoTrueConfigResponse']
+          'application/json': PlatformType<'GoTrueConfigResponse'>
         }
       }
       403: {
@@ -10321,7 +10340,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateGoTrueConfigHooksBody']
+        'application/json': PlatformType<'UpdateGoTrueConfigHooksBody'>
       }
     }
     responses: {
@@ -10330,7 +10349,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GoTrueConfigResponse']
+          'application/json': PlatformType<'GoTrueConfigResponse'>
         }
       }
       403: {
@@ -10360,7 +10379,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UserBody']
+        'application/json': PlatformType<'UserBody'>
       }
     }
     responses: {
@@ -10397,7 +10416,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UserBody']
+        'application/json': PlatformType<'UserBody'>
       }
     }
     responses: {
@@ -10434,7 +10453,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UserBody']
+        'application/json': PlatformType<'UserBody'>
       }
     }
     responses: {
@@ -10471,7 +10490,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UserBody']
+        'application/json': PlatformType<'UserBody'>
       }
     }
     responses: {
@@ -10538,7 +10557,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ValidateSpamBody']
+        'application/json': PlatformType<'ValidateSpamBody'>
       }
     }
     responses: {
@@ -10547,7 +10566,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ValidateSpamResponse']
+          'application/json': PlatformType<'ValidateSpamResponse'>
         }
       }
       403: {
@@ -10574,7 +10593,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateCliLoginSessionBody']
+        'application/json': PlatformType<'CreateCliLoginSessionBody'>
       }
     }
     responses: {
@@ -10637,10 +10656,42 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CloudMarketplaceOnboardingInfoResponse']
+          'application/json': PlatformType<'CloudMarketplaceOnboardingInfoResponse'>
         }
       }
       /** @description Failed to get info for AWS Marketplace onboarding */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  PermissionController_getAvailablePermissions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string[]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
       500: {
         headers: {
           [name: string]: unknown
@@ -10665,7 +10716,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BackupsResponse'][]
+          'application/json': PlatformType<'BackupsResponse'>[]
         }
       }
       403: {
@@ -10699,7 +10750,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": vela_components["schemas"]["BackupSchedule"];
+          'application/json': PlatformType<'BackupSchedule'>
         }
       }
       403: {
@@ -10735,7 +10786,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": vela_components["schemas"]["BackupSchedule"];
+          'application/json': PlatformType<'BackupSchedule'>
         }
       }
       403: {
@@ -10764,7 +10815,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        "application/json": components["schemas"]["BackupScheduleUpdate"]
+        'application/json': PlatformType<'BackupScheduleUpdate'>
       }
     }
     responses: {
@@ -10773,7 +10824,47 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": vela_components["schemas"]["BackupScheduleUpdate"];
+          'application/json': VelaType<'BackupSchedulePublic'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_createOrgSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': PlatformType<'BackupScheduleUpdate'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': PlatformType<'BackupSchedule'>
         }
       }
       403: {
@@ -10804,7 +10895,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        "application/json": components["schemas"]["BackupScheduleUpdate"]
+        'application/json': PlatformType<'BackupScheduleUpdate'>
       }
     }
     responses: {
@@ -10813,7 +10904,47 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": vela_components["schemas"]["BackupSchedule"];
+          'application/json': PlatformType<'BackupSchedule'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_createBranchSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': PlatformType<'BackupScheduleUpdate'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': PlatformType<'BackupSchedule'>
         }
       }
       403: {
@@ -10847,7 +10978,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": vela_components["schemas"]["BackupScheduleDeletePublic"];
+          'application/json': VelaType<'BackupScheduleDeletePublic'>
         }
       }
       403: {
@@ -10883,7 +11014,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": vela_components["schemas"]["BackupScheduleDeletePublic"];
+          'application/json': VelaType<'BackupScheduleDeletePublic'>
         }
       }
       403: {
@@ -10920,7 +11051,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": vela_components["schemas"]["BackupDeletePublic"];
+          'application/json': VelaType<'BackupDeletePublic'>
         }
       }
       403: {
@@ -10956,7 +11087,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BackupsResponse']
+          'application/json': PlatformType<'BackupsResponse'>
         }
       }
       403: {
@@ -10992,7 +11123,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BackupsResponse'][]
+          'application/json': PlatformType<'BackupsResponse'>[]
         }
       }
       403: {
@@ -11022,7 +11153,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['DownloadBackupBody']
+        'application/json': PlatformType<'DownloadBackupBody'>
       }
     }
     responses: {
@@ -11031,7 +11162,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DownloadBackupResponse']
+          'application/json': PlatformType<'DownloadBackupResponse'>
         }
       }
       403: {
@@ -11066,7 +11197,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DownloadableBackupsResponse']
+          'application/json': PlatformType<'DownloadableBackupsResponse'>
         }
       }
       403: {
@@ -11129,7 +11260,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['PointInTimeRestoreBody']
+        'application/json': PlatformType<'PointInTimeRestoreBody'>
       }
     }
     responses: {
@@ -11166,7 +11297,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RestoreLogicalBackupBody']
+        'application/json': PlatformType<'RestoreLogicalBackupBody'>
       }
     }
     responses: {
@@ -11203,7 +11334,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RestorePhysicalBackupBody']
+        'application/json': PlatformType<'RestorePhysicalBackupBody'>
       }
     }
     responses: {
@@ -11245,7 +11376,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CloneBackupsResponse']
+          'application/json': PlatformType<'CloneBackupsResponse'>
         }
       }
       /** @description Failed to list available valid backups */
@@ -11269,7 +11400,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CloneProject']
+        'application/json': PlatformType<'CloneProject'>
       }
     }
     responses: {
@@ -11278,7 +11409,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectClonedResponse']
+          'application/json': PlatformType<'ProjectClonedResponse'>
         }
       }
       /** @description Failed to clone the current project */
@@ -11307,7 +11438,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectClonedStatusResponse']
+          'application/json': PlatformType<'ProjectClonedStatusResponse'>
         }
       }
       /** @description Failed to retrieve clone project status */
@@ -11400,7 +11531,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SendDocsFeedbackBody']
+        'application/json': PlatformType<'SendDocsFeedbackBody'>
       }
     }
     responses: {
@@ -11409,7 +11540,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SendFeedbackResponse']
+          'application/json': PlatformType<'SendFeedbackResponse'>
         }
       }
       /** @description Failed to send feedback for docs */
@@ -11430,7 +11561,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SendExitSurveyBody']
+        'application/json': PlatformType<'SendExitSurveyBody'>
       }
     }
     responses: {
@@ -11439,7 +11570,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SendFeedbackResponse']
+          'application/json': PlatformType<'SendFeedbackResponse'>
         }
       }
       /** @description Failed to send exit survey */
@@ -11460,7 +11591,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SendFeedbackBody']
+        'application/json': PlatformType<'SendFeedbackBody'>
       }
     }
     responses: {
@@ -11469,7 +11600,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SendFeedbackResponse']
+          'application/json': PlatformType<'SendFeedbackResponse'>
         }
       }
       /** @description Failed to send feedback */
@@ -11490,7 +11621,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SendUpgradeSurveyBody']
+        'application/json': PlatformType<'SendUpgradeSurveyBody'>
       }
     }
     responses: {
@@ -11499,7 +11630,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SendFeedbackResponse']
+          'application/json': PlatformType<'SendFeedbackResponse'>
         }
       }
       /** @description Failed to send upgrade survey */
@@ -11525,7 +11656,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetUserOrganizationIntegrationResponse'][]
+          'application/json': PlatformType<'GetUserOrganizationIntegrationResponse'>[]
         }
       }
       /** @description Failed to get user's integrations */
@@ -11553,7 +11684,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetOrganizationIntegrationResponse'][]
+          'application/json': PlatformType<'GetOrganizationIntegrationResponse'>[]
         }
       }
       /** @description Failed to get integration with the given organization slug */
@@ -11579,7 +11710,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GitHubAuthorizationResponse']
+          'application/json': PlatformType<'GitHubAuthorizationResponse'>
         }
       }
       /** @description Failed to get GitHub authorization */
@@ -11600,7 +11731,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateGitHubAuthorizationBody']
+        'application/json': PlatformType<'CreateGitHubAuthorizationBody'>
       }
     }
     responses: {
@@ -11638,7 +11769,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GitHubBranchResponse'][]
+          'application/json': PlatformType<'GitHubBranchResponse'>[]
         }
       }
       /** @description Failed to list GitHub connection branches */
@@ -11667,7 +11798,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GitHubBranchResponse']
+          'application/json': PlatformType<'GitHubBranchResponse'>
         }
       }
       /** @description Failed to get GitHub connection branch */
@@ -11695,7 +11826,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ListGitHubConnectionsResponse']
+          'application/json': PlatformType<'ListGitHubConnectionsResponse'>
         }
       }
       /** @description Failed to list organization GitHub connections */
@@ -11716,7 +11847,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateGitHubConnectionBody']
+        'application/json': PlatformType<'CreateGitHubConnectionBody'>
       }
     }
     responses: {
@@ -11725,7 +11856,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateGitHubConnectionResponse']
+          'application/json': PlatformType<'CreateGitHubConnectionResponse'>
         }
       }
       /** @description Failed to create project connections */
@@ -11774,7 +11905,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateGitHubConnectionBody']
+        'application/json': PlatformType<'UpdateGitHubConnectionBody'>
       }
     }
     responses: {
@@ -11807,7 +11938,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ListGitHubRepositoriesResponse']
+          'application/json': PlatformType<'ListGitHubRepositoriesResponse'>
         }
       }
       /** @description Failed to get GitHub repositories for user */
@@ -11835,7 +11966,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ListRepositoryBranchesResponse']
+          'application/json': PlatformType<'ListRepositoryBranchesResponse'>
         }
       }
       /** @description Failed to list GitHub repository branches */
@@ -11864,7 +11995,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GitHubBranchResponse']
+          'application/json': PlatformType<'GitHubBranchResponse'>
         }
       }
       /** @description Failed to get GitHub repository branch */
@@ -11892,7 +12023,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrivateLinkResponse']
+          'application/json': PlatformType<'PrivateLinkResponse'>
         }
       }
       /** @description Failed to retrieve organization's PrivateLink config */
@@ -11915,7 +12046,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePrivateLinkBody']
+        'application/json': PlatformType<'UpdatePrivateLinkBody'>
       }
     }
     responses: {
@@ -11924,7 +12055,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PrivateLinkResponse']
+          'application/json': PlatformType<'PrivateLinkResponse'>
         }
       }
       /** @description Failed to update organization's PrivateLink configuration. */
@@ -11945,7 +12076,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateVercelIntegrationBody']
+        'application/json': PlatformType<'CreateVercelIntegrationBody'>
       }
     }
     responses: {
@@ -11999,7 +12130,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateVercelConnectionsBody']
+        'application/json': PlatformType<'CreateVercelConnectionsBody'>
       }
     }
     responses: {
@@ -12008,7 +12139,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateVercelConnectionResponse']
+          'application/json': PlatformType<'CreateVercelConnectionResponse'>
         }
       }
       /** @description Failed to create project connection */
@@ -12036,7 +12167,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DeleteVercelConnectionResponse']
+          'application/json': PlatformType<'DeleteVercelConnectionResponse'>
         }
       }
       /** @description Failed to delete vercel integration project connection */
@@ -12059,7 +12190,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateVercelConnectionsBody']
+        'application/json': PlatformType<'UpdateVercelConnectionsBody'>
       }
     }
     responses: {
@@ -12120,7 +12251,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetVercelConnectionsResponse']
+          'application/json': PlatformType<'GetVercelConnectionsResponse'>
         }
       }
       /** @description Failed to get installed vercel connections for the given organization integration */
@@ -12152,7 +12283,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetVercelProjectsResponse']
+          'application/json': PlatformType<'GetVercelProjectsResponse'>
         }
       }
       /** @description Failed to get vercel projects with the given organization integration id */
@@ -12185,7 +12316,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['NotificationResponseV2'][]
+          'application/json': PlatformType<'NotificationResponseV2'>[]
         }
       }
       /** @description Failed to retrieve notifications */
@@ -12206,7 +12337,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateNotificationsBodyV1']
+        'application/json': PlatformType<'UpdateNotificationsBodyV1'>
       }
     }
     responses: {
@@ -12215,7 +12346,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['NotificationResponseV1'][]
+          'application/json': PlatformType<'NotificationResponseV1'>[]
         }
       }
       /** @description Failed to delete notifications */
@@ -12236,7 +12367,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateNotificationBodyV2']
+        'application/json': PlatformType<'UpdateNotificationBodyV2'>
       }
     }
     responses: {
@@ -12245,7 +12376,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['NotificationResponseV2'][]
+          'application/json': PlatformType<'NotificationResponseV2'>[]
         }
       }
       /** @description Failed to update notifications */
@@ -12295,7 +12426,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['NotificationsSummary']
+          'application/json': PlatformType<'NotificationsSummary'>
         }
       }
     }
@@ -12309,7 +12440,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['DynamicRegisterOAuthAppBody']
+        'application/json': PlatformType<'DynamicRegisterOAuthAppBody'>
       }
     }
     responses: {
@@ -12318,7 +12449,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateOAuthAppResponse']
+          'application/json': PlatformType<'CreateOAuthAppResponse'>
         }
       }
     }
@@ -12340,7 +12471,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetOAuthAuthorizationResponse']
+          'application/json': PlatformType<'GetOAuthAuthorizationResponse'>
         }
       }
     }
@@ -12359,7 +12490,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganizationResponse'][]
+          'application/json': PlatformType<'OrganizationResponse'>[]
         }
       }
       /** @description Failed to retrieve user's organizations */
@@ -12380,7 +12511,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateOrganizationBody']
+        'application/json': PlatformType<'CreateOrganizationBody'>
       }
     }
     responses: {
@@ -12389,7 +12520,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateOrganizationResponse']
+          'application/json': PlatformType<'CreateOrganizationResponse'>
         }
       }
       /** @description Unexpected error creating an organization */
@@ -12418,7 +12549,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganizationSlugResponse']
+          'application/json': PlatformType<'OrganizationSlugResponse'>
         }
       }
       403: {
@@ -12474,7 +12605,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateOrganizationBody']
+        'application/json': PlatformType<'UpdateOrganizationBody'>
       }
     }
     responses: {
@@ -12483,7 +12614,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpdateOrganizationResponse']
+          'application/json': PlatformType<'UpdateOrganizationResponse'>
         }
       }
       403: {
@@ -12523,7 +12654,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AuditLogsResponse']
+          'application/json': PlatformType<'AuditLogsResponse'>
         }
       }
       403: {
@@ -12553,7 +12684,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['OrganizationSlugAvailableVersionsBody']
+        'application/json': PlatformType<'OrganizationSlugAvailableVersionsBody'>
       }
     }
     responses: {
@@ -12562,7 +12693,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganizationSlugAvailableVersionsResponse']
+          'application/json': PlatformType<'OrganizationSlugAvailableVersionsResponse'>
         }
       }
       403: {
@@ -12592,7 +12723,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreditsTopUpRequest']
+        'application/json': PlatformType<'CreditsTopUpRequest'>
       }
     }
     responses: {
@@ -12602,7 +12733,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreditsTopUpResponse']
+          'application/json': PlatformType<'CreditsTopUpResponse'>
         }
       }
       403: {
@@ -12640,7 +12771,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Invoice'][]
+          'application/json': PlatformType<'Invoice'>[]
         }
       }
       403: {
@@ -12711,7 +12842,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Invoice']
+          'application/json': PlatformType<'Invoice'>
         }
       }
       403: {
@@ -12747,7 +12878,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['InvoicePaymentLinkResponse']
+          'application/json': PlatformType<'InvoicePaymentLinkResponse'>
         }
       }
       403: {
@@ -12782,7 +12913,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpcomingInvoice']
+          'application/json': PlatformType<'UpcomingInvoice'>
         }
       }
       403: {
@@ -12817,7 +12948,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PlansResponse']
+          'application/json': PlatformType<'PlansResponse'>
         }
       }
       403: {
@@ -12852,7 +12983,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetSubscriptionResponse']
+          'application/json': PlatformType<'GetSubscriptionResponse'>
         }
       }
       403: {
@@ -12882,7 +13013,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateSubscriptionBody']
+        'application/json': PlatformType<'UpdateSubscriptionBody'>
       }
     }
     responses: {
@@ -12891,7 +13022,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpdateSubscriptionResponse']
+          'application/json': PlatformType<'UpdateSubscriptionResponse'>
         }
       }
       403: {
@@ -12921,7 +13052,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ConfirmSubscriptionChangeBody']
+        'application/json': PlatformType<'ConfirmSubscriptionChangeBody'>
       }
     }
     responses: {
@@ -12958,7 +13089,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateSubscriptionBody']
+        'application/json': PlatformType<'UpdateSubscriptionBody'>
       }
     }
     responses: {
@@ -12995,7 +13126,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['LinkClazarBuyerBody']
+        'application/json': PlatformType<'LinkClazarBuyerBody'>
       }
     }
     responses: {
@@ -13037,7 +13168,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetCloudMarketplaceRedirectUrlResponse']
+          'application/json': PlatformType<'GetCloudMarketplaceRedirectUrlResponse'>
         }
       }
       403: {
@@ -13072,7 +13203,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CustomerResponse']
+          'application/json': PlatformType<'CustomerResponse'>
         }
       }
       403: {
@@ -13102,7 +13233,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['BillingCustomerUpdateBody']
+        'application/json': PlatformType<'BillingCustomerUpdateBody'>
       }
     }
     responses: {
@@ -13257,7 +13388,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateDpaDocumentRequest']
+        'application/json': PlatformType<'CreateDpaDocumentRequest'>
       }
     }
     responses: {
@@ -13266,7 +13397,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateDpaDocumentResponse']
+          'application/json': PlatformType<'CreateDpaDocumentResponse'>
         }
       }
       403: {
@@ -13294,7 +13425,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrgDocumentUrlResponse']
+          'application/json': PlatformType<'OrgDocumentUrlResponse'>
         }
       }
       403: {
@@ -13322,7 +13453,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrgDocumentUrlResponse']
+          'application/json': PlatformType<'OrgDocumentUrlResponse'>
         }
       }
       403: {
@@ -13350,7 +13481,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Member'][]
+          'application/json': PlatformType<'Member'>[]
         }
       }
       /** @description Failed to retrieve organization's members */
@@ -13403,7 +13534,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['AssignMemberRoleBodyV2']
+        'application/json': PlatformType<'AssignMemberRoleBodyV2'>
       }
     }
     responses: {
@@ -13436,7 +13567,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateMemberRoleBody']
+        'application/json': PlatformType<'UpdateMemberRoleBody'>
       }
     }
     responses: {
@@ -13501,7 +13632,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['InvitationResponse']
+          'application/json': PlatformType<'InvitationResponse'>
         }
       }
       403: {
@@ -13531,7 +13662,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateInvitationBody']
+        'application/json': PlatformType<'CreateInvitationBody'>
       }
     }
     responses: {
@@ -13602,7 +13733,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['InvitationByTokenResponse']
+          'application/json': PlatformType<'InvitationByTokenResponse'>
         }
       }
       /** @description Failed to get organization invitation by token */
@@ -13660,7 +13791,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['MfaStatusResponse']
+          'application/json': PlatformType<'MfaStatusResponse'>
         }
       }
       /** @description Failed to get organization MFA status */
@@ -13684,7 +13815,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ChangeMFAEnforcementStateRequest']
+        'application/json': PlatformType<'ChangeMFAEnforcementStateRequest'>
       }
     }
     responses: {
@@ -13694,7 +13825,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['MfaStatusResponse']
+          'application/json': PlatformType<'MfaStatusResponse'>
         }
       }
       403: {
@@ -13729,7 +13860,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['MemberWithFreeProjectLimit'][]
+          'application/json': PlatformType<'MemberWithFreeProjectLimit'>[]
         }
       }
       403: {
@@ -13766,7 +13897,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OAuthAppResponse'][]
+          'application/json': PlatformType<'OAuthAppResponse'>[]
         }
       }
       403: {
@@ -13789,7 +13920,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateOAuthAppBody']
+        'application/json': PlatformType<'CreateOAuthAppBody'>
       }
     }
     responses: {
@@ -13798,7 +13929,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateOAuthAppResponse']
+          'application/json': PlatformType<'CreateOAuthAppResponse'>
         }
       }
       403: {
@@ -13827,7 +13958,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ListOAuthAppClientSecretsResponse']
+          'application/json': PlatformType<'ListOAuthAppClientSecretsResponse'>
         }
       }
       403: {
@@ -13856,7 +13987,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateOAuthAppClientSecretResponse']
+          'application/json': PlatformType<'CreateOAuthAppClientSecretResponse'>
         }
       }
       403: {
@@ -13908,7 +14039,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateOAuthAppBody']
+        'application/json': PlatformType<'CreateOAuthAppBody'>
       }
     }
     responses: {
@@ -13917,7 +14048,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PutOAuthAppResponse']
+          'application/json': PlatformType<'PutOAuthAppResponse'>
         }
       }
       403: {
@@ -13946,7 +14077,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DeleteOAuthAppResponse']
+          'application/json': PlatformType<'DeleteOAuthAppResponse'>
         }
       }
       403: {
@@ -13975,7 +14106,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RevokeAuthorizedOAuthAppResponse']
+          'application/json': PlatformType<'RevokeAuthorizedOAuthAppResponse'>
         }
       }
       403: {
@@ -14005,7 +14136,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ApproveAuthorizationResponse']
+          'application/json': PlatformType<'ApproveAuthorizationResponse'>
         }
       }
       403: {
@@ -14035,7 +14166,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DeclineAuthorizationResponse']
+          'application/json': PlatformType<'DeclineAuthorizationResponse'>
         }
       }
       403: {
@@ -14063,7 +14194,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PaymentsResponse']
+          'application/json': PlatformType<'PaymentsResponse'>
         }
       }
       403: {
@@ -14093,7 +14224,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['DetachPaymentMethodBody']
+        'application/json': PlatformType<'DetachPaymentMethodBody'>
       }
     }
     responses: {
@@ -14130,7 +14261,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['MarkDefaultPaymentMethodBody']
+        'application/json': PlatformType<'MarkDefaultPaymentMethodBody'>
       }
     }
     responses: {
@@ -14172,7 +14303,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SetupIntentResponse']
+          'application/json': PlatformType<'SetupIntentResponse'>
         }
       }
       403: {
@@ -14216,7 +14347,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganizationProjectsResponse']
+          'application/json': PlatformType<'OrganizationProjectsResponse'>
         }
       }
       403: {
@@ -14251,7 +14382,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganizationRoleResponse']
+          'application/json': VelaType<'RolePermissionsPublic'>
         }
       }
       403: {
@@ -14286,7 +14417,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetSSOProviderResponse']
+          'application/json': PlatformType<'GetSSOProviderResponse'>
         }
       }
       403: {
@@ -14309,7 +14440,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateSSOProviderBody']
+        'application/json': PlatformType<'UpdateSSOProviderBody'>
       }
     }
     responses: {
@@ -14318,7 +14449,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpdateSSOProviderResponse']
+          'application/json': PlatformType<'UpdateSSOProviderResponse'>
         }
       }
       403: {
@@ -14341,7 +14472,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateSSOProviderBody']
+        'application/json': PlatformType<'CreateSSOProviderBody'>
       }
     }
     responses: {
@@ -14350,7 +14481,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateSSOProviderResponse']
+          'application/json': PlatformType<'CreateSSOProviderResponse'>
         }
       }
       403: {
@@ -14404,7 +14535,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['TaxIdResponse']
+          'application/json': PlatformType<'TaxIdResponse'>
         }
       }
       403: {
@@ -14434,7 +14565,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateTaxIdBody']
+        'application/json': PlatformType<'CreateTaxIdBody'>
       }
     }
     responses: {
@@ -14443,7 +14574,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['TaxIdResponse']
+          'application/json': PlatformType<'TaxIdResponse'>
         }
       }
       403: {
@@ -14516,7 +14647,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrgUsageResponse']
+          'application/json': PlatformType<'OrgUsageResponse'>
         }
       }
       403: {
@@ -14543,7 +14674,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateAwsBilledOrganizationBody']
+        'application/json': PlatformType<'CreateAwsBilledOrganizationBody'>
       }
     }
     responses: {
@@ -14552,7 +14683,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OrganizationResponse']
+          'application/json': PlatformType<'OrganizationResponse'>
         }
       }
       /** @description Failed to create organization billed by AWS Marketplace */
@@ -14573,7 +14704,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ConfirmCreateSubscriptionChangeBody']
+        'application/json': PlatformType<'ConfirmCreateSubscriptionChangeBody'>
       }
     }
     responses: {
@@ -14582,7 +14713,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateOrganizationResponse']
+          'application/json': PlatformType<'CreateOrganizationResponse'>
         }
       }
       /** @description Failed to confirm subscription changes */
@@ -14610,7 +14741,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetOrganizationByFlyOrganizationIdResponse']
+          'application/json': PlatformType<'GetOrganizationByFlyOrganizationIdResponse'>
         }
       }
     }
@@ -14633,7 +14764,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresColumnPrivileges'][]
+          'application/json': PlatformType<'PostgresColumnPrivileges'>[]
         }
       }
       403: {
@@ -14664,7 +14795,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['GrantColumnPrivilegesBody']
+        'application/json': PlatformType<'GrantColumnPrivilegesBody'>
       }
     }
     responses: {
@@ -14673,7 +14804,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresColumnPrivileges'][]
+          'application/json': PlatformType<'PostgresColumnPrivileges'>[]
         }
       }
       403: {
@@ -14704,7 +14835,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RevokeColumnPrivilegesBody']
+        'application/json': PlatformType<'RevokeColumnPrivilegesBody'>
       }
     }
     responses: {
@@ -14713,7 +14844,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresColumnPrivileges'][]
+          'application/json': PlatformType<'PostgresColumnPrivileges'>[]
         }
       }
       403: {
@@ -14752,7 +14883,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresColumn'][]
+          'application/json': PlatformType<'PostgresColumn'>[]
         }
       }
       403: {
@@ -14783,7 +14914,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateColumnBody']
+        'application/json': PlatformType<'CreateColumnBody'>
       }
     }
     responses: {
@@ -14792,7 +14923,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresColumn']
+          'application/json': PlatformType<'PostgresColumn'>
         }
       }
       403: {
@@ -14832,7 +14963,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresColumn']
+          'application/json': PlatformType<'PostgresColumn'>
         }
       }
       403: {
@@ -14865,7 +14996,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateColumnBody']
+        'application/json': PlatformType<'UpdateColumnBody'>
       }
     }
     responses: {
@@ -14874,7 +15005,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresColumn']
+          'application/json': PlatformType<'PostgresColumn'>
         }
       }
       403: {
@@ -14910,7 +15041,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresExtension'][]
+          'application/json': PlatformType<'PostgresExtension'>[]
         }
       }
       403: {
@@ -14941,7 +15072,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateExtensionBody']
+        'application/json': PlatformType<'CreateExtensionBody'>
       }
     }
     responses: {
@@ -14950,7 +15081,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresExtension']
+          'application/json': PlatformType<'PostgresExtension'>
         }
       }
       403: {
@@ -14988,7 +15119,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresExtension']
+          'application/json': PlatformType<'PostgresExtension'>
         }
       }
       403: {
@@ -15029,7 +15160,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresForeignTable'][]
+          'application/json': PlatformType<'PostgresForeignTable'>[]
         }
       }
       403: {
@@ -15071,7 +15202,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresFunction'][]
+          'application/json': PlatformType<'PostgresFunction'>[]
         }
       }
       403: {
@@ -15105,7 +15236,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateFunctionBody']
+        'application/json': PlatformType<'CreateFunctionBody'>
       }
     }
     responses: {
@@ -15114,7 +15245,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresFunction']
+          'application/json': PlatformType<'PostgresFunction'>
         }
       }
       403: {
@@ -15155,7 +15286,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresFunction']
+          'application/json': PlatformType<'PostgresFunction'>
         }
       }
       403: {
@@ -15191,7 +15322,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateFunctionBody']
+        'application/json': PlatformType<'UpdateFunctionBody'>
       }
     }
     responses: {
@@ -15200,7 +15331,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresFunction']
+          'application/json': PlatformType<'PostgresFunction'>
         }
       }
       403: {
@@ -15244,7 +15375,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresMaterializedView'][]
+          'application/json': PlatformType<'PostgresMaterializedView'>[]
         }
       }
       403: {
@@ -15283,7 +15414,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPolicy'][]
+          'application/json': PlatformType<'PostgresPolicy'>[]
         }
       }
       403: {
@@ -15314,7 +15445,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreatePolicyBody']
+        'application/json': PlatformType<'CreatePolicyBody'>
       }
     }
     responses: {
@@ -15323,7 +15454,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPolicy']
+          'application/json': PlatformType<'PostgresPolicy'>
         }
       }
       403: {
@@ -15361,7 +15492,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPolicy']
+          'application/json': PlatformType<'PostgresPolicy'>
         }
       }
       403: {
@@ -15394,7 +15525,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePolicyBody']
+        'application/json': PlatformType<'UpdatePolicyBody'>
       }
     }
     responses: {
@@ -15403,7 +15534,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPolicy']
+          'application/json': PlatformType<'PostgresPolicy'>
         }
       }
       403: {
@@ -15439,7 +15570,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPublication'][]
+          'application/json': PlatformType<'PostgresPublication'>[]
         }
       }
       403: {
@@ -15470,7 +15601,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreatePublicationBody']
+        'application/json': PlatformType<'CreatePublicationBody'>
       }
     }
     responses: {
@@ -15479,7 +15610,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPublication']
+          'application/json': PlatformType<'PostgresPublication'>
         }
       }
       403: {
@@ -15517,7 +15648,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPublication']
+          'application/json': PlatformType<'PostgresPublication'>
         }
       }
       403: {
@@ -15550,7 +15681,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePublicationBody']
+        'application/json': PlatformType<'UpdatePublicationBody'>
       }
     }
     responses: {
@@ -15559,7 +15690,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresPublication']
+          'application/json': PlatformType<'PostgresPublication'>
         }
       }
       403: {
@@ -15590,7 +15721,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RunQueryBody']
+        'application/json': PlatformType<'RunQueryBody'>
       }
     }
     responses: {
@@ -15627,7 +15758,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['FormatQueryBody']
+        'application/json': PlatformType<'FormatQueryBody'>
       }
     }
     responses: {
@@ -15658,7 +15789,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ValidateQueryBody']
+        'application/json': PlatformType<'ValidateQueryBody'>
       }
     }
     responses: {
@@ -15667,7 +15798,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ValidateQueryResponse']
+          'application/json': PlatformType<'ValidateQueryResponse'>
         }
       }
       /** @description Failed to validate sql query */
@@ -15700,7 +15831,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresSchema'][]
+          'application/json': PlatformType<'PostgresSchema'>[]
         }
       }
       403: {
@@ -15734,7 +15865,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateSchemaBody']
+        'application/json': PlatformType<'CreateSchemaBody'>
       }
     }
     responses: {
@@ -15743,7 +15874,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresSchema']
+          'application/json': PlatformType<'PostgresSchema'>
         }
       }
       403: {
@@ -15784,7 +15915,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresSchema']
+          'application/json': PlatformType<'PostgresSchema'>
         }
       }
       403: {
@@ -15820,7 +15951,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateSchemaBody']
+        'application/json': PlatformType<'UpdateSchemaBody'>
       }
     }
     responses: {
@@ -15829,7 +15960,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresSchema']
+          'application/json': PlatformType<'PostgresSchema'>
         }
       }
       403: {
@@ -15873,7 +16004,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTable'][]
+          'application/json': PlatformType<'PostgresTable'>[]
         }
       }
       403: {
@@ -15904,7 +16035,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateTableBody']
+        'application/json': PlatformType<'CreateTableBody'>
       }
     }
     responses: {
@@ -15913,7 +16044,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTable']
+          'application/json': PlatformType<'PostgresTable'>
         }
       }
       403: {
@@ -15953,7 +16084,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTable']
+          'application/json': PlatformType<'PostgresTable'>
         }
       }
       403: {
@@ -15986,7 +16117,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateTableBody']
+        'application/json': PlatformType<'UpdateTableBody'>
       }
     }
     responses: {
@@ -15995,7 +16126,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTable']
+          'application/json': PlatformType<'PostgresTable'>
         }
       }
       403: {
@@ -16034,7 +16165,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTrigger'][]
+          'application/json': PlatformType<'PostgresTrigger'>[]
         }
       }
       403: {
@@ -16065,7 +16196,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateTriggerBody']
+        'application/json': PlatformType<'CreateTriggerBody'>
       }
     }
     responses: {
@@ -16074,7 +16205,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTrigger']
+          'application/json': PlatformType<'PostgresTrigger'>
         }
       }
       403: {
@@ -16112,7 +16243,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTrigger']
+          'application/json': PlatformType<'PostgresTrigger'>
         }
       }
       403: {
@@ -16145,7 +16276,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateTriggerBody']
+        'application/json': PlatformType<'UpdateTriggerBody'>
       }
     }
     responses: {
@@ -16154,7 +16285,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresTrigger']
+          'application/json': PlatformType<'PostgresTrigger'>
         }
       }
       403: {
@@ -16193,7 +16324,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresType'][]
+          'application/json': PlatformType<'PostgresType'>[]
         }
       }
       403: {
@@ -16237,7 +16368,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresView'][]
+          'application/json': PlatformType<'PostgresView'>[]
         }
       }
       403: {
@@ -16269,7 +16400,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProfileResponse']
+          'application/json': PlatformType<'ProfileResponse'>
         }
       }
       /** @description Failed to retrieve user's profile */
@@ -16295,7 +16426,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProfileResponse']
+          'application/json': PlatformType<'ProfileResponse'>
         }
       }
       /** @description Failed to create user's profile */
@@ -16347,7 +16478,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateProfileBody']
+        'application/json': PlatformType<'UpdateProfileBody'>
       }
     }
     responses: {
@@ -16356,7 +16487,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProfileResponse']
+          'application/json': PlatformType<'ProfileResponse'>
         }
       }
       /** @description Failed to update user's profile */
@@ -16382,7 +16513,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AccessToken'][]
+          'application/json': PlatformType<'AccessToken'>[]
         }
       }
       /** @description Failed to get user's access tokens */
@@ -16403,7 +16534,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateAccessTokenBody']
+        'application/json': PlatformType<'CreateAccessTokenBody'>
       }
     }
     responses: {
@@ -16412,7 +16543,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateAccessTokenResponse']
+          'application/json': PlatformType<'CreateAccessTokenResponse'>
         }
       }
       /** @description Failed to create access token */
@@ -16440,7 +16571,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AccessToken']
+          'application/json': PlatformType<'AccessToken'>
         }
       }
       /** @description Failed to get access token */
@@ -16468,7 +16599,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AccessToken']
+          'application/json': PlatformType<'AccessToken'>
         }
       }
       /** @description Failed to delete access token */
@@ -16499,7 +16630,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UserAuditLogsResponse']
+          'application/json': PlatformType<'UserAuditLogsResponse'>
         }
       }
       /** @description Failed to get a user's audit logs */
@@ -16537,7 +16668,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['PasswordCheckBody']
+        'application/json': PlatformType<'PasswordCheckBody'>
       }
     }
     responses: {
@@ -16546,7 +16677,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PasswordCheckResponse']
+          'application/json': PlatformType<'PasswordCheckResponse'>
         }
       }
       /** @description Failed to check password strength */
@@ -16572,7 +16703,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AccessControlPermission'][]
+          'application/json': VelaType<'UserPermissionPublic'>[]
         }
       }
       /** @description Failed to retrieve permissions */
@@ -16593,7 +16724,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SearchProfileBody']
+        'application/json': PlatformType<'SearchProfileBody'>
       }
     }
     responses: {
@@ -16602,7 +16733,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['Profile'][]
+          'application/json': PlatformType<'Profile'>[]
         }
       }
       /** @description Failed to search profiles with the given keywords */
@@ -16630,7 +16761,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectInfo'][]
+          'application/json': PlatformType<'ProjectInfo'>[]
         }
       }
     }
@@ -16646,7 +16777,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateProjectBody']
+        'application/json': PlatformType<'CreateProjectBody'>
       }
     }
     responses: {
@@ -16655,7 +16786,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateProjectResponse']
+          'application/json': PlatformType<'CreateProjectResponse'>
         }
       }
     }
@@ -16674,7 +16805,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectResourceWarningsResponse'][]
+          'application/json': PlatformType<'ProjectResourceWarningsResponse'>[]
         }
       }
     }
@@ -16697,7 +16828,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectDetailResponse']
+          'application/json': PlatformType<'ProjectDetailResponse'>
         }
       }
       403: {
@@ -16726,7 +16857,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RemoveProjectResponse']
+          'application/json': PlatformType<'RemoveProjectResponse'>
         }
       }
       403: {
@@ -16750,7 +16881,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateProjectBody']
+        'application/json': PlatformType<'UpdateProjectBody'>
       }
     }
     responses: {
@@ -16759,7 +16890,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectRefResponse']
+          'application/json': PlatformType<'ProjectRefResponse'>
         }
       }
       403: {
@@ -16797,7 +16928,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AnalyticsResponse']
+          'application/json': PlatformType<'AnalyticsResponse'>
         }
       }
       403: {
@@ -16835,7 +16966,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AnalyticsResponse']
+          'application/json': PlatformType<'AnalyticsResponse'>
         }
       }
       403: {
@@ -16873,7 +17004,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AnalyticsResponse']
+          'application/json': PlatformType<'AnalyticsResponse'>
         }
       }
       403: {
@@ -16912,7 +17043,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AnalyticsResponse']
+          'application/json': PlatformType<'AnalyticsResponse'>
         }
       }
       403: {
@@ -16942,7 +17073,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['GetProjectLogsBody']
+        'application/json': PlatformType<'GetProjectLogsBody'>
       }
     }
     responses: {
@@ -16951,7 +17082,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AnalyticsResponse']
+          'application/json': PlatformType<'AnalyticsResponse'>
         }
       }
       403: {
@@ -16988,7 +17119,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AnalyticsResponse']
+          'application/json': PlatformType<'AnalyticsResponse'>
         }
       }
       403: {
@@ -17023,7 +17154,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AnalyticsResponse']
+          'application/json': PlatformType<'AnalyticsResponse'>
         }
       }
       /** @description Failed to get project's usage api requests count */
@@ -17052,7 +17183,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFBackend'][]
+          'application/json': PlatformType<'LFBackend'>[]
         }
       }
       403: {
@@ -17082,7 +17213,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateBackendParamsOpenapi']
+        'application/json': PlatformType<'CreateBackendParamsOpenapi'>
       }
     }
     responses: {
@@ -17091,7 +17222,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFBackend']
+          'application/json': PlatformType<'LFBackend'>
         }
       }
       403: {
@@ -17123,7 +17254,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateBackendParamsOpenapi']
+        'application/json': PlatformType<'UpdateBackendParamsOpenapi'>
       }
     }
     responses: {
@@ -17132,7 +17263,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFBackend']
+          'application/json': PlatformType<'LFBackend'>
         }
       }
       403: {
@@ -17202,7 +17333,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFAccessToken'][]
+          'application/json': PlatformType<'LFAccessToken'>[]
         }
       }
       403: {
@@ -17234,7 +17365,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFAccessToken']
+          'application/json': PlatformType<'LFAccessToken'>
         }
       }
       403: {
@@ -17299,7 +17430,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFSource'][]
+          'application/json': PlatformType<'LFSource'>[]
         }
       }
       403: {
@@ -17329,7 +17460,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateCollectionBody']
+        'application/json': PlatformType<'CreateCollectionBody'>
       }
     }
     responses: {
@@ -17338,7 +17469,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFSource']
+          'application/json': PlatformType<'LFSource'>
         }
       }
       403: {
@@ -17374,7 +17505,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFSource']
+          'application/json': PlatformType<'LFSource'>
         }
       }
       403: {
@@ -17410,7 +17541,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFSource']
+          'application/json': PlatformType<'LFSource'>
         }
       }
       403: {
@@ -17441,7 +17572,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateCollectionBody']
+        'application/json': PlatformType<'UpdateCollectionBody'>
       }
     }
     responses: {
@@ -17450,7 +17581,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFSource']
+          'application/json': PlatformType<'LFSource'>
         }
       }
       403: {
@@ -17487,7 +17618,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFSource']
+          'application/json': PlatformType<'LFSource'>
         }
       }
       403: {
@@ -17522,7 +17653,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFEndpoint'][]
+          'application/json': PlatformType<'LFEndpoint'>[]
         }
       }
       403: {
@@ -17554,7 +17685,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFEndpoint']
+          'application/json': PlatformType<'LFEndpoint'>
         }
       }
       403: {
@@ -17586,7 +17717,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFEndpoint']
+          'application/json': PlatformType<'LFEndpoint'>
         }
       }
       403: {
@@ -17717,7 +17848,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LFUser']
+          'application/json': PlatformType<'LFUser'>
         }
       }
       403: {
@@ -17756,7 +17887,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['TemporaryApiKeyResponse']
+          'application/json': PlatformType<'TemporaryApiKeyResponse'>
         }
       }
       403: {
@@ -17782,7 +17913,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['Buffer']
+        'application/json': PlatformType<'Buffer'>
       }
     }
     responses: {
@@ -17858,7 +17989,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectAddonsResponse']
+          'application/json': PlatformType<'ProjectAddonsResponse'>
         }
       }
       403: {
@@ -17888,7 +18019,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateAddonBody']
+        'application/json': PlatformType<'UpdateAddonBody'>
       }
     }
     responses: {
@@ -17991,7 +18122,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PgbouncerConfigResponse']
+          'application/json': PlatformType<'PgbouncerConfigResponse'>
         }
       }
       /** @description Failed to retrieve project's pgbouncer config */
@@ -18016,7 +18147,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePgbouncerConfigBody']
+        'application/json': PlatformType<'UpdatePgbouncerConfigBody'>
       }
     }
     responses: {
@@ -18025,7 +18156,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpdatePoolingConfigResponse']
+          'application/json': PlatformType<'UpdatePoolingConfigResponse'>
         }
       }
       403: {
@@ -18061,7 +18192,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PgbouncerStatusResponse']
+          'application/json': PlatformType<'PgbouncerStatusResponse'>
         }
       }
       /** @description Failed to retrieve project's pgbouncer status */
@@ -18090,7 +18221,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresConfigResponse']
+          'application/json': PlatformType<'PostgresConfigResponse'>
         }
       }
       /** @description Failed to retrieve project's Postgres config */
@@ -18114,7 +18245,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePostgresConfigBody']
+        'application/json': PlatformType<'UpdatePostgresConfigBody'>
       }
     }
     responses: {
@@ -18123,7 +18254,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PostgresConfigResponse']
+          'application/json': PlatformType<'PostgresConfigResponse'>
         }
       }
       403: {
@@ -18159,7 +18290,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetPostgrestConfigResponse']
+          'application/json': PlatformType<'GetPostgrestConfigResponse'>
         }
       }
       403: {
@@ -18190,7 +18321,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePostgrestConfigBody']
+        'application/json': PlatformType<'UpdatePostgrestConfigBody'>
       }
     }
     responses: {
@@ -18199,7 +18330,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpdatePostgrestConfigResponse']
+          'application/json': PlatformType<'UpdatePostgrestConfigResponse'>
         }
       }
       403: {
@@ -18236,7 +18367,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RealtimeConfigResponse']
+          'application/json': PlatformType<'RealtimeConfigResponse'>
         }
       }
       403: {
@@ -18260,7 +18391,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateRealtimeConfigBody']
+        'application/json': PlatformType<'UpdateRealtimeConfigBody'>
       }
     }
     responses: {
@@ -18290,7 +18421,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateSecretsConfigBody']
+        'application/json': PlatformType<'UpdateSecretsConfigBody'>
       }
     }
     responses: {
@@ -18299,7 +18430,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpdateSecretsResponse']
+          'application/json': PlatformType<'UpdateSecretsResponse'>
         }
       }
       403: {
@@ -18334,7 +18465,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetJwtSecretUpdateStatus']
+          'application/json': PlatformType<'GetJwtSecretUpdateStatus'>
         }
       }
       /** @description Failed to retrieve JWT secret update status */
@@ -18364,7 +18495,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['StorageConfigResponse']
+          'application/json': PlatformType<'StorageConfigResponse'>
         }
       }
       403: {
@@ -18395,7 +18526,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateStorageConfigBody']
+        'application/json': PlatformType<'UpdateStorageConfigBody'>
       }
     }
     responses: {
@@ -18404,7 +18535,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['StorageConfigResponse']
+          'application/json': PlatformType<'StorageConfigResponse'>
         }
       }
       403: {
@@ -18439,7 +18570,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SupavisorConfigResponse'][]
+          'application/json': PlatformType<'SupavisorConfigResponse'>[]
         }
       }
       /** @description Failed to retrieve project's supavisor config */
@@ -18463,7 +18594,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateSupavisorConfigBody']
+        'application/json': PlatformType<'UpdateSupavisorConfigBody'>
       }
     }
     responses: {
@@ -18472,7 +18603,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UpdateSupavisorConfigResponse']
+          'application/json': PlatformType<'UpdateSupavisorConfigResponse'>
         }
       }
       403: {
@@ -18517,7 +18648,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetUserContentResponse']
+          'application/json': PlatformType<'GetUserContentResponse'>
         }
       }
       403: {
@@ -18547,7 +18678,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpsertContentBody']
+        'application/json': PlatformType<'UpsertContentBody'>
       }
     }
     responses: {
@@ -18584,7 +18715,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateContentBody']
+        'application/json': PlatformType<'CreateContentBody'>
       }
     }
     responses: {
@@ -18593,7 +18724,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UserContentObject']
+          'application/json': PlatformType<'UserContentObject'>
         }
       }
       403: {
@@ -18630,7 +18761,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['BulkDeleteUserContentResponse'][]
+          'application/json': PlatformType<'BulkDeleteUserContentResponse'>[]
         }
       }
       403: {
@@ -18668,7 +18799,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetContentCountV2Response']
+          'application/json': PlatformType<'GetContentCountV2Response'>
         }
       }
       403: {
@@ -18711,7 +18842,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetUserContentFolderResponse']
+          'application/json': PlatformType<'GetUserContentFolderResponse'>
         }
       }
       403: {
@@ -18741,7 +18872,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateContentFolderBody']
+        'application/json': PlatformType<'CreateContentFolderBody'>
       }
     }
     responses: {
@@ -18750,7 +18881,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateUserContentFolderResponse']
+          'application/json': PlatformType<'CreateUserContentFolderResponse'>
         }
       }
       403: {
@@ -18825,7 +18956,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetUserContentFolderResponse']
+          'application/json': PlatformType<'GetUserContentFolderResponse'>
         }
       }
       403: {
@@ -18857,7 +18988,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateContentFolderBody']
+        'application/json': PlatformType<'UpdateContentFolderBody'>
       }
     }
     responses: {
@@ -18900,7 +19031,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetUserContentByIdResponse']
+          'application/json': PlatformType<'GetUserContentByIdResponse'>
         }
       }
       403: {
@@ -19007,7 +19138,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DatabaseDetailResponse'][]
+          'application/json': PlatformType<'DatabaseDetailResponse'>[]
         }
       }
       403: {
@@ -19035,7 +19166,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DatabaseStatusResponse'][]
+          'application/json': PlatformType<'DatabaseStatusResponse'>[]
         }
       }
       /** @description Failed to get statuses of databases of a project */
@@ -19059,7 +19190,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdatePasswordBody']
+        'application/json': PlatformType<'UpdatePasswordBody'>
       }
     }
     responses: {
@@ -19101,7 +19232,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DiskResponse']
+          'application/json': PlatformType<'DiskResponse'>
         }
       }
       403: {
@@ -19131,7 +19262,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['DiskRequestBody']
+        'application/json': PlatformType<'DiskRequestBody'>
       }
     }
     responses: {
@@ -19173,7 +19304,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DiskAutoscaleConfig']
+          'application/json': PlatformType<'DiskAutoscaleConfig'>
         }
       }
       403: {
@@ -19203,7 +19334,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateDiskAutoscaleConfig']
+        'application/json': PlatformType<'UpdateDiskAutoscaleConfig'>
       }
     }
     responses: {
@@ -19212,7 +19343,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DiskAutoscaleConfig']
+          'application/json': PlatformType<'DiskAutoscaleConfig'>
         }
       }
       403: {
@@ -19247,7 +19378,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['DiskUtilMetricsResponse']
+          'application/json': PlatformType<'DiskUtilMetricsResponse'>
         }
       }
       403: {
@@ -19398,7 +19529,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['LoadBalancerDetailResponse'][]
+          'application/json': PlatformType<'LoadBalancerDetailResponse'>[]
         }
       }
     }
@@ -19420,7 +19551,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ListNotificationExceptionsResponse']
+          'application/json': PlatformType<'ListNotificationExceptionsResponse'>
         }
       }
       /** @description Failed to retrieve advisor notification exceptions */
@@ -19444,7 +19575,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateNotificationExceptionsBody']
+        'application/json': PlatformType<'CreateNotificationExceptionsBody'>
       }
     }
     responses: {
@@ -19453,7 +19584,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateNotificationExceptionsResponse']
+          'application/json': PlatformType<'CreateNotificationExceptionsResponse'>
         }
       }
       /** @description Failed to creare advisor notification exceptions */
@@ -19507,7 +19638,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateNotificationExceptionBody']
+        'application/json': PlatformType<'UpdateNotificationExceptionBody'>
       }
     }
     responses: {
@@ -19576,7 +19707,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PauseStatusResponse']
+          'application/json': PlatformType<'PauseStatusResponse'>
         }
       }
       403: {
@@ -19599,7 +19730,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ResizeBody']
+        'application/json': PlatformType<'ResizeBody'>
       }
     }
     responses: {
@@ -19630,7 +19761,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RestartProjectBody']
+        'application/json': PlatformType<'RestartProjectBody'>
       }
     }
     responses: {
@@ -19667,7 +19798,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RestartServicesBody']
+        'application/json': PlatformType<'RestartServicesBody'>
       }
     }
     responses: {
@@ -19698,7 +19829,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UnpauseProjectBody']
+        'application/json': PlatformType<'UnpauseProjectBody'>
       }
     }
     responses: {
@@ -19707,7 +19838,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UnpauseProjectResponse']
+          'application/json': PlatformType<'UnpauseProjectResponse'>
         }
       }
       403: {
@@ -19742,7 +19873,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RestoreCancellation']
+          'application/json': PlatformType<'RestoreCancellation'>
         }
       }
       403: {
@@ -19777,7 +19908,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['UnpauseProjectAvailableVersionsResponse']
+          'application/json': PlatformType<'UnpauseProjectAvailableVersionsResponse'>
         }
       }
       403: {
@@ -19813,7 +19944,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetProjectLintsResponse']
+          'application/json': PlatformType<'GetProjectLintsResponse'>
         }
       }
       403: {
@@ -19870,7 +20001,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RunLintByNameResponse']
+          'application/json': PlatformType<'RunLintByNameResponse'>
         }
       }
       403: {
@@ -19898,7 +20029,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetLeakedServiceKeyLintResponse']
+          'application/json': PlatformType<'GetLeakedServiceKeyLintResponse'>
         }
       }
       403: {
@@ -19926,7 +20057,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AuthBackupAdminLintResponse']
+          'application/json': PlatformType<'AuthBackupAdminLintResponse'>
         }
       }
       403: {
@@ -19954,7 +20085,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ServiceVersions']
+          'application/json': PlatformType<'ServiceVersions'>
         }
       }
     }
@@ -19977,7 +20108,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectSettingsResponse']
+          'application/json': PlatformType<'ProjectSettingsResponse'>
         }
       }
       /** @description Failed to retrieve project's settings */
@@ -20001,7 +20132,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['MarkSensitiveBody']
+        'application/json': PlatformType<'MarkSensitiveBody'>
       }
     }
     responses: {
@@ -20010,7 +20141,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ProjectSensitivityResponse']
+          'application/json': PlatformType<'ProjectSensitivityResponse'>
         }
       }
       403: {
@@ -20073,7 +20204,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TransferProjectBody']
+        'application/json': PlatformType<'TransferProjectBody'>
       }
     }
     responses: {
@@ -20103,7 +20234,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TransferProjectBody']
+        'application/json': PlatformType<'TransferProjectBody'>
       }
     }
     responses: {
@@ -20112,7 +20243,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PreviewProjectTransferResponse']
+          'application/json': PlatformType<'PreviewProjectTransferResponse'>
         }
       }
       403: {
@@ -20140,7 +20271,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RegionsInfo']
+          'application/json': PlatformType<'RegionsInfo'>
         }
       }
     }
@@ -20161,7 +20292,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetProjectByFlyExtensionIdResponse']
+          'application/json': PlatformType<'GetProjectByFlyExtensionIdResponse'>
         }
       }
       403: {
@@ -20190,7 +20321,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationDestinationsResponse']
+          'application/json': PlatformType<'ReplicationDestinationsResponse'>
         }
       }
       403: {
@@ -20220,7 +20351,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateReplicationDestinationBody']
+        'application/json': PlatformType<'CreateReplicationDestinationBody'>
       }
     }
     responses: {
@@ -20230,7 +20361,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateDestinationResponse']
+          'application/json': PlatformType<'CreateDestinationResponse'>
         }
       }
       403: {
@@ -20260,7 +20391,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateReplicationDestinationPipelineBody']
+        'application/json': PlatformType<'CreateReplicationDestinationPipelineBody'>
       }
     }
     responses: {
@@ -20270,7 +20401,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateDestinationPipelineResponse']
+          'application/json': PlatformType<'CreateDestinationPipelineResponse'>
         }
       }
       403: {
@@ -20304,7 +20435,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateReplicationDestinationPipelineBody']
+        'application/json': PlatformType<'UpdateReplicationDestinationPipelineBody'>
       }
     }
     responses: {
@@ -20388,7 +20519,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationDestinationResponse']
+          'application/json': PlatformType<'ReplicationDestinationResponse'>
         }
       }
       403: {
@@ -20420,7 +20551,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateReplicationDestinationBody']
+        'application/json': PlatformType<'UpdateReplicationDestinationBody'>
       }
     }
     responses: {
@@ -20500,7 +20631,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationPipelinesResponse']
+          'application/json': PlatformType<'ReplicationPipelinesResponse'>
         }
       }
       403: {
@@ -20530,7 +20661,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateReplicationPipelineBody']
+        'application/json': PlatformType<'CreateReplicationPipelineBody'>
       }
     }
     responses: {
@@ -20540,7 +20671,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreatePipelineResponse']
+          'application/json': PlatformType<'CreatePipelineResponse'>
         }
       }
       403: {
@@ -20578,7 +20709,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationPipelineResponse']
+          'application/json': PlatformType<'ReplicationPipelineResponse'>
         }
       }
       403: {
@@ -20610,7 +20741,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateReplicationPipelineBody']
+        'application/json': PlatformType<'UpdateReplicationPipelineBody'>
       }
     }
     responses: {
@@ -20692,7 +20823,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationPipelineReplicationStatusResponse']
+          'application/json': PlatformType<'ReplicationPipelineReplicationStatusResponse'>
         }
       }
       403: {
@@ -20724,7 +20855,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['RollbackTableStateBody']
+        'application/json': PlatformType<'RollbackTableStateBody'>
       }
     }
     responses: {
@@ -20734,7 +20865,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['RollbackTableStateResponse']
+          'application/json': PlatformType<'RollbackTableStateResponse'>
         }
       }
       403: {
@@ -20808,7 +20939,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationPipelineStatusResponse']
+          'application/json': PlatformType<'ReplicationPipelineStatusResponse'>
         }
       }
       403: {
@@ -20881,7 +21012,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationSourcesResponse']
+          'application/json': PlatformType<'ReplicationSourcesResponse'>
         }
       }
       403: {
@@ -20918,7 +21049,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateSourceResponse']
+          'application/json': PlatformType<'CreateSourceResponse'>
         }
       }
       403: {
@@ -20956,7 +21087,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationPublicationsResponse']
+          'application/json': PlatformType<'ReplicationPublicationsResponse'>
         }
       }
       403: {
@@ -20988,7 +21119,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateReplicationPublicationBody']
+        'application/json': PlatformType<'CreateReplicationPublicationBody'>
       }
     }
     responses: {
@@ -21071,7 +21202,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['ReplicationTablesResponse']
+          'application/json': PlatformType<'ReplicationTablesResponse'>
         }
       }
       403: {
@@ -21107,7 +21238,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateTenantSourceResponse']
+          'application/json': PlatformType<'CreateTenantSourceResponse'>
         }
       }
       403: {
@@ -21134,7 +21265,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['ResetPasswordBody']
+        'application/json': PlatformType<'ResetPasswordBody'>
       }
     }
     responses: {
@@ -21155,7 +21286,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SignUpBody']
+        'application/json': PlatformType<'SignUpBody'>
       }
     }
     responses: {
@@ -21208,7 +21339,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetArchiveResponse']
+          'application/json': PlatformType<'GetArchiveResponse'>
         }
       }
       /** @description Failed to get project storage archive */
@@ -21264,7 +21395,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['StorageBucketResponse'][]
+          'application/json': PlatformType<'StorageBucketResponse'>[]
         }
       }
       403: {
@@ -21294,7 +21425,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateStorageBucketBody']
+        'application/json': PlatformType<'CreateStorageBucketBody'>
       }
     }
     responses: {
@@ -21338,7 +21469,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['StorageBucketResponse']
+          'application/json': PlatformType<'StorageBucketResponse'>
         }
       }
       403: {
@@ -21405,7 +21536,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateStorageBucketBody']
+        'application/json': PlatformType<'UpdateStorageBucketBody'>
       }
     }
     responses: {
@@ -21479,7 +21610,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['DeleteObjectsBody']
+        'application/json': PlatformType<'DeleteObjectsBody'>
       }
     }
     responses: {
@@ -21518,7 +21649,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CopyObjectBody']
+        'application/json': PlatformType<'CopyObjectBody'>
       }
     }
     responses: {
@@ -21527,7 +21658,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CopyObjectResponse']
+          'application/json': PlatformType<'CopyObjectResponse'>
         }
       }
       403: {
@@ -21559,7 +21690,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['DownloadObjectBody']
+        'application/json': PlatformType<'DownloadObjectBody'>
       }
     }
     responses: {
@@ -21568,7 +21699,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['StreamableFile']
+          'application/json': PlatformType<'StreamableFile'>
         }
       }
       403: {
@@ -21600,7 +21731,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['GetObjectsBody']
+        'application/json': PlatformType<'GetObjectsBody'>
       }
     }
     responses: {
@@ -21609,7 +21740,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['StorageObject'][]
+          'application/json': PlatformType<'StorageObject'>[]
         }
       }
       403: {
@@ -21641,7 +21772,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['MoveObjectBody']
+        'application/json': PlatformType<'MoveObjectBody'>
       }
     }
     responses: {
@@ -21680,7 +21811,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['GetPublicUrlBody']
+        'application/json': PlatformType<'GetPublicUrlBody'>
       }
     }
     responses: {
@@ -21689,7 +21820,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['PublicUrlResponse']
+          'application/json': PlatformType<'PublicUrlResponse'>
         }
       }
       403: {
@@ -21721,7 +21852,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['GetSignedUrlBody']
+        'application/json': PlatformType<'GetSignedUrlBody'>
       }
     }
     responses: {
@@ -21730,7 +21861,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SignedUrlResponse']
+          'application/json': PlatformType<'SignedUrlResponse'>
         }
       }
       403: {
@@ -21762,7 +21893,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['GetSignedUrlsBody']
+        'application/json': PlatformType<'GetSignedUrlsBody'>
       }
     }
     responses: {
@@ -21771,7 +21902,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SignedUrlsResponse'][]
+          'application/json': PlatformType<'SignedUrlsResponse'>[]
         }
       }
       403: {
@@ -21806,7 +21937,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['GetStorageCredentialsResponse']
+          'application/json': PlatformType<'GetStorageCredentialsResponse'>
         }
       }
       403: {
@@ -21836,7 +21967,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateStorageCredentialBody']
+        'application/json': PlatformType<'CreateStorageCredentialBody'>
       }
     }
     responses: {
@@ -21845,7 +21976,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['CreateStorageCredentialResponse']
+          'application/json': PlatformType<'CreateStorageCredentialResponse'>
         }
       }
       403: {
@@ -21912,7 +22043,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['OverdueInvoiceCount'][]
+          'application/json': PlatformType<'OverdueInvoiceCount'>[]
         }
       }
     }
@@ -21926,7 +22057,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['SetupIntentRequest']
+        'application/json': PlatformType<'SetupIntentRequest'>
       }
     }
     responses: {
@@ -21935,7 +22066,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['SetupIntentResponse']
+          'application/json': PlatformType<'SetupIntentResponse'>
         }
       }
       /** @description Failed to initiate a payment method setup */
@@ -21956,7 +22087,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TelemetryEventBodyV2']
+        'application/json': PlatformType<'TelemetryEventBodyV2'>
       }
     }
     responses: {
@@ -21990,7 +22121,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['TelemetryCallFeatureFlagsResponse']
+          'application/json': PlatformType<'TelemetryCallFeatureFlagsResponse'>
         }
       }
       /** @description Failed to call feature flags */
@@ -22011,7 +22142,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TelemetryFeatureFlagBody']
+        'application/json': PlatformType<'TelemetryFeatureFlagBody'>
       }
     }
     responses: {
@@ -22039,7 +22170,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TelemetryGroupsIdentityBody']
+        'application/json': PlatformType<'TelemetryGroupsIdentityBody'>
       }
     }
     responses: {
@@ -22067,7 +22198,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TelemetryGroupsResetBody']
+        'application/json': PlatformType<'TelemetryGroupsResetBody'>
       }
     }
     responses: {
@@ -22095,7 +22226,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TelemetryIdentifyBodyV2']
+        'application/json': PlatformType<'TelemetryIdentifyBodyV2'>
       }
     }
     responses: {
@@ -22123,7 +22254,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TelemetryPageBodyV2']
+        'application/json': PlatformType<'TelemetryPageBodyV2'>
       }
     }
     responses: {
@@ -22151,7 +22282,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['TelemetryPageLeaveBody']
+        'application/json': PlatformType<'TelemetryPageLeaveBody'>
       }
     }
     responses: {
@@ -22224,7 +22355,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['UpdateEmailBody']
+        'application/json': PlatformType<'UpdateEmailBody'>
       }
     }
     responses: {
@@ -22337,7 +22468,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': components['schemas']['CreateVercelEnvironmentVariableBody']
+        'application/json': PlatformType<'CreateVercelEnvironmentVariableBody'>
       }
     }
     responses: {
@@ -22372,7 +22503,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['VercelRedirectResponse']
+          'application/json': PlatformType<'VercelRedirectResponse'>
         }
       }
       /** @description Failed to get Vercel redirect url */
@@ -22405,7 +22536,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['WorkflowRunResponse'][]
+          'application/json': PlatformType<'WorkflowRunResponse'>[]
         }
       }
       /** @description Failed to list workflow runs */
