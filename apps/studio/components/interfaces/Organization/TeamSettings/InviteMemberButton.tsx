@@ -54,7 +54,7 @@ export const InviteMemberButton = () => {
   const { slug } = useParams()
   const { profile } = useProfile()
   const { data: organization } = useSelectedOrganizationQuery()
-  // FIXME: need permission implemented   
+  // FIXME: need permission implemented
   const { permission: permissions } = {permission:[]}
   const { organizationMembersCreate: organizationMembersCreationEnabled } = useIsFeatureEnabled([
     'organization_members:create',
@@ -84,7 +84,7 @@ export const InviteMemberButton = () => {
     orgScopedRoles,
     permissions ?? []
   )
-  // FIXME: need permission implemented 
+  // FIXME: need permission implemented
   const canInviteMembers = true
 
   const { mutate: inviteMember, isLoading: isInviting } = useOrganizationCreateInvitationMutation()

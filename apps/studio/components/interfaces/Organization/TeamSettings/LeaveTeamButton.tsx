@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { useOrganizationRolesV2Query } from 'data/organization-members/organization-roles-query'
+import { useOrganizationRolesQuery } from 'data/organization-members/organization-roles-query'
 import { useOrganizationMemberDeleteMutation } from 'data/organizations/organization-member-delete-mutation'
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
@@ -35,12 +35,12 @@ export const LeaveTeamButton = () => {
 
   const { refetch: refetchOrganizations } = useOrganizationsQuery()
   const { data: members } = useOrganizationMembersQuery({ slug })
-  const { data: allRoles } = useOrganizationRolesV2Query({ slug })
+  const { data: allRoles } = useOrganizationRolesQuery({ slug })
 
   const roles = allRoles?.org_scoped_roles ?? []
   const currentUserMember = members?.find((member) => member.user_id === profile?.user_id)
   const currentUserRoleId = currentUserMember?.role_ids?.[0]
-  const currentUserRole = roles.find((role) => role.id === currentUserRoleId)
+  const currentUserRole = roles.find((role) => role.role_id === currentUserRoleId)
   const isAdmin = currentUserRole?.name === 'Administrator'
   const isOwner = selectedOrganization?.is_owner
 
