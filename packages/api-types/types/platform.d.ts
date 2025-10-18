@@ -152,14 +152,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/logs': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getLogs']
     put?: never
     post?: never
@@ -168,7 +168,7 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/providers': {
     parameters: {
       query?: never
@@ -232,14 +232,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/factors': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get?: never
     put?: never
     post?: never
@@ -248,14 +248,14 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/providers': {
     parameters: {
       query?: never
       header?: never
       path?: never
       cookie?: never
-    },
+    }
     get: operations['BranchAuthController_getUserProviders']
     put?: never
     post?: never
@@ -264,7 +264,7 @@ export interface paths {
     head?: never
     patch?: never
     trace?: never
-  },
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/auth/users/{id}/sessions': {
     parameters: {
       query?: never
@@ -9892,7 +9892,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_deleteUserFactors: {
     parameters: {
       query?: never
@@ -9920,7 +9920,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_getUserProviders: {
     parameters: {
       query?: never
@@ -9940,8 +9940,8 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': VelaType<'FederatedIdentityRepresentation'>[];
-        };
+          'application/json': VelaType<'FederatedIdentityRepresentation'>[]
+        }
       }
       403: {
         headers: {
@@ -9950,7 +9950,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_getLogs: {
     parameters: {
       query: {
@@ -9974,8 +9974,8 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': VelaType<'EventRepresentation'>[];
-        };
+          'application/json': VelaType<'EventRepresentation'>[]
+        }
       }
       403: {
         headers: {
@@ -9984,7 +9984,7 @@ export interface operations {
         content?: never
       }
     }
-  },
+  }
   BranchAuthController_getMFA: {
     parameters: {
       query?: never
