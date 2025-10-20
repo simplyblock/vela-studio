@@ -31,7 +31,8 @@ export const useProfileCreateMutation = ({
       await Promise.all([
         queryClient.invalidateQueries(profileKeys.profile()),
         queryClient.invalidateQueries(organizationKeys.list()),
-        queryClient.invalidateQueries(permissionKeys.list()),
+        queryClient.invalidateQueries(permissionKeys.list_permissions()),
+        queryClient.invalidateQueries(permissionKeys.list_roles()),
       ])
       await onSuccess?.(data, variables, context)
     },
