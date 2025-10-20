@@ -27,6 +27,8 @@ import { BackupsHistoryDialog } from './BackupsHistoryDialog'
 import { BackupsTable } from './BackupsTable'
 import { DisableBackupsDialog } from './DisableBackupsDialog'
 import { RestoreBackupDialog } from './RestoreBackupDialog'
+import { useOrgBackupSchedulesQuery } from 'data/backups/org-backup-schedules-query'
+import { useParams } from 'common'
 
 type RestoreContext = {
   rowId: string
@@ -48,6 +50,16 @@ const Backups = () => {
   const [deleteContext, setDeleteContext] = useState<RestoreContext | null>(null)
   const [environmentFilter, setEnvironmentFilter] = useState<BackupEnvironment | 'all'>('all')
   const [branchFilter, setBranchFilter] = useState<string>('')
+  const {slug:orgId} = useParams();
+  const {
+    data,
+    error,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useOrgBackupSchedulesQuery({ orgId }, {enabled:!orgId})
+
+  console.log(data);
 
   const filteredRows = useMemo(() => {
     const search = branchFilter.trim().toLowerCase()

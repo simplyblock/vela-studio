@@ -12,7 +12,6 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ComponentProps, ComponentPropsWithoutRef, FC, ReactNode, useEffect } from 'react'
-
 import { LOCAL_STORAGE_KEYS, useIsMFAEnabled, useParams } from 'common'
 import {
   generateOtherRoutes,

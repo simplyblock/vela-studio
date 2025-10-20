@@ -31,7 +31,7 @@ export const useOrgBackupSchedulesQuery = <TData = OrgBackupSchedulesData>(
   {
     enabled = true,
     ...options
-  }: UseQueryOptions<OrgBackupSchedulesData, OrgBackupSchedulesError, TData>
+  }: UseQueryOptions<OrgBackupSchedulesData, OrgBackupSchedulesError, TData> = {}
 ) =>
   useQuery<OrgBackupSchedulesData, OrgBackupSchedulesError, TData>(
     backupKeys.orgBackupSchedules(orgId),

@@ -10754,7 +10754,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupSchedule'>
+          "application/json": components["schemas"]["BackupSchedule"];
         }
       }
       403: {
