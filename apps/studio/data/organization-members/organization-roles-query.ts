@@ -1,14 +1,12 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
-import type { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
 
 export type OrganizationRolesVariables = { slug?: string }
-export type OrganizationRolesResponse = components['schemas']['OrganizationRoleResponse']
-export type OrganizationRole =
-  components['schemas']['OrganizationRoleResponse']['org_scoped_roles'][0]
+export type OrganizationRolesResponse = OrganizationRolesData
+export type OrganizationRole = OrganizationRolesData['org_scoped_roles'][0]
 
 export async function getOrganizationRoles(
   { slug }: OrganizationRolesVariables,
@@ -28,8 +26,10 @@ export async function getOrganizationRoles(
 type OrganizationRoles = Awaited<ReturnType<typeof getOrganizationRoles>>
 
 export type OrganizationRolesData = {
-  org_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>['links']
-  project_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>['links']
+  org_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>
+  env_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>
+  project_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>
+  branch_scoped_roles: Awaited<ReturnType<typeof getOrganizationRoles>>
 }
 export type OrganizationRolesError = ResponseError
 
@@ -46,8 +46,10 @@ export const useOrganizationRolesQuery = (
     {
       select: (data) => {
         return {
-          org_scoped_roles: data.links,
-          project_scoped_roles: [],
+          org_scoped_roles: data.filter((x) => x.role_type === 'organization'),
+          project_scoped_roles: data.filter((x) => x.role_type === 'project'),
+          env_scoped_roles: data.filter((x) => x.role_type === 'environment'),
+          branch_scoped_roles: data.filter((x) => x.role_type === 'branch'),
         } as OrganizationRolesData
       },
       enabled: enabled && typeof slug !== 'undefined',

@@ -8,7 +8,6 @@ import { useOrganizationMemberAssignRoleMutation } from 'data/organization-membe
 import { useOrganizationMemberUnassignRoleMutation } from 'data/organization-members/organization-member-role-unassign-mutation'
 import { useOrganizationMemberUpdateRoleMutation } from 'data/organization-members/organization-member-role-update-mutation'
 import {
-  OrganizationRole,
   useOrganizationRolesQuery,
 } from 'data/organization-members/organization-roles-query'
 import { organizationKeys as organizationKeysV1 } from 'data/organizations/keys'
@@ -73,7 +72,7 @@ export const UpdateRolesConfirmationModal = ({
     const userId = member.user_id
     const existingRoles = member.role_ids
       .map((id) => {
-        return [...org_scoped_roles, ...project_scoped_roles].find((r) => r.role_id === id)
+        return [...org_scoped_roles, ...project_scoped_roles].find((r) => r.id === id)
       })
       .filter(role => role !== undefined)
     const isChangeWithinOrgScope =
@@ -118,7 +117,7 @@ export const UpdateRolesConfirmationModal = ({
           slug,
           userId,
           roleId,
-          roleName: project_scoped_roles.find((r) => r.role_id === roleId)?.name as string,
+          roleName: project_scoped_roles.find((r) => r.id === roleId)?.name as string,
           projects: projectIds.map((id) => projects?.find((p) => p.id === id)?.ref) as string[],
           skipInvalidation: true,
         })
@@ -165,8 +164,8 @@ export const UpdateRolesConfirmationModal = ({
               <ul className="list-disc pl-6">
                 {changesToRoles.removed.map((x, i) => {
                   const role =
-                    org_scoped_roles.find((y) => y.role_id === x.roleId) ??
-                    project_scoped_roles.find((y) => y.role_id === x.roleId)
+                    org_scoped_roles.find((y) => y.id === x.roleId) ??
+                    project_scoped_roles.find((y) => y.id === x.roleId)
                   const project = orgProjects.find((y) => y.ref === x.ref)
                   const roleName = (role?.name ?? 'Unknown').split('_')[0]
 
@@ -190,7 +189,7 @@ export const UpdateRolesConfirmationModal = ({
               </p>
               <ul className="list-disc pl-6">
                 {changesToRoles.added.map((x, i) => {
-                  const role = availableRoles.find((y) => y.role_id === x.roleId)
+                  const role = availableRoles.find((y) => y.id === x.roleId)
                   const project = orgProjects.find((y) => y.ref === x.ref)
                   return (
                     <li key={`update-${i}`} className="text-sm text-foreground-light">
@@ -213,9 +212,9 @@ export const UpdateRolesConfirmationModal = ({
               <ul className="list-disc pl-6">
                 {changesToRoles.updated.map((x, i) => {
                   const originalRole =
-                    org_scoped_roles.find((y) => y.role_id === x.originalRole) ??
-                    project_scoped_roles.find((y) => y.role_id === x.originalRole)
-                  const updatedRole = org_scoped_roles.find((y) => y.role_id === x.updatedRole)
+                    org_scoped_roles.find((y) => y.id === x.originalRole) ??
+                    project_scoped_roles.find((y) => y.id === x.originalRole)
+                  const updatedRole = org_scoped_roles.find((y) => y.id === x.updatedRole)
                   const project = orgProjects.find((y) => y.ref === x.ref)
                   const originalRoleName = (originalRole?.name ?? 'Unknown').split('_')[0]
 

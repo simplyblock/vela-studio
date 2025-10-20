@@ -1,13 +1,13 @@
 import { Badge } from 'ui'
 
-export type RoleLevel = 'organization' | 'project'
+export type RoleLevel = "organization" | "environment" | "project" | "branch"
 
 interface RoleLevelBadgeProps {
   level: RoleLevel
 }
 
 export const RoleLevelBadge = ({ level }: RoleLevelBadgeProps) => {
-  const label = level === 'organization' ? 'Organization' : 'Project'
+  const label = level.charAt(0).toUpperCase() + level.slice(1)
   const variant = level === 'organization' ? 'brand' : 'default'
 
   return (

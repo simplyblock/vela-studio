@@ -77,7 +77,7 @@ export const InviteMemberButton = () => {
   const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
-    orgScopedRoles.some((r) => r.role_id === userMemberData?.role_ids[0])
+    orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
 
   const { rolesAddable } = useGetRolesManagementPermissions(
     organization?.slug,
@@ -135,7 +135,7 @@ export const InviteMemberButton = () => {
 
           form.reset({
             email: '',
-            role: developerRole?.role_id.toString() ?? '',
+            role: developerRole?.id.toString() ?? '',
             applyToOrg: true,
             projectRef: '',
           })
@@ -147,7 +147,7 @@ export const InviteMemberButton = () => {
   useEffect(() => {
     if (isSuccess && isOpen) {
       const developerRole = orgScopedRoles.find((role) => role.name === 'Developer')
-      if (developerRole !== undefined) form.setValue('role', developerRole.role_id.toString())
+      if (developerRole !== undefined) form.setValue('role', developerRole.id.toString())
     }
   }, [isSuccess, isOpen])
 
@@ -222,18 +222,18 @@ export const InviteMemberButton = () => {
                         onValueChange={(value) => form.setValue('role', value)}
                       >
                         <SelectTrigger_Shadcn_ className="text-sm capitalize">
-                          {orgScopedRoles.find((role) => role.role_id === field.value)?.name ??
+                          {orgScopedRoles.find((role) => role.id === field.value)?.name ??
                             'Unknown'}
                         </SelectTrigger_Shadcn_>
                         <SelectContent_Shadcn_>
                           <SelectGroup_Shadcn_>
                             {orgScopedRoles.map((role) => {
-                              const canAssignRole = rolesAddable.includes(role.role_id)
+                              const canAssignRole = rolesAddable.includes(role.id)
 
                               return (
                                 <SelectItem_Shadcn_
-                                  key={role.role_id}
-                                  value={role.role_id.toString()}
+                                  key={role.id}
+                                  value={role.id.toString()}
                                   className="text-sm [&>span:nth-child(2)]:w-full [&>span:nth-child(2)]:flex [&>span:nth-child(2)]:items-center [&>span:nth-child(2)]:justify-between"
                                   disabled={!canAssignRole}
                                 >

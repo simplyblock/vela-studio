@@ -1,10 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, cn } from 'ui'
 
 import { RoleLevelBadge } from './RoleLevelBadge'
-import type { RoleDefinition } from './Role.types'
+import { OrganizationRole } from 'types'
 
 interface RolesTableProps {
-  roles: RoleDefinition[]
+  roles: OrganizationRole[]
   selectedRoleId: string | null
   onSelectRole: (roleId: string) => void
 }
@@ -49,13 +49,13 @@ export const RolesTable = ({ roles, selectedRoleId, onSelectRole }: RolesTablePr
                         <p className="text-sm font-medium text-foreground">{role.name}</p>
                         <p className="text-xs text-foreground-lighter">{role.description}</p>
                       </div>
-                      <RoleLevelBadge  level={role.level} />
+                      <RoleLevelBadge level={role.role_type} />
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="align-top text-sm text-foreground-lighter">{role.type}</TableCell>
-                <TableCell className="align-top text-right text-sm font-medium">{role.users}</TableCell>
-                <TableCell className="align-top text-sm text-foreground-lighter capitalize">{role.status}</TableCell>
+                <TableCell className="align-top text-sm text-foreground-lighter">{role.is_deletable ? 'Custom' : 'System'}</TableCell>
+                <TableCell className="align-top text-right text-sm font-medium">{role.user_count}</TableCell>
+                <TableCell className="align-top text-sm text-foreground-lighter capitalize">{role.is_active ? 'active' : 'inactive'}</TableCell>
               </TableRow>
             )
           })}

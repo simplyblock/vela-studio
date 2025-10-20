@@ -40,7 +40,7 @@ export const LeaveTeamButton = () => {
   const roles = allRoles?.org_scoped_roles ?? []
   const currentUserMember = members?.find((member) => member.user_id === profile?.user_id)
   const currentUserRoleId = currentUserMember?.role_ids?.[0]
-  const currentUserRole = roles.find((role) => role.role_id === currentUserRoleId)
+  const currentUserRole = roles.find((role) => role.id === currentUserRoleId)
   const isAdmin = currentUserRole?.name === 'Administrator'
   const isOwner = selectedOrganization?.is_owner
 

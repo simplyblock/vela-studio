@@ -40,14 +40,13 @@ const ProjectList = ({
     error: projectsError,
   } = useProjectsQuery()
   const {
-    isLoading: _isLoadingPermissions,
+    isLoading: isLoadingPermissions,
     isError: isErrorPermissions,
     error: permissionsError,
   } = usePermissionsQuery()
   const { data: resourceWarnings } = useResourceWarningsQuery()
 
   const orgProjects = allProjects.filter((x) => x.organization_id === organization?.id)
-  const isLoadingPermissions = _isLoadingPermissions
 
   const hasFilterStatusApplied = filterStatus !== undefined && filterStatus.length !== 2
   const noResultsFromSearch =

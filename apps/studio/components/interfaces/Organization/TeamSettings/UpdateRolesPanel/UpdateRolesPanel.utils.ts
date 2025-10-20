@@ -11,7 +11,6 @@ export interface ProjectRoleConfiguration {
   ref?: string
   projectId?: string
   roleId: string
-  baseRoleId?: string
 }
 
 export const formatMemberRoleToProjectRoleConfiguration = (
@@ -29,15 +28,11 @@ export const formatMemberRoleToProjectRoleConfiguration = (
       }
       const projectRole = project_scoped_roles.find((role) => role.id === id)
       if (projectRole !== undefined) {
-        const _projects = (projectRole?.project_ids ?? []).map((id) =>
-          projects.find((p) => p.id === id)
-        )
-        return _projects.map((p) => ({
-          ref: p?.ref,
-          projectId: p?.id,
+        return {
+          ref: projectRole.id,
+          projectId: projectRole.project_id,
           roleId: projectRole.id,
-          baseRoleId: projectRole.base_role_id,
-        }))
+        }
       }
     })
     .filter(Boolean)
@@ -69,7 +64,6 @@ export const deriveChanges = (
       updated.push({
         ref: updatedRoleForProject.ref,
         originalRole: x.roleId,
-        originalBaseRole: x.baseRoleId,
         updatedRole: updatedRoleForProject.roleId,
       })
     }
@@ -101,7 +95,6 @@ export const deriveRoleChangeActions = (
       ref?: string
       projectId?: string
       originalRole: string
-      originalBaseRole?: string
       updatedRole: string
     }[]
   }

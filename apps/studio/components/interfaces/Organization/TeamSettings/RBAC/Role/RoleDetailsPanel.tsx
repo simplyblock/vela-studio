@@ -2,10 +2,10 @@ import { Shield } from 'lucide-react'
 import { Badge, Card, CardContent, CardDescription, CardHeader } from 'ui'
 
 import { RoleLevelBadge } from './RoleLevelBadge'
-import type { RoleDefinition } from './Role.types'
+import { OrganizationRole } from 'types'
 
 interface RoleDetailsPanelProps {
-  role?: RoleDefinition
+  role?: OrganizationRole
 }
 
 export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
@@ -17,9 +17,10 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
     )
   }
 
-  const statusVariant: 'success' | 'destructive' =
-    role.status === 'active' ? 'success' : 'destructive'
-  const statusLabel = role.status === 'active' ? 'Active' : 'Disabled'
+
+
+  const statusVariant: 'success' | 'destructive' = role.is_active ? 'success' : 'destructive'
+  const statusLabel = role.is_active ? 'Active' : 'Disabled'
 
   return (
     <Card className="h-full min-h-[320px]">
@@ -35,7 +36,7 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
                 <CardDescription>{role.description}</CardDescription>
               </div>
             </div>
-            <RoleLevelBadge level={role.level} />
+            <RoleLevelBadge level={role.role_type} />
           </div>
         </div>
       </CardHeader>
@@ -43,11 +44,11 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="flex flex-col gap-1">
             <span className="text-foreground-muted text-xs uppercase">Type</span>
-            <span className="text-foreground font-medium">{role.type}</span>
+            <span className="text-foreground font-medium">{role.role_type}</span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-foreground-muted text-xs uppercase">Assigned users</span>
-            <span className="text-foreground font-medium">{role.users}</span>
+            <span className="text-foreground font-medium">{role.user_count}</span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-foreground-muted text-xs uppercase">Status</span>
@@ -55,17 +56,17 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
               {statusLabel}
             </Badge>
           </div>
-          {role.lastUpdated && (
+          {/*role.lastUpdated && (
             <div className="flex flex-col gap-1">
               <span className="text-foreground-muted text-xs uppercase">Last updated</span>
               <span className="text-foreground font-medium">{role.lastUpdated}</span>
             </div>
-          )}
+          ) */}
         </div>
         <div className="flex flex-col gap-2">
           <span className="text-foreground-muted text-xs uppercase">Key permissions</span>
           <ul className="list-disc space-y-1 pl-4 text-sm text-foreground">
-            {role.permissions.map((permission) => (
+            {(role.access_rights ?? []).map((permission) => (
               <li key={permission}>{permission}</li>
             ))}
           </ul>
