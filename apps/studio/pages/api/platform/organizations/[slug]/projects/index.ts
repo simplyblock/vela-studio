@@ -8,8 +8,6 @@ import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
   const client = getVelaClient(req)
   const { slug } = getPlatformQueryParams(req, 'slug')
-  const creationRequest = req.body as ProjectCreateVariables
-
   const createResponse = await client.post('/organizations/{organization_id}/projects/', {
     params: {
       path: {
@@ -18,11 +16,11 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
     },
     body: {
       // FIXME: get correct values from the UI (after implemented in new/[slug].tsx
-      name: creationRequest.name,
+      name: req.body.name,
       max_backups: 10, // TODO: Get actual value
       env_type: '', // TODO: Get actual value
       deployment: {
-        database_password: '',
+        database_password: req.body.db_pass,
         database_size: 10000000000000,
         storage_size: 1000000000000,
         milli_vcpu: 10000,
