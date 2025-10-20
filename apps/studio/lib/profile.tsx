@@ -4,6 +4,7 @@ import { PropsWithChildren, createContext, useContext, useMemo } from 'react'
 import { toast } from 'sonner'
 
 import { usePermissionsQuery } from 'data/permissions/permissions-query'
+import { useRolesQuery } from '../data/permissions/roles-query'
 import { useProfileCreateMutation } from 'data/profile/profile-create-mutation'
 import { useProfileQuery } from 'data/profile/profile-query'
 import type { Profile } from 'data/profile/types'
@@ -89,11 +90,11 @@ export const ProfileProvider = ({ children }: PropsWithChildren<{}>) => {
   })
 
   const { isInitialLoading: isLoadingPermissions } = usePermissionsQuery({ enabled: isLoggedIn })
+  const { isInitialLoading: isLoadingRoles } = useRolesQuery({ enabled: isLoggedIn })
 
   const value = useMemo(() => {
-    const isLoading = isLoadingProfile || isCreatingProfile || isLoadingPermissions
-    const isGHUser = !!profile && 'auth0_id' in profile && profile?.auth0_id.startsWith('github')
-    const profileImageUrl = isGHUser ? getGitHubProfileImgUrl(profile.username) : undefined
+    const isLoading = isLoadingProfile || isCreatingProfile || isLoadingPermissions || isLoadingRoles
+    const profileImageUrl = undefined
 
     return {
       error,

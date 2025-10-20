@@ -1,4 +1,5 @@
 export const permissionKeys = {
-  list: () => ['permissions'] as const,
+  list_permissions: () => ['permissions'] as const,
+  list_roles: () => ['permissions'] as const,
   system_permissions: () => ['system-permissions'] as const,
 }

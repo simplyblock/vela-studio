@@ -22,9 +22,9 @@ import { useOrganizationMembersQuery } from 'data/organizations/organization-mem
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   Button,
   WarningIcon,
 } from 'ui'
@@ -49,7 +49,7 @@ const AuditLogs = () => {
     users: [], // user_id[]
     projects: [], // project_ref[]
   })
-  // FIXME: need permission implemented 
+  // FIXME: need permission implemented
   const canReadAuditLogs = true
 
   const { data: projects } = useProjectsQuery()
@@ -70,7 +70,12 @@ const AuditLogs = () => {
     )
 
   const activeMembers = (members ?? []).filter((x) => !x.invited_at)
-  const roles = [...(rolesData?.org_scoped_roles ?? []), ...(rolesData?.project_scoped_roles ?? [])]
+  const roles = [
+    ...(rolesData?.org_scoped_roles ?? []),
+    ...(rolesData?.env_scoped_roles ?? []),
+    ...(rolesData?.project_scoped_roles ?? []),
+    ...(rolesData?.branch_scoped_roles ?? []),
+  ]
 
   const retentionPeriod = data?.retention_period ?? 0
   const logs = data?.result ?? []
@@ -302,9 +307,7 @@ const AuditLogs = () => {
                   ]}
                   body={
                     sortedLogs?.map((log) => {
-                      const user = (members ?? []).find(
-                        (member) => member.user_id === log.actor.id
-                      )
+                      const user = (members ?? []).find((member) => member.user_id === log.actor.id)
                       const role = roles.find((role) => user?.role_ids?.[0] === role.role_id)
                       const project = projects?.find(
                         (project) => project.ref === log.target.metadata.project_ref

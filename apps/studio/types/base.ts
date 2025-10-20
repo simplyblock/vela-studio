@@ -1,7 +1,8 @@
 import { OrganizationBase } from 'data/organizations/organizations-query'
 import { PlanId } from 'data/subscriptions/types'
-import { components as vela_components } from '../data/vela/vela-schema'
 import { PermissionsData } from '../data/permissions/permissions-query'
+import { RolesData } from '../data/permissions/roles-query'
+import { OrganizationRolesData } from '../data/organizations/organization-roles-query'
 
 type ArrayElement<T> = T extends (infer U)[] ? U : never
 
@@ -64,9 +65,11 @@ export interface User {
   free_project_limit: number
 }
 
-export type Role = vela_components['schemas']['RolePermissionAssignmentPublic']
+export type Role = ArrayElement<RolesData>
 
 export type ResourcePermission = ArrayElement<PermissionsData>
+
+export type OrganizationRole = ArrayElement<OrganizationRolesData>
 
 export interface Permission {
   entity: "org" | "env" | "project" | "branch"

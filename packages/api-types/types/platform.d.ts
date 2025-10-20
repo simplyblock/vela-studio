@@ -2290,6 +2290,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/profile/roles': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Gets all the user's permissions */
+    get: operations['PermissionsController_getRoles']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/profile/search': {
     parameters: {
       query?: never
@@ -7128,22 +7145,6 @@ export interface components {
       restriction_status: 'grace_period' | 'grace_period_over' | 'restricted' | null
       slug: string
     }
-    OrganizationRoleResponse: {
-      org_scoped_roles: {
-        base_role_id: string
-        description: string | null
-        id: string
-        name: string
-        project_ids: string[] | null
-      }[]
-      project_scoped_roles: {
-        base_role_id: string
-        description: string | null
-        id: string
-        name: string
-        project_ids: string[] | null
-      }[]
-    }
     OrganizationSlugAvailableVersionsBody: {
       /** @enum {string} */
       region: string
@@ -10754,7 +10755,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupSchedule'>
+          'application/json': VelaType<'BackupSchedulePublic'>
         }
       }
       403: {
@@ -10790,7 +10791,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupSchedule'>
+          'application/json': VelaType<'BackupSchedulePublic'>
         }
       }
       403: {
@@ -10866,7 +10867,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupSchedule'>
+          'application/json': VelaType<'BackupSchedulePublic'>
         }
       }
       403: {
@@ -10906,7 +10907,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupSchedule'>
+          'application/json': VelaType<'BackupSchedulePublic'>
         }
       }
       403: {
@@ -10946,7 +10947,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupSchedule'>
+          'application/json': VelaType<'BackupSchedulePublic'>
         }
       }
       403: {
@@ -14384,7 +14385,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': VelaType<'RolePermissionsPublic'>
+          'application/json': VelaType<'RoleWithPermissionsPublic'>[]
         }
       }
       403: {
@@ -16706,6 +16707,32 @@ export interface operations {
         }
         content: {
           'application/json': VelaType<'UserPermissionPublic'>[]
+        }
+      }
+      /** @description Failed to retrieve permissions */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  PermissionsController_getRoles: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'RolePublic'>[]
         }
       }
       /** @description Failed to retrieve permissions */
