@@ -22,16 +22,16 @@ export const formatMemberRoleToProjectRoleConfiguration = (
 
   const roleConfiguration = member.role_ids
     .map((id) => {
-      const orgRole = org_scoped_roles.find((role) => role.role_id === id)
+      const orgRole = org_scoped_roles.find((role) => role.id === id)
       if (orgRole !== undefined) {
-        return { ref: undefined, roleId: orgRole.role_id }
+        return { ref: undefined, roleId: orgRole.id }
       }
-      const projectRole = project_scoped_roles.find((role) => role.role_id === id)
+      const projectRole = project_scoped_roles.find((role) => role.id === id)
       if (projectRole !== undefined) {
         return {
-          ref: projectRole.role_id,
+          ref: projectRole.id,
           projectId: projectRole.project_id,
-          roleId: projectRole.role_id,
+          roleId: projectRole.id,
         }
       }
     })

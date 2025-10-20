@@ -55,7 +55,7 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
   const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
-    orgScopedRoles.some((r) => r.role_id === userMemberData?.role_ids[0])
+    orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
 
   const { rolesRemovable } = useGetRolesManagementPermissions(
     selectedOrganization?.slug,
@@ -111,7 +111,7 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
       {
         onSuccess: () => {
           if (!member.primary_email) return toast.error('Email is required')
-          const projectScopedRole = projectScopedRoles.find((role) => role.role_id === roleId)
+          const projectScopedRole = projectScopedRoles.find((role) => role.id === roleId)
           if (projectScopedRole !== undefined) {
             const projects = (projectScopedRole?.project_ids ?? [])
               .map((id) => allProjects?.find((p) => p.id === id)?.ref)
@@ -119,7 +119,7 @@ export const MemberActions = ({ member }: MemberActionsProps) => {
             inviteMember({
               slug,
               email: member.primary_email,
-              roleId: projectScopedRole.role_id,
+              roleId: projectScopedRole.id,
               projects,
             })
           } else {

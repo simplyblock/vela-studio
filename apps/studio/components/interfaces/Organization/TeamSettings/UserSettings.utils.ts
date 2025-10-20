@@ -44,7 +44,7 @@ export const useGetRolesManagementPermissions = (
 export const hasMultipleOwners = (members: OrganizationMember[] = [], roles: Role[] = []) => {
   const membersWhoAreOwners = members.filter((member) => {
     const [memberRoleId] = member.role_ids ?? []
-    const role = roles.find((role: Role) => role.role_id === memberRoleId)
+    const role = roles.find((role: Role) => role.id === memberRoleId)
     return role?.name === 'Owner' && !member.invited_at
   })
   return membersWhoAreOwners.length > 1
