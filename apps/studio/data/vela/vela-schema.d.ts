@@ -18728,15 +18728,22 @@ export interface components {
             organization_id: string;
             database: components["schemas"]["DatabaseInformation"];
             max_resources: components["schemas"]["ResourcesDefinition"];
+            /**
+             * Resize Status
+             * @enum {string}
+             */
+            resize_status: "NONE" | "PENDING" | "RESIZING" | "FILESYSTEM_RESIZE_PENDING" | "COMPLETED" | "FAILED";
+            /** Resize Statuses */
+            resize_statuses: {
+                [key: string]: components["schemas"]["BranchResizeStatusEntry"];
+            };
             /** Assigned Labels */
             assigned_labels: string[];
             used_resources: components["schemas"]["ResourceUsageDefinition"];
             api_keys: components["schemas"]["BranchApiKeys"];
-            service_health: components["schemas"]["BranchStatus"];
-            /** Status */
-            status: string;
-            /** Ptir Enabled */
-            ptir_enabled: boolean;
+            service_status: components["schemas"]["BranchStatus"];
+            /** Pitr Enabled */
+            pitr_enabled: boolean;
             /**
              * Created At
              * Format: date-time
@@ -18748,6 +18755,19 @@ export interface components {
             updated_at?: string | null;
             /** Updated By */
             updated_by?: string | null;
+        };
+        /**
+         * BranchResizeStatusEntry
+         * @description Single service's resize state and the timestamp when it was observed.
+         */
+        BranchResizeStatusEntry: {
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "NONE" | "PENDING" | "RESIZING" | "FILESYSTEM_RESIZE_PENDING" | "COMPLETED" | "FAILED";
+            /** Timestamp */
+            timestamp: string;
         };
         /** BranchSourceParameters */
         BranchSourceParameters: {
@@ -19063,10 +19083,10 @@ export interface components {
              */
             storage_bytes?: number | null;
         };
-        /** RessourcesPayload */
-        RessourcesPayload: {
-            /** Ressources */
-            ressources: {
+        /** ResourcesPayload */
+        ResourcesPayload: {
+            /** Resources */
+            resources: {
                 [key: string]: number;
             };
         };
@@ -22878,7 +22898,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RessourcesPayload"];
+                "application/json": components["schemas"]["ResourcesPayload"];
             };
         };
         responses: {

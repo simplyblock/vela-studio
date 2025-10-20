@@ -88,13 +88,12 @@ export function mapProjectBranch(branch: VelaBranch): Branch {
     env_type: branch.env_type || '',
     project_id: branch.project_id,
     organization_id: branch.organization_id,
-    status: branch.status,
-    service_health: {
-      database: branch.service_health.database,
-      realtime: branch.service_health.realtime,
-      storage: branch.service_health.storage,
-      meta: branch.service_health.meta,
-      rest: branch.service_health.rest
+    service_status: {
+      database: branch.service_status.database,
+      realtime: branch.service_status.realtime,
+      storage: branch.service_status.storage,
+      meta: branch.service_status.meta,
+      rest: branch.service_status.rest
     },
     database: {
       host: branch.database.host,
@@ -106,7 +105,7 @@ export function mapProjectBranch(branch: VelaBranch): Branch {
       service_endpoint_uri: branch.database.service_endpoint_uri,
       encrypted_connection_string: encryptedConnectionString,
     },
-    pitr_enabled: branch.ptir_enabled,
+    pitr_enabled: branch.pitr_enabled,
     assigned_labels: branch.assigned_labels,
     used_resources: {
       vcpu: branch.used_resources.milli_vcpu,
