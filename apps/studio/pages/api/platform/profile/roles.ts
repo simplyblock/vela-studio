@@ -15,7 +15,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const user = session.user as User
     const client = getVelaClient(req)
-    return client.proxyGet(res, '/users/{user_ref}/permissions/', {
+    return client.proxyGet(res, '/users/{user_ref}/roles/', {
       params: {
         path: {
           user_ref: user.id,

@@ -1,5 +1,4 @@
 import type { OrganizationMember } from 'data/organizations/organization-members-query'
-import { useGetPermissions } from 'hooks/misc/useCheckPermissions'
 import type { Permission, Role } from 'types'
 
 
@@ -8,11 +7,6 @@ export const useGetRolesManagementPermissions = (
   roles?: Role[],
   permissions?: Permission[]
 ): { rolesAddable: string[]; rolesRemovable: string[] } => {
-  const { permissions: allPermissions, organizationSlug } = useGetPermissions(
-    permissions,
-    orgSlug,
-    permissions !== undefined && orgSlug !== undefined
-  )
 
   const rolesAddable: string[] = []
   const rolesRemovable: string[] = []
@@ -50,7 +44,7 @@ export const useGetRolesManagementPermissions = (
 export const hasMultipleOwners = (members: OrganizationMember[] = [], roles: Role[] = []) => {
   const membersWhoAreOwners = members.filter((member) => {
     const [memberRoleId] = member.role_ids ?? []
-    const role = roles.find((role: Role) => role.role_id === memberRoleId)
+    const role = roles.find((role: Role) => role.id === memberRoleId)
     return role?.name === 'Owner' && !member.invited_at
   })
   return membersWhoAreOwners.length > 1

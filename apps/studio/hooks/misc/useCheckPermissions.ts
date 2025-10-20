@@ -15,6 +15,14 @@ import { useBranchesQuery } from '../../data/branches/branches-query'
 
 function hasPermission(required: Permission, userPermissions: ResourcePermission[]): boolean {
   for (const userPermission of userPermissions) {
+    // Organization admins have all permissions
+    if (
+      userPermission.permission.entity === 'org' &&
+      userPermission.permission.resource === 'owner' &&
+      userPermission.permission.action === 'admin'
+    )
+      return true
+
     if (userPermission.permission.entity !== required.entity) continue
     if (
       userPermission.permission.resource !== '*' &&
