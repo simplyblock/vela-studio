@@ -59,7 +59,8 @@ export const useOrganizationCreateMutation = ({
             }
           )
 
-          await queryClient.invalidateQueries(permissionKeys.list())
+          await queryClient.invalidateQueries(permissionKeys.list_permissions())
+          await queryClient.invalidateQueries(permissionKeys.list_roles())
         }
 
         await onSuccess?.(data, variables, context)

@@ -36,7 +36,8 @@ export const useOrganizationDeleteMutation = ({
       async onSuccess(data, variables, context) {
         await Promise.all([
           queryClient.invalidateQueries(organizationKeys.list()),
-          queryClient.invalidateQueries(permissionKeys.list()),
+          queryClient.invalidateQueries(permissionKeys.list_permissions()),
+          queryClient.invalidateQueries(permissionKeys.list_roles()),
         ])
         await onSuccess?.(data, variables, context)
       },
