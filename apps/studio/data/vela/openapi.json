@@ -3682,7 +3682,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RessourcesPayload"
+                "$ref": "#/components/schemas/ResourcesPayload"
               }
             }
           }
@@ -33982,6 +33982,25 @@
           "max_resources": {
             "$ref": "#/components/schemas/ResourcesDefinition"
           },
+          "resize_status": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING",
+              "RESIZING",
+              "FILESYSTEM_RESIZE_PENDING",
+              "COMPLETED",
+              "FAILED"
+            ],
+            "title": "Resize Status"
+          },
+          "resize_statuses": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BranchResizeStatusEntry"
+            },
+            "type": "object",
+            "title": "Resize Statuses"
+          },
           "assigned_labels": {
             "items": {
               "type": "string"
@@ -33995,16 +34014,12 @@
           "api_keys": {
             "$ref": "#/components/schemas/BranchApiKeys"
           },
-          "service_health": {
+          "service_status": {
             "$ref": "#/components/schemas/BranchStatus"
           },
-          "status": {
-            "type": "string",
-            "title": "Status"
-          },
-          "ptir_enabled": {
+          "pitr_enabled": {
             "type": "boolean",
-            "title": "Ptir Enabled"
+            "title": "Pitr Enabled"
           },
           "created_at": {
             "type": "string",
@@ -34048,16 +34063,44 @@
           "organization_id",
           "database",
           "max_resources",
+          "resize_status",
+          "resize_statuses",
           "assigned_labels",
           "used_resources",
           "api_keys",
-          "service_health",
-          "status",
-          "ptir_enabled",
+          "service_status",
+          "pitr_enabled",
           "created_at",
           "created_by"
         ],
         "title": "BranchPublic"
+      },
+      "BranchResizeStatusEntry": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING",
+              "RESIZING",
+              "FILESYSTEM_RESIZE_PENDING",
+              "COMPLETED",
+              "FAILED"
+            ],
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "timestamp"
+        ],
+        "title": "BranchResizeStatusEntry",
+        "description": "Single service's resize state and the timestamp when it was observed."
       },
       "BranchSourceParameters": {
         "properties": {
@@ -34970,21 +35013,21 @@
         ],
         "title": "ResourcesDefinition"
       },
-      "RessourcesPayload": {
+      "ResourcesPayload": {
         "properties": {
-          "ressources": {
+          "resources": {
             "additionalProperties": {
               "type": "integer"
             },
             "type": "object",
-            "title": "Ressources"
+            "title": "Resources"
           }
         },
         "type": "object",
         "required": [
-          "ressources"
+          "resources"
         ],
-        "title": "RessourcesPayload"
+        "title": "ResourcesPayload"
       },
       "RoleAssignmentPayload": {
         "properties": {

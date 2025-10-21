@@ -8,7 +8,7 @@
 #    docker builder prune
 #    docker build . -f apps/studio/Dockerfile --target production -t simplyblock/vela-studio:latest --no-cache
 
-FROM node:22-slim AS base
+FROM node:latest AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
