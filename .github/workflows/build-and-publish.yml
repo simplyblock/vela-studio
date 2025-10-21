@@ -45,7 +45,7 @@ jobs:
       - name: Build and push by digest
         uses: docker/build-push-action@v6
         with:
-          platforms: ${{ maxtrix.platform }}
+          platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ env.REGISTRY_IMAGE }}
           file: ./apps/studio/Dockerfile
