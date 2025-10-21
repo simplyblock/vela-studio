@@ -39,11 +39,13 @@ jobs:
 
       - name: Setup up metadata
         uses: docker/metadata-action@v5
+        id: meta
         with:
           images: ${{ env.REGISTRY_IMAGE }}
 
       - name: Build and push by digest
         uses: docker/build-push-action@v6
+        id: build
         with:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
