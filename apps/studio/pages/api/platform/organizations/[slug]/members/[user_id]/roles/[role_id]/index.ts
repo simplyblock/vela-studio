@@ -7,8 +7,8 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, user_id, role_id } = getPlatformQueryParams(req, 'slug', 'user_id', 'role_id')
   const client = getVelaClient(req)
 
-  const response = await client.delete(
-    '/organizations/{organization_id}/roles/{role_id}/users/{user_id}/',
+  const response = await client.post(
+    '/organizations/{organization_id}/roles/{role_id}/unassign/{user_id}/',
     {
       params: {
         path: {

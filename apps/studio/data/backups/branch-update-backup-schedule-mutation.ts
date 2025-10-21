@@ -26,18 +26,23 @@ export async function updateBranchBackupSchedule(
   // If id is set, run an update, otherwise create a new schedule
   if (schedule.id !== undefined) {
     const { data, error } = await put(
-      '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules',
+      '/platform/organizations/{slug}/backups/schedules',
       {
         params: {
           path: {
             slug: orgId,
-            ref: projectId,
-            branch: branchId,
           },
         },
         body: {
-          env_type: schedule.env_type,
-          rows: schedule.rows
+          payload: {
+            env_type: schedule.env_type,
+            rows: schedule.rows,
+          },
+          schedule: {
+            organization_id: null,
+            branch_id: branchId,
+            env_type: schedule.env_type
+          },
         },
         signal,
       }
@@ -48,18 +53,23 @@ export async function updateBranchBackupSchedule(
   }
 
   const { data, error } = await post(
-    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules',
+    '/platform/organizations/{slug}/backups/schedules',
     {
       params: {
         path: {
           slug: orgId,
-          ref: projectId,
-          branch: branchId,
         },
       },
       body: {
-        env_type: schedule.env_type,
-        rows: schedule.rows
+        payload: {
+          env_type: schedule.env_type,
+          rows: schedule.rows,
+        },
+        schedule: {
+          organization_id: null,
+          branch_id: branchId,
+          env_type: schedule.env_type
+        },
       },
       signal,
     }
