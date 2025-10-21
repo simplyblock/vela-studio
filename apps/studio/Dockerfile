@@ -55,6 +55,7 @@ RUN pnpm --filter studio exec next build
 
 # Copy only compiled code and dependencies
 FROM base AS production
+COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/apps/studio/public ./apps/studio/public
 COPY --from=builder /app/apps/studio/.next/standalone ./
 COPY --from=builder /app/apps/studio/.next/static ./apps/studio/.next/static
@@ -63,5 +64,4 @@ USER node
 EXPOSE 3000
 #ENTRYPOINT ["docker-entrypoint.sh"]
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD node -e "fetch('http://localhost:3000/api/healthz').then((r) => {if (r.status !== 200) throw new Error(r.status)})"
-WORKDIR /app
 CMD ["node", "apps/studio/server.js"]
