@@ -61,10 +61,7 @@ jobs:
         run: |
           mkdir -p ${{ runner.temp }}/digests
           digest="${{ steps.build.outputs.digest }}"
-          echo "${digest}"
-          echo "${digest#sha256:}"
           touch "${{ runner.temp }}/digests/${digest#sha256:}"
-          ls -la ${{ runner.temp }}/digests/
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
