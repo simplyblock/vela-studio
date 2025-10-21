@@ -62,9 +62,8 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!success) return
 
-  const schedule = data as { status: string; schedule_id: string }
   return {
-    backup_schedule_id: schedule.schedule_id,
+    backup_schedule_id: data.schedule_id,
     organization_id: slug,
     env_type: req.body.env_type,
     rows: req.body.rows,
@@ -84,18 +83,14 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
           organization_id: slug,
         },
       },
-      body: {
-        env_type: req.body.env_type,
-        rows: req.body.rows,
-      },
+      body: req.body,
     }
   )
 
   if (!success) return
 
-  const schedule = data as { status: string; schedule_id: string }
   return {
-    backup_schedule_id: schedule.schedule_id,
+    backup_schedule_id: data.schedule_id,
     organization_id: slug,
     env_type: req.body.env_type,
     rows: req.body.rows,

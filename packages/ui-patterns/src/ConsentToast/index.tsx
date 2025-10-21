@@ -3,7 +3,6 @@
 import { useBreakpoint } from 'common'
 import { noop } from 'lodash'
 import { Button } from 'ui'
-import { PrivacySettings } from '../PrivacySettings'
 
 interface ConsentToastProps {
   onAccept: () => void
@@ -36,10 +35,6 @@ export const ConsentToast = ({ onAccept = noop, onOptOut = noop }: ConsentToastP
           >
             Learn more
           </a>
-          <span className="text-foreground-lighter text-xs">•</span>
-          <PrivacySettings className="underline underline-offset-2 inline text-light">
-            Privacy settings
-          </PrivacySettings>
         </div>
       </div>
 
@@ -59,9 +54,6 @@ export const ConsentToast = ({ onAccept = noop, onOptOut = noop }: ConsentToastP
           block={isMobile}
         >
           Opt out
-        </Button>
-        <Button asChild type="text" className="hidden sm:block text-light hover:text-foreground">
-          <PrivacySettings>Privacy settings</PrivacySettings>
         </Button>
       </div>
     </div>

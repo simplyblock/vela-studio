@@ -30,7 +30,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "types": []
   },
   "include": [
     "next-env.d.ts",
@@ -43,6 +44,7 @@
   ],
   "exclude": [
     "node_modules",
-    "public/deno/*.ts"
+    "public/deno/*.ts",
+    ".next/types"
   ]
 }

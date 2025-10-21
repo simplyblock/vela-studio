@@ -97,8 +97,8 @@ export interface paths {
       cookie?: never
     }
     get: operations['BackupSchedulesController_getBranchSchedules']
-    put: operations['BackupSchedulesController_updateBranchSchedule']
-    post: operations['BackupSchedulesController_createBranchSchedule']
+    put?: never
+    post?: never
     delete: operations['BackupSchedulesController_deleteBranchSchedule']
     options?: never
     head?: never
@@ -1468,8 +1468,8 @@ export interface paths {
     }
     get?: never
     /** Update organization member role */
-    put: operations['MembersController_UpdateMemberRole']
-    post?: never
+    put?: never
+    post: operations['MembersController_addMemberRole']
     /** Removes organization member role */
     delete: operations['MembersController_deleteMemberRole']
     options?: never
@@ -10820,7 +10820,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'BackupScheduleUpdate'>
+        'application/json': VelaType<'Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put'>
       }
     }
     responses: {
@@ -10858,87 +10858,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'BackupScheduleUpdate'>
-      }
-    }
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': VelaType<'BackupSchedulePublic'>
-        }
-      }
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Failed to get project backups */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  BackupSchedulesController_updateBranchSchedule: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        slug: string
-        ref: string
-        branch: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': PlatformType<'BackupScheduleUpdate'>
-      }
-    }
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': VelaType<'BackupSchedulePublic'>
-        }
-      }
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      /** @description Failed to get project backups */
-      500: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-    }
-  }
-  BackupSchedulesController_createBranchSchedule: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        slug: string
-        ref: string
-        branch: string
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': PlatformType<'BackupScheduleUpdate'>
+        'application/json': VelaType<'Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post'>
       }
     }
     responses: {
@@ -13556,7 +13476,7 @@ export interface operations {
       }
     }
   }
-  MembersController_UpdateMemberRole: {
+  MembersController_addMemberRole: {
     parameters: {
       query?: never
       header?: never
@@ -13570,7 +13490,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'UpdateMemberRoleBody'>
+        'application/json': VelaType<'RoleAssignmentPayload'>
       }
     }
     responses: {

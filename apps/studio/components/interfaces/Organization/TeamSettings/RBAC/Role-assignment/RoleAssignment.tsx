@@ -9,7 +9,8 @@ import {
 } from 'components/layouts/Scaffold'
 import { StatsCard } from 'components/ui/StatsCard'
 import { RolesTable } from '../Role/RolesTable'
-import type { RoleDefinition } from '../Role/Role.types'
+import { useOrganizationRolesQuery } from 'data/organizations/organization-roles-query'
+import { getPathReferences } from 'data/vela/path-references'
 import {
   Button,
   Checkbox_Shadcn_,
@@ -30,61 +31,6 @@ type User = {
 }
 
 type RoleAssignments = Record<string, string[]>
-
-const DEFAULT_ROLES: RoleDefinition[] = [
-  {
-    id: 'org-admin',
-    name: 'Organization admin',
-    description: 'Full access to manage users, billing, and organization settings.',
-    type: 'System',
-    level: 'organization',
-    users: 4,
-    status: 'active',
-    permissions: [
-      'Manage organization membership',
-      'Update billing and invoices',
-      'Configure organization-wide settings',
-    ],
-    lastUpdated: 'Mar 18, 2024',
-  },
-  {
-    id: 'org-analyst',
-    name: 'Security analyst',
-    description: 'Read-only visibility into projects and audit activity across the organization.',
-    type: 'Custom',
-    level: 'organization',
-    users: 2,
-    status: 'active',
-    permissions: ['View organization audit log', 'Read project-level configuration'],
-    lastUpdated: 'Feb 02, 2024',
-  },
-  {
-    id: 'project-maintainer',
-    name: 'Project maintainer',
-    description: 'Manage schemas, secrets, and deployments for assigned projects.',
-    type: 'Custom',
-    level: 'project',
-    users: 6,
-    status: 'active',
-    permissions: [
-      'Manage database migrations',
-      'Update project secrets',
-      'Trigger project redeployments',
-    ],
-    lastUpdated: 'Apr 04, 2024',
-  },
-  {
-    id: 'project-observer',
-    name: 'Project observer',
-    description: 'View metrics and logs on assigned projects without edit permissions.',
-    type: 'Derived',
-    level: 'project',
-    users: 9,
-    status: 'disabled',
-    permissions: ['View project metrics', 'View project logs'],
-    lastUpdated: 'Jan 27, 2024',
-  },
-]
 
 const DEFAULT_USERS: User[] = [
   { id: 'u-1', name: 'Ana Martinez', email: 'ana.martinez@example.com' },
@@ -111,14 +57,17 @@ const USERS_BY_ID = DEFAULT_USERS.reduce<Record<string, User>>((acc, user) => {
 }, {})
 
 export const RoleAssignment = () => {
-  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(DEFAULT_ROLES[0]?.id ?? null)
+  const { slug } = getPathReferences()
+  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
   const [assignments, setAssignments] = useState<RoleAssignments>(DEFAULT_ASSIGNMENTS)
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
   const [pendingSelection, setPendingSelection] = useState<string[]>([])
 
+  const { data: roles, isLoading: isLoadingRoles } = useOrganizationRolesQuery({slug})
+
   const rolesWithUsage = useMemo(
     () =>
-      DEFAULT_ROLES.map((role) => ({
+      (roles || []).map((role) => ({
         ...role,
         users: assignments[role.id]?.length ?? 0,
       })),
@@ -135,13 +84,13 @@ export const RoleAssignment = () => {
       },
       {
         title: 'Organization roles',
-        value: rolesWithUsage.filter((role) => role.level === 'organization').length,
+        value: rolesWithUsage.filter((role) => role.role_type === 'organization').length,
         description: 'Roles with organization-wide permissions.',
         icon: <Building2 size={18} />,
       },
       {
         title: 'Project roles',
-        value: rolesWithUsage.filter((role) => role.level === 'project').length,
+        value: rolesWithUsage.filter((role) => role.role_type === 'project').length,
         description: 'Roles scoped to individual projects.',
         icon: <Layers size={18} />,
       },

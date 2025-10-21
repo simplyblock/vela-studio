@@ -1,8 +1,6 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-
-import { components } from 'api-types'
-import { handleError, patch } from 'data/fetchers'
+import { handleError, post } from 'data/fetchers'
 import { organizationKeys as organizationKeysV1 } from 'data/organizations/keys'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
@@ -12,6 +10,8 @@ export type OrganizationMemberAssignRoleVariables = {
   userId: string
   roleId: string
   projects?: string[]
+  branches?: string[]
+  env_types?: string[]
   skipInvalidation?: boolean
 }
 
@@ -20,15 +20,26 @@ export async function assignOrganizationMemberRole({
   userId,
   roleId,
   projects,
+  branches,
+  env_types,
 }: OrganizationMemberAssignRoleVariables) {
-  const payload: components['schemas']['AssignMemberRoleBodyV2'] = { role_id: roleId }
-  if (projects !== undefined) payload.role_scoped_projects = projects
-
-  const { data, error } = await patch('/platform/organizations/{slug}/members/{user_id}', {
-    params: { path: { slug, user_id: userId } },
-    body: payload,
-    headers: { Version: '2' },
-  })
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/members/{user_id}/roles/{role_id}',
+    {
+      params: {
+        path: {
+          slug,
+          user_id: userId,
+          role_id: roleId,
+        },
+      },
+      body: {
+        project_ids: projects,
+        branch_ids: branches,
+        env_types: env_types
+      }
+    }
+  )
 
   if (error) handleError(error)
   return data

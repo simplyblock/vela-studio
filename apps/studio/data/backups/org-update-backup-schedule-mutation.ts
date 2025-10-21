@@ -8,6 +8,8 @@ import { components } from '../vela/vela-schema'
 export interface UpdateOrgBackupScheduleVariables {
   orgId: string
   schedule: {
+    /** Branch Id */
+    branchId?: string
     /** Env Type */
     env_type?: string
     /** Rows */
@@ -29,8 +31,15 @@ export async function updateOrgBackupSchedule(
         },
       },
       body: {
-        env_type: schedule.env_type,
-        rows: schedule.rows,
+        payload: {
+          env_type: schedule.env_type,
+          rows: schedule.rows,
+        },
+        schedule: {
+          organization_id: !schedule.branchId && !schedule.env_type ? orgId : null,
+          branch_id: schedule.branchId || null,
+          env_type: schedule.env_type
+        },
       },
       signal,
     })
@@ -46,8 +55,15 @@ export async function updateOrgBackupSchedule(
       },
     },
     body: {
-      env_type: schedule.env_type,
-      rows: schedule.rows,
+      payload: {
+        env_type: schedule.env_type,
+        rows: schedule.rows,
+      },
+      schedule: {
+        organization_id: !schedule.branchId && !schedule.env_type ? orgId : null,
+        branch_id: schedule.branchId || null,
+        env_type: schedule.env_type
+      },
     },
     signal,
   })

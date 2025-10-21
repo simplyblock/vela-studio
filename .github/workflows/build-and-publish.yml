@@ -1,29 +1,147 @@
-name: build-and-publish.yml
+name: Build and publish image
 on:
   push:
     branches:
       - main
 
+env:
+  REGISTRY_IMAGE: simplyblock/vela-studio
+
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ${{ matrix.builder }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: linux
+            arch: amd64
+            builder: ubuntu-latest
+          - os: linux
+            arch: arm64
+            builder: linux-arm
+
+    permissions:
+      actions: read
+      contents: write
+      security-events: write
+      id-token: write
+
     steps:
-      - uses: actions/checkout@v5
+      - name: Prepare
+        run: |
+          platform=${{ matrix.os }}/${{ matrix.arch }}
+          echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Checkout sourcecode
+        uses: actions/checkout@v5
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build and push
-        uses: docker/build-push-action@v6
+
+      - name: Setup up metadata
+        uses: docker/metadata-action@v5
+        id: meta
         with:
-          platforms: linux/amd64,linux/arm64
+          images: ${{ env.REGISTRY_IMAGE }}
+
+      - name: Build and push by digest
+        uses: docker/build-push-action@v6
+        id: build
+        with:
+          platforms: ${{ matrix.os }}/${{ matrix.arch }}
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          push: true
           file: ./apps/studio/Dockerfile
           context: .
-          push: true
-          tags: simplyblock/vela-studio:latest
           target: production
+
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+          echo "DIGEST=${digest}" >> $GITHUB_ENV
+          echo "SIMPLE_DIGEST=${digest#sha256:}" >> $GITHUB_ENV
+
+      - name: Scan the generated image for vulnerabilities
+        uses: anchore/scan-action@v6
+        id: scan
+        with:
+          image: "${{ env.REGISTRY_IMAGE }}@${{ env.DIGEST }}"
+          fail-build: false # don't fail, just report
+
+      - name: Upload the image scan report
+        id: upload
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+          wait-for-processing: true # wait for the report to be processed
+
+      - name: Generate that image SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: "${{ env.REGISTRY_IMAGE }}@${{ env.DIGEST }}"
+          artifact-name: "${{ matrix.os }}-${{ matrix.arch }}-${{ env.SIMPLE_DIGEST }}.sbom"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
+
