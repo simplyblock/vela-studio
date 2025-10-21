@@ -10791,7 +10791,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': VelaType<'BackupSchedulePublic'>
+          'application/json': PlatformType<'BackupSchedulePublic'>
         }
       }
       403: {

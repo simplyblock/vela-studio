@@ -1,8 +1,8 @@
 import dayjs from 'dayjs'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import BackupScheduleModal from 'components/interfaces/Branch/BackupScheduleModal'
-import { ScaffoldContainerLegacy } from 'components/layouts/Scaffold'
+import { ScaffoldContainer, ScaffoldContainerLegacy } from 'components/layouts/Scaffold'
 import {
   Card,
   Dialog,
@@ -29,10 +29,18 @@ import { DisableBackupsDialog } from './DisableBackupsDialog'
 import { RestoreBackupDialog } from './RestoreBackupDialog'
 import { useOrgBackupSchedulesQuery } from 'data/backups/org-backup-schedules-query'
 import { useParams } from 'common'
+import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
+import { useOrgBackupQuery } from 'data/backups/org-backups-query'
+import { mapSchedulesByBranch,groupBackupsByBranch } from './utils'
 
 type RestoreContext = {
   rowId: string
   backup: BranchBackup
+}
+
+type environment = {
+    label: string;
+    value: string;
 }
 
 const environmentOptions: Array<{ label: string; value: BackupEnvironment | 'all' }> = [
@@ -43,23 +51,75 @@ const environmentOptions: Array<{ label: string; value: BackupEnvironment | 'all
 ]
 
 const Backups = () => {
-  const [rows, setRows] = useState<BackupRow[]>(initialBackupRows)
+  // const [rows, setRows] = useState<BackupRow[]>(initialBackupRows)
   const [disableTarget, setDisableTarget] = useState<BackupRow | null>(null)
   const [historyTarget, setHistoryTarget] = useState<BackupRow | null>(null)
   const [restoreContext, setRestoreContext] = useState<RestoreContext | null>(null)
   const [deleteContext, setDeleteContext] = useState<RestoreContext | null>(null)
-  const [environmentFilter, setEnvironmentFilter] = useState<BackupEnvironment | 'all'>('all')
-  const [branchFilter, setBranchFilter] = useState<string>('')
-  const {slug:orgId} = useParams();
-  const {
-    data,
-    error,
-    isLoading,
-    isFetching,
-    refetch,
-  } = useOrgBackupSchedulesQuery({ orgId }, {enabled:!orgId})
+  const {data:org} = useSelectedOrganizationQuery()
+  let environments:environment[] = [{ label: 'All environments', value: 'all' },]
+  if (org) {
+    const envTypes: string[] = org.env_types;
 
-  console.log(data);
+    environments = [
+      { label: 'All environments', value: 'all' },
+      ...envTypes.map(type => ({
+        label: type,
+        value: type
+      }))
+    ];
+  }
+  
+  const [environmentFilter, setEnvironmentFilter] = useState<string>('all')
+  const [branchFilter, setBranchFilter] = useState<string>('')
+ 
+
+const {slug:orgId} = useParams();
+
+
+  const {
+    data : schedules,
+  } = useOrgBackupSchedulesQuery({ orgId }, {enabled:!!orgId})
+
+  const {
+    data: backups,
+  } = useOrgBackupQuery({ orgId }, {enabled:!!orgId})
+
+  // Start empty; we will hydrate from API once queries resolve
+const [rows, setRows] = useState<BackupRow[]>([])
+
+const schedulesByBranch = useMemo(() => mapSchedulesByBranch(schedules), [schedules])
+const backupsByBranch = useMemo(() => groupBackupsByBranch(backups), [backups])
+
+useEffect(() => {
+  // Build a set of branch_ids from either side
+  const branchIds = new Set<string>([
+    ...Array.from(backupsByBranch.keys()),
+    ...Array.from(schedulesByBranch.keys()),
+  ])
+
+  const next: BackupRow[] = []
+  for (const branchId of branchIds) {
+    const backupEntry = backupsByBranch.get(branchId)
+    const scheduleEntry = schedulesByBranch.get(branchId)
+
+    const schedule = scheduleEntry?.schedule ?? []
+    const environment = (scheduleEntry?.env as BackupEnvironment) ?? ('development' as BackupEnvironment)
+
+    next.push({
+      id: branchId,                               // use branch_id as the stable row id
+      projectName: backupEntry?.projectId ?? '',  // can replace with a real name later
+      branchName: branchId,                        // can replace with a real name later
+      environment,                                 // 'production' | 'test' | 'development' etc.
+      nextBackupAt: null,                          // unknown from API; OK to leave null
+      lastBackupAt: backupEntry?.backups?.[0]?.createdAt ?? null, // rough "latest" snapshot
+      schedule,                                    // what handleEnable() expects
+      backups: backupEntry?.backups ?? [],         // history for the dialog
+    } as BackupRow)
+  }
+
+  setRows(next)
+}, [backupsByBranch, schedulesByBranch],)
 
   const filteredRows = useMemo(() => {
     const search = branchFilter.trim().toLowerCase()
@@ -182,7 +242,7 @@ const Backups = () => {
   }
 
   return (
-    <ScaffoldContainerLegacy>
+    <ScaffoldContainer>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Backups</h1>
@@ -210,7 +270,7 @@ const Backups = () => {
                     <SelectValue_Shadcn_ />
                   </SelectTrigger_Shadcn_>
                   <SelectContent_Shadcn_>
-                    {environmentOptions.map((option) => (
+                    {environments.map((option) => (
                       <SelectItem_Shadcn_ key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem_Shadcn_>
@@ -292,7 +352,7 @@ const Backups = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </ScaffoldContainerLegacy>
+    </ScaffoldContainer>
   )
 }
 
