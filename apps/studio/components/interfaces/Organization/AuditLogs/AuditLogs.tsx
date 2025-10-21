@@ -308,7 +308,7 @@ const AuditLogs = () => {
                   body={
                     sortedLogs?.map((log) => {
                       const user = (members ?? []).find((member) => member.user_id === log.actor.id)
-                      const role = roles.find((role) => user?.role_ids?.[0] === role.role_id)
+                      const role = roles.find((role) => user?.role_ids?.[0] === role.id)
                       const project = projects?.find(
                         (project) => project.ref === log.target.metadata.project_ref
                       )
