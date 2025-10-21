@@ -1,0 +1,519 @@
+# Usage
+#   Start:              docker compose up
+#   With helpers:       docker compose -f docker-compose.yml -f ./dev/docker-compose.test.yml up
+#   Stop:               docker compose down
+#   Destroy:            docker compose -f docker-compose.yml -f ./dev/docker-compose.test.yml down -v --remove-orphans
+#   Reset everything:  ./reset.sh
+
+name: vela-studio
+
+services:
+  studio:
+    container_name: vela-studio
+    image: simplyblock/vela-studio:main
+    ports:
+      - '8082:8082/tcp'
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://studio:3000/api/healthz').then((r) => {if (r.status !== 200) throw new Error(r.status)})"
+        ]
+      timeout: 10s
+      interval: 5s
+      retries: 3
+    depends_on:
+      analytics:
+        condition: service_healthy
+    environment:
+      STUDIO_PG_META_URL: http://meta:8080
+      PLATFORM_PG_META_URL: http://meta:8080
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      AUTH_JWT_SECRET: ${JWT_SECRET}
+
+      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
+      LOGFLARE_URL: http://analytics:4000
+
+      VELA_PLATFORM_KEYCLOAK_ISSUER: ${VELA_PLATFORM_EXT_BASE_URL}/auth/realms/vela
+      VELA_PLATFORM_KEYCLOAK_CLIENT_ID: frontend
+      VELA_PLATFORM_KEYCLOAK_CLIENT_SECRET: super-long-random-keycloak-secret
+      VELA_PLATFORM_KEYCLOAK_AUTHORIZATION_ENDPOINT: ${VELA_PLATFORM_EXT_BASE_URL}/auth/realms/vela/protocol/openid-connect/auth
+      VELA_PLATFORM_KEYCLOAK_TOKEN_ENDPOINT: ${VELA_KEYCLOAK_INT_BASE_URL}/realms/vela/protocol/openid-connect/token
+      VELA_PLATFORM_KEYCLOAK_USERINFO_ENDPOINT: ${VELA_KEYCLOAK_INT_BASE_URL}/realms/vela/protocol/openid-connect/userinfo
+      VELA_PLATFORM_KEYCLOAK_LOGOUT_ENDPOINT: ${VELA_KEYCLOAK_INT_BASE_URL}/protocol/openid-connect/logout
+      VELA_PLATFORM_KEYCLOAK_JWKS_ENDPOINT: ${VELA_KEYCLOAK_INT_BASE_URL}/realms/vela/protocol/openid-connect/certs
+      VELA_PLATFORM_EXT_SIGN_IN_URL: ${VELA_PLATFORM_EXT_BASE_URL}/sign-in
+      VELA_PLATFORM_EXT_BASE_URL: ${VELA_PLATFORM_EXT_BASE_URL}/
+      VELA_PLATFORM_EXT_API_SERVICE_URL: ${VELA_PLATFORM_EXT_BASE_URL}/api
+      NEXTAUTH_SECRET: 'super-long-random-nextauth-secret'
+      NEXTAUTH_URL: ${VELA_PLATFORM_EXT_BASE_URL}
+
+  controller:
+    container_name: vela-controller
+    build:
+      context: ../vela-controller/
+      dockerfile: containers/Containerfile
+    depends_on:
+      analytics:
+        condition: service_healthy
+    volumes:
+      - ~/.kube/config:/root/.kube/config:ro
+      - ../vela-controller:/app
+    command: 'bash -c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && pip install -e . && uvicorn --host 0.0.0.0 --reload simplyblock.vela.api:app"'
+    healthcheck:
+      test: ['CMD', 'curl', 'http://localhost:8000/health']
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    restart: unless-stopped
+    environment:
+      VELA_ROOT_PATH: '/vela'
+      VELA_JWT_SECRET: 'http://auth:8080/auth/realms/vela/protocol/openid-connect/certs'
+      VELA_POSTGRES_URL: 'postgresql+asyncpg://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}'
+      VELA_PGMETA_CRYPTO_KEY: SAMPLE_KEY
+      VELA_KEYCLOAK_URL: 'http://auth:8080/auth/'
+      VELA_CLOUDFLARE_API_TOKEN: 'your_cloudflare_api_token'
+      VELA_CLOUDFLARE_ZONE_ID: 'your_cloudflare_zone_id'
+      VELA_CLOUDFLARE_BRANCH_REF_CNAME: 'branch-ref.staging.vela.run'
+      VELA_CLOUDFLARE_DOMAIN_SUFFIX: 'example.com'
+      VELA_KEYCLOAK_ADMIN_NAME: 'admin'
+      VELA_KEYCLOAK_ADMIN_SECRET: 'admin'
+      VELA_LOGFLARE_URL: 'http://analytics:4000'
+      VELA_LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
+
+  kong:
+    container_name: vela-kong
+    image: kong:2.8.1
+    restart: unless-stopped
+    ports:
+      - ${KONG_HTTP_PORT}:8000/tcp
+      - ${KONG_HTTPS_PORT}:8443/tcp
+    volumes:
+      # https://github.com/supabase/supabase/issues/12661
+      - ./volumes/api/kong.yml:/home/kong/temp.yml:ro,z
+    depends_on:
+      analytics:
+        condition: service_healthy
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /home/kong/kong.yml
+      # https://github.com/supabase/cli/issues/14
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl,basic-auth
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      DASHBOARD_USERNAME: ${DASHBOARD_USERNAME}
+      DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD}
+    # https://unix.stackexchange.com/a/294837
+    entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'
+
+  auth:
+    container_name: vela-keycloak
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?user=supabase_auth_admin&password=${POSTGRES_PASSWORD}
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_PROXY: edge
+      KC_HOSTNAME: http://localhost:8000/auth
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_HEALTH_ENABLED: 'true'
+    command: start-dev --import-realm --verbose
+    volumes:
+      - ./volumes/auth/realm.json:/opt/keycloak/data/import/vela-realm.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/8080' || exit 1"]  # This should do a proper request, but the container doesn't ship curl, wget, or telnet and using bash builtins is nasty
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    depends_on:
+      db:
+        condition: service_healthy
+
+  rest:
+    container_name: vela-rest
+    image: postgrest/postgrest:v12.2.12
+    restart: unless-stopped
+    depends_on:
+      db:
+        # Disable this if you are using an external Postgres database
+        condition: service_healthy
+      analytics:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS}
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: ${JWT_EXPIRY}
+    command:
+      [
+        "postgrest"
+      ]
+
+  realtime:
+    # This container name looks inconsistent but is correct because realtime constructs tenant id by parsing the subdomain
+    container_name: realtime-dev.vela-realtime
+    image: supabase/realtime:v2.34.47
+    restart: unless-stopped
+    depends_on:
+      db:
+        # Disable this if you are using an external Postgres database
+        condition: service_healthy
+      analytics:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-sSfL",
+          "--head",
+          "-o",
+          "/dev/null",
+          "-H",
+          "Authorization: Bearer ${ANON_KEY}",
+          "http://localhost:4000/api/tenants/realtime-dev/health"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    environment:
+      PORT: 4000
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_USER: supabase_admin
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      DB_AFTER_CONNECT_QUERY: 'SET search_path TO _realtime'
+      DB_ENC_KEY: supabaserealtime
+      API_JWT_SECRET: ${JWT_SECRET}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      ERL_AFLAGS: -proto_dist inet_tcp
+      DNS_NODES: "''"
+      RLIMIT_NOFILE: "10000"
+      APP_NAME: realtime
+      SEED_SELF_HOST: "true"
+      RUN_JANITOR: "true"
+
+  # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
+  storage:
+    container_name: vela-storage
+    image: supabase/storage-api:v1.25.7
+    restart: unless-stopped
+    volumes:
+      - ./volumes/storage:/var/lib/storage:z
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://storage:5000/status"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    depends_on:
+      db:
+        # Disable this if you are using an external Postgres database
+        condition: service_healthy
+      rest:
+        condition: service_started
+      imgproxy:
+        condition: service_started
+    environment:
+      ANON_KEY: ${ANON_KEY}
+      SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://rest:3000
+      PGRST_JWT_SECRET: ${JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      # TODO: https://github.com/supabase/storage-api/issues/55
+      REGION: stub
+      GLOBAL_S3_BUCKET: stub
+      ENABLE_IMAGE_TRANSFORMATION: "true"
+      IMGPROXY_URL: http://imgproxy:5001
+
+  imgproxy:
+    container_name: vela-imgproxy
+    image: darthsim/imgproxy:v3.8.0
+    restart: unless-stopped
+    volumes:
+      - ./volumes/storage:/var/lib/storage:z
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "imgproxy",
+          "health"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    environment:
+      IMGPROXY_BIND: ":5001"
+      IMGPROXY_LOCAL_FILESYSTEM_ROOT: /
+      IMGPROXY_USE_ETAG: "true"
+      IMGPROXY_ENABLE_WEBP_DETECTION: ${IMGPROXY_ENABLE_WEBP_DETECTION}
+
+  meta:
+    container_name: vela-meta
+    image: supabase/postgres-meta:v0.91.0
+    restart: unless-stopped
+    depends_on:
+      db:
+        # Disable this if you are using an external Postgres database
+        condition: service_healthy
+      analytics:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: ${POSTGRES_HOST}
+      PG_META_DB_PORT: ${POSTGRES_PORT}
+      PG_META_DB_NAME: ${POSTGRES_DB}
+      PG_META_DB_USER: supabase_admin
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+  functions:
+    container_name: vela-edge-functions
+    image: supabase/edge-runtime:v1.67.4
+    restart: unless-stopped
+    volumes:
+      - ./volumes/functions:/home/deno/functions:Z
+    depends_on:
+      analytics:
+        condition: service_healthy
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      # TODO: Allow configuring VERIFY_JWT per function. This PR might help: https://github.com/supabase/cli/pull/786
+      VERIFY_JWT: "${FUNCTIONS_VERIFY_JWT}"
+    command:
+      [
+        "start",
+        "--main-service",
+        "/home/deno/functions/main"
+      ]
+
+  analytics:
+    container_name: vela-analytics
+    image: supabase/logflare:1.23.0
+    restart: unless-stopped
+    ports:
+      - 4000:4000
+    # Uncomment to use Big Query backend for analytics
+    # volumes:
+    #   - type: bind
+    #     source: ${PWD}/gcloud.json
+    #     target: /opt/app/rel/logflare/bin/gcloud.json
+    #     read_only: true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "http://localhost:4000/health"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    depends_on:
+      db:
+        # Disable this if you are using an external Postgres database
+        condition: service_healthy
+    environment:
+      LOGFLARE_NODE_HOST: 127.0.0.1
+      DB_USERNAME: supabase_admin
+      DB_DATABASE: _supabase
+      DB_HOSTNAME: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_SCHEMA: _analytics
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
+      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
+      LOGFLARE_SINGLE_TENANT: "true"
+      LOGFLARE_SUPABASE_MODE: "true"
+      LOGFLARE_MIN_CLUSTER_SIZE: 1
+
+      # Comment variables to use Big Query backend for analytics
+      POSTGRES_BACKEND_URL: postgresql://supabase_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/_supabase
+      POSTGRES_BACKEND_SCHEMA: _analytics
+      LOGFLARE_FEATURE_FLAG_OVERRIDE: multibackend=true
+      # Uncomment to use Big Query backend for analytics
+      # GOOGLE_PROJECT_ID: ${GOOGLE_PROJECT_ID}
+      # GOOGLE_PROJECT_NUMBER: ${GOOGLE_PROJECT_NUMBER}
+
+  # Comment out everything below this point if you are using an external Postgres database
+  db:
+    container_name: vela-db
+    image: supabase/postgres:15.8.1.060
+    restart: unless-stopped
+    ports:
+      - 5433:5432/tcp
+    volumes:
+      - ./volumes/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
+      # Must be superuser to create event trigger
+      - ./volumes/db/webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql:Z
+      # Must be superuser to alter reserved role
+      - ./volumes/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:Z
+      # Initialize the database settings with JWT_SECRET and JWT_EXP
+      - ./volumes/db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:Z
+      # PGDATA directory is persisted between restarts
+      - db-data:/var/lib/postgresql/data:Z
+      # Changes required for internal supabase data such as _analytics
+      - ./volumes/db/_supabase.sql:/docker-entrypoint-initdb.d/migrations/97-_supabase.sql:Z
+      # Changes required for Analytics support
+      - ./volumes/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
+      # Changes required for Pooler support
+      - ./volumes/db/pooler.sql:/docker-entrypoint-initdb.d/migrations/99-pooler.sql:Z
+      # Use named volume to persist pgsodium decryption key between restarts
+      - db-config:/etc/postgresql-custom
+    healthcheck:
+      test:
+        [
+        "CMD",
+        "pg_isready",
+        "-U",
+        "postgres",
+        "-h",
+        "localhost"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      vector:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      PGPORT: ${POSTGRES_PORT}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      POSTGRES_DB: ${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXP: ${JWT_EXPIRY}
+    command:
+      [
+        "postgres",
+        "-c",
+        "config_file=/etc/postgresql/postgresql.conf",
+        "-c",
+        "log_min_messages=fatal" # prevents Realtime polling queries from appearing in logs
+      ]
+
+  vector:
+    container_name: vela-vector
+    image: timberio/vector:0.28.1-alpine
+    restart: unless-stopped
+    volumes:
+      - ./volumes/logs/vector.yml:/etc/vector/vector.yml:ro,z
+      - ${DOCKER_SOCKET_LOCATION}:/var/run/docker.sock:ro,z
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://vector:9001/health"
+        ]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    environment:
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
+    command:
+      [
+        "--config",
+        "/etc/vector/vector.yml"
+      ]
+    security_opt:
+      - "label=disable"
+
+  # Update the DATABASE_URL if you are using an external Postgres database
+  supavisor:
+    container_name: vela-pooler
+    image: supabase/supavisor:2.5.7
+    restart: unless-stopped
+    ports:
+      - ${POSTGRES_PORT}:5432
+      - ${POOLER_PROXY_PORT_TRANSACTION}:6543
+    volumes:
+      - ./volumes/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-sSfL",
+          "--head",
+          "-o",
+          "/dev/null",
+          "http://127.0.0.1:4000/api/health"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      db:
+        condition: service_healthy
+      analytics:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_URL: ecto://supabase_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/_supabase
+      CLUSTER_POSTGRES: "true"
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      VAULT_ENC_KEY: ${VAULT_ENC_KEY}
+      API_JWT_SECRET: ${JWT_SECRET}
+      METRICS_JWT_SECRET: ${JWT_SECRET}
+      REGION: local
+      ERL_AFLAGS: -proto_dist inet_tcp
+      POOLER_TENANT_ID: ${POOLER_TENANT_ID}
+      POOLER_DEFAULT_POOL_SIZE: ${POOLER_DEFAULT_POOL_SIZE}
+      POOLER_MAX_CLIENT_CONN: ${POOLER_MAX_CLIENT_CONN}
+      POOLER_POOL_MODE: transaction
+      DB_POOL_SIZE: ${POOLER_DB_POOL_SIZE}
+    command:
+      [
+        "/bin/sh",
+        "-c",
+        "/app/bin/migrate && /app/bin/supavisor eval \"$$(cat /etc/pooler/pooler.exs)\" && /app/bin/server"
+      ]
+
+volumes:
+  db-config:
+  db-data:
+  nextjs-compiler-cache:
