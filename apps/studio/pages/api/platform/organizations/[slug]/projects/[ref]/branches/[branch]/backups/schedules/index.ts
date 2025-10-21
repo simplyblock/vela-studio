@@ -21,26 +21,32 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
-  const { data: schedules, success } = await client.getOrFail(res, '/backup/branches/{branch_id}/schedule', {
-    params: {
-      path: {
-        branch_id: branch,
+  const { data: schedules, success } = await client.getOrFail(
+    res,
+    '/backup/branches/{branch_id}/schedule',
+    {
+      params: {
+        path: {
+          branch_id: branch,
+        },
       },
-    },
-  })
+    }
+  )
 
   if (!success) return
 
-  return schedules.map((schedule): BackupSchedule => {
-    return {
-      backup_schedule_id: schedule.id,
-      organization_id: slug,
-      project_id: ref,
-      branch_id: schedule.branch_id ?? undefined,
-      env_type: schedule.env_type ?? undefined,
-      rows: schedule.rows,
-    }
-  })
+  return res.json(
+    schedules.map((schedule): BackupSchedule => {
+      return {
+        backup_schedule_id: schedule.id,
+        organization_id: slug,
+        project_id: ref,
+        branch_id: schedule.branch_id ?? undefined,
+        env_type: schedule.env_type ?? undefined,
+        rows: schedule.rows,
+      }
+    })
+  )
 }
 
 const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet))

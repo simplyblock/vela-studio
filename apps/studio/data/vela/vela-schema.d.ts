@@ -18600,21 +18600,6 @@ export interface components {
              */
             created_at: string;
         };
-        /** BackupSchedule */
-        BackupSchedule: {
-            /**
-             * ULID
-             * Format: ulid
-             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
-             */
-            id?: string;
-            /** Organization Id */
-            organization_id: string | null;
-            /** Branch Id */
-            branch_id: string | null;
-            /** Env Type */
-            env_type?: string | null;
-        };
         /** BackupScheduleCreatePublic */
         BackupScheduleCreatePublic: {
             /** Status */
@@ -18660,26 +18645,6 @@ export interface components {
             unit: string;
             /** Retention */
             retention: number;
-        };
-        /** Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_post */
-        Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_post: {
-            payload: components["schemas"]["SchedulePayload"];
-            schedule: components["schemas"]["BackupSchedule"] | null;
-        };
-        /** Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put */
-        Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put: {
-            payload: components["schemas"]["SchedulePayload"];
-            schedule: components["schemas"]["BackupSchedule"] | null;
-        };
-        /** Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post */
-        Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post: {
-            payload: components["schemas"]["SchedulePayload"];
-            schedule: components["schemas"]["BackupSchedule"] | null;
-        };
-        /** Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_put */
-        Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_put: {
-            payload: components["schemas"]["SchedulePayload"];
-            schedule: components["schemas"]["BackupSchedule"] | null;
         };
         /** BranchApiKeys */
         BranchApiKeys: {
@@ -23214,16 +23179,18 @@ export interface operations {
     };
     add_or_replace_org_backup_schedule: {
         parameters: {
-            query?: never;
+            query: {
+                branch_id: string | null;
+            };
             header?: never;
             path: {
-                organization_id: string;
+                organization_id: string | null;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_put"];
+                "application/json": components["schemas"]["SchedulePayload"];
             };
         };
         responses: {
@@ -23249,16 +23216,18 @@ export interface operations {
     };
     add_or_replace_org_backup_schedule: {
         parameters: {
-            query?: never;
+            query: {
+                branch_id: string | null;
+            };
             header?: never;
             path: {
-                organization_id: string;
+                organization_id: string | null;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post"];
+                "application/json": components["schemas"]["SchedulePayload"];
             };
         };
         responses: {
@@ -23318,18 +23287,18 @@ export interface operations {
     add_or_replace_branch_backup_schedule: {
         parameters: {
             query: {
+                organization_id: string | null;
                 project_id: string;
-                organization_id: string;
             };
             header?: never;
             path: {
-                branch_id: string;
+                branch_id: string | null;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put"];
+                "application/json": components["schemas"]["SchedulePayload"];
             };
         };
         responses: {
@@ -23356,18 +23325,18 @@ export interface operations {
     add_or_replace_branch_backup_schedule: {
         parameters: {
             query: {
+                organization_id: string | null;
                 project_id: string;
-                organization_id: string;
             };
             header?: never;
             path: {
-                branch_id: string;
+                branch_id: string | null;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_post"];
+                "application/json": components["schemas"]["SchedulePayload"];
             };
         };
         responses: {

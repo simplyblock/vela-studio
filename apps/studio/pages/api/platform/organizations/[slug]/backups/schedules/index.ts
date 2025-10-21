@@ -33,14 +33,16 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!success) return
 
-  return schedules.map((schedule): BackupSchedule => {
-    return {
-      backup_schedule_id: schedule.id,
-      organization_id: slug,
-      env_type: schedule.env_type ?? undefined,
-      rows: schedule.rows,
-    }
-  })
+  return res.json(
+    schedules.map((schedule): BackupSchedule => {
+      return {
+        backup_schedule_id: schedule.id,
+        organization_id: slug,
+        env_type: schedule.env_type ?? undefined,
+        rows: schedule.rows,
+      }
+    })
+  )
 }
 
 const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -55,6 +57,9 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
         path: {
           organization_id: slug,
         },
+        query: {
+          branch_id: null,
+        },
       },
       body: req.body,
     }
@@ -62,12 +67,13 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!success) return
 
-  return {
-    backup_schedule_id: data.schedule_id,
+  const schedule = data as { status: string; schedule_id: string }
+  return res.json({
+    backup_schedule_id: schedule.schedule_id,
     organization_id: slug,
     env_type: req.body.env_type,
     rows: req.body.rows,
-  }
+  })
 }
 
 const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -82,19 +88,24 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
         path: {
           organization_id: slug,
         },
+        query: {
+          branch_id: null,
+        },
       },
       body: req.body,
     }
   )
-
+  console.log('TEST1')
   if (!success) return
-
-  return {
-    backup_schedule_id: data.schedule_id,
+  console.log('TEST2')
+  console.log(data)
+  const schedule = data as { status: string; schedule_id: string }
+  return res.json({
+    backup_schedule_id: schedule.schedule_id,
     organization_id: slug,
     env_type: req.body.env_type,
     rows: req.body.rows,
-  }
+  })
 }
 
 const apiHandler = apiBuilder((builder) =>

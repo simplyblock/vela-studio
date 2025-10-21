@@ -92,6 +92,7 @@ export function apiBuilder(builder: (builder: ApiBuilder) => void): ApiHandler {
     try {
       return await handler(req, res)
     } catch (error) {
+      console.error(error)
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message })
       }

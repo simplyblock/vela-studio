@@ -12,7 +12,7 @@ interface Backup {
   created_at: string
 }
 
-const handleGet = async (req: NextApiRequest, res: NextApiResponse<Backup>) => {
+const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
@@ -26,16 +26,18 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Backup>) => {
 
   if (!success) return
 
-  return backups.map((backup): Backup => {
-    return {
-      id: backup.id,
-      organization_id: slug,
-      project_id: ref,
-      branch_id: backup.branch_id,
-      row_index: backup.row_index,
-      created_at: backup.created_at,
-    }
-  })
+  return res.json(
+    backups.map((backup) => {
+      return {
+        id: backup.id,
+        organization_id: slug,
+        project_id: ref,
+        branch_id: backup.branch_id,
+        row_index: backup.row_index,
+        created_at: backup.created_at,
+      }
+    })
+  )
 }
 
 const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -53,14 +55,14 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!success) return
 
   const backupId = (data as { backup_id: string; status: string }).backup_id
-  return {
+  return res.json({
     organization_id: slug,
     project_id: ref,
     branch_id: branch,
     backup_id: backupId,
     row_index: -1,
     created_at: new Date().toISOString(),
-  }
+  })
 }
 
 const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet).post(handlePost))

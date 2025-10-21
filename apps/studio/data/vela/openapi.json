@@ -4184,17 +4184,51 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
               ],
               "title": "Organization Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Branch Id"
             }
           }
         ],
@@ -4203,7 +4237,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_put"
+                "$ref": "#/components/schemas/SchedulePayload"
               }
             }
           }
@@ -4240,17 +4274,51 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
               ],
               "title": "Organization Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Branch Id"
             }
           }
         ],
@@ -4259,7 +4327,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post"
+                "$ref": "#/components/schemas/SchedulePayload"
               }
             }
           }
@@ -4364,17 +4432,51 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
               ],
               "title": "Branch Id"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -4394,24 +4496,6 @@
               ],
               "title": "Project Id"
             }
-          },
-          {
-            "name": "organization_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
           }
         ],
         "requestBody": {
@@ -4419,7 +4503,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put"
+                "$ref": "#/components/schemas/SchedulePayload"
               }
             }
           }
@@ -4456,17 +4540,51 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
               ],
               "title": "Branch Id"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "ulid",
+                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                  "minLength": 26,
+                  "maxLength": 26,
+                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                  "examples": [
+                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                    "01H945P9C3K2QJ8F7N6M4R2E8V"
+                  ],
+                  "title": "ULID"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Organization Id"
             }
           },
           {
@@ -4486,24 +4604,6 @@
               ],
               "title": "Project Id"
             }
-          },
-          {
-            "name": "organization_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
           }
         ],
         "requestBody": {
@@ -4511,7 +4611,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_post"
+                "$ref": "#/components/schemas/SchedulePayload"
               }
             }
           }
@@ -33496,82 +33596,6 @@
         ],
         "title": "BackupPublic"
       },
-      "BackupSchedule": {
-        "properties": {
-          "id": {
-            "type": "string",
-            "maxLength": 26,
-            "minLength": 26,
-            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-            "format": "ulid",
-            "title": "ULID",
-            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-            "examples": [
-              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-              "01H945P9C3K2QJ8F7N6M4R2E8V"
-            ]
-          },
-          "organization_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 26,
-                "minLength": 26,
-                "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                "format": "ulid",
-                "title": "ULID",
-                "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                "examples": [
-                  "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                  "01H945P9C3K2QJ8F7N6M4R2E8V"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Organization Id"
-          },
-          "branch_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 26,
-                "minLength": 26,
-                "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                "format": "ulid",
-                "title": "ULID",
-                "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                "examples": [
-                  "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                  "01H945P9C3K2QJ8F7N6M4R2E8V"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Branch Id"
-          },
-          "env_type": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Env Type"
-          }
-        },
-        "type": "object",
-        "required": [
-          "organization_id",
-          "branch_id"
-        ],
-        "title": "BackupSchedule"
-      },
       "BackupScheduleCreatePublic": {
         "properties": {
           "status": {
@@ -33730,98 +33754,6 @@
           "retention"
         ],
         "title": "BackupScheduleRowPublic"
-      },
-      "Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_post": {
-        "properties": {
-          "payload": {
-            "$ref": "#/components/schemas/SchedulePayload"
-          },
-          "schedule": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/BackupSchedule"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "payload",
-          "schedule"
-        ],
-        "title": "Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_post"
-      },
-      "Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put": {
-        "properties": {
-          "payload": {
-            "$ref": "#/components/schemas/SchedulePayload"
-          },
-          "schedule": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/BackupSchedule"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "payload",
-          "schedule"
-        ],
-        "title": "Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put"
-      },
-      "Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post": {
-        "properties": {
-          "payload": {
-            "$ref": "#/components/schemas/SchedulePayload"
-          },
-          "schedule": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/BackupSchedule"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "payload",
-          "schedule"
-        ],
-        "title": "Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post"
-      },
-      "Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_put": {
-        "properties": {
-          "payload": {
-            "$ref": "#/components/schemas/SchedulePayload"
-          },
-          "schedule": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/BackupSchedule"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "type": "object",
-        "required": [
-          "payload",
-          "schedule"
-        ],
-        "title": "Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_put"
       },
       "BranchApiKeys": {
         "properties": {
