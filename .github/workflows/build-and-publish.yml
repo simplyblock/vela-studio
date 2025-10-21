@@ -22,6 +22,8 @@ jobs:
     permissions:
       actions: read
       contents: write
+      security-events: write
+      id-token: write
 
     steps:
       - name: Prepare
