@@ -5,7 +5,7 @@ export * from './infrastructure'
 export const API_URL = (() => {
   if (process.env.NODE_ENV === 'test') return 'http://localhost:3000/api'
   //  If running in platform, use API_URL from the env var
-  return process.env.NEXT_PUBLIC_API_URL || '/api'
+  return '/api'
 })()
 
 export const PG_META_URL = process.env.PLATFORM_PG_META_URL
