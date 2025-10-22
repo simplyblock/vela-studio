@@ -54,9 +54,6 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
         path: {
           organization_id: slug,
         },
-        query: {
-          branch_id: null,
-        },
       },
       body: req.body,
     }
@@ -85,17 +82,13 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
         path: {
           organization_id: slug,
         },
-        query: {
-          branch_id: null,
-        },
       },
       body: req.body,
     }
   )
-  console.log('TEST1')
+
   if (!success) return
-  console.log('TEST2')
-  console.log(data)
+
   const schedule = data as { status: string; schedule_id: string }
   return res.json({
     backup_schedule_id: schedule.schedule_id,

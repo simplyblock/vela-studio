@@ -3655,6 +3655,9 @@
     },
     "/resources/branches/{branch_id}/provision": {
       "post": {
+        "tags": [
+          "resource"
+        ],
         "summary": "Provision Branch",
         "operationId": "provision_branch",
         "parameters": [
@@ -3692,7 +3695,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/BranchProvisionPublic"
+                }
               }
             }
           },
@@ -3709,6 +3714,9 @@
         }
       },
       "get": {
+        "tags": [
+          "resource"
+        ],
         "summary": "Get Branch Provisioning Api",
         "operationId": "get_branch_provisioning_api",
         "parameters": [
@@ -3755,8 +3763,295 @@
     },
     "/resources/projects/{project_id}/usage": {
       "get": {
+        "tags": [
+          "resource"
+        ],
         "summary": "Get Project Usage",
         "operationId": "get_project_usage",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "cycle_start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cycle Start"
+            }
+          },
+          {
+            "name": "cycle_end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cycle End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceLimitsPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/organizations/{organization_id}/usage": {
+      "get": {
+        "tags": [
+          "resource"
+        ],
+        "summary": "Get Org Usage",
+        "operationId": "get_org_usage",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "cycle_start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cycle Start"
+            }
+          },
+          {
+            "name": "cycle_end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cycle End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceLimitsPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/organizations/{organization_id}/limits/provisioning": {
+      "post": {
+        "tags": [
+          "resource"
+        ],
+        "summary": "Set Organization Provisioning Limit",
+        "operationId": "set_organization_provisioning_limit",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvLimitPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LimitResultPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "resource"
+        ],
+        "summary": "Get Organization Provisioning Limits",
+        "operationId": "get_organization_provisioning_limits",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProvisioningLimitPublic"
+                  },
+                  "title": "Response Get Organization Provisioning Limits Resources Organizations  Organization Id  Limits Provisioning Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/projects/{project_id}/limits/provisioning": {
+      "post": {
+        "tags": [
+          "resource"
+        ],
+        "summary": "Set Project Provisioning Limit",
+        "operationId": "set_project_provisioning_limit",
         "parameters": [
           {
             "name": "project_id",
@@ -3782,126 +4077,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ToFromPayload"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/resources/organizations/{org_id}/usage": {
-      "get": {
-        "summary": "Get Org Usage",
-        "operationId": "get_org_usage",
-        "parameters": [
-          {
-            "name": "org_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Org Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ToFromPayload"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/resources/limits/provisioning/{entity_type}/{entity_id}": {
-      "post": {
-        "summary": "Set Provisioning Limit",
-        "operationId": "set_provisioning_limit",
-        "parameters": [
-          {
-            "name": "entity_type",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/EntityType"
-            }
-          },
-          {
-            "name": "entity_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Entity Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
                 "$ref": "#/components/schemas/ProvLimitPayload"
               }
             }
@@ -3912,7 +4087,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/LimitResultPublic"
+                }
               }
             }
           },
@@ -3929,19 +4106,14 @@
         }
       },
       "get": {
-        "summary": "Get Provisioning Limits",
-        "operationId": "get_provisioning_limits",
+        "tags": [
+          "resource"
+        ],
+        "summary": "Get Project Provisioning Limits",
+        "operationId": "get_project_provisioning_limits",
         "parameters": [
           {
-            "name": "entity_type",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/EntityType"
-            }
-          },
-          {
-            "name": "entity_id",
+            "name": "project_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -3955,7 +4127,7 @@
                 "01ARZ3NDEKTSV4RRFFQ69G5FAV",
                 "01H945P9C3K2QJ8F7N6M4R2E8V"
               ],
-              "title": "Entity Id"
+              "title": "Project Id"
             }
           }
         ],
@@ -3964,7 +4136,13 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProvisioningLimitPublic"
+                  },
+                  "title": "Response Get Project Provisioning Limits Resources Projects  Project Id  Limits Provisioning Get"
+                }
               }
             }
           },
@@ -3981,21 +4159,16 @@
         }
       }
     },
-    "/resources/limits/consumption/{entity_type}/{entity_id}": {
+    "/resources/organizations/{organization_id}/limits/consumption": {
       "post": {
-        "summary": "Set Consumption Limit",
-        "operationId": "set_consumption_limit",
+        "tags": [
+          "resource"
+        ],
+        "summary": "Set Organization Consumption Limit",
+        "operationId": "set_organization_consumption_limit",
         "parameters": [
           {
-            "name": "entity_type",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/EntityType"
-            }
-          },
-          {
-            "name": "entity_id",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -4009,7 +4182,7 @@
                 "01ARZ3NDEKTSV4RRFFQ69G5FAV",
                 "01H945P9C3K2QJ8F7N6M4R2E8V"
               ],
-              "title": "Entity Id"
+              "title": "Organization Id"
             }
           }
         ],
@@ -4028,7 +4201,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/LimitResultPublic"
+                }
               }
             }
           },
@@ -4045,19 +4220,14 @@
         }
       },
       "get": {
-        "summary": "Get Consumption Limits",
-        "operationId": "get_consumption_limits",
+        "tags": [
+          "resource"
+        ],
+        "summary": "Get Organization Consumption Limits",
+        "operationId": "get_organization_consumption_limits",
         "parameters": [
           {
-            "name": "entity_type",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/EntityType"
-            }
-          },
-          {
-            "name": "entity_id",
+            "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -4071,7 +4241,7 @@
                 "01ARZ3NDEKTSV4RRFFQ69G5FAV",
                 "01H945P9C3K2QJ8F7N6M4R2E8V"
               ],
-              "title": "Entity Id"
+              "title": "Organization Id"
             }
           }
         ],
@@ -4080,7 +4250,127 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConsumptionLimitPublic"
+                  },
+                  "title": "Response Get Organization Consumption Limits Resources Organizations  Organization Id  Limits Consumption Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/projects/{project_id}/limits/consumption": {
+      "post": {
+        "tags": [
+          "resource"
+        ],
+        "summary": "Set Project Consumption Limit",
+        "operationId": "set_project_consumption_limit",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsumptionPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LimitResultPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "resource"
+        ],
+        "summary": "Get Project Consumption Limits",
+        "operationId": "get_project_consumption_limits",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConsumptionLimitPublic"
+                  },
+                  "title": "Response Get Project Consumption Limits Resources Projects  Project Id  Limits Consumption Get"
+                }
               }
             }
           },
@@ -4099,6 +4389,9 @@
     },
     "/resources/branches/{branch_id}/limits/": {
       "get": {
+        "tags": [
+          "resource"
+        ],
         "summary": "Branch Effective Limit",
         "operationId": "branch_effective_limit",
         "parameters": [
@@ -4126,7 +4419,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceLimitsPublic"
+                }
               }
             }
           },
@@ -4175,60 +4470,26 @@
       }
     },
     "/backup/organizations/{organization_id}/schedule": {
-      "put": {
-        "summary": "Add Or Replace Org Backup Schedule",
-        "operationId": "add_or_replace_org_backup_schedule",
+      "post": {
+        "summary": "Add Org Backup Schedule",
+        "operationId": "add_org_backup_schedule",
         "parameters": [
           {
             "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "minLength": 26,
-                  "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
-                },
-                {
-                  "type": "null"
-                }
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
               ],
               "title": "Organization Id"
-            }
-          },
-          {
-            "name": "branch_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "minLength": 26,
-                  "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Branch Id"
             }
           }
         ],
@@ -4265,60 +4526,26 @@
           }
         }
       },
-      "post": {
-        "summary": "Add Or Replace Org Backup Schedule",
-        "operationId": "add_or_replace_org_backup_schedule",
+      "put": {
+        "summary": "Replace Org Backup Schedule",
+        "operationId": "replace_org_backup_schedule",
         "parameters": [
           {
             "name": "organization_id",
             "in": "path",
             "required": true,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "minLength": 26,
-                  "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
-                },
-                {
-                  "type": "null"
-                }
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
               ],
               "title": "Organization Id"
-            }
-          },
-          {
-            "name": "branch_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "minLength": 26,
-                  "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Branch Id"
             }
           }
         ],
@@ -4327,7 +4554,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SchedulePayload"
+                "$ref": "#/components/schemas/BackupScheduleUpdate"
               }
             }
           }
@@ -4423,9 +4650,9 @@
       }
     },
     "/backup/branches/{branch_id}/schedule": {
-      "put": {
-        "summary": "Add Or Replace Branch Backup Schedule",
-        "operationId": "add_or_replace_branch_backup_schedule",
+      "post": {
+        "summary": "Add Branch Backup Schedule",
+        "operationId": "add_branch_backup_schedule",
         "parameters": [
           {
             "name": "branch_id",
@@ -4435,66 +4662,18 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
                   "minLength": 26,
                   "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
+                  "pattern": "[0-7][0123456789ABCDEFGHJKMNPQRSTVWXYZ]{25}"
                 },
                 {
-                  "type": "null"
+                  "type": "string",
+                  "format": "binary",
+                  "minLength": 16,
+                  "maxLength": 16
                 }
               ],
               "title": "Branch Id"
-            }
-          },
-          {
-            "name": "organization_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "minLength": 26,
-                  "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
             }
           }
         ],
@@ -4531,9 +4710,9 @@
           }
         }
       },
-      "post": {
-        "summary": "Add Or Replace Branch Backup Schedule",
-        "operationId": "add_or_replace_branch_backup_schedule",
+      "put": {
+        "summary": "Replace Branch Backup Schedule",
+        "operationId": "replace_branch_backup_schedule",
         "parameters": [
           {
             "name": "branch_id",
@@ -4543,66 +4722,18 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
                   "minLength": 26,
                   "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
+                  "pattern": "[0-7][0123456789ABCDEFGHJKMNPQRSTVWXYZ]{25}"
                 },
                 {
-                  "type": "null"
+                  "type": "string",
+                  "format": "binary",
+                  "minLength": 16,
+                  "maxLength": 16
                 }
               ],
               "title": "Branch Id"
-            }
-          },
-          {
-            "name": "organization_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "ulid",
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "minLength": 26,
-                  "maxLength": 26,
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": [
-                    "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                    "01H945P9C3K2QJ8F7N6M4R2E8V"
-                  ],
-                  "title": "ULID"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "project_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Project Id"
             }
           }
         ],
@@ -4611,7 +4742,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SchedulePayload"
+                "$ref": "#/components/schemas/BackupScheduleUpdate"
               }
             }
           }
@@ -33755,6 +33886,53 @@
         ],
         "title": "BackupScheduleRowPublic"
       },
+      "BackupScheduleUpdate": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ScheduleRow"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "minItems": 0,
+            "title": "Rows"
+          },
+          "env_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Env Type"
+          },
+          "schedule_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 26,
+                "minLength": 26,
+                "pattern": "[0-7][0123456789ABCDEFGHJKMNPQRSTVWXYZ]{25}"
+              },
+              {
+                "type": "string",
+                "maxLength": 16,
+                "minLength": 16,
+                "format": "binary"
+              }
+            ],
+            "title": "Schedule Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "rows",
+          "schedule_id"
+        ],
+        "title": "BackupScheduleUpdate"
+      },
       "BranchApiKeys": {
         "properties": {
           "anon": {
@@ -33848,6 +34026,19 @@
           "new_password"
         ],
         "title": "BranchPasswordReset"
+      },
+      "BranchProvisionPublic": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "BranchProvisionPublic"
       },
       "BranchPublic": {
         "properties": {
@@ -34178,10 +34369,43 @@
         "type": "object",
         "title": "BranchUpdate"
       },
+      "ConsumptionLimitPublic": {
+        "properties": {
+          "resource": {
+            "type": "string",
+            "enum": [
+              "milli_vcpu",
+              "ram",
+              "iops",
+              "storage_size",
+              "database_size"
+            ],
+            "title": "Resource"
+          },
+          "max_total_minutes": {
+            "type": "integer",
+            "title": "Max Total Minutes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource",
+          "max_total_minutes"
+        ],
+        "title": "ConsumptionLimitPublic"
+      },
       "ConsumptionPayload": {
         "properties": {
           "resource": {
-            "$ref": "#/components/schemas/ResourceType"
+            "type": "string",
+            "enum": [
+              "milli_vcpu",
+              "ram",
+              "iops",
+              "storage_size",
+              "database_size"
+            ],
+            "title": "Resource"
           },
           "max_total_minutes": {
             "type": "integer",
@@ -34304,15 +34528,6 @@
         ],
         "title": "DeploymentParameters"
       },
-      "EntityType": {
-        "type": "string",
-        "enum": [
-          "org",
-          "org_env",
-          "project"
-        ],
-        "title": "EntityType"
-      },
       "HTTPError": {
         "properties": {
           "detail": {
@@ -34346,6 +34561,24 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "LimitResultPublic": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "limit": {
+            "type": "string",
+            "title": "Limit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "limit"
+        ],
+        "title": "LimitResultPublic"
       },
       "Organization": {
         "properties": {
@@ -34727,7 +34960,15 @@
       "ProvLimitPayload": {
         "properties": {
           "resource": {
-            "$ref": "#/components/schemas/ResourceType"
+            "type": "string",
+            "enum": [
+              "milli_vcpu",
+              "ram",
+              "iops",
+              "storage_size",
+              "database_size"
+            ],
+            "title": "Resource"
           },
           "max_total": {
             "type": "integer",
@@ -34745,6 +34986,36 @@
           "max_per_branch"
         ],
         "title": "ProvLimitPayload"
+      },
+      "ProvisioningLimitPublic": {
+        "properties": {
+          "resource": {
+            "type": "string",
+            "enum": [
+              "milli_vcpu",
+              "ram",
+              "iops",
+              "storage_size",
+              "database_size"
+            ],
+            "title": "Resource"
+          },
+          "max_total": {
+            "type": "integer",
+            "title": "Max Total"
+          },
+          "max_per_branch": {
+            "type": "integer",
+            "title": "Max Per Branch"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource",
+          "max_total",
+          "max_per_branch"
+        ],
+        "title": "ProvisioningLimitPublic"
       },
       "ResizeParameters": {
         "properties": {
@@ -34803,38 +35074,84 @@
               }
             ],
             "title": "Milli Vcpu"
+          },
+          "iops": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 2147483647.0,
+                "minimum": 100.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iops"
           }
         },
         "type": "object",
         "title": "ResizeParameters"
       },
-      "ResourceType": {
-        "type": "object",
+      "ResourceLimitsPublic": {
         "properties": {
-          "type": {
-            "type": "string"
-          },
-          "scopes": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "scopeAliases": {
-            "type": "object",
-            "additionalProperties": {
-              "uniqueItems": true,
-              "type": "array",
-              "items": {
-                "type": "string"
+          "milli_vcpu": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
               }
-            }
+            ],
+            "title": "Milli Vcpu"
           },
-          "groupType": {
-            "type": "string"
+          "ram": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ram"
+          },
+          "iops": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iops"
+          },
+          "storage_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Size"
+          },
+          "database_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Database Size"
           }
-        }
+        },
+        "type": "object",
+        "title": "ResourceLimitsPublic"
       },
       "ResourceUsageDefinition": {
         "properties": {
@@ -34948,11 +35265,7 @@
       "ResourcesPayload": {
         "properties": {
           "resources": {
-            "additionalProperties": {
-              "type": "integer"
-            },
-            "type": "object",
-            "title": "Resources"
+            "$ref": "#/components/schemas/ResourceLimitsPublic"
           }
         },
         "type": "object",
@@ -35634,36 +35947,6 @@
           "project"
         ],
         "title": "TargetMetadata"
-      },
-      "ToFromPayload": {
-        "properties": {
-          "cycle_start": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Cycle Start"
-          },
-          "cycle_end": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Cycle End"
-          }
-        },
-        "type": "object",
-        "title": "ToFromPayload"
       },
       "UserCreationResult": {
         "properties": {
@@ -39615,6 +39898,34 @@
           },
           "authorizationSchema": {
             "$ref": "#/components/schemas/AuthorizationSchema"
+          }
+        }
+      },
+      "ResourceType": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "scopes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "scopeAliases": {
+            "type": "object",
+            "additionalProperties": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "groupType": {
+            "type": "string"
           }
         }
       },

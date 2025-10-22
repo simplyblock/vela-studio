@@ -9,6 +9,91 @@ type VelaType<Name extends keyof vela_components['schemas']> = vela_components['
 type PlatformType<Name extends keyof components['schemas']> = components['schemas'][Name]
 
 export interface paths {
+  '/platform/organizations/{slug}/resources/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['ResourceController_getOrganizationUsage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/resources/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['ResourceController_getOrganizationUsage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/resources/limits': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Organization Provisioning Limits */
+    get: operations["ResourceController_getOrganizationProvisioningLimit"];
+    put?: never;
+    /** Set Organization Provisioning Limit */
+    post: operations["ResourceController_setOrganizationProvisioningLimit"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  }
+  '/platform/organizations/{slug}/projects/{ref}/resources/limits': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Project Provisioning Limits */
+    get: operations["ResourceController_getProjectProvisioningLimit"];
+    put?: never;
+    /** Set Project Provisioning Limit */
+    post: operations["ResourceController_setProjectProvisioningLimit"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resources/limits': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Branch Effective Limit */
+    get: operations["ResourceController_getBranchEffectiveLimits"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  }
   '/platform/permissions': {
     parameters: {
       query?: never
@@ -10672,6 +10757,242 @@ export interface operations {
         content?: never
       }
     }
+  }
+  ResourceController_getOrganizationUsage: {
+    parameters: {
+      query?: {
+        cycle_start?: string | null;
+        cycle_end?: string | null;
+      };
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"ResourceLimitsPublic">;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"HTTPValidationError">;
+        };
+      };
+    };
+  }
+  ResourceController_getProjectUsage: {
+    parameters: {
+      query?: {
+        cycle_start?: string | null;
+        cycle_end?: string | null;
+      };
+      header?: never;
+      path: {
+        slug: string
+        ref: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"ResourceLimitsPublic">;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"HTTPValidationError">;
+        };
+      };
+    };
+  }
+  ResourceController_getOrganizationProvisioningLimit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"ProvisioningLimitPublic">[];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"HTTPValidationError">;
+        };
+      };
+    };
+  }
+  ResourceController_getProjectProvisioningLimit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+        ref: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"ProvisioningLimitPublic">[];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"HTTPValidationError">;
+        };
+      };
+    };
+  }
+  ResourceController_setOrganizationProvisioningLimit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": VelaType<"ProvLimitPayload">;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"LimitResultPublic">;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"HTTPValidationError">;
+        };
+      };
+    };
+  }
+  ResourceController_setProjectProvisioningLimit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+        ref: string
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": VelaType<"ProvLimitPayload">;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"LimitResultPublic">;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"HTTPValidationError">;
+        };
+      };
+    };
+  }
+  ResourceController_getBranchEffectiveLimits: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+        ref: string;
+        branch: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"ResourceLimitsPublic">;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": VelaType<"HTTPValidationError">;
+        };
+      };
+    };
   }
   PermissionController_getAvailablePermissions: {
     parameters: {
