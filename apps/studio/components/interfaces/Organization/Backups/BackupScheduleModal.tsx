@@ -22,6 +22,8 @@ import {
 import { useParams } from 'common'
 import { useOrgBackupSchedulesQuery } from 'data/backups/org-backup-schedules-query'
 import { useUpdateOrgBackupScheduleMutation } from 'data/backups/org-update-backup-schedule-mutation'
+import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
+import { environment } from './Backups'
 
 const LABEL_OPTIONS = [
   { label: 'All', value: 'all' },
@@ -85,6 +87,19 @@ const toApiRows = (uiRow: ScheduleRow, idx: number): ApiSchedule['rows'][number]
 const BackupScheduleModal = () => {
   const [open, setOpen] = useState(false)
   // default label while opening modal is 'all'
+  const {data:org} = useSelectedOrganizationQuery()
+    let environments:environment[] = [{ label: 'All environments', value: 'all' },]
+    if (org) {
+      const envTypes: string[] = org.env_types;
+  
+      environments = [
+        { label: 'All environments', value: 'all' },
+        ...envTypes.map(type => ({
+          label: type,
+          value: type
+        }))
+      ];
+    }
   const [selectedLabel, setSelectedLabel] = useState<(typeof LABEL_OPTIONS)[number]['value']>('all')
   const [rows, setRows] = useState<ScheduleRow[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -345,7 +360,8 @@ const currentSchedule: ApiSchedule | undefined = useMemo(() => {
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div className="space-y-2 md:max-w-sm">
                 <Label_Shadcn_ htmlFor="backup-label">Label</Label_Shadcn_>
-                <Select_Shadcn_ value={selectedLabel} onValueChange={handleLabelChange} disabled={schedulesLoading || saving}>
+                {/* can add a schedulesLoading ||  to disabled conidition later if needed */}
+                <Select_Shadcn_ value={selectedLabel} onValueChange={handleLabelChange} disabled={saving}>
                   <SelectTrigger_Shadcn_ id="backup-label">
                     <SelectValue_Shadcn_ placeholder="Select label" />
                   </SelectTrigger_Shadcn_>

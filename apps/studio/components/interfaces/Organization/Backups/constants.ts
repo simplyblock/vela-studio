@@ -18,8 +18,11 @@ export const dayjsUnitMap: Record<BackupScheduleUnit, ManipulateType> = {
   months: 'month',
 }
 
-export const environmentBadgeClasses: Record<BackupEnvironment, string> = {
+const ENVIRONMENT_BADGE_MAP: Record<string, string> = {
   production: 'bg-brand-400/10 text-brand-600 border-brand-400/30',
   test: 'bg-warning-400/10 text-warning-700 border-warning-400/30',
   development: 'bg-foreground-muted/10 text-foreground border-foreground-muted/30',
 }
+
+export const getEnvironmentBadgeClass = (environment: BackupEnvironment) =>
+  ENVIRONMENT_BADGE_MAP[environment] ?? 'bg-foreground-muted/10 text-foreground border-foreground-muted/30'

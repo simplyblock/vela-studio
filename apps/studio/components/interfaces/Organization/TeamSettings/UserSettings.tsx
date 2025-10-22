@@ -16,7 +16,7 @@ import MembersView from './MembersView'
 import CreateBranchModal from 'components/interfaces/Branch/CreateBranchModal'
 import CreateProjectModal from 'components/interfaces/Branch/CreateProjectModal'
 import ResizeBranchModal from 'components/interfaces/Branch/ResizeBranchModal'
-import BackupScheduleModal from 'components/interfaces/Branch/BackupScheduleModal'
+import BackupScheduleModal from 'components/interfaces/Organization/Backups/BackupScheduleModal'
 
 export const UserSettings = () => {
   const [searchString, setSearchString] = useState('')

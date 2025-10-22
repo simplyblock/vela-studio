@@ -3,6 +3,7 @@ import { isUndefined } from 'lodash'
 import {
   Blocks,
   Boxes,
+  CalendarClock,
   ChartArea,
   HardDrive,
   PanelLeftDashed,
@@ -253,6 +254,28 @@ const ProjectLinks = () => {
     storage: storageEnabled,
     realtime: realtimeEnabled,
   })
+  const projectLinks = [
+    {
+      key: 'database-backup-schedules',
+      label: 'Backup Schedules',
+      icon: <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link:
+        projectRef &&
+        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
+      isActive: router.asPath.includes('/database/backups/scheduled'),
+    },
+    {
+      key: 'database-backups',
+      label: 'Backups',
+      icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link:
+        projectRef &&
+        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
+      isActive:
+        router.asPath.includes('/database/backups/pitr') ||
+        router.asPath.includes('/database/backups/restore-to-new-project'),
+    },
+  ]
 
   const { isEnabled: isUnifiedLogsEnabled } = useUnifiedLogsPreview()
 
@@ -292,7 +315,11 @@ const ProjectLinks = () => {
             active={activeRoute === route.key}
           />
         ))}
+        {projectLinks.map(({ isActive, ...route }) => (
+          <SideBarNavLink key={route.key} route={route} active={isActive} />
+        ))}
       </SidebarGroup>
+      
       <Separator className="w-[calc(100%-1rem)] mx-auto" />
       <SidebarGroup className="gap-0.5">
         {otherRoutes.map((route, i) => {

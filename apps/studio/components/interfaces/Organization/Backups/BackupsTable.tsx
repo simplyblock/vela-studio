@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from 'ui'
 
-import { environmentBadgeClasses } from './constants'
+import { getEnvironmentBadgeClass } from './constants'
 import { formatBackupDate } from './utils'
 import type { BackupRow } from './types'
 
@@ -52,7 +52,7 @@ export const BackupsTable = ({ rows, onDisable, onEnable, onViewBackups }: Backu
             </TableCell>
             <TableCell>
               <Badge
-                className={`border ${environmentBadgeClasses[row.environment]} px-2 py-0.5 text-xs font-medium`}
+                className={`border ${getEnvironmentBadgeClass(row.environment)} px-2 py-0.5 text-xs font-medium`}
               >
                 {row.environment}
               </Badge>
@@ -63,7 +63,9 @@ export const BackupsTable = ({ rows, onDisable, onEnable, onViewBackups }: Backu
               {row.backups.length}
             </TableCell>
             <TableCell className="text-right text-sm text-foreground-light">
-              {formatBytes(row.storageUsedBytes, 2)}
+              {typeof row.storageUsedBytes === 'number'
+                ? formatBytes(row.storageUsedBytes, 2)
+                : '—'}
             </TableCell>
             <TableCell>
               <div className="flex justify-end gap-1.5">

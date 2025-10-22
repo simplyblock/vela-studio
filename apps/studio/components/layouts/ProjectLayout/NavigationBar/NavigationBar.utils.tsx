@@ -54,7 +54,7 @@ export const generateProductRoutes = (
   projectRef?: string,
   project?: Project,
   branchRef?: string,
-  features?: { auth?: boolean; edgeFunctions?: boolean; storage?: boolean; realtime?: boolean }
+  features?: { auth?: boolean; edgeFunctions?: boolean; storage?: boolean; realtime?: boolean;  backups?: boolean  }
 ): Route[] => {
   const isProjectActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
@@ -64,7 +64,7 @@ export const generateProductRoutes = (
   const edgeFunctionsEnabled = features?.edgeFunctions ?? true
   const storageEnabled = features?.storage ?? true
   const realtimeEnabled = features?.realtime ?? true
-
+  const backupsEnabled = features?.backups ?? true
   const databaseMenu = generateDatabaseMenu(orgRef, project)
   const authMenu = generateAuthMenu(orgRef, projectRef!, branchRef!)
 

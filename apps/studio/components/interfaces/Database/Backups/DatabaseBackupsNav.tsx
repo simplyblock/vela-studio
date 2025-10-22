@@ -16,28 +16,28 @@ function DatabaseBackupsNav({ active }: Props) {
     {
       enabled: true,
       id: 'scheduled',
-      label: 'Scheduled backups',
+      label: 'Schedule backups',
       href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
     },
     {
       enabled: true,
       id: 'pitr',
-      label: 'Point in time',
+      label: 'Backups',
       href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
     },
-    {
-      enabled: true,
-      id: 'rtnp',
-      label: (
-        <div className="flex items-center gap-1">
-          Restore to new project{' '}
-          <Badge size="small" className="!text-[10px] px-1.5 py-0">
-            New
-          </Badge>
-        </div>
-      ),
-      href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/restore-to-new-project`,
-    },
+    // {
+    //   enabled: true,
+    //   id: 'rtnp',
+    //   label: (
+    //     <div className="flex items-center gap-1">
+    //       Restore to new project{' '}
+    //       <Badge size="small" className="!text-[10px] px-1.5 py-0">
+    //         New
+    //       </Badge>
+    //     </div>
+    //   ),
+    //   href: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/restore-to-new-project`,
+    // },
   ] as const
 
   return (
