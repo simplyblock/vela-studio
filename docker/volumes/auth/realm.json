@@ -4,7 +4,6 @@
   "enabled": true,
   "registrationAllowed": true,
   "verifyEmail": false,
-  "frontendUrl": "http://localhost:8080",
   "users": [
     {
       "username": "testuser",
