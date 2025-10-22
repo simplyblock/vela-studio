@@ -182,8 +182,8 @@ export interface paths {
       cookie?: never
     }
     get: operations['BackupSchedulesController_getBranchSchedules']
-    put?: never
-    post?: never
+    put: operations['BackupSchedulesController_updateBranchSchedules']
+    post: operations['BackupSchedulesController_createBranchSchedules']
     delete: operations['BackupSchedulesController_deleteBranchSchedule']
     options?: never
     head?: never
@@ -11130,6 +11130,46 @@ export interface operations {
       }
     }
   }
+  BackupSchedulesController_updateBranchSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'replace_brach_backup_schedule'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'BackupSchedulePublic'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   BackupSchedulesController_updateOrgSchedule: {
     parameters: {
       query?: never
@@ -11141,7 +11181,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': VelaType<'Body_add_or_replace_branch_backup_schedule_backup_branches__branch_id__schedule_put'>
+        'application/json': VelaType<'replace_org_backup_schedule'>
       }
     }
     responses: {
@@ -11179,7 +11219,47 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': VelaType<'Body_add_or_replace_org_backup_schedule_backup_organizations__organization_id__schedule_post'>
+        'application/json': VelaType<'create_org_backup_schedule'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'BackupSchedulePublic'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupSchedulesController_createBranchSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'replace_branch_backup_schedule'>
       }
     }
     responses: {
