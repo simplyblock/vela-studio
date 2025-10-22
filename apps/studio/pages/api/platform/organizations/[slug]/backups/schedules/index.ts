@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
-import { getVelaClient } from 'data/vela/vela'
+import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vela'
 import { apiBuilder } from 'lib/api/apiBuilder'
 
 interface BackupSchedule {
@@ -19,29 +19,26 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
 
   const client = getVelaClient(req)
-  const { data: schedules, success } = await client.getOrFail(
-    res,
-    '/backup/organizations/{organization_id}/schedule',
-    {
-      params: {
-        path: {
-          organization_id: slug,
-        },
+  const response = await client.get('/backup/organizations/{organization_id}/schedule', {
+    params: {
+      path: {
+        organization_id: slug,
       },
-    }
-  )
+    },
+  })
 
-  if (!success) return
+  if (maybeHandleError(res, response, validStatusCodes(200, 404))) return
+  if (response.response.status === 404) return res.json([])
 
   return res.json(
-    schedules.map((schedule): BackupSchedule => {
+    response.data?.map((schedule): BackupSchedule => {
       return {
         backup_schedule_id: schedule.id,
         organization_id: slug,
         env_type: schedule.env_type ?? undefined,
         rows: schedule.rows,
       }
-    })
+    }) || []
   )
 }
 

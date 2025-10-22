@@ -1,6 +1,6 @@
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getVelaClient } from 'data/vela/vela'
+import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
 interface Backup {
@@ -16,7 +16,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
-  const { data: backups, success } = await client.getOrFail(res, '/backup/branches/{branch_id}/', {
+  const response = await client.get('/backup/branches/{branch_id}/', {
     params: {
       path: {
         branch_id: branch,
@@ -24,10 +24,11 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   })
 
-  if (!success) return
+  if (maybeHandleError(res, response, validStatusCodes(200, 404))) return
+  if (response.response.status === 404) return res.json([])
 
   return res.json(
-    backups.map((backup) => {
+    response.data?.map((backup) => {
       return {
         id: backup.id,
         organization_id: slug,
@@ -36,7 +37,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
         row_index: backup.row_index,
         created_at: backup.created_at,
       }
-    })
+    }) || []
   )
 }
 

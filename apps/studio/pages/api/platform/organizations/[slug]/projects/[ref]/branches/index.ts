@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { Branch } from 'api-types/types'
-import { getVelaClient } from 'data/vela/vela'
+import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vela'
 import { mapProjectBranch } from 'data/vela/api-mappers'
 
 const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -19,8 +19,8 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
           project_id: ref,
         },
         query: {
-          response: 'full'
-        }
+          response: 'full',
+        },
       },
       body: {
         name: req.body.branch_name,
@@ -38,8 +38,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch[]>) =>
   const { slug, ref } = getPlatformQueryParams(req, 'slug', 'ref')
 
   const client = getVelaClient(req)
-  const { data, success } = await client.getOrFail(
-    res,
+  const response = await client.get(
     '/organizations/{organization_id}/projects/{project_id}/branches/',
     {
       params: {
@@ -51,9 +50,10 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch[]>) =>
     }
   )
 
-  if (!success) return
+  if (maybeHandleError(res, response, validStatusCodes(200, 404))) return
+  if (response.response.status === 404) return res.json([])
 
-  return res.json(data?.map((branch) => mapProjectBranch(branch)) ?? [])
+  return res.json(response.data?.map((branch) => mapProjectBranch(branch)) ?? [])
 }
 
 const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet).post(handleCreate))
