@@ -441,7 +441,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/resources/organizations/{org_id}/usage": {
+    "/resources/organizations/{organization_id}/usage": {
         parameters: {
             query?: never;
             header?: never;
@@ -458,36 +458,72 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/resources/limits/provisioning/{entity_type}/{entity_id}": {
+    "/resources/organizations/{organization_id}/limits/provisioning": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Provisioning Limits */
-        get: operations["get_provisioning_limits"];
+        /** Get Organization Provisioning Limits */
+        get: operations["get_organization_provisioning_limits"];
         put?: never;
-        /** Set Provisioning Limit */
-        post: operations["set_provisioning_limit"];
+        /** Set Organization Provisioning Limit */
+        post: operations["set_organization_provisioning_limit"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/resources/limits/consumption/{entity_type}/{entity_id}": {
+    "/resources/projects/{project_id}/limits/provisioning": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Consumption Limits */
-        get: operations["get_consumption_limits"];
+        /** Get Project Provisioning Limits */
+        get: operations["get_project_provisioning_limits"];
         put?: never;
-        /** Set Consumption Limit */
-        post: operations["set_consumption_limit"];
+        /** Set Project Provisioning Limit */
+        post: operations["set_project_provisioning_limit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resources/organizations/{organization_id}/limits/consumption": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Organization Consumption Limits */
+        get: operations["get_organization_consumption_limits"];
+        put?: never;
+        /** Set Organization Consumption Limit */
+        post: operations["set_organization_consumption_limit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/resources/projects/{project_id}/limits/consumption": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Project Consumption Limits */
+        get: operations["get_project_consumption_limits"];
+        put?: never;
+        /** Set Project Consumption Limit */
+        post: operations["set_project_consumption_limit"];
         delete?: never;
         options?: never;
         head?: never;
@@ -540,10 +576,10 @@ export interface paths {
         };
         /** List Org Schedules */
         get: operations["list_org_schedules"];
-        /** Add Or Replace Org Backup Schedule */
-        put: operations["add_or_replace_org_backup_schedule"];
-        /** Add Or Replace Org Backup Schedule */
-        post: operations["add_or_replace_org_backup_schedule"];
+        /** Replace Org Backup Schedule */
+        put: operations["replace_org_backup_schedule"];
+        /** Add Org Backup Schedule */
+        post: operations["add_org_backup_schedule"];
         delete?: never;
         options?: never;
         head?: never;
@@ -559,10 +595,10 @@ export interface paths {
         };
         /** List Branch Schedules */
         get: operations["list_branch_schedules"];
-        /** Add Or Replace Branch Backup Schedule */
-        put: operations["add_or_replace_branch_backup_schedule"];
-        /** Add Or Replace Branch Backup Schedule */
-        post: operations["add_or_replace_branch_backup_schedule"];
+        /** Replace Branch Backup Schedule */
+        put: operations["replace_branch_backup_schedule"];
+        /** Add Branch Backup Schedule */
+        post: operations["add_branch_backup_schedule"];
         delete?: never;
         options?: never;
         head?: never;
@@ -18646,6 +18682,15 @@ export interface components {
             /** Retention */
             retention: number;
         };
+        /** BackupScheduleUpdate */
+        BackupScheduleUpdate: {
+            /** Rows */
+            rows: components["schemas"]["ScheduleRow"][];
+            /** Env Type */
+            env_type?: string | null;
+            /** Schedule Id */
+            schedule_id: string;
+        };
         /** BranchApiKeys */
         BranchApiKeys: {
             /** Anon */
@@ -18666,6 +18711,11 @@ export interface components {
         BranchPasswordReset: {
             /** New Password */
             new_password: string;
+        };
+        /** BranchProvisionPublic */
+        BranchProvisionPublic: {
+            /** Status */
+            status: string;
         };
         /** BranchPublic */
         BranchPublic: {
@@ -18786,9 +18836,23 @@ export interface components {
             /** Name */
             name?: string | null;
         };
+        /** ConsumptionLimitPublic */
+        ConsumptionLimitPublic: {
+            /**
+             * Resource
+             * @enum {string}
+             */
+            resource: "milli_vcpu" | "ram" | "iops" | "storage_size" | "database_size";
+            /** Max Total Minutes */
+            max_total_minutes: number;
+        };
         /** ConsumptionPayload */
         ConsumptionPayload: {
-            resource: components["schemas"]["ResourceType"];
+            /**
+             * Resource
+             * @enum {string}
+             */
+            resource: "milli_vcpu" | "ram" | "iops" | "storage_size" | "database_size";
             /** Max Total Minutes */
             max_total_minutes: number;
         };
@@ -18831,11 +18895,6 @@ export interface components {
              */
             database_image_tag: "15.1.0.147";
         };
-        /**
-         * EntityType
-         * @enum {string}
-         */
-        EntityType: "org" | "org_env" | "project";
         /** HTTPError */
         HTTPError: {
             /** Detail */
@@ -18847,6 +18906,13 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** LimitResultPublic */
+        LimitResultPublic: {
+            /** Status */
+            status: string;
+            /** Limit */
+            limit: string;
         };
         /** Organization */
         Organization: {
@@ -18967,7 +19033,23 @@ export interface components {
         };
         /** ProvLimitPayload */
         ProvLimitPayload: {
-            resource: components["schemas"]["ResourceType"];
+            /**
+             * Resource
+             * @enum {string}
+             */
+            resource: "milli_vcpu" | "ram" | "iops" | "storage_size" | "database_size";
+            /** Max Total */
+            max_total: number;
+            /** Max Per Branch */
+            max_per_branch: number;
+        };
+        /** ProvisioningLimitPublic */
+        ProvisioningLimitPublic: {
+            /**
+             * Resource
+             * @enum {string}
+             */
+            resource: "milli_vcpu" | "ram" | "iops" | "storage_size" | "database_size";
             /** Max Total */
             max_total: number;
             /** Max Per Branch */
@@ -18983,14 +19065,21 @@ export interface components {
             memory_bytes?: number | null;
             /** Milli Vcpu */
             milli_vcpu?: number | null;
+            /** Iops */
+            iops?: number | null;
         };
-        ResourceType: {
-            type?: string;
-            scopes?: string[];
-            scopeAliases?: {
-                [key: string]: string[];
-            };
-            groupType?: string;
+        /** ResourceLimitsPublic */
+        ResourceLimitsPublic: {
+            /** Milli Vcpu */
+            milli_vcpu?: number | null;
+            /** Ram */
+            ram?: number | null;
+            /** Iops */
+            iops?: number | null;
+            /** Storage Size */
+            storage_size?: number | null;
+            /** Database Size */
+            database_size?: number | null;
         };
         /** ResourceUsageDefinition */
         ResourceUsageDefinition: {
@@ -19050,10 +19139,7 @@ export interface components {
         };
         /** ResourcesPayload */
         ResourcesPayload: {
-            /** Resources */
-            resources: {
-                [key: string]: number;
-            };
+            resources: components["schemas"]["ResourceLimitsPublic"];
         };
         /** RoleAssignmentPayload */
         RoleAssignmentPayload: {
@@ -19275,13 +19361,6 @@ export interface components {
             organization: string | null;
             /** Project */
             project: string | null;
-        };
-        /** ToFromPayload */
-        ToFromPayload: {
-            /** Cycle Start */
-            cycle_start?: string | null;
-            /** Cycle End */
-            cycle_end?: string | null;
         };
         /** UserCreationResult */
         UserCreationResult: {
@@ -20638,6 +20717,14 @@ export interface components {
             scopes?: components["schemas"]["ScopeRepresentation"][];
             decisionStrategy?: components["schemas"]["DecisionStrategy"];
             authorizationSchema?: components["schemas"]["AuthorizationSchema"];
+        };
+        ResourceType: {
+            type?: string;
+            scopes?: string[];
+            scopeAliases?: {
+                [key: string]: string[];
+            };
+            groupType?: string;
         };
         RoleRepresentation: {
             id?: string;
@@ -22873,7 +22960,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BranchProvisionPublic"];
                 };
             };
             /** @description Validation Error */
@@ -22889,18 +22976,17 @@ export interface operations {
     };
     get_project_usage: {
         parameters: {
-            query?: never;
+            query?: {
+                cycle_start?: string | null;
+                cycle_end?: string | null;
+            };
             header?: never;
             path: {
                 project_id: string;
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ToFromPayload"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {
@@ -22908,7 +22994,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["ResourceLimitsPublic"];
                 };
             };
             /** @description Validation Error */
@@ -22924,46 +23010,13 @@ export interface operations {
     };
     get_org_usage: {
         parameters: {
-            query?: never;
+            query?: {
+                cycle_start?: string | null;
+                cycle_end?: string | null;
+            };
             header?: never;
             path: {
-                org_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ToFromPayload"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_provisioning_limits: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                entity_type: components["schemas"]["EntityType"];
-                entity_id: string;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -22975,7 +23028,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["ResourceLimitsPublic"];
                 };
             };
             /** @description Validation Error */
@@ -22989,13 +23042,43 @@ export interface operations {
             };
         };
     };
-    set_provisioning_limit: {
+    get_organization_provisioning_limits: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                entity_type: components["schemas"]["EntityType"];
-                entity_id: string;
+                organization_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvisioningLimitPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_organization_provisioning_limit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -23011,7 +23094,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["LimitResultPublic"];
                 };
             };
             /** @description Validation Error */
@@ -23025,13 +23108,12 @@ export interface operations {
             };
         };
     };
-    get_consumption_limits: {
+    get_project_provisioning_limits: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                entity_type: components["schemas"]["EntityType"];
-                entity_id: string;
+                project_id: string;
             };
             cookie?: never;
         };
@@ -23043,7 +23125,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["ProvisioningLimitPublic"][];
                 };
             };
             /** @description Validation Error */
@@ -23057,13 +23139,78 @@ export interface operations {
             };
         };
     };
-    set_consumption_limit: {
+    set_project_provisioning_limit: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                entity_type: components["schemas"]["EntityType"];
-                entity_id: string;
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProvLimitPayload"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LimitResultPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_organization_consumption_limits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsumptionLimitPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_organization_consumption_limit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -23079,7 +23226,73 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["LimitResultPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_project_consumption_limits: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsumptionLimitPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_project_consumption_limit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                project_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsumptionPayload"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LimitResultPublic"];
                 };
             };
             /** @description Validation Error */
@@ -23110,7 +23323,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["ResourceLimitsPublic"];
                 };
             };
             /** @description Validation Error */
@@ -23177,20 +23390,18 @@ export interface operations {
             };
         };
     };
-    add_or_replace_org_backup_schedule: {
+    replace_org_backup_schedule: {
         parameters: {
-            query: {
-                branch_id: string | null;
-            };
+            query?: never;
             header?: never;
             path: {
-                organization_id: string | null;
+                organization_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SchedulePayload"];
+                "application/json": components["schemas"]["BackupScheduleUpdate"];
             };
         };
         responses: {
@@ -23214,14 +23425,12 @@ export interface operations {
             };
         };
     };
-    add_or_replace_org_backup_schedule: {
+    add_org_backup_schedule: {
         parameters: {
-            query: {
-                branch_id: string | null;
-            };
+            query?: never;
             header?: never;
             path: {
-                organization_id: string | null;
+                organization_id: string;
             };
             cookie?: never;
         };
@@ -23284,21 +23493,18 @@ export interface operations {
             };
         };
     };
-    add_or_replace_branch_backup_schedule: {
+    replace_branch_backup_schedule: {
         parameters: {
-            query: {
-                organization_id: string | null;
-                project_id: string;
-            };
+            query?: never;
             header?: never;
             path: {
-                branch_id: string | null;
+                branch_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SchedulePayload"];
+                "application/json": components["schemas"]["BackupScheduleUpdate"];
             };
         };
         responses: {
@@ -23322,15 +23528,12 @@ export interface operations {
             };
         };
     };
-    add_or_replace_branch_backup_schedule: {
+    add_branch_backup_schedule: {
         parameters: {
-            query: {
-                organization_id: string | null;
-                project_id: string;
-            };
+            query?: never;
             header?: never;
             path: {
-                branch_id: string | null;
+                branch_id: string;
             };
             cookie?: never;
         };
