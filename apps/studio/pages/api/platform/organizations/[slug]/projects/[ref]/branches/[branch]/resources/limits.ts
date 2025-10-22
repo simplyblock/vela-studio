@@ -1,17 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { getVelaClient } from 'data/vela/vela'
+import { apiBuilder } from 'lib/api/apiBuilder'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { slug } = getPlatformQueryParams(req, 'slug')
+  const { branch } = getPlatformQueryParams(req, 'branch')
   const client = getVelaClient(req)
-  return client.proxyGet(res, '/resources/organizations/{organization_id}/usage', {
+  return client.proxyGet(res, '/resources/branches/{branch_id}/limits/', {
     params: {
       path: {
-        organization_id: slug,
+        branch_id: branch,
       },
-      query: req.query,
     },
   })
 }
