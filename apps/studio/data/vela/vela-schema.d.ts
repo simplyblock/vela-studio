@@ -18630,6 +18630,8 @@ export interface components {
             branch_id: string;
             /** Row Index */
             row_index: number;
+            /** Size Bytes */
+            size_bytes: number;
             /**
              * Created At
              * Format: date-time
@@ -18783,6 +18785,8 @@ export interface components {
             status: "NONE" | "PENDING" | "RESIZING" | "FILESYSTEM_RESIZE_PENDING" | "COMPLETED" | "FAILED";
             /** Timestamp */
             timestamp: string;
+        } & {
+            [key: string]: unknown;
         };
         /** BranchSourceParameters */
         BranchSourceParameters: {

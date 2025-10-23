@@ -11042,7 +11042,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupsResponse'>[]
+          'application/json': VelaType<'BackupPublic'>[]
         }
       }
       403: {
@@ -11447,7 +11447,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupsResponse'>[]
+          'application/json': VelaType<'BackupPublic'>[]
         }
       }
       403: {
