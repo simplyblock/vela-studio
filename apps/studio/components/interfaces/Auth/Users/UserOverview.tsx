@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
-import { Ban, Check, Copy, Mail, ShieldOff, Trash, X } from 'lucide-react'
-import Link from 'next/link'
+import { Ban, Check, Copy, ShieldOff, Trash, X } from 'lucide-react'
 import { ComponentProps, ReactNode, useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -12,15 +11,12 @@ import { useUserProvidersQuery } from 'data/auth/user-providers-query'
 import { useUserDeleteMFAFactorsMutation } from 'data/auth/user-delete-mfa-factors-mutation'
 import { useUserResetPasswordMutation } from 'data/auth/user-reset-password-mutation'
 import { useUserSendMagicLinkMutation } from 'data/auth/user-send-magic-link-mutation'
-import { useUserSendOTPMutation } from 'data/auth/user-send-otp-mutation'
 import { useUserUpdateMutation } from 'data/auth/user-update-mutation'
 import { User } from 'data/auth/users-infinite-query'
-import { BASE_PATH } from 'lib/constants'
 import { timeout } from 'lib/helpers'
 import { Button, cn, Separator } from 'ui'
 import { Admonition } from 'ui-patterns/admonition'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { PROVIDERS_SCHEMAS } from '../AuthProvidersFormValidation'
 import { BanUserModal } from './BanUserModal'
 import { DeleteUserModal } from './DeleteUserModal'
 import { UserHeader } from './UserHeader'
@@ -113,15 +109,6 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
     },
     onError: (err) => {
       toast.error(`Failed to send magic link: ${err.message}`)
-    },
-  })
-  const { mutate: sendOTP, isLoading: isSendingOTP } = useUserSendOTPMutation({
-    onSuccess: (_, vars) => {
-      setSuccessAction('send_otp')
-      toast.success(`Sent OTP to ${vars.user.attributes.phone}`)
-    },
-    onError: (err) => {
-      toast.error(`Failed to send OTP: ${err.message}`)
     },
   })
   const { mutate: deleteUserMFAFactors } = useUserDeleteMFAFactorsMutation({

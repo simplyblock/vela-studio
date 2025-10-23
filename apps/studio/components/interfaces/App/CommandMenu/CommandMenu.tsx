@@ -30,7 +30,6 @@ export default function StudioCommandMenu() {
   useDocsAiCommands({
     options: { orderSection: orderCommandSectionsByPriority, sectionMeta: { priority: 3 } },
   })
-  // useSupportCommands() // FIXME: disabled support command menu
   useChangelogCommand({ enabled: true })
   useThemeSwitcherCommands()
 

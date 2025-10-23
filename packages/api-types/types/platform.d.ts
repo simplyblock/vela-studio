@@ -1879,6 +1879,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/roles/assignments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Gets the given organization's roles */
+    get: operations['OrganizationRolesController_getAllRoleAssignments']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/sso': {
     parameters: {
       query?: never
@@ -14741,6 +14758,41 @@ export interface operations {
         }
         content: {
           'application/json': VelaType<'RoleWithPermissionsPublic'>[]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to retrieve the organization's roles */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  OrganizationRolesController_getAllRoleAssignments: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description Organization slug */
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'RoleAssignmentsPublic'>
         }
       }
       403: {
