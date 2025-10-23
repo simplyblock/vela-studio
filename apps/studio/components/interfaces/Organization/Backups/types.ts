@@ -1,4 +1,4 @@
-export type BackupEnvironment = 'production' | 'test' | 'development'
+export type BackupEnvironment = string
 
 export type BackupScheduleUnit = 'minutes' | 'hours' | 'days' | 'weeks' | 'months'
 
@@ -18,21 +18,24 @@ export type BranchResources = {
 
 export type BranchBackup = {
   id: string
-  createdAt: string
-  sizeBytes: number
-  status: 'completed' | 'in-progress'
+  createdAt: string | null
+  rowIndex?: number | null
+  sizeBytes?: number | null
+  status?: string | null
 }
 
 export type BackupRow = {
   id: string
+  projectId: string
   projectName: string
+  branchId: string
   branchName: string
   environment: BackupEnvironment
-  lastBackupAt: string
+  lastBackupAt: string | null
   nextBackupAt: string | null
-  storageUsedBytes: number
+  storageUsedBytes?: number | null
   autoBackupEnabled: boolean
-  resources: BranchResources
+  resources?: BranchResources | null
   schedule: BackupScheduleEntry[]
   backups: BranchBackup[]
 }

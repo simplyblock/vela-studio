@@ -36,7 +36,7 @@ export async function deleteBranchBackup(
 
 type DeleteBranchBackupData = Awaited<ReturnType<typeof deleteBranchBackup>>
 
-export const useManualBranchBackupMutation = ({
+export const useDeleteBranchBackupMutation = ({
   onSuccess,
   onError,
   ...options
@@ -58,10 +58,10 @@ export const useManualBranchBackupMutation = ({
       },
       async onError(data, variables, context) {
         if (onError === undefined) {
-          toast.error(`Failed to create manual backup: ${data.message}`)
-        } else {
-          onError(data, variables, context)
+          toast.error(`Failed to delete backup: ${data.message}`)
+          return
         }
+        onError(data, variables, context)
       },
       ...options,
     }

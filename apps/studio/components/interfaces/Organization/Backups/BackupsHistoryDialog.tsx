@@ -75,17 +75,29 @@ export const BackupsHistoryDialog = ({
                     {formatBackupDate(backup.createdAt)}
                   </TableCell>
                   <TableCell className="text-sm text-foreground-light">
-                    {formatBytes(backup.sizeBytes, 2)}
+                    {typeof backup.sizeBytes === 'number'
+                      ? formatBytes(backup.sizeBytes, 2)
+                      : '—'}
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant={backup.status === 'completed' ? 'default' : 'outline'}
-                      className={`capitalize ${
-                        backup.status === 'completed' ? '' : 'text-warning-700 border-warning-500/60'
-                      }`}
-                    >
-                      {backup.status}
-                    </Badge>
+                    {backup.status ? (
+                      (() => {
+                        const normalized = backup.status.toLowerCase()
+                        const isCompleted = normalized === 'completed'
+                        return (
+                          <Badge
+                            variant={isCompleted ? 'default' : 'outline'}
+                            className={`capitalize ${
+                              isCompleted ? '' : 'text-warning-700 border-warning-500/60'
+                            }`}
+                          >
+                            {normalized}
+                          </Badge>
+                        )
+                      })()
+                    ) : (
+                      <span className="text-sm text-foreground-light">—</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-1.5">

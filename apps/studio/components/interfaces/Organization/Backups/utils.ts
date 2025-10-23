@@ -12,8 +12,9 @@ type ApiSchedule =
       organization_id: string | null
       branch_id: string | null
       env_type: string | null
-      rows: { row_index: number; interval: number; unit: string; retention: number }[]
-    }
+      rows?: { row_index: number; interval: number; unit: string; retention: number }[]
+    }[]
+  | null
   | undefined
 
 type ApiBackup =
@@ -24,7 +25,10 @@ type ApiBackup =
       branch_id: string
       row_index: number
       created_at: string
+      size_bytes?: number | null
+      status?: string | null
     }[]
+  | null
   | undefined
 
 // Minimal schedule shape the UI already expects (handleEnable reads every/unit)
@@ -36,17 +40,13 @@ type UiScheduleRow = {
 
 // Create a map: branch_id -> schedule rows
 export function mapSchedulesByBranch(s: ApiSchedule) {
-  const byBranch = new Map<
-    string,
-    { env: string | null; schedule: UiScheduleRow[] }
-  >()
+  const byBranch = new Map<string, { env: string | null; schedule: UiScheduleRow[] }>()
 
-  if (!s) return byBranch
+  if (!Array.isArray(s)) return byBranch
 
-  // One schedule object can represent one branch (based on your type)
-  // If you expect multiple schedule objects, loop them; if only one, this still works.
-  const sched = s
-  if (sched.branch_id) {
+  for (const sched of s) {
+    if (!sched?.branch_id) continue
+
     byBranch.set(sched.branch_id, {
       env: sched.env_type ?? null,
       schedule:
@@ -62,26 +62,35 @@ export function mapSchedulesByBranch(s: ApiSchedule) {
 
 // Create a map: branch_id -> backup snapshots
 export function groupBackupsByBranch(d: ApiBackup) {
-  const byBranch = new Map<string, { backups: any[]; projectId: string }>()
-  if (!d) return byBranch
+  const byBranch = new Map<
+    string,
+    { backups: { id: string; createdAt: string; sizeBytes?: number | null; status?: string | null; rowIndex?: number }[]; projectId: string }
+  >()
+  if (!Array.isArray(d)) return byBranch
 
   for (const b of d) {
-    const existing = byBranch.get(b.branch_id)
-    const bb: any = {
+    if (!b?.branch_id) continue
+
+    const entry = byBranch.get(b.branch_id) ?? {
+      backups: [] as {
+        id: string
+        createdAt: string
+        sizeBytes?: number | null
+        status?: string | null
+        rowIndex?: number
+      }[],
+      projectId: b.project_id,
+    }
+
+    entry.backups.push({
       id: b.id,
       createdAt: b.created_at,
+      sizeBytes: b.size_bytes ?? null,
+      status: b.status ?? null,
+      rowIndex: typeof b.row_index === 'number' ? b.row_index : undefined,
+    })
 
-    } as any
-
-    if (existing) {
-      existing.backups.push(bb)
-    } else {
-      byBranch.set(b.branch_id, {
-        backups: [bb],
-        projectId: b.project_id,
-      })
-    }
+    byBranch.set(b.branch_id, entry)
   }
   return byBranch
 }
-

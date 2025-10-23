@@ -53,8 +53,9 @@ export const RestoreBackupDialog = ({
   }, [open, row])
 
   const filteredProjectOptions = useMemo(() => {
-    return projectOptions.filter((option) => option.value !== row?.projectName)
-  }, [projectOptions, row?.projectName])
+    // excluding the same project 
+    return projectOptions.filter((option) => option.value !== row?.projectId)
+  }, [projectOptions, row?.projectId])
 
   const canConfirm =
     mode === 'same-branch' ||
