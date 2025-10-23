@@ -1,9 +1,7 @@
 import { PostgresTrigger } from '@supabase/postgres-meta'
 import { useState } from 'react'
-import { useIsInlineEditorEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { DeleteTrigger } from 'components/interfaces/Database/Triggers/DeleteTrigger'
 import { TriggerSheet } from 'components/interfaces/Database/Triggers/TriggerSheet'
-import { generateTriggerCreateSQL } from 'components/interfaces/Database/Triggers/TriggersList/TriggerList.utils'
 import TriggersList from 'components/interfaces/Database/Triggers/TriggersList/TriggersList'
 import DatabaseLayout from 'components/layouts/DatabaseLayout/DatabaseLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -14,36 +12,21 @@ import NoPermission from 'components/ui/NoPermission'
 import type { NextPageWithLayout } from 'types'
 
 const TriggersPage: NextPageWithLayout = () => {
-  const isInlineEditorEnabled = useIsInlineEditorEnabled()
-
   const [selectedTrigger, setSelectedTrigger] = useState<PostgresTrigger>()
   const [showCreateTriggerForm, setShowCreateTriggerForm] = useState<boolean>(false)
   const [showDeleteTriggerForm, setShowDeleteTriggerForm] = useState<boolean>(false)
 
   // Local editor panel state
   const [editorPanelOpen, setEditorPanelOpen] = useState(false)
-  const [selectedTriggerForEditor, setSelectedTriggerForEditor] = useState<PostgresTrigger>()
 
   const { can: canReadTriggers, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
 
   const createTrigger = () => {
-    if (isInlineEditorEnabled) {
-      setSelectedTriggerForEditor(undefined)
-      setEditorPanelOpen(true)
-    } else {
-      setSelectedTrigger(undefined)
-      setShowCreateTriggerForm(true)
-    }
+    setEditorPanelOpen(true)
   }
 
   const editTrigger = (trigger: PostgresTrigger) => {
-    if (isInlineEditorEnabled) {
-      setSelectedTriggerForEditor(trigger)
-      setEditorPanelOpen(true)
-    } else {
-      setSelectedTrigger(trigger)
-      setShowCreateTriggerForm(true)
-    }
+    setEditorPanelOpen(true)
   }
 
   const deleteTrigger = (trigger: PostgresTrigger) => {
@@ -88,30 +71,18 @@ const TriggersPage: NextPageWithLayout = () => {
         open={editorPanelOpen}
         onRunSuccess={() => {
           setEditorPanelOpen(false)
-          setSelectedTriggerForEditor(undefined)
         }}
         onClose={() => {
           setEditorPanelOpen(false)
-          setSelectedTriggerForEditor(undefined)
         }}
         initialValue={
-          selectedTriggerForEditor
-            ? generateTriggerCreateSQL(selectedTriggerForEditor)
-            : `create trigger trigger_name
+          `create trigger trigger_name
 after insert or update or delete on table_name
 for each row
 execute function function_name();`
         }
-        label={
-          selectedTriggerForEditor
-            ? `Edit trigger "${selectedTriggerForEditor.name}"`
-            : 'Create new database trigger'
-        }
-        initialPrompt={
-          selectedTriggerForEditor
-            ? `Update the database trigger "${selectedTriggerForEditor.name}" to...`
-            : 'Create a new database trigger that...'
-        }
+        label='Create new database trigger'
+        initialPrompt='Create a new database trigger that...'
       />
     </>
   )

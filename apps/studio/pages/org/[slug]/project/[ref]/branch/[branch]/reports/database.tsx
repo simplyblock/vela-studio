@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useParams } from 'common'
-import ReportChart from 'components/interfaces/Reports/ReportChart'
 import ReportHeader from 'components/interfaces/Reports/ReportHeader'
 import ReportPadding from 'components/interfaces/Reports/ReportPadding'
 import { REPORT_DATERANGE_HELPER_LABELS } from 'components/interfaces/Reports/Reports.constants'
@@ -33,11 +32,10 @@ import { useDatabaseReport } from 'data/reports/database-report-query'
 import { useReportDateRange } from 'hooks/misc/useReportDateRange'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useFlag } from 'hooks/ui/useFlag'
 import { formatBytes } from 'lib/helpers'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import type { NextPageWithLayout } from 'types'
-import { AlertDescription_Shadcn_, Alert_Shadcn_, Button } from 'ui'
+import { Alert_Shadcn_, AlertDescription_Shadcn_, Button } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const DatabaseReport: NextPageWithLayout = () => {
@@ -59,7 +57,6 @@ export default DatabaseReport
 
 const DatabaseUsage = () => {
   const { db, chart, ref: projectRef, slug: orgRef, branch: branchRef } = useParams()
-  const isReportsV2 = useFlag('reportsDatabaseV2')
   const { data: org } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
@@ -71,8 +68,6 @@ const DatabaseUsage = () => {
     datePickerHelpers,
     handleDatePickerChange,
   } = useReportDateRange(REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES)
-
-  const showChartsV2 = isReportsV2
 
   const state = useDatabaseSelectorStateSnapshot()
   const queryClient = useQueryClient()
@@ -95,9 +90,12 @@ const DatabaseUsage = () => {
   const { data: maxConnections } = useMaxConnectionsQuery({
     branch,
   })
-  const { data: poolerConfig } = usePgbouncerConfigQuery({ orgSlug: org?.slug, projectRef: project?.ref })
-  // FIXME: need permission implemented 
-  const { can: canUpdateDiskSizeConfig } = {can:true}
+  const { data: poolerConfig } = usePgbouncerConfigQuery({
+    orgSlug: org?.slug,
+    projectRef: project?.ref,
+  })
+  // FIXME: need permission implemented
+  const { can: canUpdateDiskSizeConfig } = { can: true }
 
   const REPORT_ATTRIBUTES = getReportAttributes(
     org!,
@@ -140,35 +138,19 @@ const DatabaseUsage = () => {
         })
       )
     })
-    if (showChartsV2) {
-      REPORT_ATTRIBUTES_V2.forEach((chart: any) => {
-        chart.attributes.forEach((attr: any) => {
-          queryClient.invalidateQueries(
-            analyticsKeys.infraMonitoring(projectRef, {
-              attribute: attr.attribute,
-              startDate: period_start.date,
-              endDate: period_end.date,
-              interval,
-              databaseIdentifier: state.selectedDatabaseId,
-            })
-          )
-        })
+    REPORT_ATTRIBUTES_V2.forEach((chart: any) => {
+      chart.attributes.forEach((attr: any) => {
+        queryClient.invalidateQueries(
+          analyticsKeys.infraMonitoring(projectRef, {
+            attribute: attr.attribute,
+            startDate: period_start.date,
+            endDate: period_end.date,
+            interval,
+            databaseIdentifier: state.selectedDatabaseId,
+          })
+        )
       })
-    } else {
-      REPORT_ATTRIBUTES.forEach((chart: any) => {
-        chart.attributes.forEach((attr: any) => {
-          queryClient.invalidateQueries(
-            analyticsKeys.infraMonitoring(projectRef, {
-              attribute: attr.attribute,
-              startDate: period_start.date,
-              endDate: period_end.date,
-              interval,
-              databaseIdentifier: state.selectedDatabaseId,
-            })
-          )
-        })
-      })
-    }
+    })
     if (isReplicaSelected) {
       queryClient.invalidateQueries(
         analyticsKeys.infraMonitoring(projectRef, {
@@ -240,56 +222,23 @@ const DatabaseUsage = () => {
         }
       >
         {selectedDateRange &&
-          (showChartsV2
-            ? REPORT_ATTRIBUTES_V2.filter((chart) => !chart.hide).map((chart) => (
-                <ComposedChartHandler
-                  key={chart.id}
-                  {...chart}
-                  attributes={chart.attributes as MultiAttribute[]}
-                  interval={selectedDateRange.interval}
-                  startDate={selectedDateRange?.period_start?.date}
-                  endDate={selectedDateRange?.period_end?.date}
-                  updateDateRange={updateDateRange}
-                  defaultChartStyle={chart.defaultChartStyle as 'line' | 'bar' | 'stackedAreaLine'}
-                  showMaxValue={
-                    chart.id === 'client-connections' || chart.id === 'pgbouncer-connections'
-                      ? true
-                      : chart.showMaxValue
-                  }
-                />
-              ))
-            : REPORT_ATTRIBUTES.filter((chart) => !chart.hide).map((chart, i) =>
-                chart.availableIn?.includes('free') ? (
-                  <ComposedChartHandler
-                    key={chart.id}
-                    {...chart}
-                    attributes={chart.attributes as MultiAttribute[]}
-                    interval={selectedDateRange.interval}
-                    startDate={selectedDateRange?.period_start?.date}
-                    endDate={selectedDateRange?.period_end?.date}
-                    updateDateRange={updateDateRange}
-                    defaultChartStyle={
-                      chart.defaultChartStyle as 'line' | 'bar' | 'stackedAreaLine'
-                    }
-                    showMaxValue={
-                      chart.id === 'client-connections' || chart.id === 'pgbouncer-connections'
-                        ? true
-                        : chart.showMaxValue
-                    }
-                    syncId={chart.syncId}
-                  />
-                ) : (
-                  <ReportChart
-                    key={`${chart.id}-${i}`}
-                    chart={chart}
-                    className="!mb-0"
-                    interval={selectedDateRange.interval}
-                    startDate={selectedDateRange?.period_start?.date}
-                    endDate={selectedDateRange?.period_end?.date}
-                    updateDateRange={updateDateRange}
-                  />
-                )
-              ))}
+          REPORT_ATTRIBUTES_V2.filter((chart) => !chart.hide).map((chart) => (
+            <ComposedChartHandler
+              key={chart.id}
+              {...chart}
+              attributes={chart.attributes as MultiAttribute[]}
+              interval={selectedDateRange.interval}
+              startDate={selectedDateRange?.period_start?.date}
+              endDate={selectedDateRange?.period_end?.date}
+              updateDateRange={updateDateRange}
+              defaultChartStyle={chart.defaultChartStyle as 'line' | 'bar' | 'stackedAreaLine'}
+              showMaxValue={
+                chart.id === 'client-connections' || chart.id === 'pgbouncer-connections'
+                  ? true
+                  : chart.showMaxValue
+              }
+            />
+          ))}
         {selectedDateRange && isReplicaSelected && (
           <Panel title="Replica Information">
             <Panel.Content>
@@ -331,7 +280,9 @@ const DatabaseUsage = () => {
                   <div className="col-span-full lg:col-span-4 xl:col-span-7 lg:text-right">
                     {project?.cloud_provider === 'AWS' ? (
                       <Button asChild type="default">
-                        <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/compute-and-disk`}>
+                        <Link
+                          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/compute-and-disk`}
+                        >
                           Increase disk size
                         </Link>
                       </Button>

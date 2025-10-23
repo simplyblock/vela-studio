@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useIsInlineEditorEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { CreateFunction, DeleteFunction } from 'components/interfaces/Database'
 import FunctionsList from 'components/interfaces/Database/Functions/FunctionsList/FunctionsList'
 import DatabaseLayout from 'components/layouts/DatabaseLayout/DatabaseLayout'
@@ -15,34 +14,18 @@ const DatabaseFunctionsPage: NextPageWithLayout = () => {
   const [selectedFunction, setSelectedFunction] = useState<DatabaseFunction | undefined>()
   const [showCreateFunctionForm, setShowCreateFunctionForm] = useState(false)
   const [showDeleteFunctionForm, setShowDeleteFunctionForm] = useState(false)
-  const isInlineEditorEnabled = useIsInlineEditorEnabled()
 
   // Local editor panel state
   const [editorPanelOpen, setEditorPanelOpen] = useState(false)
-  const [selectedFunctionForEditor, setSelectedFunctionForEditor] = useState<
-    DatabaseFunction | undefined
-  >()
-  // FIXME: need permission implemented 
+  // FIXME: need permission implemented
   const { can: canReadFunctions, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
 
   const createFunction = () => {
-    if (isInlineEditorEnabled) {
-      setSelectedFunctionForEditor(undefined)
-      setEditorPanelOpen(true)
-    } else {
-      setSelectedFunction(undefined)
-      setShowCreateFunctionForm(true)
-    }
+    setEditorPanelOpen(true)
   }
 
   const editFunction = (fn: DatabaseFunction) => {
-    if (isInlineEditorEnabled) {
-      setSelectedFunctionForEditor(fn)
-      setEditorPanelOpen(true)
-    } else {
-      setSelectedFunction(fn)
-      setShowCreateFunctionForm(true)
-    }
+    setEditorPanelOpen(true)
   }
 
   const deleteFunction = (fn: any) => {
@@ -86,16 +69,12 @@ const DatabaseFunctionsPage: NextPageWithLayout = () => {
         open={editorPanelOpen}
         onRunSuccess={() => {
           setEditorPanelOpen(false)
-          setSelectedFunctionForEditor(undefined)
         }}
         onClose={() => {
           setEditorPanelOpen(false)
-          setSelectedFunctionForEditor(undefined)
         }}
         initialValue={
-          selectedFunctionForEditor
-            ? selectedFunctionForEditor.complete_statement
-            : `create function function_name()
+          `create function function_name()
 returns void
 language plpgsql
 as $$
@@ -104,16 +83,8 @@ begin
 end;
 $$;`
         }
-        label={
-          selectedFunctionForEditor
-            ? `Edit function "${selectedFunctionForEditor.name}"`
-            : 'Create new database function'
-        }
-        initialPrompt={
-          selectedFunctionForEditor
-            ? `Update the database function "${selectedFunctionForEditor.name}" to...`
-            : 'Create a new database function that...'
-        }
+        label='Create new database function'
+        initialPrompt='Create a new database function that...'
       />
     </>
   )

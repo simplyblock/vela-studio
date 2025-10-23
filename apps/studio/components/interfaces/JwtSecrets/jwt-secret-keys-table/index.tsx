@@ -11,7 +11,6 @@ import { JWTSigningKey, useJWTSigningKeysQuery } from 'data/jwt-signing-keys/jwt
 import { useLegacyJWTSigningKeyCreateMutation } from 'data/jwt-signing-keys/legacy-jwt-signing-key-create-mutation'
 import { useLegacyJWTSigningKeyQuery } from 'data/jwt-signing-keys/legacy-jwt-signing-key-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useFlag } from 'hooks/ui/useFlag'
 import {
   Button,
   Card,
@@ -30,7 +29,6 @@ import {
   TableRow,
 } from 'ui'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
-import { SigningKeysComingSoonBanner } from '../signing-keys-coming-soon'
 import { StartUsingJwtSigningKeysBanner } from '../start-using-keys-banner'
 import { ActionPanel } from './action-panel'
 import { CreateKeyDialog } from './create-key-dialog'
@@ -43,8 +41,6 @@ type DialogType = 'legacy' | 'create' | 'rotate' | 'key-details' | 'revoke' | 'd
 export default function JWTSecretKeysTable() {
   const { ref: projectRef } = useParams()
   const { data: project, isLoading: isProjectLoading } = useSelectedProjectQuery()
-
-  const newJwtSecrets = useFlag('newJwtSecrets')
 
   const [selectedKey, setSelectedKey] = useState<JWTSigningKey>()
   const [selectedKeyToUpdate, setSelectedKeyToUpdate] = useState<string>()
@@ -144,10 +140,6 @@ export default function JWTSecretKeysTable() {
 
   if (isLoading) {
     return <GenericSkeletonLoader />
-  }
-
-  if (!newJwtSecrets) {
-    return <SigningKeysComingSoonBanner />
   }
 
   return (

@@ -3,7 +3,6 @@
  * import directly from here.
  */
 export * from './src/admonition'
-export * from './src/AssistantChat/AssistantChatForm'
 export * from './src/AuthenticatedDropdownMenu'
 export * from './src/Banners'
 export * from './src/CommandMenu'

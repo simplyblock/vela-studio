@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router'
 import { PropsWithChildren } from 'react'
 
-import { useIsColumnLevelPrivilegesEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { ProductMenu } from 'components/ui/ProductMenu'
 import { useDatabaseExtensionsQuery } from 'data/database-extensions/database-extensions-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { withAuth } from 'hooks/misc/withAuth'
-import { useFlag } from 'hooks/ui/useFlag'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateDatabaseMenu } from './DatabaseMenu.utils'
 import { getOrganizationSlug } from 'data/vela/organization-path-slug'
@@ -33,8 +31,6 @@ const DatabaseProductMenu = () => {
   })
 
   const pitrEnabled = true
-  const columnLevelPrivileges = useIsColumnLevelPrivilegesEnabled()
-  const enablePgReplicate = useFlag('enablePgReplicate')
 
   const { databaseRoles: showRoles } = useIsFeatureEnabled([
     'database:replication',
@@ -48,8 +44,6 @@ const DatabaseProductMenu = () => {
         page={page}
         menu={generateDatabaseMenu(slug, project, branchRef, {
           pitrEnabled,
-          columnLevelPrivileges,
-          enablePgReplicate,
           showPgReplicate,
           showRoles,
         })}

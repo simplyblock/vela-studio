@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router'
 
 import { useParams } from 'common'
-import { useUnifiedLogsPreview } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
-import { useFlag } from 'hooks/ui/useFlag'
-import { Button, cn, ResizablePanel } from 'ui'
-import { FeaturePreviewSidebarPanel } from '../FeaturePreviewSidebarPanel'
+import { cn, ResizablePanel } from 'ui'
 import { DateRangeDisabled } from './DataTable.types'
 import { DataTableFilterControls } from './DataTableFilters/DataTableFilterControls'
 import { DataTableResetButton } from './DataTableResetButton'
@@ -18,14 +15,6 @@ export function FilterSideBar({ dateRangeDisabled }: FilterSideBarProps) {
   const router = useRouter()
   const { slug, ref, branch: branchRef } = useParams()
   const { table } = useDataTable()
-
-  const isUnifiedLogsPreviewAvailable = useFlag('unifiedLogs')
-  const { disable: disableUnifiedLogs } = useUnifiedLogsPreview()
-
-  const handleGoBackToOldLogs = () => {
-    disableUnifiedLogs()
-    router.push(`/org/${slug}/project/${ref}/branch/${branchRef}/logs/explorer`)
-  }
 
   return (
     <ResizablePanel
@@ -48,18 +37,6 @@ export function FilterSideBar({ dateRangeDisabled }: FilterSideBarProps) {
       </div>
 
       <div className="flex-1 p-2 sm:overflow-y-scroll">
-        {isUnifiedLogsPreviewAvailable && (
-          <FeaturePreviewSidebarPanel
-            className="mx-2 mt-2 mb-3"
-            title="Go back to old logs"
-            description="Use the traditional interface"
-            actions={
-              <Button type="default" size="tiny" onClick={handleGoBackToOldLogs}>
-                Switch back
-              </Button>
-            }
-          />
-        )}
         <DataTableFilterControls dateRangeDisabled={dateRangeDisabled} />
       </div>
     </ResizablePanel>

@@ -10,7 +10,6 @@ import { useProjectRestartMutation } from 'data/projects/project-restart-mutatio
 import { useProjectRestartServicesMutation } from 'data/projects/project-restart-services-mutation'
 import { setProjectStatus } from 'data/projects/projects-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useFlag } from 'hooks/ui/useFlag'
 import {
   Button,
   DropdownMenu,
@@ -33,8 +32,7 @@ const RestartServerButton = () => {
   const projectRef = project?.ref ?? ''
   const projectRegion = project?.region ?? ''
 
-  const projectRestartDisabled = useFlag('disableProjectRestarts')
-   // FIXME: need permission implemented  
+   // FIXME: need permission implemented
   const { can: canRestartProject } = {can:true}
 
   const { mutate: restartProject, isLoading: isRestartingProject } = useProjectRestartMutation({
@@ -95,26 +93,23 @@ const RestartServerButton = () => {
           disabled={
             project === undefined ||
             !canRestartProject ||
-            !isProjectActive ||
-            projectRestartDisabled
+            !isProjectActive
           }
           onClick={() => setServiceToRestart('project')}
           tooltip={{
             content: {
               side: 'bottom',
-              text: projectRestartDisabled
-                ? 'Project restart is currently disabled'
-                : !canRestartProject
-                  ? 'You need additional permissions to restart this project'
-                  : !isProjectActive
-                    ? 'Unable to restart project as project is not active'
-                    : undefined,
+              text: !canRestartProject
+                ? 'You need additional permissions to restart this project'
+                : !isProjectActive
+                  ? 'Unable to restart project as project is not active'
+                  : undefined,
             },
           }}
         >
           Restart project
         </ButtonTooltip>
-        {canRestartProject && isProjectActive && !projectRestartDisabled && (
+        {canRestartProject && isProjectActive && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

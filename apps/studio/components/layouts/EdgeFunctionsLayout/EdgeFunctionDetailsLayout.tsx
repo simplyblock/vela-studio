@@ -5,10 +5,8 @@ import { toast } from 'sonner'
 
 import { BlobReader, BlobWriter, ZipWriter } from '@zip.js/zip.js'
 import { useParams } from 'common'
-import { useIsAPIDocsSidePanelEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { EdgeFunctionTesterSheet } from 'components/interfaces/Functions/EdgeFunctionDetails/EdgeFunctionTesterSheet'
 import { PageLayout } from 'components/layouts/PageLayout/PageLayout'
-import APIDocsButton from 'components/ui/APIDocsButton'
 import { DocsButton } from 'components/ui/DocsButton'
 import NoPermission from 'components/ui/NoPermission'
 import { useEdgeFunctionBodyQuery } from 'data/edge-functions/edge-function-body-query'
@@ -40,8 +38,7 @@ const EdgeFunctionDetailsLayout = ({
   const { slug: orgRef, functionSlug, ref: projectRef, branch: branchRef } = useParams()
   const { mutate: sendEvent } = useSendEventMutation()
 
-  const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
-  // FIXME: need permission implemented   
+  // FIXME: need permission implemented
   const { isLoading, can: canReadFunctions } = {can:true , isLoading:false}
 
   const [isOpen, setIsOpen] = useState(false)
@@ -157,13 +154,6 @@ const EdgeFunctionDetailsLayout = ({
         navigationItems={navigationItems}
         primaryActions={
           <div className="flex items-center space-x-2">
-            {isNewAPIDocsEnabled && (
-              <APIDocsButton
-                section={
-                  functionSlug !== undefined ? ['edge-functions', functionSlug] : ['edge-functions']
-                }
-              />
-            )}
             <DocsButton href="https://supabase.com/docs/guides/functions" />
             <Popover_Shadcn_>
               <PopoverTrigger_Shadcn_ asChild>

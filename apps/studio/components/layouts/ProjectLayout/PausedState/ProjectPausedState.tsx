@@ -9,7 +9,6 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { useParams } from 'common'
-import { PostgresVersionSelector } from 'components/interfaces/ProjectCreation/PostgresVersionSelector'
 import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useFreeProjectLimitCheckQuery } from 'data/organizations/free-project-limit-check-query'
@@ -19,14 +18,12 @@ import { useProjectRestoreMutation } from 'data/projects/project-restore-mutatio
 import { setProjectStatus } from 'data/projects/projects-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useFlag } from 'hooks/ui/useFlag'
 import { PROJECT_STATUS } from 'lib/constants'
 import {
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
   Alert_Shadcn_,
   Button,
-  FormField_Shadcn_,
   Form_Shadcn_,
   Modal,
 } from 'ui'
@@ -53,7 +50,6 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
-  const showPostgresVersionSelector = useFlag('showPostgresVersionSelector')
 
   const {
     data: pauseStatus,
@@ -102,19 +98,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
       return toast.error('Unable to restore: project is required')
     }
 
-    if (!showPostgresVersionSelector) {
-      restoreProject({ ref: project.ref })
-    } else {
-      const { postgresVersionSelection } = values
-
-      const postgresVersionDetails = extractPostgresVersionDetails(postgresVersionSelection)
-
-      restoreProject({
-        ref: project.ref,
-        releaseChannel: postgresVersionDetails.releaseChannel,
-        postgresEngine: postgresVersionDetails.postgresEngine,
-      })
-    }
+    restoreProject({ ref: project.ref })
   }
 
   const FormSchema = z.object({
@@ -257,27 +241,6 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
       >
         <Form_Shadcn_ {...form}>
           <form onSubmit={form.handleSubmit(onConfirmRestore)}>
-            {showPostgresVersionSelector && (
-              <Modal.Content>
-                <div className="space-y-2">
-                  <FormField_Shadcn_
-                    control={form.control}
-                    name="postgresVersionSelection"
-                    render={({ field }) => (
-                      <PostgresVersionSelector
-                        field={field}
-                        form={form}
-                        type="unpause"
-                        label="Select the version of Postgres to restore to"
-                        layout="vertical"
-                        dbRegion="default"
-                        organizationSlug={selectedOrganization?.slug}
-                      />
-                    )}
-                  />
-                </div>
-              </Modal.Content>
-            )}
             <Modal.Content className="flex items-center space-x-2 justify-end">
               <Button
                 type="default"

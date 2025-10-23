@@ -20,7 +20,6 @@ import { SecurityOptions } from 'components/interfaces/ProjectCreation/SecurityO
 import { SpecialSymbolsCallout } from 'components/interfaces/ProjectCreation/SpecialSymbolsCallout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { WizardLayoutWithoutAuth } from 'components/layouts/WizardLayout'
-import DisabledWarningDueToIncident from 'components/ui/DisabledWarningDueToIncident'
 import Panel from 'components/ui/Panel'
 import PasswordStrengthBar from 'components/ui/PasswordStrengthBar'
 import { useAuthorizedAppsQuery } from 'data/oauth/authorized-apps-query'
@@ -36,7 +35,6 @@ import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { withAuth } from 'hooks/misc/withAuth'
-import { useFlag } from 'hooks/ui/useFlag'
 import { DEFAULT_MINIMUM_PASSWORD_STRENGTH, PROJECT_STATUS } from 'lib/constants'
 import passwordStrength from 'lib/password-strength'
 import { generateStrongPassword } from 'lib/project'
@@ -110,9 +108,6 @@ const Wizard: NextPageWithLayout = () => {
   }
 
   const { mutate: sendEvent } = useSendEventMutation()
-
-  const projectCreationDisabled = useFlag('disableProjectCreationAndUpdate')
-  const showPostgresVersionSelector = useFlag('showPostgresVersionSelector')
 
   const { data: approvedOAuthApps } = useAuthorizedAppsQuery({ slug }, { enabled: slug !== '_' })
 
@@ -346,221 +341,213 @@ const Wizard: NextPageWithLayout = () => {
           }
         >
           <>
-            {projectCreationDisabled ? (
-              <Panel.Content className="pb-8">
-                <DisabledWarningDueToIncident title="Project creation is currently disabled" />
+            <div className="divide-y divide-border-muted">
+              <Panel.Content className={['space-y-4'].join(' ')}>
+                {isAdmin && !isInvalidSlug && (
+                  <FormField_Shadcn_
+                    control={form.control}
+                    name="organization"
+                    render={({ field }) => (
+                      <FormItemLayout label="Organization" layout="horizontal">
+                        {(organizations?.length ?? 0) > 0 && (
+                          <Select_Shadcn_
+                            onValueChange={(slug) => {
+                              field.onChange(slug)
+                              router.push(`/new/${slug}`)
+                            }}
+                            value={field.value}
+                            defaultValue={field.value}
+                          >
+                            <FormControl_Shadcn_>
+                              <SelectTrigger_Shadcn_>
+                                <SelectValue_Shadcn_ placeholder="Select an organization" />
+                              </SelectTrigger_Shadcn_>
+                            </FormControl_Shadcn_>
+                            <SelectContent_Shadcn_>
+                              <SelectGroup_Shadcn_>
+                                {organizations?.map((x) => (
+                                  <SelectItem_Shadcn_
+                                    key={x.id}
+                                    value={x.slug}
+                                    className="flex justify-between"
+                                  >
+                                    <span className="mr-2">{x.name}</span>
+                                  </SelectItem_Shadcn_>
+                                ))}
+                              </SelectGroup_Shadcn_>
+                            </SelectContent_Shadcn_>
+                          </Select_Shadcn_>
+                        )}
+                      </FormItemLayout>
+                    )}
+                  />
+                )}
+
+                {isOrganizationsSuccess && !isAdmin && !orgNotFound && (
+                  <NotOrganizationOwnerWarning slug={slug} />
+                )}
+                {orgNotFound && <OrgNotFound slug={slug} />}
               </Panel.Content>
-            ) : (
-              <div className="divide-y divide-border-muted">
-                <Panel.Content className={['space-y-4'].join(' ')}>
-                  {isAdmin && !isInvalidSlug && (
+
+              {canCreateProject && (
+                <>
+                  <Panel.Content>
                     <FormField_Shadcn_
                       control={form.control}
-                      name="organization"
+                      name="projectName"
                       render={({ field }) => (
-                        <FormItemLayout label="Organization" layout="horizontal">
-                          {(organizations?.length ?? 0) > 0 && (
-                            <Select_Shadcn_
-                              onValueChange={(slug) => {
-                                field.onChange(slug)
-                                router.push(`/new/${slug}`)
-                              }}
-                              value={field.value}
-                              defaultValue={field.value}
-                            >
-                              <FormControl_Shadcn_>
-                                <SelectTrigger_Shadcn_>
-                                  <SelectValue_Shadcn_ placeholder="Select an organization" />
-                                </SelectTrigger_Shadcn_>
-                              </FormControl_Shadcn_>
-                              <SelectContent_Shadcn_>
-                                <SelectGroup_Shadcn_>
-                                  {organizations?.map((x) => (
-                                    <SelectItem_Shadcn_
-                                      key={x.id}
-                                      value={x.slug}
-                                      className="flex justify-between"
-                                    >
-                                      <span className="mr-2">{x.name}</span>
-                                    </SelectItem_Shadcn_>
-                                  ))}
-                                </SelectGroup_Shadcn_>
-                              </SelectContent_Shadcn_>
-                            </Select_Shadcn_>
-                          )}
+                        <FormItemLayout label="Project name" layout="horizontal">
+                          <FormControl_Shadcn_>
+                            <Input_Shadcn_ {...field} placeholder="Project name" />
+                          </FormControl_Shadcn_>
                         </FormItemLayout>
                       )}
                     />
-                  )}
+                  </Panel.Content>
 
-                  {isOrganizationsSuccess && !isAdmin && !orgNotFound && (
-                    <NotOrganizationOwnerWarning slug={slug} />
-                  )}
-                  {orgNotFound && <OrgNotFound slug={slug} />}
-                </Panel.Content>
+                  <Panel.Content>
+                    <FormField_Shadcn_
+                      control={form.control}
+                      name="instanceSize"
+                      render={({ field }) => (
+                        <FormItemLayout
+                          layout="horizontal"
+                          label={
+                            <div className="flex flex-col gap-y-4">
+                              <span>Compute Size</span>
+                            </div>
+                          }
+                          description={
+                            <>
+                              <p>
+                                The default size of your project's databases. You can change this later.
+                              </p>
+                            </>
+                          }
+                        >
+                          <Select_Shadcn_
+                            value={field.value}
+                            onValueChange={(value) => field.onChange(value)}
+                          >
+                            <SelectTrigger_Shadcn_ className="[&_.instance-details]:hidden">
+                              <SelectValue_Shadcn_ placeholder="Select a compute size" />
+                            </SelectTrigger_Shadcn_>
+                            <SelectContent_Shadcn_>
+                              <SelectGroup_Shadcn_>
+                                <SelectItem_Shadcn_
+                                  key={'disabled'}
+                                  value={'disabled'}
+                                  disabled
+                                >
+                                  <div className="flex items-center justify-center w-full">
+                                    <span>Larger instance sizes available after creation</span>
+                                  </div>
+                                </SelectItem_Shadcn_>
+                              </SelectGroup_Shadcn_>
+                            </SelectContent_Shadcn_>
+                          </Select_Shadcn_>
+                        </FormItemLayout>
+                      )}
+                    />
+                  </Panel.Content>
 
-                {canCreateProject && (
-                  <>
+                  <Panel.Content>
+                    <FormField_Shadcn_
+                      control={form.control}
+                      name="dbPass"
+                      render={({ field }) => {
+                        const hasSpecialCharacters =
+                          field.value.length > 0 && !field.value.match(SPECIAL_CHARS_REGEX)
+
+                        return (
+                          <FormItemLayout
+                            label="Database Password"
+                            layout="horizontal"
+                            description={
+                              <>
+                                {hasSpecialCharacters && <SpecialSymbolsCallout />}
+                                <PasswordStrengthBar
+                                  passwordStrengthScore={form.getValues('dbPassStrength')}
+                                  password={field.value}
+                                  passwordStrengthMessage={passwordStrengthMessage}
+                                  generateStrongPassword={generatePassword}
+                                />
+                              </>
+                            }
+                          >
+                            <FormControl_Shadcn_>
+                              <Input
+                                copy={field.value.length > 0}
+                                type="password"
+                                placeholder="Type in a strong password"
+                                {...field}
+                                autoComplete="off"
+                                onChange={async (event) => {
+                                  field.onChange(event)
+                                  form.trigger('dbPassStrength')
+                                  const value = event.target.value
+                                  if (event.target.value === '') {
+                                    await form.setValue('dbPassStrength', 0)
+                                    await form.trigger('dbPass')
+                                  } else {
+                                    await delayedCheckPasswordStrength(value)
+                                  }
+                                }}
+                              />
+                            </FormControl_Shadcn_>
+                          </FormItemLayout>
+                        )
+                      }}
+                    />
+                  </Panel.Content>
+
+                  <Panel.Content>
+                    <FormField_Shadcn_
+                      control={form.control}
+                      name="postgresVersionSelection"
+                      render={({ field }) => (
+                        <PostgresVersionSelector
+                          field={field}
+                          form={form}
+                          organizationSlug={slug}
+                        />
+                      )}
+                    />
+                  </Panel.Content>
+
+                  {showNonProdFields && (
                     <Panel.Content>
                       <FormField_Shadcn_
                         control={form.control}
-                        name="projectName"
+                        name="postgresVersion"
                         render={({ field }) => (
-                          <FormItemLayout label="Project name" layout="horizontal">
+                          <FormItemLayout
+                            label="Custom Postgres version"
+                            layout="horizontal"
+                            description="Specify a custom version of Postgres (Defaults to the latest). This is only applicable for local/staging projects"
+                          >
                             <FormControl_Shadcn_>
-                              <Input_Shadcn_ {...field} placeholder="Project name" />
+                              <Input_Shadcn_
+                                placeholder="Postgres version"
+                                {...field}
+                                autoComplete="off"
+                              />
                             </FormControl_Shadcn_>
                           </FormItemLayout>
                         )}
                       />
                     </Panel.Content>
+                  )}
 
-                    <Panel.Content>
-                      <FormField_Shadcn_
-                        control={form.control}
-                        name="instanceSize"
-                        render={({ field }) => (
-                          <FormItemLayout
-                            layout="horizontal"
-                            label={
-                              <div className="flex flex-col gap-y-4">
-                                <span>Compute Size</span>
-                              </div>
-                            }
-                            description={
-                              <>
-                                <p>
-                                  The default size of your project's databases. You can change this later.
-                                </p>
-                              </>
-                            }
-                          >
-                            <Select_Shadcn_
-                              value={field.value}
-                              onValueChange={(value) => field.onChange(value)}
-                            >
-                              <SelectTrigger_Shadcn_ className="[&_.instance-details]:hidden">
-                                <SelectValue_Shadcn_ placeholder="Select a compute size" />
-                              </SelectTrigger_Shadcn_>
-                              <SelectContent_Shadcn_>
-                                <SelectGroup_Shadcn_>
-                                  <SelectItem_Shadcn_
-                                    key={'disabled'}
-                                    value={'disabled'}
-                                    disabled
-                                  >
-                                    <div className="flex items-center justify-center w-full">
-                                      <span>Larger instance sizes available after creation</span>
-                                    </div>
-                                  </SelectItem_Shadcn_>
-                                </SelectGroup_Shadcn_>
-                              </SelectContent_Shadcn_>
-                            </Select_Shadcn_>
-                          </FormItemLayout>
-                        )}
-                      />
-                    </Panel.Content>
-
-                    <Panel.Content>
-                      <FormField_Shadcn_
-                        control={form.control}
-                        name="dbPass"
-                        render={({ field }) => {
-                          const hasSpecialCharacters =
-                            field.value.length > 0 && !field.value.match(SPECIAL_CHARS_REGEX)
-
-                          return (
-                            <FormItemLayout
-                              label="Database Password"
-                              layout="horizontal"
-                              description={
-                                <>
-                                  {hasSpecialCharacters && <SpecialSymbolsCallout />}
-                                  <PasswordStrengthBar
-                                    passwordStrengthScore={form.getValues('dbPassStrength')}
-                                    password={field.value}
-                                    passwordStrengthMessage={passwordStrengthMessage}
-                                    generateStrongPassword={generatePassword}
-                                  />
-                                </>
-                              }
-                            >
-                              <FormControl_Shadcn_>
-                                <Input
-                                  copy={field.value.length > 0}
-                                  type="password"
-                                  placeholder="Type in a strong password"
-                                  {...field}
-                                  autoComplete="off"
-                                  onChange={async (event) => {
-                                    field.onChange(event)
-                                    form.trigger('dbPassStrength')
-                                    const value = event.target.value
-                                    if (event.target.value === '') {
-                                      await form.setValue('dbPassStrength', 0)
-                                      await form.trigger('dbPass')
-                                    } else {
-                                      await delayedCheckPasswordStrength(value)
-                                    }
-                                  }}
-                                />
-                              </FormControl_Shadcn_>
-                            </FormItemLayout>
-                          )
-                        }}
-                      />
-                    </Panel.Content>
-
-                    {showPostgresVersionSelector && (
-                      <Panel.Content>
-                        <FormField_Shadcn_
-                          control={form.control}
-                          name="postgresVersionSelection"
-                          render={({ field }) => (
-                            <PostgresVersionSelector
-                              field={field}
-                              form={form}
-                              organizationSlug={slug}
-                            />
-                          )}
-                        />
-                      </Panel.Content>
-                    )}
-
-                    {showNonProdFields && (
-                      <Panel.Content>
-                        <FormField_Shadcn_
-                          control={form.control}
-                          name="postgresVersion"
-                          render={({ field }) => (
-                            <FormItemLayout
-                              label="Custom Postgres version"
-                              layout="horizontal"
-                              description="Specify a custom version of Postgres (Defaults to the latest). This is only applicable for local/staging projects"
-                            >
-                              <FormControl_Shadcn_>
-                                <Input_Shadcn_
-                                  placeholder="Postgres version"
-                                  {...field}
-                                  autoComplete="off"
-                                />
-                              </FormControl_Shadcn_>
-                            </FormItemLayout>
-                          )}
-                        />
-                      </Panel.Content>
-                    )}
-
-                    <SecurityOptions form={form} />
-                    {
-                      /* //FIXME: Hard disabled for now */ false && showAdvancedConfig && (
-                        <AdvancedConfiguration form={form} />
-                      )
-                    }
-                  </>
-                )}
-              </div>
-            )}
+                  <SecurityOptions form={form} />
+                  {
+                    /* //FIXME: Hard disabled for now */ false && showAdvancedConfig && (
+                      <AdvancedConfiguration form={form} />
+                    )
+                  }
+                </>
+              )}
+            </div>
           </>
         </Panel>
 

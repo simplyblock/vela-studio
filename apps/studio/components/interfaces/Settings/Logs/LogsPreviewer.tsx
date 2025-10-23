@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { PropsWithChildren, useEffect, useState } from 'react'
 
 import { useParams } from 'common'
-import PreviewFilterPanel from 'components/interfaces/Settings/Logs/PreviewFilterPanel'
 import LoadingOpacity from 'components/ui/LoadingOpacity'
 import ShimmerLine from 'components/ui/ShimmerLine'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
@@ -12,7 +11,6 @@ import useLogsPreview from 'hooks/analytics/useLogsPreview'
 import { useLogsUrlState } from 'hooks/analytics/useLogsUrlState'
 import { useSelectedLog } from 'hooks/analytics/useSelectedLog'
 import useSingleLog from 'hooks/analytics/useSingleLog'
-import { useFlag } from 'hooks/ui/useFlag'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { Button } from 'ui'
 import { LogsBarChart } from 'ui-patterns/LogsBarChart'
@@ -57,7 +55,6 @@ export const LogsPreviewer = ({
   EmptyState,
   filterPanelClassName,
 }: PropsWithChildren<LogsPreviewerProps>) => {
-  const useUniversalFilterBar = useFlag('universalFilterBar')
 
   const router = useRouter()
   const { slug, db, branch: branchRef } = useParams()
@@ -216,13 +213,7 @@ export const LogsPreviewer = ({
 
   return (
     <div className="flex-1 flex flex-col h-full">
-      {useUniversalFilterBar ? (
-        // Experimental Universal Filter Bar
-        <PreviewFilterPanelWithUniversal {...filterPanelProps} />
-      ) : (
-        // Legacy Filter Panel
-        <PreviewFilterPanel {...filterPanelProps} />
-      )}
+      <PreviewFilterPanelWithUniversal {...filterPanelProps} />
       {children}
       <div
         className={

@@ -1,10 +1,8 @@
 import type { PostgresPolicy, PostgresTable } from '@supabase/postgres-meta'
 import { Search } from 'lucide-react'
 import { useState } from 'react'
-import { useIsInlineEditorEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import Policies from 'components/interfaces/Auth/Policies/Policies'
 import { getGeneralPolicyTemplates } from 'components/interfaces/Auth/Policies/PolicyEditorModal/PolicyEditorModal.constants'
-import { PolicyEditorPanel } from 'components/interfaces/Auth/Policies/PolicyEditorPanel'
 import { generatePolicyUpdateSQL } from 'components/interfaces/Auth/Policies/PolicyTableRow/PolicyTableRow.utils'
 import AuthLayout from 'components/layouts/AuthLayout/AuthLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -16,7 +14,6 @@ import SchemaSelector from 'components/ui/SchemaSelector'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useDatabasePoliciesQuery } from 'data/database-policies/database-policies-query'
 import { useTablesQuery } from 'data/tables/tables-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useUrlState } from 'hooks/ui/useUrlState'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import type { NextPageWithLayout } from 'types'
@@ -64,12 +61,9 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
     search?: string
   }>()
   const { schema = 'public', search: searchString = '' } = params
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const isInlineEditorEnabled = useIsInlineEditorEnabled()
 
   const [selectedTable, setSelectedTable] = useState<string>()
-  const [showPolicyAiEditor, setShowPolicyAiEditor] = useState(false)
   const [selectedPolicyToEdit, setSelectedPolicyToEdit] = useState<PostgresPolicy>()
 
   // Local editor panel state
@@ -144,37 +138,15 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
           onSelectCreatePolicy={(table: string) => {
             setSelectedTable(table)
             setSelectedPolicyToEdit(undefined)
-            if (isInlineEditorEnabled) {
-              setEditorPanelOpen(true)
-            } else {
-              setShowPolicyAiEditor(true)
-            }
+            setEditorPanelOpen(true)
           }}
           onSelectEditPolicy={(policy) => {
             setSelectedPolicyToEdit(policy)
             setSelectedTable(undefined)
-            if (isInlineEditorEnabled) {
-              setEditorPanelOpen(true)
-            } else {
-              setShowPolicyAiEditor(true)
-            }
+            setEditorPanelOpen(true)
           }}
         />
       )}
-
-      <PolicyEditorPanel
-        visible={showPolicyAiEditor}
-        schema={schema}
-        searchString={searchString}
-        selectedTable={selectedTable}
-        selectedPolicy={selectedPolicyToEdit}
-        onSelectCancel={() => {
-          setSelectedTable(undefined)
-          setShowPolicyAiEditor(false)
-          setSelectedPolicyToEdit(undefined)
-        }}
-        authContext="database"
-      />
 
       <EditorPanel
         open={editorPanelOpen}

@@ -5,7 +5,6 @@ export const generateAdvisorsMenu = (
   orgRef: string,
   project?: Project,
   branchRef?: string,
-  features?: { advisorRules: boolean }
 ): ProductMenuGroup[] => {
   const projectRef = project?.ref ?? 'default'
 
@@ -33,20 +32,16 @@ export const generateAdvisorsMenu = (
         },
       ],
     },
-    ...(features?.advisorRules
-      ? [
-          {
-            title: 'Configuration',
-            items: [
-              {
-                name: 'Settings',
-                key: 'rules',
-                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/security`,
-                items: [],
-              },
-            ],
-          },
-        ]
-      : []),
+    {
+      title: 'Configuration',
+      items: [
+        {
+          name: 'Settings',
+          key: 'rules',
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/advisors/rules/security`,
+          items: [],
+        },
+      ],
+    },
   ]
 }

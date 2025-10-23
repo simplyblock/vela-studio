@@ -1,20 +1,14 @@
-import { ChevronRight, CircleHelpIcon, Plus } from 'lucide-react'
+import { ChevronRight, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 import { useParams } from 'common'
-import {
-  useFeaturePreviewModal,
-  useUnifiedLogsPreview,
-} from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import SavedQueriesItem from 'components/interfaces/Settings/Logs/Logs.SavedQueriesItem'
 import { LogsSidebarItem } from 'components/interfaces/Settings/Logs/SidebarV2/SidebarItem'
-import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useContentQuery } from 'data/content/content-query'
 import { useReplicationSourcesQuery } from 'data/replication/sources-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
-import { useFlag } from 'hooks/ui/useFlag'
 import {
   Badge,
   Button,
@@ -78,10 +72,6 @@ export function LogsSidebarMenuV2() {
   const router = useRouter()
   const { ref, slug, branch: branchRef } = useParams() as { ref: string, slug: string, branch: string }
 
-  const unifiedLogsFlagEnabled = useFlag('unifiedLogs')
-  const { selectFeaturePreview } = useFeaturePreviewModal()
-  const { enable: enableUnifiedLogs } = useUnifiedLogsPreview()
-
   const [searchText, setSearchText] = useState('')
 
   const {
@@ -98,18 +88,14 @@ export function LogsSidebarMenuV2() {
     'logs:collections',
   ])
 
-  const enablePgReplicate = useFlag('enablePgReplicate')
   const { data: etlData, isLoading: isETLLoading } = useReplicationSourcesQuery(
     {
       orgSlug: slug, projectRef: ref,
     },
-    {
-      enabled: enablePgReplicate,
-    }
   )
 
   // [Jordi] We only want to show ETL logs if the user has the feature enabled AND they're using the feature aka they've created a source.
-  const showETLLogs = enablePgReplicate && (etlData?.sources?.length ?? 0) > 0 && !isETLLoading
+  const showETLLogs = (etlData?.sources?.length ?? 0) > 0 && !isETLLoading
 
   const { data: savedQueriesRes, isLoading: savedQueriesLoading } = useContentQuery({
     projectRef: ref,
@@ -213,50 +199,19 @@ export function LogsSidebarMenuV2() {
 
   return (
     <div className="pb-12 relative">
-      {!unifiedLogsFlagEnabled && (
-        <FeaturePreviewSidebarPanel
-          className="mx-4 mt-4"
-          illustration={<Badge variant="default">Coming soon</Badge>}
-          title="New logs"
-          description="Get early access"
-          actions={
-            <Link href="https://forms.supabase.com/unified-logs-signup" target="_blank">
-              <Button type="default" size="tiny">
-                Early access
-              </Button>
-            </Link>
-          }
-        />
-      )}
-      {unifiedLogsFlagEnabled && (
-        <FeaturePreviewSidebarPanel
-          className="mx-4 mt-4"
-          title="New Logs Interface"
-          description="Unified view across all services with improved filtering and real-time updates"
-          illustration={<Badge variant="brand">Feature Preview</Badge>}
-          actions={
-            <>
-              <Button
-                size="tiny"
-                type="default"
-                onClick={() => {
-                  enableUnifiedLogs()
-                  router.push(`/org/${slug}/project/${ref}/logs`)
-                }}
-              >
-                Enable preview
-              </Button>
-              <ButtonTooltip
-                type="default"
-                className="px-1.5"
-                icon={<CircleHelpIcon />}
-                onClick={() => selectFeaturePreview('supabase-ui-preview-unified-logs')}
-                tooltip={{ content: { side: 'bottom', text: 'More information' } }}
-              />
-            </>
-          }
-        />
-      )}
+      <FeaturePreviewSidebarPanel
+        className="mx-4 mt-4"
+        illustration={<Badge variant="default">Coming soon</Badge>}
+        title="New logs"
+        description="Get early access"
+        actions={
+          <Link href="https://forms.supabase.com/unified-logs-signup" target="_blank">
+            <Button type="default" size="tiny">
+              Early access
+            </Button>
+          </Link>
+        }
+      />
 
       <div
         className={cn(

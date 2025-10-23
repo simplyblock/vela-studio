@@ -1,4 +1,3 @@
-import { useFlag } from 'hooks/ui/useFlag'
 import { PropsWithChildren } from 'react'
 
 type SignInLayoutProps = {
@@ -11,8 +10,8 @@ const SignInLayout = ({
   subheading,
   children,
 }: PropsWithChildren<SignInLayoutProps>) => {
-  const ongoingIncident = useFlag('ongoingIncident')
 
+  const ongoingIncident = false // FIXME: get a way to find out about incidents
   return (
     <>
       <div className="relative flex flex-col bg-alternative min-h-screen">

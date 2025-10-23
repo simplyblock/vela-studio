@@ -5,10 +5,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import {
-  useFeaturePreviewModal,
-  useIsColumnLevelPrivilegesEnabled,
-} from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
-import {
   getDefaultColumnCheckedStates,
   getDefaultTableCheckedStates,
   useApplyPrivilegeOperations,
@@ -39,9 +35,6 @@ const EDITABLE_ROLES = ['authenticated', 'anon', 'service_role']
 const PrivilegesPage: NextPageWithLayout = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, table: paramTable } = useParams()
   const { data: branch } = useSelectedBranchQuery()
-  const { openFeaturePreviewModal } = useFeaturePreviewModal()
-  const isEnabled = useIsColumnLevelPrivilegesEnabled()
-
 
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
   const [selectedTable, setSelectedTable] = useState<string | undefined>(paramTable)
@@ -227,128 +220,110 @@ const PrivilegesPage: NextPageWithLayout = () => {
             <DocsButton href="https://supabase.com/docs/guides/auth/column-level-security" />
           </div>
 
-          {isEnabled ? (
-            <>
-              {!diffWarningDismissed && (
-                <Alert_Shadcn_ variant="warning">
-                  <AlertCircle strokeWidth={2} />
-                  <AlertTitle_Shadcn_>
-                    Changes to column privileges will not be reflected in migrations when running{' '}
-                    <code className="text-xs">supabase db diff</code>.
-                  </AlertTitle_Shadcn_>
-                  <AlertDescription_Shadcn_>
-                    Column privileges are not supported in the current version of the Supabase CLI.
-                    <br />
-                    You will need to manually apply these changes to your database.
-                  </AlertDescription_Shadcn_>
-                  <Button
-                    type="outline"
-                    aria-label="Dismiss"
-                    className="absolute top-2 right-2 p-1 !pl-1"
-                    onClick={() => {
-                      setDiffWarningDismissed(true)
-                    }}
-                  >
-                    <XIcon width={14} height={14} />
-                  </Button>
-                </Alert_Shadcn_>
-              )}
-
-              {!selectStarWarningDismissed && (
-                <Alert_Shadcn_ variant="warning">
-                  <AlertCircle strokeWidth={2} />
-                  <AlertTitle_Shadcn_>
-                    Changing column privileges can break existing queries.
-                  </AlertTitle_Shadcn_>
-                  <AlertDescription_Shadcn_>
-                    If you remove a column privilege for a role, that role will lose all access to
-                    that column.
-                    <br />
-                    All operations selecting <code className="text-xs">*</code> (including{' '}
-                    <code className="text-xs">returning *</code> for{' '}
-                    <code className="text-xs">insert</code>, <code className="text-xs">update</code>
-                    , and <code className="text-xs">delete</code>) will fail.
-                  </AlertDescription_Shadcn_>
-                  <Button
-                    type="outline"
-                    aria-label="Dismiss"
-                    className="absolute top-2 right-2 p-1 !pl-1"
-                    onClick={() => {
-                      setSelectStarWarningDismissed(true)
-                    }}
-                  >
-                    <XIcon width={14} height={14} />
-                  </Button>
-                </Alert_Shadcn_>
-              )}
-
-              <PrivilegesHead
-                disabled={isSchemaLocked}
-                selectedSchema={selectedSchema}
-                selectedRole={selectedRole}
-                selectedTable={table}
-                tables={tables ?? []}
-                roles={roles}
-                onChangeSchema={handleChangeSchema}
-                onChangeRole={handleChangeRole}
-                onChangeTable={handleChangeTable}
-                applyChanges={applyChanges}
-                resetChanges={resetOperations}
-                hasChanges={hasChanges}
-                isApplyingChanges={isApplyingChanges}
-              />
-              {isSchemaLocked && (
-                <ProtectedSchemaWarning schema={selectedSchema} entity="column privileges" />
-              )}
-              {isLoading ? (
-                <GenericSkeletonLoader />
-              ) : isError ? (
-                <AlertError error={errorTablePrivileges || errorColumnPrivileges} />
-              ) : table && tablePrivilege ? (
-                <div>
-                  <PrivilegesTable
-                    disabled={isSchemaLocked}
-                    columnPrivileges={columnPrivileges}
-                    tableCheckedStates={tableCheckedStates}
-                    columnCheckedStates={columnCheckedStates}
-                    toggleTablePrivilege={toggleTablePrivilege}
-                    toggleColumnPrivilege={toggleColumnPrivilege}
-                    isApplyingChanges={isApplyingChanges}
-                  />
-                </div>
-              ) : (tables ?? []).length === 0 ? (
-                <div className="flex-grow flex flex-col items-center justify-center w-[600px] mx-auto">
-                  <p className="text-center">There are no tables in the {selectedSchema} schema</p>
-                  <p className="text-sm text-foreground-light text-center">
-                    Once a table is available in the schema, you may manage it's column-level
-                    privileges here
-                  </p>
-                  {selectedSchema === 'public' && (
-                    <Button asChild className="mt-4">
-                      <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`}>Create a new table</Link>
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-64 ">
-                  <p className="text-foreground-light">Select a table to edit privileges</p>
-                </div>
-              )}
-            </>
-          ) : (
-            <Alert_Shadcn_>
+          {!diffWarningDismissed && (
+            <Alert_Shadcn_ variant="warning">
+              <AlertCircle strokeWidth={2} />
               <AlertTitle_Shadcn_>
-                Column-level privileges is a dashboard feature preview
+                Changes to column privileges will not be reflected in migrations when running{' '}
+                <code className="text-xs">supabase db diff</code>.
               </AlertTitle_Shadcn_>
               <AlertDescription_Shadcn_>
-                You may access this feature by enabling it under dashboard feature previews.
+                Column privileges are not supported in the current version of the Supabase CLI.
+                <br />
+                You will need to manually apply these changes to your database.
               </AlertDescription_Shadcn_>
-              <div className="mt-4">
-                <Button type="default" onClick={openFeaturePreviewModal}>
-                  View feature previews
-                </Button>
-              </div>
+              <Button
+                type="outline"
+                aria-label="Dismiss"
+                className="absolute top-2 right-2 p-1 !pl-1"
+                onClick={() => {
+                  setDiffWarningDismissed(true)
+                }}
+              >
+                <XIcon width={14} height={14} />
+              </Button>
             </Alert_Shadcn_>
+          )}
+
+          {!selectStarWarningDismissed && (
+            <Alert_Shadcn_ variant="warning">
+              <AlertCircle strokeWidth={2} />
+              <AlertTitle_Shadcn_>
+                Changing column privileges can break existing queries.
+              </AlertTitle_Shadcn_>
+              <AlertDescription_Shadcn_>
+                If you remove a column privilege for a role, that role will lose all access to
+                that column.
+                <br />
+                All operations selecting <code className="text-xs">*</code> (including{' '}
+                <code className="text-xs">returning *</code> for{' '}
+                <code className="text-xs">insert</code>, <code className="text-xs">update</code>
+                , and <code className="text-xs">delete</code>) will fail.
+              </AlertDescription_Shadcn_>
+              <Button
+                type="outline"
+                aria-label="Dismiss"
+                className="absolute top-2 right-2 p-1 !pl-1"
+                onClick={() => {
+                  setSelectStarWarningDismissed(true)
+                }}
+              >
+                <XIcon width={14} height={14} />
+              </Button>
+            </Alert_Shadcn_>
+          )}
+
+          <PrivilegesHead
+            disabled={isSchemaLocked}
+            selectedSchema={selectedSchema}
+            selectedRole={selectedRole}
+            selectedTable={table}
+            tables={tables ?? []}
+            roles={roles}
+            onChangeSchema={handleChangeSchema}
+            onChangeRole={handleChangeRole}
+            onChangeTable={handleChangeTable}
+            applyChanges={applyChanges}
+            resetChanges={resetOperations}
+            hasChanges={hasChanges}
+            isApplyingChanges={isApplyingChanges}
+          />
+          {isSchemaLocked && (
+            <ProtectedSchemaWarning schema={selectedSchema} entity="column privileges" />
+          )}
+          {isLoading ? (
+            <GenericSkeletonLoader />
+          ) : isError ? (
+            <AlertError error={errorTablePrivileges || errorColumnPrivileges} />
+          ) : table && tablePrivilege ? (
+            <div>
+              <PrivilegesTable
+                disabled={isSchemaLocked}
+                columnPrivileges={columnPrivileges}
+                tableCheckedStates={tableCheckedStates}
+                columnCheckedStates={columnCheckedStates}
+                toggleTablePrivilege={toggleTablePrivilege}
+                toggleColumnPrivilege={toggleColumnPrivilege}
+                isApplyingChanges={isApplyingChanges}
+              />
+            </div>
+          ) : (tables ?? []).length === 0 ? (
+            <div className="flex-grow flex flex-col items-center justify-center w-[600px] mx-auto">
+              <p className="text-center">There are no tables in the {selectedSchema} schema</p>
+              <p className="text-sm text-foreground-light text-center">
+                Once a table is available in the schema, you may manage it's column-level
+                privileges here
+              </p>
+              {selectedSchema === 'public' && (
+                <Button asChild className="mt-4">
+                  <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`}>Create a new table</Link>
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64 ">
+              <p className="text-foreground-light">Select a table to edit privileges</p>
+            </div>
           )}
         </div>
       </ScaffoldSection>

@@ -8,7 +8,6 @@ import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProjectTransferMutation } from 'data/projects/project-transfer-mutation'
 import { useProjectTransferPreviewQuery } from 'data/projects/project-transfer-preview-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useFlag } from 'hooks/ui/useFlag'
 import { Button, InfoIcon, Listbox, Loading, Modal, WarningIcon } from 'ui'
 import { Admonition } from 'ui-patterns'
 
@@ -19,7 +18,6 @@ const TransferProjectButton = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   const { data: allOrganizations } = useOrganizationsQuery({ enabled: isOpen })
-  const disableProjectTransfer = useFlag('disableProjectTransfer')
 
   const organizations = (allOrganizations || []).filter((it) => it.id !== projectOrgId)
 
@@ -73,15 +71,13 @@ const TransferProjectButton = () => {
       <ButtonTooltip
         type="default"
         onClick={toggle}
-        disabled={!canTransferProject || disableProjectTransfer}
+        disabled={!canTransferProject}
         tooltip={{
           content: {
             side: 'bottom',
             text: !canTransferProject
               ? 'You need additional permissions to transfer this project'
-              : disableProjectTransfer
-                ? 'Project transfers are temporarily disabled, please try again later.'
-                : undefined,
+              : undefined,
           },
         }}
       >

@@ -7,8 +7,6 @@ export const generateDatabaseMenu = (
   branchRef?: string,
   flags?: {
     pitrEnabled: boolean
-    columnLevelPrivileges: boolean
-    enablePgReplicate: boolean
     showPgReplicate: boolean
     showRoles: boolean
   }
@@ -16,7 +14,6 @@ export const generateDatabaseMenu = (
   const ref = project?.ref ?? 'default'
   const {
     pitrEnabled,
-    enablePgReplicate,
     showPgReplicate,
     showRoles,
   } = flags || {}
@@ -78,7 +75,6 @@ export const generateDatabaseMenu = (
                 name: 'Replication',
                 key: 'replication',
                 url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/replication`,
-                label: !enablePgReplicate ? 'Coming soon' : undefined,
                 items: [],
               },
             ]

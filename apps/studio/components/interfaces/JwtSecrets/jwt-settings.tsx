@@ -13,7 +13,6 @@ import { useJwtSecretUpdateMutation } from 'data/config/jwt-secret-update-mutati
 import { useJwtSecretUpdatingStatusQuery } from 'data/config/jwt-secret-updating-status-query'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { useLegacyJWTSigningKeyQuery } from 'data/jwt-signing-keys/legacy-jwt-signing-key-query'
-import { useFlag } from 'hooks/ui/useFlag'
 import { uuidv4 } from 'lib/helpers'
 import {
   AlertCircle,
@@ -64,8 +63,6 @@ const schema = object({
 const JWTSettings = () => {
   const { slug: orgSlug, ref: projectRef, branch: branchRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
-
-  const newJwtSecrets = useFlag('newJwtSecrets')
 
   const [customToken, setCustomToken] = useState<string>('')
   const [showCustomTokenInput, setShowCustomTokenInput] = useState(false)
@@ -257,7 +254,7 @@ const JWTSettings = () => {
                       disabled={!canUpdateConfig || isLoadingAuthConfig}
                     />
 
-                    {newJwtSecrets && !legacyKey && (
+                    {!legacyKey && (
                       <>
                         {isUpdatingJwtSecret && (
                           <div className="flex items-center space-x-2">
@@ -374,88 +371,86 @@ const JWTSettings = () => {
                       </>
                     )}
 
-                    {!newJwtSecrets && (
-                      <div className="space-y-3">
-                        <div className="p-3 px-6 border rounded-md shadow-sm bg-studio">
-                          {isUpdatingJwtSecret ? (
-                            <div className="flex items-center space-x-2">
-                              <Loader2 className="animate-spin" size={14} />
-                              <p className="text-sm">
-                                Updating JWT secret: {jwtSecretUpdateProgressMessage}
-                              </p>
-                            </div>
-                          ) : (
-                            <div className="w-full space-y-2">
-                              <div className="flex items-center justify-between w-full">
-                                <div className="flex flex-col space-y-1">
-                                  <p className="text-sm">Generate a new JWT secret</p>
-                                  <p className="text-sm opacity-50">
-                                    A random secret will be created, or you can create your own.
-                                  </p>
-                                </div>
-                                <div className="flex flex-col items-end">
-                                  {isUpdatingJwtSecret ? (
-                                    <Button loading type="secondary">
-                                      Updating JWT secret...
-                                    </Button>
-                                  ) : !canGenerateNewJWTSecret ? (
-                                    <ButtonTooltip
-                                      disabled
-                                      type="default"
-                                      iconRight={<ChevronDown size={14} />}
-                                      tooltip={{
-                                        content: {
-                                          side: 'bottom',
-                                          text: 'You need additional permissions to generate a new JWT secret',
-                                        },
-                                      }}
-                                    >
-                                      Generate a new secret
-                                    </ButtonTooltip>
-                                  ) : (
-                                    <DropdownMenu>
-                                      <DropdownMenuTrigger asChild>
-                                        <Button
-                                          type="default"
-                                          iconRight={<ChevronDown size={14} />}
-                                        >
-                                          <span>Generate a new secret</span>
-                                        </Button>
-                                      </DropdownMenuTrigger>
-                                      <DropdownMenuContent align="end" side="bottom">
-                                        <DropdownMenuItem
-                                          className="space-x-2"
-                                          onClick={() => setIsGeneratingKey(true)}
-                                        >
-                                          <RefreshCw size={16} />
-                                          <p>Generate a random secret</p>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                          className="space-x-2"
-                                          onClick={() => setIsCreatingKey(true)}
-                                        >
-                                          <PenTool size={16} />
-                                          <p>Create my own secret</p>
-                                        </DropdownMenuItem>
-                                      </DropdownMenuContent>
-                                    </DropdownMenu>
-                                  )}
-                                </div>
+                    <div className="space-y-3">
+                      <div className="p-3 px-6 border rounded-md shadow-sm bg-studio">
+                        {isUpdatingJwtSecret ? (
+                          <div className="flex items-center space-x-2">
+                            <Loader2 className="animate-spin" size={14} />
+                            <p className="text-sm">
+                              Updating JWT secret: {jwtSecretUpdateProgressMessage}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="w-full space-y-2">
+                            <div className="flex items-center justify-between w-full">
+                              <div className="flex flex-col space-y-1">
+                                <p className="text-sm">Generate a new JWT secret</p>
+                                <p className="text-sm opacity-50">
+                                  A random secret will be created, or you can create your own.
+                                </p>
+                              </div>
+                              <div className="flex flex-col items-end">
+                                {isUpdatingJwtSecret ? (
+                                  <Button loading type="secondary">
+                                    Updating JWT secret...
+                                  </Button>
+                                ) : !canGenerateNewJWTSecret ? (
+                                  <ButtonTooltip
+                                    disabled
+                                    type="default"
+                                    iconRight={<ChevronDown size={14} />}
+                                    tooltip={{
+                                      content: {
+                                        side: 'bottom',
+                                        text: 'You need additional permissions to generate a new JWT secret',
+                                      },
+                                    }}
+                                  >
+                                    Generate a new secret
+                                  </ButtonTooltip>
+                                ) : (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button
+                                        type="default"
+                                        iconRight={<ChevronDown size={14} />}
+                                      >
+                                        <span>Generate a new secret</span>
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" side="bottom">
+                                      <DropdownMenuItem
+                                        className="space-x-2"
+                                        onClick={() => setIsGeneratingKey(true)}
+                                      >
+                                        <RefreshCw size={16} />
+                                        <p>Generate a random secret</p>
+                                      </DropdownMenuItem>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuItem
+                                        className="space-x-2"
+                                        onClick={() => setIsCreatingKey(true)}
+                                      >
+                                        <PenTool size={16} />
+                                        <p>Create my own secret</p>
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                )}
                               </div>
                             </div>
-                          )}
-                        </div>
-                        {isJwtSecretUpdateFailed ? (
-                          <Admonition type="warning" title="Failed to update JWT secret">
-                            Please try again. If the failures persist, please contact Supabase
-                            support with the following details: <br />
-                            Change tracking ID: {data?.changeTrackingId} <br />
-                            Error message: {jwtSecretUpdateErrorMessage}
-                          </Admonition>
-                        ) : null}
+                          </div>
+                        )}
                       </div>
-                    )}
+                      {isJwtSecretUpdateFailed ? (
+                        <Admonition type="warning" title="Failed to update JWT secret">
+                          Please try again. If the failures persist, please contact Supabase
+                          support with the following details: <br />
+                          Change tracking ID: {data?.changeTrackingId} <br />
+                          Error message: {jwtSecretUpdateErrorMessage}
+                        </Admonition>
+                      ) : null}
+                    </div>
                   </>
                 )}
               </Panel.Content>

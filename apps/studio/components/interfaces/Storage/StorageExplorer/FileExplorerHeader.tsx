@@ -1,8 +1,6 @@
 import { compact, debounce, isEqual, noop } from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useIsAPIDocsSidePanelEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
-import APIDocsButton from 'components/ui/APIDocsButton'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import {
   Check,
@@ -145,7 +143,6 @@ const FileExplorerHeader = ({
 }: FileExplorerHeader) => {
   const debounceDuration = 300
   const snap = useStorageExplorerStateSnapshot()
-  const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
 
   const [pathString, setPathString] = useState('')
   const [searchString, setSearchString] = useState('')
@@ -491,15 +488,6 @@ const FileExplorerHeader = ({
             />
           )}
         </div>
-
-        {isNewAPIDocsEnabled && (
-          <>
-            <div className="h-6 border-r border-control" />
-            <div className="mx-2">
-              <APIDocsButton section={['storage', selectedBucket.name]} />
-            </div>
-          </>
-        )}
       </div>
     </div>
   )

@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import { PropsWithChildren } from 'react'
 
-import { useIsAdvisorRulesEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { ProductMenu } from 'components/ui/ProductMenu'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { withAuth } from 'hooks/misc/withAuth'
@@ -15,7 +14,6 @@ export interface AdvisorsLayoutProps {
 
 const AdvisorsLayout = ({ children }: PropsWithChildren<AdvisorsLayoutProps>) => {
   const { data: project } = useSelectedProjectQuery()
-  const advisorRules = useIsAdvisorRulesEnabled()
 
   const router = useRouter()
   const { slug: orgRef, branch: branchRef } = useParams() as { slug: string, branch?: string }
@@ -26,7 +24,7 @@ const AdvisorsLayout = ({ children }: PropsWithChildren<AdvisorsLayoutProps>) =>
       isLoading={false}
       product="Advisors"
       productMenu={
-        <ProductMenu page={page} menu={generateAdvisorsMenu(orgRef, project, branchRef, { advisorRules })} />
+        <ProductMenu page={page} menu={generateAdvisorsMenu(orgRef, project, branchRef)} />
       }
     >
       {children}

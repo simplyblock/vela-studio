@@ -3,12 +3,10 @@
 import { components } from 'api-types'
 import { useRouter } from 'next/compat/router'
 import { usePathname } from 'next/navigation'
-import Script from 'next/script'
 import { useCallback, useEffect, useRef } from 'react'
 import { useLatest } from 'react-use'
 import { useUser } from './auth'
 import { LOCAL_STORAGE_KEYS } from './constants'
-import { useFeatureFlags } from './feature-flags'
 import { post } from './fetchWrappers'
 import { ensurePlatformSuffix, isBrowser } from './helpers'
 import { useParams, useTelemetryCookie } from './hooks'
@@ -120,8 +118,6 @@ export const PageTelemetry = ({
   const slug = organizationSlug || params.slug
   const ref = projectRef || params.ref
 
-  const featureFlags = useFeatureFlags()
-
   const title = typeof document !== 'undefined' ? document?.title : ''
   const referrer = typeof document !== 'undefined' ? document?.referrer : ''
   useTelemetryCookie({ hasAcceptedConsent, title, referrer })
@@ -170,7 +166,6 @@ export const PageTelemetry = ({
     if (
       (router?.isReady ?? true) &&
       hasAcceptedConsent &&
-      featureFlags.hasLoaded &&
       !hasSentInitialPageTelemetryRef.current
     ) {
       const cookies = document.cookie.split(';')
@@ -198,7 +193,7 @@ export const PageTelemetry = ({
 
       hasSentInitialPageTelemetryRef.current = true
     }
-  }, [router?.isReady, hasAcceptedConsent, featureFlags.hasLoaded, slug, ref])
+  }, [router?.isReady, hasAcceptedConsent, slug, ref])
 
   useEffect(() => {
     // For pages router

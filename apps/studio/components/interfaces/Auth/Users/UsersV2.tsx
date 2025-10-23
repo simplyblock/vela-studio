@@ -6,7 +6,6 @@ import DataGrid, { Column, DataGridHandle, Row } from 'react-data-grid'
 import { toast } from 'sonner'
 
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
-import { useIsAPIDocsSidePanelEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import AlertError from 'components/ui/AlertError'
 import APIDocsButton from 'components/ui/APIDocsButton'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
@@ -60,7 +59,6 @@ export const UsersV2 = () => {
   const { data: branch } = useSelectedBranchQuery()
   const gridRef = useRef<DataGridHandle>(null)
   const xScroll = useRef<number>(0)
-  const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
 
   const {
     authenticationShowSortByEmail: showSortByEmail,
@@ -420,7 +418,6 @@ export const UsersV2 = () => {
               </div>
 
               <div className="flex items-center gap-x-2">
-                {isNewAPIDocsEnabled && <APIDocsButton section={['user-management']} />}
                 <Button
                   size="tiny"
                   icon={<RefreshCw />}

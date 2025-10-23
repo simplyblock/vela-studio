@@ -11,7 +11,6 @@ import ProductMenuItem from 'components/ui/ProductMenu/ProductMenuItem'
 import { useScroll } from 'framer-motion'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { withAuth } from 'hooks/misc/withAuth'
-import { useFlag } from 'hooks/ui/useFlag'
 import { Menu, Separator } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import { IntegrationTabs } from './tabs'
@@ -22,11 +21,7 @@ import { getPathReferences } from 'data/vela/path-references'
  * Handles scroll-based sticky header behavior and authentication
  */
 const IntegrationsLayout = ({ ...props }: PropsWithChildren) => {
-  const layoutSidebar = useFlag('integrationLayoutSidebar')
-  if (layoutSidebar) {
-    return <IntegrationsLayoutSide {...props} />
-  }
-  return <IntegrationTopHeaderLayout {...props} />
+  return <IntegrationsLayoutSide {...props} />
 }
 
 /**

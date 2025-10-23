@@ -32,19 +32,16 @@ import { NuqsAdapter } from 'nuqs/adapters/next/pages'
 import { ErrorInfo } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 
-import { FeatureFlagProvider, ThemeProvider, useThemeSandbox } from 'common'
+import { ThemeProvider, useThemeSandbox } from 'common'
 import MetaFaviconsPagesRouter from 'common/MetaFavicons/pages-router'
 import { RouteValidationWrapper } from 'components/interfaces/App'
 import { AppBannerContextProvider } from 'components/interfaces/App/AppBannerWrapperContext'
 import { StudioCommandMenu } from 'components/interfaces/App/CommandMenu'
-import { FeaturePreviewContextProvider } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
-import FeaturePreviewModal from 'components/interfaces/App/FeaturePreview/FeaturePreviewModal'
 import { MonacoThemeProvider } from 'components/interfaces/App/MonacoThemeProvider'
 import { GlobalErrorBoundaryState } from 'components/ui/GlobalErrorBoundaryState'
 import { useRootQueryClient } from 'data/query-client'
 import { customFont, sourceCodePro } from 'fonts'
 import { AuthProvider } from 'lib/auth'
-import { getFlags as getConfigCatFlags } from 'lib/configcat'
 import { BASE_PATH } from 'lib/constants'
 import { ProfileProvider } from 'lib/profile'
 import { Telemetry } from 'lib/telemetry'
@@ -95,51 +92,43 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
           <Hydrate state={pageProps.dehydratedState}>
             <ServiceUrlsProvider>
               <AuthProvider>
-                <FeatureFlagProvider
-                  enabled={false /* FIXME: disabled hard */}
-                  getConfigCatFlags={getConfigCatFlags}
-                >
-                  <ProfileProvider>
-                    <Head>
-                      <title>Supabase</title>
-                      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-                      <meta property="og:image" content={`${BASE_PATH}/img/supabase-logo.png`} />
-                      {/* [Alaister]: This has to be an inline style tag here and not a separate component due to next/font */}
-                      <style
-                        dangerouslySetInnerHTML={{
-                          __html: `:root{--font-custom:${customFont.style.fontFamily};--font-source-code-pro:${sourceCodePro.style.fontFamily};}`,
-                        }}
-                      />
-                    </Head>
-                    <MetaFaviconsPagesRouter applicationName="Supabase Studio" />
-                    <TooltipProvider delayDuration={0}>
-                      <RouteValidationWrapper>
-                        <ThemeProvider
-                          defaultTheme="light"
-                          themes={['dark', 'light', 'classic-dark']}
-                          enableSystem
-                          disableTransitionOnChange
-                        >
-                          <AppBannerContextProvider>
-                            <CommandProvider>
-                              <FeaturePreviewContextProvider>
-                                {getLayout(<Component {...pageProps} />)}
-                                <StudioCommandMenu />
-                                <FeaturePreviewModal />
-                              </FeaturePreviewContextProvider>
-                              <SonnerToaster position="top-right" />
-                              <MonacoThemeProvider />
-                            </CommandProvider>
-                          </AppBannerContextProvider>
-                        </ThemeProvider>
-                      </RouteValidationWrapper>
-                    </TooltipProvider>
-                    <Telemetry />
-                    {!isTestEnv && (
-                      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-                    )}
-                  </ProfileProvider>
-                </FeatureFlagProvider>
+                <ProfileProvider>
+                  <Head>
+                    <title>Supabase</title>
+                    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                    <meta property="og:image" content={`${BASE_PATH}/img/supabase-logo.png`} />
+                    {/* [Alaister]: This has to be an inline style tag here and not a separate component due to next/font */}
+                    <style
+                      dangerouslySetInnerHTML={{
+                        __html: `:root{--font-custom:${customFont.style.fontFamily};--font-source-code-pro:${sourceCodePro.style.fontFamily};}`,
+                      }}
+                    />
+                  </Head>
+                  <MetaFaviconsPagesRouter applicationName="Supabase Studio" />
+                  <TooltipProvider delayDuration={0}>
+                    <RouteValidationWrapper>
+                      <ThemeProvider
+                        defaultTheme="light"
+                        themes={['dark', 'light', 'classic-dark']}
+                        enableSystem
+                        disableTransitionOnChange
+                      >
+                        <AppBannerContextProvider>
+                          <CommandProvider>
+                            {getLayout(<Component {...pageProps} />)}
+                            <StudioCommandMenu />
+                            <SonnerToaster position="top-right" />
+                            <MonacoThemeProvider />
+                          </CommandProvider>
+                        </AppBannerContextProvider>
+                      </ThemeProvider>
+                    </RouteValidationWrapper>
+                  </TooltipProvider>
+                  <Telemetry />
+                  {!isTestEnv && (
+                    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+                  )}
+                </ProfileProvider>
               </AuthProvider>
             </ServiceUrlsProvider>
           </Hydrate>

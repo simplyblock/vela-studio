@@ -15,22 +15,16 @@ import { useProfile } from 'lib/profile'
 import { Menu, cn } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { ReportMenuItem } from './ReportMenuItem'
-import { useFlag } from 'hooks/ui/useFlag'
 
 const ReportsMenu = () => {
   const router = useRouter()
   const { profile } = useProfile()
   const { slug, ref, id, branch: branchRef } = useParams()
   const pageKey = (id || router.pathname.split('/')[6]) as string
-  const authEnabled = useFlag('authreportv2')
-  const edgeFnEnabled = useFlag('edgefunctionreport')
-  const realtimeEnabled = useFlag('realtimeReport')
-  const storageReportEnabled = useFlag('storagereport')
-  const postgrestReportEnabled = useFlag('postgrestreport')
 
   // b/c fly doesn't support storage
   const storageSupported = useIsFeatureEnabled('project_storage:all')
-  const storageEnabled = storageReportEnabled && storageSupported
+  const storageEnabled = storageSupported
   // FIXME: need permission implemented 
   const canCreateCustomReport = true
 
@@ -114,48 +108,31 @@ const ReportsMenu = () => {
           key: 'api-overview',
           url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/api-overview${preservedQueryParams}`,
         },
-        ...(authEnabled
-          ? [
-              {
-                name: 'Auth',
-                key: 'auth',
-                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/auth${preservedQueryParams}`,
-              },
-            ]
-          : []),
+        {
+          name: 'Auth',
+          key: 'auth',
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/auth${preservedQueryParams}`,
+        },
         {
           name: 'Database',
           key: 'database',
           url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/database${preservedQueryParams}`,
         },
-        ...(edgeFnEnabled
-          ? [
-              {
-                name: 'Edge Functions',
-                key: 'edge-functions',
-                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/edge-functions${preservedQueryParams}`,
-              },
-            ]
-          : []),
-        ...(postgrestReportEnabled
-          ? [
-              {
-                name: 'PostgREST',
-                key: 'postgrest',
-                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/postgrest${preservedQueryParams}`,
-              },
-            ]
-          : []),
-        ...(realtimeEnabled
-          ? [
-              {
-                name: 'Realtime',
-                key: 'realtime',
-                url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/realtime${preservedQueryParams}`,
-              },
-            ]
-          : []),
-
+        {
+          name: 'Edge Functions',
+          key: 'edge-functions',
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/edge-functions${preservedQueryParams}`,
+        },
+        {
+          name: 'PostgREST',
+          key: 'postgrest',
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/postgrest${preservedQueryParams}`,
+        },
+        {
+          name: 'Realtime',
+          key: 'realtime',
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/reports/realtime${preservedQueryParams}`,
+        },
         ...(storageEnabled
           ? [
               {

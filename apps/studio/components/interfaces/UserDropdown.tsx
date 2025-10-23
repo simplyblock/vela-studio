@@ -1,4 +1,4 @@
-import { Command, FlaskConical, Settings } from 'lucide-react'
+import { Command, Settings } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -23,7 +23,6 @@ import {
   singleThemes,
 } from 'ui'
 import { useSetCommandMenuOpen } from 'ui-patterns/CommandMenu'
-import { useFeaturePreviewModal } from './App/FeaturePreview/FeaturePreviewContext'
 
 export function UserDropdown() {
   const router = useRouter()
@@ -32,7 +31,6 @@ export function UserDropdown() {
   const { theme, setTheme } = useTheme()
   const appStateSnapshot = useAppStateSnapshot()
   const setCommandMenuOpen = useSetCommandMenuOpen()
-  const { openFeaturePreviewModal } = useFeaturePreviewModal()
   const profileShowEmailEnabled = useIsFeatureEnabled('profile:show_email')
 
   return (
@@ -85,14 +83,6 @@ export function UserDropdown() {
               <Settings size={14} strokeWidth={1.5} className="text-foreground-lighter" />
               Account preferences
             </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="flex gap-2"
-            onClick={openFeaturePreviewModal}
-            onSelect={openFeaturePreviewModal}
-          >
-            <FlaskConical size={14} strokeWidth={1.5} className="text-foreground-lighter" />
-            Feature previews
           </DropdownMenuItem>
           <DropdownMenuItem className="flex gap-2" onClick={() => setCommandMenuOpen(true)}>
             <Command size={14} strokeWidth={1.5} className="text-foreground-lighter" />

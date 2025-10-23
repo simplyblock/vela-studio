@@ -5,10 +5,8 @@ export const generateRealtimeMenu = (
   slug: string,
   project: Project,
   branchRef: string,
-  flags?: { enableRealtimeSettings: boolean }
 ): ProductMenuGroup[] => {
   const ref = project?.ref ?? 'default'
-  const { enableRealtimeSettings } = flags || {}
 
   return [
     {
@@ -31,16 +29,12 @@ export const generateRealtimeMenu = (
           url: `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/policies`,
           items: [],
         },
-        ...(enableRealtimeSettings
-          ? [
-              {
-                name: 'Settings',
-                key: 'settings',
-                url: `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/settings`,
-                items: [],
-              },
-            ]
-          : []),
+        {
+          name: 'Settings',
+          key: 'settings',
+          url: `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/settings`,
+          items: [],
+        },
       ],
     },
   ]

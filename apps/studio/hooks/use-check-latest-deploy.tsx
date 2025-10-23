@@ -5,7 +5,6 @@ import { toast } from 'sonner'
 
 import { useDeploymentCommitQuery } from 'data/utils/deployment-commit-query'
 import { Button, StatusIcon } from 'ui'
-import { useFlag } from './ui/useFlag'
 
 const DeployCheckToast = ({ id }: { id: string | number }) => {
   const router = useRouter()
@@ -34,13 +33,10 @@ const DeployCheckToast = ({ id }: { id: string | number }) => {
 // there's a new version of Studio is available, and the user has been on the old dashboard (based on commit) for more than 24 hours.
 // [Joshen] K-Dog has a suggestion here to bring down the time period here by checking commits
 export function useCheckLatestDeploy() {
-  const showRefreshToast = useFlag('showRefreshToast')
-
   const [currentCommitTime, setCurrentCommitTime] = useState('')
   const [isToastShown, setIsToastShown] = useState(false)
 
   const { data: commit } = useDeploymentCommitQuery({
-    enabled: showRefreshToast,
     staleTime: 1000 * 60 * 10, // 10 minutes
   })
 

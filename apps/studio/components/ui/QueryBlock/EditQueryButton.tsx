@@ -2,7 +2,6 @@ import { Edit } from 'lucide-react'
 import { useRouter } from 'next/router'
 
 import { useParams } from 'common'
-import { useIsInlineEditorEnabled } from 'components/interfaces/App/FeaturePreview/FeaturePreviewContext'
 import { DiffType } from 'components/interfaces/SQLEditor/SQLEditor.types'
 import useNewQuery from 'components/interfaces/SQLEditor/hooks'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
@@ -45,7 +44,6 @@ export const EditQueryButton = ({
 
   const isInSQLEditor = router.pathname.includes('/sql')
   const isInNewSnippet = router.pathname.endsWith('/sql')
-  const isInlineEditorEnabled = useIsInlineEditorEnabled()
   const tooltip: { content: ComponentProps<typeof TooltipContent> & { text: string } } = {
     content: { side: 'bottom', text: 'Edit in SQL Editor' },
   }
@@ -75,14 +73,10 @@ export const EditQueryButton = ({
       className={cn('w-7 h-7', className)}
       icon={<Edit size={14} strokeWidth={1.5} />}
       onClick={() => {
-        if (isInlineEditorEnabled) {
-          // This component needs to be updated to work with local EditorPanel state
-          // For now, fall back to creating a new query
-          if (sql) newQuery(sql, title)
-          snap.closeAssistant()
-        } else {
-          if (sql) newQuery(sql, title)
-        }
+        // This component needs to be updated to work with local EditorPanel state
+        // For now, fall back to creating a new query
+        if (sql) newQuery(sql, title)
+        snap.closeAssistant()
         sendEvent({
           action: 'assistant_edit_in_sql_editor_clicked',
           properties: {

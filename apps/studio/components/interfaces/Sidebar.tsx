@@ -27,7 +27,6 @@ import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Home } from 'icons'
-import { useAppStateSnapshot } from 'state/app-state'
 import {
   Button,
   cn,
@@ -48,10 +47,6 @@ import {
   Sidebar as SidebarPrimitive,
   useSidebar,
 } from 'ui'
-import {
-  useIsAPIDocsSidePanelEnabled,
-  useUnifiedLogsPreview,
-} from './App/FeaturePreview/FeaturePreviewContext'
 
 export const ICON_SIZE = 32
 export const ICON_STROKE_WIDTH = 1.5
@@ -228,8 +223,6 @@ const ProjectLinks = () => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref?: string, branch?: string }
   const { data: project } = useSelectedProjectQuery()
-  const snap = useAppStateSnapshot()
-  const isNewAPIDocsEnabled = useIsAPIDocsSidePanelEnabled()
   const { securityLints, errorLints } = useLints()
 
   const activeRoute = router.pathname.split('/')[5]
@@ -254,10 +247,8 @@ const ProjectLinks = () => {
     realtime: realtimeEnabled,
   })
 
-  const { isEnabled: isUnifiedLogsEnabled } = useUnifiedLogsPreview()
-
   const otherRoutes = generateOtherRoutes(orgRef, projectRef, project, branchRef, {
-    unifiedLogs: isUnifiedLogsEnabled,
+    unifiedLogs: true,
   })
   const settingsRoutes = generateSettingsRoutes(orgRef, projectRef, project, branchRef)
 
@@ -296,21 +287,7 @@ const ProjectLinks = () => {
       <Separator className="w-[calc(100%-1rem)] mx-auto" />
       <SidebarGroup className="gap-0.5">
         {otherRoutes.map((route, i) => {
-          if (route.key === 'api' && isNewAPIDocsEnabled) {
-            return (
-              <SideBarNavLink
-                key={`other-routes-${i}`}
-                route={{
-                  label: route.label,
-                  icon: route.icon,
-                  key: route.key,
-                }}
-                onClick={() => {
-                  snap.setShowProjectApiDocs(true)
-                }}
-              />
-            )
-          } else if (route.key === 'advisors') {
+          if (route.key === 'advisors') {
             return (
               <div className="relative" key={route.key}>
                 {ActiveDot(errorLints, securityLints)}
