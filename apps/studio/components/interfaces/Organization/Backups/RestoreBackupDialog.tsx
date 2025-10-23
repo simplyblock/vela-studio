@@ -53,6 +53,7 @@ export const RestoreBackupDialog = ({
   }, [open, row])
 
   const filteredProjectOptions = useMemo(() => {
+    // excluding the same project 
     return projectOptions.filter((option) => option.value !== row?.projectId)
   }, [projectOptions, row?.projectId])
 

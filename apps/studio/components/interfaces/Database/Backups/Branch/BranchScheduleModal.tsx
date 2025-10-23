@@ -20,10 +20,11 @@ import {
 } from 'ui'
 
 import { useParams } from 'common'
-import { useOrgBackupSchedulesQuery } from 'data/backups/org-backup-schedules-query'
-import { useUpdateOrgBackupScheduleMutation } from 'data/backups/org-update-backup-schedule-mutation'
-import { useDeleteOrgBackupScheduleMutation } from 'data/backups/org-delete-backup-schedule-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { useBranchBackupSchedulesQuery } from 'data/backups/branch-backup-schedules-query'
+import { useUpdateBranchBackupScheduleMutation } from 'data/backups/branch-update-backup-schedule-mutation'
+import { useDeleteBranchBackupScheduleMutation } from 'data/backups/branch-delete-backup-schedule-mutation'
 
 const TIME_UNITS = [
   { label: 'Minutes', value: 'minutes', minutes: 1 },
@@ -92,19 +93,21 @@ const getScheduleForLabel = (label: string, schedules: ApiSchedule[]) => {
   return schedules.find((schedule) => schedule.env_type === label)
 }
 
-const BackupScheduleModal = () => {
+const BranchScheduleModal = () => {
   const [open, setOpen] = useState(false)
   const [selectedLabel, setSelectedLabel] = useState<string>('all')
   const [rows, setRows] = useState<ScheduleRow[]>([])
   const [error, setError] = useState<string | null>(null)
   const idCounterRef = useRef(0)
 
-  const { slug: orgId } = useParams()
+  const { slug: orgId, ref: projectId, branch: branchId } = useParams()
 
   const { data: org } = useSelectedOrganizationQuery()
-  const { data: schedulesData, isLoading: schedulesLoading } = useOrgBackupSchedulesQuery(
-    { orgId },
-    { enabled: !!orgId }
+  const { data: project } = useSelectedProjectQuery()
+
+  const { data: schedulesData, isLoading: schedulesLoading } = useBranchBackupSchedulesQuery(
+    { orgId, projectId, branchId },
+    { enabled: Boolean(orgId && projectId && branchId) }
   )
 
   const schedulesList = useMemo(
@@ -113,9 +116,9 @@ const BackupScheduleModal = () => {
   )
 
   const maxBackupsAllowed = useMemo(() => {
-    const value = org?.max_backups ?? DEFAULT_MAX_BACKUPS
+    const value = project?.max_backups ?? org?.max_backups ?? DEFAULT_MAX_BACKUPS
     return Math.max(1, value)
-  }, [org?.max_backups])
+  }, [project?.max_backups, org?.max_backups])
 
   const environmentOptions = useMemo(() => {
     const optionMap = new Map<string, string>()
@@ -146,11 +149,11 @@ const BackupScheduleModal = () => {
     [selectedLabel, schedulesList]
   )
 
-  const { mutateAsync: updateSchedule, isLoading: saving } = useUpdateOrgBackupScheduleMutation({
+  const { mutateAsync: updateSchedule, isLoading: saving } = useUpdateBranchBackupScheduleMutation({
     onSuccess: () => setOpen(false),
   })
 
-  const { mutateAsync: deleteSchedule, isLoading: deleting } = useDeleteOrgBackupScheduleMutation({
+  const { mutateAsync: deleteSchedule, isLoading: deleting } = useDeleteBranchBackupScheduleMutation({
     onSuccess: () => setOpen(false),
   })
 
@@ -364,11 +367,15 @@ const BackupScheduleModal = () => {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!orgId || isSubmitting) return
+    if (!orgId || !projectId || !branchId || isSubmitting) return
 
     if (rows.length === 0) {
       if (currentSchedule?.id) {
-        await deleteSchedule({ orgId })
+        await deleteSchedule({
+          orgId,
+          projectId,
+          branchId,
+        })
       } else {
         setError('Add at least one schedule.')
       }
@@ -383,6 +390,8 @@ const BackupScheduleModal = () => {
 
     await updateSchedule({
       orgId,
+      projectId,
+      branchId,
       schedule: {
         env_type,
         rows: apiRows,
@@ -399,35 +408,34 @@ const BackupScheduleModal = () => {
   })()
 
   const isSubmitDisabled =
-    isSubmitting || (rows.length === 0 && !currentSchedule) || environmentOptions.length === 0
+    isSubmitting ||
+    (rows.length === 0 && !currentSchedule) ||
+    environmentOptions.length === 0
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button type="default" disabled={schedulesLoading && !open}>
-          Configure backup schedule
+          Configure branch schedule
         </Button>
       </DialogTrigger>
       <DialogContent size="xxlarge" className="max-h-[85vh] overflow-y-auto p-0">
         <form onSubmit={handleSubmit} className="flex flex-col">
           <DialogHeader padding="small" className="border-b">
-            <DialogTitle>Backup Default Schedules</DialogTitle>
+            <DialogTitle>Branch Backup Schedule</DialogTitle>
           </DialogHeader>
 
           <DialogSection padding="medium" className="space-y-6">
             <div className="space-y-1">
               <p className="text-sm text-foreground-light">
-                Configure how often automated backups run and how many copies to keep for each cadence.
-              </p>
-              <p className="text-xs text-foreground-muted">
-                Use longer intervals for lower-frequency backups to build a retention ladder without exceeding the {maxBackupsAllowed} backup limit.
+                Configure automated backups for this branch, adjust cadence, or remove the schedule entirely.
               </p>
             </div>
 
             <div className="rounded-md border border-border bg-muted/30 px-4 py-3 text-sm text-foreground-light space-y-1">
               <p>
                 You can retain up to{' '}
-                <span className="font-medium text-foreground">{maxBackupsAllowed}</span> backups per environment.
+                <span className="font-medium text-foreground">{maxBackupsAllowed}</span> backups for this branch.
               </p>
               <p className="text-xs text-foreground-muted">
                 Remaining retention slots: <span className="font-medium text-foreground">{remainingRepeatCapacity}</span>
@@ -436,13 +444,13 @@ const BackupScheduleModal = () => {
 
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div className="space-y-2 md:max-w-sm">
-                <Label_Shadcn_ htmlFor="backup-label">Environment</Label_Shadcn_>
+                <Label_Shadcn_ htmlFor="branch-backup-label">Environment</Label_Shadcn_>
                 <Select_Shadcn_
                   value={selectedLabel}
                   onValueChange={handleLabelChange}
                   disabled={isSubmitting || schedulesLoading || environmentOptions.length === 0}
                 >
-                  <SelectTrigger_Shadcn_ id="backup-label">
+                  <SelectTrigger_Shadcn_ id="branch-backup-label">
                     <SelectValue_Shadcn_ placeholder="Select environment" />
                   </SelectTrigger_Shadcn_>
                   <SelectContent_Shadcn_>
@@ -463,8 +471,8 @@ const BackupScheduleModal = () => {
                 const previousMinutes = previousRow ? getRowMinutes(previousRow) : 0
                 const nextMinutes = nextRow ? getRowMinutes(nextRow) : null
                 const baseMinimumEvery = getMinimumEveryForUnit(row.unit)
-                const minimumMinutesConstraint = previousRow ? previousMinutes + 1 : MIN_INTERVAL_MINUTES
                 const unitMinutes = unitMinutesLookup[row.unit]
+                const minimumMinutesConstraint = previousRow ? previousMinutes + 1 : MIN_INTERVAL_MINUTES
                 const computedMinEvery = Math.max(
                   baseMinimumEvery,
                   Math.ceil(minimumMinutesConstraint / unitMinutes)
@@ -601,7 +609,7 @@ const BackupScheduleModal = () => {
             <Button type="default" htmlType="button" onClick={() => setOpen(false)} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit" disabled={isSubmitDisabled}>
+            <Button type="primary" htmlType="submit" disabled={isSubmitting || (rows.length === 0 && !currentSchedule)}>
               {primaryButtonLabel}
             </Button>
           </DialogFooter>
@@ -611,4 +619,4 @@ const BackupScheduleModal = () => {
   )
 }
 
-export default BackupScheduleModal
+export default BranchScheduleModal

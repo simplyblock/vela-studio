@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from 'ui'
+import BranchScheduleModal from './BranchScheduleModal'
 
 type NormalizedScheduleRow = {
   id: string
@@ -101,14 +102,19 @@ const BranchBackupSchedules = () => {
               <AlertError subject="Failed to load backup schedules" error={error} />
             ) : (
               <Card>
-                <CardHeader className="flex flex-row items-start justify-between gap-3">
-                  <div>
+                <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="space-y-1">
                     <CardTitle>Automated backup schedules</CardTitle>
                     <p className="text-sm text-foreground-light">
                       Review the automated backup cadence configured for this branch.
                     </p>
                   </div>
-                  {(isLoading || isFetching) && <Loader2 className="h-4 w-4 animate-spin text-foreground-light" />}
+                  <div className="flex items-center gap-3">
+                    {(isLoading || isFetching) && (
+                      <Loader2 className="h-4 w-4 animate-spin text-foreground-light" />
+                    )}
+                    <BranchScheduleModal />
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {isLoading ? (

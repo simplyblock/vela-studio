@@ -36,6 +36,8 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { useOrgBackupQuery } from 'data/backups/org-backups-query'
 import { mapSchedulesByBranch, groupBackupsByBranch } from './utils'
 import { useDeleteBranchBackupMutation } from 'data/backups/branch-delete-backup-mutation'
+import { useProjectsQuery } from 'data/projects/projects-query'
+import { getBranches } from 'data/branches/branches-query'
 
 type RestoreContext = {
   rowId: string
@@ -91,6 +93,8 @@ const Backups = () => {
     error: backupsError,
   } = useOrgBackupQuery({ orgId }, { enabled: !!orgId })
 
+  const { data: allProjects } = useProjectsQuery()
+
   const { mutateAsync: deleteBranchBackup, isLoading: isDeletingBackup } = useDeleteBranchBackupMutation({
     onSuccess: () => {
       toast.success('Backup deleted')
@@ -98,6 +102,7 @@ const Backups = () => {
   })
 
   const [rows, setRows] = useState<BackupRow[]>([])
+  const [branchInfoMap, setBranchInfoMap] = useState<Map<string, { name: string; projectRef: string }>>(new Map())
 
   const normalizedSchedules = useMemo(
     () => (Array.isArray(schedules) ? schedules : schedules ? [schedules] : []),
@@ -115,6 +120,73 @@ const Backups = () => {
   )
   const backupsByBranch = useMemo(() => groupBackupsByBranch(normalizedBackups), [normalizedBackups])
 
+  const orgProjects = useMemo(
+    () => (allProjects ?? []).filter((project) => project.organization_id === org?.id),
+    [allProjects, org?.id]
+  )
+
+  const projectNameMap = useMemo(() => {
+    const map = new Map<string, string>()
+    orgProjects.forEach((project) => {
+      map.set(project.ref, project.name)
+    })
+    return map
+  }, [orgProjects])
+
+  useEffect(() => {
+    if (!orgId) return
+
+    const projectRefSet = new Set<string>()
+    if (orgProjects.length > 0) {
+      orgProjects.forEach((project) => projectRefSet.add(project.ref))
+    } else {
+      Array.from(backupsByBranch.values())
+        .map((entry) => entry?.projectId)
+        .filter((ref): ref is string => Boolean(ref))
+        .forEach((ref) => projectRefSet.add(ref))
+    }
+
+    const projectRefs = Array.from(projectRefSet)
+
+    if (projectRefs.length === 0) {
+      setBranchInfoMap(new Map())
+      return
+    }
+
+    const controller = new AbortController()
+    ;(async () => {
+      const map = new Map<string, { name: string; projectRef: string }>()
+      try {
+        const results = await Promise.all(
+          projectRefs.map(async (projectRef) => {
+            try {
+              const branches = await getBranches({ orgSlug: orgId, projectRef }, controller.signal)
+              return { projectRef, branches }
+            } catch (error: any) {
+              if (error?.name !== 'AbortError') {
+                console.error(error)
+              }
+              return { projectRef, branches: [] }
+            }
+          })
+        )
+        if (controller.signal.aborted) return
+        results.forEach(({ projectRef, branches }) => {
+          branches.forEach((branch) => {
+            map.set(branch.id, { name: branch.name, projectRef })
+          })
+        })
+        setBranchInfoMap(map)
+      } catch (error: any) {
+        if (error?.name !== 'AbortError') {
+          console.error(error)
+        }
+      }
+    })()
+
+    return () => controller.abort()
+  }, [orgId, backupsByBranch, orgProjects])
+
   useEffect(() => {
     // Build a set of branch_ids from either side
     const branchIds = new Set<string>([
@@ -129,7 +201,7 @@ const Backups = () => {
 
       const schedule = scheduleEntry?.schedule ?? []
       const environment = (scheduleEntry?.env as BackupEnvironment) ?? 'development'
-
+      
       const toTimestamp = (value: string | null) => {
         if (!value) return 0
         const parsed = Date.parse(value)
@@ -148,12 +220,17 @@ const Backups = () => {
             rowIndex: backup.rowIndex,
           })) ?? []
 
+      const branchInfo = branchInfoMap.get(branchId)
+      const projectRef = backupEntry?.projectId ?? branchInfo?.projectRef ?? ''
+      const projectName = projectRef ? projectNameMap.get(projectRef) ?? projectRef : 'Unknown project'
+      const branchName = branchInfo?.name ?? branchId
+
       next.push({
         id: branchId,
-        projectId: backupEntry?.projectId ?? '',
-        projectName: backupEntry?.projectId ?? 'Unknown project',
+        projectId: projectRef,
+        projectName,
         branchId,
-        branchName: branchId,
+        branchName,
         environment: environment.toLowerCase(),
         nextBackupAt: null,
         lastBackupAt: backupsList[0]?.createdAt ?? null,
@@ -173,7 +250,7 @@ const Backups = () => {
     })
 
     setRows(next)
-  }, [backupsByBranch, schedulesByBranch])
+  }, [backupsByBranch, schedulesByBranch, projectNameMap, branchInfoMap])
 
   const isLoadingData = isLoadingBackups || isLoadingSchedules
   const isFetchingData = isFetchingBackups || isFetchingSchedules
@@ -200,15 +277,19 @@ const Backups = () => {
 
   const projectOptions = useMemo(() => {
     const map = new Map<string, string>()
-    rows.forEach((row) => {
-      const value = row.projectId || row.projectName || row.id
-      const label = row.projectName || row.projectId || row.id
-      if (!map.has(value)) {
-        map.set(value, label)
-      }
-    })
+    if (allProjects) {
+      allProjects.forEach((project) => {
+        if (project.ref && !map.has(project.ref)) {
+          map.set(project.ref, project.name || project.ref)
+        }
+      })
+    }
+    
     return Array.from(map.entries()).map(([value, label]) => ({ value, label }))
-  }, [rows])
+  }, [allProjects]) 
+
+  console.log("allProjects",allProjects)
+  console.log("projectOPtions",projectOptions)  
 
   const restoreRow = useMemo(
     () => rows.find((row) => row.id === restoreContext?.rowId) ?? null,

@@ -60,7 +60,6 @@ export const BackupsHistoryDialog = ({
                 <TableHead className="min-w-[140px]">Created</TableHead>
                 <TableHead className="min-w-[120px]">Size</TableHead>
                 <TableHead className="min-w-[100px]">Status</TableHead>
-                <TableHead className="min-w-[100px]">Schedule row</TableHead>
                 <TableHead className="min-w-[140px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -99,9 +98,6 @@ export const BackupsHistoryDialog = ({
                     ) : (
                       <span className="text-sm text-foreground-light">—</span>
                     )}
-                  </TableCell>
-                  <TableCell className="text-sm text-foreground-light">
-                    {typeof backup.rowIndex === 'number' ? `Row #${backup.rowIndex + 1}` : '—'}
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-1.5">

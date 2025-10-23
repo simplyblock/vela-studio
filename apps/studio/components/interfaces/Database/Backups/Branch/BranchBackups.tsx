@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { Loader2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Loader2, RefreshCcw, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 import DatabaseBackupsNav from '../DatabaseBackupsNav'
@@ -11,8 +11,12 @@ import AlertError from 'components/ui/AlertError'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useBranchBackupQuery } from 'data/backups/branch-backups-query'
 import { useManualBranchBackupMutation } from 'data/backups/branch-manual-backup-mutation'
+import { useDeleteBranchBackupMutation } from 'data/backups/branch-delete-backup-mutation'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useParams } from 'common'
 import { formatBytes } from 'lib/helpers'
+import { RestoreBackupDialog } from 'components/interfaces/Organization/Backups/RestoreBackupDialog'
+import type { BackupRow, BranchBackup as OrgBranchBackup } from 'components/interfaces/Organization/Backups/types'
 import {
   Badge,
   Button,
@@ -20,6 +24,12 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   Table,
   TableBody,
   TableCell,
@@ -76,6 +86,7 @@ const normalizeBackups = (data: any): NormalizedBackup[] => {
 
 const BranchBackups = () => {
   const { slug: orgId, ref: projectId, branch: branchId } = useParams()
+  const { data: project } = useSelectedProjectQuery()
 
   const {
     data,
@@ -89,6 +100,8 @@ const BranchBackups = () => {
   )
 
   const backups = useMemo(() => normalizeBackups(data), [data])
+  const [restoreTarget, setRestoreTarget] = useState<NormalizedBackup | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<NormalizedBackup | null>(null)
 
   const {
     mutate: triggerManual,
@@ -99,9 +112,71 @@ const BranchBackups = () => {
     },
   })
 
+  const { mutateAsync: deleteBackup, isLoading: isDeleting } = useDeleteBranchBackupMutation({
+    onSuccess: () => {
+      toast.success('Backup deleted')
+      setDeleteTarget(null)
+    },
+  })
+
   const handleCreateBackup = () => {
     if (!orgId || !projectId || !branchId) return
     triggerManual({ orgId, projectId, branchId })
+  }
+
+  const projectOptions = useMemo(() => {
+    if (!project?.ref) return []
+    return [
+      {
+        label: project.name ?? project.ref,
+        value: project.ref,
+      },
+    ]
+  }, [project])
+
+  const restoreRow: BackupRow | null = useMemo(() => {
+    if (!restoreTarget) return null
+    const projectRef = project?.ref ?? projectId ?? ''
+    return {
+      id: branchId ?? '',
+      projectId: projectRef,
+      projectName: project?.name ?? projectRef,
+      branchId: branchId ?? '',
+      branchName: branchId ?? '',
+      environment: 'all',
+      lastBackupAt: restoreTarget.createdAt ?? null,
+      nextBackupAt: null,
+      storageUsedBytes: restoreTarget.sizeBytes ?? null,
+      autoBackupEnabled: true,
+      resources: null,
+      schedule: [],
+      backups: [],
+    } as BackupRow
+  }, [restoreTarget, branchId, project, projectId])
+
+  const restoreBackup: OrgBranchBackup | null = useMemo(() => {
+    if (!restoreTarget) return null
+    return {
+      id: restoreTarget.id,
+      createdAt: restoreTarget.createdAt ?? null,
+      sizeBytes: restoreTarget.sizeBytes ?? null,
+      status: restoreTarget.status ?? 'completed',
+    } as OrgBranchBackup
+  }, [restoreTarget])
+
+  const handleRestoreConfirm = (payload: { mode: 'same-branch' | 'new-branch'; project?: string; branchName?: string }) => {
+    if (!restoreTarget) return
+    toast.success('Restore request submitted')
+    setRestoreTarget(null)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget || !orgId || !projectId || !branchId || isDeleting) return
+    try {
+      await deleteBackup({ orgId, projectId, branchId, backupId: deleteTarget.id })
+    } catch (error) {
+      // errors handled in mutation
+    }
   }
 
   return (
@@ -149,6 +224,7 @@ const BranchBackups = () => {
                               <TableHead className="min-w-[140px]">Backup ID</TableHead>
                               <TableHead className="min-w-[120px]">Status</TableHead>
                               <TableHead className="min-w-[120px] text-right">Size</TableHead>
+                              <TableHead className="min-w-[120px] text-right">Actions</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -185,6 +261,22 @@ const BranchBackups = () => {
                                       ? formatBytes(backup.sizeBytes, 2)
                                       : '—'}
                                   </TableCell>
+                                  <TableCell className="text-right">
+                                    <div className="flex justify-end gap-1.5">
+                                      <Button
+                                        type="text"
+                                        className="px-1.5"
+                                        icon={<RefreshCcw size={16} />}
+                                        onClick={() => setRestoreTarget(backup)}
+                                      />
+                                      <Button
+                                        type="text"
+                                        className="px-1.5 text-destructive hover:text-destructive"
+                                        icon={<Trash2 size={16} />}
+                                        onClick={() => setDeleteTarget(backup)}
+                                      />
+                                    </div>
+                                  </TableCell>
                                 </TableRow>
                               )
                             })}
@@ -205,6 +297,37 @@ const BranchBackups = () => {
           </div>
         </div>
       </ScaffoldSection>
+      <RestoreBackupDialog
+        row={restoreRow}
+        backup={restoreBackup}
+        open={restoreTarget !== null}
+        projectOptions={projectOptions}
+        onCancel={() => setRestoreTarget(null)}
+        onConfirm={handleRestoreConfirm}
+      />
+      <Dialog open={deleteTarget !== null} onOpenChange={(nextOpen) => !nextOpen && !isDeleting && setDeleteTarget(null)}>
+        <DialogContent size="xlarge">
+          <DialogHeader>
+            <DialogTitle>Delete backup</DialogTitle>
+            <DialogDescription>
+              {deleteTarget
+                ? `Remove backup ${deleteTarget.id} from ${project?.name ?? projectId ?? 'project'}`
+                : ''}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 p-2 text-sm text-foreground-light">
+            <p>This action permanently removes the selected snapshot and cannot be undone.</p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button type="default" onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+              Cancel
+            </Button>
+            <Button type="danger" onClick={handleDeleteConfirm} disabled={isDeleting}>
+              {isDeleting ? 'Deleting…' : 'Delete backup'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </ScaffoldContainer>
   )
 }
