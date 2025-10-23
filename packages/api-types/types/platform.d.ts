@@ -168,6 +168,22 @@ export interface paths {
     get: operations['BackupSchedulesController_getOrgSchedules']
     put: operations['BackupSchedulesController_updateOrgSchedule']
     post: operations['BackupSchedulesController_createOrgSchedule']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/backups/schedules/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
     delete: operations['BackupSchedulesController_deleteOrgSchedule']
     options?: never
     head?: never
@@ -184,6 +200,22 @@ export interface paths {
     get: operations['BackupSchedulesController_getBranchSchedules']
     put: operations['BackupSchedulesController_updateBranchSchedules']
     post: operations['BackupSchedulesController_createBranchSchedules']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
     delete: operations['BackupSchedulesController_deleteBranchSchedule']
     options?: never
     head?: never
@@ -11292,6 +11324,7 @@ export interface operations {
       header?: never
       path: {
         slug: string
+        id: string
       }
       cookie?: never
     }
@@ -11328,6 +11361,7 @@ export interface operations {
         slug: string
         ref: string
         branch: string
+        id: string
       }
       cookie?: never
     }

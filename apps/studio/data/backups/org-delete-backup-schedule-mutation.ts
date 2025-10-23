@@ -6,16 +6,18 @@ import { backupKeys } from './keys'
 
 export interface DeleteBranchBackupScheduleVariables {
   orgId: string
+  scheduleId: string
 }
 
 export async function deleteBranchBackupSchedule(
-  { orgId }: DeleteBranchBackupScheduleVariables,
+  { orgId, scheduleId }: DeleteBranchBackupScheduleVariables,
   signal?: AbortSignal
 ) {
-  const { data, error } = await del('/platform/organizations/{slug}/backups/schedules', {
+  const { data, error } = await del('/platform/organizations/{slug}/backups/schedules/{id}', {
     params: {
       path: {
         slug: orgId,
+        id: scheduleId,
       },
     },
     signal,
