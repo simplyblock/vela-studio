@@ -27,8 +27,33 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(200).json(response.data)
 }
 
+const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { slug, user_id, role_id } = getPlatformQueryParams(req, 'slug', 'user_id', 'role_id')
+  const client = getVelaClient(req)
+
+  const response = await client.post(
+    '/organizations/{organization_id}/roles/{role_id}/assign/{user_id}/',
+    {
+      params: {
+        path: {
+          organization_id: slug,
+          user_id,
+          role_id,
+        },
+      },
+      body: req.body,
+    }
+  )
+
+  if (response.error) {
+    return res.status(response.response.status).json(response.error)
+  }
+
+  return res.status(200).json(response.data)
+}
+
 const apiHandler = apiBuilder((builder) => {
-  builder.useAuth().delete(handleDelete)
+  builder.useAuth().delete(handleDelete).post(handlePost)
 })
 
 export default apiHandler

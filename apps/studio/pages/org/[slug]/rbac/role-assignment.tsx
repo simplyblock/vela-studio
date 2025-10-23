@@ -1,4 +1,4 @@
-import { RoleAssignment } from 'components/interfaces/Organization/TeamSettings/RBAC/Role-assignment/RoleAssignment'
+import { RoleAssignment } from 'components/interfaces/Organization/TeamSettings/RBAC/RoleAssignment/RoleAssignment'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import OrganizationLayout from 'components/layouts/OrganizationLayout'
 import OrganizationSettingsLayout from 'components/layouts/ProjectLayout/OrganizationSettingsLayout'

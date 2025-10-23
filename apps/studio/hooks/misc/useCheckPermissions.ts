@@ -248,8 +248,26 @@ export function useBranchPermissionQuery({
   }
 }
 
-export function usePermissionsCheck(requiredPermission: Permission) {
+export function useCheckPermissions(requiredPermission: string): {
+  can: boolean
+  isLoading: boolean
+  isSuccess: boolean
+}
+export function useCheckPermissions(requiredPermission: Permission): {
+  can: boolean
+  isLoading: boolean
+  isSuccess: boolean
+}
+export function useCheckPermissions(requiredPermission: Permission | string): {
+  can: boolean
+  isLoading: boolean
+  isSuccess: boolean
+} {
   const { slug: orgId, ref: projectId, branch: branchId } = getPathReferences()
+
+  if (typeof requiredPermission === 'string') {
+    requiredPermission = transformToPermission(requiredPermission)
+  }
 
   const isLoggedIn = useIsLoggedIn()
   const {

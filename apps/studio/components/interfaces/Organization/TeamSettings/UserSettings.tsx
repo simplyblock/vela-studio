@@ -4,7 +4,6 @@ import {
   ScaffoldActionsContainer,
   ScaffoldActionsGroup,
   ScaffoldContainer,
-  ScaffoldContainerLegacy,
   ScaffoldFilterAndContent,
   ScaffoldSectionContent,
   ScaffoldTitle,

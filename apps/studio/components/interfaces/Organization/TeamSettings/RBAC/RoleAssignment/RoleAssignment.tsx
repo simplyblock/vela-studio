@@ -23,6 +23,7 @@ import {
   DialogTitle,
   ScrollArea,
 } from 'ui'
+import { useOrganizationRoleAssignmentsQuery } from '../../../../../../data/organization-members/organization-role-assignments-query'
 
 type User = {
   id: string
@@ -63,7 +64,11 @@ export const RoleAssignment = () => {
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
   const [pendingSelection, setPendingSelection] = useState<string[]>([])
 
-  const { data: roles, isLoading: isLoadingRoles } = useOrganizationRolesQuery({slug})
+  const { data: roles, isLoading: isLoadingRoles } = useOrganizationRolesQuery({ slug })
+  const { data: roleAssignments, isLoading: isLoadingRoleAssignments } =
+    useOrganizationRoleAssignmentsQuery({ slug })
+
+  const isLoading = isLoadingRoles || isLoadingRoleAssignments
 
   const rolesWithUsage = useMemo(
     () =>
@@ -112,9 +117,7 @@ export const RoleAssignment = () => {
   const assignedMembers = useMemo(() => {
     if (!selectedRoleId) return []
     const userIds = assignments[selectedRoleId] ?? []
-    return userIds
-      .map((id) => USERS_BY_ID[id])
-      .filter((user): user is User => Boolean(user))
+    return userIds.map((id) => USERS_BY_ID[id]).filter((user): user is User => Boolean(user))
   }, [assignments, selectedRoleId])
 
   const handleRemoveMember = (userId: string) => {
@@ -134,9 +137,7 @@ export const RoleAssignment = () => {
 
   const handleTogglePendingUser = (userId: string) => {
     setPendingSelection((current) =>
-      current.includes(userId)
-        ? current.filter((id) => id !== userId)
-        : current.concat(userId)
+      current.includes(userId) ? current.filter((id) => id !== userId) : current.concat(userId)
     )
   }
 

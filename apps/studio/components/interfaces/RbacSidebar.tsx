@@ -23,7 +23,7 @@ export const RbacSubSideBar = () => {
         },
         {
           label: 'Role Assignment',
-          href: `/org/${orgSlug}/rbac/roleAssignment`,
+          href: `/org/${orgSlug}/rbac/role-assignment`,
           icon: UserCog,
         },
       ],

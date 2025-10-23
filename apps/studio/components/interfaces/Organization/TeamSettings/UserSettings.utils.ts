@@ -1,11 +1,11 @@
 import type { OrganizationMember } from 'data/organizations/organization-members-query'
-import type { Permission, Role } from 'types'
+import type { ResourcePermission, Role } from 'types'
 
 
 export const useGetRolesManagementPermissions = (
   orgSlug?: string,
   roles?: Role[],
-  permissions?: Permission[]
+  permissions?: ResourcePermission[]
 ): { rolesAddable: string[]; rolesRemovable: string[] } => {
 
   const rolesAddable: string[] = []
