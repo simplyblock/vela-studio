@@ -8,6 +8,7 @@ export interface DeleteBranchBackupScheduleVariables {
   orgId: string
   projectId: string
   branchId: string
+  scheduleId: string
 }
 
 export async function deleteBranchBackupSchedule(
@@ -15,13 +16,14 @@ export async function deleteBranchBackupSchedule(
   signal?: AbortSignal
 ) {
   const { data, error } = await del(
-    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules',
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups/schedules/{id}',
     {
       params: {
         path: {
           slug: orgId,
           ref: projectId,
           branch: branchId,
+          id: scheduleId,
         },
       },
       signal,
