@@ -11,9 +11,7 @@ import {
 import Results from 'components/interfaces/SQLEditor/UtilityPanel/Results'
 import { SqlRunButton } from 'components/interfaces/SQLEditor/UtilityPanel/RunButton'
 import { QueryResponseError, useExecuteSqlMutation } from 'data/sql/execute-sql-mutation'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { BASE_PATH } from 'lib/constants'
 import { uuidv4 } from 'lib/helpers'
 import { useProfile } from 'lib/profile'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
@@ -45,8 +43,6 @@ import {
   SQL_ICON,
 } from 'ui'
 import { Admonition } from 'ui-patterns'
-import { containsUnknownFunction, isReadOnlySelect } from '../AIAssistantPanel/AIAssistant.utils'
-import AIEditor from '../AIEditor'
 import { ButtonTooltip } from '../ButtonTooltip'
 import { InlineLink } from '../InlineLink'
 import SqlWarningAdmonition from '../SqlWarningAdmonition'
@@ -85,7 +81,6 @@ export const EditorPanel = ({
   onRunSuccess,
   onRunError,
   templates = [],
-  initialPrompt = '',
   onChange,
 }: EditorPanelProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
@@ -93,7 +88,6 @@ export const EditorPanel = ({
   const { data: branch } = useSelectedBranchQuery()
   const { profile } = useProfile()
   const snapV2 = useSqlEditorV2StateSnapshot()
-  const { data: org } = useSelectedOrganizationQuery()
 
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<QueryResponseError>()
@@ -134,20 +128,11 @@ export const EditorPanel = ({
     },
   })
 
-  const onExecuteSql = (skipValidation = false) => {
+  const onExecuteSql = () => {
     setError(undefined)
     setShowWarning(undefined)
 
     if (currentValue.length === 0) return
-
-    if (!skipValidation) {
-      const isReadOnlySelectSQL = isReadOnlySelect(currentValue)
-      if (!isReadOnlySelectSQL) {
-        const hasUnknownFunctions = containsUnknownFunction(currentValue)
-        setShowWarning(hasUnknownFunctions ? 'hasUnknownFunctions' : 'hasWriteOperation')
-        return
-      }
-    }
     executeSql({
       branch,
       sql: suffixWithLimit(currentValue, 100),
@@ -318,34 +303,6 @@ export const EditorPanel = ({
         </SheetHeader>
 
         <div className="flex-1 overflow-hidden flex flex-col h-full">
-          <div className="flex-1 min-h-0 relative">
-            <AIEditor
-              autoFocus
-              language="pgsql"
-              value={currentValue}
-              onChange={handleChange}
-              aiEndpoint={`${BASE_PATH}/api/ai/code/complete`}
-              aiMetadata={{
-                projectRef: project?.ref,
-                connectionString: branch?.database.encrypted_connection_string,
-                orgSlug: org?.slug,
-              }}
-              initialPrompt={initialPrompt}
-              options={{
-                tabSize: 2,
-                fontSize: 13,
-                minimap: { enabled: false },
-                wordWrap: 'on',
-                lineNumbers: 'on',
-                folding: false,
-                padding: { top: 16 },
-                lineNumbersMinChars: 3,
-              }}
-              executeQuery={onExecuteSql}
-              onClose={() => onClose()}
-            />
-          </div>
-
           {error !== undefined && (
             <div className="shrink-0">
               <Admonition
@@ -376,7 +333,7 @@ export const EditorPanel = ({
               onCancel={() => setShowWarning(undefined)}
               onConfirm={() => {
                 setShowWarning(undefined)
-                onExecuteSql(true)
+                onExecuteSql()
               }}
             />
           )}
