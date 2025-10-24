@@ -1,7 +1,6 @@
 import { Edit, File, Plus, Trash } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-import AIEditor from 'components/ui/AIEditor'
 import {
   Button,
   ContextMenu_Shadcn_,
@@ -57,8 +56,6 @@ const getLanguageFromFileName = (fileName: string): string => {
 const FileExplorerAndEditor = ({
   files,
   onFilesChange,
-  aiEndpoint,
-  aiMetadata,
 }: FileExplorerAndEditorProps) => {
   const selectedFile = files.find((f) => f.selected) ?? files[0]
 
@@ -241,25 +238,6 @@ const FileExplorerAndEditor = ({
             }}
           />
         </div>
-      </div>
-      <div className="flex-1 min-h-0 relative px-3 bg-surface-200">
-        <AIEditor
-          language={getLanguageFromFileName(selectedFile?.name || 'index.ts')}
-          value={selectedFile?.content}
-          onChange={handleChange}
-          aiEndpoint={aiEndpoint}
-          aiMetadata={aiMetadata}
-          options={{
-            tabSize: 2,
-            fontSize: 13,
-            minimap: { enabled: false },
-            wordWrap: 'on',
-            lineNumbers: 'on',
-            folding: false,
-            padding: { top: 20, bottom: 20 },
-            lineNumbersMinChars: 3,
-          }}
-        />
       </div>
     </div>
   )

@@ -1,7 +1,6 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-import { useOrganizationRestrictions } from 'hooks/misc/useOrganizationRestrictions'
 import { cn, CriticalIcon, WarningIcon } from 'ui'
 
 const bannerMotionProps = {
@@ -10,18 +9,6 @@ const bannerMotionProps = {
   exit: { height: 0, opacity: 0 },
   transition: { duration: 0.2, delay: 0.5 },
 } as const
-
-export const OrganizationResourceBanner = () => {
-  const { warnings } = useOrganizationRestrictions()
-
-  return (
-    <AnimatePresence initial={false}>
-      {warnings.map((warning, i) => (
-        <HeaderBanner key={i} {...warning} />
-      ))}
-    </AnimatePresence>
-  )
-}
 
 export const HeaderBanner = ({
   type,

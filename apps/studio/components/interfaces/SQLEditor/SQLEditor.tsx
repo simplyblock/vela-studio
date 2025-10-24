@@ -7,7 +7,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
-import ResizableAIWidget from 'components/ui/AIEditor/ResizableAIWidget'
 import { GridFooter } from 'components/ui/GridFooter'
 import { useEntityDefinitionsQuery } from 'data/database/entity-definitions-query'
 import { constructHeaders, isValidConnString } from 'data/fetchers'
@@ -675,28 +674,6 @@ export const SQLEditor = () => {
                           lineNumbersMinChars: 3,
                         }}
                       />
-                      {showWidget && (
-                        <ResizableAIWidget
-                          editor={diffEditorRef.current!}
-                          id="ask-ai-diff"
-                          value={promptInput}
-                          onChange={setPromptInput}
-                          onSubmit={(prompt: string) => {
-                            handlePrompt(prompt, {
-                              beforeSelection: promptState.beforeSelection,
-                              selection: promptState.selection || defaultSqlDiff.modified,
-                              afterSelection: promptState.afterSelection,
-                            })
-                          }}
-                          onAccept={acceptAiHandler}
-                          onReject={discardAiHandler}
-                          onCancel={resetPrompt}
-                          isDiffVisible={true}
-                          isLoading={isCompletionLoading}
-                          startLineNumber={Math.max(0, promptState.startLineNumber)}
-                          endLineNumber={promptState.endLineNumber}
-                        />
-                      )}
                     </div>
                   )}
                   <div key={id} className="w-full h-full relative">
@@ -734,26 +711,6 @@ export const SQLEditor = () => {
                         }))
                       }}
                     />
-                    {editorRef.current && promptState.isOpen && !isDiffOpen && (
-                      <ResizableAIWidget
-                        editor={editorRef.current}
-                        id="ask-ai"
-                        value={promptInput}
-                        onChange={setPromptInput}
-                        onSubmit={(prompt: string) => {
-                          handlePrompt(prompt, {
-                            beforeSelection: promptState.beforeSelection,
-                            selection: promptState.selection,
-                            afterSelection: promptState.afterSelection,
-                          })
-                        }}
-                        onCancel={resetPrompt}
-                        isDiffVisible={false}
-                        isLoading={isCompletionLoading}
-                        startLineNumber={Math.max(0, promptState.startLineNumber)}
-                        endLineNumber={promptState.endLineNumber}
-                      />
-                    )}
                   </div>
                 </>
               )}
