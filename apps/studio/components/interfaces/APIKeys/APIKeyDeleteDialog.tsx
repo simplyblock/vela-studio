@@ -8,6 +8,7 @@ import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
 import { useAPIKeyDeleteMutation } from 'data/api-keys/api-key-delete-mutation'
 import { APIKeysData } from 'data/api-keys/api-keys-query'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface APIKeyDeleteDialogProps {
   apiKey: Extract<APIKeysData[number], { type: 'secret' | 'publishable' }>
@@ -17,8 +18,7 @@ interface APIKeyDeleteDialogProps {
 export const APIKeyDeleteDialog = ({ apiKey, lastSeen }: APIKeyDeleteDialogProps) => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const [isOpen, setIsOpen] = useState(false)
-    // FIXME: need permission implemented 
-  const { can: canDeleteAPIKeys } = {can:true}
+  const { can: canDeleteAPIKeys } = useCheckPermissions("branch:auth:admin")
 
   const { mutate: deleteAPIKey, isLoading: isDeletingAPIKey } = useAPIKeyDeleteMutation({
     onSuccess: () => {

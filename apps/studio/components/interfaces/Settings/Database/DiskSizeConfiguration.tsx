@@ -16,6 +16,7 @@ import { useUrlState } from 'hooks/ui/useUrlState'
 import { formatBytes } from 'lib/helpers'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface DiskSizeConfigurationProps {
   disabled?: boolean
@@ -32,8 +33,8 @@ const DiskSizeConfiguration = ({ disabled = false }: DiskSizeConfigurationProps)
     const show = typeof value === 'function' ? value(showIncreaseDiskSizeModal) : value
     setUrlParams({ show_increase_disk_size_modal: show ? 'true' : undefined })
   }
-  // FIXME: need permission implemented 
-  const { can: canUpdateDiskSizeConfig } = {can:true}
+
+  const { can: canUpdateDiskSizeConfig } = useCheckPermissions("branch:settings:admin")
 
   const { isLoading: isUpdatingDiskSize } = useProjectDiskResizeMutation({
     onSuccess: (_, variables) => {

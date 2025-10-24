@@ -10,6 +10,7 @@ import { useProjectTransferPreviewQuery } from 'data/projects/project-transfer-p
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, InfoIcon, Listbox, Loading, Modal, WarningIcon } from 'ui'
 import { Admonition } from 'ui-patterns'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const TransferProjectButton = () => {
   const { data: project } = useSelectedProjectQuery()
@@ -53,8 +54,8 @@ const TransferProjectButton = () => {
       remove()
     }
   }, [isOpen])
-  // FIXME: need permission implemented 
-  const { can: canTransferProject } = {can:true}
+
+  const { can: canTransferProject } = useCheckPermissions("env:projects:admin")
 
   const toggle = () => {
     setIsOpen(!isOpen)

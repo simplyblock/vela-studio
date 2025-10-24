@@ -56,6 +56,7 @@ import { inverseValidBucketNameRegex, validBucketNameRegex } from './CreateBucke
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { convertFromBytes, convertToBytes } from './StorageSettings/StorageSettings.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 const FormSchema = z
   .object({
     name: z
@@ -104,8 +105,8 @@ const CreateBucketModal = () => {
   const { data: branch } = useSelectedBranchQuery()
   const { mutate: sendEvent } = useSendEventMutation()
   const router = useRouter()
-  // FIXME: need permission implemented   
-  const { can: canCreateBuckets } = {can:true}
+
+  const { can: canCreateBuckets } = useCheckPermissions("branch:settings:admin")
 
   const { mutateAsync: createBucket, isLoading: isCreating } = useBucketCreateMutation({
     // [Joshen] Silencing the error here as it's being handled in onSubmit

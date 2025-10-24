@@ -3,6 +3,7 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import type { ProjectSecret } from 'data/secrets/secrets-query'
 import { TableCell, TableRow } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface EdgeFunctionSecretProps {
   secret: ProjectSecret
@@ -11,7 +12,7 @@ interface EdgeFunctionSecretProps {
 
 const EdgeFunctionSecret = ({ secret, onSelectDelete }: EdgeFunctionSecretProps) => {
   // FIXME: need permission implemented 
-  const { can: canUpdateSecrets } = {can:true}
+  const { can: canUpdateSecrets } = useCheckPermissions("branch:edge:admin")
   // [Joshen] Following API's validation:
   // https://github.com/supabase/infrastructure/blob/develop/api/src/routes/v1/projects/ref/secrets/secrets.controller.ts#L106
   const isReservedSecret = !!secret.name.match(/^(SUPABASE_).*/)

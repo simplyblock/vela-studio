@@ -38,6 +38,7 @@ import { PolicyTemplates } from './PolicyTemplates'
 import { QueryError } from './QueryError'
 import { RLSCodeEditor } from './RLSCodeEditor'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface PolicyEditorPanelProps {
   visible: boolean
@@ -64,8 +65,7 @@ export const PolicyEditorPanel = memo(function ({
   const queryClient = useQueryClient()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  // FIXME: need permission implemented
-  const { can: canUpdatePolicies } = { can: true }
+  const { can: canUpdatePolicies } = useCheckPermissions("branch:rls:admin")
 
   // [Joshen] Hyrid form fields, just spit balling to get a decent POC out
   const [using, setUsing] = useState('')

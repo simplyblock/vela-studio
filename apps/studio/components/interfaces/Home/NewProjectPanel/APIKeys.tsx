@@ -11,6 +11,7 @@ import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { Input, SimpleCodeBlock } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const generateInitSnippet = (endpoint: string) => ({
   js: `
@@ -73,8 +74,7 @@ export const APIKeys = () => {
     isJwtSecretUpdateStatusLoading && !isProjectSettingsLoading && isApiKeysEmpty
 
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
-  // FIXME: need permission implemented 
-  const { can: canReadAPIKeys } = {can:true}
+  const { can: canReadAPIKeys } = useCheckPermissions("branch:api:getkeys")
   const isNotUpdatingJwtSecret =
     jwtSecretUpdateStatus === undefined || jwtSecretUpdateStatus === JwtSecretUpdateStatus.Updated
 

@@ -13,13 +13,13 @@ import { useComplianceConfigUpdateMutation } from 'data/config/project-complianc
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Switch, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const ComplianceConfig = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
   const [isSensitive, setIsSensitive] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canUpdateComplianceConfig } = {can:true}
+  const { can: canUpdateComplianceConfig } = useCheckPermissions("branch:settings:admin")
 
   const {
     data: settings,

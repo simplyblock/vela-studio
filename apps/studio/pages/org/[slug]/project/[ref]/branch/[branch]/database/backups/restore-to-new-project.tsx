@@ -27,6 +27,7 @@ import type { NextPageWithLayout } from 'types'
 import { Alert_Shadcn_, AlertDescription_Shadcn_, AlertTitle_Shadcn_, Badge, Button } from 'ui'
 import { Admonition, TimestampInfo } from 'ui-patterns'
 import { useParams } from 'common'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const RestoreToNewProjectPage: NextPageWithLayout = () => {
   return (
@@ -71,10 +72,8 @@ const RestoreToNewProject = () => {
   } = useCloneBackupsQuery({ projectRef: project?.ref })
 
   const isActiveHealthy = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
-  // FIXME: need permission implemented 
-  const { can: canReadPhysicalBackups, isSuccess: isPermissionsLoaded } ={can:true,isSuccess:true}
-  // FIXME: need permission implemented 
-  const { can: canTriggerPhysicalBackups } = {can:true}
+  const { can: canReadPhysicalBackups, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:read")
+  const { can: canTriggerPhysicalBackups } = useCheckPermissions("branch:settings:admin")
   const PITR_ENABLED = cloneBackups?.pitr_enabled
   const PHYSICAL_BACKUPS_ENABLED = project?.is_physical_backups_enabled
   const dbVersion = getDatabaseMajorVersion(project?.dbVersion ?? '')

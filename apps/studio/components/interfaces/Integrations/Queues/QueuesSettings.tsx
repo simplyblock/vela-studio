@@ -32,13 +32,13 @@ import { Admonition } from 'ui-patterns'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 // [Joshen] Not convinced with the UI and layout but getting the functionality out first
 
 export const QueuesSettings = () => {
   const { data: branch } = useSelectedBranchQuery()
-    // FIXME: need permission implemented
-  const { can: canUpdatePostgrestConfig } = {can:true}
+  const { can: canUpdatePostgrestConfig } = useCheckPermissions("branch:settings:admin")
   const [isToggling, setIsToggling] = useState(false)
   const [rlsConfirmModalOpen, setRlsConfirmModalOpen] = useState(false)
   const [isUpdatingRls, setIsUpdatingRls] = useState(false)

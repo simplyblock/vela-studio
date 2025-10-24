@@ -19,10 +19,10 @@ import { useUpdateLogDrainMutation } from 'data/log-drains/update-log-drain-muta
 import type { NextPageWithLayout } from 'types'
 import { Alert_Shadcn_, Button } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const LogDrainsSettings: NextPageWithLayout = () => {
-  // FIXME: need permission implemented   
-  const { can: canManageLogDrains, isLoading: isLoadingPermissions } ={can:true , isLoading:false}
+  const { can: canManageLogDrains, isLoading: isLoadingPermissions } = useCheckPermissions("branch:settings:admin")
   const [open, setOpen] = useState(false)
   const { ref } = useParams() as { ref: string }
   const [selectedLogDrain, setSelectedLogDrain] = useState<Partial<LogDrainData> | null>(null)

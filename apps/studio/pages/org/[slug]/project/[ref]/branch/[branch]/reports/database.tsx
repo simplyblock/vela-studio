@@ -37,6 +37,7 @@ import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import type { NextPageWithLayout } from 'types'
 import { Alert_Shadcn_, AlertDescription_Shadcn_, Button } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const DatabaseReport: NextPageWithLayout = () => {
   return (
@@ -94,8 +95,7 @@ const DatabaseUsage = () => {
     orgSlug: org?.slug,
     projectRef: project?.ref,
   })
-  // FIXME: need permission implemented
-  const { can: canUpdateDiskSizeConfig } = { can: true }
+  const { can: canUpdateDiskSizeConfig } = useCheckPermissions("project:settings:write")
 
   const REPORT_ATTRIBUTES = getReportAttributes(
     org!,

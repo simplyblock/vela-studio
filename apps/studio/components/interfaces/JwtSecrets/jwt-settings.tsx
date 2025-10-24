@@ -53,6 +53,7 @@ import {
   JWT_SECRET_UPDATE_PROGRESS_MESSAGES,
 } from './jwt.constants'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const schema = object({
   JWT_EXP: number()
@@ -68,12 +69,9 @@ const JWTSettings = () => {
   const [showCustomTokenInput, setShowCustomTokenInput] = useState(false)
   const [isCreatingKey, setIsCreatingKey] = useState<boolean>(false)
   const [isRegeneratingKey, setIsGeneratingKey] = useState<boolean>(false)
-  // FIXME: need permission implemented
-  const { can: canReadJWTSecret } = { can: true }
-  // FIXME: need permission implemented
-  const { can: canGenerateNewJWTSecret } = { can: true }
-  // FIXME: need permission implemented
-  const { can: canUpdateConfig } = { can: true }
+  const { can: canReadJWTSecret } = useCheckPermissions("branch:api:getkeys")
+  const { can: canGenerateNewJWTSecret } = useCheckPermissions("branch:auth:admin")
+  const { can: canUpdateConfig } = useCheckPermissions("branch:auth:admin")
 
   const { data } = useJwtSecretUpdatingStatusQuery({ branch })
   const { data: config, isError } = useProjectPostgrestConfigQuery({ branch })

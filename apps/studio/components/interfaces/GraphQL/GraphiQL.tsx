@@ -39,6 +39,7 @@ import { useLocalStorage } from 'hooks/misc/useLocalStorage'
 import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button, cn } from 'ui'
 import { RoleImpersonationSelector } from '../RoleImpersonationSelector'
 import styles from './graphiql.module.css'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface GraphiQLProps {
   fetcher: Fetcher
@@ -73,8 +74,7 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
   const copy = useCopyQuery()
   const merge = useMergeQuery()
   const prettify = usePrettifyEditors()
-  // FIXME: need permission implemented 
-  const { can: canReadJWTSecret } = {can:true}
+  const { can: canReadJWTSecret } = useCheckPermissions("branch:api:getkeys")
 
   const [rlsBypassedWarningDismissed, setRlsBypassedWarningDismissed] = useLocalStorage(
     LOCAL_STORAGE_KEYS.GRAPHIQL_RLS_BYPASS_WARNING,

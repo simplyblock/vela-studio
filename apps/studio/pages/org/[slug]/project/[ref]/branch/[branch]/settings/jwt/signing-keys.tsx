@@ -5,10 +5,10 @@ import SettingsLayout from 'components/layouts/ProjectSettingsLayout/SettingsLay
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const JWTSigningKeysPage: NextPageWithLayout = () => {
-  // FIXME: need permission implemented   
-  const { can: canReadAPIKeys, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+  const { can: canReadAPIKeys, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:api:getkeys")
 
   return (
     <>

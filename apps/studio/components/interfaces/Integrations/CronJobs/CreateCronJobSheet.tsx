@@ -51,6 +51,7 @@ import { HttpRequestSection } from './HttpRequestSection'
 import { SqlFunctionSection } from './SqlFunctionSection'
 import { SqlSnippetSection } from './SqlSnippetSection'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface CreateCronJobSheetProps {
   selectedCronJob?: Pick<CronJob, 'jobname' | 'schedule' | 'active' | 'command'>
@@ -218,8 +219,7 @@ export const CreateCronJobSheet = ({
   const { mutate: sendEvent } = useSendEventMutation()
   const { mutate: upsertCronJob, isLoading: isUpserting } = useDatabaseCronJobCreateMutation()
   const isLoading = isLoadingGetCronJob || isUpserting
-  // FIXME: need permission implemented 
-  const { can: canToggleExtensions } = {can:true}
+  const { can: canToggleExtensions } = useCheckPermissions("branch:settings:admin")
 
   const cronJobValues = parseCronJobCommand(selectedCronJob?.command || '', project?.ref!)
 

@@ -26,6 +26,7 @@ import {
 } from 'ui'
 import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface ColumnListProps {
   onAddColumn: () => void
@@ -62,8 +63,7 @@ export const ColumnList = ({
       : selectedTable?.columns?.filter((column) => column.name.includes(filterString))) ?? []
 
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedTable?.schema ?? '' })
-   // FIXME: need permission implemented 
-  const { can: canUpdateColumns } = {can:true}
+  const { can: canUpdateColumns } = useCheckPermissions("branch:settings:admin")
 
   return (
     <div className="space-y-4">

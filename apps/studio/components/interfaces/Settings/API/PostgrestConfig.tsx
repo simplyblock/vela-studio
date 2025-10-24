@@ -48,6 +48,7 @@ import {
 } from 'ui-patterns/multi-select'
 import { HardenAPIModal } from './HardenAPIModal'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const formSchema = z
   .object({
@@ -97,8 +98,7 @@ export const PostgrestConfig = () => {
 
   const formId = 'project-postgres-config'
   const hiddenSchema = ['auth', 'pgbouncer', 'hooks', 'extensions']
-    // FIXME: need permission implemented 
-  const { can: canUpdatePostgrestConfig, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+  const { can: canUpdatePostgrestConfig, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:admin")
   const isGraphqlExtensionEnabled =
     (extensions ?? []).find((ext) => ext.name === 'pg_graphql')?.installed_version !== null
 

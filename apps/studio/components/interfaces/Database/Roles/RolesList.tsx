@@ -13,6 +13,7 @@ import { RoleRow } from './RoleRow'
 import { RoleRowSkeleton } from './RoleRowSkeleton'
 import { SUPABASE_ROLES } from './Roles.constants'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 type SUPABASE_ROLE = (typeof SUPABASE_ROLES)[number]
 
@@ -23,8 +24,7 @@ const RolesList = () => {
   const [filterType, setFilterType] = useState<'all' | 'active'>('all')
   const [isCreatingRole, setIsCreatingRole] = useState(false)
   const [selectedRoleToDelete, setSelectedRoleToDelete] = useState<any>()
-  // FIXME: need permission implemented 
-  const { can: canUpdateRoles } = {can:true}
+  const { can: canUpdateRoles } = useCheckPermissions("branch:auth:admin")
 
   const { data: maxConnData } = useMaxConnectionsQuery({
     branch,

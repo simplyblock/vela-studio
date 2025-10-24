@@ -30,6 +30,7 @@ import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const formId = 'pooling-configuration-form'
 
@@ -46,7 +47,7 @@ export const ConnectionPooling = () => {
   const { data: org } = useSelectedOrganizationQuery()
   const { data: branch } = useSelectedBranchQuery()
 
-  const { can: canUpdateConnectionPoolingConfiguration } = {can:true}
+  const { can: canUpdateConnectionPoolingConfiguration } = useCheckPermissions("branch:settings:admin")
 
   const {
     data: pgbouncerConfig,

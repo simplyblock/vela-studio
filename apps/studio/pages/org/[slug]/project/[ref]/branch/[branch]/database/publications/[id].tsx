@@ -5,10 +5,10 @@ import { PageLayout } from 'components/layouts/PageLayout/PageLayout'
 import { ScaffoldContainer, ScaffoldSection } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const DatabasePublications: NextPageWithLayout = () => {
-  // FIXME: need permission implemented   
-  const { can: canViewPublications, isSuccess: isPermissionsLoaded } ={can:true,isSuccess:true}
+  const { can: canViewPublications, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:read")
   if (isPermissionsLoaded && !canViewPublications) {
     return <NoPermission isFullPage resourceText="view database publications" />
   }

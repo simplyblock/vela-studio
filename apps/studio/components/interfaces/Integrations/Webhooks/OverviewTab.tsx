@@ -7,6 +7,7 @@ import { useSchemasQuery } from 'data/database/schemas-query'
 import { Admonition } from 'ui-patterns'
 import { IntegrationOverviewTab } from '../Integration/IntegrationOverviewTab'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const WebhooksOverviewTab = () => {
   const { data: branch } = useSelectedBranchQuery()
@@ -21,7 +22,7 @@ export const WebhooksOverviewTab = () => {
 
   const isHooksEnabled = schemas?.some((schema) => schema.name === 'supabase_functions')
   // FIXME: need permission implemented 
-  const { can: canReadWebhooks, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
+  const { can: canReadWebhooks, isLoading: isLoadingPermissions } = useCheckPermissions("branch:settings:read")
 
   const { mutate: enableHooks, isLoading: isEnablingHooks } = useHooksEnableMutation({
     onSuccess: async () => {

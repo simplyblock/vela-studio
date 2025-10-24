@@ -32,6 +32,7 @@ import {
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const formId = 'realtime-configuration-form'
 
@@ -40,7 +41,7 @@ export const RealtimeSettings = () => {
   const { data: organization } = useSelectedOrganizationQuery()
   const { data: branch } = useSelectedBranchQuery()
   // FIXME: need permission implemented
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canUpdateConfig } = useCheckPermissions("branch:rt:admin")
 
   const { data: maxConn } = useMaxConnectionsQuery({
     branch,

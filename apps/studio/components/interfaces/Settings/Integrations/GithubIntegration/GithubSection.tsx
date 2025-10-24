@@ -13,6 +13,7 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { BASE_PATH } from 'lib/constants'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import GitHubIntegrationConnectionForm from './GitHubIntegrationConnectionForm'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
   return (
@@ -27,8 +28,8 @@ const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
 const GitHubSection = () => {
   const { ref: projectRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
-  // FIXME: need permission implemented 
-  const { can: canReadGitHubConnection, isLoading: isLoadingPermissions } = {can:true,isLoading:false}
+
+  const { can: canReadGitHubConnection, isLoading: isLoadingPermissions } = useCheckPermissions("org:settings:read")
 
   const { data: connections } = useGitHubConnectionsQuery(
     { organizationId: organization?.id },

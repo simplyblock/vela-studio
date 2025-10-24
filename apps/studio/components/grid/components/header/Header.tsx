@@ -39,6 +39,7 @@ import { FilterPopover } from './filter/FilterPopover'
 import { formatRowsForCSV } from './Header.utils'
 import { SortPopover } from './sort/SortPopover'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 // [Joshen] CSV exports require this guard as a fail-safe if the table is
 // just too large for a browser to keep all the rows in memory before
 // exporting. Either that or export as multiple CSV sheets with max n rows each
@@ -85,8 +86,7 @@ const DefaultHeader = () => {
 
   const snap = useTableEditorTableStateSnapshot()
   const tableEditorSnap = useTableEditorStateSnapshot()
-  // FIXME: need permission implemented 
-  const { can: canCreateColumns } = {can:true}
+  const { can: canCreateColumns } = useCheckPermissions("branch:settings:admin")
   const { mutate: sendEvent } = useSendEventMutation()
 
   const onAddRow =

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 
 import { useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface ApiKeysVisibilityState {
   hasApiKeys: boolean
@@ -17,8 +18,7 @@ interface ApiKeysVisibilityState {
  */
 export function useApiKeysVisibility(): ApiKeysVisibilityState {
   const { data: branch } = useSelectedBranchQuery()
-    // FIXME: need permission implemented 
-  const { can: canReadAPIKeys } = {can:true}
+  const { can: canReadAPIKeys } = useCheckPermissions("branch:api:getkeys")
 
   const { data: apiKeysData, isLoading } = useAPIKeysQuery({
     branch,

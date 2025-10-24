@@ -21,6 +21,7 @@ import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
 import { Branch } from 'api-types/types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const BranchesPage: NextPageWithLayout = () => {
   const router = useRouter()
@@ -37,8 +38,7 @@ const BranchesPage: NextPageWithLayout = () => {
   const projectRef =
     project !== undefined ? (isBranch ? project.parent_project_ref : ref) : undefined
 
-  // FIXME: need permission implemented
-  const { can: canReadBranches, isSuccess: isPermissionsLoaded } = { can: true, isSuccess: true }
+  const { can: canReadBranches, isSuccess: isPermissionsLoaded } = useCheckPermissions("env:projects:read")
 
   const {
     data: branches,
@@ -145,8 +145,7 @@ const BranchesPage: NextPageWithLayout = () => {
 BranchesPage.getLayout = (page) => {
   const BranchesPageWrapper = () => {
     const snap = useAppStateSnapshot()
-    // FIXME: need permission implemented
-    const { can: canCreateBranches } = { can: true }
+    const { can: canCreateBranches } = useCheckPermissions("project:branches:create")
 
     const primaryActions = (
       <ButtonTooltip

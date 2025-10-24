@@ -10,6 +10,7 @@ import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query
 import { Input } from 'ui'
 import { getLastUsedAPIKeys, useLastUsedAPIKeysLogQuery } from './DisplayApiSettings.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const DisplayApiSettings = ({
   showTitle = true,
@@ -34,8 +35,8 @@ export const DisplayApiSettings = ({
     isLoading: isJwtSecretUpdateStatusLoading,
   } = useJwtSecretUpdatingStatusQuery({ branch })
   const jwtSecretUpdateStatus = data?.jwtSecretUpdateStatus
-  // FIXME: need permission implemented 
-  const { isLoading: isLoadingPermissions, can: canReadAPIKeys } = {can:true , isLoading:false}
+
+  const { isLoading: isLoadingPermissions, can: canReadAPIKeys } = useCheckPermissions("branch:api:getkeys")
 
   const isLoading = isProjectSettingsLoading || isLoadingPermissions
 

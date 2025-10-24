@@ -17,6 +17,7 @@ import {
 import { APIKeyRow } from './APIKeyRow'
 import CreateSecretAPIKeyDialog from './CreateSecretAPIKeyDialog'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface LastSeenData {
   [hash: string]: { timestamp: string }
@@ -55,8 +56,7 @@ export const SecretAPIKeys = () => {
     isLoading: isLoadingApiKeys,
     error,
   } = useAPIKeysQuery({ branch, reveal: false })
-  // FIXME: need permission implemented 
-  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
+  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = useCheckPermissions("branch:api:getkeys")
   const lastSeen = useLastSeen(projectRef!)
 
   const secretApiKeys = useMemo(

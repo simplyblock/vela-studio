@@ -27,6 +27,7 @@ import {
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import FunctionList from './FunctionList'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface FunctionsListProps {
   createFunction: () => void
@@ -56,8 +57,7 @@ const FunctionsList = ({
     }
     router.push(url)
   }
-  // FIXME: need permission implemented 
-  const { can: canCreateFunctions } = {can:true}
+  const { can: canCreateFunctions } = useCheckPermissions("branch:edge:admin")
 
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedSchema })
 

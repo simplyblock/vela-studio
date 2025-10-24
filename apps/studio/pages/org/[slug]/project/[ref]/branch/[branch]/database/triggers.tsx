@@ -10,6 +10,7 @@ import { EditorPanel } from 'components/ui/EditorPanel/EditorPanel'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import NoPermission from 'components/ui/NoPermission'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const TriggersPage: NextPageWithLayout = () => {
   const [selectedTrigger, setSelectedTrigger] = useState<PostgresTrigger>()
@@ -19,7 +20,7 @@ const TriggersPage: NextPageWithLayout = () => {
   // Local editor panel state
   const [editorPanelOpen, setEditorPanelOpen] = useState(false)
 
-  const { can: canReadTriggers, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+  const { can: canReadTriggers, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:read")
 
   const createTrigger = () => {
     setEditorPanelOpen(true)

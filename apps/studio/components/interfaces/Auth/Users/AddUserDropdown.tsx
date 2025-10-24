@@ -6,13 +6,12 @@ import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'ui'
 import CreateUserModal from './CreateUserModal'
 import InviteUserModal from './InviteUserModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const AddUserDropdown = () => {
   const showSendInvitation = useIsFeatureEnabled('authentication:show_send_invitation')
-  // FIXME: need permission implemented 
-  const { can: canInviteUsers } = {can:true}
-   // FIXME: need permission implemented  
-  const { can: canCreateUsers } ={can:true}
+  const { can: canInviteUsers } = useCheckPermissions("branch:auth:admin")
+  const { can: canCreateUsers } = useCheckPermissions("branch:auth:admin")
 
   const [inviteVisible, setInviteVisible] = useState(false)
   const [createVisible, setCreateVisible] = useState(false)

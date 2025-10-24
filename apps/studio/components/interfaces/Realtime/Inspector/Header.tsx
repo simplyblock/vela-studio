@@ -10,6 +10,7 @@ import { ChooseChannelPopover } from './ChooseChannelPopover'
 import { RealtimeFilterPopover } from './RealtimeFilterPopover'
 import { RealtimeTokensPopover } from './RealtimeTokensPopover'
 import { RealtimeConfig } from './useRealtimeMessages'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface HeaderProps {
   config: RealtimeConfig
@@ -20,8 +21,7 @@ export const Header = ({ config, onChangeConfig }: HeaderProps) => {
   const { mutate: sendEvent } = useSendEventMutation()
   const { ref } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
-  // FIXME: need permission implemented 
-  const { can: canReadAPIKeys } = {can:true}
+  const { can: canReadAPIKeys } = useCheckPermissions("branch:api:getkeys")
 
   return (
     <div className="flex flex-row h-14 gap-2.5 items-center px-4">

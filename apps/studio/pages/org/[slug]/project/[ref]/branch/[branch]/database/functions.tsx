@@ -9,6 +9,7 @@ import { FormHeader } from 'components/ui/Forms/FormHeader'
 import NoPermission from 'components/ui/NoPermission'
 import { DatabaseFunction } from 'data/database-functions/database-functions-query'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const DatabaseFunctionsPage: NextPageWithLayout = () => {
   const [selectedFunction, setSelectedFunction] = useState<DatabaseFunction | undefined>()
@@ -17,8 +18,7 @@ const DatabaseFunctionsPage: NextPageWithLayout = () => {
 
   // Local editor panel state
   const [editorPanelOpen, setEditorPanelOpen] = useState(false)
-  // FIXME: need permission implemented
-  const { can: canReadFunctions, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+  const { can: canReadFunctions, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:edge:read")
 
   const createFunction = () => {
     setEditorPanelOpen(true)

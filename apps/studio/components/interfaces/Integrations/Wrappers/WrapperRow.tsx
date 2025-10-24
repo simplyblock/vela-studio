@@ -11,6 +11,7 @@ import { INTEGRATIONS } from '../Landing/Integrations.constants'
 import DeleteWrapperModal from './DeleteWrapperModal'
 import { EditWrapperSheet } from './EditWrapperSheet'
 import { formatWrapperTables } from './Wrappers.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface WrapperRowProps {
   wrapper: FDW
@@ -18,8 +19,7 @@ interface WrapperRowProps {
 
 const WrapperRow = ({ wrapper }: WrapperRowProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
-    // FIXME: need permission implemented 
-  const { can: canManageWrappers } = {can:true}
+  const { can: canManageWrappers } = useCheckPermissions("branch:settings:admin")
 
   const [editWrapperShown, setEditWrapperShown] = useState(false)
   const [isClosingEditWrapper, setIsClosingEditWrapper] = useState(false)

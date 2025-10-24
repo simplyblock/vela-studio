@@ -34,6 +34,7 @@ import {
   TreeViewItem,
   cn,
 } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface SQLEditorTreeViewItemProps
   extends Omit<ComponentProps<typeof TreeViewItem>, 'name' | 'xPadding'> {
@@ -103,8 +104,7 @@ export const SQLEditorTreeViewItem = ({
   const isEditing = status === 'editing'
   const isSaving = status === 'saving'
 
-  // FIXME: need permission implemented 
-  const { can: canCreateSQLSnippet } = {can:true}
+  const { can: canCreateSQLSnippet } = useCheckPermissions("branch:settings:admin")
 
   const parentId = element.parent === 0 ? undefined : element.parent
 

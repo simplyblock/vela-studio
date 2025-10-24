@@ -62,6 +62,7 @@ import { ProtectedSchemaWarning } from '../ProtectedSchemaWarning'
 import { formatAllEntities } from './Tables.utils'
 import { getPathReferences } from 'data/vela/path-references'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface TableListProps {
   onAddTable: () => void
@@ -87,8 +88,7 @@ export const TableList = ({
 
   const [filterString, setFilterString] = useState<string>('')
   const [visibleTypes, setVisibleTypes] = useState<string[]>(Object.values(ENTITY_TYPE))
-  // FIXME: need permission implemented 
-  const { can: canUpdateTables } = {can:true}
+  const { can: canUpdateTables } = useCheckPermissions("branch:settings:admin")
 
   const {
     data: tables,

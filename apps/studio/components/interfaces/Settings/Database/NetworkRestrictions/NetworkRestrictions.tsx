@@ -26,6 +26,7 @@ import AllowAllModal from './AllowAllModal'
 import DisallowAllModal from './DisallowAllModal'
 import RemoveRestrictionModal from './RemoveRestrictionModal'
 import { getPathReferences } from 'data/vela/path-references'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface AccessButtonProps {
   disabled: boolean
@@ -75,8 +76,7 @@ const NetworkRestrictions = () => {
   const [selectedRestrictionToRemove, setSelectedRestrictionToRemove] = useState<string>()
 
   const { data, isLoading } = useNetworkRestrictionsQuery({ orgSlug, projectRef: ref })
-  // FIXME: need permission implemented 
-  const { can: canUpdateNetworkRestrictions } = {can:true}
+  const { can: canUpdateNetworkRestrictions } = useCheckPermissions("branch:settings:admin")
 
   const hasAccessToRestrictions = data?.entitlement === 'allowed'
   const ipv4Restrictions = data?.config?.dbAllowedCidrs ?? []

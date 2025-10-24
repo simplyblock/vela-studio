@@ -31,6 +31,7 @@ import { getContentFilePath } from './Connect.utils'
 import ConnectDropdown from './ConnectDropdown'
 import ConnectTabContent from './ConnectTabContent'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const Connect = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
@@ -55,8 +56,7 @@ export const Connect = () => {
   )
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef }, { enabled: showConnect })
-    // FIXME: need permission implemented 
-  const { can: canReadAPIKeys } = {can:true}
+  const { can: canReadAPIKeys } = useCheckPermissions("branch:api:getkeys")
 
   const handleParentChange = (value: string) => {
     setSelectedParent(value)

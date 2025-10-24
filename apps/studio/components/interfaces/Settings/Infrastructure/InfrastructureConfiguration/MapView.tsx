@@ -11,6 +11,7 @@ import { Database, useReadReplicasQuery } from 'data/read-replicas/replicas-quer
 import { BASE_PATH } from 'lib/constants'
 import GeographyData from './MapData.json'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 // [Joshen] Foresee that we'll skip this view for initial launch
 
@@ -32,8 +33,8 @@ const MapView = ({
     y: number
     region: { key: string; country?: string; name?: string; region?: string }
   }>()
-  // FIXME: need permission implemented 
-  const { can: canManageReplicas } = {can:true}
+
+  const { can: canManageReplicas } = useCheckPermissions("branch:replicate:admin")
 
   const { data } = useReadReplicasQuery({ branch })
   const databases = data ?? []

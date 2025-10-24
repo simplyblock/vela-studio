@@ -19,6 +19,7 @@ import {
 } from 'ui'
 import { generateTriggerCreateSQL } from './TriggerList.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface TriggerListProps {
   schema: string
@@ -50,7 +51,7 @@ const TriggerList = ({
     filteredTriggers.filter((x) => x.schema == schema),
     (trigger) => trigger.name.toLocaleLowerCase()
   )
-  const { can: canUpdateTriggers } = {can:true}
+  const { can: canUpdateTriggers } = useCheckPermissions("branch:settings:admin")
 
   if (_triggers.length === 0 && filterString.length === 0) {
     return (

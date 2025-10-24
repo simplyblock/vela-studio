@@ -23,6 +23,7 @@ import { UserHeader } from './UserHeader'
 import { PANEL_PADDING } from './Users.constants'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 import { useAuthUserSessions } from 'data/auth/auth-user-sessions-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const DATE_FORMAT = 'DD MMM, YYYY HH:mm'
 const CONTAINER_CLASS = cn(
@@ -65,18 +66,12 @@ export const UserOverview = ({ user, onDeleteSuccess }: UserOverviewProps) => {
     }, undefined)
   }, [userSessions, isLoadingSessions])
 
-  // FIXME: need permission implemented
-  const { can: canUpdateUser } = { can: true }
-  // FIXME: need permission implemented
-  const { can: canSendMagicLink } = { can: true }
-  // FIXME: need permission implemented
-  const { can: canSendRecovery } = { can: true }
-  // FIXME: need permission implemented
-  const { can: canSendOtp } = { can: true }
-  // FIXME: need permission implemented
-  const { can: canRemoveUser } = { can: true }
-  // FIXME: need permission implemented
-  const { can: canRemoveMFAFactors } = { can: true }
+  const { can: canUpdateUser } = useCheckPermissions("branch:auth:admin")
+  const { can: canSendMagicLink } = useCheckPermissions("branch:auth:admin")
+  const { can: canSendRecovery } = useCheckPermissions("branch:auth:admin")
+  const { can: canSendOtp } = useCheckPermissions("branch:auth:admin")
+  const { can: canRemoveUser } = useCheckPermissions("branch:auth:admin")
+  const { can: canRemoveMFAFactors } = useCheckPermissions("branch:auth:admin")
 
   const [successAction, setSuccessAction] = useState<
     'send_magic_link' | 'send_recovery' | 'send_otp'

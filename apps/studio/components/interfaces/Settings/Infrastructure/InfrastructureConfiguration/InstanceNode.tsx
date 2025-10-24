@@ -37,6 +37,7 @@ import {
   Region,
 } from './InstanceConfiguration.constants'
 import { formatSeconds } from './InstanceConfiguration.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface NodeData {
   id: string
@@ -179,8 +180,7 @@ export const ReplicaNode = ({ data }: NodeProps<ReplicaNodeData>) => {
   } = data
   const { slug, ref, branch: branchRef } = useParams()
   const dbSelectorState = useDatabaseSelectorStateSnapshot()
-  // FIXME: need permission implemented 
-  const { can: canManageReplicas } = {can:true}
+  const { can: canManageReplicas } = useCheckPermissions("branch:replicate:admin")
   const [, setShowConnect] = useQueryState('showConnect', parseAsBoolean.withDefault(false))
 
   const { data: databaseStatuses } = useReadReplicasStatusesQuery({ projectRef: ref })

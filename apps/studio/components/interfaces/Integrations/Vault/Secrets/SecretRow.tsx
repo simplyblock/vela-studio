@@ -16,6 +16,7 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import EditSecretModal from './EditSecretModal'
 import type { SecretTableColumn } from './Secrets.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface SecretRowProps {
   row: VaultSecret
@@ -28,8 +29,7 @@ const SecretRow = ({ row, col, onSelectRemove }: SecretRowProps) => {
   const [modal, setModal] = useState<string | null>(null)
   const [revealSecret, setRevealSecret] = useState(false)
   const name = row?.name ?? 'No name provided'
-  // FIXME: need permission implemented 
-  const { can: canManageSecrets } = {can:true}
+  const { can: canManageSecrets } = useCheckPermissions("branch:auth:admin")
 
   const { data: revealedValue, isFetching } = useVaultSecretDecryptedValueQuery(
     {

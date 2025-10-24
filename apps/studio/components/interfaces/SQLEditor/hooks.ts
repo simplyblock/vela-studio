@@ -14,6 +14,7 @@ import {
   compareAsNewSnippet,
   createSqlSnippetSkeletonV2,
 } from './SQLEditor.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const useNewQuery = () => {
   const router = useRouter()
@@ -21,8 +22,8 @@ export const useNewQuery = () => {
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
   const snapV2 = useSqlEditorV2StateSnapshot()
-  // FIXME: need permission implemented 
-  const { can: canCreateSQLSnippet } = {can:true}
+
+  const { can: canCreateSQLSnippet } = useCheckPermissions("branch:settings:admin")
 
   const newQuery = async (sql: string, name: string, shouldRedirect: boolean = true) => {
     if (!projectRef) return console.error('Project ref is required')

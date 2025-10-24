@@ -33,6 +33,7 @@ import {
 } from 'ui'
 import { MultiSelectV2 } from 'ui-patterns/MultiSelectDeprecated/MultiSelectV2'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface PolicyDetailsV2Props {
   schema: string
@@ -61,8 +62,7 @@ export const PolicyDetailsV2 = ({
 }: PolicyDetailsV2Props) => {
   const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
-    // FIXME: need permission implemented 
-  const { can: canUpdatePolicies } = {can:true}
+  const { can: canUpdatePolicies } = useCheckPermissions("branch:rls:admin")
 
   const { data: tables, isSuccess: isSuccessTables } = useTablesQuery({
     branch,

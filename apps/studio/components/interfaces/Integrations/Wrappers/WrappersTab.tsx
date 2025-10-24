@@ -9,6 +9,7 @@ import { WRAPPERS } from './Wrappers.constants'
 import { wrapperMetaComparator } from './Wrappers.utils'
 import { WrapperTable } from './WrapperTable'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const WrappersTab = () => {
   const { id } = useParams()
@@ -16,8 +17,7 @@ export const WrappersTab = () => {
   const [selectedWrapperForDelete, setSelectedWrapperForDelete] = useState<FDW | null>(null)
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
   const [isClosingCreateWrapper, setisClosingCreateWrapper] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canCreateWrapper } = {can:true}
+  const { can: canCreateWrapper } = useCheckPermissions("branch:settings:admin")
 
   const { data } = useFDWsQuery({
     branch,
