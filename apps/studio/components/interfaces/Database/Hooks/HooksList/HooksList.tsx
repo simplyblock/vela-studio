@@ -15,6 +15,7 @@ import { Input } from 'ui'
 import { HooksListEmpty } from './HooksListEmpty'
 import { SchemaTable } from './SchemaTable'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface HooksListProps {
   createHook: () => void
@@ -44,10 +45,7 @@ export const HooksList = ({
     includes(x.name.toLowerCase(), filterString.toLowerCase())
   )
   const filteredHookSchemas = lodashMap(uniqBy(filteredHooks, 'schema'), 'schema')
-  // FIXME: need permission implemented 
-  const { can: canCreateWebhooks } = {can:true}
-  // FIXME: need permission implemented 
-  const isPermissionsLoaded = true
+  const { can: canCreateWebhooks, isLoading: isPermissionsLoading } = useCheckPermissions("branch:settings:admin")
 
   return (
     <div className="w-full space-y-4">
@@ -64,12 +62,12 @@ export const HooksList = ({
           <DocsButton href="https://supabase.com/docs/guides/database/webhooks" />
           <ButtonTooltip
             onClick={() => createHook()}
-            disabled={!isPermissionsLoaded || !canCreateWebhooks}
+            disabled={isPermissionsLoading || !canCreateWebhooks}
             tooltip={{
               content: {
                 side: 'bottom',
                 text:
-                  isPermissionsLoaded && !canCreateWebhooks
+                  !isPermissionsLoading && !canCreateWebhooks
                     ? 'You need additional permissions to create webhooks'
                     : undefined,
               },

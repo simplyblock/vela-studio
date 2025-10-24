@@ -12,6 +12,7 @@ import { useProfile } from 'lib/profile'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import { cn, SQL_ICON } from 'ui'
 import { createSqlSnippetSkeletonV2 } from '../SQLEditor.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const SQLQuickstarts = () => {
   const router = useRouter()
@@ -22,8 +23,8 @@ const SQLQuickstarts = () => {
   const [, quickStart] = partition(SQL_TEMPLATES, { type: 'template' })
 
   const snapV2 = useSqlEditorV2StateSnapshot()
-  // FIXME: need permission implemented 
-  const { can: canCreateSQLSnippet } = {can:true}
+
+  const { can: canCreateSQLSnippet } = useCheckPermissions("branch:settings:admin")
 
   const { mutate: sendEvent } = useSendEventMutation()
 

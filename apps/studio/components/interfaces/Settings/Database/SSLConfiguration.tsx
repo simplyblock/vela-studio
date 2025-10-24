@@ -14,6 +14,7 @@ import { useSSLEnforcementQuery } from 'data/ssl-enforcement/ssl-enforcement-que
 import { useSSLEnforcementUpdateMutation } from 'data/ssl-enforcement/ssl-enforcement-update-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Alert, Button, Switch, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const SSLConfiguration = () => {
   const { slug: orgSlug, ref } = useParams()
@@ -41,8 +42,7 @@ const SSLConfiguration = () => {
     }
   )
 
-  // FIXME: need permission implemented 
-  const { can: canUpdateSSLEnforcement } = {can:true}
+  const { can: canUpdateSSLEnforcement } = useCheckPermissions("branch:settings:admin")
   const initialIsEnforced = isSuccess
     ? sslEnforcementConfiguration.appliedSuccessfully &&
       sslEnforcementConfiguration.currentConfig.database

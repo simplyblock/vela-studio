@@ -10,6 +10,7 @@ import { useCheckCNAMERecordMutation } from 'data/custom-domains/check-cname-mut
 import { useCustomDomainCreateMutation } from 'data/custom-domains/custom-domains-create-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Form, Input } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const schema = yup.object({
   domain: yup.string().required('A value for your custom domain is required'),
@@ -25,8 +26,7 @@ const CustomDomainsConfigureHostname = () => {
 
   const FORM_ID = 'custom-domains-form'
   const endpoint = settings?.app_config?.endpoint
-    // FIXME: need permission implemented 
-  const { can: canConfigureCustomDomain } = {can:true}
+  const { can: canConfigureCustomDomain } = useCheckPermissions("branch:settings:admin")
   const onCreateCustomDomain = async (values: yup.InferType<typeof schema>) => {
     if (!ref) return console.error('Project ref is required')
 

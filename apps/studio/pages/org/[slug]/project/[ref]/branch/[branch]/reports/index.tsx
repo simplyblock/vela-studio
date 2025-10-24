@@ -9,6 +9,7 @@ import { Loading } from 'components/ui/Loading'
 import { useContentQuery } from 'data/content/content-query'
 import { useProfile } from 'lib/profile'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const UserReportPage: NextPageWithLayout = () => {
   const router = useRouter()
@@ -33,8 +34,7 @@ export const UserReportPage: NextPageWithLayout = () => {
     }
   )
 
-    // FIXME: need permission implemented 
-  const { can: canCreateReport } = {can:true}
+  const { can: canCreateReport } = useCheckPermissions("branch:settings:admin")
 
   return (
     <div className="h-full w-full">

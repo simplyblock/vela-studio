@@ -13,13 +13,13 @@ import { DEFAULT_MINIMUM_PASSWORD_STRENGTH } from 'lib/constants'
 import passwordStrength from 'lib/password-strength'
 import { generateStrongPassword } from 'lib/project'
 import { Button, Input, Modal } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const ResetDbPassword = ({ disabled = false }) => {
   const { ref } = useParams()
   const isProjectActive = useIsProjectActive()
   const { data: project } = useSelectedProjectQuery()
-  // FIXME: need permission implemented 
-  const { can: canResetDbPassword } = {can:true}
+  const { can: canResetDbPassword } = useCheckPermissions("branch:db:admin")
 
   const [showResetDbPass, setShowResetDbPass] = useState<boolean>(false)
 

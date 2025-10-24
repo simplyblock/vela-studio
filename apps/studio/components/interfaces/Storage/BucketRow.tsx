@@ -18,6 +18,7 @@ import {
   TooltipTrigger,
   cn,
 } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface BucketRowProps {
   bucket: Bucket
@@ -28,8 +29,7 @@ export interface BucketRowProps {
 }
 
 const BucketRow = ({ orgRef, branchRef, bucket, projectRef = '', isSelected = false }: BucketRowProps) => {
-  // FIXME: need permission implemented 
-  const { can: canUpdateBuckets } = {can:true}
+  const { can: canUpdateBuckets } = useCheckPermissions("branch:settings:admin")
   const [modal, setModal] = useState<string | null>(null)
   const onClose = () => setModal(null)
 

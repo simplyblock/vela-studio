@@ -27,13 +27,12 @@ import {
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { isSmtpEnabled } from '../SmtpForm/SmtpForm.utils'
 import { getPathReferences } from 'data/vela/path-references'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const RateLimits = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
-  // FIXME: need permission implemented 
-  const { can: canUpdateConfig } = {can:true}
-   // FIXME: need permission implemented  
-  const { can: canReadConfig } = {can:true}
+  const { can: canUpdateConfig } = useCheckPermissions("branch:settings:admin")
+  const { can: canReadConfig } = useCheckPermissions("branch:settings:read")
 
   const {
     data: authConfig,

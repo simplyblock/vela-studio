@@ -28,6 +28,7 @@ import {
   Button,
   WarningIcon,
 } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const CHART_INTERVALS: ChartIntervals[] = [
   {
@@ -139,7 +140,7 @@ const PageLayout: NextPageWithLayout = () => {
     endDate.toISOString()
   )
 
-  const { isLoading: permissionsLoading, can: canReadFunction } = {can:true , isLoading:false}
+  const { isLoading: permissionsLoading, can: canReadFunction } = useCheckPermissions("branch:edge:read")
   if (!canReadFunction && !permissionsLoading) {
     return <NoPermission isFullPage resourceText="access this edge function" />
   }

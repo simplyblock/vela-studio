@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface HookListProps {
   schema: string
@@ -49,8 +50,7 @@ export const HookList = ({
       x.schema === schema &&
       x.function_args.length >= 2
   )
-    // FIXME: need permission implemented 
-  const { can: canUpdateWebhook } = {can:true}
+  const { can: canUpdateWebhook } = useCheckPermissions("branch:settings:admin")
 
   return (
     <>

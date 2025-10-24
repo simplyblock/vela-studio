@@ -28,6 +28,7 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { PublicationSkeleton } from './PublicationSkeleton'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface PublicationEvent {
   event: string
@@ -56,8 +57,7 @@ export const PublicationsList = () => {
     },
   })
 
-    // FIXME: need permission implemented 
-  const { can: canUpdatePublications, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+  const { can: canUpdatePublications, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:admin")
 
   const publicationEvents: PublicationEvent[] = [
     { event: 'Insert', key: 'publish_insert' },

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { DeleteProjectModal } from './DeleteProjectModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface DeleteProjectButtonProps {
   type?: 'danger' | 'default'
@@ -10,8 +11,7 @@ export interface DeleteProjectButtonProps {
 const DeleteProjectButton = ({ type = 'danger' }: DeleteProjectButtonProps) => {
   const { data: project } = useSelectedProjectQuery()
   const [isOpen, setIsOpen] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canDeleteProject } = {can:true}
+  const { can: canDeleteProject } = useCheckPermissions("env:projects:delete")
 
   return (
     <>

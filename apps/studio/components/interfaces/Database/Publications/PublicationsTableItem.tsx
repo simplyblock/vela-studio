@@ -6,6 +6,7 @@ import { useDatabasePublicationUpdateMutation } from 'data/database-publications
 import { useProtectedSchemas } from 'hooks/useProtectedSchemas'
 import { Badge, Switch, TableCell, TableRow, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface PublicationsTableItemProps {
   table: PostgresTable
@@ -25,8 +26,7 @@ export const PublicationsTableItem = ({
   const [checked, setChecked] = useState(
     selectedPublication.tables?.find((x: any) => x.id == table.id) != undefined
   )
-  // FIXME: need permission implemented 
-  const { can: canUpdatePublications } = {can:true}
+  const { can: canUpdatePublications } = useCheckPermissions("branch:settings:admin")
   const { mutate: updatePublications, isLoading } = useDatabasePublicationUpdateMutation()
 
   const toggleReplicationForTable = async (

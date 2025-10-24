@@ -24,6 +24,7 @@ import {
 import { Input } from 'ui-patterns/DataInputs/Input'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import EdgeFunctionsLayout from './EdgeFunctionsLayout'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface EdgeFunctionDetailsLayoutProps {
   title?: string
@@ -38,8 +39,7 @@ const EdgeFunctionDetailsLayout = ({
   const { slug: orgRef, functionSlug, ref: projectRef, branch: branchRef } = useParams()
   const { mutate: sendEvent } = useSendEventMutation()
 
-  // FIXME: need permission implemented
-  const { isLoading, can: canReadFunctions } = {can:true , isLoading:false}
+  const { isLoading, can: canReadFunctions } = useCheckPermissions("branch:edge:admin")
 
   const [isOpen, setIsOpen] = useState(false)
 

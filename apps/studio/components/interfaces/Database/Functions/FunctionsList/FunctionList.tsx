@@ -18,6 +18,7 @@ import {
 import { getPathReferences } from 'data/vela/path-references'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface FunctionListProps {
   schema: string
@@ -52,8 +53,7 @@ const FunctionList = ({
     (func) => func.name.toLocaleLowerCase()
   )
   const projectRef = selectedProject?.ref
-    // FIXME: need permission implemented 
-  const { can: canUpdateFunctions } = {can:true}
+  const { can: canUpdateFunctions } = useCheckPermissions("branch:edge:admin")
 
   if (_functions.length === 0 && filterString.length === 0) {
     return (

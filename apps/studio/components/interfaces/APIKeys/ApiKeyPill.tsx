@@ -12,6 +12,7 @@ import { useAPIKeyIdQuery } from 'data/api-keys/[id]/api-key-id-query'
 import { APIKeysData } from 'data/api-keys/api-keys-query'
 import { apiKeysKeys } from 'data/api-keys/keys'
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export function ApiKeyPill({
   apiKey,
@@ -27,8 +28,7 @@ export function ApiKeyPill({
   const isSecret = apiKey.type === 'secret'
 
   // Permission check for revealing/copying secret API keys
-    // FIXME: need permission implemented 
-  const { can: canManageSecretKeys, isLoading: isLoadingPermission } ={can:true , isLoading:false}
+  const { can: canManageSecretKeys, isLoading: isLoadingPermission } = useCheckPermissions("branch:auth:admin")
 
   // This query only runs when show=true (enabled: show)
   // It fetches the fully revealed API key when needed

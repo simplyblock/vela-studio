@@ -22,6 +22,7 @@ import {
   Input_Shadcn_,
 } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export type CreateUserModalProps = {
   visible: boolean
@@ -37,8 +38,7 @@ const CreateUserFormSchema = z.object({
 
 const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
   const { data: branch } = useSelectedBranchQuery()
-  // FIXME: need permission implemented
-  const { can: canCreateUsers } = { can: true }
+  const { can: canCreateUsers } = useCheckPermissions("branch:auth:admin")
 
   const { mutate: createUser, isLoading: isCreatingUser } = useUserCreateMutation({
     onSuccess(res) {

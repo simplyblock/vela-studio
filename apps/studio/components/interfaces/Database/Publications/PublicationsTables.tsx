@@ -14,6 +14,7 @@ import { Admonition } from 'ui-patterns'
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { PublicationsTableItem } from './PublicationsTableItem'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const PublicationsTables = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, id } = useParams()
@@ -21,7 +22,7 @@ export const PublicationsTables = () => {
   const { data: branch } = useSelectedBranchQuery()
   const [filterString, setFilterString] = useState<string>('')
 
-  const { can: canUpdatePublications, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
+  const { can: canUpdatePublications, isLoading: isLoadingPermissions } = useCheckPermissions("branch:settings:admin")
   const { data: publications = [] } = useDatabasePublicationsQuery({
     branch
   })

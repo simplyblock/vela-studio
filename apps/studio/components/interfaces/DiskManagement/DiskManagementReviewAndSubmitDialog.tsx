@@ -29,17 +29,15 @@ import {
 import { DiskStorageSchemaType } from './DiskManagement.schema'
 import { DiskManagementMessage } from './DiskManagement.types'
 import {
-  calculateComputeSizePrice,
   calculateDiskSizePrice,
   calculateIOPSPrice,
   calculateThroughputPrice,
-  getAvailableComputeOptions,
-  mapAddOnVariantIdToComputeSize,
 } from './DiskManagement.utils'
 import { DiskMangementRestartRequiredSection } from './DiskManagementRestartRequiredSection'
 import { BillingChangeBadge } from './ui/BillingChangeBadge'
 import { DISK_AUTOSCALE_CONFIG_DEFAULTS, DiskType } from './ui/DiskManagement.constants'
 import { DiskMangementCoolDownSection } from './ui/DiskManagementCoolDownSection'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const TableHeaderRow = () => (
   <TableRow>
@@ -145,8 +143,7 @@ export const DiskManagementReviewAndSubmitDialog = ({
   const { data: project } = useSelectedProjectQuery()
 
   const { formState, getValues } = form
-  // FIXME: need permission implemented 
-  const { can: canUpdateDiskConfiguration } = {can:true}
+  const { can: canUpdateDiskConfiguration } = useCheckPermissions("branch:settings:admin")
 
   const planId = 'free'
   const isDirty = !!Object.keys(form.formState.dirtyFields).length

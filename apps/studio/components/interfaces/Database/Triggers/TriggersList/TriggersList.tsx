@@ -28,6 +28,7 @@ import {
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import TriggerList from './TriggerList'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface TriggersListProps {
   createTrigger: () => void
@@ -63,8 +64,8 @@ const TriggersList = ({
   } = useDatabaseTriggersQuery({
     branch
   })
-  // FIXME: need permission implemented 
-  const { can: canCreateTriggers } = {can:true}
+
+  const { can: canCreateTriggers } = useCheckPermissions("branch:settings:admin")
 
   if (isLoading) {
     return <GenericSkeletonLoader />

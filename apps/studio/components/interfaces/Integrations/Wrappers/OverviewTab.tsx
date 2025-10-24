@@ -19,6 +19,7 @@ import { CreateWrapperSheet } from './CreateWrapperSheet'
 import { WRAPPERS } from './Wrappers.constants'
 import { WrapperTable } from './WrapperTable'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const WrapperOverviewTab = () => {
   const { id, slug: orgRef, branch: branchRef } = useParams()
@@ -26,8 +27,7 @@ export const WrapperOverviewTab = () => {
   const { data: branch } = useSelectedBranchQuery()
   const [createWrapperShown, setCreateWrapperShown] = useState(false)
   const [isClosingCreateWrapper, setisClosingCreateWrapper] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canCreateWrapper } = {can:true}
+  const { can: canCreateWrapper } = useCheckPermissions("branch:settings:admin")
 
   const { data } = useDatabaseExtensionsQuery({
     branch

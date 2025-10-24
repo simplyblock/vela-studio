@@ -44,6 +44,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { getPathReferences } from 'data/vela/path-references'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const GITHUB_ICON = (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98 96" className="w-6">
@@ -73,10 +74,9 @@ const GitHubIntegrationConnectionForm = ({
   const [isConfirmingRepoChange, setIsConfirmingRepoChange] = useState(false)
   const [repoComboBoxOpen, setRepoComboboxOpen] = useState(false)
   const isParentProject = !Boolean(selectedProject?.parent_project_ref)
-  // FIXME: need permission implemented 
-  const { can: canUpdateGitHubConnection } = {can:true}
-  // FIXME: need permission implemented   
-  const { can: canCreateGitHubConnection } = {can:true}
+
+  const { can: canUpdateGitHubConnection } = useCheckPermissions("org:settings:admin")
+  const { can: canCreateGitHubConnection } = useCheckPermissions("org:settings:admin")
 
   const { data: gitHubAuthorization } = useGitHubAuthorizationQuery()
 

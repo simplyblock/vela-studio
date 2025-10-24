@@ -21,6 +21,7 @@ import {
 } from 'ui'
 import PauseProjectButton from './Infrastructure/PauseProjectButton'
 import RestartServerButton from './Infrastructure/RestartServerButton'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const General = () => {
   const { data: project } = useSelectedProjectQuery()
@@ -31,8 +32,7 @@ const General = () => {
 
   const formId = 'project-general-settings'
   const initialValues = { name: project?.name ?? '', ref: project?.ref ?? '' }
-  // FIXME: need permission implemented
-  const { can: canUpdateProject } = { can: true }
+  const { can: canUpdateProject } = useCheckPermissions("project:settings:write")
 
   const { mutate: updateProject, isLoading: isUpdating } = useProjectUpdateMutation()
 

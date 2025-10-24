@@ -48,6 +48,7 @@ import CommandRender from '../CommandRender'
 import { INVOCATION_TABS } from './EdgeFunctionDetails.constants'
 import { generateCLICommands } from './EdgeFunctionDetails.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const FormSchema = z.object({
   name: z.string().min(0, 'Name is required'),
@@ -59,8 +60,7 @@ export const EdgeFunctionDetails = () => {
   const router = useRouter()
   const { slug, ref: projectRef, functionSlug } = useParams()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-    // FIXME: need permission implemented 
-  const { can: canUpdateEdgeFunction } = {can:true}
+  const { can: canUpdateEdgeFunction } = useCheckPermissions("branch:edge:admin")
 
   const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })

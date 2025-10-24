@@ -13,15 +13,14 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import AddNewSecretForm from './AddNewSecretForm'
 import EdgeFunctionSecret from './EdgeFunctionSecret'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const EdgeFunctionSecrets = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const [searchString, setSearchString] = useState('')
   const [selectedSecret, setSelectedSecret] = useState<ProjectSecret>()
-  // FIXME: need permission implemented 
-  const { can: canReadSecrets, isLoading: isLoadingPermissions } = {can:true,isLoading:false}
-   // FIXME: need permission implemented  
-  const { can: canUpdateSecrets } = {can:true}
+  const { can: canReadSecrets, isLoading: isLoadingPermissions } = useCheckPermissions("branch:api:getkeys")
+  const { can: canUpdateSecrets } = useCheckPermissions("branch:edge:admin")
 
   const { data, error, isLoading, isSuccess, isError } = useSecretsQuery({
     orgSlug, projectRef,

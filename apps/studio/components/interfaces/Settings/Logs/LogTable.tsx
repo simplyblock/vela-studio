@@ -32,6 +32,7 @@ import { isDefaultLogPreviewFormat } from './Logs.utils'
 import { DefaultErrorRenderer } from './LogsErrorRenderers/DefaultErrorRenderer'
 import ResourcesExceededErrorRenderer from './LogsErrorRenderers/ResourcesExceededErrorRenderer'
 import { LogsTableEmptyState } from './LogsTableEmptyState'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface Props {
   data?: LogData[]
@@ -91,8 +92,8 @@ const LogTable = ({
   const [cellPosition, setCellPosition] = useState<any>()
   const [selectionOpen, setSelectionOpen] = useState(false)
   const [selectedRow, setSelectedRow] = useState<LogData | null>(null)
-  // FIXME: need permission implemented 
-  const { can: canCreateLogQuery } = {can:true}
+
+  const { can: canCreateLogQuery } = useCheckPermissions("branch:settings:admin")
 
   const firstRow = data[0]
 

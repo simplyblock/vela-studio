@@ -56,6 +56,7 @@ import {
 import { NoticeBar } from './ui/NoticeBar'
 import { SpendCapDisabledSection } from './ui/SpendCapDisabledSection'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export function DiskManagementForm() {
   const { data: project } = useSelectedProjectQuery()
@@ -69,7 +70,7 @@ export function DiskManagementForm() {
     (warning) => warning.project === project?.ref
   )
   const isReadOnlyMode = projectResourceWarnings?.is_readonly_mode_enabled
-  const { can: canUpdateDiskConfiguration, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+  const { can: canUpdateDiskConfiguration, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:admin")
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const [refetchInterval, setRefetchInterval] = useState<number | false>(false)
   const [message, setMessageState] = useState<DiskManagementMessage | null>(null)

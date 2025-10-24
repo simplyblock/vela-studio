@@ -12,6 +12,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { useParams } from 'common'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const PauseProjectButton = () => {
   const router = useRouter()
@@ -23,8 +24,7 @@ const PauseProjectButton = () => {
 
   const projectRef = project?.ref ?? ''
   const isPaused = project?.status === PROJECT_STATUS.INACTIVE
-    // FIXME: need permission implemented 
-  const { can: canPauseProject } = {can:true}
+  const { can: canPauseProject } = useCheckPermissions("env:projects:pause")
 
   const { mutate: pauseProject, isLoading: isPausing } = useProjectPauseMutation({
     onSuccess: (_, variables) => {

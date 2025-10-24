@@ -39,6 +39,7 @@ import {
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const CreateBranchModal = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
@@ -47,7 +48,7 @@ export const CreateBranchModal = () => {
   const { data: selectedOrg } = useSelectedOrganizationQuery()
   const { showCreateBranchModal, setShowCreateBranchModal } = useAppStateSnapshot()
 
-  const { can: canCreateBranch } = { can: true }
+  const { can: canCreateBranch } = useCheckPermissions("project:branches:create")
 
   const formId = 'create-branch-form'
   const FormSchema = z

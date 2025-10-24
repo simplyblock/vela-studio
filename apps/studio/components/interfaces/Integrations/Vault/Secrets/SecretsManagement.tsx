@@ -1,6 +1,6 @@
 import DataGrid, { Row } from 'react-data-grid'
 import { sortBy } from 'lodash'
-import { Loader, RefreshCw, Search, X } from 'lucide-react'
+import { RefreshCw, Search, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'common'
@@ -23,6 +23,7 @@ import AddNewSecretModal from './AddNewSecretModal'
 import DeleteSecretModal from './DeleteSecretModal'
 import { formatSecretColumns } from './Secrets.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const SecretsManagement = () => {
   const { search } = useParams()
@@ -32,8 +33,7 @@ export const SecretsManagement = () => {
   const [showAddSecretModal, setShowAddSecretModal] = useState(false)
   const [selectedSecretToRemove, setSelectedSecretToRemove] = useState<VaultSecret>()
   const [selectedSort, setSelectedSort] = useState<'updated_at' | 'name'>('updated_at')
-  // FIXME: need permission implemented 
-  const { can: canManageSecrets } = {can:true}
+  const { can: canManageSecrets } = useCheckPermissions("branch:auth:admin")
 
   const { data, isLoading, isRefetching, refetch, error, isError } = useVaultSecretsQuery({
     branch,

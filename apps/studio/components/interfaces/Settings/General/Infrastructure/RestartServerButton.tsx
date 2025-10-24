@@ -20,6 +20,7 @@ import {
 } from 'ui'
 import ConfirmModal from 'ui-patterns/Dialogs/ConfirmDialog'
 import { useParams } from 'common'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const RestartServerButton = () => {
   const router = useRouter()
@@ -32,8 +33,7 @@ const RestartServerButton = () => {
   const projectRef = project?.ref ?? ''
   const projectRegion = project?.region ?? ''
 
-   // FIXME: need permission implemented
-  const { can: canRestartProject } = {can:true}
+  const { can: canRestartProject } = useCheckPermissions("branch:settings:pause")
 
   const { mutate: restartProject, isLoading: isRestartingProject } = useProjectRestartMutation({
     onSuccess: () => {

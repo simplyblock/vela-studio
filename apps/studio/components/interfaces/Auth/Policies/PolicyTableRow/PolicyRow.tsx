@@ -21,6 +21,7 @@ import {
   TooltipTrigger,
 } from 'ui'
 import { generatePolicyUpdateSQL } from './PolicyTableRow.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface PolicyRowProps {
   policy: PostgresPolicy
@@ -36,8 +37,7 @@ const PolicyRow = ({
   onSelectDeletePolicy = noop,
 }: PolicyRowProps) => {
   const aiSnap = useAiAssistantStateSnapshot()
-    // FIXME: need permission implemented 
-  const { can: canUpdatePolicies } = {can:true}
+  const { can: canUpdatePolicies } = useCheckPermissions("branch:rls:admin")
 
   const { data: project } = useSelectedProjectQuery()
   const { data: authConfig } = useAuthConfigQuery({ projectRef: project?.ref })

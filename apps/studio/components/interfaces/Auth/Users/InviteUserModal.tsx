@@ -20,7 +20,8 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useUserCreateMutation } from '../../../../data/auth/user-create-mutation'
+import { useUserCreateMutation } from 'data/auth/user-create-mutation'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export type InviteUserModalProps = {
   visible: boolean
@@ -41,8 +42,7 @@ const InviteUserModal = ({ visible, setVisible }: InviteUserModalProps) => {
     },
   })
 
-  // FIXME: need permission implemented
-  const { can: canInviteUsers } = { can: true }
+  const { can: canInviteUsers } = useCheckPermissions("branch:auth:admin")
 
   const generateRandomPassword = () => {
     const characters = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'

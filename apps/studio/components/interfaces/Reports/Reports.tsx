@@ -35,6 +35,7 @@ import { ChartConfig } from '../SQLEditor/UtilityPanel/ChartConfig'
 import { GridResize } from './GridResize'
 import { MetricOptions } from './MetricOptions'
 import { LAYOUT_COLUMN_COUNT } from './Reports.constants'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const DEFAULT_CHART_COLUMN_COUNT = 1
 const DEFAULT_CHART_ROW_COUNT = 1
@@ -79,10 +80,8 @@ const Reports = () => {
 
   const currentReport = userContents?.content.find((report) => report.id === id)
   const currentReportContent = currentReport?.content as Dashboards.Content
-  // FIXME: need permission implemented 
-  const { can: canReadReport, isLoading: isLoadingPermissions } ={can:true , isLoading:false}
-   // FIXME: need permission implemented  
-  const { can: canUpdateReport } = {can:true}
+  const { can: canReadReport, isLoading: isLoadingPermissions } = useCheckPermissions("branch:settings:read")
+  const { can: canUpdateReport } = useCheckPermissions("branch:settings:admin")
 
   function handleDateRangePicker({ period_start, period_end }: any) {
     setStartDate(period_start.date)

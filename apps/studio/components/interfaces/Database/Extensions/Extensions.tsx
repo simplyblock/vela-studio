@@ -12,6 +12,7 @@ import { Card, Input, Table, TableBody, TableCell, TableHead, TableHeader, Table
 import ExtensionRow from './ExtensionRow'
 import { HIDDEN_EXTENSIONS, SEARCH_TERMS } from './Extensions.constants'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const Extensions = () => {
   const { filter } = useParams()
@@ -37,8 +38,7 @@ const Extensions = () => {
     extensionsWithoutHidden,
     (ext) => !isNull(ext.installed_version)
   )
-  // FIXME: need permission implemented 
-  const { can: canUpdateExtensions, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
+  const { can: canUpdateExtensions, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:admin")
 
   useEffect(() => {
     if (filter !== undefined) setFilterString(filter as string)

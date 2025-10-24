@@ -18,6 +18,7 @@ import {
 import { BranchLoader, BranchManagementSection, BranchRow, BranchRowLoader } from './BranchPanels'
 import { EditBranchModal } from './EditBranchModal'
 import { Branch } from 'api-types/types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface OverviewProps {
   isLoading: boolean
@@ -100,8 +101,7 @@ export const Overview = ({
 // Actions for main (production) branch
 const MainBranchActions = ({ branch }: { branch: Branch }) => {
   const { ref: projectRef } = useParams()
-  // FIXME: need permission implemented
-  const { can: canUpdateBranches } = { can: true }
+  const { can: canUpdateBranches } = useCheckPermissions("branch:auth:admin")
   const [showEditBranchModal, setShowEditBranchModal] = useState(false)
 
   return (

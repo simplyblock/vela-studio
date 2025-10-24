@@ -16,6 +16,7 @@ import MessageSelection from './MessageSelection'
 import type { LogData } from './Messages.types'
 import NoChannelEmptyState from './NoChannelEmptyState'
 import { ColumnRenderer } from './RealtimeMessageColumnRenderer'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const isErrorLog = (l: LogData) => {
   return l.message === 'SYSTEM' && l.metadata?.status === 'error'
@@ -32,7 +33,7 @@ const NoResultAlert = ({
 }) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   // FIXME: need permission implemented 
-  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = {can:true , isLoading:false}
+  const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = useCheckPermissions("branch:api:getkeys")
 
   return (
     <div className="w-full max-w-md flex items-center flex-col">

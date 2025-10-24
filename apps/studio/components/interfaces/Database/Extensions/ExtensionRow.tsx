@@ -14,6 +14,7 @@ import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import EnableExtensionModal from './EnableExtensionModal'
 import { EXTENSION_DISABLE_WARNINGS } from './Extensions.constants'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface ExtensionRowProps {
   extension: DatabaseExtension
@@ -26,8 +27,7 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
 
   const [isDisableModalOpen, setIsDisableModalOpen] = useState(false)
   const [showConfirmEnableModal, setShowConfirmEnableModal] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canUpdateExtensions } = {can:true}
+  const { can: canUpdateExtensions } = useCheckPermissions("branch:settings:admin")
   const disabled = !canUpdateExtensions
 
   const extensionMeta = extensions.find((item) => item.name === extension.name)

@@ -37,6 +37,7 @@ import MapView from './MapView'
 import { RestartReplicaConfirmationModal } from './RestartReplicaConfirmationModal'
 import { useShowNewReplicaPanel } from './use-show-new-replica'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const InstanceConfigurationUI = () => {
   const reactFlow = useReactFlow()
@@ -52,8 +53,8 @@ const InstanceConfigurationUI = () => {
   const [refetchInterval, setRefetchInterval] = useState<number | boolean>(10000)
   const [selectedReplicaToDrop, setSelectedReplicaToDrop] = useState<Database>()
   const [selectedReplicaToRestart, setSelectedReplicaToRestart] = useState<Database>()
-  // FIXME: need permission implemented 
-  const { can: canManageReplicas } = {can:true}
+
+  const { can: canManageReplicas } = useCheckPermissions("branch:replicate:admin")
 
   const {
     data: loadBalancers,

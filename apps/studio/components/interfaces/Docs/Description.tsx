@@ -8,6 +8,7 @@ import { timeout } from 'lib/helpers'
 import { Loader } from 'lucide-react'
 import { Button } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 // Removes some auto-generated Postgrest text
 // Ideally PostgREST wouldn't add this if there is already a comment
@@ -23,13 +24,13 @@ const temp_removePostgrestText = (content: string) => {
   return cleansed
 }
 
-interface DescrptionProps {
+interface DescriptionProps {
   content: string
   metadata: { table?: string; column?: string; rpc?: string }
   onChange: (value: string) => void
 }
 
-const Description = ({ content, metadata, onChange = noop }: DescrptionProps) => {
+const Description = ({ content, metadata, onChange = noop }: DescriptionProps) => {
   const contentText = temp_removePostgrestText(content || '').trim()
   const [value, setValue] = useState(contentText)
   const [isUpdating, setIsUpdating] = useState(false)
@@ -40,8 +41,7 @@ const Description = ({ content, metadata, onChange = noop }: DescrptionProps) =>
 
   const hasChanged = value != contentText
   const animateCss = `transition duration-150`
-  // FIXME: need permission implemented 
-  const { can: canUpdateDescription } = {can:true}
+  const { can: canUpdateDescription } = useCheckPermissions("branch:auth:admin")
   const updateDescription = async () => {
     if (isUpdating || !canUpdateDescription) return false
 

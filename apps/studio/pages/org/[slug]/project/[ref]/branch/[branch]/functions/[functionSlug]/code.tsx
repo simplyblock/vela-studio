@@ -18,6 +18,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { BASE_PATH } from 'lib/constants'
 import { LogoLoader } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const CodePage = () => {
   const { ref,slug, functionSlug } = useParams()
@@ -27,9 +28,7 @@ const CodePage = () => {
 
   const { mutate: sendEvent } = useSendEventMutation()
   const [showDeployWarning, setShowDeployWarning] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canDeployFunction } = {can:true}
-  
+  const { can: canDeployFunction } = useCheckPermissions("branch:egde:admin")
 
   const { data: selectedFunction } = useEdgeFunctionQuery({ projectRef: ref, slug: functionSlug })
   const {

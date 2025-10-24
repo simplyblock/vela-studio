@@ -21,6 +21,7 @@ import {
   Skeleton,
 } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface SchemaSelectorProps {
   className?: string
@@ -48,8 +49,7 @@ const SchemaSelector = ({
   portal = true,
 }: SchemaSelectorProps) => {
   const [open, setOpen] = useState(false)
-  // FIXME: need permission implemented   
-  const { can: canCreateSchemas } = {can:true}
+  const { can: canCreateSchemas } = useCheckPermissions("branch:settings:admin")
 
   const { data: branch } = useSelectedBranchQuery()
   const {
