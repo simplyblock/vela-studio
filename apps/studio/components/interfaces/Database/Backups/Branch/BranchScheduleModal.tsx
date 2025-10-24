@@ -375,6 +375,7 @@ const BranchScheduleModal = () => {
           orgId,
           projectId,
           branchId,
+          scheduleId: currentSchedule.id,
         })
       } else {
         setError('Add at least one schedule.')

@@ -12,7 +12,7 @@ export interface DeleteBranchBackupScheduleVariables {
 }
 
 export async function deleteBranchBackupSchedule(
-  { orgId, projectId, branchId }: DeleteBranchBackupScheduleVariables,
+  { orgId, projectId, branchId, scheduleId }: DeleteBranchBackupScheduleVariables,
   signal?: AbortSignal
 ) {
   const { data, error } = await del(
