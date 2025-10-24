@@ -40,7 +40,7 @@ export const RealtimeSettings = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: organization } = useSelectedOrganizationQuery()
   const { data: branch } = useSelectedBranchQuery()
-  // FIXME: need permission implemented
+
   const { can: canUpdateConfig } = useCheckPermissions("branch:rt:admin")
 
   const { data: maxConn } = useMaxConnectionsQuery({

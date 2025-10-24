@@ -22,6 +22,7 @@ import DeleteConfirmationDialogs from './DeleteConfirmationDialogs'
 import SidePanelEditor from './SidePanelEditor/SidePanelEditor'
 import TableDefinition from './TableDefinition'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface TableGridEditorProps {
   isLoadingSelectedTable?: boolean
@@ -45,10 +46,10 @@ export const TableGridEditor = ({
   })
 
   const [{ view: selectedView = 'data' }] = useUrlState()
-  // FIXME: need permission implemented 
-  const canEditTables = true
-   // FIXME: need permission implemented  
-  const canEditColumns = true
+
+  const canEditTables = useCheckPermissions("branch:settings:admin")
+  const canEditColumns = useCheckPermissions("branch:settings:admin")
+
   const isReadOnly = !canEditTables && !canEditColumns
   const tabId = !!id ? tabs.openTabs.find((x) => x.endsWith(id)) : undefined
   const openTabs = tabs.openTabs.filter((x) => !x.startsWith('sql'))

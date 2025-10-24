@@ -11,7 +11,6 @@ interface EdgeFunctionSecretProps {
 }
 
 const EdgeFunctionSecret = ({ secret, onSelectDelete }: EdgeFunctionSecretProps) => {
-  // FIXME: need permission implemented 
   const { can: canUpdateSecrets } = useCheckPermissions("branch:edge:admin")
   // [Joshen] Following API's validation:
   // https://github.com/supabase/infrastructure/blob/develop/api/src/routes/v1/projects/ref/secrets/secrets.controller.ts#L106

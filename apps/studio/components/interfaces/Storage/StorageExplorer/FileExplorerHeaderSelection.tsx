@@ -4,11 +4,12 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import { Button } from 'ui'
 import { downloadFile } from './StorageExplorer.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const FileExplorerHeaderSelection = () => {
   const { ref: projectRef, bucketId } = useParams()
-  // FIXME: need permission implemented   
-  const canUpdateFiles = true
+
+  const canUpdateFiles = useCheckPermissions("branch:settings:admin")
 
   const {
     selectedItems,

@@ -26,6 +26,7 @@ import {
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface CreateCredentialModalProps {
   visible: boolean
@@ -37,8 +38,8 @@ export const CreateCredentialModal = ({ visible, onOpenChange }: CreateCredentia
   const { data: branch } = useSelectedBranchQuery()
   const isProjectActive = useIsProjectActive()
   const [showSuccess, setShowSuccess] = useState(false)
-  // FIXME: need permission implemented 
-  const canCreateCredentials = true
+
+  const canCreateCredentials = useCheckPermissions("branch:settings:admin")
 
   const { data: config } = useProjectStorageConfigQuery({ branch })
   const isS3ConnectionEnabled = config?.features?.s3Protocol?.enabled

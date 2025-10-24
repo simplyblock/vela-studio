@@ -12,13 +12,14 @@ import { getDocument } from 'data/documents/document-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { Button } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const SecurityQuestionnaire = () => {
   const { data: organization } = useSelectedOrganizationQuery()
   const slug = organization?.slug
   const { mutate: sendEvent } = useSendEventMutation()
-    // FIXME: need permission implemented 
-  const canReadSubscriptions = true
+
+  const { can: canReadSubscriptions } = useCheckPermissions("branch:settings:read")
 
   const currentPlan = organization?.plan
 

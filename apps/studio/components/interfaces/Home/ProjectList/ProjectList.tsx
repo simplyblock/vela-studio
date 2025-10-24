@@ -199,7 +199,7 @@ const OrganizationProjects = ({
 
   return (
     <div className="space-y-3" key={organization.slug}>
-      {/* FIXME after permissions isLoadingPermissions ||*/ isLoadingProjects ? (
+      {isLoadingPermissions || isLoadingProjects ? (
         <ul className="mx-auto grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
           <ShimmeringCard />
           <ShimmeringCard />

@@ -13,13 +13,14 @@ import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { Button } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const SOC2 = () => {
   const { data: organization } = useSelectedOrganizationQuery()
   const slug = organization?.slug
   const { mutate: sendEvent } = useSendEventMutation()
-  // FIXME: need permission implemented 
-  const canReadSubscriptions = true
+
+  const { can: canReadSubscriptions } = useCheckPermissions("branch:settings:read")
 
   const currentPlan = organization?.plan
 

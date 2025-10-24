@@ -38,6 +38,7 @@ import { useTableEditorTabsCleanUp } from '../Tabs/Tabs.utils'
 import EntityListItem from './EntityListItem'
 import { TableMenuEmptyState } from './TableMenuEmptyState'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const TableEditorMenu = () => {
   const { slug, id: _id } = useParams()
@@ -82,8 +83,8 @@ export const TableEditorMenu = () => {
     () => data?.pages.flatMap((page) => page.data.entities),
     [data?.pages]
   )
-  // FIXME: need permission implemented 
-  const canCreateTables = true
+
+  const canCreateTables = useCheckPermissions("branch:settings:admin")
 
   const { isSchemaLocked, reason } = useIsProtectedSchema({ schema: selectedSchema })
 

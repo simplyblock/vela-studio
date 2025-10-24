@@ -20,6 +20,7 @@ import { StorageItem } from '../Storage.types'
 import { downloadFile } from './StorageExplorer.utils'
 import { useCopyUrl } from './useCopyUrl'
 import { useFetchFileUrlQuery } from './useFetchFileUrlQuery'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const PREVIEW_SIZE_LIMIT = 10 * 1024 * 1024 // 10MB
 
@@ -124,8 +125,8 @@ const PreviewPane = () => {
     setSelectedFileCustomExpiry,
   } = useStorageExplorerStateSnapshot()
   const { onCopyUrl } = useCopyUrl()
-  // FIXME: need permission implemented 
-  const canUpdateFiles = true
+
+  const canUpdateFiles = useCheckPermissions("branch:settings:admin")
 
   if (!file) return null
 

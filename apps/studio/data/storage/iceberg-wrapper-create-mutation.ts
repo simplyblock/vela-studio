@@ -11,6 +11,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useS3AccessKeyCreateMutation } from './s3-access-key-create-mutation'
 import { getPathReferences } from '../vela/path-references'
 import { useSelectedBranchQuery } from '../branches/selected-branch-query'
+import { useCheckPermissions } from '../../hooks/misc/useCheckPermissions'
 
 export const useIcebergWrapperCreateMutation = () => {
   const { data: project } = useSelectedProjectQuery()
@@ -27,8 +28,8 @@ export const useIcebergWrapperCreateMutation = () => {
   const apiKey = secretKey?.api_key ?? serviceKey?.api_key ?? 'SUPABASE_CLIENT_API_KEY'
 
   const wrapperMeta = WRAPPERS.find((wrapper) => wrapper.name === 'iceberg_wrapper')
-  // FIXME: need permission implemented 
-  const canCreateCredentials = true
+
+  const canCreateCredentials = useCheckPermissions("branch:settings:admin")
 
   const { mutateAsync: createS3AccessKey, isLoading: isCreatingS3AccessKey } =
     useS3AccessKeyCreateMutation()

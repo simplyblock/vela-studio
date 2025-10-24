@@ -7,11 +7,11 @@ import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import OrganizationDeletePanel from './OrganizationDeletePanel'
 
 import { OrganizationDetailsForm } from './OrganizationDetailsForm'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const GeneralSettings = () => {
   const organizationDeletionEnabled = useIsFeatureEnabled('organizations:delete')
-  // FIXME: need permission implemented 
-  const canDeleteOrganization = true
+  const canDeleteOrganization = useCheckPermissions("org:owner:admin")
 
   return (
     <ScaffoldContainer>

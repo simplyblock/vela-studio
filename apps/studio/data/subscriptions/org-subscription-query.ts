@@ -2,6 +2,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { subscriptionKeys } from './keys'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export type OrgSubscriptionVariables = {
   orgSlug?: string
@@ -32,10 +33,7 @@ export const useOrgSubscriptionQuery = <TData = OrgSubscriptionData>(
     ...options
   }: UseQueryOptions<OrgSubscriptionData, OrgSubscriptionError, TData> = {}
 ) => {
-  // [Joshen] Thinking it makes sense to add this check at the RQ level - prevent
-  // unnecessary requests, although this behaviour still needs handling on the UI
-  // FIXME: need permission implemented   
-  const canReadSubscriptions = true
+  const canReadSubscriptions = useCheckPermissions("branch:settings:admin")
 
   return useQuery<OrgSubscriptionData, OrgSubscriptionError, TData>(
     subscriptionKeys.orgSubscription(orgSlug),

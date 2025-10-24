@@ -48,6 +48,7 @@ import { StorageItem, StorageItemWithColumn } from '../Storage.types'
 import FileExplorerRowEditing from './FileExplorerRowEditing'
 import { copyPathToFolder, downloadFile } from './StorageExplorer.utils'
 import { useCopyUrl } from './useCopyUrl'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const RowIcon = ({
   view,
@@ -137,8 +138,8 @@ const FileExplorerRow: ItemRenderer<StorageItem, FileExplorerRowProps> = ({
   const isOpened =
     openedFolders.length > columnIndex ? openedFolders[columnIndex].name === item.name : false
   const isPreviewed = !isEmpty(selectedFilePreview) && isEqual(selectedFilePreview?.id, item.id)
-    // FIXME: need permission implemented 
-  const canUpdateFiles = true
+
+  const canUpdateFiles = useCheckPermissions("branch:settings:admin")
 
   const onSelectFile = async (columnIndex: number, file: StorageItem) => {
     popColumnAtIndex(columnIndex)

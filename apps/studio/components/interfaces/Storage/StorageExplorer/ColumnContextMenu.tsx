@@ -11,14 +11,14 @@ import {
   STORAGE_SORT_BY_ORDER,
   STORAGE_VIEWS,
 } from '../Storage.constants'
+import { useCheckPermissions } from '../../../../hooks/misc/useCheckPermissions'
 
 interface ColumnContextMenuProps {
   id: string
 }
 
 const ColumnContextMenu = ({ id = '' }: ColumnContextMenuProps) => {
-  // FIXME: need permission implemented   
-  const canUpdateFiles = true
+  const canUpdateFiles = useCheckPermissions("branch:settings:admin")
   const {
     columns,
     selectedItems,

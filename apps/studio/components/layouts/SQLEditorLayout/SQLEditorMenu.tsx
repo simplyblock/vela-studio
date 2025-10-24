@@ -27,6 +27,7 @@ import {
 } from 'ui-patterns/InnerSideMenu'
 import { SearchList } from './SQLEditorNavV2/SearchList'
 import { SQLEditorNav } from './SQLEditorNavV2/SQLEditorNav'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const SQLEditorMenu = () => {
   const router = useRouter()
@@ -45,8 +46,7 @@ export const SQLEditorMenu = () => {
   const appState = getAppStateSnapshot()
   const debouncedSearch = useDebounce(search, 500)
 
-  // FIXME: need permission implemented 
-  const canCreateSQLSnippet = true
+  const canCreateSQLSnippet = useCheckPermissions("branch:settings:admin")
 
   const createNewFolder = () => {
     if (!ref) return console.error('Project ref is required')

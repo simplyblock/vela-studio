@@ -32,7 +32,7 @@ const NoResultAlert = ({
   showSendMessage: () => void
 }) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  // FIXME: need permission implemented 
+
   const { can: canReadAPIKeys, isLoading: isLoadingPermissions } = useCheckPermissions("branch:api:getkeys")
 
   return (

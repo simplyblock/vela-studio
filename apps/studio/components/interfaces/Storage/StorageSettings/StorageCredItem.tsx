@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const StorageCredItem = ({
   description,
@@ -23,8 +24,7 @@ export const StorageCredItem = ({
   access_key: string
   onDeleteClick: (id: string) => void
 }) => {
-  // FIXME: need permission implemented   
-  const canRemoveAccessKey = true
+  const canRemoveAccessKey = useCheckPermissions("branch:settings:admin")
 
   function daysSince(date: string) {
     const now = new Date()

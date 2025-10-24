@@ -56,6 +56,7 @@ import { Input } from 'ui-patterns/DataInputs/Input'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { getPathReferences } from 'data/vela/path-references'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
 
@@ -152,8 +153,7 @@ const Wizard: NextPageWithLayout = () => {
         project.organization_id === currentOrg?.id && project.status !== PROJECT_STATUS.INACTIVE
     ) ?? []
 
-  // FIXME: need permission implemented
-  const isAdmin = true
+  const isAdmin = useCheckPermissions("env:projects:create")
 
   const isInvalidSlug = isOrganizationsSuccess && currentOrg === undefined
   const orgNotFound = isOrganizationsSuccess && (organizations?.length ?? 0) > 0 && isInvalidSlug

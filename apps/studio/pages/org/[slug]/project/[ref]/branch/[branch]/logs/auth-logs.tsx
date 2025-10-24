@@ -4,11 +4,13 @@ import LogsLayout from 'components/layouts/LogsLayout/LogsLayout'
 import NoPermission from 'components/ui/NoPermission'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const LogsPage: NextPageWithLayout = () => {
   const { data: project } = useSelectedProjectQuery()
-  // FIXME: need permission implemented 
-  const canReadAuthLogs = true
+
+  const canReadAuthLogs = useCheckPermissions("branch:logging:read")
+
   return !canReadAuthLogs ? (
     <NoPermission isFullPage resourceText="access your project's authentication logs" />
   ) : !!project ? (
