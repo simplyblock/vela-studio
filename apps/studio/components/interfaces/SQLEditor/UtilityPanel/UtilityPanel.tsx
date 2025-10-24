@@ -15,12 +15,10 @@ import UtilityTabResults from './UtilityTabResults'
 export type UtilityPanelProps = {
   id: string
   isExecuting?: boolean
-  isDebugging?: boolean
   isDisabled?: boolean
   hasSelection: boolean
   prettifyQuery: () => void
   executeQuery: () => void
-  onDebug: () => void
 }
 
 const DEFAULT_CHART_CONFIG: ChartConfig = {
@@ -35,12 +33,10 @@ const DEFAULT_CHART_CONFIG: ChartConfig = {
 const UtilityPanel = ({
   id,
   isExecuting,
-  isDebugging,
   isDisabled,
   hasSelection,
   prettifyQuery,
   executeQuery,
-  onDebug,
 }: UtilityPanelProps) => {
   const { ref } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
@@ -159,8 +155,6 @@ const UtilityPanel = ({
           id={id}
           isExecuting={isExecuting}
           isDisabled={isDisabled}
-          onDebug={onDebug}
-          isDebugging={isDebugging}
         />
       </TabsContent_Shadcn_>
 

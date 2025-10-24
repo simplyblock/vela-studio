@@ -9,7 +9,6 @@ import { LINTER_LEVELS } from 'components/interfaces/Linter/Linter.constants'
 import { LintEntity, NoIssuesFound, lintInfoMap } from 'components/interfaces/Linter/Linter.utils'
 import { Lint } from 'data/lint/lint-query'
 import { useRouter } from 'next/router'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   AiIconAnimation,
   Button,
@@ -43,7 +42,6 @@ const LinterDataGrid = ({
   const gridRef = useRef<DataGridHandle>(null)
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref: string, branch: string }
   const router = useRouter()
-  const snap = useAiAssistantStateSnapshot()
 
   const [view, setView] = useState<'details' | 'suggestion'>('details')
 
@@ -240,22 +238,6 @@ const LinterDataGrid = ({
                       <div className="grid gap-2">
                         <h3 className="text-sm">Resolve</h3>
                         <div className="flex items-center gap-2">
-                          <Button
-                            icon={<AiIconAnimation className="scale-75 w-3 h-3" />}
-                            onClick={() => {
-                              snap.newChat({
-                                name: 'Summarize lint',
-                                open: true,
-                                initialInput: `Summarize the issue and suggest fixes: ${lintInfoMap.find((item) => item.name === selectedLint.name)?.title}
-                                \nEntity: ${(selectedLint.metadata && (selectedLint.metadata.entity || (selectedLint.metadata.schema && selectedLint.metadata.name && `${selectedLint.metadata.schema}.${selectedLint.metadata.name}`))) ?? ''}
-                                \nSchema: ${selectedLint.metadata?.schema ?? ''}
-                                \nIssue: ${selectedLint.detail.replace(/\\`/g, '`')}
-                                \nDescription: ${selectedLint.description.replace(/\\`/g, '`')}\n`,
-                              })
-                            }}
-                          >
-                            Ask Assistant
-                          </Button>
                           <LintCTA
                             title={selectedLint.name}
                             orgRef={orgRef}

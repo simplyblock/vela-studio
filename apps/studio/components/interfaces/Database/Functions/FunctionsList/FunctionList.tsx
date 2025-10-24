@@ -1,10 +1,9 @@
 import { includes, noop, sortBy } from 'lodash'
-import { Edit, Edit2, FileText, MoreVertical, Trash } from 'lucide-react'
+import { Edit2, FileText, MoreVertical, Trash } from 'lucide-react'
 import { useRouter } from 'next/router'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseFunctionsQuery } from 'data/database-functions/database-functions-query'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   Button,
   DropdownMenu,
@@ -39,7 +38,6 @@ const FunctionList = ({
   const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: functions } = useDatabaseFunctionsQuery({
     branch,
@@ -134,39 +132,6 @@ const FunctionList = ({
                         <DropdownMenuItem className="space-x-2" onClick={() => editFunction(x)}>
                           <Edit2 size={14} />
                           <p>Edit function</p>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="space-x-2"
-                          onClick={() => {
-                            aiSnap.newChat({
-                              name: `Update function ${x.name}`,
-                              open: true,
-                              initialInput: 'Update this function to do...',
-                              suggestions: {
-                                title:
-                                  'I can help you make a change to this function, here are a few example prompts to get you started:',
-                                prompts: [
-                                  {
-                                    label: 'Rename Function',
-                                    description: 'Rename this function to ...',
-                                  },
-                                  {
-                                    label: 'Modify Function',
-                                    description: 'Modify this function so that it ...',
-                                  },
-                                  {
-                                    label: 'Add Trigger',
-                                    description:
-                                      'Add a trigger for this function that calls it when ...',
-                                  },
-                                ],
-                              },
-                              sqlSnippets: [x.complete_statement],
-                            })
-                          }}
-                        >
-                          <Edit size={14} />
-                          <p>Edit function with Assistant</p>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="space-x-2" onClick={() => deleteFunction(x)}>

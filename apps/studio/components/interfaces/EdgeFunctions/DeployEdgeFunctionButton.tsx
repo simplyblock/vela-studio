@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { TerminalInstructions } from 'components/interfaces/Functions/TerminalInstructions'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   AiIconAnimation,
   Button,
@@ -24,7 +23,6 @@ export const DeployEdgeFunctionButton = () => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: org } = useSelectedOrganizationQuery()
-  const snap = useAiAssistantStateSnapshot()
 
   const { mutate: sendEvent } = useSendEventMutation()
 
@@ -82,46 +80,6 @@ export const DeployEdgeFunctionButton = () => {
             </DialogSection>
           </DialogContent>
         </Dialog>
-        <DropdownMenuItem
-          className="gap-4"
-          onSelect={() => {
-            snap.newChat({
-              name: 'Create new edge function',
-              open: true,
-              initialInput: `Create a new edge function that ...`,
-              suggestions: {
-                title:
-                  'I can help you create a new edge function. Here are a few example prompts to get you started:',
-                prompts: [
-                  {
-                    label: 'Stripe Payments',
-                    description: 'Create a new edge function that processes payments with Stripe',
-                  },
-                  {
-                    label: 'Email with Resend',
-                    description: 'Create a new edge function that sends emails with Resend',
-                  },
-                  {
-                    label: 'PDF Generator',
-                    description:
-                      'Create a new edge function that generates PDFs from HTML templates',
-                  },
-                ],
-              },
-            })
-            sendEvent({
-              action: 'edge_function_ai_assistant_button_clicked',
-              properties: { origin: 'secondary_action' },
-              groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
-            })
-          }}
-        >
-          <AiIconAnimation className="shrink-0" size={16} />
-          <div>
-            <span className="text-foreground">Via AI Assistant</span>
-            <p>Let the Assistant write and deploy for you</p>
-          </div>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

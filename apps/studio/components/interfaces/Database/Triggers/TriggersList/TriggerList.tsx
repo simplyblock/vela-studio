@@ -1,9 +1,8 @@
 import { includes, sortBy } from 'lodash'
-import { Check, Edit, Edit2, MoreVertical, Trash, X } from 'lucide-react'
+import { Check, Edit2, MoreVertical, Trash, X } from 'lucide-react'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useDatabaseTriggersQuery } from 'data/database-triggers/database-triggers-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   Badge,
   Button,
@@ -38,7 +37,6 @@ const TriggerList = ({
 }: TriggerListProps) => {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const aiSnap = useAiAssistantStateSnapshot()
 
   const { data: triggers } = useDatabaseTriggersQuery({
     branch
@@ -156,40 +154,6 @@ const TriggerList = ({
                       >
                         <Edit2 size={14} />
                         <p>Edit trigger</p>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="space-x-2"
-                        onClick={() => {
-                          const sql = generateTriggerCreateSQL(x)
-                          aiSnap.newChat({
-                            name: `Update trigger ${X.name}`,
-                            open: true,
-                            initialInput: `Update this trigger which exists on the ${x.schema}.${x.table} table to...`,
-                            suggestions: {
-                              title:
-                                'I can help you make a change to this trigger, here are a few example prompts to get you started:',
-                              prompts: [
-                                {
-                                  label: 'Rename Trigger',
-                                  description: 'Rename this trigger to ...',
-                                },
-                                {
-                                  label: 'Change Events',
-                                  description: 'Change the events this trigger responds to ...',
-                                },
-                                {
-                                  label: 'Modify Timing',
-                                  description:
-                                    'Modify this trigger to run after instead of before ...',
-                                },
-                              ],
-                            },
-                            sqlSnippets: [sql],
-                          })
-                        }}
-                      >
-                        <Edit size={14} />
-                        <p>Edit with Assistant</p>
                       </DropdownMenuItem>
                       <DropdownMenuItem className="space-x-2" onClick={() => deleteTrigger(x)}>
                         <Trash stroke="red" size={14} />

@@ -25,11 +25,6 @@
     "build:vela-openapi": "npx openapi-typescript ./data/vela/openapi.json -o ./data/vela/vela-schema.d.ts --default-non-nullable false"
   },
   "dependencies": {
-    "@ai-sdk/amazon-bedrock": "^3.0.0",
-    "@ai-sdk/openai": "^2.0.0",
-    "@ai-sdk/provider": "^2.0.0",
-    "@ai-sdk/provider-utils": "^3.0.0",
-    "@ai-sdk/react": "^2.0.0",
     "@aws-sdk/credential-providers": "^3.804.0",
     "@dagrejs/dagre": "^1.0.4",
     "@deno/eszip": "0.83.0",
@@ -71,7 +66,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@zip.js/zip.js": "^2.7.29",
     "ai": "^5.0.0",
-    "ai-commands": "workspace:*",
     "awesome-debounce-promise": "^2.1.0",
     "cacheables": "^2.0.0",
     "common": "workspace:*",
@@ -105,7 +99,6 @@
     "next-auth": "^4.24.11",
     "next-themes": "^0.3.0",
     "nuqs": "^2.4.1",
-    "openai": "^4.75.1",
     "openapi-fetch": "0.12.4",
     "openapi-typescript-helpers": "^0.0.15",
     "papaparse": "^5.3.1",

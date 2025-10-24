@@ -13,9 +13,7 @@ import { useDatabaseFunctionsQuery } from 'data/database-functions/database-func
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
 import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
-  AiIconAnimation,
   Input,
   Table,
   TableHeader,
@@ -43,7 +41,6 @@ const FunctionsList = ({
   const router = useRouter()
   const { search } = useParams()
   const { data: branch } = useSelectedBranchQuery()
-  const aiSnap = useAiAssistantStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
 
   const filterString = search ?? ''
@@ -142,27 +139,6 @@ const FunctionsList = ({
                   >
                     Create a new function
                   </ButtonTooltip>
-                  <ButtonTooltip
-                    type="default"
-                    disabled={!canCreateFunctions}
-                    className="px-1 pointer-events-auto"
-                    icon={<AiIconAnimation size={16} />}
-                    onClick={() =>
-                      aiSnap.newChat({
-                        name: 'Create new function',
-                        open: true,
-                        initialInput: `Create a new function for the schema ${selectedSchema} that does ...`,
-                      })
-                    }
-                    tooltip={{
-                      content: {
-                        side: 'bottom',
-                        text: !canCreateFunctions
-                          ? 'You need additional permissions to create functions'
-                          : 'Create with Supabase Assistant',
-                      },
-                    }}
-                  />
                 </>
               )}
             </div>

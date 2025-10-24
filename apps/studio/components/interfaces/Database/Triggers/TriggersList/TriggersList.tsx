@@ -13,9 +13,7 @@ import { useTablesQuery } from 'data/tables/tables-query'
 import { useQuerySchemaState } from 'hooks/misc/useSchemaQueryState'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useIsProtectedSchema, useProtectedSchemas } from 'hooks/useProtectedSchemas'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
-  AiIconAnimation,
   Input,
   Card,
   Table,
@@ -23,7 +21,6 @@ import {
   TableHead,
   TableBody,
   TableRow,
-  TableCell,
 } from 'ui'
 import { ProtectedSchemaWarning } from '../../ProtectedSchemaWarning'
 import TriggerList from './TriggerList'
@@ -41,9 +38,7 @@ const TriggersList = ({
   editTrigger = noop,
   deleteTrigger = noop,
 }: TriggersListProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const aiSnap = useAiAssistantStateSnapshot()
   const { selectedSchema, setSelectedSchema } = useQuerySchemaState()
   const [filterString, setFilterString] = useState<string>('')
 
@@ -135,49 +130,6 @@ const TriggersList = ({
                 >
                   New trigger
                 </ButtonTooltip>
-
-                {hasTables && (
-                  <ButtonTooltip
-                    type="default"
-                    disabled={!hasTables || !canCreateTriggers}
-                    className="px-1 pointer-events-auto"
-                    icon={<AiIconAnimation size={16} />}
-                    onClick={() =>
-                      aiSnap.newChat({
-                        name: 'Create new trigger',
-                        open: true,
-                        initialInput: `Create a new trigger for the schema ${selectedSchema} that does ...`,
-                        suggestions: {
-                          title:
-                            'I can help you create a new trigger, here are a few example prompts to get you started:',
-                          prompts: [
-                            {
-                              label: 'Log Changes',
-                              description: 'Create a trigger that logs changes to the users table',
-                            },
-                            {
-                              label: 'Update Timestamp',
-                              description: 'Create a trigger that updates updated_at timestamp',
-                            },
-                            {
-                              label: 'Validate Email',
-                              description:
-                                'Create a trigger that validates email format before insert',
-                            },
-                          ],
-                        },
-                      })
-                    }
-                    tooltip={{
-                      content: {
-                        side: 'bottom',
-                        text: !canCreateTriggers
-                          ? 'You need additional permissions to create triggers'
-                          : 'Create with Supabase Assistant',
-                      },
-                    }}
-                  />
-                )}
               </div>
             )}
           </div>

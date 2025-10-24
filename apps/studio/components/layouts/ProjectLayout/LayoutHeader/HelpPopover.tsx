@@ -8,7 +8,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   AiIconAnimation,
   Button,
@@ -24,7 +23,6 @@ export const HelpPopover = () => {
   const router = useRouter()
   const { data: project } = useSelectedProjectQuery()
   const { data: org } = useSelectedOrganizationQuery()
-  const snap = useAiAssistantStateSnapshot()
 
   const { mutate: sendEvent } = useSendEventMutation()
 
@@ -62,66 +60,6 @@ export const HelpPopover = () => {
             Response times are based on your billing plan, with paid plans prioritized.
           </p>
         </div>
-        <div className="px-5">
-          <ButtonGroup className="w-full">
-            {projectRef && (
-              <ButtonGroupItem
-                size="tiny"
-                icon={<AiIconAnimation allowHoverEffect size={14} />}
-                onClick={() => {
-                  snap.newChat({
-                    name: 'Support',
-                    open: true,
-                    initialInput: `I need help with my project`,
-                    suggestions: {
-                      title:
-                        'I can help you with your project, here are some example prompts to get you started:',
-                      prompts: [
-                        {
-                          label: 'Database Health',
-                          description: 'Summarise my database health and performance',
-                        },
-                        {
-                          label: 'Debug Logs',
-                          description: 'View and debug my edge function logs',
-                        },
-                        {
-                          label: 'RLS Setup',
-                          description: 'Implement row level security for my tables',
-                        },
-                      ],
-                    },
-                  })
-                }}
-              >
-                Supabase Assistant
-              </ButtonGroupItem>
-            )}
-            <ButtonGroupItem size="tiny" icon={<Wrench strokeWidth={1.5} size={14} />} asChild>
-              <a
-                href="https://supabase.com/docs/guides/platform/troubleshooting"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Troubleshooting
-              </a>
-            </ButtonGroupItem>
-            <ButtonGroupItem size="tiny" icon={<BookOpen strokeWidth={1.5} size={14} />} asChild>
-              <a href="https://supabase.com/docs/" target="_blank" rel="noreferrer">
-                Docs
-              </a>
-            </ButtonGroupItem>
-            <ButtonGroupItem size="tiny" icon={<Activity strokeWidth={1.5} size={14} />} asChild>
-              <a href="https://status.supabase.com/" target="_blank" rel="noreferrer">
-                Supabase Status
-              </a>
-            </ButtonGroupItem>
-            <ButtonGroupItem size="tiny" icon={<Mail strokeWidth={1.5} size={14} />}>
-              <Link href={supportUrl}>Contact Support</Link>
-            </ButtonGroupItem>
-          </ButtonGroup>
-        </div>
-        <Popover.Separator />
         <div className="mb-4 space-y-2">
           <div className="mb-4 px-5">
             <h5 className="mb-2">Reach out to the community</h5>

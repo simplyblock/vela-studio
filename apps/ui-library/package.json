@@ -64,7 +64,6 @@
     "next-auth": "^4.24.11",
     "next-contentlayer2": "0.5.8",
     "next-themes": "^0.3.0",
-    "openai": "^5.9.0",
     "openapi-fetch": "0.12.4",
     "react": "catalog:",
     "react-docgen": "^7.0.3",

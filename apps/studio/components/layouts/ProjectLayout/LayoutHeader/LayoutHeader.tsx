@@ -5,7 +5,6 @@ import { ReactNode, useMemo, useState } from 'react'
 import { useParams } from 'common'
 import { Connect } from 'components/interfaces/Connect/Connect'
 import { UserDropdown } from 'components/interfaces/UserDropdown'
-import { AssistantButton } from 'components/layouts/AppLayout/AssistantButton'
 import { InlineEditorButton } from 'components/layouts/AppLayout/InlineEditorButton'
 import { OrganizationDropdown } from 'components/layouts/AppLayout/OrganizationDropdown'
 import { ProjectDropdown } from 'components/layouts/AppLayout/ProjectDropdown'
@@ -197,7 +196,6 @@ const LayoutHeader = ({
                 {!!projectRef && (
                   <>
                     <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
-                    <AssistantButton />
                   </>
                 )}
               </AnimatePresence>
