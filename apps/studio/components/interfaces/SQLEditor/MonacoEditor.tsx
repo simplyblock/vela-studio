@@ -7,7 +7,6 @@ import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useProfile } from 'lib/profile'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import { useTabsStateSnapshot } from 'state/tabs'
 import { cn } from 'ui'
@@ -54,8 +53,6 @@ const MonacoEditor = ({
   const snapV2 = useSqlEditorV2StateSnapshot()
   const tabsSnap = useTabsStateSnapshot()
 
-  const aiSnap = useAiAssistantStateSnapshot()
-
   const [intellisenseEnabled] = useLocalStorageQuery(
     LOCAL_STORAGE_KEYS.SQL_EDITOR_INTELLISENSE,
     true
@@ -96,24 +93,6 @@ const MonacoEditor = ({
       contextMenuOrder: 0,
       run: () => {
         if (snippet) snapV2.addNeedsSaving(snippet.snippet.id)
-      },
-    })
-
-    editor.addAction({
-      id: 'explain-code',
-      label: 'Explain Code',
-      contextMenuGroupId: 'operation',
-      contextMenuOrder: 1,
-      run: () => {
-        const selectedValue = (editorRef?.current as any)
-          .getModel()
-          .getValueInRange((editorRef?.current as any)?.getSelection())
-        aiSnap.newChat({
-          name: 'Explain code section',
-          open: true,
-          sqlSnippets: [selectedValue],
-          initialInput: 'Can you explain this section to me in more detail?',
-        })
       },
     })
 

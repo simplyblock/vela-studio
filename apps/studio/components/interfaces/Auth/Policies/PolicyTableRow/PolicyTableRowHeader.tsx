@@ -4,8 +4,7 @@ import { Lock, Unlock } from 'lucide-react'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { EditorTablePageLink } from 'data/prefetchers/project.$ref.editor.$id'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
-import { AiIconAnimation, Badge } from 'ui'
+import { Badge } from 'ui'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface PolicyTableRowHeaderProps {
@@ -32,7 +31,6 @@ const PolicyTableRowHeader = ({
   onSelectCreatePolicy,
 }: PolicyTableRowHeaderProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref: string, branch: string }
-  const aiSnap = useAiAssistantStateSnapshot()
   const { can: canCreatePolicies } = useCheckPermissions("branch:rls:admin")
   const { can: canToggleRLS } = useCheckPermissions("branch:rls:admin")
 
@@ -107,29 +105,6 @@ const PolicyTableRowHeader = ({
               }}
             >
               Create policy
-            </ButtonTooltip>
-
-            <ButtonTooltip
-              type="default"
-              className="px-1"
-              onClick={() => {
-                aiSnap.newChat({
-                  name: 'Create new policy',
-                  open: true,
-                  initialInput: `Create and name a new policy for the ${table.schema} schema on the ${table.name} table that ...`,
-                })
-              }}
-              tooltip={{
-                content: {
-                  side: 'bottom',
-                  text:
-                    !canToggleRLS || !canCreatePolicies
-                      ? 'You need additional permissions to create RLS policies'
-                      : 'Create with Supabase Assistant',
-                },
-              }}
-            >
-              <AiIconAnimation size={16} />
             </ButtonTooltip>
           </div>
         </div>

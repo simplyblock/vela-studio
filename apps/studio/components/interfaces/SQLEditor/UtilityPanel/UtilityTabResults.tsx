@@ -5,9 +5,6 @@ import { forwardRef } from 'react'
 import { useParams } from 'common'
 import CopyButton from 'components/ui/CopyButton'
 import { InlineLink, InlineLinkClassName } from 'components/ui/InlineLink'
-import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
-import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import { Button, cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
@@ -17,12 +14,10 @@ export type UtilityTabResultsProps = {
   id: string
   isExecuting?: boolean
   isDisabled?: boolean
-  onDebug: () => void
-  isDebugging?: boolean
 }
 
 const UtilityTabResults = forwardRef<HTMLDivElement, UtilityTabResultsProps>(
-  ({ id, isExecuting, isDisabled, isDebugging, onDebug }) => {
+  ({ id, isExecuting }) => {
     const { slug: orgSlug, ref } = useParams()
     const state = useDatabaseSelectorStateSnapshot()
     const snapV2 = useSqlEditorV2StateSnapshot()

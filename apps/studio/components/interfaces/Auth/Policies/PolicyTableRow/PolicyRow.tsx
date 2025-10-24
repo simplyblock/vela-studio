@@ -6,7 +6,6 @@ import { DropdownMenuItemTooltip } from 'components/ui/DropdownMenuItemTooltip'
 import Panel from 'components/ui/Panel'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
   Badge,
   Button,
@@ -36,7 +35,6 @@ const PolicyRow = ({
   onSelectEditPolicy = noop,
   onSelectDeletePolicy = noop,
 }: PolicyRowProps) => {
-  const aiSnap = useAiAssistantStateSnapshot()
   const { can: canUpdatePolicies } = useCheckPermissions("branch:rls:admin")
 
   const { data: project } = useSelectedProjectQuery()
@@ -114,38 +112,6 @@ const PolicyRow = ({
               <DropdownMenuItem className="gap-x-2" onClick={() => onSelectEditPolicy(policy)}>
                 <Edit size={14} />
                 <p>Edit policy</p>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="space-x-2"
-                onClick={() => {
-                  const sql = generatePolicyUpdateSQL(policy)
-                  aiSnap.newChat({
-                    name: `Update policy ${policy.name}`,
-                    open: true,
-                    sqlSnippets: [sql],
-                    initialInput: `Update the policy with name "${policy.name}" in the ${policy.schema} schema on the ${policy.table} table. It should...`,
-                    suggestions: {
-                      title: `I can help you make a change to the policy "${policy.name}" in the ${policy.schema} schema on the ${policy.table} table, here are a few example prompts to get you started:`,
-                      prompts: [
-                        {
-                          label: 'Improve Policy',
-                          description: 'Tell me how I can improve this policy...',
-                        },
-                        {
-                          label: 'Duplicate Policy',
-                          description: 'Duplicate this policy for another table...',
-                        },
-                        {
-                          label: 'Add Conditions',
-                          description: 'Add extra conditions to this policy...',
-                        },
-                      ],
-                    },
-                  })
-                }}
-              >
-                <Edit size={14} />
-                <p>Edit policy with Assistant</p>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItemTooltip

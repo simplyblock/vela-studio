@@ -9,9 +9,7 @@ import { ResourceItem } from 'components/ui/Resource/ResourceItem'
 import { ResourceList } from 'components/ui/Resource/ResourceList'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
-  AiIconAnimation,
   Button,
   Card,
   CardContent,
@@ -34,7 +32,6 @@ import { TerminalInstructions } from './TerminalInstructions'
 export const FunctionsEmptyState = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const router = useRouter()
-  const aiSnap = useAiAssistantStateSnapshot()
 
   const { mutate: sendEvent } = useSendEventMutation()
   const { data: org } = useSelectedOrganizationQuery()
@@ -67,54 +64,6 @@ export const FunctionsEmptyState = () => {
               }}
             >
               Open Editor
-            </Button>
-          </div>
-
-          {/* AI Assistant Option */}
-          <div className="p-8">
-            <div className="flex items-center gap-2">
-              <AiIconAnimation size={20} />
-              <h4 className="text-base text-foreground">AI Assistant</h4>
-            </div>
-            <p className="text-sm text-foreground-light mb-4 mt-1">
-              Let our AI assistant help you create functions. Perfect for kickstarting a function.
-            </p>
-            <Button
-              type="default"
-              onClick={() => {
-                aiSnap.newChat({
-                  name: 'Create new edge function',
-                  open: true,
-                  initialInput: 'Create a new edge function that ...',
-                  suggestions: {
-                    title:
-                      'I can help you create a new edge function. Here are a few example prompts to get you started:',
-                    prompts: [
-                      {
-                        label: 'Stripe Payments',
-                        description:
-                          'Create a new edge function that processes payments with Stripe',
-                      },
-                      {
-                        label: 'Email with Resend',
-                        description: 'Create a new edge function that sends emails with Resend',
-                      },
-                      {
-                        label: 'PDF Generator',
-                        description:
-                          'Create a new edge function that generates PDFs from HTML templates',
-                      },
-                    ],
-                  },
-                })
-                sendEvent({
-                  action: 'edge_function_ai_assistant_button_clicked',
-                  properties: { origin: 'no_functions_block' },
-                  groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
-                })
-              }}
-            >
-              Open Assistant
             </Button>
           </div>
 

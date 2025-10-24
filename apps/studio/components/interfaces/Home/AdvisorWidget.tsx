@@ -4,13 +4,11 @@ import { useMemo, useState } from 'react'
 
 import { useParams } from 'common'
 import { LINTER_LEVELS } from 'components/interfaces/Linter/Linter.constants'
-import { EntityTypeIcon, lintInfoMap } from 'components/interfaces/Linter/Linter.utils'
+import { EntityTypeIcon } from 'components/interfaces/Linter/Linter.utils'
 import { useQueryPerformanceQuery } from 'components/interfaces/Reports/Reports.queries'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { Lint, useProjectLintsQuery } from 'data/lint/lint-query'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
-  AiIconAnimation,
   Card,
   CardContent,
   CardHeader,
@@ -46,7 +44,6 @@ export const AdvisorWidget = () => {
       preset: 'slowestExecutionTime',
     }
   )
-  const snap = useAiAssistantStateSnapshot()
 
   const securityLints = useMemo(
     () => (Array.isArray(lints) && lints || []).filter((lint: Lint) => lint.categories.includes('SECURITY')),
@@ -143,28 +140,6 @@ export const AdvisorWidget = () => {
                         {lintText.replace(/\\`/g, '`')}
                       </p>
                     </Link>
-                    <ButtonTooltip
-                      type="text"
-                      className="px-1 opacity-0 group-hover:opacity-100 w-7"
-                      icon={<AiIconAnimation size={16} />}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        e.preventDefault()
-                        snap.newChat({
-                          name: 'Summarize lint',
-                          open: true,
-                          initialInput: `Summarize the issue and suggest fixes for the following lint item:
-  Title: ${lintInfoMap.find((item) => item.name === lint.name)?.title ?? lint.title}
-  Entity: ${(lint.metadata && (lint.metadata.entity || (lint.metadata.schema && lint.metadata.name && `${lint.metadata.schema}.${lint.metadata.name}`))) ?? 'N/A'}
-  Schema: ${lint.metadata?.schema ?? 'N/A'}
-  Issue Details: ${lint.detail ? lint.detail.replace(/\`/g, '`') : 'N/A'}
-  Description: ${lint.description ? lint.description.replace(/\`/g, '`') : 'N/A'}`,
-                        })
-                      }}
-                      tooltip={{
-                        content: { side: 'bottom', text: 'What is this issue?' },
-                      }}
-                    />
                   </div>
                 </li>
               )

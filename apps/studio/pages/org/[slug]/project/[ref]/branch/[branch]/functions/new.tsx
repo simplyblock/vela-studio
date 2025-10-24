@@ -17,9 +17,7 @@ import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { BASE_PATH } from 'lib/constants'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import {
-  AiIconAnimation,
   Button,
   cn,
   Command_Shadcn_,
@@ -102,7 +100,6 @@ const NewFunctionPage = () => {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { data: org } = useSelectedOrganizationQuery()
-  const snap = useAiAssistantStateSnapshot()
   const { mutate: sendEvent } = useSendEventMutation()
 
   const [files, setFiles] = useState<
@@ -154,43 +151,6 @@ const NewFunctionPage = () => {
     sendEvent({
       action: 'edge_function_deploy_button_clicked',
       properties: { origin: 'functions_editor' },
-      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
-    })
-  }
-
-  const handleChat = () => {
-    const selectedFile = files.find((f) => f.selected) ?? files[0]
-    snap.newChat({
-      name: 'Explain edge function',
-      open: true,
-      sqlSnippets: [selectedFile.content],
-      initialInput: 'Help me understand and improve this edge function...',
-      suggestions: {
-        title:
-          'I can help you understand and improve your edge function. Here are a few example prompts to get you started:',
-        prompts: [
-          {
-            label: 'Explain Function',
-            description: 'Explain what this function does...',
-          },
-          {
-            label: 'Optimize Function',
-            description: 'Help me optimize this function...',
-          },
-          {
-            label: 'Add Features',
-            description: 'Show me how to add more features...',
-          },
-          {
-            label: 'Error Handling',
-            description: 'Help me handle errors better...',
-          },
-        ],
-      },
-    })
-    sendEvent({
-      action: 'edge_function_ai_assistant_button_clicked',
-      properties: { origin: 'functions_editor_chat' },
       groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
     })
   }
@@ -256,7 +216,6 @@ const NewFunctionPage = () => {
         ])
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [template])
 
   return (
@@ -322,14 +281,6 @@ const NewFunctionPage = () => {
               </Command_Shadcn_>
             </PopoverContent_Shadcn_>
           </Popover_Shadcn_>
-          <Button
-            size="tiny"
-            type="default"
-            onClick={handleChat}
-            icon={<AiIconAnimation size={16} />}
-          >
-            Chat
-          </Button>
         </>
       }
     >

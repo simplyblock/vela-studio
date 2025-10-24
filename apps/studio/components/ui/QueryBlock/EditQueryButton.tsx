@@ -1,14 +1,10 @@
 import { Edit } from 'lucide-react'
-import { useRouter } from 'next/router'
 
 import { useParams } from 'common'
 import { DiffType } from 'components/interfaces/SQLEditor/SQLEditor.types'
 import useNewQuery from 'components/interfaces/SQLEditor/hooks'
-import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import Link from 'next/link'
 import { ComponentProps } from 'react'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import { useSqlEditorV2StateSnapshot } from 'state/sql-editor-v2'
 import {
   cn,
@@ -35,21 +31,14 @@ export const EditQueryButton = ({
   className,
   type = 'text',
 }: EditQueryButtonProps) => {
-  const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { newQuery } = useNewQuery()
 
   const sqlEditorSnap = useSqlEditorV2StateSnapshot()
-  const snap = useAiAssistantStateSnapshot()
 
-  const isInSQLEditor = router.pathname.includes('/sql')
-  const isInNewSnippet = router.pathname.endsWith('/sql')
   const tooltip: { content: ComponentProps<typeof TooltipContent> & { text: string } } = {
     content: { side: 'bottom', text: 'Edit in SQL Editor' },
   }
-
-  const { data: org } = useSelectedOrganizationQuery()
-  const { mutate: sendEvent } = useSendEventMutation()
 
   if (id !== undefined) {
     return (
@@ -66,29 +55,7 @@ export const EditQueryButton = ({
     )
   }
 
-  return !isInSQLEditor || isInNewSnippet ? (
-    <ButtonTooltip
-      type={type}
-      size="tiny"
-      className={cn('w-7 h-7', className)}
-      icon={<Edit size={14} strokeWidth={1.5} />}
-      onClick={() => {
-        // This component needs to be updated to work with local EditorPanel state
-        // For now, fall back to creating a new query
-        if (sql) newQuery(sql, title)
-        snap.closeAssistant()
-        sendEvent({
-          action: 'assistant_edit_in_sql_editor_clicked',
-          properties: {
-            isInSQLEditor,
-            isInNewSnippet,
-          },
-          groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
-        })
-      }}
-      tooltip={tooltip}
-    />
-  ) : (
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <ButtonTooltip

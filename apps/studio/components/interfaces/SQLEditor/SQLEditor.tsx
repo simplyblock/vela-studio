@@ -23,7 +23,6 @@ import { formatSql } from 'lib/formatSql'
 import { detectOS, uuidv4 } from 'lib/helpers'
 import { useProfile } from 'lib/profile'
 import { wrapWithRoleImpersonation } from 'lib/role-impersonation'
-import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import {
   isRoleImpersonationEnabled,
@@ -80,7 +79,6 @@ export const SQLEditor = () => {
 
   const queryClient = useQueryClient()
   const tabs = useTabsStateSnapshot()
-  const aiSnap = useAiAssistantStateSnapshot()
   const snapV2 = useSqlEditorV2StateSnapshot()
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
   const databaseSelectorState = useDatabaseSelectorStateSnapshot()
@@ -96,7 +94,7 @@ export const SQLEditor = () => {
     defaultSqlDiff,
     closeDiff,
   } = useSqlEditorDiff()
-  const { promptState, setPromptState, promptInput, setPromptInput, resetPrompt } =
+  const { promptState, setPromptState, resetPrompt } =
     useSqlEditorPrompt()
 
   const editorRef = useRef<IStandaloneCodeEditor | null>(null)
@@ -114,7 +112,6 @@ export const SQLEditor = () => {
 
   // generate an id to be used for new snippets. The dependency on urlId is to avoid a bug which
   // shows up when clicking on the SQL Editor while being in the SQL editor on a random snippet.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const generatedId = useMemo(() => uuidv4(), [urlId])
   // the id is stable across renders - it depends either on the url or on the memoized generated id
   const id = !urlId || urlId === 'new' ? generatedId : urlId
@@ -295,7 +292,6 @@ export const SQLEditor = () => {
         })
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       isDiffOpen,
       id,
@@ -330,7 +326,6 @@ export const SQLEditor = () => {
         toast.error(`Failed to create new query: ${error.message}`)
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [profile?.id, project?.id, projectRef, router, snapV2]
   )
 
@@ -346,31 +341,6 @@ export const SQLEditor = () => {
     }, 20)
     editor.onDidScrollChange((e) => (scrollTopRef.current = e.scrollTop))
   }
-
-  const onDebug = useCallback(async () => {
-    try {
-      const snippet = snapV2.snippets[id]
-      const result = snapV2.results[id]?.[0]
-      aiSnap.newChat({
-        name: 'Debug SQL snippet',
-        open: true,
-        sqlSnippets: [
-          (snippet.snippet.content?.sql ?? '').replace(sqlAiDisclaimerComment, '').trim(),
-        ],
-        initialInput: `Help me to debug the attached sql snippet which gives the following error: \n\n${result.error.message}`,
-      })
-    } catch (error: unknown) {
-      // [Joshen] There's a tendency for the SQL debug to chuck a lengthy error message
-      // that's not relevant for the user - so we prettify it here by avoiding to return the
-      // entire error body from the assistant
-      if (isError(error)) {
-        toast.error(
-          `Sorry, the assistant failed to debug your query! Please try again with a different one.`
-        )
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, snapV2.results, snapV2.snippets])
 
   const acceptAiHandler = useCallback(async () => {
     try {
@@ -407,7 +377,6 @@ export const SQLEditor = () => {
     } finally {
       setIsAcceptDiffLoading(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourceSqlDiff, selectedDiffType, handleNewQuery, router, id, snapV2])
 
   const discardAiHandler = useCallback(() => {
@@ -534,7 +503,6 @@ export const SQLEditor = () => {
         tabs.updateTab(tabId, { scrollTop: scrollTopRef.current })
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [closeDiff, id])
 
   useEffect(() => {
@@ -572,7 +540,6 @@ export const SQLEditor = () => {
         modifiedEditor.revealLineInCenter(startLine)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDiffType, sourceSqlDiff])
 
   useEffect(() => {
@@ -580,7 +547,6 @@ export const SQLEditor = () => {
       const primaryDatabase = databases.find((db) => db.identifier === branchRef)
       databaseSelectorState.setSelectedDatabaseId(primaryDatabase?.identifier)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessReadReplicas, databases, branchRef])
 
   useEffect(() => {
@@ -605,7 +571,6 @@ export const SQLEditor = () => {
         setSelectedDiffType(diffType)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [snapV2.diffContent])
 
   // We want to check if the diff editor is mounted and if it is, we want to show the widget
@@ -732,7 +697,6 @@ export const SQLEditor = () => {
                 hasSelection={hasSelection}
                 prettifyQuery={prettifyQuery}
                 executeQuery={executeQuery}
-                onDebug={onDebug}
               />
             )}
           </ResizablePanel>
