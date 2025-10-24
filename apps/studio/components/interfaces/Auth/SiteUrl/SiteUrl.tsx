@@ -23,6 +23,7 @@ import {
   Input_Shadcn_,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const schema = object({
   SITE_URL: string().required('Must have a Site URL'),
@@ -34,7 +35,7 @@ const SiteUrl = () => {
   const { mutate: updateAuthConfig } = useAuthConfigUpdateMutation()
   const [isUpdatingSiteUrl, setIsUpdatingSiteUrl] = useState(false)
 
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canUpdateConfig } = useCheckPermissions('branch:auth:admin')
 
   const siteUrlForm = useForm({
     resolver: yupResolver(schema),

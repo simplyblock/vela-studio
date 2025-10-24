@@ -7,7 +7,6 @@ import { toast } from 'sonner'
 
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
-import APIDocsButton from 'components/ui/APIDocsButton'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { FilterPopover } from 'components/ui/FilterPopover'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
@@ -244,7 +243,6 @@ export const UsersV2 = () => {
         setSelectedColumns(columns.filter((col) => col.key !== 'img').map((col) => col.key))
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isSuccess,
     isRefetching,

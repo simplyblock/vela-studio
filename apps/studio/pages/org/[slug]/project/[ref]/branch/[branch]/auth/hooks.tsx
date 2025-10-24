@@ -5,14 +5,22 @@ import { PageLayout } from 'components/layouts/PageLayout/PageLayout'
 import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
 import type { NextPageWithLayout } from 'types'
-import { DocsButton } from 'components/ui/DocsButton'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 
 const Hooks: NextPageWithLayout = () => {
-  // FIXME: need permission implemented   
-  const canReadAuthSettings = true
-  const isPermissionsLoaded = true
+  const { isLoading: isPermissionsLoading, can: canReadAuthSettings } =
+    useCheckPermissions('branch:auth:read')
 
-  if (isPermissionsLoaded && !canReadAuthSettings) {
+  if (isPermissionsLoading) {
+    return (
+      <div className="mt-12">
+        <GenericSkeletonLoader />
+      </div>
+    )
+  }
+
+  if (!canReadAuthSettings) {
     return <NoPermission isFullPage resourceText="access your project's auth hooks" />
   }
 
@@ -22,9 +30,6 @@ const Hooks: NextPageWithLayout = () => {
     </ScaffoldContainer>
   )
 }
-const secondaryActions = [
-  <DocsButton key="docs" href="https://supabase.com/docs/guides/auth/auth-hooks" />,
-]
 
 Hooks.getLayout = (page) => (
   <DefaultLayout>
@@ -32,7 +37,6 @@ Hooks.getLayout = (page) => (
       <PageLayout
         title="Auth Hooks"
         subtitle="Use Postgres functions or HTTP endpoints to customize the behavior of Supabase Auth to meet your needs"
-        secondaryActions={secondaryActions}
       >
         {page}
       </PageLayout>

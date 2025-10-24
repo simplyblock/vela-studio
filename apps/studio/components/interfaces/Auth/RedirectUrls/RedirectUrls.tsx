@@ -7,7 +7,6 @@ import {
   ScaffoldSection,
   ScaffoldSectionTitle,
 } from 'components/layouts/Scaffold'
-import { DocsButton } from 'components/ui/DocsButton'
 import { HorizontalShimmerWithIcon } from 'components/ui/Shimmers/Shimmers'
 import {
   Alert_Shadcn_,
@@ -115,7 +114,6 @@ export const RedirectUrls = () => {
             allowed, for example, https://*.domain.com
           </ScaffoldDescription>
         </div>
-        <DocsButton href="https://supabase.com/docs/guides/auth/concepts/redirect-urls" />
       </div>
 
       {isLoading && (

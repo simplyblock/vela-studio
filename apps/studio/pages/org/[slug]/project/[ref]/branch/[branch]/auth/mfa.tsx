@@ -1,4 +1,3 @@
-
 import { MfaAuthSettingsForm } from 'components/interfaces/Auth'
 import AuthLayout from 'components/layouts/AuthLayout/AuthLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -7,19 +6,27 @@ import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const MfaPage: NextPageWithLayout = () => {
-  // FIXME: need permission implemented 
-  const isPermissionsLoaded = true
-  const canReadAuthSettings = true
+  const { isLoading: isPermissionsLoading, can: canReadAuthSettings } =
+    useCheckPermissions('branch:auth:read')
 
-  if (isPermissionsLoaded && !canReadAuthSettings) {
+  if (isPermissionsLoading) {
+    return (
+      <div className="mt-12">
+        <GenericSkeletonLoader />
+      </div>
+    )
+  }
+
+  if (!canReadAuthSettings) {
     return <NoPermission isFullPage resourceText="access your project's authentication settings" />
   }
 
   return (
     <ScaffoldContainer>
-      {!isPermissionsLoaded ? <GenericSkeletonLoader /> : <MfaAuthSettingsForm />}
+      <MfaAuthSettingsForm />
     </ScaffoldContainer>
   )
 }

@@ -39,6 +39,7 @@ import { useAuthProviderDeleteMutation } from 'data/auth/auth-provider-delete-mu
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { timeout } from 'lib/helpers'
 import { useAuthProviderUpdateMutation } from 'data/auth/auth-provider-update-mutation'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface ProviderFormProps {
   config: components['schemas']['AuthProviderResponse']
@@ -59,8 +60,7 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
   const { mutate: updateAuthProvider, isLoading: isUpdatingProvider } =
     useAuthProviderUpdateMutation()
 
-  // FIXME: need permission implemented
-  const { can: canUpdateConfig } = { can: true }
+  const { can: canUpdateConfig } = useCheckPermissions('branch:auth:admin')
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgId, projectRef: projectId })
   const protocol = settings?.app_config?.protocol ?? 'https'

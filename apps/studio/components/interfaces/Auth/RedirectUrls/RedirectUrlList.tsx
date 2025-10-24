@@ -4,6 +4,7 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { EmptyListState } from 'components/ui/States'
 import { Button, Checkbox_Shadcn_ } from 'ui'
 import { ValueContainer } from './ValueContainer'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface RedirectUrlListProps {
   allowList: string[]
@@ -22,8 +23,7 @@ export const RedirectUrlList = ({
   onSelectRemoveURLs,
   onSelectClearSelection,
 }: RedirectUrlListProps) => {
-    // FIXME: need permission implemented 
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canUpdateConfig } = useCheckPermissions('branch:auth:admin')
 
   // [Joshen] One for next time: maybe shift this into a reusable logic since it
   // seems like we can use this in multiple places for future

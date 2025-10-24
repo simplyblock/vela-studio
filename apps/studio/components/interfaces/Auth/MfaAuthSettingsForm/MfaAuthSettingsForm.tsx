@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { number, object, string } from 'yup'
+import { object, string } from 'yup'
 
 import { useParams } from 'common'
 import { ScaffoldSection, ScaffoldSectionTitle } from 'components/layouts/Scaffold'
@@ -21,8 +21,6 @@ import {
   FormControl_Shadcn_,
   FormField_Shadcn_,
   Form_Shadcn_,
-  Input_Shadcn_,
-  PrePostTab,
   SelectContent_Shadcn_,
   SelectItem_Shadcn_,
   SelectTrigger_Shadcn_,
@@ -31,7 +29,7 @@ import {
   WarningIcon,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 function determineMFAStatus(verifyEnabled: boolean, enrollEnabled: boolean) {
   return verifyEnabled ? (enrollEnabled ? 'Enabled' : 'Verify Enabled') : 'Disabled'
@@ -65,10 +63,8 @@ const MfaAuthSettingsForm = () => {
   const [isUpdatingTotpForm, setIsUpdatingTotpForm] = useState(false)
 
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canReadConfig } = {can:true}
-  // FIXME: need permission implemented 
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canReadConfig } = useCheckPermissions("branch:auth:read")
+  const { can: canUpdateConfig } = useCheckPermissions("branch:auth:admin")
 
   const totpForm = useForm({
     resolver: yupResolver(totpSchema),

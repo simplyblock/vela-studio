@@ -2,12 +2,13 @@ import type { PostgresPolicy, PostgresTable } from '@supabase/postgres-meta'
 import { Search } from 'lucide-react'
 import { useState } from 'react'
 import Policies from 'components/interfaces/Auth/Policies/Policies'
-import { getGeneralPolicyTemplates } from 'components/interfaces/Auth/Policies/PolicyEditorModal/PolicyEditorModal.constants'
+import {
+  getGeneralPolicyTemplates
+} from 'components/interfaces/Auth/Policies/PolicyEditorModal/PolicyEditorModal.constants'
 import { generatePolicyUpdateSQL } from 'components/interfaces/Auth/Policies/PolicyTableRow/PolicyTableRow.utils'
 import AuthLayout from 'components/layouts/AuthLayout/AuthLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import { EditorPanel } from 'components/ui/EditorPanel/EditorPanel'
 import NoPermission from 'components/ui/NoPermission'
 import SchemaSelector from 'components/ui/SchemaSelector'
@@ -19,6 +20,7 @@ import { useIsProtectedSchema } from 'hooks/useProtectedSchemas'
 import type { NextPageWithLayout } from 'types'
 import { Input } from 'ui'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 /**
  * Filter tables by table name and policy name
@@ -72,7 +74,7 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
   const { isSchemaLocked } = useIsProtectedSchema({ schema: schema, excludedSchemas: ['realtime'] })
 
   const { data: policies } = useDatabasePoliciesQuery({
-    branch
+    branch,
   })
 
   const {
@@ -87,11 +89,18 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
   })
 
   const filteredTables = onFilterTables(tables ?? [], policies ?? [], searchString)
-  // FIXME: need permission implemented   
-  const canReadPolicies = true
-  const isPermissionsLoaded = true
+  const { isLoading: isPermissionsLoading, can: canReadRlsSettings } =
+    useCheckPermissions('branch:rls:read')
 
-  if (isPermissionsLoaded && !canReadPolicies) {
+  if (isPermissionsLoading) {
+    return (
+      <div className="mt-12">
+        <GenericSkeletonLoader />
+      </div>
+    )
+  }
+
+  if (!canReadRlsSettings) {
     return <NoPermission isFullPage resourceText="view this project's RLS policies" />
   }
 
@@ -120,12 +129,11 @@ const AuthPoliciesPage: NextPageWithLayout = () => {
               }}
               icon={<Search size={14} />}
             />
-            <DocsButton href="https://supabase.com/docs/learn/auth-deep-dive/auth-row-level-security" />
           </div>
         </div>
       </div>
 
-      {isLoading && <GenericSkeletonLoader />}
+      {isPermissionsLoading || (isLoading && <GenericSkeletonLoader />)}
 
       {isError && <AlertError error={error} subject="Failed to retrieve tables" />}
 
