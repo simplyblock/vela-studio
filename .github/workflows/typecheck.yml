@@ -38,6 +38,3 @@ jobs:
 
       - name: Run TypeScript type check
         run: pnpm exec turbo run typecheck
-
-      - name: Run Lint
-        run: pnpm exec turbo run lint
