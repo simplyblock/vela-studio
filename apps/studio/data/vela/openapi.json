@@ -33710,6 +33710,10 @@
             "type": "integer",
             "title": "Row Index"
           },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -33723,6 +33727,7 @@
           "project_id",
           "branch_id",
           "row_index",
+          "size_bytes",
           "created_at"
         ],
         "title": "BackupPublic"
@@ -34217,6 +34222,7 @@
             "title": "Timestamp"
           }
         },
+        "additionalProperties": true,
         "type": "object",
         "required": [
           "status",
@@ -34499,9 +34505,9 @@
           },
           "memory_bytes": {
             "type": "integer",
-            "multipleOf": 100000000.0,
-            "maximum": 256000000000.0,
-            "minimum": 4000000000.0,
+            "multipleOf": 134217728.0,
+            "maximum": 274877906944.0,
+            "minimum": 2147483648.0,
             "title": "Memory Bytes"
           },
           "iops": {
@@ -35051,9 +35057,9 @@
             "anyOf": [
               {
                 "type": "integer",
-                "multipleOf": 100000000.0,
-                "maximum": 256000000000.0,
-                "minimum": 4000000000.0
+                "multipleOf": 134217728.0,
+                "maximum": 274877906944.0,
+                "minimum": 2147483648.0
               },
               {
                 "type": "null"
@@ -35216,9 +35222,7 @@
           },
           "ram_bytes": {
             "type": "integer",
-            "multipleOf": 100000000.0,
-            "maximum": 256000000000.0,
-            "minimum": 4000000000.0,
+            "exclusiveMinimum": 0.0,
             "title": "Ram Bytes",
             "description": "Guest memory expressed in bytes (mirrors Branch.memory)."
           },
