@@ -7,15 +7,21 @@ import { useAuthConfigPrefetch } from 'data/auth/auth-config-query'
 import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateAuthMenu } from './AuthLayout.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const AuthProductMenu = () => {
   const router = useRouter()
-  const { slug: orgRef, ref: projectRef = 'default', branch: branchRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   useAuthConfigPrefetch({ projectRef })
   const page = router.pathname.split('/')[6]
 
-  return <ProductMenu page={page} menu={generateAuthMenu(orgRef!, projectRef, branchRef!)} />
+  const { can: canViewPolicies } = useCheckPermissions("branch:rls:read")
+  const { can: canAdminPolicies } = useCheckPermissions("branch:rls:admin")
+
+  return <ProductMenu page={page} menu={generateAuthMenu(orgRef!, projectRef!, branchRef!, {
+    showPolicies: canViewPolicies || canAdminPolicies,
+  })} />
 }
 
 const AuthLayout = ({ children }: PropsWithChildren<{}>) => {

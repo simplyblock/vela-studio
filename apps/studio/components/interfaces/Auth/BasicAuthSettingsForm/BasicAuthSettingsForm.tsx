@@ -30,6 +30,7 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { NO_REQUIRED_CHARACTERS } from '../Auth.constants'
 import { getPathReferences } from 'data/vela/path-references'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const schema = object({
   disableSignup: boolean().required(),
@@ -49,10 +50,8 @@ const BasicAuthSettingsForm = () => {
     isLoading,
   } = useAuthConfigQuery({ projectRef })
   const { mutate: updateAuthConfig, isLoading: isUpdatingConfig } = useAuthConfigUpdateMutation()
-  // FIXME: need permission implemented 
-  const { can: canReadConfig, isSuccess: isPermissionsLoaded } = {can:true,isSuccess:true}
-    // FIXME: need permission implemented 
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canReadConfig, isSuccess: isPermissionsLoaded } = useCheckPermissions('branch:auth:read')
+  const { can: canUpdateConfig } = useCheckPermissions('branch:auth:admin')
 
   const form = useForm({
     resolver: yupResolver(schema),

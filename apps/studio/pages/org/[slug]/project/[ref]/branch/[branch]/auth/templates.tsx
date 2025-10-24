@@ -4,13 +4,22 @@ import DefaultLayout from 'components/layouts/DefaultLayout'
 import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import NoPermission from 'components/ui/NoPermission'
 import type { NextPageWithLayout } from 'types'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 
 const TemplatesPage: NextPageWithLayout = () => {
-  // FIXME: need permission implemented 
-  const canReadAuthSettings = true
-  const isPermissionsLoaded =true
+  const { isLoading: isPermissionsLoading, can: canReadAuthSettings } =
+    useCheckPermissions('branch:auth:read')
 
-  if (isPermissionsLoaded && !canReadAuthSettings) {
+  if (isPermissionsLoading) {
+    return (
+      <div className="mt-12">
+        <GenericSkeletonLoader />
+      </div>
+    )
+  }
+
+  if (!canReadAuthSettings) {
     return <NoPermission isFullPage resourceText="access your project's email settings" />
   }
 

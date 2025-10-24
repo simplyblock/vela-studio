@@ -26,6 +26,7 @@ import {
   WarningIcon,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const FormSchema = z.object({
   API_MAX_REQUEST_DURATION: z.coerce
@@ -37,10 +38,8 @@ const FormSchema = z.object({
 
 export const AdvancedAuthSettingsForm = () => {
   const { ref: projectRef } = useParams()
-    // FIXME: need permission implemented
-  const { can: canReadConfig } = {can:true}
-    // FIXME: need permission implemented 
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canReadConfig } = useCheckPermissions("branch:auth:read")
+  const { can: canUpdateConfig } = useCheckPermissions("branch:auth:admin")
 
   const [isUpdatingRequestDurationForm, setIsUpdatingRequestDurationForm] = useState(false)
   const [isUpdatingDatabaseForm, setIsUpdatingDatabaseForm] = useState(false)

@@ -21,7 +21,6 @@ import { useBranchQuery } from 'data/branches/branch-query'
 export const HooksListing = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
-  const { data: project } = useSelectedProjectQuery()
   const { data: authConfig, error: authConfigError, isError } = useAuthConfigQuery({ projectRef })
 
   const [selectedHook, setSelectedHook] = useState<HOOK_DEFINITION_TITLE | null>(null)

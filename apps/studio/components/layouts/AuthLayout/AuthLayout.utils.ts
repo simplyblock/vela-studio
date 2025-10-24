@@ -1,20 +1,36 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 
-export const generateAuthMenu = (orgRef: string, projectRef: string, branchRef: string): ProductMenuGroup[] => {
+export const generateAuthMenu = (
+  orgRef: string,
+  projectRef: string,
+  branchRef: string,
+  { showPolicies }: { showPolicies: boolean }
+): ProductMenuGroup[] => {
   return [
     {
       title: 'Manage',
-      items: [{ name: 'Users', key: 'users', url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/users`, items: [] }],
+      items: [
+        {
+          name: 'Users',
+          key: 'users',
+          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/users`,
+          items: [],
+        },
+      ],
     },
     {
       title: 'Configuration',
       items: [
-        {
-          name: 'Policies',
-          key: 'policies',
-          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`,
-          items: [],
-        },
+        ...(showPolicies
+          ? [
+              {
+                name: 'Policies',
+                key: 'policies',
+                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/policies`,
+                items: [],
+              },
+            ]
+          : []),
         {
           name: 'Sign Up / Providers',
           key: 'sign-in-up',

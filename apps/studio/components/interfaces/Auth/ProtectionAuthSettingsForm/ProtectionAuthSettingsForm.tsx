@@ -34,6 +34,7 @@ import {
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { NO_REQUIRED_CHARACTERS } from '../Auth.constants'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const CAPTCHA_PROVIDERS = [
   { key: 'hcaptcha', label: 'hCaptcha' },
@@ -77,10 +78,8 @@ const ProtectionAuthSettingsForm = () => {
     },
   })
   const [hidden, setHidden] = useState(true)
-  // FIXME: need permission implemented 
-  const { can: canReadConfig } = {can:true}
-   // FIXME: need permission implemented  
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canReadConfig } = useCheckPermissions("branch:auth:read")
+  const { can: canUpdateConfig } = useCheckPermissions("branch:auth:admin")
 
   const protectionForm = useForm({
     resolver: yupResolver(schema),

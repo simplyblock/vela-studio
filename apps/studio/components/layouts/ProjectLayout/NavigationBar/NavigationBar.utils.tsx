@@ -66,7 +66,9 @@ export const generateProductRoutes = (
   const realtimeEnabled = features?.realtime ?? true
   const backupsEnabled = features?.backups ?? true
   const databaseMenu = generateDatabaseMenu(orgRef, project)
-  const authMenu = generateAuthMenu(orgRef, projectRef!, branchRef!)
+  const authMenu = generateAuthMenu(orgRef, projectRef!, branchRef!, {
+    showPolicies: features?.auth ?? false,
+  })
 
   return [
     {

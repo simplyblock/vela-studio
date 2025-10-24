@@ -5,6 +5,7 @@ import { DocsButton } from 'components/ui/DocsButton'
 
 import { Badge, Input, copyToClipboard } from 'ui'
 import { Hook } from './hooks.constants'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface HookCardProps {
   hook: Hook
@@ -12,8 +13,7 @@ interface HookCardProps {
 }
 
 export const HookCard = ({ hook, onSelect }: HookCardProps) => {
-    // FIXME: need permission implemented 
-  const { can: canUpdateAuthHook } = {can:true}
+  const { can: canUpdateAuthHook } = useCheckPermissions("branch:auth:read")
 
   return (
     <div className="bg-surface-100 border-default overflow-hidden border shadow px-5 py-4 flex flex-row first:rounded-t-md last:rounded-b-md space-x-4">

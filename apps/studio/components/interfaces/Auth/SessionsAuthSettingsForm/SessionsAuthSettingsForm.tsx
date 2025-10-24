@@ -26,6 +26,7 @@ import {
   WarningIcon,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 function HoursOrNeverText({ value }: { value: number }) {
   if (value === 0) {
@@ -62,10 +63,8 @@ const SessionsAuthSettingsForm = () => {
   // Separate loading states for each form
   const [isUpdatingRefreshTokens, setIsUpdatingRefreshTokens] = useState(false)
   const [isUpdatingUserSessions, setIsUpdatingUserSessions] = useState(false)
-  // FIXME: need permission implemented 
-  const { can: canReadConfig } = {can:true}
-   // FIXME: need permission implemented  
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canReadConfig } = useCheckPermissions("branch:auth:read")
+  const { can: canUpdateConfig } = useCheckPermissions("branch:auth:admin")
 
   const refreshTokenForm = useForm<z.infer<typeof RefreshTokenSchema>>({
     resolver: zodResolver(RefreshTokenSchema),

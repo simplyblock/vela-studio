@@ -32,6 +32,7 @@ import {
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { SpamValidation } from './SpamValidation'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface TemplateEditorProps {
   template: FormSchema
@@ -39,8 +40,7 @@ interface TemplateEditorProps {
 
 const TemplateEditor = ({ template }: TemplateEditorProps) => {
   const { ref: projectRef } = useParams()
-  // FIXME: need permission implemented 
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canUpdateConfig } = useCheckPermissions('branch:auth:admin')
   // Add a ref to the code editor
   const editorRef = useRef<editor.IStandaloneCodeEditor>()
 

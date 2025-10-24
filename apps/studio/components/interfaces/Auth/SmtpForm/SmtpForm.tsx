@@ -31,6 +31,7 @@ import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { urlRegex } from '../Auth.constants'
 import { defaultDisabledSmtpFormValues } from './SmtpForm.constants'
 import { generateFormValues, isSmtpEnabled } from './SmtpForm.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface SmtpFormValues {
   SMTP_ADMIN_EMAIL?: string
@@ -50,10 +51,8 @@ const SmtpForm = () => {
 
   const [enableSmtp, setEnableSmtp] = useState(false)
   const [hidden, setHidden] = useState(true)
-  // FIXME: need permission implemented 
-  const { can: canReadConfig } = {can:true}
-   // FIXME: need permission implemented  
-  const { can: canUpdateConfig } = {can:true}
+  const { can: canReadConfig } = useCheckPermissions('branch:auth:read')
+  const { can: canUpdateConfig } = useCheckPermissions('branch:auth:admin')
 
   const smtpSchema = yup.object({
     SMTP_ADMIN_EMAIL: yup.string().when('ENABLE_SMTP', {

@@ -6,6 +6,7 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { EditorTablePageLink } from 'data/prefetchers/project.$ref.editor.$id'
 import { useAiAssistantStateSnapshot } from 'state/ai-assistant-state'
 import { AiIconAnimation, Badge } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface PolicyTableRowHeaderProps {
   table: {
@@ -32,10 +33,8 @@ const PolicyTableRowHeader = ({
 }: PolicyTableRowHeaderProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref: string, branch: string }
   const aiSnap = useAiAssistantStateSnapshot()
-  // FIXME: need permission implemented 
-  const { can: canCreatePolicies } = {can:true}
-  // FIXME: need permission implemented 
-  const { can: canToggleRLS } = {can:true}
+  const { can: canCreatePolicies } = useCheckPermissions("branch:rls:admin")
+  const { can: canToggleRLS } = useCheckPermissions("branch:rls:admin")
 
   const isRealtimeSchema = table.schema === 'realtime'
   const isRealtimeMessagesTable = isRealtimeSchema && table.name === 'messages'

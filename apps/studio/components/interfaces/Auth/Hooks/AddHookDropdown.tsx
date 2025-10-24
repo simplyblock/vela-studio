@@ -15,6 +15,7 @@ import {
 } from 'ui'
 import { HOOKS_DEFINITIONS, HOOK_DEFINITION_TITLE, Hook } from './hooks.constants'
 import { extractMethod, isValidHook } from './hooks.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface AddHookDropdownProps {
   buttonText?: string
@@ -31,8 +32,7 @@ export const AddHookDropdown = ({
   const { data: organization } = useSelectedOrganizationQuery()
 
   const { data: authConfig } = useAuthConfigQuery({ projectRef })
-    // FIXME: need permission implemented 
-  const { can: canUpdateAuthHook } = {can:true}
+  const { can: canUpdateAuthHook } = useCheckPermissions("branch:auth:admin")
 
   const hooks: Hook[] = HOOKS_DEFINITIONS.map((definition) => {
     return {
