@@ -24,13 +24,14 @@ import Egress from './Egress'
 import Compute from './Compute'
 import SizeAndCounts from './SizeAndCounts'
 import TotalUsage from './TotalUsage'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const Usage = () => {
   const { slug: orgRef, projectRef, branch: branchRef } = useParams()
   const [dateRange, setDateRange] = useState<any>()
   const [selectedProjectRef, setSelectedProjectRef] = useState<string>()
-  // FIXME: need permission implemented 
-  const canReadSubscriptions = true
+
+  const canReadSubscriptions = useCheckPermissions("org:metering:read")
 
   const { data: organization } = useSelectedOrganizationQuery()
   const { data: projects, isSuccess } = useProjectsQuery()

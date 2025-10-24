@@ -6,6 +6,7 @@ import { useOrganizationDeleteMutation } from 'data/organizations/organization-d
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { Button, Form, Input, Modal } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const DeleteOrganizationButton = () => {
   const router = useRouter()
@@ -19,8 +20,9 @@ export const DeleteOrganizationButton = () => {
     LOCAL_STORAGE_KEYS.LAST_VISITED_ORGANIZATION,
     ''
   )
-  // FIXME: need permission implemented 
-  const canDeleteOrganization = true
+
+  const canDeleteOrganization = useCheckPermissions("org:owner:admin")
+
   const { mutate: deleteOrganization, isLoading: isDeleting } = useOrganizationDeleteMutation({
     onSuccess: () => {
       toast.success(`Successfully deleted ${orgName}`)

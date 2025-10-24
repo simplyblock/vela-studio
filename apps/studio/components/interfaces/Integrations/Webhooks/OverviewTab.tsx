@@ -21,7 +21,6 @@ export const WebhooksOverviewTab = () => {
   })
 
   const isHooksEnabled = schemas?.some((schema) => schema.name === 'supabase_functions')
-  // FIXME: need permission implemented 
   const { can: canReadWebhooks, isLoading: isLoadingPermissions } = useCheckPermissions("branch:settings:read")
 
   const { mutate: enableHooks, isLoading: isEnablingHooks } = useHooksEnableMutation({

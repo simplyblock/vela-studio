@@ -29,6 +29,7 @@ import {
   WarningIcon,
 } from 'ui'
 import { LogsDatePicker } from 'components/interfaces/Settings/Logs/Logs.DatePickers'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 // [Joshen considerations]
 // - Maybe fix the height of the table to the remaining height of the viewport, so that the search input is always visible
@@ -49,8 +50,7 @@ const AuditLogs = () => {
     users: [], // user_id[]
     projects: [], // project_ref[]
   })
-  // FIXME: need permission implemented
-  const canReadAuditLogs = true
+  const { can: canReadAuditLogs } = useCheckPermissions("branch:logging:read")
 
   const { data: projects } = useProjectsQuery()
   const { data: organizations } = useOrganizationsQuery()

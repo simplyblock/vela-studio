@@ -15,6 +15,7 @@ import {
   TooltipTrigger,
 } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface OAuthAppRowProps {
   app: OAuthApp
@@ -23,10 +24,8 @@ export interface OAuthAppRowProps {
 }
 
 export const OAuthAppRow = ({ app, onSelectEdit, onSelectDelete }: OAuthAppRowProps) => {
-    // FIXME: need permission implemented 
-  const canUpdateOAuthApps = true
-    // FIXME: need permission implemented 
-  const canDeleteOAuthApps = true
+  const canUpdateOAuthApps = useCheckPermissions("org:auth:admin")
+  const canDeleteOAuthApps = useCheckPermissions("org:auth:admin")
 
   return (
     <Table.tr>

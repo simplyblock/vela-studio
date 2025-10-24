@@ -18,6 +18,7 @@ import {
 } from '../Storage.constants'
 import type { StorageColumn, StorageItemWithColumn } from '../Storage.types'
 import FileExplorerRow from './FileExplorerRow'
+import { useCheckPermissions } from '../../../../hooks/misc/useCheckPermissions'
 
 const DragOverOverlay = ({ isOpen, onDragLeave, onDrop, folderIsEmpty }: any) => {
   return (
@@ -80,8 +81,7 @@ const FileExplorerColumn = ({
   const fileExplorerColumnRef = useRef<any>(null)
 
   const snap = useStorageExplorerStateSnapshot()
-  // FIXME: need permission implemented   
-  const canUpdateStorage = true
+  const canUpdateStorage = useCheckPermissions("branch:settings:admin")
 
   useEffect(() => {
     if (fileExplorerColumnRef) {

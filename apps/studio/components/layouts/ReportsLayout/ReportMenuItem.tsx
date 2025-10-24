@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from 'ui'
+import { useCheckPermissions } from '../../../hooks/misc/useCheckPermissions'
 
 interface ReportMenuItemProps {
   item: {
@@ -38,8 +39,8 @@ export const ReportMenuItem = ({
   onSelectDelete,
 }: ReportMenuItemProps) => {
   const { profile } = useProfile()
-  // FIXME: need permission implemented   
-  const canUpdateCustomReport = true
+
+  const canUpdateCustomReport = useCheckPermissions("branch:settings:admin")
   return (
     <Link
       className={cn(

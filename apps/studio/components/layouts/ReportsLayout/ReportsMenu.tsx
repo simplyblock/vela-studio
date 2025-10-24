@@ -15,6 +15,7 @@ import { useProfile } from 'lib/profile'
 import { Menu, cn } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { ReportMenuItem } from './ReportMenuItem'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const ReportsMenu = () => {
   const router = useRouter()
@@ -25,8 +26,8 @@ const ReportsMenu = () => {
   // b/c fly doesn't support storage
   const storageSupported = useIsFeatureEnabled('project_storage:all')
   const storageEnabled = storageSupported
-  // FIXME: need permission implemented 
-  const canCreateCustomReport = true
+
+  const canCreateCustomReport = useCheckPermissions("branch:settings:admin")
 
   // Preserve date range query parameters when navigating
   const preservedQueryParams = useMemo(() => {

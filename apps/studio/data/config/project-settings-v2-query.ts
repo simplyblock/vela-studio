@@ -3,6 +3,7 @@ import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export type ProjectSettingsVariables = {
   orgSlug?: string
@@ -48,10 +49,7 @@ export const useProjectSettingsV2Query = <TData = ProjectSettingsData>(
     ...options
   }: UseQueryOptions<ProjectSettingsData, ProjectSettingsError, TData> = {}
 ) => {
-  // [Joshen] Sync with API perms checking here - shouldReturnApiKeys
-  // https://github.com/supabase/infrastructure/blob/develop/api/src/routes/platform/projects/ref/settings.controller.ts#L92
-  // FIXME: need permission implemented 
-  const canReadAPIKeys = true
+  const canReadAPIKeys = useCheckPermissions("branch:api:getkeys")
 
   return useQuery<ProjectSettingsData, ProjectSettingsError, TData>(
     configKeys.settingsV2(orgSlug, projectRef),

@@ -23,6 +23,7 @@ import {
   PrePostTab,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const OrgDetailsSchema = z.object({
   name: z.string().min(1, 'Organization name is required'),
@@ -32,8 +33,8 @@ export const OrganizationDetailsForm = () => {
   const { slug } = useParams()
   const queryClient = useQueryClient()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
-    // FIXME: need permission implemented 
-  const canUpdateOrganization = true
+
+  const canUpdateOrganization = useCheckPermissions("org:settings:admin")
 
   const { mutate: updateOrganization, isLoading: isUpdatingDetails } =
     useOrganizationUpdateMutation()

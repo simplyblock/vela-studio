@@ -26,6 +26,7 @@ import {
 import { useEditorType } from '../editors/EditorsLayout.hooks'
 import { ActionCard } from './ActionCard'
 import { RecentItems } from './RecentItems'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export function NewTab() {
   const router = useRouter()
@@ -43,8 +44,8 @@ export function NewTab() {
   const [quickstarts] = partition(SQL_TEMPLATES, { type: 'quickstart' })
 
   const { mutate: sendEvent } = useSendEventMutation()
-  // FIXME: need permission implemented 
-  const canCreateSQLSnippet = true
+
+  const canCreateSQLSnippet = useCheckPermissions("branch:settings:admin")
 
   const tableEditorActions = [
     {

@@ -18,6 +18,7 @@ import { DeleteAppModal } from './DeleteAppModal'
 import { OAuthAppRow } from './OAuthAppRow'
 import { PublishAppSidePanel } from './PublishAppSidePanel'
 import { RevokeAppModal } from './RevokeAppModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 // [Joshen] Note on nav UX
 // Kang Ming mentioned that it might be better to split Published Apps and Authorized Apps into 2 separate tabs
@@ -32,10 +33,8 @@ const OAuthApps = () => {
   const [selectedAppToDelete, setSelectedAppToDelete] = useState<OAuthApp>()
   const [selectedAppToRevoke, setSelectedAppToRevoke] = useState<AuthorizedApp>()
 
-    // FIXME: need permission implemented 
-  const canReadOAuthApps = true
-    // FIXME: need permission implemented 
-  const canCreateOAuthApps = true
+  const { can: canReadOAuthApps } = useCheckPermissions("org:auth:read")
+  const { can: canCreateOAuthApps } = useCheckPermissions("org:auth:admin")
 
   const {
     data: publishedApps,

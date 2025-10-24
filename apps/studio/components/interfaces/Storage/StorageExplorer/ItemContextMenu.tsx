@@ -7,6 +7,7 @@ import { URL_EXPIRY_DURATION } from '../Storage.constants'
 import { StorageItemWithColumn } from '../Storage.types'
 import { downloadFile } from './StorageExplorer.utils'
 import { useCopyUrl } from './useCopyUrl'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface ItemContextMenuProps {
   id: string
@@ -25,8 +26,8 @@ const ItemContextMenu = ({ id = '' }: ItemContextMenuProps) => {
   } = useStorageExplorerStateSnapshot()
   const { onCopyUrl } = useCopyUrl()
   const isPublic = selectedBucket.public
-  // FIXME: need permission implemented 
-  const canUpdateFiles = true
+
+  const canUpdateFiles = useCheckPermissions("branch:settings:admin")
 
   const onHandleClick = async (event: any, item: StorageItemWithColumn, expiresIn?: number) => {
     if (item.isCorrupted) return

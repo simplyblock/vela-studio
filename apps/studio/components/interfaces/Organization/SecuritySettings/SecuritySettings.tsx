@@ -35,6 +35,7 @@ import {
   WarningIcon,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const schema = z.object({
   enforceMfa: z.boolean(),
@@ -45,10 +46,8 @@ const SecuritySettings = () => {
   const { profile } = useProfile()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const { data: members } = useOrganizationMembersQuery({ slug })
-    // FIXME: need permission implemented 
-  const canReadMfaConfig = true
-   // FIXME: need permission implemented  
-  const canUpdateMfaConfig = true
+  const { can: canReadMfaConfig } = useCheckPermissions("org:auth:read")
+  const { can: canUpdateMfaConfig } = useCheckPermissions("org:auth:admin")
   const { mutate: sendEvent } = useSendEventMutation()
 
   const isPaidPlan = selectedOrganization?.plan.id !== 'free'

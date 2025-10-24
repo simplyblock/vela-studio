@@ -43,6 +43,7 @@ import { RevokeCredentialModal } from './RevokeCredentialModal'
 import { StorageCredItem } from './StorageCredItem'
 import { getConnectionURL } from './StorageSettings.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const S3Connection = () => {
   const { slug, ref: projectRef } = useParams()
@@ -53,10 +54,9 @@ export const S3Connection = () => {
   const [openCreateCred, setOpenCreateCred] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [deleteCred, setDeleteCred] = useState<{ id: string; description: string }>()
-  // FIXME: need permission implemented
-  const canReadS3Credentials = true
-  // FIXME: need permission implemented
-  const canUpdateStorageSettings = true
+
+  const { can: canReadS3Credentials } = useCheckPermissions("branch:settings:admin")
+  const { can: canUpdateStorageSettings } = useCheckPermissions("branch:settings:admin")
 
   const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
   const {

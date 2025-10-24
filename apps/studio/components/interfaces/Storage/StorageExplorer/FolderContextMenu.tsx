@@ -3,6 +3,7 @@ import { Item, Menu, Separator } from 'react-contexify'
 import 'react-contexify/dist/ReactContexify.css'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import { copyPathToFolder } from './StorageExplorer.utils'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface FolderContextMenuProps {
   id: string
@@ -11,8 +12,8 @@ interface FolderContextMenuProps {
 const FolderContextMenu = ({ id = '' }: FolderContextMenuProps) => {
   const { openedFolders, downloadFolder, setSelectedItemToRename, setSelectedItemsToDelete } =
     useStorageExplorerStateSnapshot()
-  // FIXME: need permission implemented 
-  const canUpdateFiles = true
+
+  const canUpdateFiles = useCheckPermissions("branch:settings:admin")
 
   return (
     <Menu id={id} animation="fade">

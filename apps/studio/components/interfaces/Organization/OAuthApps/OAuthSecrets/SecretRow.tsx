@@ -11,6 +11,7 @@ import { Secret, useClientSecretsQuery } from 'data/oauth-secrets/client-secrets
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { cn } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface SecretRowProps {
   secret: Secret
@@ -20,8 +21,8 @@ export interface SecretRowProps {
 export const SecretRow = ({ secret, appId }: SecretRowProps) => {
   const { slug } = useParams()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-    // FIXME: need permission implemented 
-  const canManageSecrets = true
+
+  const canManageSecrets = useCheckPermissions("org:auth:admin")
 
   const { data } = useClientSecretsQuery({ slug, appId })
   const secrets = data?.client_secrets ?? []

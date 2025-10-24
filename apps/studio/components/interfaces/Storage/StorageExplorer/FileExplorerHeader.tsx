@@ -30,6 +30,7 @@ import {
   Input,
 } from 'ui'
 import { STORAGE_SORT_BY, STORAGE_SORT_BY_ORDER, STORAGE_VIEWS } from '../Storage.constants'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const VIEW_OPTIONS = [
   { key: STORAGE_VIEWS.COLUMNS, name: 'As columns' },
@@ -174,8 +175,8 @@ const FileExplorerHeader = ({
 
   const breadcrumbs = columns.map((column) => column.name)
   const backDisabled = columns.length <= 1
-  // FIXME: need permission implemented   
-  const canUpdateStorage = true
+
+  const canUpdateStorage = useCheckPermissions("branch:settings:admin")
 
   useEffect(() => {
     if (itemSearchString) setSearchString(itemSearchString)

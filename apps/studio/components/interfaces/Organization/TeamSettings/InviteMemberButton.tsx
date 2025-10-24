@@ -49,13 +49,13 @@ import {
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { useGetRolesManagementPermissions } from './UserSettings.utils'
+import { useCheckPermissions, useOrganizationPermissionQuery } from 'hooks/misc/useCheckPermissions'
 
 export const InviteMemberButton = () => {
   const { slug } = useParams()
   const { profile } = useProfile()
   const { data: organization } = useSelectedOrganizationQuery()
-  // FIXME: need permission implemented
-  const { permission: permissions } = {permission:[]}
+  const { permissions } = useOrganizationPermissionQuery()
   const { organizationMembersCreate: organizationMembersCreationEnabled } = useIsFeatureEnabled([
     'organization_members:create',
   ])
@@ -84,8 +84,8 @@ export const InviteMemberButton = () => {
     orgScopedRoles,
     permissions ?? []
   )
-  // FIXME: need permission implemented
-  const canInviteMembers = true
+
+  const canInviteMembers = useCheckPermissions("org:user:admin")
 
   const { mutate: inviteMember, isLoading: isInviting } = useOrganizationCreateInvitationMutation()
 

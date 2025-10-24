@@ -13,9 +13,7 @@ import {
 import NoPermission from 'components/ui/NoPermission'
 import { useGitHubAuthorizationQuery } from 'data/integrations/github-authorization-query'
 import { useGitHubConnectionDeleteMutation } from 'data/integrations/github-connection-delete-mutation'
-import { useGitHubConnectionsQuery } from 'data/integrations/github-connections-query'
 import type { IntegrationProjectConnection } from 'data/integrations/integrations.types'
-import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { BASE_PATH } from 'lib/constants'
 import {
@@ -25,6 +23,7 @@ import {
 import { useRouter } from 'next/router'
 import { useSidePanelsStateSnapshot } from 'state/side-panels'
 import { useParams } from 'common'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const IntegrationImageHandler = ({ title }: { title: 'vercel' | 'github' }) => {
   return (
@@ -41,13 +40,7 @@ const IntegrationSettings = () => {
   const router = useRouter()
   const { data: org } = useSelectedOrganizationQuery()
 
-  const showVercelIntegration = useIsFeatureEnabled('integrations:vercel')
-  // FIXME: need permission implemented 
-  const canReadGithubConnection = true
-    // FIXME: need permission implemented 
-  const canCreateGitHubConnection = true
-    // FIXME: need permission implemented 
-  const canUpdateGitHubConnection = true
+  const canReadGithubConnection = useCheckPermissions("branch:settings:read")
 
   const { data: gitHubAuthorization } = useGitHubAuthorizationQuery()
 

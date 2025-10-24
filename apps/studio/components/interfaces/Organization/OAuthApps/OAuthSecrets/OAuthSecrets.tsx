@@ -7,6 +7,7 @@ import { CreatedSecret, useClientSecretsQuery } from 'data/oauth-secrets/client-
 import { OAuthApp } from 'data/oauth/oauth-apps-query'
 import { Alert_Shadcn_, AlertTitle_Shadcn_, InfoIcon } from 'ui'
 import { SecretRow } from './SecretRow'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface Props {
   selectedApp?: OAuthApp
@@ -15,8 +16,8 @@ interface Props {
 export const OAuthSecrets = ({ selectedApp }: Props) => {
   const { slug } = useParams()
   const [createdSecret, setCreatedSecret] = useState<CreatedSecret>()
-    // FIXME: need permission implemented 
-  const canManageSecrets = true
+
+  const canManageSecrets = useCheckPermissions("org:auth:admin")
 
   const { id: appId } = selectedApp ?? {}
 

@@ -37,6 +37,7 @@ import {
 } from './StorageSettings.constants'
 import { convertFromBytes, convertToBytes } from './StorageSettings.utils'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface StorageSettingsState {
   fileSizeLimit: number
@@ -47,10 +48,8 @@ interface StorageSettingsState {
 const StorageSettings = () => {
   const { slug, ref: projectRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
-  // FIXME: need permission implemented 
-  const canReadStorageSettings = true
-  // FIXME: need permission implemented   
-  const canUpdateStorageSettings = true
+  const canReadStorageSettings = useCheckPermissions("branch:settings:read")
+  const canUpdateStorageSettings = useCheckPermissions("branch:settings:admin")
 
   const {
     data: config,

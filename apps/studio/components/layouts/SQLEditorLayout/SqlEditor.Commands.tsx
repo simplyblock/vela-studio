@@ -36,6 +36,7 @@ import {
 } from 'ui-patterns/CommandMenu'
 import { getPathReferences } from 'data/vela/path-references'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export function useSqlEditorGotoCommands(options?: CommandOptions) {
   let { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
@@ -102,8 +103,8 @@ function RunSnippetPage() {
   const snippets = snippetPages?.pages.flatMap((page) => page.contents)
 
   const { profile } = useProfile()
-  // FIXME: need permission implemented   
-  const canCreateSQLSnippet = true
+
+  const { can: canCreateSQLSnippet } = useCheckPermissions("branch:settings:admin")
 
   useSetCommandMenuSize('xlarge')
 

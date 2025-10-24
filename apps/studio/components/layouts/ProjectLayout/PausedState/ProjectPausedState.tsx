@@ -30,6 +30,7 @@ import {
 import { GenericSkeletonLoader } from 'ui-patterns/ShimmeringLoader'
 import { RestorePaidPlanProjectNotice } from '../RestorePaidPlanProjectNotice'
 import { PauseDisabledState } from './PauseDisabledState'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export interface ProjectPausedStateProps {
   product?: string
@@ -83,8 +84,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
     },
   })
 
-  // FIXME: need permission implemented 
-  const canResumeProject = true
+  const canResumeProject = useCheckPermissions("env:projects:pause")
 
   const onSelectRestore = () => {
     if (!canResumeProject) {
