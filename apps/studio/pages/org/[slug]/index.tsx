@@ -14,7 +14,6 @@ import type { NextPageWithLayout } from 'types'
 import { Admonition } from 'ui-patterns'
 
 const ProjectsPage: NextPageWithLayout = () => {
-  const { slug } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
   const isUserMFAEnabled = useIsMFAEnabled()
   const disableAccessMfa = org?.organization_requires_mfa && !isUserMFAEnabled
