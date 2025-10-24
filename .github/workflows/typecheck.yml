@@ -3,7 +3,7 @@ name: Check code with TypeScript & Lint
 on:
   pull_request:
     branches:
-      - 'master'
+      - 'main'
 
 # Cancel old builds on new commit for same workflow + branch/PR
 concurrency:
