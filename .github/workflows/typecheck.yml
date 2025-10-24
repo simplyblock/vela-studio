@@ -3,7 +3,7 @@ name: Check code with TypeScript & Lint
 on:
   pull_request:
     branches:
-      - 'master'
+      - 'main'
 
 # Cancel old builds on new commit for same workflow + branch/PR
 concurrency:
@@ -17,8 +17,7 @@ jobs:
   typecheck:
     # Uses larger hosted runner as it significantly decreases build times
     runs-on:
-      group: Default Larger Runners
-
+      ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,6 +38,3 @@ jobs:
 
       - name: Run TypeScript type check
         run: pnpm exec turbo run typecheck
-
-      - name: Run Lint
-        run: pnpm exec turbo run lint

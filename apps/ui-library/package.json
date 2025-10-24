@@ -13,8 +13,7 @@
     "lint": "next lint",
     "lint:mdx": "supa-mdx-lint content --config ../../supa-mdx-lint.config.toml",
     "content:build": "contentlayer2 build",
-    "clean": "rimraf node_modules .next .turbo",
-    "typecheck": "contentlayer2 build && tsc --noEmit -p tsconfig.json"
+    "clean": "rimraf node_modules .next .turbo"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",

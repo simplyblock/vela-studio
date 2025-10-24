@@ -368,7 +368,7 @@ const BackupScheduleModal = () => {
 
     if (rows.length === 0) {
       if (currentSchedule?.id) {
-        await deleteSchedule({ orgId })
+        await deleteSchedule({ orgId, scheduleId: currentSchedule.id })
       } else {
         setError('Add at least one schedule.')
       }
