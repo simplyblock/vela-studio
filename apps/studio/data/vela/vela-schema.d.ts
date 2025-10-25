@@ -406,18 +406,18 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/resources/branches/{branch_id}/provision": {
+    "/resources/branches/{branch_id}/allocations": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Branch Provisioning Api */
-        get: operations["get_branch_provisioning_api"];
+        /** Get Branch Allocations */
+        get: operations["get_branch_allocations"];
         put?: never;
-        /** Provision Branch */
-        post: operations["provision_branch"];
+        /** Set Branch Allocations */
+        post: operations["set_branch_allocations"];
         delete?: never;
         options?: never;
         head?: never;
@@ -559,6 +559,23 @@ export interface paths {
          * @description List all access rights defined in the system.
          */
         get: operations["list_available_permissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/system/resource-limit-definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Resource Limit Definitions */
+        get: operations["list_resource_limit_definitions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -18693,6 +18710,25 @@ export interface components {
             /** Schedule Id */
             schedule_id: string;
         };
+        /** BranchAllocationPublic */
+        BranchAllocationPublic: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            branch_id: string;
+            /** Milli Vcpu */
+            milli_vcpu?: number | null;
+            /** Ram */
+            ram?: number | null;
+            /** Iops */
+            iops?: number | null;
+            /** Storage Size */
+            storage_size?: number | null;
+            /** Database Size */
+            database_size?: number | null;
+        };
         /** BranchApiKeys */
         BranchApiKeys: {
             /** Anon */
@@ -19071,6 +19107,22 @@ export interface components {
             milli_vcpu?: number | null;
             /** Iops */
             iops?: number | null;
+        };
+        /** ResourceLimitDefinitionPublic */
+        ResourceLimitDefinitionPublic: {
+            /**
+             * Resource Type
+             * @enum {string}
+             */
+            resource_type: "milli_vcpu" | "ram" | "iops" | "storage_size" | "database_size";
+            /** Min */
+            min: number;
+            /** Max */
+            max: number;
+            /** Step */
+            step: number;
+            /** Unit */
+            unit: string | null;
         };
         /** ResourceLimitsPublic */
         ResourceLimitsPublic: {
@@ -22912,7 +22964,7 @@ export interface operations {
             };
         };
     };
-    get_branch_provisioning_api: {
+    get_branch_allocations: {
         parameters: {
             query?: never;
             header?: never;
@@ -22929,7 +22981,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["BranchAllocationPublic"];
                 };
             };
             /** @description Validation Error */
@@ -22943,7 +22995,7 @@ export interface operations {
             };
         };
     };
-    provision_branch: {
+    set_branch_allocations: {
         parameters: {
             query?: never;
             header?: never;
@@ -23357,6 +23409,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": string[];
+                };
+            };
+        };
+    };
+    list_resource_limit_definitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceLimitDefinitionPublic"][];
                 };
             };
         };
