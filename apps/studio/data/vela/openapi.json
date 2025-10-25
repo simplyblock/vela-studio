@@ -3653,13 +3653,13 @@
         }
       }
     },
-    "/resources/branches/{branch_id}/provision": {
+    "/resources/branches/{branch_id}/allocations": {
       "post": {
         "tags": [
           "resource"
         ],
-        "summary": "Provision Branch",
-        "operationId": "provision_branch",
+        "summary": "Set Branch Allocations",
+        "operationId": "set_branch_allocations",
         "parameters": [
           {
             "name": "branch_id",
@@ -3717,8 +3717,8 @@
         "tags": [
           "resource"
         ],
-        "summary": "Get Branch Provisioning Api",
-        "operationId": "get_branch_provisioning_api",
+        "summary": "Get Branch Allocations",
+        "operationId": "get_branch_allocations",
         "parameters": [
           {
             "name": "branch_id",
@@ -3744,7 +3744,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/BranchAllocationPublic"
+                }
               }
             }
           },
@@ -4457,6 +4459,36 @@
                   },
                   "type": "array",
                   "title": "Response List Available Permissions System Available Permissions  Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/system/resource-limit-definitions": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "List Resource Limit Definitions",
+        "operationId": "list_resource_limit_definitions",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ResourceLimitDefinitionPublic"
+                  },
+                  "type": "array",
+                  "title": "Response List Resource Limit Definitions System Resource Limit Definitions Get"
                 }
               }
             }
@@ -33938,6 +33970,83 @@
         ],
         "title": "BackupScheduleUpdate"
       },
+      "BranchAllocationPublic": {
+        "properties": {
+          "branch_id": {
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
+          },
+          "milli_vcpu": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Milli Vcpu"
+          },
+          "ram": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ram"
+          },
+          "iops": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iops"
+          },
+          "storage_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Size"
+          },
+          "database_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Database Size"
+          }
+        },
+        "type": "object",
+        "required": [
+          "branch_id"
+        ],
+        "title": "BranchAllocationPublic"
+      },
       "BranchApiKeys": {
         "properties": {
           "anon": {
@@ -35097,6 +35206,53 @@
         },
         "type": "object",
         "title": "ResizeParameters"
+      },
+      "ResourceLimitDefinitionPublic": {
+        "properties": {
+          "resource_type": {
+            "type": "string",
+            "enum": [
+              "milli_vcpu",
+              "ram",
+              "iops",
+              "storage_size",
+              "database_size"
+            ],
+            "title": "Resource Type"
+          },
+          "min": {
+            "type": "integer",
+            "title": "Min"
+          },
+          "max": {
+            "type": "integer",
+            "title": "Max"
+          },
+          "step": {
+            "type": "integer",
+            "title": "Step"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resource_type",
+          "min",
+          "max",
+          "step",
+          "unit"
+        ],
+        "title": "ResourceLimitDefinitionPublic"
       },
       "ResourceLimitsPublic": {
         "properties": {

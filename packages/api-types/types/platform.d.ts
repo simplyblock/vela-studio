@@ -110,6 +110,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/resource-limits': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['ResourceLimitsController_getResourceLimitDefinitions']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/backups': {
     parameters: {
       query?: never
@@ -11042,6 +11058,38 @@ export interface operations {
         };
       };
     };
+  }
+  ResourceLimitsController_getResourceLimitDefinitions: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<"ResourceLimitDefinitionPublic">[]
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
   }
   PermissionController_getAvailablePermissions: {
     parameters: {
