@@ -13,7 +13,6 @@ export type BranchCreateVariables = {
   branchName: string
   withData?: boolean
   withConfig?: boolean
-  enableFileStorage?: boolean
   deployment?: components['schemas']['DeploymentParameters']
 }
 
