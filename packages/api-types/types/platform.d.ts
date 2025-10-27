@@ -109,6 +109,38 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/pause': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BranchController_pauseBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resume': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BranchController_resumeBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resources/limits': {
     parameters: {
       query?: never
@@ -11089,6 +11121,64 @@ export interface operations {
     }
   }
   BranchController_deleteBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchController_pauseBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchController_resumeBranch: {
     parameters: {
       query?: never
       header?: never
