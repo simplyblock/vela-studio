@@ -141,6 +141,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resize': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BranchController_resizeBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resources/limits': {
     parameters: {
       query?: never
@@ -11207,6 +11223,41 @@ export interface operations {
       }
     }
   }
+  BranchController_resizeBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": VelaType<"ResizeParameters">;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   ResourceController_getBranchEffectiveLimits: {
     parameters: {
       query?: never
@@ -11691,7 +11742,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupsResponse'>
+          'application/json': VelaType<'BackupCreatePublic'>
         }
       }
       403: {
