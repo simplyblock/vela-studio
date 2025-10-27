@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="https://vela.simplyblock.io">
-<img src="apps/docs/public/Vela-logo-white.png" alt="Vela Logo" width="250" height="100">
+<img src="img/vela-logo-white.png" alt="Vela Logo" width="250" height="100">
         </a>
 </p>
 
@@ -51,7 +51,7 @@ Learn more at [vela.simplyblock.io](https://vela.simplyblock.io)
 
 ## Architecture
 <p align="left">
-<img src="apps/docs/public/img/vela-architecture-background.png" alt="Vela Architecture">
+<img src="img/vela-architecture-background.png" alt="Vela Architecture">
 </p>
 Vela is built on open-source components, combining Postgres and modern infrastructure automation to provide a complete, self-hostable platform.
 
@@ -68,11 +68,11 @@ Vela is built on open-source components, combining Postgres and modern infrastru
 
 ## Screenshots
 <p align="left">
-<img src="apps/docs/public/img/screenshot-backups.png" alt="Backups Schedule">
-<img src="apps/docs/public/img/screenshot-edge functions.png" alt="Edge Functions">
-<img src="apps/docs/public/img/screenshot-projects.png" alt="Projects">
-<img src="apps/docs/public/img/screenshot-schema-visualizer.png" alt="Schema Visualizer">
-<img src="apps/docs/public/img/screenshots-table-editor.png" alt="Table Editor">
+<img src="img/screenshot-backups.png" alt="Backups Schedule">
+<img src="img/screenshot-edge-functions.png" alt="Edge Functions">
+<img src="img/screenshot-projects.png" alt="Projects">
+<img src="img/screenshot-schema-visualizer.png" alt="Schema Visualizer">
+<img src="img/screenshots-table-editor.png" alt="Table Editor">
 </p>
 
 ## Getting Started
