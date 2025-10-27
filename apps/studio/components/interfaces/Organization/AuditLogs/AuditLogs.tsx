@@ -150,7 +150,7 @@ const AuditLogs = () => {
                   projects?.filter((p) => p.organization_id === currentOrganization?.id) ?? []
                 }
                 labelKey="name"
-                valueKey="ref"
+                valueKey="id"
                 activeOptions={filters.projects}
                 onSaveFilters={(values) => setFilters({ ...filters, projects: values })}
               />
@@ -310,7 +310,7 @@ const AuditLogs = () => {
                       const user = (members ?? []).find((member) => member.user_id === log.actor.id)
                       const role = roles.find((role) => user?.role_ids?.[0] === role.id)
                       const project = projects?.find(
-                        (project) => project.ref === log.target.metadata.project_ref
+                        (project) => project.id === log.target.metadata.project_ref
                       )
                       const organization = organizations?.find(
                         (org) => org.slug === log.target.metadata.org_slug

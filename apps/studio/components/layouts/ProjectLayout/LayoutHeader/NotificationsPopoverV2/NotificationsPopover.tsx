@@ -208,7 +208,7 @@ export const NotificationsPopoverV2 = () => {
                         rowHeights.current = { ...rowHeights.current, [idx]: height }
                       }
                     },
-                    getProject: (ref: string) => projects?.find((project) => project.ref === ref)!,
+                    getProject: (ref: string) => projects?.find((project) => project.id === ref)!,
                     getOrganizationById: (id: string) =>
                       organizations?.find((org) => org.id === id)!,
                     getOrganizationBySlug: (slug: string) =>

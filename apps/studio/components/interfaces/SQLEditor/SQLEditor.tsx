@@ -82,7 +82,7 @@ export const SQLEditor = () => {
   const snapV2 = useSqlEditorV2StateSnapshot()
   const getImpersonatedRoleState = useGetImpersonatedRoleState()
   const databaseSelectorState = useDatabaseSelectorStateSnapshot()
-  const [selectedSchemas] = useSchemasForAi(project?.ref!)
+  const [selectedSchemas] = useSchemasForAi(project?.id!)
 
   const {
     sourceSqlDiff,
@@ -409,7 +409,7 @@ export const SQLEditor = () => {
             ...(options?.headers ?? {}),
           },
           body: JSON.stringify({
-            projectRef: project?.ref,
+            projectRef: project?.id,
             connectionString: branch?.database.encrypted_connection_string,
             language: 'sql',
             orgSlug: org?.slug,
@@ -447,7 +447,7 @@ export const SQLEditor = () => {
     [
       org?.slug,
       branch?.database.encrypted_connection_string,
-      project?.ref,
+      project?.id,
       setPromptState,
       setSelectedDiffType,
       setSourceSqlDiff,

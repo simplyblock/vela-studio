@@ -1,9 +1,9 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
-import type { Project } from 'data/projects/project-detail-query'
+import type { ProjectDetail } from 'data/projects/project-detail-query'
 
 export const generateDatabaseMenu = (
   slug: string,
-  project?: Project,
+  project?: ProjectDetail,
   branchRef?: string,
   flags?: {
     pitrEnabled: boolean
@@ -11,7 +11,7 @@ export const generateDatabaseMenu = (
     showRoles: boolean
   }
 ): ProductMenuGroup[] => {
-  const ref = project?.ref ?? 'default'
+  const ref = project?.id ?? 'default'
   const {
     pitrEnabled,
     showPgReplicate,

@@ -132,7 +132,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
       {
         onSuccess: () => {
           toast.success(`Successfully created queue ${name}`)
-          router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/queues/${name}`)
+          router.push(`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/integrations/queues/queues/${name}`)
           onClose()
         },
       }
@@ -338,7 +338,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
                     <Markdown
                       className="[&>p]:!leading-normal"
                       content={`You may opt to manage your queues via any Supabase client libraries or PostgREST
-                      endpoints by enabling this in the [queues settings](/project/${project?.ref}/integrations/queues/settings).`}
+                      endpoints by enabling this in the [queues settings](/project/${project?.id}/integrations/queues/settings).`}
                     />
                   </Admonition>
                 ) : (

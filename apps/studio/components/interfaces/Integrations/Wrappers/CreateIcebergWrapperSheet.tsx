@@ -165,7 +165,7 @@ export const CreateIcebergWrapperSheet = ({
           wrapperType: wrapperMeta.label,
         },
         groups: {
-          project: project?.ref ?? 'Unknown',
+          project: project?.id ?? 'Unknown',
           organization: org?.slug ?? 'Unknown',
         },
       })

@@ -50,7 +50,7 @@ const FunctionList = ({
     filteredFunctions.filter((x) => x.schema == schema),
     (func) => func.name.toLocaleLowerCase()
   )
-  const projectRef = selectedProject?.ref
+  const projectRef = selectedProject?.id
   const { can: canUpdateFunctions } = useCheckPermissions("branch:edge:admin")
 
   if (_functions.length === 0 && filterString.length === 0) {

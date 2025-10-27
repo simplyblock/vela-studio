@@ -10,7 +10,7 @@ type Props = {
 
 function DatabaseBackupsNav({ active }: Props) {
   const { slug: orgRef, branch: branchRef } = getPathReferences()
-  const { ref: projectRef } = useSelectedProjectQuery()?.data || {}
+  const { id: projectRef } = useSelectedProjectQuery()?.data || {}
 
   const navMenuItems = [
     {

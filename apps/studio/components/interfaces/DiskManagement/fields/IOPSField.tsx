@@ -3,16 +3,13 @@ import { UseFormReturn } from 'react-hook-form'
 import { InputVariants } from '@ui/components/shadcn/ui/input'
 import { useParams } from 'common'
 import { useDiskAttributesQuery } from 'data/config/disk-attributes-query'
-import { Button, cn, FormControl_Shadcn_, FormField_Shadcn_, Input_Shadcn_, Skeleton } from 'ui'
+import { cn, FormControl_Shadcn_, FormField_Shadcn_, Input_Shadcn_, Skeleton } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { DiskStorageSchemaType } from '../DiskManagement.schema'
 import {
-  calculateComputeSizeRequiredForIops,
   calculateIOPSPrice,
-  mapAddOnVariantIdToComputeSize,
 } from '../DiskManagement.utils'
 import { BillingChangeBadge } from '../ui/BillingChangeBadge'
-import { ComputeSizeRecommendationSection } from '../ui/ComputeSizeRecommendationSection'
 import { DiskType, RESTRICTED_COMPUTE_FOR_IOPS_ON_GP3 } from '../ui/DiskManagement.constants'
 import { DiskManagementIOPSReadReplicas } from '../ui/DiskManagementReadReplicas'
 import FormMessage from '../ui/FormMessage'
@@ -25,7 +22,7 @@ type IOPSFieldProps = {
 
 export function IOPSField({ form, disableInput }: IOPSFieldProps) {
   const { ref: projectRef } = useParams()
-  const { control, formState, setValue, trigger, getValues, watch } = form
+  const { control, formState, setValue, getValues, watch } = form
 
   const watchedStorageType = watch('storageType')
   const watchedComputeSize = watch('computeSize')
@@ -48,7 +45,6 @@ export function IOPSField({ form, disableInput }: IOPSFieldProps) {
       control={control}
       name="provisionedIOPS"
       render={({ field }) => {
-        const reccomendedComputeSize = calculateComputeSizeRequiredForIops(watchedIOPS)
         return (
           <FormItemLayout
             layout="horizontal"
@@ -57,20 +53,6 @@ export function IOPSField({ form, disableInput }: IOPSFieldProps) {
             description={
               <span className="flex flex-col gap-y-2">
                 <p>Use higher IOPS for high-throughput apps.</p>
-                <ComputeSizeRecommendationSection
-                  form={form}
-                  actions={
-                    <Button
-                      type="default"
-                      onClick={() => {
-                        setValue('computeSize', reccomendedComputeSize ?? 'ci_nano')
-                        trigger('provisionedIOPS')
-                      }}
-                    >
-                      Update to {mapAddOnVariantIdToComputeSize(reccomendedComputeSize)}
-                    </Button>
-                  }
-                />
                 {!formState.errors.provisionedIOPS && (
                   <DiskManagementIOPSReadReplicas
                     isDirty={formState.dirtyFields.provisionedIOPS !== undefined}

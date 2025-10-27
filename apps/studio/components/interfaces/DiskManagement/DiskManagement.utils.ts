@@ -239,67 +239,7 @@ export const calculateDiskSizeRequiredForIops = (provisionedIOPS: number): numbe
   return Math.max(1, Math.ceil(provisionedIOPS / 1000))
 }
 
-export const formatComputeName = (compute: string) => {
-  return compute.toUpperCase().replace('CI_', '')
-}
-
-export const mapComputeSizeNameToAddonVariantId = (
-  computeSize: ProjectDetail['infra_compute_size']
-): ComputeInstanceAddonVariantId => {
-  return {
-    pico: 'ci_pico',
-    nano: 'ci_nano',
-    micro: 'ci_micro',
-    small: 'ci_small',
-    medium: 'ci_medium',
-    large: 'ci_large',
-    xlarge: 'ci_xlarge',
-    '2xlarge': 'ci_2xlarge',
-    '4xlarge': 'ci_4xlarge',
-    '8xlarge': 'ci_8xlarge',
-    '12xlarge': 'ci_12xlarge',
-    '16xlarge': 'ci_16xlarge',
-    '24xlarge': 'ci_24xlarge',
-    '24xlarge_optimized_memory': 'ci_24xlarge_optimized_memory',
-    '24xlarge_optimized_cpu': 'ci_24xlarge_optimized_cpu',
-    '24xlarge_high_memory': 'ci_24xlarge_high_memory',
-    '48xlarge': 'ci_48xlarge',
-    '48xlarge_optimized_memory': 'ci_48xlarge_optimized_memory',
-    '48xlarge_optimized_cpu': 'ci_48xlarge_optimized_cpu',
-    '48xlarge_high_memory': 'ci_48xlarge_high_memory',
-  }[computeSize ?? 'nano'] as ComputeInstanceAddonVariantId
-}
-
-export const mapAddOnVariantIdToComputeSize = (
-  addonVariantId: ComputeInstanceAddonVariantId = 'ci_nano'
-): ComputeInstanceSize => {
-  return {
-    ci_nano: 'Nano',
-    ci_micro: 'Micro',
-    ci_small: 'Small',
-    ci_medium: 'Medium',
-    ci_large: 'Large',
-    ci_xlarge: 'XL',
-    ci_2xlarge: '2XL',
-    ci_4xlarge: '4XL',
-    ci_8xlarge: '8XL',
-    ci_12xlarge: '12XL',
-    ci_16xlarge: '16XL',
-    ci_24xlarge: '24XL',
-    ci_24xlarge_optimized_memory: '24XL - Optimized Memory',
-    ci_24xlarge_optimized_cpu: '24XL - Optimized CPU',
-    ci_24xlarge_high_memory: '24XL - High Memory',
-    ci_48xlarge: '48XL',
-    ci_48xlarge_optimized_memory: '48XL - Optimized Memory',
-    ci_48xlarge_optimized_cpu: '48XL - Optimized CPU',
-    ci_48xlarge_high_memory: '48XL - High Memory',
-  }[addonVariantId] as ComputeInstanceSize
-}
-
 export const formatNumber = (num: number): string => {
   return num.toLocaleString('en-US')
 }
 
-export const showMicroUpgrade = (plan: PlanId, infraComputeSize: InfraInstanceSize): boolean => {
-  return plan !== 'free' && infraComputeSize === 'nano'
-}

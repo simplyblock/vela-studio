@@ -1,15 +1,9 @@
 import { UseFormReturn } from 'react-hook-form'
-
-import { InputVariants } from '@ui/components/shadcn/ui/input'
-import { useParams } from 'common'
 import { DocsButton } from 'components/ui/DocsButton'
-import { useDiskAttributesQuery } from 'data/config/disk-attributes-query'
-import { useDiskUtilizationQuery } from 'data/config/disk-utilization-query'
-import dayjs from 'dayjs'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { GB } from 'lib/constants'
-import { Button, FormControl_Shadcn_, FormField_Shadcn_, Input_Shadcn_, Skeleton, cn } from 'ui'
+import { Button, FormControl_Shadcn_, FormField_Shadcn_, Input_Shadcn_ } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { DiskStorageSchemaType } from '../DiskManagement.schema'
 import { calculateDiskSizePrice } from '../DiskManagement.utils'
@@ -21,6 +15,7 @@ import { DiskTypeRecommendationSection } from '../ui/DiskTypeRecommendationSecti
 import FormMessage from '../ui/FormMessage'
 import { InputPostTab } from '../ui/InputPostTab'
 import { InputResetButton } from '../ui/InputResetButton'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 type DiskSizeFieldProps = {
   form: UseFormReturn<DiskStorageSchemaType>
@@ -33,39 +28,14 @@ export function DiskSizeField({
   disableInput,
   setAdvancedSettingsOpenState,
 }: DiskSizeFieldProps) {
-  const { ref: projectRef } = useParams()
   const { control, formState, setValue, trigger, getValues, resetField, watch } = form
   const { data: org } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
-
-  const {
-    isLoading: isLoadingDiskAttributes,
-    error: diskAttributesError,
-    isError: isDiskAttributesError,
-  } = useDiskAttributesQuery(
-    { projectRef },
-    { enabled: project && project.cloud_provider !== 'FLY' }
-  )
-
-  const {
-    data: diskUtil,
-    error: diskUtilError,
-    isError: isDiskUtilizationError,
-  } = useDiskUtilizationQuery(
-    {
-      projectRef: projectRef,
-    },
-    { enabled: project && project.cloud_provider !== 'FLY' }
-  )
-
-  const error = diskUtilError || diskAttributesError
-  const isError = isDiskUtilizationError || isDiskAttributesError
+  const { data: branch } = useSelectedBranchQuery()
 
   // coming up typically takes 5 minutes, and the request is cached for 5 mins
   // so doing less than 10 mins to account for both
-  const isProjectNew =
-    dayjs.utc().diff(dayjs.utc(project?.inserted_at), 'minute') < 10 ||
-    project?.status === 'COMING_UP'
+  const isProjectNew = project?.status === 'STARTING'
 
   const watchedStorageType = watch('storageType')
   const watchedTotalSize = watch('totalSize')
@@ -85,7 +55,7 @@ export function DiskSizeField({
   })
 
   const isAllocatedStorageDirty = !!formState.dirtyFields.totalSize
-  const mainDiskUsed = Math.round(((diskUtil?.metrics.fs_used_bytes ?? 0) / GB) * 100) / 100
+  const mainDiskUsed = Math.round(((branch?.used_resources.nvme_bytes ?? 0) / GB) * 100) / 100
 
   return (
     <div className="grid @xl:grid-cols-12 gap-5">
@@ -97,36 +67,25 @@ export function DiskSizeField({
             <FormItemLayout label="Disk Size" layout="vertical" id={field.name}>
               <div className="relative flex gap-2 items-center">
                 <InputPostTab label="GB">
-                  {isLoadingDiskAttributes ? (
-                    <div
-                      className={cn(
-                        InputVariants({ size: 'small' }),
-                        'w-32 font-mono rounded-r-none'
-                      )}
-                    >
-                      <Skeleton className="w-10 h-4" />
-                    </div>
-                  ) : (
-                    <FormControl_Shadcn_>
-                      <Input_Shadcn_
-                        type="number"
-                        id={field.name}
-                        {...field}
-                        disabled={disableInput || isError}
-                        className="w-32 font-mono rounded-r-none"
-                        onWheel={(e) => e.currentTarget.blur()}
-                        onChange={(e) => {
-                          setValue('totalSize', e.target.valueAsNumber, {
-                            shouldDirty: true,
-                            shouldValidate: true,
-                          })
-                          trigger('provisionedIOPS')
-                          trigger('throughput')
-                        }}
-                        min={includedDiskGB}
-                      />
-                    </FormControl_Shadcn_>
-                  )}
+                  <FormControl_Shadcn_>
+                    <Input_Shadcn_
+                      type="number"
+                      id={field.name}
+                      {...field}
+                      disabled={disableInput}
+                      className="w-32 font-mono rounded-r-none"
+                      onWheel={(e) => e.currentTarget.blur()}
+                      onChange={(e) => {
+                        setValue('totalSize', e.target.valueAsNumber, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                        trigger('provisionedIOPS')
+                        trigger('throughput')
+                      }}
+                      min={includedDiskGB}
+                    />
+                  </FormControl_Shadcn_>
                 </InputPostTab>
                 <InputResetButton
                   isDirty={isAllocatedStorageDirty}
@@ -183,17 +142,11 @@ export function DiskSizeField({
       <div className="col-span-8">
         <DiskSpaceBar form={form} />
 
-        {isProjectNew ? (
+        {isProjectNew && (
           <FormMessage
             message="Disk size data is not available for ~10 minutes after project creation"
             type="error"
           />
-        ) : (
-          error && (
-            <FormMessage message="Failed to load disk size data" type="error">
-              {error?.message}
-            </FormMessage>
-          )
         )}
 
         <DiskManagementDiskSizeReadReplicas

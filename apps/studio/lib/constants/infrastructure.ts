@@ -1,23 +1,16 @@
-import type { components } from 'data/api'
+import { components } from 'data/vela/vela-schema'
 
 export const PROJECT_STATUS: {
-  [key: string]: components['schemas']['ProjectDetailResponse']['status']
+  [key: string]: components['schemas']['ProjectPublic']['status']
 } = {
-  INACTIVE: 'INACTIVE',
-  ACTIVE_HEALTHY: 'ACTIVE_HEALTHY',
-  ACTIVE_UNHEALTHY: 'ACTIVE_UNHEALTHY',
-  COMING_UP: 'COMING_UP',
-  UNKNOWN: 'UNKNOWN',
-  GOING_DOWN: 'GOING_DOWN',
-  INIT_FAILED: 'INIT_FAILED',
-  REMOVED: 'REMOVED',
-  RESTARTING: 'RESTARTING',
-  RESTORING: 'RESTORING',
-  RESTORE_FAILED: 'RESTORE_FAILED',
-  UPGRADING: 'UPGRADING',
   PAUSING: 'PAUSING',
-  PAUSE_FAILED: 'PAUSE_FAILED',
-  RESIZING: 'RESIZING',
+  PAUSED: 'PAUSED',
+  STARTING: 'STARTING',
+  STARTED: 'STARTED',
+  MIGRATING: 'MIGRATING',
+  DELETING: 'DELETING',
+  ERROR: 'ERROR',
+  UNKNOWN: 'UNKNOWN',
 }
 
 export const DEFAULT_MINIMUM_PASSWORD_STRENGTH = 4

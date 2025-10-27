@@ -47,7 +47,7 @@ const QueueRow = ({ queue }: { queue: PostgresQueue }) => {
       key={queue.queue_name}
       onClick={() => {
         router.push(
-          `/org/${orgRef}/project/${selectedProject?.ref}/branch/${branchRef}/integrations/queues/queues/${queue.queue_name}`
+          `/org/${orgRef}/project/${selectedProject?.id}/branch/${branchRef}/integrations/queues/queues/${queue.queue_name}`
         )
       }}
     >

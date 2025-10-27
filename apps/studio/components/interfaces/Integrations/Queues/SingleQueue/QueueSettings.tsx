@@ -255,7 +255,7 @@ export const QueueSettings = ({}: QueueSettingsProps) => {
                   You may opt to manage your queues via any Supabase client libraries or PostgREST
                   endpoints by enabling this in the{' '}
                   <Link
-                    href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues/settings`}
+                    href={`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/integrations/queues/settings`}
                     className="underline transition underline-offset-2 decoration-foreground-lighter hover:decoration-foreground"
                   >
                     queues settings

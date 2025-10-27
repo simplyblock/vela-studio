@@ -404,19 +404,19 @@ export const TabsStateContextProvider = ({ children }: PropsWithChildren) => {
   const { data: project } = useSelectedProjectQuery()
   const slug = getOrganizationSlug()
   const branchRef = getBranchRef()
-  const [state, setState] = useState(createTabsState(slug || '', project?.ref ?? '', branchRef ?? ''))
+  const [state, setState] = useState(createTabsState(slug || '', project?.id ?? '', branchRef ?? ''))
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !!project?.ref) {
-      setState(createTabsState(slug || '', project?.ref ?? '', branchRef ?? ''))
+    if (typeof window !== 'undefined' && !!project?.id) {
+      setState(createTabsState(slug || '', project?.id ?? '', branchRef ?? ''))
     }
-  }, [project?.ref, slug])
+  }, [project?.id, slug])
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && project?.ref) {
+    if (typeof window !== 'undefined' && project?.id) {
       return subscribe(state, () => {
         localStorage.setItem(
-          getTabsStorageKey(project?.ref),
+          getTabsStorageKey(project?.id),
           JSON.stringify({
             activeTab: state.activeTab,
             openTabs: state.openTabs,
@@ -425,14 +425,14 @@ export const TabsStateContextProvider = ({ children }: PropsWithChildren) => {
           })
         )
         localStorage.setItem(
-          getRecentItemsStorageKey(project?.ref),
+          getRecentItemsStorageKey(project?.id),
           JSON.stringify({
             items: state.recentItems,
           })
         )
       })
     }
-  }, [project?.ref, state])
+  }, [project?.id, state])
 
   return <TabsStateContext.Provider value={state}>{children}</TabsStateContext.Provider>
 }

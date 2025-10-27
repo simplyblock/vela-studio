@@ -87,7 +87,7 @@ const RouteValidationWrapper = ({ children }: PropsWithChildren<{}>) => {
     if (projectsInitialized && ref) {
       // Check validity of project that the user is trying to access
       const projects = projectsRef.current ?? []
-      const isValidProject = projects.some((project) => project.ref === ref)
+      const isValidProject = projects.some((project) => project.id === ref)
 
       if (!isValidProject) {
         toast.error('This project does not exist')

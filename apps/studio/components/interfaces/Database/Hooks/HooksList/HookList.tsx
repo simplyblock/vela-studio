@@ -41,9 +41,6 @@ export const HookList = ({
     branch
   })
 
-  const restUrl = project?.restUrl
-  const restUrlTld = restUrl ? new URL(restUrl).hostname.split('.').pop() : 'co'
-
   const filteredHooks = (hooks ?? []).filter(
     (x) =>
       includes(x.name.toLowerCase(), filterString.toLowerCase()) &&
@@ -56,8 +53,8 @@ export const HookList = ({
     <>
       {filteredHooks.map((x) => {
         const isEdgeFunction = (url: string) =>
-          url.includes(`https://${ref}.functions.supabase.${restUrlTld}/`) ||
-          url.includes(`https://${ref}.supabase.${restUrlTld}/functions/`)
+          url.includes(`https://${ref}.functions.supabase.co/`) ||
+          url.includes(`https://${ref}.supabase.co/functions/`)
         const [url, method] = x.function_args
 
         return (

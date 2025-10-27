@@ -22,7 +22,7 @@ const PurgeQueue = ({ queueName, visible, onClose }: PurgeQueueProps) => {
   const { mutate: purgeDatabaseQueue, isLoading } = useDatabaseQueuePurgeMutation({
     onSuccess: () => {
       toast.success(`Successfully purged queue ${queueName}`)
-      router.push(`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/queues`)
+      router.push(`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/integrations/queues`)
       onClose()
     },
   })

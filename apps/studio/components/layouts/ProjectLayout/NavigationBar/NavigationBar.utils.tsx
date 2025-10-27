@@ -6,7 +6,7 @@ import { generateDatabaseMenu } from 'components/layouts/DatabaseLayout/Database
 import { generateSettingsMenu } from 'components/layouts/ProjectSettingsLayout/SettingsMenu.utils'
 import type { Route } from 'components/ui/ui.types'
 import { EditorIndexPageLink } from 'data/prefetchers/project.$ref.editor'
-import type { Project } from 'data/projects/project-detail-query'
+import type { ProjectDetail } from 'data/projects/project-detail-query'
 import {
   Auth,
   Database,
@@ -21,7 +21,7 @@ import { PROJECT_STATUS } from 'lib/constants'
 export const generateToolRoutes = (
   orgRef: string,
   projectRef?: string,
-  project?: Project,
+  project?: ProjectDetail,
   branchRef?: string,
 ): Route[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
@@ -52,7 +52,7 @@ export const generateToolRoutes = (
 export const generateProductRoutes = (
   orgRef: string,
   projectRef?: string,
-  project?: Project,
+  project?: ProjectDetail,
   branchRef?: string,
   features?: { auth?: boolean; edgeFunctions?: boolean; storage?: boolean; realtime?: boolean;  backups?: boolean  }
 ): Route[] => {
@@ -147,7 +147,7 @@ export const generateProductRoutes = (
 export const generateOtherRoutes = (
   orgRef: string,
   projectRef?: string,
-  project?: Project,
+  project?: ProjectDetail,
   branchRef?: string,
   features?: { unifiedLogs?: boolean }
 ): Route[] => {
@@ -216,7 +216,7 @@ export const generateOtherRoutes = (
 export const generateSettingsRoutes = (
   orgRef: string,
   projectRef?: string,
-  project?: Project,
+  project?: ProjectDetail,
   branchRef?: string
 ): Route[] => {
   const settingsMenu = generateSettingsMenu(orgRef, projectRef!, branchRef, project)

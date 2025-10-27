@@ -73,7 +73,6 @@ const GitHubIntegrationConnectionForm = ({
   const [isConfirmingBranchChange, setIsConfirmingBranchChange] = useState(false)
   const [isConfirmingRepoChange, setIsConfirmingRepoChange] = useState(false)
   const [repoComboBoxOpen, setRepoComboboxOpen] = useState(false)
-  const isParentProject = !Boolean(selectedProject?.parent_project_ref)
 
   const { can: canUpdateGitHubConnection } = useCheckPermissions("org:settings:admin")
   const { can: canCreateGitHubConnection } = useCheckPermissions("org:settings:admin")
@@ -101,8 +100,8 @@ const GitHubIntegrationConnectionForm = ({
   })
 
   const { data: existingBranches } = useBranchesQuery(
-    { projectRef: selectedProject?.ref },
-    { enabled: !!selectedProject?.ref }
+    { projectRef: selectedProject?.id },
+    { enabled: !!selectedProject?.id }
   )
 
   const { mutateAsync: checkGithubBranchValidity, isLoading: isCheckingBranch } =
@@ -195,7 +194,7 @@ const GitHubIntegrationConnectionForm = ({
   const selectedRepository = githubRepos.find((repo) => repo.id === currentRepositoryId)
 
   const handleCreateOrUpdateConnection = async (data: z.infer<typeof GitHubSettingsSchema>) => {
-    if (!selectedProject?.ref || !selectedOrganization?.id) return
+    if (!selectedProject?.id || !selectedOrganization?.id) return
 
     try {
       if (connection) {
@@ -224,13 +223,13 @@ const GitHubIntegrationConnectionForm = ({
     data: z.infer<typeof GitHubSettingsSchema>,
     selectedRepo: { id: string; installation_id: number }
   ) => {
-    if (!selectedProject?.ref || !selectedOrganization?.id || !branch) return
+    if (!selectedProject?.id || !selectedOrganization?.id || !branch) return
 
     createConnection({
       organizationId: selectedOrganization.id,
       connection: {
         installation_id: selectedRepo.installation_id,
-        project_ref: selectedProject.ref,
+        project_ref: selectedProject.id,
         repository_id: Number(selectedRepo.id),
         workdir: data.supabaseDirectory,
         supabase_changes_only: data.supabaseChangesOnly,
@@ -249,7 +248,7 @@ const GitHubIntegrationConnectionForm = ({
     } else {
       updateBranch({
         orgSlug: orgRef!,
-        projectRef: selectedProject.ref,
+        projectRef: selectedProject.id,
         branch: data.branchName,
       })
     }
@@ -259,7 +258,7 @@ const GitHubIntegrationConnectionForm = ({
     data: z.infer<typeof GitHubSettingsSchema>,
     currentConnection: GitHubConnection
   ) => {
-    if (!selectedProject?.ref || !selectedOrganization?.id) return
+    if (!selectedProject?.id || !selectedOrganization?.id) return
 
     if (data.enableProductionSync) {
       setIsConfirmingBranchChange(true)
@@ -273,7 +272,7 @@ const GitHubIntegrationConnectionForm = ({
     data: z.infer<typeof GitHubSettingsSchema>,
     currentConnection: GitHubConnection
   ) => {
-    if (!selectedProject?.ref || !selectedOrganization?.id) return
+    if (!selectedProject?.id || !selectedOrganization?.id) return
 
     updateConnectionSettings({
       connectionId: currentConnection.id,
@@ -289,7 +288,7 @@ const GitHubIntegrationConnectionForm = ({
     if (prodBranch?.id) {
       updateBranch({
         orgSlug: orgRef!,
-        projectRef: selectedProject.ref,
+        projectRef: selectedProject.id,
         branch: data.branchName || 'main',
       })
     }
@@ -398,7 +397,6 @@ const GitHubIntegrationConnectionForm = ({
       <Form_Shadcn_ {...githubSettingsForm}>
         <form
           onSubmit={githubSettingsForm.handleSubmit(handleCreateOrUpdateConnection)}
-          className={cn(!isParentProject && 'opacity-25 pointer-events-none')}
         >
           <Card>
             <CardContent className="space-y-6">

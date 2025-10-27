@@ -26,7 +26,7 @@ export function useApiKeysCommands() {
   const { slug: orgRef, branch: branchRef } = getPathReferences()
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const projectRef = project?.ref || '_'
+  const projectId = project?.id || '_'
 
   const { data: apiKeys } = useAPIKeysQuery({ branch, reveal: true })
   const { anonKey, serviceKey, publishableKey, allSecretKeys } = getKeys(apiKeys)
@@ -104,7 +104,7 @@ export function useApiKeysCommands() {
         !(anonKey || serviceKey) && {
           id: 'api-keys-project-settings',
           name: 'See API keys in Project Settings',
-          route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`,
+          route: `/org/${orgRef}/project/${projectId}/branch/${branchRef}/settings/api`,
           icon: () => <Key />,
         },
       ].filter(Boolean) as ICommand[],

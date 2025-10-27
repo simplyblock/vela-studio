@@ -79,8 +79,8 @@ export const WrapperOverviewTab = () => {
                   <Link
                     href={
                       databaseNeedsUpgrading
-                        ? `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/infrastructure`
-                        : `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/database/extensions?filter=wrappers`
+                        ? `/org/${orgRef}/project/${project?.id}/branch/${branchRef}/settings/infrastructure`
+                        : `/org/${orgRef}/project/${project?.id}/branch/${branchRef}/database/extensions?filter=wrappers`
                     }
                   >
                     {databaseNeedsUpgrading ? 'Upgrade database' : 'View wrappers extension'}

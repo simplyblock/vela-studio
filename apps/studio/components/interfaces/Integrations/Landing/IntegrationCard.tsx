@@ -44,7 +44,7 @@ export const IntegrationCard = ({
   const { data: project } = useSelectedProjectQuery()
 
   return (
-    <Link href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/${id}/overview`}>
+    <Link href={`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/integrations/${id}/overview`}>
       <div className={INTEGRATION_CARD_STYLE}>
         <div className="w-10 h-10 relative bg-white border rounded-md flex items-center justify-center">
           {icon()}

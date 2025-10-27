@@ -331,7 +331,7 @@ function TableSelector() {
                   value={escapeAttributeSelector(`${table.schema}.${table.name}`)}
                   onSelect={() => {
                     router.push(
-                      `/org/${orgRef}/project/${project?.ref ?? '_'}/branch/${branchRef}/sql/new?content=${encodeURIComponent(generateSelectStatement(table))}`
+                      `/org/${orgRef}/project/${project?.id ?? '_'}/branch/${branchRef}/sql/new?content=${encodeURIComponent(generateSelectStatement(table))}`
                     )
                   }}
                 >

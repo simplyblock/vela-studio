@@ -4,14 +4,14 @@ import { useEffect, useRef } from 'react'
 import { Badge, Button } from 'ui'
 
 import ShimmerLine from 'components/ui/ShimmerLine'
-import { invalidateProjectDetailsQuery, type Project } from 'data/projects/project-detail-query'
+import { invalidateProjectDetailsQuery, type ProjectDetail } from 'data/projects/project-detail-query'
 import { setProjectPostgrestStatus } from 'data/projects/projects-query'
 import pingPostgrest from 'lib/pingPostgrest'
 import { Loader, Monitor, Server, ExternalLink } from 'lucide-react'
 import { getPathReferences } from 'data/vela/path-references'
 
 export interface ConnectingStateProps {
-  project: Project
+  project: ProjectDetail
 }
 
 const ConnectingState = ({ project }: ConnectingStateProps) => {
@@ -20,8 +20,6 @@ const ConnectingState = ({ project }: ConnectingStateProps) => {
   const checkProjectConnectionIntervalRef = useRef<number>()
 
   useEffect(() => {
-    if (!project.restUrl) return
-
     // Check project connection status every 4 seconds
     // pingPostgrest timeouts in 2s, wait for another 2s before checking again
     checkProjectConnectionIntervalRef.current = window.setInterval(testProjectConnection, 4000)
@@ -31,11 +29,11 @@ const ConnectingState = ({ project }: ConnectingStateProps) => {
   }, [project])
 
   const testProjectConnection = async () => {
-    const result = await pingPostgrest(project.ref)
+    const result = await pingPostgrest(project.id) // FIXME: this should ping based on branch
     if (result) {
       clearInterval(checkProjectConnectionIntervalRef.current)
-      setProjectPostgrestStatus(queryClient, orgRef!, project.ref, 'ONLINE')
-      await invalidateProjectDetailsQuery(queryClient, orgRef!, project.ref)
+      setProjectPostgrestStatus(queryClient, orgRef!, project.id, 'STARTED')
+      await invalidateProjectDetailsQuery(queryClient, orgRef!, project.id)
     }
   }
 

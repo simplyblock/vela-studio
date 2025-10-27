@@ -20,7 +20,7 @@ export const CreateReportModal = ({ visible, onCancel, afterSubmit }: CreateRepo
   const router = useRouter()
   const { profile } = useProfile()
   const { data: project } = useSelectedProjectQuery()
-  const ref = project?.ref ?? 'default'
+  const ref = project?.id ?? 'default'
   const { slug, branch: branchRef } = useParams()
 
   // Preserve date range query parameters when navigating to new report

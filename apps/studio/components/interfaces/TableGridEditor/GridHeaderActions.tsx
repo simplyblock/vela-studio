@@ -86,7 +86,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
   const snap = useTableEditorTableStateSnapshot()
   const showHeaderActions = snap.selectedRows.size === 0
 
-  const projectRef = project?.ref
+  const projectRef = project?.id
   const { data } = useDatabasePoliciesQuery({
     branch,
   })
@@ -158,7 +158,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
         origin: 'tableGridHeader',
       },
       groups: {
-        project: project?.ref ?? 'Unknown',
+        project: project?.id ?? 'Unknown',
         organization: org?.slug ?? 'Unknown',
       },
     })

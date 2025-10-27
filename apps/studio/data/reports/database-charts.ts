@@ -2,19 +2,19 @@ import { numberFormatter } from 'components/ui/Charts/Charts.utils'
 import { ReportAttributes } from 'components/ui/Charts/ComposedChart.utils'
 import { formatBytes } from 'lib/helpers'
 import { Organization } from 'types'
-import { Project } from '../projects/project-detail-query'
+import { ProjectDetail } from '../projects/project-detail-query'
 import { DiskAttributesData } from '../config/disk-attributes-query'
 import { MaxConnectionsData } from '../database/max-connections-query'
 import { PgbouncerConfigData } from '../database/pgbouncer-config-query'
 
 export const getReportAttributes = (
   org: Organization,
-  project: Project,
+  project: ProjectDetail,
   diskConfig?: DiskAttributesData,
   maxConnections?: MaxConnectionsData,
   poolerConfig?: PgbouncerConfigData
 ): ReportAttributes[] => {
-  const computeSize = project?.infra_compute_size || 'medium'
+  const computeSize = 'medium'
 
   return [
     {
@@ -221,15 +221,14 @@ export const getReportAttributes = (
 
 export const getReportAttributesV2: (
   org: Organization,
-  project: Project,
+  project: ProjectDetail,
   diskConfig?: DiskAttributesData,
   maxConnections?: MaxConnectionsData,
   poolerConfig?: PgbouncerConfigData
 ) => ReportAttributes[] = (org, project, diskConfig, maxConnections, poolerConfig) => {
   const isFreePlan = org?.plan?.id === 'free'
-  const computeSize = project?.infra_compute_size || 'medium'
-  const isSpendCapEnabled =
-    org?.plan.id !== 'free' && project?.cloud_provider !== 'FLY'
+  const computeSize = 'medium'
+  const isSpendCapEnabled = org?.plan.id !== 'free'
 
   return [
     {

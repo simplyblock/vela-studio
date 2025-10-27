@@ -30,8 +30,7 @@ const RestartServerButton = () => {
   const isProjectActive = useIsProjectActive()
   const [serviceToRestart, setServiceToRestart] = useState<'project' | 'database'>()
 
-  const projectRef = project?.ref ?? ''
-  const projectRegion = project?.region ?? ''
+  const projectRef = project?.id ?? ''
 
   const { can: canRestartProject } = useCheckPermissions("branch:settings:pause")
 
@@ -66,7 +65,7 @@ const RestartServerButton = () => {
     if (!canRestartProject) {
       return toast.error('You do not have the required permissions to restart this project')
     }
-    restartProjectServices({ ref: projectRef, region: projectRegion, services: ['postgresql'] })
+    restartProjectServices({ ref: projectRef, services: ['postgresql'] })
   }
 
   const onRestartFailed = (error: any, type: string) => {
@@ -75,7 +74,7 @@ const RestartServerButton = () => {
   }
 
   const onRestartSuccess = () => {
-    setProjectStatus(queryClient, slug as string, projectRef, 'RESTARTING')
+    setProjectStatus(queryClient, slug as string, projectRef, 'STARTING')
     toast.success('Restarting server...')
     router.push(`/org/${slug}/project/${projectRef}`)
     setServiceToRestart(undefined)

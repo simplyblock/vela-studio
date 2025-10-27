@@ -98,7 +98,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
       return toast.error('Unable to restore: project is required')
     }
 
-    restoreProject({ ref: project.ref })
+    restoreProject({ ref: project.id })
   }
 
   const FormSchema = z.object({

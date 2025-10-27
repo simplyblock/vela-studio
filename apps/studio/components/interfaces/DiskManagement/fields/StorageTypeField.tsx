@@ -36,8 +36,6 @@ export function StorageTypeField({ form, disableInput }: StorageTypeFieldProps) 
   const { data: project } = useSelectedProjectQuery()
   const { ref: projectRef } = useParams()
 
-  const isIo2Supported = IO2_AVAILABLE_REGIONS.includes(project?.region ?? '')
-
   const { isLoading, error, isError } = useDiskAttributesQuery({ projectRef })
 
   return (
@@ -99,15 +97,13 @@ export function StorageTypeField({ form, disableInput }: StorageTypeFieldProps) 
             <SelectContent_Shadcn_>
               <>
                 {DISK_TYPE_OPTIONS.map((item) => {
-                  const disableIo2 = item.type === 'io2' && !isIo2Supported
                   return (
                     <Tooltip key={item.type}>
                       <TooltipTrigger asChild>
                         <SelectItem_Shadcn_
                           key={item.type}
-                          disabled={disableInput || disableIo2}
+                          disabled={disableInput}
                           value={item.type}
-                          className={cn(disableIo2 && '!pointer-events-auto')}
                         >
                           <div className="flex flex-col gap-0 items-start">
                             <div className="flex gap-3 items-center">
@@ -125,16 +121,6 @@ export function StorageTypeField({ form, disableInput }: StorageTypeFieldProps) 
                           </div>
                         </SelectItem_Shadcn_>
                       </TooltipTrigger>
-                      {disableIo2 && (
-                        <TooltipContent side="right" className="w-64">
-                          IO2 Volume Type is not available in your project's region (
-                          {project?.region}). More information available{' '}
-                          <InlineLink href="https://docs.aws.amazon.com/ebs/latest/userguide/provisioned-iops.html#io2-bx-considerations">
-                            here
-                          </InlineLink>
-                          .
-                        </TooltipContent>
-                      )}
                     </Tooltip>
                   )
                 })}

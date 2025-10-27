@@ -1,24 +1,13 @@
 import { QueryClient, useQuery, UseQueryOptions } from '@tanstack/react-query'
 
-import type { components } from 'data/api'
-import { get, handleError, isValidConnString } from 'data/fetchers'
+import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { projectKeys } from './keys'
+import { components } from 'data/vela/vela-schema'
 
 export type ProjectDetailVariables = { slug?: string; ref?: string }
 
-export type ProjectMinimal = components['schemas']['ProjectInfo']
-export type ProjectDetail = components['schemas']['ProjectDetailResponse']
-
-export interface Project extends Omit<ProjectDetail, 'status'> {
-  /**
-   * postgrestStatus is available on client side only.
-   * We use this status to check if a project instance is HEALTHY or not
-   * If not we will show ConnectingState and run a polling until it's back online
-   */
-  postgrestStatus?: 'ONLINE' | 'OFFLINE'
-  status: components['schemas']['ProjectDetailResponse']['status']
-}
+export type ProjectDetail = components['schemas']['ProjectPublic']
 
 export async function getProjectDetail(
   { slug, ref }: ProjectDetailVariables,
@@ -28,12 +17,17 @@ export async function getProjectDetail(
   if (!ref) throw new Error('Project ref is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}', {
-    params: { path: { slug, ref } },
+    params: {
+      path: {
+        slug,
+        ref,
+      },
+    },
     signal,
   })
 
   if (error) handleError(error)
-  return data as unknown as Project
+  return data
 }
 
 export type ProjectDetailData = Awaited<ReturnType<typeof getProjectDetail>>
@@ -52,13 +46,8 @@ export const useProjectDetailQuery = <TData = ProjectDetailData>(
       refetchInterval(data) {
         const result = data && (data as unknown as ProjectDetailData)
         const status = result && result.status
-        const connectionString = result && result.connectionString
 
-        if (
-          status === 'COMING_UP' ||
-          status === 'UNKNOWN' ||
-          !isValidConnString(connectionString)
-        ) {
+        if (status === 'STARTING' || status === 'UNKNOWN') {
           return 5 * 1000 // 5 seconds
         }
 

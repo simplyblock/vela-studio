@@ -38,7 +38,7 @@ const PolicyRow = ({
   const { can: canUpdatePolicies } = useCheckPermissions("branch:rls:admin")
 
   const { data: project } = useSelectedProjectQuery()
-  const { data: authConfig } = useAuthConfigQuery({ projectRef: project?.ref })
+  const { data: authConfig } = useAuthConfigQuery({ projectRef: project?.id })
 
   // override islocked for Realtime messages table
   const isLocked =

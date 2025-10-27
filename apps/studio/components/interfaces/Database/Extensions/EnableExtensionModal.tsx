@@ -1,5 +1,5 @@
 import type { PostgresExtension } from '@supabase/postgres-meta'
-import { Database, ExternalLinkIcon, Plus } from 'lucide-react'
+import { Database, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -7,17 +7,12 @@ import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useDatabaseExtensionEnableMutation } from 'data/database-extensions/database-extension-enable-mutation'
 import { useSchemasQuery } from 'data/database/schemas-query'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
-  AlertDescription_Shadcn_,
-  AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   Button,
   Form,
   Input,
   Listbox,
   Modal,
-  WarningIcon,
 } from 'ui'
 import { getPathReferences } from 'data/vela/path-references'
 import { useBranchQuery } from 'data/branches/branch-query'
@@ -29,7 +24,6 @@ interface EnableExtensionModalProps {
 }
 
 const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionModalProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
   const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const [defaultSchema, setDefaultSchema] = useState()
@@ -189,37 +183,6 @@ const EnableExtensionModal = ({ visible, extension, onCancel }: EnableExtensionM
                 </Modal.Content>
               )}
 
-              {extension.name === 'pg_cron' && project?.cloud_provider === 'FLY' && (
-                <Modal.Content>
-                  <Alert_Shadcn_ variant="warning">
-                    <WarningIcon />
-                    <AlertTitle_Shadcn_>
-                      The pg_cron extension is not fully supported for Fly projects
-                    </AlertTitle_Shadcn_>
-
-                    <AlertDescription_Shadcn_>
-                      You can still enable the extension, but pg_cron jobs may not run due to the
-                      behavior of Fly projects.
-                    </AlertDescription_Shadcn_>
-
-                    <AlertDescription_Shadcn_ className="mt-3">
-                      <Button
-                        asChild
-                        type="default"
-                        iconRight={<ExternalLinkIcon width={12} height={12} />}
-                      >
-                        <a
-                          href="/docs/guides/platform/fly-postgres#limitations"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <span>Learn more</span>
-                        </a>
-                      </Button>
-                    </AlertDescription_Shadcn_>
-                  </Alert_Shadcn_>
-                </Modal.Content>
-              )}
               <Modal.Separator />
               <Modal.Content className="flex items-center justify-end space-x-2">
                 <Button type="default" disabled={isEnabling} onClick={() => onCancel()}>

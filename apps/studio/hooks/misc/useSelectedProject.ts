@@ -9,9 +9,6 @@ export function useSelectedProjectQuery({ enabled = true } = {}) {
     { slug, ref },
     {
       enabled,
-      select: (data) => {
-        return { ...data, parentRef: data.parent_project_ref ?? data.ref }
-      },
     }
   )
 }
@@ -28,7 +25,7 @@ export function useProjectByRefQuery(ref?: string) {
   const projectsQuery = useProjectsQuery({
     enabled: isLoggedIn,
     select: (data) => {
-      return data.find((project) => project.ref === ref)
+      return data.find((project) => project.id === ref)
     },
   })
 

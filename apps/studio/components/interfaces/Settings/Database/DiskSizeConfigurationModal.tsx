@@ -27,7 +27,6 @@ const DiskSizeConfigurationModal = ({
 }: DiskSizeConfigurationProps) => {
   const { data: organization } = useSelectedOrganizationQuery()
   const { data: project, isLoading: isLoadingProject } = useSelectedProjectQuery()
-  const { lastDatabaseResizeAt } = project ?? {}
 
   const isLoading = isLoadingProject
 

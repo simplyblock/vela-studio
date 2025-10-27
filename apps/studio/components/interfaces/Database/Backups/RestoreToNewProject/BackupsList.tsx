@@ -18,7 +18,7 @@ export const BackupsList = ({ onSelectRestore, disabled }: BackupsListProps) => 
   const isFreePlan = organization?.plan?.id === 'free'
 
   const { data: cloneBackups } = useCloneBackupsQuery(
-    { projectRef: project?.ref },
+    { projectRef: project?.id },
     { enabled: !isFreePlan }
   )
 

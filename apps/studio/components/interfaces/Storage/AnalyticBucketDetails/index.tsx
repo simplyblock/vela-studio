@@ -157,7 +157,7 @@ export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
         {state === 'not-installed' && (
           <ExtensionNotInstalled
             bucketName={bucket.name}
-            projectRef={project?.ref!}
+            projectRef={project?.id!}
             orgRef={orgRef!}
             branchRef={branchRef!}
             wrapperMeta={wrapperMeta}
@@ -167,7 +167,7 @@ export const AnalyticBucketDetails = ({ bucket }: { bucket: Bucket }) => {
         {state === 'needs-upgrade' && (
           <ExtensionNeedsUpgrade
             bucketName={bucket.name}
-            projectRef={project?.ref!}
+            projectRef={project?.id!}
             orgRef={orgRef!}
             branchRef={branchRef!}
             wrapperMeta={wrapperMeta}

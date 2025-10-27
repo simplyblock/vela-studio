@@ -22,7 +22,7 @@ const PauseProjectButton = () => {
   const isProjectActive = useIsProjectActive()
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const projectRef = project?.ref ?? ''
+  const projectRef = project?.id ?? ''
   const isPaused = project?.status === PROJECT_STATUS.INACTIVE
   const { can: canPauseProject } = useCheckPermissions("env:projects:pause")
 

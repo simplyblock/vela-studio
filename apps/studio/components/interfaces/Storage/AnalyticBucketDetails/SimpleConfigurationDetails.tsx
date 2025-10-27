@@ -26,7 +26,7 @@ export const SimpleConfigurationDetails = ({ bucketName }: { bucketName: string 
   const { data: branch } = useSelectedBranchQuery()
 
   const { data: apiKeys } = useAPIKeysQuery({ branch })
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef: project?.ref })
+  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef: project?.id })
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.storage_endpoint || settings?.app_config?.endpoint
 
@@ -36,8 +36,8 @@ export const SimpleConfigurationDetails = ({ bucketName }: { bucketName: string 
   const values: Record<string, string> = {
     vault_token: serviceApiKey,
     warehouse: bucketName,
-    's3.endpoint': getConnectionURL(project?.ref ?? '', protocol, endpoint),
-    catalog_uri: getCatalogURI(project?.ref ?? '', protocol, endpoint),
+    's3.endpoint': getConnectionURL(project?.id ?? '', protocol, endpoint),
+    catalog_uri: getCatalogURI(project?.id ?? '', protocol, endpoint),
   }
 
   return (
@@ -54,7 +54,7 @@ export const SimpleConfigurationDetails = ({ bucketName }: { bucketName: string 
       <Card className="flex flex-col gap-6 p-6 pb-0">
         <p className="text-sm text-foreground-light mb-4">
           To get AWS credentials, you can create them using the{' '}
-          <Link href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/storage/settings`}>
+          <Link href={`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/storage/settings`}>
             <a className="underline ">S3 Access Keys</a>
           </Link>{' '}
           feature.

@@ -368,7 +368,7 @@ const TableEditor = ({
                   origin: 'tableSidePanel',
                 },
                 groups: {
-                  project: project?.ref ?? 'Unknown',
+                  project: project?.id ?? 'Unknown',
                   organization: org?.slug ?? 'Unknown',
                 },
               })

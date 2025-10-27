@@ -55,7 +55,7 @@ const ProjectList = ({
     orgProjects.filter((project) => {
       return (
         project.name.toLowerCase().includes(search.toLowerCase()) ||
-        project.ref.includes(search.toLowerCase())
+        project.id.includes(search.toLowerCase())
       )
     }).length === 0
   const noResultsFromStatusFilter =
@@ -160,7 +160,7 @@ const OrganizationProjects = ({
       ? sortedProjects.filter((project) => {
           return (
             project.name.toLowerCase().includes(search.toLowerCase()) ||
-            project.ref.includes(search.toLowerCase())
+            project.id.includes(search.toLowerCase())
           )
         })
       : sortedProjects
@@ -225,14 +225,14 @@ const OrganizationProjects = ({
           ) : (
             filteredProjectsByStatus?.map((project) => (
               <ProjectCard
-                key={project.ref}
+                key={project.id}
                 project={project}
-                rewriteHref={rewriteHref ? rewriteHref(project.ref) : undefined}
+                rewriteHref={rewriteHref ? rewriteHref(project.id) : undefined}
                 resourceWarnings={resourceWarnings.find(
-                  (resourceWarning) => resourceWarning.project === project.ref
+                  (resourceWarning) => resourceWarning.project === project.id
                 )}
                 githubIntegration={githubConnections?.find(
-                  (connection) => connection.supabase_project_ref === project.ref
+                  (connection) => connection.supabase_project_ref === project.id
                 )}
               />
             ))

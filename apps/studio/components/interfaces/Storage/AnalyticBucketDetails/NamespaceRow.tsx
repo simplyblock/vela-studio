@@ -102,7 +102,7 @@ export const NamespaceRow = ({
               <a
                 target="_blank"
                 rel="noreferrer"
-                href={`${BASE_PATH}/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/editor?schema=${schema}`}
+                href={`${BASE_PATH}/org/${orgRef}/project/${project?.id}/branch/${branchRef}/editor?schema=${schema}`}
               >
                 Open in Table Editor
               </a>

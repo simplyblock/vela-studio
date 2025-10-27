@@ -89,7 +89,7 @@ const IntegrationTopHeaderLayout = ({ ...props }: PropsWithChildren) => {
     name: integration.name,
     label: integration.status,
     key: `integrations/${integration.id}`,
-    url: `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/${integration.id}/overview`,
+    url: `/org/${orgRef}/project/${project?.id}/branch/${branchRef}/integrations/${integration.id}/overview`,
     icon: (
       <div className="relative w-6 h-6 bg-white border rounded flex items-center justify-center">
         {integration.icon({ className: 'p-1' })}
@@ -106,7 +106,7 @@ const IntegrationTopHeaderLayout = ({ ...props }: PropsWithChildren) => {
       isBlocking={false}
       productMenu={
         <>
-          <ProductMenu page={page} menu={generateIntegrationsMenu({ orgRef: orgRef!, projectRef: project?.ref, branchRef })} />
+          <ProductMenu page={page} menu={generateIntegrationsMenu({ orgRef: orgRef!, projectRef: project?.id, branchRef })} />
           <Separator />
           <div className="px-4 py-6 md:px-6">
             <Menu.Group
@@ -166,7 +166,7 @@ const IntegrationsLayoutSide = ({ ...props }: PropsWithChildren) => {
     name: integration.name,
     label: integration.status,
     key: `integrations/${integration.id}`,
-    url: `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/${integration.id}/overview`,
+    url: `/org/${orgRef}/project/${project?.id}/branch/${branchRef}/integrations/${integration.id}/overview`,
     icon: (
       <div className="relative w-6 h-6 bg-white border rounded flex items-center justify-center">
         {integration.icon({ className: 'p-1' })}
@@ -181,7 +181,7 @@ const IntegrationsLayoutSide = ({ ...props }: PropsWithChildren) => {
       product="Integrations"
       productMenu={
         <>
-          <ProductMenu page={page} menu={generateIntegrationsMenu({ orgRef: orgRef!, projectRef: project?.ref, branchRef })} />
+          <ProductMenu page={page} menu={generateIntegrationsMenu({ orgRef: orgRef!, projectRef: project?.id, branchRef })} />
           <Separator />
           <div className="p-6">
             <Menu.Group

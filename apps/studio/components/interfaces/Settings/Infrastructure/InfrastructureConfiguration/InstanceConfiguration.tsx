@@ -1,6 +1,6 @@
 import { useParams } from 'common'
 import { partition } from 'lodash'
-import { ChevronDown, Globe2, Loader2, Network } from 'lucide-react'
+import { ChevronDown, Loader2 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ReactFlow, { Background, Edge, ReactFlowProvider, useReactFlow } from 'reactflow'
@@ -260,26 +260,6 @@ const InstanceConfigurationUI = () => {
                   </DropdownMenu>
                 )}
               </div>
-              {project?.cloud_provider === 'AWS' && (
-                <div className="flex items-center justify-center">
-                  <Button
-                    type="default"
-                    icon={<Network size={15} />}
-                    className={`rounded-r-none transition ${
-                      view === 'flow' ? 'opacity-100' : 'opacity-50'
-                    }`}
-                    onClick={() => setView('flow')}
-                  />
-                  <Button
-                    type="default"
-                    icon={<Globe2 size={15} />}
-                    className={`rounded-l-none transition ${
-                      view === 'map' ? 'opacity-100' : 'opacity-50'
-                    }`}
-                    onClick={() => setView('map')}
-                  />
-                </div>
-              )}
             </div>
             {view === 'flow' ? (
               <ReactFlow

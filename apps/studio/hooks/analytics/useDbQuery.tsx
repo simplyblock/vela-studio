@@ -57,7 +57,7 @@ const useDbQuery = ({
     isRefetching,
     refetch,
   } = useQuery(
-    ['projects', project?.ref, 'db', { ...params, sql: resolvedSql, identifier }, where, orderBy],
+    ['projects', project?.id, 'db', { ...params, sql: resolvedSql, identifier }, where, orderBy],
     ({ signal }) => {
       return executeSql(
         {

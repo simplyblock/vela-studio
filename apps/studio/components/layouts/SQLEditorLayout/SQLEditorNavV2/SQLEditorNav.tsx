@@ -659,7 +659,7 @@ export const SQLEditorNav = ({ sort = 'inserted_at' }: SQLEditorNavProps) => {
                           folder_id: element.id as string,
                           sql: '',
                         })
-                        snapV2.addSnippet({ projectRef: project.ref, snippet })
+                        snapV2.addSnippet({ projectRef: project.id, snippet })
                         router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql/${snippet.id}`)
                       }
                     }}

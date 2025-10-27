@@ -11,23 +11,15 @@ import {
   AlertTitle_Shadcn_,
   Alert_Shadcn_,
 } from 'ui'
-import InstanceConfiguration from './InfrastructureConfiguration/InstanceConfiguration'
 
 const InfrastructureInfo = () => {
   const { data: project } = useSelectedProjectQuery()
 
-  const isInactive = project?.status === 'INACTIVE'
+  const isInactive = project?.status === 'PAUSED'
 
   return (
     <>
       <ScaffoldDivider />
-      {project?.cloud_provider !== 'FLY' && (
-        <>
-          <InstanceConfiguration />
-          <ScaffoldDivider />
-        </>
-      )}
-
       <ScaffoldContainer>
         <ScaffoldSection>
           <ScaffoldSectionDetail>

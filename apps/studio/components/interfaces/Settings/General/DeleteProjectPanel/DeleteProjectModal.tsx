@@ -36,7 +36,7 @@ export const DeleteProjectModal = ({
 
   async function handleDeleteProject() {
     if (project === undefined) return
-    deleteProject({ projectRef: project.ref, organizationSlug: organization?.slug })
+    deleteProject({ projectRef: project.id, organizationSlug: organization?.slug })
   }
 
   return (

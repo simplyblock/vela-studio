@@ -66,7 +66,7 @@ const Migrations = () => {
           >
             <Button key="contact-support" asChild type="default">
               <Link
-                href={`/support/new?projectRef=${project?.ref}&category=dashboard_bug&subject=Unable%20to%20view%20database%20migrations`}
+                href={`/support/new?projectRef=${project?.id}&category=dashboard_bug&subject=Unable%20to%20view%20database%20migrations`}
               >
                 Contact support
               </Link>

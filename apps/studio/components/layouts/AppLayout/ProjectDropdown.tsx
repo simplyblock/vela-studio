@@ -65,14 +65,14 @@ const ProjectLink = ({
   // const sanitizedRoute = sanitizeRoute(router.route, router.query)
 
   // [Joshen] Temp while we're interim between v1 and v2 billing
-  // let href = sanitizedRoute?.replace('[ref]', project.ref) ?? `/project/${project.ref}`
+  // let href = sanitizedRoute?.replace('[ref]', project.id) ?? `/project/${project.id}`
 
-  let href = `/org/${slug}/project/${project.ref}`
+  let href = `/org/${slug}/project/${project.id}`
 
   return (
     <CommandItem_Shadcn_
-      key={project.ref}
-      value={`${project.name.replaceAll('"', '')}-${project.ref}`}
+      key={project.id}
+      value={`${project.name.replaceAll('"', '')}-${project.id}`}
       className="cursor-pointer w-full"
       onSelect={() => {
         router.push(href)
@@ -82,7 +82,7 @@ const ProjectLink = ({
     >
       <Link href={href} className="w-full flex items-center justify-between">
         {project.name}
-        {project.ref === ref && <Check size={16} />}
+        {project.id === ref && <Check size={16} />}
       </Link>
     </CommandItem_Shadcn_>
   )
@@ -96,8 +96,6 @@ export const ProjectDropdown = () => {
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
 
   const projectCreationEnabled = useIsFeatureEnabled('projects:create')
-
-  const isBranch = project?.parentRef !== project?.ref
 
   const projects = allProjects
     ?.filter((x) => x.organization_id === selectedOrganization?.id)
@@ -115,7 +113,7 @@ export const ProjectDropdown = () => {
   return (
     <>
       <Link
-        href={`/org/${slug}/project/${project?.ref}`}
+        href={`/org/${slug}/project/${project?.id}`}
         className="flex items-center gap-2 flex-shrink-0 text-sm"
       >
         <Box size={14} strokeWidth={1.5} className="text-foreground-lighter" />
@@ -140,7 +138,7 @@ export const ProjectDropdown = () => {
               <CommandGroup_Shadcn_>
                 <ScrollArea className={(projects || []).length > 7 ? 'h-[210px]' : ''}>
                   {projects?.map((project) => (
-                    <ProjectLink key={project.ref} project={project} setOpen={setOpen} />
+                    <ProjectLink key={project.id} project={project} setOpen={setOpen} />
                   ))}
                 </ScrollArea>
               </CommandGroup_Shadcn_>

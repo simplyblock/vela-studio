@@ -289,7 +289,7 @@ const NewFunctionPage = () => {
         onFilesChange={setFiles}
         aiEndpoint={`${BASE_PATH}/api/ai/code/complete`}
         aiMetadata={{
-          projectRef: project?.ref,
+          projectRef: project?.id,
           connectionString: branch?.database.encrypted_connection_string,
           orgSlug: org?.slug,
         }}

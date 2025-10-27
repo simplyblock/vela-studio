@@ -78,7 +78,7 @@ export const Header = forwardRef<HTMLDivElement, HeaderProps>(({ scroll }, ref) 
                       transition={{ duration: 0.15 }}
                     >
                       <Link
-                        href={`/org/${slug}/project/${project?.ref}/integrations`}
+                        href={`/org/${slug}/project/${project?.id}/integrations`}
                         className="text-foreground-light hover:text-foreground transition flex items-center"
                       >
                         <ChevronLeft size={14} />
@@ -106,7 +106,7 @@ export const Header = forwardRef<HTMLDivElement, HeaderProps>(({ scroll }, ref) 
                       transition={layoutTransition}
                       className="text-xs text-foreground-light hover:text-foreground !p-0"
                     >
-                      <Link href={`/org/${slug}/project/${project?.ref}/integrations`}>Integrations</Link>
+                      <Link href={`/org/${slug}/project/${project?.id}/integrations`}>Integrations</Link>
                     </motion.span>
                   )}
                 </div>

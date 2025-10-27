@@ -27,10 +27,8 @@ interface HTTPRequestFieldsProps {
   form: UseFormReturn<CreateCronJobForm>
 }
 
-const buildFunctionUrl = (slug: string, projectRef: string, restUrl?: string) => {
-  const restUrlTld = restUrl ? new URL(restUrl).hostname.split('.').pop() : 'co'
-  const functionUrl = `https://${projectRef}.supabase.${restUrlTld}/functions/v1/${slug}`
-  return functionUrl
+const buildFunctionUrl = (slug: string, projectRef: string) => {
+  return `https://${projectRef}.supabase.co/functions/v1/${slug}` // FIXME: hardcoded url
 }
 
 export const EdgeFunctionSection = ({ form }: HTTPRequestFieldsProps) => {
@@ -46,12 +44,11 @@ export const EdgeFunctionSection = ({ form }: HTTPRequestFieldsProps) => {
       const fn = edgeFunctions[0]
       const functionUrl = buildFunctionUrl(
         fn.slug,
-        selectedProject?.ref || '',
-        selectedProject?.restUrl
+        selectedProject?.id || ''
       )
       form.setValue('values.edgeFunctionName', functionUrl)
     }
-  }, [edgeFunctions, form, isSuccess, selectedProject?.ref, selectedProject?.restUrl])
+  }, [edgeFunctions, form, isSuccess, selectedProject?.id])
 
   return (
     <SheetSection className="flex flex-col gap-6">
@@ -109,8 +106,7 @@ export const EdgeFunctionSection = ({ form }: HTTPRequestFieldsProps) => {
                     {edgeFunctions.map((fn) => {
                       const functionUrl = buildFunctionUrl(
                         fn.slug,
-                        selectedProject?.ref || '',
-                        selectedProject?.restUrl
+                        selectedProject?.id || ''
                       )
 
                       return (

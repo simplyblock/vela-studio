@@ -47,12 +47,11 @@ const Usage = () => {
 
   useEffect(() => {
     if (projectRef && isSuccess && orgProjects !== undefined) {
-      if (orgProjects.find((project) => project.ref === projectRef)) {
+      if (orgProjects.find((project) => project.id === projectRef)) {
         setSelectedProjectRef(projectRef)
       }
     }
     // [Joshen] Since we're already looking at isSuccess
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectRef, isSuccess])
 
   const billingCycleStart = useMemo(() => {
@@ -81,7 +80,6 @@ const Usage = () => {
       // LF seems to have an issue with the milliseconds, causes infinite loading sometimes
       return new Date(dateRange?.period_start?.date).toISOString().slice(0, -5) + 'Z'
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, subscription])
 
   const endDate = useMemo(() => {
@@ -95,11 +93,10 @@ const Usage = () => {
       // LF seems to have an issue with the milliseconds, causes infinite loading sometimes
       return new Date(dateRange.period_end.date).toISOString().slice(0, -5) + 'Z'
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, subscription])
 
   const selectedProject = selectedProjectRef
-    ? orgProjects?.find((it) => it.ref === selectedProjectRef)
+    ? orgProjects?.find((it) => it.id === selectedProjectRef)
     : undefined
 
   if (!canReadSubscriptions) {
@@ -159,9 +156,9 @@ const Usage = () => {
                   </Listbox.Option>
                   {orgProjects?.map((project) => (
                     <Listbox.Option
-                      key={project.ref}
-                      id={project.ref}
-                      value={project.ref}
+                      key={project.id}
+                      id={project.id}
+                      value={project.id}
                       label={project.name}
                     >
                       {project.name}

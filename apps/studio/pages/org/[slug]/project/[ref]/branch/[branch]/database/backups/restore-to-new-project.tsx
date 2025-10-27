@@ -28,6 +28,7 @@ import { Alert_Shadcn_, AlertDescription_Shadcn_, AlertTitle_Shadcn_, Badge, But
 import { Admonition, TimestampInfo } from 'ui-patterns'
 import { useParams } from 'common'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { useBranchQuery } from 'data/branches/branch-query'
 
 const RestoreToNewProjectPage: NextPageWithLayout = () => {
   return (
@@ -54,8 +55,9 @@ RestoreToNewProjectPage.getLayout = (page) => (
 )
 
 const RestoreToNewProject = () => {
-  const { slug: orgRef, branch: branchRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useBranchQuery({orgRef, projectRef, branchRef})
   const { data: organization } = useSelectedOrganizationQuery()
 
   const [refetchInterval, setRefetchInterval] = useState<number | false>(false)
@@ -69,19 +71,18 @@ const RestoreToNewProject = () => {
     error,
     isLoading: cloneBackupsLoading,
     isError,
-  } = useCloneBackupsQuery({ projectRef: project?.ref })
+  } = useCloneBackupsQuery({ projectRef: project?.id })
 
   const isActiveHealthy = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
   const { can: canReadPhysicalBackups, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:read")
   const { can: canTriggerPhysicalBackups } = useCheckPermissions("branch:settings:admin")
   const PITR_ENABLED = cloneBackups?.pitr_enabled
-  const PHYSICAL_BACKUPS_ENABLED = project?.is_physical_backups_enabled
-  const dbVersion = getDatabaseMajorVersion(project?.dbVersion ?? '')
+  const dbVersion = getDatabaseMajorVersion(branch?.database.version ?? '')
   const IS_PG15_OR_ABOVE = dbVersion >= 15
   const targetVolumeSizeGb = cloneBackups?.target_volume_size_gb
   const targetComputeSize = cloneBackups?.target_compute_size
   const planId = organization?.plan?.id ?? 'free'
-  const { data } = useDiskAttributesQuery({ projectRef: project?.ref })
+  const { data } = useDiskAttributesQuery({ projectRef: project?.id })
   const storageType = data?.attributes?.type ?? 'gp3'
 
   const {
@@ -90,7 +91,7 @@ const RestoreToNewProject = () => {
     isLoading: cloneStatusLoading,
   } = useCloneStatusQuery(
     {
-      projectRef: project?.ref,
+      projectRef: project?.id,
     },
     {
       refetchInterval,
@@ -99,7 +100,7 @@ const RestoreToNewProject = () => {
         const hasTransientState = data?.clones?.some((c) => c.status === 'IN_PROGRESS') || false
         if (!hasTransientState) setRefetchInterval(false)
       },
-      enabled: PHYSICAL_BACKUPS_ENABLED || PITR_ENABLED,
+      enabled: PITR_ENABLED,
     }
   )
   const IS_CLONED_PROJECT = (cloneStatus?.cloned_from?.source_project as any)?.ref ? true : false
@@ -193,34 +194,11 @@ const RestoreToNewProject = () => {
         <Markdown
           className="max-w-full"
           content={`Restore to new project is only available for Postgres 15 and above.  
-            Go to [infrastructure settings](/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/infrastructure)
+            Go to [infrastructure settings](/org/${orgRef}/project/${project?.id}/branch/${branchRef}/settings/infrastructure)
             to upgrade your database version.
           `}
         />
       </Admonition>
-    )
-  }
-
-  if (!PHYSICAL_BACKUPS_ENABLED) {
-    return (
-      <Admonition
-        type="default"
-        title="Restore to new project requires physical backups"
-        description={
-          <>
-            Physical backups must be enabled to restore your database to a new project.
-            <br /> Find out more about how backups work at supabase{' '}
-            <Link
-              target="_blank"
-              className="underline"
-              href="https://supabase.com/docs/guides/platform/backups"
-            >
-              in our docs
-            </Link>
-            .
-          </>
-        }
-      />
     )
   }
 
@@ -234,7 +212,7 @@ const RestoreToNewProject = () => {
         <Markdown
           className="max-w-full [&>p]:!leading-normal"
           content={`This is a temporary limitation whereby projects that were originally restored from another project cannot be restored to yet another project. 
-          If you need to restore from a restored project, please reach out via [support](/support/new?projectRef=${project?.ref}).`}
+          If you need to restore from a restored project, please reach out via [support](/support/new?projectRef=${project?.id}).`}
         />
         <Button asChild type="default">
           <Link href={`/org/${orgRef}/project/${(cloneStatus?.cloned_from?.source_project as any)?.ref || ''}`}>

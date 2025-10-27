@@ -47,11 +47,8 @@ export const FormContents = ({
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
-  const restUrl = project?.restUrl
-  const restUrlTld = restUrl ? new URL(restUrl).hostname.split('.').pop() : 'co'
-
   const { data: keys = [] } = useAPIKeysQuery({ branch, reveal: true })
-  const { data: functions = [] } = useEdgeFunctionsQuery({ projectRef: project?.ref })
+  const { data: functions = [] } = useEdgeFunctionsQuery({ projectRef: project?.id })
 
   const legacyServiceRole = keys.find((x) => x.name === 'service_role')?.api_key ?? '[YOUR API KEY]'
 
@@ -68,10 +65,10 @@ export const FormContents = ({
     } else if (values.function_type === 'supabase_function') {
       // Default to first edge function in the list
       const fnSlug = functions[0]?.slug
-      const defaultFunctionUrl = `https://${project?.ref}.supabase.${restUrlTld}/functions/v1/${fnSlug}` // FIXME: this url is hardcoded to supabase
+      const defaultFunctionUrl = `https://${project?.id}.supabase.co/functions/v1/${fnSlug}` // FIXME: this url is hardcoded to supabase
       const updatedValues = {
         ...values,
-        http_url: isEdgeFunction({ ref: project?.ref, restUrlTld, url: values.http_url })
+        http_url: isEdgeFunction({ ref: project?.id, restUrlTld: 'co', url: values.http_url })
           ? values.http_url
           : defaultFunctionUrl,
       }
@@ -81,7 +78,7 @@ export const FormContents = ({
   }, [values.function_type])
 
   useEffect(() => {
-    const isEdgeFunctionSelected = isEdgeFunction({ ref: project?.ref, restUrlTld, url: values.http_url })
+    const isEdgeFunctionSelected = isEdgeFunction({ ref: project?.id, restUrlTld: 'co', url: values.http_url })
 
     if (values.http_url && isEdgeFunctionSelected) {
       const fnSlug = values.http_url.split('/').at(-1)

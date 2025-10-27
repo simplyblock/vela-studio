@@ -111,7 +111,7 @@ const NotificationRow: ItemRenderer<Notification, NotificationRowProps> = ({
             {project !== undefined && (
               <Link
                 title={project.name}
-                href={`/org/${slug}/project/${project.ref}`}
+                href={`/org/${slug}/project/${project.id}`}
                 className="text-xs transition text-foreground-light hover:text-foreground underline truncate"
               >
                 {project.name}
@@ -136,7 +136,7 @@ const NotificationRow: ItemRenderer<Notification, NotificationRowProps> = ({
               const key = `${notification.id}-action-${idx}`
               if (action.url !== undefined) {
                 const url = action.url.includes('[ref]')
-                  ? action.url.replace('[ref]', project?.ref ?? '_')
+                  ? action.url.replace('[ref]', project?.id ?? '_')
                   : action.url.includes('[slug]')
                     ? action.url.replace('[slug]', organization?.slug ?? '_')
                     : action.url

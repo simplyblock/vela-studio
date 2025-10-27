@@ -9,11 +9,11 @@ import ProjectUsage from './ProjectUsage'
 
 export const ProjectUsageSection = () => {
   const { data: project } = useSelectedProjectQuery()
-  const { error, isLoading } = useProjectLogRequestsCountQuery({ projectRef: project?.ref })
+  const { error, isLoading } = useProjectLogRequestsCountQuery({ projectRef: project?.id })
 
   // wait for the stats to load before showing the usage section to eliminate multiple spinners
   const { isLoading: isLogsStatsLoading } = useProjectLogStatsQuery({
-    projectRef: project?.ref,
+    projectRef: project?.id,
     interval: '1hr',
   })
 

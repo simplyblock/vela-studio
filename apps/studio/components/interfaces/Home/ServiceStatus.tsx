@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { AlertTriangle, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -208,18 +207,13 @@ export const ServiceStatus = () => {
   const allServicesOperational = services.every((service) => service.isHealthy)
 
   // If the project is less than 5 minutes old, and status is not operational, then it's likely the service is still starting up
-  const isProjectNew =
-    dayjs.utc().diff(dayjs.utc(project?.inserted_at), 'minute') < SERVICE_STATUS_THRESHOLD ||
-    project?.status === 'COMING_UP'
+  const isProjectNew = project?.status === 'STARTING'
 
   useEffect(() => {
     let timer: any
 
     if (isProjectNew) {
-      const secondsSinceProjectCreated = dayjs
-        .utc()
-        .diff(dayjs.utc(project?.inserted_at), 'seconds')
-      const remainingTimeTillNextCheck = SERVICE_STATUS_THRESHOLD * 60 - secondsSinceProjectCreated
+      const remainingTimeTillNextCheck = SERVICE_STATUS_THRESHOLD * 60
 
       timer = setTimeout(() => {
         refetchServiceStatus()
@@ -230,7 +224,6 @@ export const ServiceStatus = () => {
     return () => {
       clearTimeout(timer)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isProjectNew])
 
   return (
