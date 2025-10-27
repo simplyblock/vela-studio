@@ -22,9 +22,7 @@ export const EdgeFunctionsListItem = ({ function: item }: EdgeFunctionsListItemP
   const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
 
   // get the .co or .net TLD from the restUrl
-  const restUrl = project?.restUrl
-  const restUrlTld = restUrl !== undefined ? new URL(restUrl).hostname.split('.').pop() : 'co'
-  const functionUrl = `https://${projectRef}.supabase.${restUrlTld}/functions/v1/${item.slug}`
+  const functionUrl = `https://${projectRef}.supabase.co/functions/v1/${item.slug}` // FIXME: hardcoded url
 
   const endpoint =
     customDomainData?.customDomain?.status === 'active'

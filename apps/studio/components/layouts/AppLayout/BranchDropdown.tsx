@@ -69,14 +69,12 @@ export const BranchDropdown = () => {
 
   const [open, setOpen] = useState(false)
 
-  const projectRef = projectDetails?.parent_project_ref || ref
-
   const {
     data: branches,
     isLoading,
     isError,
     isSuccess,
-  } = useBranchesQuery({ orgSlug, projectRef }, { enabled: Boolean(projectDetails) })
+  } = useBranchesQuery({ orgSlug, projectRef: ref }, { enabled: Boolean(projectDetails) })
 
   const selectedBranch = branches?.find((branch) => branch.id === branchRef)
 

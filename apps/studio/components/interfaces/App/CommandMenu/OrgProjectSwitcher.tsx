@@ -16,7 +16,7 @@ export function useProjectSwitchCommand() {
 
   const { data: _projects } = useProjectsQuery({ enabled: true })
   const projects = useMemo(
-    () => (_projects ?? []).map(({ name, ref }) => ({ name, ref })),
+    () => (_projects ?? []).map(({ name, id }) => ({ name, id })),
     [_projects]
   )
 
@@ -28,11 +28,11 @@ export function useProjectSwitchCommand() {
         {
           id: 'switch-project',
           name: 'Switch project',
-          commands: projects.map(({ name, ref }) => ({
-            id: `project-${ref}`,
+          commands: projects.map(({ name, id }) => ({
+            id: `project-${id}`,
             name,
-            value: `${name} (${ref})`,
-            route: `/org/${slug}/project/${ref}`,
+            value: `${name} (${id})`,
+            route: `/org/${slug}/project/${id}`,
             icon: () => <Forward />,
           })),
         },

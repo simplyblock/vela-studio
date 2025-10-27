@@ -88,7 +88,7 @@ export const Grid = memo(
           sendEvent({
             action: eventName,
             groups: {
-              project: project?.ref ?? 'Unknown',
+              project: project?.id ?? 'Unknown',
               organization: org?.slug ?? 'Unknown',
             },
           })
@@ -192,7 +192,7 @@ export const Grid = memo(
                                   action: 'import_data_button_clicked',
                                   properties: { tableType: 'Existing Table' },
                                   groups: {
-                                    project: project?.ref ?? 'Unknown',
+                                    project: project?.id ?? 'Unknown',
                                     organization: org?.slug ?? 'Unknown',
                                   },
                                 })

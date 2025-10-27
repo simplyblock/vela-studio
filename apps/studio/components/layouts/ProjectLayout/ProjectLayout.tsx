@@ -286,7 +286,7 @@ const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapp
     selectedProject?.status === PROJECT_STATUS.GOING_DOWN ||
     selectedProject?.status === PROJECT_STATUS.PAUSING
   const isProjectPauseFailed = selectedProject?.status === PROJECT_STATUS.PAUSE_FAILED
-  const isProjectOffline = selectedProject?.postgrestStatus === 'OFFLINE'
+  const isProjectOffline = selectedProject?.status === 'PAUSED'
 
   useEffect(() => {
     if (ref) state.setSelectedDatabaseId(ref)
@@ -320,5 +320,5 @@ const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapp
     return <BuildingState />
   }
 
-  return <Fragment key={selectedProject?.ref}>{children}</Fragment>
+  return <Fragment key={selectedProject?.id}>{children}</Fragment>
 }

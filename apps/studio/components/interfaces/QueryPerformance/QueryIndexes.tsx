@@ -128,7 +128,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
         {isLoading && <GenericSkeletonLoader />}
         {isError && (
           <AlertError
-            projectRef={project?.ref}
+            projectRef={project?.id}
             error={error}
             subject="Failed to retrieve indexes in use"
           />
@@ -180,7 +180,7 @@ export const QueryIndexes = ({ selectedRow }: QueryIndexesProps) => {
               {isLoadingIndexAdvisorResult && <GenericSkeletonLoader />}
               {isErrorIndexAdvisorResult && (
                 <AlertError
-                  projectRef={project?.ref}
+                  projectRef={project?.id}
                   error={indexAdvisorError}
                   subject="Failed to retrieve result from index advisor"
                 />

@@ -377,7 +377,7 @@ CREATE INDEX ON "${selectedSchema}"."${selectedEntity}" USING ${selectedIndexTyp
                   <Link
                     href={
                       project !== undefined
-                        ? `/org/${orgRef}/project/${project.ref}/branch/${branchRef}/sql/new?content=${generatedSQL}`
+                        ? `/org/${orgRef}/project/${project.id}/branch/${branchRef}/sql/new?content=${generatedSQL}`
                         : '/'
                     }
                   >

@@ -8,7 +8,7 @@ const LoadingState = () => {
 
   const projectName =
     ref !== 'default'
-      ? allProjects?.find((project) => project.ref === ref)?.name
+      ? allProjects?.find((project) => project.id === ref)?.name
       : 'Welcome to your project'
 
   return (

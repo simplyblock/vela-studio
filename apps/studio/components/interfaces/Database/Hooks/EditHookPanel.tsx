@@ -31,7 +31,7 @@ export const isEdgeFunction = ({
   ref?: string
   restUrlTld?: string
   url: string
-}) =>
+}) => // TODO: Fix edge function detection
   url.includes(`https://${ref}.functions.supabase.${restUrlTld}/`) ||
   url.includes(`https://${ref}.supabase.${restUrlTld}/functions/`)
 
@@ -119,15 +119,13 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
     () => [...(data ?? [])].sort((a, b) => (a.schema > b.schema ? 0 : -1)),
     [data]
   )
-  const restUrl = project?.restUrl
-  const restUrlTld = restUrl ? new URL(restUrl).hostname.split('.').pop() : 'co'
 
   const initialValues = {
     name: selectedHook?.name ?? '',
     table_id: selectedHook?.table_id ?? '',
     http_url: selectedHook?.function_args?.[0] ?? '',
     http_method: selectedHook?.function_args?.[1] ?? 'POST',
-    function_type: isEdgeFunction({ ref, restUrlTld, url: selectedHook?.function_args?.[0] ?? '' })
+    function_type: isEdgeFunction({ ref, restUrlTld: 'co', url: selectedHook?.function_args?.[0] ?? '' })
       ? 'supabase_function'
       : 'http_request',
     timeout_ms: Number(selectedHook?.function_args?.[4] ?? 5000),

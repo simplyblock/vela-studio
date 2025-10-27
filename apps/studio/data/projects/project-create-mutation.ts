@@ -1,11 +1,10 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import type { components } from 'data/api'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { projectKeys } from './keys'
-import { DesiredInstanceSize, PostgresEngine, ReleaseChannel } from './new-project.constants'
+import { components } from '../vela/vela-schema'
 
 const WHITELIST_ERRORS = [
   'The following organization members have reached their maximum limits for the number of active free projects',
@@ -17,59 +16,21 @@ const WHITELIST_ERRORS = [
   'already exists in your organization.',
 ]
 
-type CreateProjectBody = components['schemas']['CreateProjectBody']
+type CreateProjectBody = components['schemas']['ProjectCreate']
 
 export type ProjectCreateVariables = {
-  name: string
   organizationSlug: string
-  dbPass: string
-  dbSql?: string
-  dbPricingTierId?: string
-  authSiteUrl?: string
-  customSupabaseRequest?: object
-  dbInstanceSize?: DesiredInstanceSize
-  dataApiExposedSchemas?: string[]
-  dataApiUseApiSchema?: boolean
-  postgresEngine?: PostgresEngine
-  releaseChannel?: ReleaseChannel
+  parameters: CreateProjectBody
 }
 
-export async function createProject({
-  name,
-  organizationSlug,
-  dbPass,
-  dbSql,
-  authSiteUrl,
-  customSupabaseRequest,
-  dbInstanceSize,
-  dataApiExposedSchemas,
-  dataApiUseApiSchema,
-  postgresEngine,
-  releaseChannel,
-}: ProjectCreateVariables) {
-  const body: CreateProjectBody = {
-    organization_slug: organizationSlug,
-    name,
-    db_pass: dbPass,
-    db_sql: dbSql,
-    auth_site_url: authSiteUrl,
-    ...(customSupabaseRequest !== undefined && {
-      custom_supabase_internal_requests: customSupabaseRequest as any,
-    }),
-    desired_instance_size: dbInstanceSize,
-    data_api_exposed_schemas: dataApiExposedSchemas,
-    data_api_use_api_schema: dataApiUseApiSchema,
-    postgres_engine: postgresEngine,
-    release_channel: releaseChannel,
-  }
-
+export async function createProject(vars: ProjectCreateVariables) {
   const { data, error } = await post(`/platform/organizations/{slug}/projects`, {
     params: {
       path: {
-        slug: organizationSlug,
+        slug: vars.organizationSlug,
       }
     },
-    body,
+    body: vars.parameters,
   })
 
   if (error) handleError(error)

@@ -89,7 +89,7 @@ const CreateEnumeratedTypeSidePanel = ({
   }
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    if (project?.ref === undefined) return console.error('Project ref required')
+    if (project?.id === undefined) return console.error('Project ref required')
     if (branch === undefined) return console.error('Branch connectionString required')
 
     createEnumeratedType({

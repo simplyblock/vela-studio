@@ -34,9 +34,7 @@ const BranchesPage: NextPageWithLayout = () => {
 
   const { mutate: sendEvent } = useSendEventMutation()
 
-  const isBranch = project?.parent_project_ref !== undefined
-  const projectRef =
-    project !== undefined ? (isBranch ? project.parent_project_ref : ref) : undefined
+  const projectRef = project !== undefined ? ref : undefined
 
   const { can: canReadBranches, isSuccess: isPermissionsLoaded } = useCheckPermissions("env:projects:read")
 

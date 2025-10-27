@@ -76,7 +76,7 @@ export function usePrefetchEditorTablePage() {
       if (!project || !branch || !id || isNaN(id)) return
 
       // Prefetch the code
-      router.prefetch(`/org/${orgRef}/project/${project.ref}/branch/${branchRef}/editor/${id}`)
+      router.prefetch(`/org/${orgRef}/project/${project.id}/branch/${branchRef}/editor/${id}`)
 
       // Prefetch the data
       prefetchEditorTablePage({

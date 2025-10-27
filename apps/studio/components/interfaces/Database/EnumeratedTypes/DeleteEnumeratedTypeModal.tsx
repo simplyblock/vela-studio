@@ -29,7 +29,7 @@ const DeleteEnumeratedTypeModal = ({
 
   const onConfirmDeleteType = () => {
     if (selectedEnumeratedType === undefined) return console.error('No enumerated type selected')
-    if (project?.ref === undefined) return console.error('Project ref required')
+    if (project?.id === undefined) return console.error('Project ref required')
     if (branch === undefined) return console.error('Branch connectionString required')
 
     deleteEnumeratedType({

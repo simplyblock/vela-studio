@@ -180,10 +180,10 @@ export const PreviousRunsTab = () => {
     { enabled: !!jobId, staleTime: 30000 }
   )
 
-  const { data: edgeFunctions = [] } = useEdgeFunctionsQuery({ projectRef: project?.ref })
+  const { data: edgeFunctions = [] } = useEdgeFunctionsQuery({ projectRef: project?.id })
 
   const cronJobRuns = useMemo(() => data?.pages.flatMap((p) => p) || [], [data?.pages])
-  const cronJobValues = parseCronJobCommand(job?.command || '', project?.ref!)
+  const cronJobValues = parseCronJobCommand(job?.command || '', project?.id!)
   const edgeFunction =
     cronJobValues.type === 'edge_function' ? cronJobValues.edgeFunctionName : undefined
   const edgeFunctionSlug = edgeFunction?.split('/functions/v1/').pop()
@@ -295,7 +295,7 @@ export const PreviousRunsTab = () => {
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/logs/pgcron-logs/`}
+                    href={`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/logs/pgcron-logs/`}
                   >
                     View Cron logs
                   </Link>
@@ -305,7 +305,7 @@ export const PreviousRunsTab = () => {
                     <Link
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/functions/${edgeFunctionSlug}/logs`}
+                      href={`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/functions/${edgeFunctionSlug}/logs`}
                     >
                       View Edge Function logs
                     </Link>

@@ -263,7 +263,7 @@ export const TableEditorMenu = () => {
                     ItemComponent={EntityListItem}
                     itemProps={{
                       slug: slug,
-                      projectRef: project?.ref!,
+                      projectRef: project?.id!,
                       id: Number(id),
                       isSchemaLocked,
                       onExportCLI: () => onSelectExportCLI(Number(id)),

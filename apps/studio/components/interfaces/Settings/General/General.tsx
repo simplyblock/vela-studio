@@ -27,21 +27,20 @@ const General = () => {
   const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
 
-  const { data: parentProject } = useProjectByRefQuery(project?.parent_project_ref)
-  const isBranch = parentProject !== undefined
+  const isBranch = true // FIXME: Do we still need this?
 
   const formId = 'project-general-settings'
-  const initialValues = { name: project?.name ?? '', ref: project?.ref ?? '' }
+  const initialValues = { name: project?.name ?? '', ref: project?.id ?? '' }
   const { can: canUpdateProject } = useCheckPermissions("project:settings:write")
 
   const { mutate: updateProject, isLoading: isUpdating } = useProjectUpdateMutation()
 
   const onSubmit = async (values: any, { resetForm }: any) => {
-    if (!project?.ref) return console.error('Ref is required')
+    if (!project?.id) return console.error('Ref is required')
     if (!organization?.slug) return console.error('Slug is required')
 
     updateProject(
-      { orgRef: organization.slug, ref: project.ref, name: values.name.trim() },
+      { orgRef: organization.slug, ref: project.id, name: values.name.trim() },
       {
         onSuccess: ({ name }) => {
           resetForm({ values: { name }, initialValues: { name } })
@@ -53,26 +52,6 @@ const General = () => {
 
   return (
     <div>
-      {isBranch && (
-        <Alert_Shadcn_ variant="default" className="mb-6">
-          <WarningIcon />
-          <AlertTitle_Shadcn_>
-            You are currently on a preview branch of your project
-          </AlertTitle_Shadcn_>
-          <AlertDescription_Shadcn_>
-            Certain settings are not available while you're on a preview branch. To adjust your
-            project settings, you may return to your{' '}
-            <Link
-              href={`/org/${organization?.slug}/project/${parentProject.ref}/settings/general`}
-              className="text-brand"
-            >
-              main branch
-            </Link>
-            .
-          </AlertDescription_Shadcn_>
-        </Alert_Shadcn_>
-      )}
-
       {project === undefined ? (
         <GenericSkeletonLoader />
       ) : (
@@ -162,7 +141,7 @@ const General = () => {
                   </div>
                   <div>
                     <Button asChild type="default">
-                      <Link href={`/org/${organization?.slug}/usage?projectRef=${project?.ref}`}>
+                      <Link href={`/org/${organization?.slug}/usage?projectRef=${project?.id}`}>
                         View project usage
                       </Link>
                     </Button>

@@ -14,7 +14,7 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const TransferProjectButton = () => {
   const { data: project } = useSelectedProjectQuery()
-  const projectRef = project?.ref
+  const projectRef = project?.id
   const projectOrgId = project?.organization_id
   const [isOpen, setIsOpen] = useState(false)
 

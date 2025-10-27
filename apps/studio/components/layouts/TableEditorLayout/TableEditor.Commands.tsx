@@ -10,7 +10,7 @@ import { useRegisterCommands } from 'ui-patterns/CommandMenu'
 export function useProjectLevelTableEditorCommands(options?: CommandOptions) {
   const { data: project } = useSelectedProjectQuery()
   const { slug: orgRef, branch: branchRef } = useParams()
-  const projectRef = project?.ref || '_'
+  const projectRef = project?.id || '_'
 
   useRegisterCommands(
     COMMAND_MENU_SECTIONS.TABLE,

@@ -128,7 +128,7 @@ const Backups = () => {
   const projectNameMap = useMemo(() => {
     const map = new Map<string, string>()
     orgProjects.forEach((project) => {
-      map.set(project.ref, project.name)
+      map.set(project.id, project.name)
     })
     return map
   }, [orgProjects])
@@ -138,7 +138,7 @@ const Backups = () => {
 
     const projectRefSet = new Set<string>()
     if (orgProjects.length > 0) {
-      orgProjects.forEach((project) => projectRefSet.add(project.ref))
+      orgProjects.forEach((project) => projectRefSet.add(project.id))
     } else {
       Array.from(backupsByBranch.values())
         .map((entry) => entry?.projectId)
@@ -279,8 +279,8 @@ const Backups = () => {
     const map = new Map<string, string>()
     if (allProjects) {
       allProjects.forEach((project) => {
-        if (project.ref && !map.has(project.ref)) {
-          map.set(project.ref, project.name || project.ref)
+        if (project.id && !map.has(project.id)) {
+          map.set(project.id, project.name || project.id)
         }
       })
     }

@@ -43,7 +43,7 @@ const DiskSizeConfiguration = ({ disabled = false }: DiskSizeConfigurationProps)
     },
   })
 
-  const currentDiskSize = project?.volumeSizeGb ?? 0
+  const currentDiskSize = branch?.used_resources.nvme_bytes ?? 0
 
   const { data } = useDatabaseSizeQuery({
     branch,

@@ -93,7 +93,7 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
             <div className="flex flex-col gap-1">
               {extensionMeta.product_url ? (
                 <Link
-                  href={extensionMeta.product_url.replace('{ref}', project?.ref ?? '')}
+                  href={extensionMeta.product_url.replace('{ref}', project?.id ?? '')}
                   className="transition hover:text-foreground"
                 >
                   {extensionMeta.product}

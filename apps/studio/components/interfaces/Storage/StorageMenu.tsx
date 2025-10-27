@@ -23,7 +23,6 @@ const StorageMenu = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef, bucketId } = useParams()
   const { data: projectDetails } = useSelectedProjectQuery()
   const snap = useStorageExplorerStateSnapshot()
-  const isBranch = projectDetails?.parent_project_ref !== undefined
 
   const [searchText, setSearchText] = useState<string>('')
 
@@ -36,7 +35,6 @@ const StorageMenu = () => {
 
   const {
     data: buckets = [],
-    error,
     isLoading,
     isError,
     isSuccess,
@@ -51,7 +49,6 @@ const StorageMenu = () => {
     searchText.length > 1
       ? sortedBuckets.filter((bucket) => bucket.name.includes(searchText.trim()))
       : sortedBuckets
-  const tempNotSupported = error?.message.includes('Tenant config') && isBranch
 
   return (
     <>
@@ -102,16 +99,12 @@ const StorageMenu = () => {
 
             {isError && (
               <div className="px-2">
-                <Alert_Shadcn_ variant={tempNotSupported ? 'default' : 'warning'}>
+                <Alert_Shadcn_ variant='warning'>
                   <AlertTitle_Shadcn_ className="text-xs tracking-normal">
-                    {tempNotSupported
-                      ? 'Storage is not available on preview branches for now'
-                      : 'Failed to fetch buckets'}
+                    'Failed to fetch buckets'
                   </AlertTitle_Shadcn_>
                   <AlertDescription_Shadcn_ className="text-xs">
-                    {tempNotSupported
-                      ? "We're actively looking into making this available on preview branches"
-                      : 'Please refresh to try again'}
+                    'Please refresh to try again'
                   </AlertDescription_Shadcn_>
                 </Alert_Shadcn_>
               </div>

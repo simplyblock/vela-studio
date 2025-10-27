@@ -1,7 +1,6 @@
 import { GitBranch, Github } from 'lucide-react'
 
 import CardButton from 'components/ui/CardButton'
-import { ComputeBadgeWrapper } from 'components/ui/ComputeBadgeWrapper'
 import type { IntegrationProjectConnection } from 'data/integrations/integrations.types'
 import { ProjectIndexPageLink } from 'data/prefetchers/project.$ref'
 import type { ProjectInfo } from 'data/projects/projects-query'
@@ -21,10 +20,10 @@ export interface ProjectCardProps {
 
 const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCardProps) => {
   const { slug: orgRef } = useParams() as { slug: string }
-  const { name, ref: projectRef, default_branch } = project
+  const { name, id: projectRef, default_branch_id } = project
 
   const { data: branches, isLoading } = useBranchesQuery({ orgSlug: orgRef, projectRef })
-  const mainBranch = branches?.find((branch) => branch.name === default_branch)
+  const mainBranch = branches?.find((branch) => branch.id === default_branch_id)
 
   const isBranchingEnabled = true
   const isGithubIntegrated = githubIntegration !== undefined
@@ -45,10 +44,9 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
             <div className="w-full justify-between space-y-1.5 px-5">
               <p className="flex-shrink truncate text-sm pr-4">{name}</p>
               <span className="text-sm lowercase text-foreground-light">
-                Reference: {project.ref}
+                Reference: {project.id}
               </span>
               <div className="flex items-center gap-x-1.5">
-                {project.status !== 'INACTIVE' && <ComputeBadgeWrapper project={project} />}
                 {isBranchingEnabled && (
                   <div className="w-fit p-1 border rounded-md flex items-center">
                     <GitBranch size={12} strokeWidth={1.5} />

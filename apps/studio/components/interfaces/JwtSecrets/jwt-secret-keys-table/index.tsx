@@ -446,7 +446,7 @@ export default function JWTSecretKeysTable() {
           <DialogContent className="sm:max-w-lg">
             <KeyDetailsDialog
               selectedKey={selectedKey}
-              restURL={project.restUrl}
+              restURL={''} // FIXME: missing restUrl
               onClose={resetDialog}
             />
           </DialogContent>

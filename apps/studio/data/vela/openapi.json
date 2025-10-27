@@ -1692,6 +1692,149 @@
         }
       }
     },
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/pgbouncer-config": {
+      "patch": {
+        "tags": [
+          "organization",
+          "organization",
+          "project",
+          "project",
+          "branch",
+          "branch"
+        ],
+        "summary": "Organizations:Projects:Branch:Update-Pgbouncer-Config",
+        "operationId": "organizations:projects:branch:update-pgbouncer-config",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BranchPgbouncerConfigUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchPgbouncerConfigStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "PgBouncer configuration template missing required entries."
+          },
+          "502": {
+            "description": "Failed to update PgBouncer configuration."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/resize": {
       "post": {
         "tags": [
@@ -4523,6 +4666,15 @@
               ],
               "title": "Organization Id"
             }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ResponseType",
+              "default": "empty"
+            }
           }
         ],
         "requestBody": {
@@ -4541,7 +4693,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                    },
+                    {
+                      "$ref": "#/components/schemas/BackupSchedulePublic"
+                    }
+                  ],
+                  "title": "Response Add Org Backup Schedule Backup Organizations  Organization Id  Schedule Post"
                 }
               }
             }
@@ -4579,6 +4739,15 @@
               ],
               "title": "Organization Id"
             }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ResponseType",
+              "default": "empty"
+            }
           }
         ],
         "requestBody": {
@@ -4597,7 +4766,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                    },
+                    {
+                      "$ref": "#/components/schemas/BackupSchedulePublic"
+                    }
+                  ],
+                  "title": "Response Replace Org Backup Schedule Backup Organizations  Organization Id  Schedule Put"
                 }
               }
             }
@@ -4707,6 +4884,15 @@
               ],
               "title": "Branch Id"
             }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ResponseType",
+              "default": "empty"
+            }
           }
         ],
         "requestBody": {
@@ -4725,7 +4911,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                    },
+                    {
+                      "$ref": "#/components/schemas/BackupSchedulePublic"
+                    }
+                  ],
+                  "title": "Response Add Branch Backup Schedule Backup Branches  Branch Id  Schedule Post"
                 }
               }
             }
@@ -4767,6 +4961,15 @@
               ],
               "title": "Branch Id"
             }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ResponseType",
+              "default": "empty"
+            }
           }
         ],
         "requestBody": {
@@ -4785,7 +4988,15 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BackupScheduleCreatePublic"
+                    },
+                    {
+                      "$ref": "#/components/schemas/BackupSchedulePublic"
+                    }
+                  ],
+                  "title": "Response Replace Branch Backup Schedule Backup Branches  Branch Id  Schedule Put"
                 }
               }
             }
@@ -33845,6 +34056,27 @@
             ],
             "title": "Organization Id"
           },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 26,
+                "minLength": 26,
+                "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                "format": "ulid",
+                "title": "ULID",
+                "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                "examples": [
+                  "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                  "01H945P9C3K2QJ8F7N6M4R2E8V"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
           "branch_id": {
             "anyOf": [
               {
@@ -33889,6 +34121,7 @@
         "required": [
           "id",
           "organization_id",
+          "project_id",
           "branch_id",
           "env_type",
           "rows"
@@ -34141,6 +34374,124 @@
         ],
         "title": "BranchPasswordReset"
       },
+      "BranchPgbouncerConfigStatus": {
+        "properties": {
+          "pgbouncer_enabled": {
+            "type": "boolean",
+            "title": "Pgbouncer Enabled"
+          },
+          "pgbouncer_status": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Pgbouncer Status"
+          },
+          "pool_mode": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Pool Mode"
+          },
+          "max_client_conn": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Client Conn"
+          },
+          "default_pool_size": {
+            "type": "integer",
+            "title": "Default Pool Size"
+          },
+          "server_idle_timeout": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Server Idle Timeout"
+          },
+          "server_lifetime": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Server Lifetime"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pgbouncer_enabled",
+          "pgbouncer_status",
+          "pool_mode",
+          "default_pool_size"
+        ],
+        "title": "BranchPgbouncerConfigStatus"
+      },
+      "BranchPgbouncerConfigUpdate": {
+        "properties": {
+          "default_pool_size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 20.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Pool Size",
+            "description": "Number of client connections allowed per database/user pair."
+          },
+          "max_client_conn": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 100.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Client Conn"
+          },
+          "server_idle_timeout": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 60.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Server Idle Timeout"
+          },
+          "server_lifetime": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 600.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Server Lifetime"
+          }
+        },
+        "type": "object",
+        "title": "BranchPgbouncerConfigUpdate"
+      },
       "BranchProvisionPublic": {
         "properties": {
           "status": {
@@ -34251,6 +34602,22 @@
           "api_keys": {
             "$ref": "#/components/schemas/BranchApiKeys"
           },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE_HEALTHY",
+              "STOPPED",
+              "STARTING",
+              "ACTIVE_UNHEALTHY",
+              "CREATING",
+              "DELETING",
+              "UPDATING",
+              "RESTARTING",
+              "STOPPING",
+              "UNKNOWN"
+            ],
+            "title": "Status"
+          },
           "service_status": {
             "$ref": "#/components/schemas/BranchStatus"
           },
@@ -34305,6 +34672,7 @@
           "assigned_labels",
           "used_resources",
           "api_keys",
+          "status",
           "service_status",
           "pitr_enabled",
           "created_at",
@@ -34629,6 +34997,10 @@
             "type": "string",
             "const": "15.1.0.147",
             "title": "Database Image Tag"
+          },
+          "enable_file_storage": {
+            "type": "boolean",
+            "title": "Enable File Storage"
           }
         },
         "type": "object",
@@ -34639,7 +35011,8 @@
           "milli_vcpu",
           "memory_bytes",
           "iops",
-          "database_image_tag"
+          "database_image_tag",
+          "enable_file_storage"
         ],
         "title": "DeploymentParameters"
       },
@@ -34973,24 +35346,23 @@
             "pattern": "^[^\\x00]*$",
             "title": "Name"
           },
-          "deployment": {
-            "$ref": "#/components/schemas/DeploymentParameters"
+          "per_branch_limits": {
+            "$ref": "#/components/schemas/ResourceLimitsPublic"
+          },
+          "project_limits": {
+            "$ref": "#/components/schemas/ResourceLimitsPublic"
           },
           "max_backups": {
             "type": "integer",
             "title": "Max Backups"
-          },
-          "env_type": {
-            "type": "string",
-            "title": "Env Type"
           }
         },
         "type": "object",
         "required": [
           "name",
-          "deployment",
-          "max_backups",
-          "env_type"
+          "per_branch_limits",
+          "project_limits",
+          "max_backups"
         ],
         "title": "ProjectCreate"
       },
@@ -35031,6 +35403,41 @@
           "max_backups": {
             "type": "integer",
             "title": "Max Backups"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PAUSING",
+              "PAUSED",
+              "STARTING",
+              "STARTED",
+              "MIGRATING",
+              "DELETING",
+              "ERROR",
+              "UNKNOWN"
+            ],
+            "title": "Status"
+          },
+          "default_branch_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 26,
+                "minLength": 26,
+                "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+                "format": "ulid",
+                "title": "ULID",
+                "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+                "examples": [
+                  "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                  "01H945P9C3K2QJ8F7N6M4R2E8V"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Branch Id"
           }
         },
         "type": "object",
@@ -35038,7 +35445,9 @@
           "organization_id",
           "id",
           "name",
-          "max_backups"
+          "max_backups",
+          "status",
+          "default_branch_id"
         ],
         "title": "ProjectPublic"
       },
@@ -35433,6 +35842,13 @@
           "resources"
         ],
         "title": "ResourcesPayload"
+      },
+      "ResponseType": {
+        "type": "string",
+        "enum": [
+          "empty",
+          "full"
+        ]
       },
       "RoleAssignmentPayload": {
         "properties": {

@@ -1,6 +1,5 @@
-import { Activity, BookOpen, HelpCircle, Mail, MessageCircle, Wrench } from 'lucide-react'
+import { HelpCircle, MessageCircle } from 'lucide-react'
 import Image from 'next/legacy/image'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import SVG from 'react-inlinesvg'
 
@@ -9,11 +8,7 @@ import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
-  AiIconAnimation,
   Button,
-  ButtonGroup,
-  ButtonGroupItem,
-  Popover,
   PopoverContent_Shadcn_,
   PopoverTrigger_Shadcn_,
   Popover_Shadcn_,
@@ -26,7 +21,7 @@ export const HelpPopover = () => {
 
   const { mutate: sendEvent } = useSendEventMutation()
 
-  const projectRef = project?.parent_project_ref ?? router.query.ref
+  const projectRef = router.query.ref
   const supportUrl = `/support/new${projectRef ? `?projectRef=${projectRef}` : ''}`
 
   return (
@@ -47,7 +42,7 @@ export const HelpPopover = () => {
           onClick={() => {
             sendEvent({
               action: 'help_button_clicked',
-              groups: { project: project?.ref, organization: org?.slug },
+              groups: { project: project?.id, organization: org?.slug },
             })
           }}
         />

@@ -76,7 +76,7 @@ const DatabaseUsage = () => {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [showIncreaseDiskSizeModal, setshowIncreaseDiskSizeModal] = useState(false)
 
-  const isReplicaSelected = state.selectedDatabaseId !== project?.ref
+  const isReplicaSelected = state.selectedDatabaseId !== project?.id
 
   const report = useDatabaseReport()
   const { data, params, largeObjectsSql, isLoading, refresh } = report
@@ -85,15 +85,15 @@ const DatabaseUsage = () => {
     branch,
   })
   const databaseSizeBytes = databaseSizeData ?? 0
-  const currentDiskSize = project?.volumeSizeGb ?? 0
+  const currentDiskSize = branch?.used_resources.nvme_bytes ?? 0
 
-  const { data: diskConfig } = useDiskAttributesQuery({ projectRef: project?.ref })
+  const { data: diskConfig } = useDiskAttributesQuery({ projectRef: project?.id })
   const { data: maxConnections } = useMaxConnectionsQuery({
     branch,
   })
   const { data: poolerConfig } = usePgbouncerConfigQuery({
     orgSlug: org?.slug,
-    projectRef: project?.ref,
+    projectRef: project?.id,
   })
   const { can: canUpdateDiskSizeConfig } = useCheckPermissions("project:settings:write")
 
@@ -278,31 +278,21 @@ const DatabaseUsage = () => {
                   </div>
 
                   <div className="col-span-full lg:col-span-4 xl:col-span-7 lg:text-right">
-                    {project?.cloud_provider === 'AWS' ? (
-                      <Button asChild type="default">
-                        <Link
-                          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/compute-and-disk`}
-                        >
-                          Increase disk size
-                        </Link>
-                      </Button>
-                    ) : (
-                      <ButtonTooltip
-                        type="default"
-                        disabled={!canUpdateDiskSizeConfig}
-                        onClick={() => setshowIncreaseDiskSizeModal(true)}
-                        tooltip={{
-                          content: {
-                            side: 'bottom',
-                            text: !canUpdateDiskSizeConfig
-                              ? 'You need additional permissions to increase the disk size'
-                              : undefined,
-                          },
-                        }}
-                      >
-                        Increase disk size
-                      </ButtonTooltip>
-                    )}
+                    <ButtonTooltip
+                      type="default"
+                      disabled={!canUpdateDiskSizeConfig}
+                      onClick={() => setshowIncreaseDiskSizeModal(true)}
+                      tooltip={{
+                        content: {
+                          side: 'bottom',
+                          text: !canUpdateDiskSizeConfig
+                            ? 'You need additional permissions to increase the disk size'
+                            : undefined,
+                        },
+                      }}
+                    >
+                      Increase disk size
+                    </ButtonTooltip>
                   </div>
                 </div>
 

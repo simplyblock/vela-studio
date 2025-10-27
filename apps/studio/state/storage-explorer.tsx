@@ -1817,7 +1817,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
 
   const { data: settings } = useProjectSettingsV2Query({
     orgSlug: orgRef,
-    projectRef: project?.ref,
+    projectRef: project?.id,
   })
 
   const protocol = settings?.app_config?.protocol ?? 'https'
@@ -1830,17 +1830,17 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
   // So the useEffect here is to make sure that the project ref is loaded into the state properly
   // Although I'd be keen to re-investigate this to see if we can remove this
   useEffect(() => {
-    const hasDataReady = !!project?.ref
+    const hasDataReady = !!project?.id
 
     if (!isPaused && hasDataReady) {
       setState(
         createStorageExplorerState({
-          projectRef: project?.ref ?? '',
+          projectRef: project?.id ?? '',
           orgRef: orgRef ?? '',
           branchRef: branchRef ?? '',
           supabaseClient: async () => {
             try {
-              const data = await getTemporaryAPIKey({ projectRef: project.ref })
+              const data = await getTemporaryAPIKey({ projectRef: project.id })
               const clientEndpoint = `https://${endpoint}`
 
               return createClient(clientEndpoint, data.api_key, {
@@ -1865,7 +1865,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
         })
       )
     }
-  }, [project?.ref, stateRef, isPaused, resumableUploadUrl, protocol, endpoint, orgRef])
+  }, [project?.id, stateRef, isPaused, resumableUploadUrl, protocol, endpoint, orgRef])
 
   return (
     <StorageExplorerStateContext.Provider value={state}>

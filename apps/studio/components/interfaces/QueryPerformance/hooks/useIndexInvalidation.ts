@@ -56,5 +56,5 @@ export function useIndexInvalidation() {
     queryClient.invalidateQueries(
       databaseIndexesKeys.list(branch?.organization_id, branch?.project_id, branch?.id)
     )
-  }, [queryPerformanceQuery, queryClient, project?.ref])
+  }, [queryPerformanceQuery, queryClient, project?.id])
 }

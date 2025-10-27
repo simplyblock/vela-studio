@@ -1,12 +1,12 @@
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
-import type { Project } from 'data/projects/project-detail-query'
+import type { ProjectDetail } from 'data/projects/project-detail-query'
 
 export const generateAdvisorsMenu = (
   orgRef: string,
-  project?: Project,
+  project?: ProjectDetail,
   branchRef?: string,
 ): ProductMenuGroup[] => {
-  const projectRef = project?.ref ?? 'default'
+  const projectRef = project?.id ?? 'default'
 
   return [
     {

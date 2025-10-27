@@ -175,7 +175,7 @@ export const CreateWrapperSheet = ({
           wrapperType: wrapperMeta.label,
         },
         groups: {
-          project: project?.ref ?? 'Unknown',
+          project: project?.id ?? 'Unknown',
           organization: org?.slug ?? 'Unknown',
         },
       })

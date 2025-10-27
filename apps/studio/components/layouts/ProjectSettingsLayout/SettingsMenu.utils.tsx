@@ -1,14 +1,14 @@
 import { ArrowUpRight } from 'lucide-react'
 
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
-import type { Project } from 'data/projects/project-detail-query'
+import type { ProjectDetail } from 'data/projects/project-detail-query'
 import { PROJECT_STATUS } from 'lib/constants'
 
 export const generateSettingsMenu = (
   orgRef: string,
   projectRef?: string,
   branchRef?: string,
-  project?: Project,
+  project?: ProjectDetail,
   features?: {
     auth?: boolean
     edgeFunctions?: boolean

@@ -154,7 +154,7 @@ export const InviteMemberButton = () => {
   useEffect(() => {
     if (!applyToOrg) {
       const firstProject = orgProjects?.[0]
-      if (firstProject !== undefined) form.setValue('projectRef', firstProject.ref)
+      if (firstProject !== undefined) form.setValue('projectRef', firstProject.id)
     } else {
       form.setValue('projectRef', '')
     }
@@ -276,7 +276,7 @@ export const InviteMemberButton = () => {
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               }
                             >
-                              {orgProjects.find((project) => project.ref === field.value)?.name ??
+                              {orgProjects.find((project) => project.id === field.value)?.name ??
                                 'Unknown'}
                             </Button>
                           </PopoverTrigger_Shadcn_>
@@ -284,7 +284,7 @@ export const InviteMemberButton = () => {
                             <Command_Shadcn_
                               // [Joshen] Let's update this to use keywords in CommandItem once cmdk is updated
                               filter={(value, search) => {
-                                const project = orgProjects.find((project) => project.ref === value)
+                                const project = orgProjects.find((project) => project.id === value)
                                 const projectName = project?.name.toLowerCase()
                                 if (
                                   projectName !== undefined &&
@@ -311,8 +311,8 @@ export const InviteMemberButton = () => {
                                     {orgProjects.map((project) => {
                                       return (
                                         <CommandItem_Shadcn_
-                                          key={project.ref}
-                                          value={project.ref}
+                                          key={project.id}
+                                          value={project.id}
                                           onSelect={(value) => {
                                             form.setValue('projectRef', value)
                                             setProjectDropdownOpen(false)
@@ -321,7 +321,7 @@ export const InviteMemberButton = () => {
                                           <Check
                                             className={cn(
                                               'mr-2 h-4 w-4',
-                                              field.value === project.ref
+                                              field.value === project.id
                                                 ? 'opacity-100'
                                                 : 'opacity-0'
                                             )}

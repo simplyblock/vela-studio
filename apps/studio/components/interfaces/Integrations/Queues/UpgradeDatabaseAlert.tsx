@@ -27,7 +27,7 @@ export const UpgradeDatabaseAlert = ({ minimumVersion = '15.6' }: UpgradeDatabas
         </p>
       </div>
       <Button color="primary" className="w-fit">
-        <Link href={`/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/settings/infrastructure`}>Upgrade database</Link>
+        <Link href={`/org/${orgRef}/project/${project?.id}/branch/${branchRef}/settings/infrastructure`}>Upgrade database</Link>
       </Button>
     </Admonition>
   )

@@ -1,6 +1,6 @@
 import { components } from './vela-schema'
 import { Organization } from '../../types'
-import { Project } from '../projects/project-detail-query'
+import { ProjectDetail } from '../projects/project-detail-query'
 import fs from 'node:fs'
 import CryptoJS from 'crypto-js'
 import { OrganizationMember } from '../organizations/organization-members-query'
@@ -30,26 +30,6 @@ export function mapOrganization(organization: VelaOrganization): Organization {
     organization_requires_mfa: false,
     restriction_data: {},
     restriction_status: null,
-  }
-}
-
-export function mapProject(project: VelaProject): Project {
-  return {
-    id: project.id!,
-    name: project.name!,
-    ref: project.id!,
-    max_backups: project.max_backups,
-    organization_id: project.organization_id!,
-    cloud_provider: 'vela',
-    status: 'ACTIVE_HEALTHY',
-    region: 'local',
-    inserted_at: new Date().toISOString(),
-    db_host: 'localhost',
-    is_branch_enabled: false,
-    is_physical_backups_enabled: false,
-    restUrl: '',
-    subscription_id: '',
-    default_branch: 'main',
   }
 }
 

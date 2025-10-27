@@ -7,7 +7,6 @@ import { DiskStorageSchemaType } from '../DiskManagement.schema'
 import {
   calculateComputeSizeRequiredForIops,
   calculateMaxIopsAllowedForComputeSize,
-  mapAddOnVariantIdToComputeSize,
 } from '../DiskManagement.utils'
 import {
   COMPUTE_BASELINE_IOPS,
@@ -46,15 +45,6 @@ export function ComputeSizeRecommendationSection({
             title={`Your Compute size can only support a baseline IOPS of ${COMPUTE_BASELINE_IOPS[computeSize]}`}
           >
             <div className="flex flex-col gap-2">
-              <div>
-                <p className="text-sm text-foreground-light">
-                  To achieve sustained IOPS performance we recommend using the{' '}
-                  <span className="text-foreground">
-                    {mapAddOnVariantIdToComputeSize(computeSizeRecommendedForIops)}
-                  </span>{' '}
-                  compute size.
-                </p>
-              </div>
               {actions && <div>{actions}</div>}
             </div>
           </Admonition>

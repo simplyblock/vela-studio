@@ -221,7 +221,7 @@ export const CreateCronJobSheet = ({
   const isLoading = isLoadingGetCronJob || isUpserting
   const { can: canToggleExtensions } = useCheckPermissions("branch:settings:admin")
 
-  const cronJobValues = parseCronJobCommand(selectedCronJob?.command || '', project?.ref!)
+  const cronJobValues = parseCronJobCommand(selectedCronJob?.command || '', project?.id!)
 
   const form = useForm<CreateCronJobForm>({
     resolver: zodResolver(FormSchema),
@@ -352,7 +352,7 @@ export const CreateCronJobSheet = ({
                 schedule: schedule,
               },
               groups: {
-                project: project?.ref ?? 'Unknown',
+                project: project?.id ?? 'Unknown',
                 organization: org?.slug ?? 'Unknown',
               },
             })
@@ -364,7 +364,7 @@ export const CreateCronJobSheet = ({
                 schedule: schedule,
               },
               groups: {
-                project: project?.ref ?? 'Unknown',
+                project: project?.id ?? 'Unknown',
                 organization: org?.slug ?? 'Unknown',
               },
             })

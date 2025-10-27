@@ -79,7 +79,7 @@ const UserImpersonationSelector = () => {
     state.role.userType === 'external' &&
     state.role.externalAuth
 
-  const customAccessTokenHookDetails = useCustomAccessTokenHookDetails(project?.ref)
+  const customAccessTokenHookDetails = useCustomAccessTokenHookDetails(project?.id)
 
   const [isImpersonateLoading, setIsImpersonateLoading] = useState(false)
 

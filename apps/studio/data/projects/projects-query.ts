@@ -1,20 +1,20 @@
 import { QueryClient, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query'
 import { useCallback, useRef } from 'react'
 
-import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import { useProfile } from 'lib/profile'
 import type { Organization, ResponseError } from 'types'
 import { projectKeys } from './keys'
-import type { Project } from './project-detail-query'
+import type { ProjectDetail } from './project-detail-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { getPathReferences } from '../vela/path-references'
+import { components } from '../vela/vela-schema'
 
 export type ProjectsVariables = {
   ref?: string
 }
 
-export type ProjectInfo = components['schemas']['ProjectInfo']
+export type ProjectInfo = components['schemas']['ProjectPublic']
 
 export async function getProjects({
   signal,
@@ -89,16 +89,16 @@ export function invalidateProjectsQuery(client: QueryClient) {
 export function setProjectStatus(
   client: QueryClient,
   slug: Organization['slug'],
-  projectRef: Project['ref'],
-  status: Project['status']
+  projectRef: ProjectDetail['id'],
+  status: ProjectDetail['status']
 ) {
-  client.setQueriesData<Project[] | undefined>(
+  client.setQueriesData<ProjectDetail[] | undefined>(
     projectKeys.list(),
     (old) => {
       if (!old) return old
 
       return old.map((project) => {
-        if (project.ref === projectRef) {
+        if (project.id === projectRef) {
           return { ...project, status }
         }
         return project
@@ -107,7 +107,7 @@ export function setProjectStatus(
     { updatedAt: Date.now() }
   )
 
-  client.setQueriesData<Project>(
+  client.setQueriesData<ProjectDetail>(
     projectKeys.detail(slug, projectRef),
     (old) => {
       if (!old) return old
@@ -121,15 +121,15 @@ export function setProjectStatus(
 export function setProjectPostgrestStatus(
   client: QueryClient,
   slug: Organization['slug'],
-  projectRef: Project['ref'],
-  status: Project['postgrestStatus']
+  projectRef: ProjectDetail['id'],
+  status: ProjectDetail['status']
 ) {
-  client.setQueriesData<Project>(
+  client.setQueriesData<ProjectDetail>(
     projectKeys.detail(slug, projectRef),
     (old) => {
       if (!old) return old
 
-      return { ...old, postgrestStatus: status }
+      return { ...old, postgrsestStatus: status }
     },
     { updatedAt: Date.now() }
   )

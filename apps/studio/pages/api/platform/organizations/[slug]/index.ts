@@ -44,19 +44,12 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const client = getVelaClient(req)
 
-  client.delete("/organizations/{organization_id}/", {
+  return await client.proxyDelete(res, "/organizations/{organization_id}/", {
     params: {
       path: {
         organization_id: slug
       }
     }
-  })
-
-  return res.status(200).json({
-    id: '',
-    slug: String(slug),
-    name: '',
-    deleted_at: '',
   })
 }
 

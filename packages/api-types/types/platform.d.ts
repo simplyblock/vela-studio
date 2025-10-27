@@ -7973,106 +7973,6 @@ export interface components {
       id: number
       ref: string
     }
-    ProjectDetailResponse: {
-      cloud_provider: string
-      /** @default null */
-      connectionString?: string | null
-      db_host: string
-      dbVersion?: string
-      id: string
-      /** @enum {string} */
-      max_backups: number
-      infra_compute_size?:
-        | 'pico'
-        | 'nano'
-        | 'micro'
-        | 'small'
-        | 'medium'
-        | 'large'
-        | 'xlarge'
-        | '2xlarge'
-        | '4xlarge'
-        | '8xlarge'
-        | '12xlarge'
-        | '16xlarge'
-        | '24xlarge'
-        | '24xlarge_optimized_memory'
-        | '24xlarge_optimized_cpu'
-        | '24xlarge_high_memory'
-        | '48xlarge'
-        | '48xlarge_optimized_memory'
-        | '48xlarge_optimized_cpu'
-        | '48xlarge_high_memory'
-      inserted_at: string
-      is_branch_enabled: boolean
-      is_physical_backups_enabled: boolean
-      lastDatabaseResizeAt?: string
-      maxDatabasePreprovisionGb?: number
-      name: string
-      organization_id: string
-      parent_project_ref?: string
-      ref: string
-      region: string
-      restUrl: string
-      /** @enum {string} */
-      status:
-        | 'INACTIVE'
-        | 'ACTIVE_HEALTHY'
-        | 'ACTIVE_UNHEALTHY'
-        | 'COMING_UP'
-        | 'UNKNOWN'
-        | 'GOING_DOWN'
-        | 'INIT_FAILED'
-        | 'REMOVED'
-        | 'RESTORING'
-        | 'UPGRADING'
-        | 'PAUSING'
-        | 'RESTORE_FAILED'
-        | 'RESTARTING'
-        | 'PAUSE_FAILED'
-        | 'RESIZING'
-      subscription_id: string
-      volumeSizeGb?: number
-      default_branch: string
-    }
-    ProjectInfo: {
-      cloud_provider: string
-      disk_volume_size_gb?: number
-      id: string
-      /** @enum {string} */
-      infra_compute_size?:
-        | 'pico'
-        | 'nano'
-        | 'micro'
-        | 'small'
-        | 'medium'
-        | 'large'
-        | 'xlarge'
-        | '2xlarge'
-        | '4xlarge'
-        | '8xlarge'
-        | '12xlarge'
-        | '16xlarge'
-        | '24xlarge'
-        | '24xlarge_optimized_memory'
-        | '24xlarge_optimized_cpu'
-        | '24xlarge_high_memory'
-        | '48xlarge'
-        | '48xlarge_optimized_memory'
-        | '48xlarge_optimized_cpu'
-        | '48xlarge_high_memory'
-      inserted_at: string | null
-      is_branch_enabled: boolean
-      is_physical_backups_enabled: boolean | null
-      name: string
-      organization_id: string
-      organization_slug: string
-      default_branch: string
-      ref: string
-      region: string
-      status: string
-      subscription_id: string | null
-    }
     ProjectRefResponse: {
       id: number
       name: string
@@ -17245,7 +17145,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'ProjectInfo'>[]
+          'application/json': VelaType<'ProjectPublic'>[]
         }
       }
     }
@@ -17261,7 +17161,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'CreateProjectBody'>
+        'application/json': VelaType<'ProjectCreate'>
       }
     }
     responses: {
@@ -17270,7 +17170,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'CreateProjectResponse'>
+          'application/json': VelaType<'ProjectPublic'>
         }
       }
     }
@@ -17312,7 +17212,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'ProjectDetailResponse'>
+          'application/json': VelaType<'ProjectPublic'>
         }
       }
       403: {

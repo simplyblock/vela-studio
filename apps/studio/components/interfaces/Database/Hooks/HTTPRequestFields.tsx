@@ -103,9 +103,7 @@ const HTTPRequestFields = ({
           ) : type === 'supabase_function' && edgeFunctions.length > 0 ? (
             <Listbox id="http_url" name="http_url" label="Select which edge function to trigger">
               {edgeFunctions.map((fn) => {
-                const restUrl = selectedProject?.restUrl
-                const restUrlTld = restUrl ? new URL(restUrl).hostname.split('.').pop() : 'co'
-                const functionUrl = `https://${ref}.supabase.${restUrlTld}/functions/v1/${fn.slug}`
+                const functionUrl = `https://${ref}.supabase.co/functions/v1/${fn.slug}` // FIXME: hardcoded url
 
                 return (
                   <Listbox.Option key={fn.id} id={functionUrl} value={functionUrl} label={fn.name}>

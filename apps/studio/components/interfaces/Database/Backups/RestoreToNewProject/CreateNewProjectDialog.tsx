@@ -70,7 +70,7 @@ export const CreateNewProjectDialog = ({
   const isFreePlan = organization?.plan?.id === 'free'
 
   const { data: cloneBackups } = useCloneBackupsQuery(
-    { projectRef: project?.ref },
+    { projectRef: project?.id },
     { enabled: !isFreePlan }
   )
   const hasPITREnabled = cloneBackups?.pitr_enabled
@@ -115,14 +115,14 @@ export const CreateNewProjectDialog = ({
           <form
             id={'create-new-project-form'}
             onSubmit={form.handleSubmit((data) => {
-              if (!project?.ref) {
+              if (!project?.id) {
                 toast.error('Project ref is required')
                 return
               }
 
               if (hasPITREnabled && recoveryTimeTarget) {
                 triggerClone({
-                  projectRef: project?.ref,
+                  projectRef: project?.id,
                   newProjectName: data.name,
                   newDbPass: data.password,
                   recoveryTimeTarget: recoveryTimeTarget,
@@ -130,7 +130,7 @@ export const CreateNewProjectDialog = ({
                 })
               } else if (selectedBackupId) {
                 triggerClone({
-                  projectRef: project?.ref,
+                  projectRef: project?.id,
                   cloneBackupId: selectedBackupId,
                   newProjectName: data.name,
                   newDbPass: data.password,

@@ -82,7 +82,7 @@ export const PublicationsList = () => {
 
     const { publication, event, currentStatus } = toggleListenEventValue
     const payload = {
-      projectRef: project.ref,
+      projectRef: project.id,
       connectionString: branch.database.encrypted_connection_string,
       id: publication.id,
     } as any

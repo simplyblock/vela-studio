@@ -14,7 +14,7 @@ const LogsPage: NextPageWithLayout = () => {
   return !canReadAuthLogs ? (
     <NoPermission isFullPage resourceText="access your project's authentication logs" />
   ) : !!project ? (
-    <LogsPreviewer condensedLayout projectRef={project!.ref} queryType="auth" />
+    <LogsPreviewer condensedLayout projectRef={project!.id} queryType="auth" />
   ) : null
 }
 

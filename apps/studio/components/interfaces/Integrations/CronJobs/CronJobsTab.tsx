@@ -124,7 +124,7 @@ export const CronjobsTab = () => {
   const onOpenCreateJobSheet = () => {
     sendEvent({
       action: 'cron_job_create_clicked',
-      groups: { project: project?.ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: project?.id ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
     })
     setCreateCronJobSheetShown(true)
   }

@@ -31,13 +31,12 @@ interface EditBranchModalProps {
   onClose: () => void
 }
 
+// TODO: Do we still use this?
 export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalProps) => {
   const { slug: orgSlug, ref } = useParams()
   const { data: projectDetails } = useSelectedProjectQuery()
 
-  const isBranch = projectDetails?.parent_project_ref !== undefined
-  const projectRef =
-    projectDetails !== undefined ? (isBranch ? projectDetails.parent_project_ref : ref) : undefined
+  const projectRef = projectDetails !== undefined ? ref : undefined
 
   const { data: branches } = useBranchesQuery({ orgSlug, projectRef })
 

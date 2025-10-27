@@ -39,7 +39,6 @@ import { Admonition } from 'ui-patterns'
 import { FormFooterChangeBadge } from '../DataWarehouse/FormFooterChangeBadge'
 import { CreateDiskStorageSchema, DiskStorageSchemaType } from './DiskManagement.schema'
 import { DiskManagementMessage } from './DiskManagement.types'
-import { mapComputeSizeNameToAddonVariantId } from './DiskManagement.utils'
 import { DiskMangementRestartRequiredSection } from './DiskManagementRestartRequiredSection'
 import { DiskManagementReviewAndSubmitDialog } from './DiskManagementReviewAndSubmitDialog'
 import { AutoScaleFields } from './fields/AutoScaleFields'
@@ -49,7 +48,6 @@ import { StorageTypeField } from './fields/StorageTypeField'
 import { ThroughputField } from './fields/ThroughputField'
 import { DiskCountdownRadial } from './ui/DiskCountdownRadial'
 import {
-  DISK_LIMITS,
   DiskType,
   RESTRICTED_COMPUTE_FOR_THROUGHPUT_ON_GP3,
 } from './ui/DiskManagement.constants'
@@ -67,7 +65,7 @@ export function DiskManagementForm() {
 
   const { data: resourceWarnings } = useResourceWarningsQuery()
   const projectResourceWarnings = (resourceWarnings ?? [])?.find(
-    (warning) => warning.project === project?.ref
+    (warning) => warning.project === project?.id
   )
   const isReadOnlyMode = projectResourceWarnings?.is_readonly_mode_enabled
   const { can: canUpdateDiskConfiguration, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:admin")
@@ -120,10 +118,6 @@ export function DiskManagementForm() {
   const { data: diskAutoscaleConfig, isSuccess: isDiskAutoscaleConfigSuccess } =
     useDiskAutoscaleCustomConfigQuery({ projectRef }, { enabled: project != null })
 
-  const computeSize = project?.infra_compute_size
-    ? mapComputeSizeNameToAddonVariantId(project?.infra_compute_size)
-    : undefined
-
   // @ts-ignore
   const { type, iops, throughput_mbps, size_gb } = data?.attributes ?? { size_gb: 0, iops: 0 }
   const { growth_percent, max_size_gb, min_increment_gb } = diskAutoscaleConfig ?? {}
@@ -132,7 +126,6 @@ export function DiskManagementForm() {
     provisionedIOPS: iops,
     throughput: throughput_mbps,
     totalSize: size_gb,
-    computeSize,
     growthPercent: growth_percent,
     minIncrementGb: min_increment_gb,
     maxSizeGb: max_size_gb,
@@ -146,20 +139,6 @@ export function DiskManagementForm() {
     mode: 'onBlur',
     reValidateMode: 'onChange',
   })
-
-  const { computeSize: modifiedComputeSize } = form.watch()
-
-  // We only support disk configurations for >=Large instances
-  // If a customer downgrades back to <Large, we should reset the storage settings to avoid incurring unnecessary costs
-  useEffect(() => {
-    if (modifiedComputeSize && project?.infra_compute_size && isDialogOpen) {
-      if (RESTRICTED_COMPUTE_FOR_THROUGHPUT_ON_GP3.includes(modifiedComputeSize)) {
-        form.setValue('storageType', DiskType.GP3)
-        form.setValue('throughput', DISK_LIMITS['gp3'].minThroughput)
-        form.setValue('provisionedIOPS', DISK_LIMITS['gp3'].minIops)
-      }
-    }
-  }, [modifiedComputeSize, isDialogOpen, project])
 
   const isSuccess =
     isDiskAttributesSuccess &&

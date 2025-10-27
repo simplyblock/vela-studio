@@ -75,7 +75,7 @@ export const RoleImpersonationStateContextProvider = ({ children }: PropsWithChi
     const result = await executeSql({
       branch,
       sql: `select ${schema}.${functionName}('${JSON.stringify(event)}'::jsonb) as event;`,
-      queryKey: ['customize-access-token', project?.ref],
+      queryKey: ['customize-access-token', project?.id],
     })
 
     return result?.result?.[0]?.event?.claims
@@ -84,7 +84,7 @@ export const RoleImpersonationStateContextProvider = ({ children }: PropsWithChi
   const customizeAccessTokenRef = useLatest(customizeAccessToken)
 
   const state = useConstant(() =>
-    createRoleImpersonationState(project?.ref ?? '', customizeAccessTokenRef)
+    createRoleImpersonationState(project?.id ?? '', customizeAccessTokenRef)
   )
 
   return (

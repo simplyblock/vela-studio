@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useEffect, useMemo, useRef } from 'react'
 
@@ -6,13 +5,11 @@ import { useParams } from 'common'
 import { ClientLibrary, ExampleProject } from 'components/interfaces/Home'
 import { AdvisorWidget } from 'components/interfaces/Home/AdvisorWidget'
 import { CLIENT_LIBRARIES, EXAMPLE_PROJECTS } from 'components/interfaces/Home/Home.constants'
-import { NewProjectPanel } from 'components/interfaces/Home/NewProjectPanel/NewProjectPanel'
 import { ProjectUsageSection } from 'components/interfaces/Home/ProjectUsageSection'
 import { ServiceStatus } from 'components/interfaces/Home/ServiceStatus'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { ProjectPausedState } from 'components/layouts/ProjectLayout/PausedState/ProjectPausedState'
 import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectLayout'
-import { ComputeBadgeWrapper } from 'components/ui/ComputeBadgeWrapper'
 import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBanner'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
@@ -59,7 +56,6 @@ const Home: NextPageWithLayout = () => {
 
   const hasShownEnableBranchingModalRef = useRef(false)
   const isPaused = project?.status === PROJECT_STATUS.INACTIVE
-  const isNewProject = dayjs(project?.inserted_at).isAfter(dayjs().subtract(2, 'day'))
 
   useEffect(() => {
     if (enableBranching && !hasShownEnableBranchingModalRef.current) {
@@ -75,7 +71,7 @@ const Home: NextPageWithLayout = () => {
   })
   const { data: functionsData, isLoading: isLoadingFunctions } = useEdgeFunctionsQuery({
     orgSlug: slug,
-    projectRef: project?.ref,
+    projectRef: project?.id,
   })
   const { data: replicasData, isLoading: isLoadingReplicas } = useReadReplicasQuery({
     branch,
@@ -99,18 +95,6 @@ const Home: NextPageWithLayout = () => {
             <div className="flex flex-col md:flex-row md:items-end gap-3 w-full">
               <div>
                 <h1 className="text-3xl">{projectName}</h1>
-              </div>
-              <div className="flex items-center gap-x-2 mb-1">
-                {showInstanceSize && (
-                  <ComputeBadgeWrapper
-                    project={{
-                      ref: project?.ref,
-                      organization_slug: organization?.slug,
-                      cloud_provider: project?.cloud_provider,
-                      infra_compute_size: project?.infra_compute_size,
-                    }}
-                  />
-                )}
               </div>
             </div>
             <div className="flex items-center">
@@ -177,9 +161,9 @@ const Home: NextPageWithLayout = () => {
           <div className="py-16 border-b border-muted">
             <div className="mx-auto max-w-7xl space-y-16">
               {project?.status !== PROJECT_STATUS.INACTIVE && (
-                <>{isNewProject ? <NewProjectPanel /> : <ProjectUsageSection />}</>
+               <ProjectUsageSection />
               )}
-              {!isNewProject && project?.status !== PROJECT_STATUS.INACTIVE && <AdvisorWidget />}
+              {project?.status !== PROJECT_STATUS.INACTIVE && <AdvisorWidget />}
             </div>
           </div>
 

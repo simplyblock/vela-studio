@@ -15,7 +15,11 @@ export async function getDiskUtilization(
   if (!projectRef) throw new Error('Project ref is required')
 
   const { data, error } = await get(`/platform/projects/{ref}/disk/util`, {
-    params: { path: { ref: projectRef } },
+    params: {
+      path: {
+        ref: projectRef,
+      },
+    },
     signal,
   })
 

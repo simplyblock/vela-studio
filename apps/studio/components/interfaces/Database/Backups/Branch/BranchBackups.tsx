@@ -125,18 +125,18 @@ const BranchBackups = () => {
   }
 
   const projectOptions = useMemo(() => {
-    if (!project?.ref) return []
+    if (!project?.id) return []
     return [
       {
-        label: project.name ?? project.ref,
-        value: project.ref,
+        label: project.name ?? project.id,
+        value: project.id,
       },
     ]
   }, [project])
 
   const restoreRow: BackupRow | null = useMemo(() => {
     if (!restoreTarget) return null
-    const projectRef = project?.ref ?? projectId ?? ''
+    const projectRef = project?.id ?? projectId ?? ''
     return {
       id: branchId ?? '',
       projectId: projectRef,

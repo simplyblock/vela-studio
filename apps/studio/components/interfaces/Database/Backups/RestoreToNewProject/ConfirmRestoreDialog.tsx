@@ -1,5 +1,4 @@
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   Dialog,
@@ -26,7 +25,6 @@ export const ConfirmRestoreDialog = ({
   onSelectContinue,
   additionalMonthlySpend,
 }: ConfirmRestoreDialogProps) => {
-  const { data: project } = useSelectedProjectQuery()
   const { data: organization } = useSelectedOrganizationQuery()
 
   return (
@@ -42,9 +40,6 @@ export const ConfirmRestoreDialog = ({
           <ul className="space-y-2">
             <li>
               Project organization will stay the same: <code>{organization?.name}</code>
-            </li>
-            <li>
-              Project region will stay the same: <code>{project?.region || ''}</code>
             </li>
           </ul>
           <ul>

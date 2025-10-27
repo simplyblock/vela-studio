@@ -6,7 +6,6 @@ import type { ResponseError } from 'types'
 
 export type ProjectRestartServicesVariables = {
   ref: string
-  region: string
   services: (
     | 'postgresql'
     | 'adminapi'
@@ -27,7 +26,6 @@ export type ProjectRestartServicesVariables = {
 
 export async function restartProjectServices({
   ref,
-  region,
   services = ['postgresql'],
   source_notification_id,
 }: ProjectRestartServicesVariables) {
@@ -35,7 +33,7 @@ export async function restartProjectServices({
     params: { path: { ref } },
     body: {
       restartRequest: {
-        region,
+        region: '',
         services,
         source_notification_id,
       },

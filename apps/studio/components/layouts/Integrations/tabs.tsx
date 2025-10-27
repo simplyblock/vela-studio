@@ -69,7 +69,7 @@ export const IntegrationTabs = ({ scroll, isSticky }: IntegrationTabsProps) => {
           )}
 
           {tabs.map((tab) => {
-            const tabUrl = `/org/${orgRef}/project/${project?.ref}/branch/${branchRef}/integrations/${integration?.id}/${tab.route}`
+            const tabUrl = `/org/${orgRef}/project/${project?.id}/branch/${branchRef}/integrations/${integration?.id}/${tab.route}`
             return (
               <div className="flex items-center gap-2" key={tab.route}>
                 <NavMenuItem active={pageId === tab.route && !childId}>

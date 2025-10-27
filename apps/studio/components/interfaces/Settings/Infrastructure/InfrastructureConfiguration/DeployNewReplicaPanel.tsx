@@ -1,6 +1,5 @@
 import { ChevronDown } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { useParams } from 'common'
@@ -53,7 +52,7 @@ const DeployNewReplicaPanel = ({ visible, onSuccess, onClose }: DeployNewReplica
 
   // @ts-ignore
   const { size_gb, type, throughput_mbps, iops } = diskConfiguration?.attributes ?? {}
-  const showNewDiskManagementUI = project?.cloud_provider === 'AWS'
+
   const readReplicaDiskSizes = (size_gb ?? 0) * 1.25
   const additionalCostDiskSize =
     readReplicaDiskSizes * (DISK_PRICING[type as DiskType]?.storage ?? 0)
@@ -74,17 +73,11 @@ const DeployNewReplicaPanel = ({ visible, onSuccess, onClose }: DeployNewReplica
         }).newPrice
       : 0
 
-  const [refetchInterval, setRefetchInterval] = useState<number | false>(false)
-
   console.log(`[DeployNewReplicaPanel] slug: ${slug}`)
   useProjectDetailQuery(
     { slug, ref: projectRef },
     {
-      refetchInterval,
       refetchOnWindowFocus: false,
-      onSuccess: (data) => {
-        if (data.is_physical_backups_enabled) setRefetchInterval(false)
-      },
     }
   )
 
@@ -97,16 +90,12 @@ const DeployNewReplicaPanel = ({ visible, onSuccess, onClose }: DeployNewReplica
   })
 
   const currentPgVersion = Number(
-    (project?.dbVersion ?? '').split('supabase-postgres-')[1]?.split('.')[0]
+    (branch?.database.version ?? '').split('supabase-postgres-')[1]?.split('.')[0]
   )
 
   const reachedMaxReplicas =
     (data ?? []).filter((db) => db.identifier !== projectRef).length >= MAX_REPLICAS_ABOVE_XL
-  const isFreePlan = org?.plan.id === 'free'
-  const isAWSProvider = project?.cloud_provider === 'AWS'
-  const isWalgEnabled = project?.is_physical_backups_enabled
-  const canDeployReplica =
-    !reachedMaxReplicas && currentPgVersion >= 15 && isAWSProvider && !isFreePlan && isWalgEnabled
+  const canDeployReplica = !reachedMaxReplicas && currentPgVersion >= 15
 
   const onSubmit = async () => {
     if (!projectRef) return console.error('Project is required')
@@ -122,7 +111,7 @@ const DeployNewReplicaPanel = ({ visible, onSuccess, onClose }: DeployNewReplica
       onCancel={onClose}
       loading={isSettingUp}
       disabled={!canDeployReplica}
-      className={cn(showNewDiskManagementUI ? 'max-w-[500px]' : '')}
+      className={cn('max-w-[500px]')}
       header="Deploy a new read replica"
       onConfirm={() => onSubmit()}
       confirmText="Deploy replica"
@@ -130,71 +119,67 @@ const DeployNewReplicaPanel = ({ visible, onSuccess, onClose }: DeployNewReplica
       <SidePanel.Content className="flex flex-col py-4 gap-y-4">
         <div className="flex flex-col gap-y-6 mt-2">
           <div className="flex flex-col gap-y-2">
-            {showNewDiskManagementUI ? (
-              <>
-                <Collapsible_Shadcn_>
-                  <CollapsibleTrigger_Shadcn_ className="w-full flex items-center justify-between [&[data-state=open]>svg]:!-rotate-180">
-                    <p className="text-sm text-left">
-                      New replica will cost an additional{' '}
-                      <span translate="no">
-                        {formatCurrency(
-                          additionalCostDiskSize +
-                            Number(additionalCostIOPS) +
-                            Number(additionalCostThroughput)
-                        )}
-                        /month
-                      </span>
-                    </p>
-                    <ChevronDown size={14} className="transition" />
-                  </CollapsibleTrigger_Shadcn_>
-                  <CollapsibleContent_Shadcn_ className="flex flex-col gap-y-1 mt-1">
-                    <p className="text-foreground-light text-sm">
-                      Read replicas will match the compute size of your primary database and will
-                      include 25% more disk size than the primary database to accommodate WAL files.
-                    </p>
-                    <p className="text-foreground-light text-sm">
-                      The additional cost for the replica breaks down to:
-                    </p>
-                    <Table>
-                      <TableHeader className="font-mono uppercase text-xs [&_th]:h-auto [&_th]:pb-2 [&_th]:pt-4">
-                        <TableRow>
-                          <TableHead className="w-[140px] pl-0">Item</TableHead>
-                          <TableHead>Description</TableHead>
-                          <TableHead className="text-right pr-0">Cost (/month)</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody className="[&_td]:py-0 [&_tr]:h-[50px] [&_tr]:border-dotted">
-                        <TableRow>
-                          <TableCell className="pl-0">Disk size</TableCell>
-                          <TableCell>
-                            {((size_gb ?? 0) * 1.25).toLocaleString()} GB ({type})
-                          </TableCell>
-                          <TableCell className="text-right font-mono pr-0" translate="no">
-                            {formatCurrency(additionalCostDiskSize)}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="pl-0">IOPS</TableCell>
-                          <TableCell>{iops?.toLocaleString()} IOPS</TableCell>
-                          <TableCell className="text-right font-mono pr-0" translate="no">
-                            {formatCurrency(+additionalCostIOPS)}
-                          </TableCell>
-                        </TableRow>
-                        {type === 'gp3' && (
-                          <TableRow>
-                            <TableCell className="pl-0">Throughput</TableCell>
-                            <TableCell>{throughput_mbps?.toLocaleString()} MB/s</TableCell>
-                            <TableCell className="text-right font-mono pr-0">
-                              {formatCurrency(+additionalCostThroughput)}
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    </Table>
-                  </CollapsibleContent_Shadcn_>
-                </Collapsible_Shadcn_>
-              </>
-            ) : null}
+            <Collapsible_Shadcn_>
+              <CollapsibleTrigger_Shadcn_ className="w-full flex items-center justify-between [&[data-state=open]>svg]:!-rotate-180">
+                <p className="text-sm text-left">
+                  New replica will cost an additional{' '}
+                  <span translate="no">
+                    {formatCurrency(
+                      additionalCostDiskSize +
+                        Number(additionalCostIOPS) +
+                        Number(additionalCostThroughput)
+                    )}
+                    /month
+                  </span>
+                </p>
+                <ChevronDown size={14} className="transition" />
+              </CollapsibleTrigger_Shadcn_>
+              <CollapsibleContent_Shadcn_ className="flex flex-col gap-y-1 mt-1">
+                <p className="text-foreground-light text-sm">
+                  Read replicas will match the compute size of your primary database and will
+                  include 25% more disk size than the primary database to accommodate WAL files.
+                </p>
+                <p className="text-foreground-light text-sm">
+                  The additional cost for the replica breaks down to:
+                </p>
+                <Table>
+                  <TableHeader className="font-mono uppercase text-xs [&_th]:h-auto [&_th]:pb-2 [&_th]:pt-4">
+                    <TableRow>
+                      <TableHead className="w-[140px] pl-0">Item</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead className="text-right pr-0">Cost (/month)</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody className="[&_td]:py-0 [&_tr]:h-[50px] [&_tr]:border-dotted">
+                    <TableRow>
+                      <TableCell className="pl-0">Disk size</TableCell>
+                      <TableCell>
+                        {((size_gb ?? 0) * 1.25).toLocaleString()} GB ({type})
+                      </TableCell>
+                      <TableCell className="text-right font-mono pr-0" translate="no">
+                        {formatCurrency(additionalCostDiskSize)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="pl-0">IOPS</TableCell>
+                      <TableCell>{iops?.toLocaleString()} IOPS</TableCell>
+                      <TableCell className="text-right font-mono pr-0" translate="no">
+                        {formatCurrency(+additionalCostIOPS)}
+                      </TableCell>
+                    </TableRow>
+                    {type === 'gp3' && (
+                      <TableRow>
+                        <TableCell className="pl-0">Throughput</TableCell>
+                        <TableCell>{throughput_mbps?.toLocaleString()} MB/s</TableCell>
+                        <TableCell className="text-right font-mono pr-0">
+                          {formatCurrency(+additionalCostThroughput)}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </CollapsibleContent_Shadcn_>
+            </Collapsible_Shadcn_>
 
             <p className="text-foreground-light text-sm">
               Read more about{' '}

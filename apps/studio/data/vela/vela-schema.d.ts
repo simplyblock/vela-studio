@@ -147,6 +147,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/pgbouncer-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Organizations:Projects:Branch:Update-Pgbouncer-Config */
+        patch: operations["organizations:projects:branch:update-pgbouncer-config"];
+        trace?: never;
+    };
     "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/resize": {
         parameters: {
             query?: never;
@@ -18683,6 +18700,8 @@ export interface components {
             id: string;
             /** Organization Id */
             organization_id: string | null;
+            /** Project Id */
+            project_id: string | null;
             /** Branch Id */
             branch_id: string | null;
             /** Env Type */
@@ -18750,6 +18769,37 @@ export interface components {
             /** New Password */
             new_password: string;
         };
+        /** BranchPgbouncerConfigStatus */
+        BranchPgbouncerConfigStatus: {
+            /** Pgbouncer Enabled */
+            pgbouncer_enabled: boolean;
+            /** Pgbouncer Status */
+            pgbouncer_status: string;
+            /** Pool Mode */
+            pool_mode: string;
+            /** Max Client Conn */
+            max_client_conn?: number | null;
+            /** Default Pool Size */
+            default_pool_size: number;
+            /** Server Idle Timeout */
+            server_idle_timeout?: number | null;
+            /** Server Lifetime */
+            server_lifetime?: number | null;
+        };
+        /** BranchPgbouncerConfigUpdate */
+        BranchPgbouncerConfigUpdate: {
+            /**
+             * Default Pool Size
+             * @description Number of client connections allowed per database/user pair.
+             */
+            default_pool_size?: number | null;
+            /** Max Client Conn */
+            max_client_conn?: number | null;
+            /** Server Idle Timeout */
+            server_idle_timeout?: number | null;
+            /** Server Lifetime */
+            server_lifetime?: number | null;
+        };
         /** BranchProvisionPublic */
         BranchProvisionPublic: {
             /** Status */
@@ -18794,6 +18844,11 @@ export interface components {
             assigned_labels: string[];
             used_resources: components["schemas"]["ResourceUsageDefinition"];
             api_keys: components["schemas"]["BranchApiKeys"];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
             service_status: components["schemas"]["BranchStatus"];
             /** Pitr Enabled */
             pitr_enabled: boolean;
@@ -18934,6 +18989,8 @@ export interface components {
              * @constant
              */
             database_image_tag: "15.1.0.147";
+            /** Enable File Storage */
+            enable_file_storage: boolean;
         };
         /** HTTPError */
         HTTPError: {
@@ -19039,11 +19096,10 @@ export interface components {
         ProjectCreate: {
             /** Name */
             name: string;
-            deployment: components["schemas"]["DeploymentParameters"];
+            per_branch_limits: components["schemas"]["ResourceLimitsPublic"];
+            project_limits: components["schemas"]["ResourceLimitsPublic"];
             /** Max Backups */
             max_backups: number;
-            /** Env Type */
-            env_type: string;
         };
         /** ProjectPublic */
         ProjectPublic: {
@@ -19063,6 +19119,13 @@ export interface components {
             name: string;
             /** Max Backups */
             max_backups: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "PAUSING" | "PAUSED" | "STARTING" | "STARTED" | "MIGRATING" | "DELETING" | "ERROR" | "UNKNOWN";
+            /** Default Branch Id */
+            default_branch_id: string | null;
         };
         /** ProjectUpdate */
         ProjectUpdate: {
@@ -19197,6 +19260,8 @@ export interface components {
         ResourcesPayload: {
             resources: components["schemas"]["ResourceLimitsPublic"];
         };
+        /** @enum {string} */
+        ResponseType: "empty" | "full";
         /** RoleAssignmentPayload */
         RoleAssignmentPayload: {
             /** Project Ids */
@@ -21914,6 +21979,84 @@ export interface operations {
             };
         };
     };
+    "organizations:projects:branch:update-pgbouncer-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BranchPgbouncerConfigUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BranchPgbouncerConfigStatus"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description PgBouncer configuration template missing required entries. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Failed to update PgBouncer configuration. */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "organizations:projects:branch:resize": {
         parameters: {
             query?: never;
@@ -23468,7 +23611,9 @@ export interface operations {
     };
     replace_org_backup_schedule: {
         parameters: {
-            query?: never;
+            query?: {
+                response?: components["schemas"]["ResponseType"];
+            };
             header?: never;
             path: {
                 organization_id: string;
@@ -23487,7 +23632,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"] | components["schemas"]["BackupSchedulePublic"];
                 };
             };
             /** @description Validation Error */
@@ -23503,7 +23648,9 @@ export interface operations {
     };
     add_org_backup_schedule: {
         parameters: {
-            query?: never;
+            query?: {
+                response?: components["schemas"]["ResponseType"];
+            };
             header?: never;
             path: {
                 organization_id: string;
@@ -23522,7 +23669,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"] | components["schemas"]["BackupSchedulePublic"];
                 };
             };
             /** @description Validation Error */
@@ -23571,7 +23718,9 @@ export interface operations {
     };
     replace_branch_backup_schedule: {
         parameters: {
-            query?: never;
+            query?: {
+                response?: components["schemas"]["ResponseType"];
+            };
             header?: never;
             path: {
                 branch_id: string;
@@ -23590,7 +23739,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"] | components["schemas"]["BackupSchedulePublic"];
                 };
             };
             /** @description Validation Error */
@@ -23606,7 +23755,9 @@ export interface operations {
     };
     add_branch_backup_schedule: {
         parameters: {
-            query?: never;
+            query?: {
+                response?: components["schemas"]["ResponseType"];
+            };
             header?: never;
             path: {
                 branch_id: string;
@@ -23625,7 +23776,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BackupScheduleCreatePublic"];
+                    "application/json": components["schemas"]["BackupScheduleCreatePublic"] | components["schemas"]["BackupSchedulePublic"];
                 };
             };
             /** @description Validation Error */

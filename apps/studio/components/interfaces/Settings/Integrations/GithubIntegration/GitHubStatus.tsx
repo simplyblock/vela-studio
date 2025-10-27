@@ -14,7 +14,6 @@ export const GitHubStatus = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
-  const parentProjectRef = selectedProject?.parent_project_ref || projectRef
 
   const { data: connections } = useGitHubConnectionsQuery(
     { organizationId: selectedOrganization?.id },
@@ -22,12 +21,12 @@ export const GitHubStatus = () => {
   )
 
   const { data: branches } = useBranchesQuery(
-    { projectRef: parentProjectRef },
-    { enabled: !!parentProjectRef }
+    { projectRef: projectRef },
+    { enabled: !!projectRef }
   )
 
   const githubConnection = connections?.find(
-    (connection) => connection.project.ref === parentProjectRef
+    (connection) => connection.project.ref === projectRef
   )
 
   const isConnected = Boolean(githubConnection)
@@ -38,7 +37,7 @@ export const GitHubStatus = () => {
     <HoverCard openDelay={300} closeDelay={100}>
       <HoverCardTrigger asChild>
         <Link
-          href={`/org/${orgRef}/project/${parentProjectRef}/branch/${branchRef}/settings/integrations`}
+          href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/integrations`}
           className="block w-full transition truncate text-sm text-foreground-light hover:text-foreground"
         >
           <div className="w-full flex items-center justify-between">

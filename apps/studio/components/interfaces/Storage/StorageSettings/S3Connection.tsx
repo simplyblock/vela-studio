@@ -163,11 +163,6 @@ export const S3Connection = () => {
                     <FormItemLayout layout="horizontal" label="Endpoint" isReactForm={false}>
                       <Input readOnly copy disabled value={s3connectionUrl} />
                     </FormItemLayout>
-                    {!projectIsLoading && (
-                      <FormItemLayout layout="horizontal" label="Region" isReactForm={false}>
-                        <Input className="input-mono" copy disabled value={project?.region} />
-                      </FormItemLayout>
-                    )}
                   </div>
                 </CardContent>
 
