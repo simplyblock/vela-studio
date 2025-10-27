@@ -17,7 +17,7 @@ import {
 } from 'ui'
 import { BranchLoader, BranchManagementSection, BranchRow, BranchRowLoader } from './BranchPanels'
 import { EditBranchModal } from './EditBranchModal'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface OverviewProps {

@@ -4,34 +4,6 @@
  */
 
 export interface paths {
-  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get database branch config
-     * @description Fetches configurations of the specified database branch
-     */
-    get: operations['v1-get-a-branch-config']
-    put?: never
-    post?: never
-    /**
-     * Delete a database branch
-     * @description Deletes the specified database branch
-     */
-    delete: operations['v1-delete-a-branch']
-    options?: never
-    head?: never
-    /**
-     * Update database branch config
-     * @description Updates the configuration of the specified database branch
-     */
-    patch: operations['v1-update-a-branch-config']
-    trace?: never
-  }
   '/v1/branches/{branch_id}/diff': {
     parameters: {
       query?: never
@@ -463,50 +435,6 @@ export interface paths {
     post?: never
     /** Removes project addon */
     delete: operations['v1-remove-project-addon']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/organizations/{slug}/projects/{ref}/branches': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * List all database branches
-     * @description Returns all database branches of the specified project.
-     */
-    get: operations['v1-list-all-branches']
-    put?: never
-    /**
-     * Create a database branch
-     * @description Creates a database branch from the specified project.
-     */
-    post: operations['v1-create-a-branch']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform/organizations/{slug}/projects/{ref}/branches/{name}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Get a database branch
-     * @description Fetches the specified database branch by its name.
-     */
-    get: operations['v1-get-a-branch']
-    put?: never
-    post?: never
-    delete?: never
     options?: never
     head?: never
     patch?: never

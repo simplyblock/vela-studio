@@ -5,7 +5,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { wrapWithTransaction } from 'data/sql/utils/transaction'
 import type { ResponseError } from 'types'
 import { enumeratedTypesKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type EnumeratedTypeUpdateVariables = {
   branch: Branch

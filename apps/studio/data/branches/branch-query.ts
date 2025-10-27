@@ -3,13 +3,15 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { components } from 'data/vela/vela-schema'
 
 export type BranchVariables = {
   orgRef?: string
   projectRef?: string
   branchRef?: string
 }
+
+export type Branch = components['schemas']['BranchPublic']
 
 export async function getBranch(
   { orgRef, projectRef, branchRef }: BranchVariables,

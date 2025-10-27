@@ -20,7 +20,7 @@ import { ExecuteSqlError, executeSql } from '../sql/execute-sql-query'
 import { tableRowKeys } from './keys'
 import { THRESHOLD_COUNT } from './table-rows-count-query'
 import { formatFilterValue } from './utils'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export interface GetTableRowsArgs {
   table?: SupaTable

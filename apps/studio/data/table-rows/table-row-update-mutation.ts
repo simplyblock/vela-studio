@@ -7,7 +7,7 @@ import { RoleImpersonationState, wrapWithRoleImpersonation } from 'lib/role-impe
 import { isRoleImpersonationEnabled } from 'state/role-impersonation-state'
 import type { ResponseError } from 'types'
 import { tableRowKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type TableRowUpdateVariables = {
   branch: Branch

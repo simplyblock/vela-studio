@@ -5,7 +5,7 @@ import { handleError, patch } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
 import { components } from 'api-types'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type StorageConfigUpdatePayload = components['schemas']['UpdateStorageConfigBody']
 

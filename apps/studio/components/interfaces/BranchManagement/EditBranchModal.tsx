@@ -23,7 +23,7 @@ import {
   Input_Shadcn_,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 interface EditBranchModalProps {
   branch?: Branch
@@ -42,7 +42,7 @@ export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalPro
 
   const { mutate: updateBranch, isLoading: isUpdating } = useBranchUpdateMutation({
     onSuccess: (data) => {
-      toast.success(`Successfully updated branch "${data.name}"`)
+      toast.success('Successfully updated branch')
       onClose()
     },
     onError: (error) => {

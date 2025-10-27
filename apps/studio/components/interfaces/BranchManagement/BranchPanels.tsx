@@ -5,7 +5,7 @@ import { PropsWithChildren, ReactNode } from 'react'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { BASE_PATH } from 'lib/constants'
 import { Tooltip, TooltipContent, TooltipTrigger } from 'ui'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 interface BranchManagementSectionProps {
   header: string | ReactNode

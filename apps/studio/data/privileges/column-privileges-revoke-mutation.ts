@@ -5,7 +5,7 @@ import type { ResponseError } from 'types'
 import pgMeta from '@supabase/pg-meta'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { privilegeKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type ColumnPrivilegesRevoke = components['schemas']['RevokeColumnPrivilegesBody']
 

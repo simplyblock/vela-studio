@@ -4,7 +4,7 @@ import { last } from 'lodash'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { databaseCronJobsKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseCronJobRunsVariables = {
   branch?: Branch

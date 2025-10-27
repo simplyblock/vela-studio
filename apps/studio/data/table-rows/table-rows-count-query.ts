@@ -8,7 +8,7 @@ import { isRoleImpersonationEnabled } from 'state/role-impersonation-state'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { tableRowKeys } from './keys'
 import { formatFilterValue } from './utils'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type GetTableRowsCountArgs = {
   table?: SupaTable

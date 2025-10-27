@@ -20,7 +20,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const BranchesPage: NextPageWithLayout = () => {

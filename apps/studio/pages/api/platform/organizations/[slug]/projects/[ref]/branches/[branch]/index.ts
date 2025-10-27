@@ -2,14 +2,13 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { getVelaClient } from 'data/vela/vela'
-import { Branch } from 'api-types/types'
-import { mapProjectBranch } from 'data/vela/api-mappers'
+import { Branch } from 'data/branches/branch-query'
 
 const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
   const client = getVelaClient(req)
 
-  const { data, success } = await client.putOrFail(
+  return await client.proxyPut(
     res,
     '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/',
     {
@@ -21,20 +20,16 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       },
       body: {
-        name: req.body.name,
+        name: req.body,
       },
     }
   )
-
-  if (!success) return
-
-  return res.json(mapProjectBranch(data!))
 }
 
 const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
   const client = getVelaClient(req)
-  client.proxyDelete(
+  return await client.proxyDelete(
     res,
     '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/',
     {
@@ -53,7 +48,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch>) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
-  const { data, success } = await client.getOrFail(
+  return await client.proxyGet(
     res,
     '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/',
     {
@@ -66,10 +61,6 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch>) => {
       },
     }
   )
-
-  if (!success) return
-
-  return res.json(mapProjectBranch(data!))
 }
 
 const apiHandler = apiBuilder((builder) =>

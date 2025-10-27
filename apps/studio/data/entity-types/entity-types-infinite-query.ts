@@ -3,7 +3,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { ENTITY_TYPE } from './entity-type-constants'
 import { entityTypeKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type EntityTypesVariables = {
   branch?: Branch

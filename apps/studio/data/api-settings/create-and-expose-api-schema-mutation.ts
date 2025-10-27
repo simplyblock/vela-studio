@@ -6,7 +6,7 @@ import { databaseKeys } from 'data/database/keys'
 import { handleError, patch } from 'data/fetchers'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type CreateAndExposeAPISchemaVariables = {
   branch: Branch

@@ -10,7 +10,7 @@ import { isRoleImpersonationEnabled } from 'state/role-impersonation-state'
 import type { ResponseError } from 'types'
 import { tableRowKeys } from './keys'
 import { formatFilterValue } from './utils'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type TableRowDeleteAllVariables = {
   branch: Branch

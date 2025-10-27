@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
+import { components } from '../vela/vela-schema'
 
 export type BranchCreateVariables = {
   orgRef: string
@@ -11,6 +12,9 @@ export type BranchCreateVariables = {
   branchRef: string
   branchName: string
   withData?: boolean
+  withConfig?: boolean
+  enableFileStorage?: boolean
+  deployment?: components['schemas']['DeploymentParameters']
 }
 
 export async function createBranch({
@@ -19,6 +23,8 @@ export async function createBranch({
   branchRef,
   branchName,
   withData,
+  withConfig,
+  deployment,
 }: BranchCreateVariables) {
   const { data, error } = await post('/platform/organizations/{slug}/projects/{ref}/branches', {
     params: {
@@ -28,9 +34,13 @@ export async function createBranch({
       },
     },
     body: {
-      branch_name: branchName,
-      source: branchRef,
-      with_data: withData,
+      name: branchName,
+      source: {
+        branch_id: branchRef,
+        config_copy: withConfig,
+        copy_data: withData,
+      },
+      deployment: deployment
     },
   })
 

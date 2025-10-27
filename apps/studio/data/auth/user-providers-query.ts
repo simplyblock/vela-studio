@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { authKeys } from './keys'
 import { UserVariables } from './types'
 import { Filter } from './users-infinite-query'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 import { get, handleError } from '../fetchers'
 import { ResponseError } from '../../types'
 

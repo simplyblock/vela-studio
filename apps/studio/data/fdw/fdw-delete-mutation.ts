@@ -10,7 +10,7 @@ import { vaultSecretsKeys } from 'data/vault/keys'
 import type { ResponseError } from 'types'
 import { FDW } from './fdws-query'
 import { fdwKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type FDWDeleteVariables = {
   branch: Branch

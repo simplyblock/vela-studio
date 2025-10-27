@@ -3,7 +3,7 @@ import { Query } from '@supabase/pg-meta/src/query'
 import type { VaultSecret } from 'types'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { vaultSecretsKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export const getVaultSecretsSql = () => {
   const sql = new Query()

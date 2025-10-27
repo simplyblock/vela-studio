@@ -8,7 +8,7 @@ import {
 } from 'lib/role-impersonation'
 import type { ResponseError } from 'types'
 import { sqlKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type ExecuteSqlVariables = {
   branch?: Branch

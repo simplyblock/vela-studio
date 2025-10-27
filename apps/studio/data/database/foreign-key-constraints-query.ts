@@ -2,7 +2,7 @@ import { QueryClient, useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { databaseKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type GetForeignKeyConstraintsVariables = {
   schema?: string

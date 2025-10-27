@@ -3,7 +3,7 @@ import { getDecryptedValues } from 'data/vault/vault-secret-decrypted-value-quer
 import { INTEGRATIONS } from '../Integrations/Landing/Integrations.constants'
 import { WrapperMeta } from '../Integrations/Wrappers/Wrappers.types'
 import { convertKVStringArrayToJson } from '../Integrations/Wrappers/Wrappers.utils'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export const getDecryptedParameters = async ({
   branch,

@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import type { ResponseError } from 'types'
 import { configKeys } from './keys'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DiskBreakdownVariables = {
   branch?: Branch

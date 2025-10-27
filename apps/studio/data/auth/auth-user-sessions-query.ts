@@ -1,4 +1,4 @@
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { authKeys } from './keys'
 import { ResponseError } from '../../types'

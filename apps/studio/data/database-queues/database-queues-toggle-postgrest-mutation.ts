@@ -6,7 +6,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
 import { databaseKeys } from 'data/database/keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseQueueExposePostgrestVariables = {
   branch: Branch
