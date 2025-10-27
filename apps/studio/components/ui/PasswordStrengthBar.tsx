@@ -4,7 +4,7 @@ interface Props {
   passwordStrengthScore: number
   passwordStrengthMessage: string
   password: string
-  generateStrongPassword: () => void
+  generateStrongPassword?: () => void
 }
 
 const PasswordStrengthBar = ({
@@ -37,13 +37,13 @@ const PasswordStrengthBar = ({
       <p>
         {passwordStrengthMessage
           ? passwordStrengthMessage
-          : 'This is the password to your Postgres database, so it must be strong and hard to guess.'}{' '}
-        <span
+          : 'This is the password to your Postgres database, so it must be strong and hard to guess.'}
+        {generateStrongPassword ? <span
           className="text-foreground opacity-50 underline hover:opacity-100 transition cursor-pointer"
           onClick={generateStrongPassword}
         >
           Generate a password
-        </span>
+        </span> : <></>}
       </p>
     </>
   )

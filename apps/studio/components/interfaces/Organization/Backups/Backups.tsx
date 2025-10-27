@@ -44,7 +44,7 @@ type RestoreContext = {
   backup: BranchBackup
 }
 
-export type environment = {
+type environment = {
     label: string;
     value: string;
 }
@@ -288,8 +288,6 @@ const Backups = () => {
     return Array.from(map.entries()).map(([value, label]) => ({ value, label }))
   }, [allProjects]) 
 
-  console.log("allProjects",allProjects)
-  console.log("projectOPtions",projectOptions)  
 
   const restoreRow = useMemo(
     () => rows.find((row) => row.id === restoreContext?.rowId) ?? null,

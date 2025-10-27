@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { isUndefined } from 'lodash'
 import {
+  Activity,
   Blocks,
   Boxes,
   CalendarClock,
@@ -268,6 +269,16 @@ const ProjectLinks = () => {
         router.asPath.includes('/database/backups/pitr') ||
         router.asPath.includes('/database/backups/restore-to-new-project'),
     },
+    {
+      key: 'resource-limits',
+      label: 'Resource Limits',
+      icon: <Activity size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link:
+        projectRef &&
+        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/resource-limits`,
+      isActive: router.asPath.includes('/resource-limits'),
+    },
+
   ]
 
   const otherRoutes = generateOtherRoutes(orgRef, projectRef, project, branchRef, {

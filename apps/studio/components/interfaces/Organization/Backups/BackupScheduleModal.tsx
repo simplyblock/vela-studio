@@ -50,7 +50,7 @@ const getMinimumEveryForUnit = (unit: TimeUnit) =>
 const getRowMinutes = (row: ScheduleRow) => row.every * unitMinutesLookup[row.unit]
 
 type ApiSchedule = {
-  id: string
+  backup_schedule_id: string
   organization_id: string | null
   branch_id: string | null
   env_type: string | null
@@ -108,6 +108,7 @@ const BackupScheduleModal = () => {
   )
 
   const schedulesList = useMemo(
+    // @ts-ignore
     () => toArray<ApiSchedule>(schedulesData),
     [schedulesData]
   )
@@ -361,14 +362,14 @@ const BackupScheduleModal = () => {
     }
     return null
   }, [maxBackupsAllowed])
-
+  console.log(currentSchedule)
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!orgId || isSubmitting) return
 
     if (rows.length === 0) {
-      if (currentSchedule?.id) {
-        await deleteSchedule({ orgId, scheduleId: currentSchedule.id })
+      if (currentSchedule?.backup_schedule_id) {
+        await deleteSchedule({ orgId, scheduleId: currentSchedule.backup_schedule_id })
       } else {
         setError('Add at least one schedule.')
       }
@@ -378,17 +379,20 @@ const BackupScheduleModal = () => {
     const validationMessage = validateRows(rows)
     if (validationMessage) return setError(validationMessage)
 
-    const env_type = selectedLabel === 'all' ? undefined : selectedLabel
-    const apiRows = rows.map(toApiRows)
+    // const env_type = selectedLabel === 'all' ? undefined : selectedLabel
 
-    await updateSchedule({
+    const env_type = selectedLabel
+    const apiRows = rows.map(toApiRows)
+    const body = {
       orgId,
       schedule: {
         env_type,
         rows: apiRows,
-        id: currentSchedule?.id,
+        id: currentSchedule?.backup_schedule_id,
       },
-    })
+    }
+    console.log("body",body)
+    await updateSchedule(body)
   }
 
   const primaryButtonLabel = (() => {
