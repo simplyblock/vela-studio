@@ -1,5 +1,5 @@
 import { Cacheables } from 'cacheables'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 const branchCache = new Cacheables()
 

@@ -13,7 +13,7 @@ import { getInitialGridColumns } from 'components/grid/utils/column'
 import { getGridColumns } from 'components/grid/utils/gridColumns'
 import { Entity } from 'data/table-editor/table-editor-types'
 import { useTableEditorStateSnapshot } from './table-editor'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export const createTableEditorTableState = ({
   branch,

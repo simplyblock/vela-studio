@@ -6,7 +6,7 @@ import { DATE_FORMAT } from 'lib/constants'
 import { last } from 'lodash'
 import { ResponseError } from 'types'
 import { databaseQueuesKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseQueueVariables = {
   branch?: Branch

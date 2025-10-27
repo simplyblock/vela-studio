@@ -3,7 +3,7 @@ import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query
 import type { components } from 'data/api'
 import { ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { authKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 import { get, handleError } from '../fetchers'
 
 export type Filter = 'verified' | 'unverified' | 'anonymous'

@@ -5,7 +5,7 @@ import type { ResponseError } from 'types'
 import { databaseTriggerKeys } from './keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { PGTriggerCreate } from '@supabase/pg-meta/src/pg-meta-triggers'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseTriggerCreateVariables = {
   branch: Branch

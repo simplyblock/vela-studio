@@ -43,56 +43,136 @@ export interface paths {
   }
   '/platform/organizations/{slug}/resources/limits': {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get Organization Provisioning Limits */
-    get: operations["ResourceController_getOrganizationProvisioningLimit"];
-    put?: never;
+    get: operations['ResourceController_getOrganizationProvisioningLimit']
+    put?: never
     /** Set Organization Provisioning Limit */
-    post: operations["ResourceController_setOrganizationProvisioningLimit"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
+    post: operations['ResourceController_setOrganizationProvisioningLimit']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/platform/organizations/{slug}/projects/{ref}/resources/limits': {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Get Project Provisioning Limits */
-    get: operations["ResourceController_getProjectProvisioningLimit"];
-    put?: never;
+    get: operations['ResourceController_getProjectProvisioningLimit']
+    put?: never
     /** Set Project Provisioning Limit */
-    post: operations["ResourceController_setProjectProvisioningLimit"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
+    post: operations['ResourceController_setProjectProvisioningLimit']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['BranchController_getBranches']
+    put?: never
+    post: operations['BranchController_createBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['BranchController_getBranch']
+    put: operations['BranchController_updateBranch']
+    post?: never
+    delete: operations['BranchController_deleteBranch']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/pause': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BranchController_pauseBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resume': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BranchController_resumeBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resize': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BranchController_resizeBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/resources/limits': {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Branch Effective Limit */
-    get: operations["ResourceController_getBranchEffectiveLimits"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
+    get: operations['ResourceController_getBranchEffectiveLimits']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/platform/permissions': {
     parameters: {
@@ -10726,238 +10806,490 @@ export interface operations {
   ResourceController_getOrganizationUsage: {
     parameters: {
       query?: {
-        cycle_start?: string | null;
-        cycle_end?: string | null;
-      };
-      header?: never;
+        cycle_start?: string | null
+        cycle_end?: string | null
+      }
+      header?: never
       path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Successful Response */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"ResourceLimitsPublic">;
-        };
-      };
+          'application/json': VelaType<'ResourceLimitsPublic'>
+        }
+      }
       /** @description Validation Error */
       422: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"HTTPValidationError">;
-        };
-      };
-    };
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
   }
   ResourceController_getProjectUsage: {
     parameters: {
       query?: {
-        cycle_start?: string | null;
-        cycle_end?: string | null;
-      };
-      header?: never;
+        cycle_start?: string | null
+        cycle_end?: string | null
+      }
+      header?: never
       path: {
         slug: string
-        ref: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        ref: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Successful Response */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"ResourceLimitsPublic">;
-        };
-      };
+          'application/json': VelaType<'ResourceLimitsPublic'>
+        }
+      }
       /** @description Validation Error */
       422: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"HTTPValidationError">;
-        };
-      };
-    };
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
   }
   ResourceController_getOrganizationProvisioningLimit: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Successful Response */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"ProvisioningLimitPublic">[];
-        };
-      };
+          'application/json': VelaType<'ProvisioningLimitPublic'>[]
+        }
+      }
       /** @description Validation Error */
       422: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"HTTPValidationError">;
-        };
-      };
-    };
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
   }
   ResourceController_getProjectProvisioningLimit: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        slug: string;
-        ref: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        slug: string
+        ref: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Successful Response */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"ProvisioningLimitPublic">[];
-        };
-      };
+          'application/json': VelaType<'ProvisioningLimitPublic'>[]
+        }
+      }
       /** @description Validation Error */
       422: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"HTTPValidationError">;
-        };
-      };
-    };
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
   }
   ResourceController_setOrganizationProvisioningLimit: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
+        slug: string
+      }
+      cookie?: never
+    }
     requestBody: {
       content: {
-        "application/json": VelaType<"ProvLimitPayload">;
-      };
-    };
+        'application/json': VelaType<'ProvLimitPayload'>
+      }
+    }
     responses: {
       /** @description Successful Response */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"LimitResultPublic">;
-        };
-      };
+          'application/json': VelaType<'LimitResultPublic'>
+        }
+      }
       /** @description Validation Error */
       422: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"HTTPValidationError">;
-        };
-      };
-    };
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
   }
   ResourceController_setProjectProvisioningLimit: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        slug: string;
+        slug: string
         ref: string
-      };
-      cookie?: never;
-    };
+      }
+      cookie?: never
+    }
     requestBody: {
       content: {
-        "application/json": VelaType<"ProvLimitPayload">;
-      };
-    };
+        'application/json': VelaType<'ProvLimitPayload'>
+      }
+    }
     responses: {
       /** @description Successful Response */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"LimitResultPublic">;
-        };
-      };
+          'application/json': VelaType<'LimitResultPublic'>
+        }
+      }
       /** @description Validation Error */
       422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
+  }
+  BranchController_createBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'BranchCreate'>
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': NonNullable<VelaType<'BranchPublic'>>
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
+  }
+  BranchController_getBranches: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'BranchPublic'>
+        }
+      }
+    }
+  }
+  BranchController_getBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'BranchPublic'>
+        }
+      }
+    }
+  }
+  BranchController_updateBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'BranchUpdate'>
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchController_deleteBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchController_pauseBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchController_resumeBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BranchController_resizeBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        "application/json": VelaType<"ResizeParameters">;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      202: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": VelaType<"HTTPValidationError">;
+          "application/json": unknown;
         };
-      };
-    };
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
   }
   ResourceController_getBranchEffectiveLimits: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        slug: string;
-        ref: string;
-        branch: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Successful Response */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"ResourceLimitsPublic">;
-        };
-      };
+          'application/json': VelaType<'ResourceLimitsPublic'>
+        }
+      }
       /** @description Validation Error */
       422: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": VelaType<"HTTPValidationError">;
-        };
-      };
-    };
+          'application/json': VelaType<'HTTPValidationError'>
+        }
+      }
+    }
   }
   ResourceLimitsController_getResourceLimitDefinitions: {
     parameters: {
@@ -10973,7 +11305,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': VelaType<"ResourceLimitDefinitionPublic">[]
+          'application/json': VelaType<'ResourceLimitDefinitionPublic'>[]
         }
       }
       403: {
@@ -11410,7 +11742,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'BackupsResponse'>
+          'application/json': VelaType<'BackupCreatePublic'>
         }
       }
       403: {

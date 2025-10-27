@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { invalidateSchemasQuery } from './schemas-query'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type HooksEnableVariables = {
   branch: Branch

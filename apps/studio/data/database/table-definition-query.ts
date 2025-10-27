@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { CREATE_PG_GET_TABLEDEF_SQL } from './database-query-constants'
 import { databaseKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type GetTableDefinitionArgs = {
   id?: number

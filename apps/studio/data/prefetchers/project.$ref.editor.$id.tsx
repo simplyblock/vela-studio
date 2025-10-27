@@ -18,8 +18,8 @@ import { TABLE_EDITOR_DEFAULT_ROWS_PER_PAGE } from 'state/table-editor'
 import PrefetchableLink, { PrefetchableLinkProps } from './PrefetchableLink'
 import { getOrganizationSlug } from '../vela/organization-path-slug'
 import { getBranchRef } from '../vela/branch-path-ref'
-import { Branch } from 'api-types/types'
 import { useSelectedBranchQuery } from '../branches/selected-branch-query'
+import { Branch } from 'data/branches/branch-query'
 
 interface PrefetchEditorTablePageArgs {
   queryClient: QueryClient

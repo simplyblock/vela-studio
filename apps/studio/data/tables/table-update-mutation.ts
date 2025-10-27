@@ -8,7 +8,7 @@ import { lintKeys } from 'data/lint/keys'
 import { tableEditorKeys } from 'data/table-editor/keys'
 import type { ResponseError } from 'types'
 import { tableKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type UpdateTableBody = components['schemas']['UpdateTableBody']
 

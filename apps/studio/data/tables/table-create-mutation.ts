@@ -6,7 +6,7 @@ import type { components } from 'data/api'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { tableKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type CreateTableBody = components['schemas']['CreateTableBody']
 

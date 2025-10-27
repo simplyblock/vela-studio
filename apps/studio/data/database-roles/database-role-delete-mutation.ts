@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { invalidateRolesQuery } from './database-roles-query'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type DropRoleBody = Parameters<typeof pgMeta.roles.remove>[1]
 

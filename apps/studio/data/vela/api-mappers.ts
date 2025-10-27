@@ -1,15 +1,10 @@
 import { components } from './vela-schema'
 import { Organization } from '../../types'
-import { ProjectDetail } from '../projects/project-detail-query'
 import fs from 'node:fs'
-import CryptoJS from 'crypto-js'
 import { OrganizationMember } from '../organizations/organization-members-query'
-import { Branch } from 'api-types/types'
 
 export type VelaOrganization = components['schemas']['Organization']
-export type VelaProject = components['schemas']['ProjectPublic']
 export type VelaMember = components['schemas']['UserPublic']
-export type VelaBranch = components['schemas']['BranchPublic']
 
 const isDocker = fs.existsSync('/.dockerenv')
 if (isDocker) console.log('Running in Docker, using fake encrypted connection string')
@@ -45,65 +40,6 @@ export function mapOrganizationMember(member: VelaMember): OrganizationMember {
     metadata: {
       first_name: member.first_name,
       last_name: member.last_name,
-    },
-  }
-}
-
-export function mapProjectBranch(branch: VelaBranch): Branch {
-  let encryptedConnectionString = branch.database.encrypted_connection_string
-  if (isDocker) {
-    encryptedConnectionString = CryptoJS.AES.encrypt(
-      'postgresql://supabase_admin:your-super-secret-and-long-postgres-password@db:5432/postgres',
-      'SAMPLE_KEY'
-    )
-      .toString()
-      .trim() // FIXME: Encrypted connectionString needs to come from the outside
-  }
-
-  return {
-    id: branch.id,
-    created_at: branch.created_at,
-    created_by: branch.created_by,
-    name: branch.name,
-    env_type: branch.env_type || '',
-    project_id: branch.project_id,
-    organization_id: branch.organization_id,
-    service_status: {
-      database: branch.service_status.database,
-      realtime: branch.service_status.realtime,
-      storage: branch.service_status.storage,
-      meta: branch.service_status.meta,
-      rest: branch.service_status.rest
-    },
-    database: {
-      host: branch.database.host,
-      port: branch.database.port,
-      name: branch.database.name,
-      version: branch.database.version,
-      username: branch.database.username,
-      has_replicas: branch.database.has_replicas,
-      service_endpoint_uri: branch.database.service_endpoint_uri,
-      encrypted_connection_string: encryptedConnectionString,
-    },
-    pitr_enabled: branch.pitr_enabled,
-    assigned_labels: branch.assigned_labels,
-    used_resources: {
-      vcpu: branch.used_resources.milli_vcpu,
-      ram_bytes: branch.used_resources.ram_bytes,
-      nvme_bytes: branch.used_resources.nvme_bytes,
-      iops: branch.used_resources.iops,
-      storage_bytes: branch.used_resources.storage_bytes ?? undefined,
-    },
-    max_resources: {
-      vcpu: branch.max_resources.milli_vcpu,
-      ram_bytes: branch.max_resources.ram_bytes,
-      nvme_bytes: branch.max_resources.nvme_bytes,
-      iops: branch.max_resources.iops,
-      storage_bytes: branch.max_resources.storage_bytes ?? undefined,
-    },
-    api_keys: {
-      anon: branch.api_keys.anon ?? undefined,
-      service_role: branch.api_keys.service_role ?? undefined,
     },
   }
 }

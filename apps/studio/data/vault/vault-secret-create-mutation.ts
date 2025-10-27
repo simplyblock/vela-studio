@@ -5,7 +5,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { quoteLiteral } from 'lib/pg-format'
 import type { ResponseError, VaultSecret } from 'types'
 import { vaultSecretsKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type VaultSecretCreateVariables = {
   branch: Branch

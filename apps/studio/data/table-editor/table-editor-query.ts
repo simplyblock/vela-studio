@@ -4,7 +4,7 @@ import { executeSql, ExecuteSqlError } from '../sql/execute-sql-query'
 import { tableEditorKeys } from './keys'
 import { getTableEditorSql } from './table-editor-query-sql'
 import { Entity } from './table-editor-types'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type TableEditorArgs = {
   id?: number

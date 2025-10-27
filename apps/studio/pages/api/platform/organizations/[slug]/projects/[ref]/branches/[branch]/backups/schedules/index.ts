@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vela'
 import { apiBuilder } from 'lib/api/apiBuilder'
-import { components } from 'data/vela/vela-schema'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')

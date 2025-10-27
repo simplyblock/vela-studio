@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 import { executeSql, ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { databaseKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type SchemasVariables = {
   branch?: Branch

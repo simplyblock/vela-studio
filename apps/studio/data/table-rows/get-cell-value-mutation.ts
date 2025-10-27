@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { Query } from '@supabase/pg-meta/src/query'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type GetCellValueVariables = {
   branch: Branch

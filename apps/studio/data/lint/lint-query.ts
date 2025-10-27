@@ -6,7 +6,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import { ResponseError } from 'types'
 import { lintKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type ProjectLintsVariables = {
   branch?: Branch

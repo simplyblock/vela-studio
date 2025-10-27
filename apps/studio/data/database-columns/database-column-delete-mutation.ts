@@ -10,7 +10,7 @@ import { tableEditorKeys } from 'data/table-editor/keys'
 import { tableRowKeys } from 'data/table-rows/keys'
 import { viewKeys } from 'data/views/keys'
 import type { ResponseError } from 'types'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseColumnDeleteVariables = {
   branch: Branch

@@ -24,7 +24,7 @@ import {
   ScrollArea,
   cn,
 } from 'ui'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 const BranchLink = ({
   branch,

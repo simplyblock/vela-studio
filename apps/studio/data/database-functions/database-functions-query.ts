@@ -4,7 +4,7 @@ import { databaseKeys } from 'data/database/keys'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { z } from 'zod'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseFunctionsVariables = {
   branch?: Branch

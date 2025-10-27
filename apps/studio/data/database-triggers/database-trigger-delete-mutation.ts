@@ -4,7 +4,7 @@ import pgMeta from '@supabase/pg-meta'
 import type { ResponseError } from 'types'
 import { databaseTriggerKeys } from './keys'
 import { executeSql } from 'data/sql/execute-sql-query'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseTriggerDeleteVariables = {
   trigger: {

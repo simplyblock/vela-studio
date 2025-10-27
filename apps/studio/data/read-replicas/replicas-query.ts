@@ -4,7 +4,7 @@ import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { replicaKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export const MAX_REPLICAS_BELOW_XL = 2
 export const MAX_REPLICAS_ABOVE_XL = 5

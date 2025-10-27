@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import type { components } from 'data/api'
 import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type CreateColumnBody = Omit<components['schemas']['CreateColumnBody'], 'tableId'> & {
   schema: string

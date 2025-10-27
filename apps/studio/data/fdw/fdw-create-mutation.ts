@@ -12,7 +12,7 @@ import { wrapWithTransaction } from 'data/sql/utils/transaction'
 import { vaultSecretsKeys } from 'data/vault/keys'
 import type { ResponseError } from 'types'
 import { fdwKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type FDWCreateVariables = {
   branch?: Branch

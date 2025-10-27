@@ -2,7 +2,7 @@ import { JwtSecretUpdateStatus } from '@supabase/shared-types/out/events'
 import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import { configKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type JwtSecretUpdatingStatusVariables = {
   branch?: Branch

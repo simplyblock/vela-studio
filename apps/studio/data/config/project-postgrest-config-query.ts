@@ -4,7 +4,7 @@ import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
 import { ResponseError } from 'types'
 import { configKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type ProjectPostgrestConfigVariables = {
   branch?: Branch

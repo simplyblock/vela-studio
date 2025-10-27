@@ -4,7 +4,7 @@ import { PostgresView } from '@supabase/postgres-meta'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { foreignTableKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type ForeignTablesVariables = {
   branch?: Branch

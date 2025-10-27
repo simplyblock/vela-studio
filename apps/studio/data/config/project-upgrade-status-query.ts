@@ -3,7 +3,7 @@ import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query
 import { get, handleError } from 'data/fetchers'
 import { PROJECT_STATUS } from 'lib/constants'
 import { configKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type ProjectUpgradingStatusVariables = {
   branch?: Branch

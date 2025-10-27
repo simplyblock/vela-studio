@@ -4,7 +4,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import { ResponseError } from 'types'
 import { CronJob } from './database-cron-jobs-infinite-query'
 import { databaseCronJobsKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseCronJobVariables = {
   branch?: Branch

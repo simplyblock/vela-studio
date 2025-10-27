@@ -3,7 +3,7 @@ import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { databasePublicationsKeys } from './keys'
 import { DEFAULT_PLATFORM_APPLICATION_NAME } from '@supabase/pg-meta/src/constants'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabasePublicationsVariables = {
   branch?: Branch

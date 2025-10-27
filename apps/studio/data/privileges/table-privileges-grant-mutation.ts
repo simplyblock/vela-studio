@@ -6,7 +6,7 @@ import { executeSql } from 'data/sql/execute-sql-query'
 import type { ResponseError } from 'types'
 import { invalidateTablePrivilegesQuery } from './table-privileges-query'
 import { privilegeKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type TablePrivilegesGrant = Parameters<
   typeof pgMeta.tablePrivileges.grant

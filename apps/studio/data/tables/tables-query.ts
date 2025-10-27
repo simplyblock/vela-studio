@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { tableKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type TablesVariables = {
   branch?: Branch

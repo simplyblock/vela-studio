@@ -5,7 +5,7 @@ import { components } from 'api-types'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { lintKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 type ExceptionPayload = components['schemas']['CreateNotificationExceptionsBody']['exceptions'][0]
 

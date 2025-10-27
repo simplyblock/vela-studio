@@ -1,7 +1,7 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { handleError, patch } from 'data/fetchers'
+import { handleError, put } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
 
@@ -16,7 +16,7 @@ export async function updateBranch({
   projectRef,
   branch,
 }: BranchUpdateVariables) {
-  const { data, error } = await patch('/platform/organizations/{slug}/projects/{ref}/branches/{branch}', {
+  const { data, error } = await put('/platform/organizations/{slug}/projects/{ref}/branches/{branch}', {
     params: {
       path: {
         slug: orgSlug,
@@ -25,7 +25,7 @@ export async function updateBranch({
       },
     },
     body: {
-      branch_name: branch,
+      name: branch,
     },
   })
 

@@ -4,7 +4,7 @@ import type { components } from 'data/api'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { enumeratedTypesKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type EnumeratedTypesVariables = {
   branch?: Branch

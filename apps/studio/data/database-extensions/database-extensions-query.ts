@@ -5,7 +5,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
 import type { ResponseError } from 'types'
 import { databaseExtensionsKeys } from './keys'
-import { Branch } from 'api-types/types'
+import { Branch } from 'data/branches/branch-query'
 
 export type DatabaseExtension = components['schemas']['PostgresExtension']
 
