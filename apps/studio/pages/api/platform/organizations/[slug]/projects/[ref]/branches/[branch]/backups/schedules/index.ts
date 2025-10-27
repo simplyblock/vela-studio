@@ -4,7 +4,7 @@ import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vel
 import { apiBuilder } from 'lib/api/apiBuilder'
 
 interface BackupSchedule {
-  backup_schedule_id: string
+  schedule_id: string
   organization_id: string
   project_id: string
   branch_id?: string
@@ -35,7 +35,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.json(
     response.data?.map((schedule): BackupSchedule => {
       return {
-        backup_schedule_id: schedule.id,
+        schedule_id: schedule.id,
         organization_id: slug,
         project_id: ref,
         branch_id: schedule.branch_id ?? undefined,
@@ -63,7 +63,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const schedule = data as { status: string; schedule_id: string }
   return res.json({
-    backup_schedule_id: schedule.schedule_id,
+    schedule_id: schedule.schedule_id,
     organization_id: slug,
     env_type: req.body.env_type,
     rows: req.body.rows,
@@ -87,7 +87,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const schedule = data as { status: string; schedule_id: string }
   return res.json({
-    backup_schedule_id: schedule.schedule_id,
+    schedule_id: schedule.schedule_id,
     organization_id: slug,
     env_type: req.body.env_type,
     rows: req.body.rows,
