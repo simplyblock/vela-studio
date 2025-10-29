@@ -1,6 +1,6 @@
 import { partition } from 'lodash'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useParams } from 'common'
@@ -25,7 +25,7 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const BranchesPage: NextPageWithLayout = () => {
   const router = useRouter()
-  const { ref } = useParams()
+  const { slug, ref } = useParams()
   const snap = useAppStateSnapshot()
   const { data: project } = useSelectedProjectQuery()
   const { data: selectedOrg } = useSelectedOrganizationQuery()
@@ -84,6 +84,13 @@ const BranchesPage: NextPageWithLayout = () => {
       }
     )
   }
+
+  useEffect(() => {
+    if (!isSuccessBranches) return
+    if (branches?.length || 0) {
+      return router.push(`/new/${slug}/${ref}?name=main`)
+    }
+  }, [router, isSuccessBranches, branches])
 
   return (
     <>

@@ -1,10 +1,9 @@
-import { useIsLoggedIn } from 'common'
+import { useIsLoggedIn, useParams } from 'common'
 import { useProjectDetailQuery } from 'data/projects/project-detail-query'
 import { useProjectsQuery } from 'data/projects/projects-query'
-import { getPathReferences } from 'data/vela/path-references'
 
 export function useSelectedProjectQuery({ enabled = true } = {}) {
-  const { slug, ref } = getPathReferences()
+  const { slug, ref } = useParams()
   return useProjectDetailQuery(
     { slug, ref },
     {
@@ -16,7 +15,7 @@ export function useSelectedProjectQuery({ enabled = true } = {}) {
 export function useProjectByRefQuery(ref?: string) {
   const isLoggedIn = useIsLoggedIn()
 
-  const { slug } = getPathReferences()
+  const { slug } = useParams()
   const projectQuery = useProjectDetailQuery({ slug, ref }, { enabled: isLoggedIn })
 
   // [Alaister]: This is here for the purpose of improving performance.

@@ -9,7 +9,7 @@ import { components } from '../vela/vela-schema'
 export type BranchCreateVariables = {
   orgRef: string
   projectRef: string
-  branchRef: string
+  branchRef?: string
   branchName: string
   withData?: boolean
   withConfig?: boolean
@@ -34,11 +34,11 @@ export async function createBranch({
     },
     body: {
       name: branchName,
-      source: {
+      source: branchRef ? {
         branch_id: branchRef,
         config_copy: withConfig,
         copy_data: withData,
-      },
+      } : undefined,
       deployment: deployment
     },
   })

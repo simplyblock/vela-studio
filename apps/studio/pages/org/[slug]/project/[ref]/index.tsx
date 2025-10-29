@@ -13,23 +13,27 @@ import Link from 'next/link'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { ServiceStatus } from 'components/interfaces/Home/ServiceStatus'
 import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBanner'
+import { useBranchesQuery } from 'data/branches/branches-query'
 
 const Home: NextPageWithLayout = () => {
   const { data: project, isLoading: isProjectLoading } = useSelectedProjectQuery()
   const { ref, slug } = useParams()
   const router = useRouter()
 
+  const { data: branches, isLoading: isBranchesLoading } = useBranchesQuery({ orgSlug: slug, projectRef: ref })
   const { branchId: lastVisitedProjectBranch, isLoading: isBranchLoading } = useLastVisitedBranch(project)
 
   useEffect(() => {
-    if (isProjectLoading || isBranchLoading) return
+    if (isProjectLoading || isBranchLoading || isBranchesLoading) return
 
-    if (!project) {
+    if ((branches?.length || 0) === 0) {
+      router.push(`/new/${slug}/${ref}`)
+    } else if (!project) {
       router.push('/organizations')
     } else {
       router.replace(`/org/${slug}/project/${ref}/branch/${lastVisitedProjectBranch}`)
     }
-  }, [router, project, isProjectLoading, lastVisitedProjectBranch, isBranchLoading, ref, slug])
+  }, [router, project, isProjectLoading, lastVisitedProjectBranch, isBranchLoading, isBranchesLoading, branches, ref, slug])
 
   return (
     <div className="w-full px-4">

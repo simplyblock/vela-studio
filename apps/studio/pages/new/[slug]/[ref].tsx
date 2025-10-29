@@ -1,26 +1,26 @@
-import { NewOrgForm } from 'components/interfaces/Organization'
+import NewBranchForm from 'components/interfaces/Branch/NewBranchForm'
 import AppLayout from 'components/layouts/AppLayout/AppLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import WizardLayout from 'components/layouts/WizardLayout'
 import type { NextPageWithLayout } from 'types'
 
 /**
- * No org selected yet, create a new one
+ * No branch, create a new one
  */
-const Wizard: NextPageWithLayout = () => {
+const CreateBranchPage: NextPageWithLayout = () => {
   return (
     <>
-      <NewOrgForm />
+      <NewBranchForm />
     </>
   )
 }
 
-Wizard.getLayout = (page) => (
+CreateBranchPage.getLayout = (page) => (
   <AppLayout>
-    <DefaultLayout headerTitle="New organization">
+    <DefaultLayout headerTitle="New branch">
       <WizardLayout>{page}</WizardLayout>
     </DefaultLayout>
   </AppLayout>
 )
 
-export default Wizard
+export default CreateBranchPage

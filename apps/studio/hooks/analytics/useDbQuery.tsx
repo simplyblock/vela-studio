@@ -38,7 +38,7 @@ const useDbQuery = ({
   orderBy?: string
 }): DbQueryHook => {
   const { data: project } = useSelectedProjectQuery()
-  const { data: branch } = useSelectedBranchQuery()
+  const { data: branch, isLoading: isBranchLoading } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
   const { data: databases } = useReadReplicasQuery({ branch })
@@ -68,7 +68,7 @@ const useDbQuery = ({
       ).then((res) => res.result) as Promise<MetaQueryResponse>
     },
     {
-      enabled: Boolean(resolvedSql),
+      enabled: !isBranchLoading && Boolean(resolvedSql),
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
     }

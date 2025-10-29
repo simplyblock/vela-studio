@@ -21,7 +21,6 @@ import { SetupIntentResponse } from 'data/stripe/setup-intent-mutation'
 import { useProfile } from 'lib/profile'
 
 interface NewOrgFormProps {
-  setupIntent?: SetupIntentResponse
 }
 
 const formSchema = z.object({

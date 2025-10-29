@@ -1,4 +1,4 @@
-
+import { Eye, EyeOff } from 'lucide-react'
 import { Eye, EyeOff } from 'lucide-react'
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react'
 import {
@@ -14,9 +14,9 @@ import {
   DialogTrigger,
   Input_Shadcn_,
   Label_Shadcn_,
+  Select_Shadcn_,
   SelectContent_Shadcn_,
   SelectItem_Shadcn_,
-  Select_Shadcn_,
   SelectTrigger_Shadcn_,
   SelectValue_Shadcn_,
   Slider_Shadcn_,
@@ -47,7 +47,7 @@ type FormState = {
 const ENVIRONMENT_OPTIONS = [
   { label: 'Development', value: 'development' },
   { label: 'Test', value: 'test' },
-//   { label: 'Staging', value: 'staging' },
+  //   { label: 'Staging', value: 'staging' },
   { label: 'Production', value: 'production' },
 ]
 
@@ -116,7 +116,9 @@ const CreateBranchModal = () => {
     setFormState((prev) => ({
       ...prev,
       cloneFromBranch: isChecked,
-      sourceBranch: isChecked ? prev.sourceBranch || BRANCH_OPTIONS[0]?.value || '' : prev.sourceBranch,
+      sourceBranch: isChecked
+        ? prev.sourceBranch || BRANCH_OPTIONS[0]?.value || ''
+        : prev.sourceBranch,
       copyConfig: isChecked ? prev.copyConfig : false,
       copyData: isChecked ? prev.copyData : false,
     }))
@@ -233,7 +235,12 @@ const CreateBranchModal = () => {
                 </div>
               </div>
               <div className="md:col-span-2">
-                <Button type="default" size="tiny" htmlType="button" onClick={handleGeneratePassword}>
+                <Button
+                  type="default"
+                  size="tiny"
+                  htmlType="button"
+                  onClick={handleGeneratePassword}
+                >
                   Generate strong password
                 </Button>
               </div>
@@ -251,7 +258,9 @@ const CreateBranchModal = () => {
                         <Label_Shadcn_ htmlFor={`sizing-${key}`} className="text-foreground">
                           {label}
                         </Label_Shadcn_>
-                        <span className="text-foreground-muted">{formState[key]} {unit}</span>
+                        <span className="text-foreground-muted">
+                          {formState[key]} {unit}
+                        </span>
                       </div>
                       <Slider_Shadcn_
                         id={`sizing-${key}`}
@@ -311,9 +320,7 @@ const CreateBranchModal = () => {
                       <Checkbox_Shadcn_
                         id="copy-config"
                         checked={formState.copyConfig}
-                        onCheckedChange={(checked) =>
-                          updateField('copyConfig', checked === true)
-                        }
+                        onCheckedChange={(checked) => updateField('copyConfig', checked === true)}
                       />
                       <Label_Shadcn_ htmlFor="copy-config" className="text-sm">
                         Copy configuration
@@ -324,9 +331,7 @@ const CreateBranchModal = () => {
                       <Checkbox_Shadcn_
                         id="copy-data"
                         checked={formState.copyData}
-                        onCheckedChange={(checked) =>
-                          updateField('copyData', checked === true)
-                        }
+                        onCheckedChange={(checked) => updateField('copyData', checked === true)}
                       />
                       <Label_Shadcn_ htmlFor="copy-data" className="text-sm">
                         Copy data
@@ -341,9 +346,7 @@ const CreateBranchModal = () => {
               <Checkbox_Shadcn_
                 id="include-file-storage"
                 checked={formState.includeFileStorage}
-                onCheckedChange={(checked) =>
-                  updateField('includeFileStorage', checked === true)
-                }
+                onCheckedChange={(checked) => updateField('includeFileStorage', checked === true)}
               />
               <Label_Shadcn_ htmlFor="include-file-storage" className="text-sm">
                 Include file storage

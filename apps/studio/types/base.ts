@@ -4,7 +4,7 @@ import { PermissionsData } from '../data/permissions/permissions-query'
 import { RolesData } from '../data/permissions/roles-query'
 import { OrganizationRolesData } from '../data/organizations/organization-roles-query'
 
-type ArrayElement<T> = T extends (infer U)[] ? U : never
+export type ArrayElement<T> = T extends (infer U)[] ? U : never
 
 export interface Organization extends OrganizationBase {
   partner_id?: string

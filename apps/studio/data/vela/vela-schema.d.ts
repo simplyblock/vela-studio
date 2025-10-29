@@ -601,6 +601,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/system/available-postgresql-versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Available Postgresql Versions */
+        get: operations["list_available_postgresql_versions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/backup/organizations/{organization_id}/schedule": {
         parameters: {
             query?: never;
@@ -18598,6 +18615,15 @@ export interface components {
              */
             occurred_at: string;
         };
+        /** AvailablePostgresqlVersion */
+        AvailablePostgresqlVersion: {
+            /** Label */
+            label: string;
+            /** Value */
+            value: string;
+            /** Default */
+            default: boolean;
+        };
         /** BackupCreatePublic */
         BackupCreatePublic: {
             /** Status */
@@ -18785,6 +18811,10 @@ export interface components {
             server_idle_timeout?: number | null;
             /** Server Lifetime */
             server_lifetime?: number | null;
+            /** Query Wait Timeout */
+            query_wait_timeout?: number | null;
+            /** Reserve Pool Size */
+            reserve_pool_size?: number | null;
         };
         /** BranchPgbouncerConfigUpdate */
         BranchPgbouncerConfigUpdate: {
@@ -18799,6 +18829,10 @@ export interface components {
             server_idle_timeout?: number | null;
             /** Server Lifetime */
             server_lifetime?: number | null;
+            /** Query Wait Timeout */
+            query_wait_timeout?: number | null;
+            /** Reserve Pool Size */
+            reserve_pool_size?: number | null;
         };
         /** BranchProvisionPublic */
         BranchProvisionPublic: {
@@ -18848,7 +18882,7 @@ export interface components {
              * Status
              * @enum {string}
              */
-            status: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            status: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
             service_status: components["schemas"]["BranchStatus"];
             /** Pitr Enabled */
             pitr_enabled: boolean;
@@ -18904,27 +18938,27 @@ export interface components {
              * Database
              * @enum {string}
              */
-            database: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            database: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
             /**
              * Storage
              * @enum {string}
              */
-            storage: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            storage: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
             /**
              * Realtime
              * @enum {string}
              */
-            realtime: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            realtime: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
             /**
              * Meta
              * @enum {string}
              */
-            meta: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            meta: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
             /**
              * Rest
              * @enum {string}
              */
-            rest: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN";
+            rest: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
         };
         /** BranchUpdate */
         BranchUpdate: {
@@ -18977,7 +19011,7 @@ export interface components {
             /** Database Size */
             database_size: number;
             /** Storage Size */
-            storage_size: number;
+            storage_size?: number | null;
             /** Milli Vcpu */
             milli_vcpu: number;
             /** Memory Bytes */
@@ -18989,8 +19023,11 @@ export interface components {
              * @constant
              */
             database_image_tag: "15.1.0.147";
-            /** Enable File Storage */
-            enable_file_storage: boolean;
+            /**
+             * Enable File Storage
+             * @default true
+             */
+            enable_file_storage?: boolean;
         };
         /** HTTPError */
         HTTPError: {
@@ -19187,17 +19224,35 @@ export interface components {
             /** Unit */
             unit: string | null;
         };
-        /** ResourceLimitsPublic */
+        /**
+         * ResourceLimitsPublic
+         * @example {}
+         */
         ResourceLimitsPublic: {
-            /** Milli Vcpu */
+            /**
+             * Milli Vcpu
+             * @description Requested milli vCPU per branch; omit or null to inherit higher-level limit.
+             */
             milli_vcpu?: number | null;
-            /** Ram */
+            /**
+             * Ram
+             * @description Requested RAM (bytes) per branch; omit or null to inherit higher-level limit.
+             */
             ram?: number | null;
-            /** Iops */
+            /**
+             * Iops
+             * @description Requested IOPS per branch; omit or null to inherit higher-level limit.
+             */
             iops?: number | null;
-            /** Storage Size */
+            /**
+             * Storage Size
+             * @description Requested storage size (bytes) per branch; omit or null to inherit higher-level limit.
+             */
             storage_size?: number | null;
-            /** Database Size */
+            /**
+             * Database Size
+             * @description Requested database size (bytes) per branch; omit or null to inherit higher-level limit.
+             */
             database_size?: number | null;
         };
         /** ResourceUsageDefinition */
@@ -23572,6 +23627,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceLimitDefinitionPublic"][];
+                };
+            };
+        };
+    };
+    list_available_postgresql_versions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AvailablePostgresqlVersion"][];
                 };
             };
         };

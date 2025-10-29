@@ -4644,6 +4644,36 @@
         ]
       }
     },
+    "/system/available-postgresql-versions": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "List Available Postgresql Versions",
+        "operationId": "list_available_postgresql_versions",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AvailablePostgresqlVersion"
+                  },
+                  "type": "array",
+                  "title": "Response List Available Postgresql Versions System Available Postgresql Versions Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
     "/backup/organizations/{organization_id}/schedule": {
       "post": {
         "summary": "Add Org Backup Schedule",
@@ -33808,6 +33838,29 @@
         ],
         "title": "AuditLog"
       },
+      "AvailablePostgresqlVersion": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          },
+          "default": {
+            "type": "boolean",
+            "title": "Default"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "value",
+          "default"
+        ],
+        "title": "AvailablePostgresqlVersion"
+      },
       "BackupCreatePublic": {
         "properties": {
           "status": {
@@ -34426,6 +34479,28 @@
               }
             ],
             "title": "Server Lifetime"
+          },
+          "query_wait_timeout": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Wait Timeout"
+          },
+          "reserve_pool_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reserve Pool Size"
           }
         },
         "type": "object",
@@ -34487,6 +34562,30 @@
               }
             ],
             "title": "Server Lifetime"
+          },
+          "query_wait_timeout": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 30.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query Wait Timeout"
+          },
+          "reserve_pool_size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reserve Pool Size"
           }
         },
         "type": "object",
@@ -34614,7 +34713,8 @@
               "UPDATING",
               "RESTARTING",
               "STOPPING",
-              "UNKNOWN"
+              "UNKNOWN",
+              "ERROR"
             ],
             "title": "Status"
           },
@@ -34754,7 +34854,8 @@
               "UPDATING",
               "RESTARTING",
               "STOPPING",
-              "UNKNOWN"
+              "UNKNOWN",
+              "ERROR"
             ],
             "title": "Database"
           },
@@ -34770,7 +34871,8 @@
               "UPDATING",
               "RESTARTING",
               "STOPPING",
-              "UNKNOWN"
+              "UNKNOWN",
+              "ERROR"
             ],
             "title": "Storage"
           },
@@ -34786,7 +34888,8 @@
               "UPDATING",
               "RESTARTING",
               "STOPPING",
-              "UNKNOWN"
+              "UNKNOWN",
+              "ERROR"
             ],
             "title": "Realtime"
           },
@@ -34802,7 +34905,8 @@
               "UPDATING",
               "RESTARTING",
               "STOPPING",
-              "UNKNOWN"
+              "UNKNOWN",
+              "ERROR"
             ],
             "title": "Meta"
           },
@@ -34818,7 +34922,8 @@
               "UPDATING",
               "RESTARTING",
               "STOPPING",
-              "UNKNOWN"
+              "UNKNOWN",
+              "ERROR"
             ],
             "title": "Rest"
           }
@@ -34967,10 +35072,17 @@
             "title": "Database Size"
           },
           "storage_size": {
-            "type": "integer",
-            "multipleOf": 1000000000.0,
-            "maximum": 1000000000000.0,
-            "minimum": 500000000.0,
+            "anyOf": [
+              {
+                "type": "integer",
+                "multipleOf": 1000000000.0,
+                "maximum": 1000000000000.0,
+                "minimum": 500000000.0
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Storage Size"
           },
           "milli_vcpu": {
@@ -35000,19 +35112,18 @@
           },
           "enable_file_storage": {
             "type": "boolean",
-            "title": "Enable File Storage"
+            "title": "Enable File Storage",
+            "default": true
           }
         },
         "type": "object",
         "required": [
           "database_password",
           "database_size",
-          "storage_size",
           "milli_vcpu",
           "memory_bytes",
           "iops",
-          "database_image_tag",
-          "enable_file_storage"
+          "database_image_tag"
         ],
         "title": "DeploymentParameters"
       },
@@ -35674,7 +35785,8 @@
                 "type": "null"
               }
             ],
-            "title": "Milli Vcpu"
+            "title": "Milli Vcpu",
+            "description": "Requested milli vCPU per branch; omit or null to inherit higher-level limit."
           },
           "ram": {
             "anyOf": [
@@ -35685,7 +35797,8 @@
                 "type": "null"
               }
             ],
-            "title": "Ram"
+            "title": "Ram",
+            "description": "Requested RAM (bytes) per branch; omit or null to inherit higher-level limit."
           },
           "iops": {
             "anyOf": [
@@ -35696,7 +35809,8 @@
                 "type": "null"
               }
             ],
-            "title": "Iops"
+            "title": "Iops",
+            "description": "Requested IOPS per branch; omit or null to inherit higher-level limit."
           },
           "storage_size": {
             "anyOf": [
@@ -35707,7 +35821,8 @@
                 "type": "null"
               }
             ],
-            "title": "Storage Size"
+            "title": "Storage Size",
+            "description": "Requested storage size (bytes) per branch; omit or null to inherit higher-level limit."
           },
           "database_size": {
             "anyOf": [
@@ -35718,11 +35833,13 @@
                 "type": "null"
               }
             ],
-            "title": "Database Size"
+            "title": "Database Size",
+            "description": "Requested database size (bytes) per branch; omit or null to inherit higher-level limit."
           }
         },
         "type": "object",
-        "title": "ResourceLimitsPublic"
+        "title": "ResourceLimitsPublic",
+        "example": {}
       },
       "ResourceUsageDefinition": {
         "properties": {

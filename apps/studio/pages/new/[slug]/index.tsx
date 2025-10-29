@@ -28,7 +28,6 @@ import {
 } from 'data/projects/project-create-mutation'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { withAuth } from 'hooks/misc/withAuth'
@@ -58,7 +57,8 @@ import { Eye, EyeOff } from 'lucide-react'
 import { getPathReferences } from 'data/vela/path-references'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import WideWizardLayout from 'components/layouts/WideWizardLayout'
-import { components } from '../../data/vela/vela-schema'
+import { components } from 'data/vela/vela-schema'
+import { useAvailablePostgresVersionsQuery } from 'data/platform/available-postgresql-versions-query'
 
 /* ------------------------------------------------------------------
    Constants / schemas
@@ -71,22 +71,17 @@ import { components } from '../../data/vela/vela-schema'
 const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
 const sizesWithNoCostConfirmationRequired: DesiredInstanceSize[] = ['micro', 'small']
 
-type environment = {
-  label: string
-  value: string
-}
-
 type SliderKey = 'vcpu' | 'ram' | 'nvme' | 'iops' | 'storage'
 
 const SLIDER_CONFIG: Record<
   SliderKey,
-  { label: string; min: number; max: number; step: number; unit: string }
+  { label: string; min: number; max: number; step: number; unit: string; divider: number }
 > = {
-  vcpu: { label: 'vCPU', min: 1, max: 32, step: 1, unit: 'vCPU' },
-  ram: { label: 'RAM', min: 1, max: 128, step: 1, unit: 'GB' },
-  nvme: { label: 'NVMe', min: 10, max: 1000, step: 10, unit: 'GB' },
-  iops: { label: 'IOPS', min: 1000, max: 20000, step: 500, unit: 'IOPS' },
-  storage: { label: 'Storage', min: 50, max: 2000, step: 50, unit: 'GB' },
+  vcpu: { label: 'vCPU', min: 1, max: 32, step: 1, unit: 'vCPU', divider: 1 },
+  ram: { label: 'RAM', min: 1, max: 128, step: 1, unit: 'GB', divider: 1 },
+  nvme: { label: 'NVMe', min: 10, max: 1000, step: 1, unit: 'GB', divider: 10 },
+  iops: { label: 'IOPS', min: 1000, max: 20000, step: 1, unit: 'IOPS', divider: 500 },
+  storage: { label: 'Storage', min: 50, max: 2000, step: 1, unit: 'GB', divider: 50 },
 }
 
 const FormSchema = z
@@ -100,7 +95,6 @@ const FormSchema = z
       .min(1, 'Please enter a project name.')
       .min(3, 'Project name must be at least 3 characters long.')
       .max(64, 'Project name must be no longer than 64 characters.'),
-    branchName: z.string().trim().min(1, 'Please enter a branch name.'),
     postgresVersion: z
       .string({
         required_error: 'Please enter a Postgres version.',
@@ -115,7 +109,6 @@ const FormSchema = z
     dataApi: z.boolean(),
     useApiSchema: z.boolean(),
     postgresVersionSelection: z.string(),
-    environmentType: z.string(),
     includeFileStorage: z.boolean(),
     enableHa: z.boolean(),
     readReplicas: z.number(),
@@ -156,20 +149,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
     ''
   )
 
-  const showAdvancedConfig = useIsFeatureEnabled('project_creation:show_advanced_config')
-
-  const { data: org } = useSelectedOrganizationQuery()
-  let environments: environment[] = []
-  if (org) {
-    const envTypes: string[] = org.env_types
-
-    environments = [
-      ...envTypes.map((type) => ({
-        label: type,
-        value: type,
-      })),
-    ]
-  }
+  const { data: availablePostgresVersions } = useAvailablePostgresVersionsQuery()
 
   useEffect(() => {
     if (slug === 'last-visited-org') {
@@ -219,16 +199,18 @@ const CreateProjectPage: NextPageWithLayout = () => {
       const k = keyMap[item.resource_type]
       if (!k) return
 
+      const step = item.step
+
       map[k] = {
         label: SLIDER_CONFIG[k].label,
         // branch: local min/max; project: API min/max
-        min: item.min ?? SLIDER_CONFIG[k].min,
-        max: item.max ?? SLIDER_CONFIG[k].max,
-        step: item.step ?? SLIDER_CONFIG[k].step,
+        min: item.min / step,
+        max: item.max / step,
+        step: 1,
         unit: item.unit ?? SLIDER_CONFIG[k].unit,
+        divider: step,
       }
     })
-
     return map
   }, [limitDefinitions])
 
@@ -270,8 +252,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
   const isEmptyOrganizations = (organizations?.length ?? 0) <= 0 && isOrganizationsSuccess
   const canCreateProject = isAdmin
 
-  const showNonProdFields = process.env.NEXT_PUBLIC_ENVIRONMENT !== 'prod'
-
   const delayedCheckPasswordStrength = useRef(
     debounce((value) => checkPasswordStrength(value), 300)
   ).current
@@ -303,7 +283,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
     defaultValues: {
       organization: slug,
       projectName: projectName || '',
-      branchName: '',
       postgresVersion: '',
       dbPass: '',
       dbPassConfirm: '',
@@ -312,7 +291,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
       dataApi: true,
       useApiSchema: false,
       postgresVersionSelection: '',
-      environmentType: environments[0]?.value ?? 'development',
       includeFileStorage: false,
       enableHa: false,
       readReplicas: 0,
@@ -332,8 +310,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
       },
     },
   })
-
-  const { instanceSize } = form.watch()
 
   function generatePassword() {
     const password = generateStrongPassword()
@@ -371,31 +347,28 @@ const CreateProjectPage: NextPageWithLayout = () => {
       return
     }
 
-    const {
-      projectName,
-      postgresVersion,
-    } = values
+    const { projectName, postgresVersion } = values
 
     const data: ProjectCreateVariables = {
       organizationSlug: currentOrg.slug,
       parameters: {
-        name: projectName,
+        name: values.projectName,
         max_backups: 100, // FIXME: fill in correct value
-        per_branch_limits: { // FIXME: fill in correct value
-          milli_vcpu: 10000,
-          ram: 274877906944,
-          iops: 1000000000,
-          database_size: 1000000000000,
-          storage_size: 100000000000000,
+        per_branch_limits: {
+          milli_vcpu: values.perBranchLimits.vcpu * limitConfig.vcpu.divider,
+          ram: values.perBranchLimits.ram * limitConfig.ram.divider,
+          iops: values.perBranchLimits.iops * limitConfig.iops.divider,
+          database_size: values.perBranchLimits.nvme * limitConfig.nvme.divider,
+          storage_size: values.perBranchLimits.storage * limitConfig.storage.divider,
         },
-        project_limits: { // FIXME: fill in correct value
-          milli_vcpu: 10000,
-          ram: 274877906944,
-          iops: 1000000000,
-          database_size: 1000000000000,
-          storage_size: 100000000000000,
-        }
-      }
+        project_limits: {
+          milli_vcpu: values.projectLimits.vcpu * limitConfig.vcpu.divider,
+          ram: values.projectLimits.ram * limitConfig.ram.divider,
+          iops: values.projectLimits.iops * limitConfig.iops.divider,
+          database_size: values.projectLimits.nvme * limitConfig.nvme.divider,
+          storage_size: values.projectLimits.storage * limitConfig.storage.divider,
+        },
+      },
     }
 
     if (postgresVersion) {
@@ -551,64 +524,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
                 />
               </div>
 
-              {/* COL 2: Branch name */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label_Shadcn_
-                    htmlFor="branch-name"
-                    className="text-xs font-medium text-foreground whitespace-nowrap"
-                  >
-                    Branch name
-                  </Label_Shadcn_>
-
-                  <FormField_Shadcn_
-                    control={form.control}
-                    name="branchName"
-                    render={({ field }) => (
-                      <Input_Shadcn_
-                        id="branch-name"
-                        placeholder="main"
-                        className="h-9 text-sm"
-                        {...field}
-                      />
-                    )}
-                  />
-
-                  <p className="text-[11px] leading-snug text-foreground-muted">
-                    This branch will be created with the settings below.
-                  </p>
-                </div>
-                <FormField_Shadcn_
-                  control={form.control}
-                  name="environmentType"
-                  render={({ field }) => (
-                    <div className="space-y-2">
-                      <Label_Shadcn_
-                        htmlFor="environment-type"
-                        className="text-xs font-medium text-foreground whitespace-nowrap"
-                      >
-                        Environment type
-                      </Label_Shadcn_>
-                      <Select_Shadcn_
-                        value={field.value}
-                        onValueChange={(value) => field.onChange(value)}
-                      >
-                        <SelectTrigger_Shadcn_ id="environment-type" className="w-full h-9 text-sm">
-                          <SelectValue_Shadcn_ placeholder="Select an environment" />
-                        </SelectTrigger_Shadcn_>
-                        <SelectContent_Shadcn_>
-                          {environments.map((option) => (
-                            <SelectItem_Shadcn_ key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem_Shadcn_>
-                          ))}
-                        </SelectContent_Shadcn_>
-                      </Select_Shadcn_>
-                    </div>
-                  )}
-                />
-              </div>
-
               {/* COL 3: Pg creds + custom PG version */}
               <div className="space-y-6">
                 {/* Password + Confirm */}
@@ -722,12 +637,13 @@ const CreateProjectPage: NextPageWithLayout = () => {
                   </Button>
                 </div>
 
-                {/* Custom Postgres version ONLY (selector removed) */}
-                {showNonProdFields && (
-                  <FormField_Shadcn_
-                    control={form.control}
-                    name="postgresVersion"
-                    render={({ field }) => (
+                <FormField_Shadcn_
+                  control={form.control}
+                  name="postgresVersion"
+                  render={({ field }) => {
+                    const availableVersions = availablePostgresVersions || []
+                    const defaultVersion = availableVersions.find(version => version.default)?.value || ''
+                    return (
                       <div className="space-y-2">
                         <Label_Shadcn_
                           htmlFor="custom-pg-version"
@@ -735,20 +651,27 @@ const CreateProjectPage: NextPageWithLayout = () => {
                         >
                           Custom Postgres version
                         </Label_Shadcn_>
-                        <Input_Shadcn_
-                          id="custom-pg-version"
-                          placeholder="15.2.0-3"
-                          autoComplete="off"
-                          className="h-9 text-sm"
-                          {...field}
-                        />
-                        <p className="text-[11px] leading-snug text-foreground-muted">
-                          Only for local / staging projects.
-                        </p>
+                        <Select_Shadcn_
+                          disabled={availableVersions.length < 2}
+                          value={defaultVersion}
+                        >
+                          <SelectTrigger_Shadcn_>
+                            <SelectValue_Shadcn_ placeholder="Select PostgreSQL version" />
+                          </SelectTrigger_Shadcn_>
+                          <SelectContent_Shadcn_>
+                            {availableVersions.map((version) => {
+                              return (
+                                <SelectItem_Shadcn_ value={version.value}>
+                                  {version.label}
+                                </SelectItem_Shadcn_>
+                              )
+                            })}
+                          </SelectContent_Shadcn_>
+                        </Select_Shadcn_>
                       </div>
-                    )}
-                  />
-                )}
+                    )
+                  }}
+                />
               </div>
             </section>
 
@@ -758,7 +681,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
             <section className="grid gap-10 xl:grid-cols-2">
               {/* Branch sizing card */}
               <section className="rounded-lg border p-5 space-y-4">
-                <p className="font-medium text-sm text-foreground">Sizing (this branch)</p>
+                <p className="font-medium text-sm text-foreground">Sizing (per branch)</p>
 
                 <div className="grid grid-cols-1 gap-y-4">
                   {(Object.keys(SLIDER_CONFIG) as SliderKey[]).map((key) => {
@@ -803,7 +726,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
 
                 <div className="grid grid-cols-1 gap-y-4">
                   {(Object.keys(SLIDER_CONFIG) as SliderKey[]).map((key) => {
-                    const { label, min, max, step, unit } = SLIDER_CONFIG[key]
+                    const { label, min, max, step, unit } = limitConfig[key]
                     const value = form.watch(`projectLimits.${key}`)
 
                     return (
