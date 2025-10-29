@@ -1,4 +1,4 @@
-import { AlertCircle, Check, ChevronsUpDown, ListTree, Plus, Shield } from 'lucide-react'
+import { AlertCircle, Check, ChevronsUpDown, Copy, ListTree, Plus, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -11,18 +11,18 @@ import { useAppStateSnapshot } from 'state/app-state'
 import {
   Badge,
   Button,
+  cn,
+  Command_Shadcn_,
   CommandEmpty_Shadcn_,
   CommandGroup_Shadcn_,
   CommandInput_Shadcn_,
   CommandItem_Shadcn_,
   CommandList_Shadcn_,
   CommandSeparator_Shadcn_,
-  Command_Shadcn_,
+  Popover_Shadcn_,
   PopoverContent_Shadcn_,
   PopoverTrigger_Shadcn_,
-  Popover_Shadcn_,
   ScrollArea,
-  cn,
 } from 'ui'
 import { Branch } from 'data/branches/branch-query'
 
@@ -45,7 +45,6 @@ const BranchLink = ({
         className="cursor-pointer w-full flex items-center justify-between"
         onSelect={() => {
           setOpen(false)
-          router.push(href)
         }}
         onClick={() => {
           setOpen(false)
@@ -104,7 +103,7 @@ export const BranchDropdown = () => {
       {isSuccess && (
         <>
           <Link
-            href={`/org/${orgSlug}/project/${ref}`}
+            href={`/org/${orgSlug}/project/${ref}/branch/${branchRef}`}
             className="flex items-center gap-2 flex-shrink-0 text-sm"
           >
             <span className="text-foreground max-w-32 lg:max-w-none truncate">
@@ -151,23 +150,40 @@ export const BranchDropdown = () => {
                       className="cursor-pointer w-full"
                       onSelect={() => {
                         setOpen(false)
-                        snap.setShowCreateBranchModal(true)
                       }}
                       onClick={() => {
                         setOpen(false)
-                        snap.setShowCreateBranchModal(true)
                       }}
                     >
-                      <div className="w-full flex items-center gap-2">
+                      <Link
+                        href={`/new/${orgSlug}/${ref}`}
+                        className="w-full flex items-center gap-2"
+                      >
                         <Plus size={14} strokeWidth={1.5} />
                         <p>Create branch</p>
-                      </div>
+                      </Link>
                     </CommandItem_Shadcn_>
                     <CommandItem_Shadcn_
                       className="cursor-pointer w-full"
                       onSelect={() => {
                         setOpen(false)
-                        router.push(`/org/${orgSlug}/project/${ref}/branch`)
+                      }}
+                      onClick={() => {
+                        setOpen(false)
+                      }}
+                    >
+                      <Link
+                        href={`/new/${orgSlug}/${ref}/${branchRef}?name=Clone%20of%20${selectedBranch?.name}`}
+                        className="w-full flex items-center gap-2"
+                      >
+                        <Copy size={14} strokeWidth={1.5} />
+                        <p>Clone current branch</p>
+                      </Link>
+                    </CommandItem_Shadcn_>
+                    <CommandItem_Shadcn_
+                      className="cursor-pointer w-full"
+                      onSelect={() => {
+                        setOpen(false)
                       }}
                       onClick={() => setOpen(false)}
                     >

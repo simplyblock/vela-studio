@@ -21,6 +21,7 @@ import { BreadcrumbsView } from './BreadcrumbsView'
 import { HelpPopover } from './HelpPopover'
 import { HomeIcon } from './HomeIcon'
 import { NotificationsPopoverV2 } from './NotificationsPopoverV2/NotificationsPopover'
+import { useSelectedBranchQuery } from '../../../../data/branches/selected-branch-query'
 
 const LayoutHeaderDivider = ({ className, ...props }: React.HTMLProps<HTMLSpanElement>) => (
   <span className={cn('text-border-stronger pr-2', className)} {...props}>
@@ -56,6 +57,7 @@ const LayoutHeader = ({
   const { ref: projectRef, slug } = useParams()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const { data: selectedProject } = useSelectedProjectQuery()
+  const { data: selectedBranch } = useSelectedBranchQuery()
   const { setMobileMenuOpen } = useAppStateSnapshot()
 
   const [showEditorPanel, setShowEditorPanel] = useState(false)
@@ -115,7 +117,7 @@ const LayoutHeader = ({
                 </>
               ) : null}
               <AnimatePresence>
-                {projectRef && (
+                {selectedProject && (
                   <motion.div
                     className="flex items-center"
                     initial={{ opacity: 0, x: -20 }}
@@ -139,7 +141,7 @@ const LayoutHeader = ({
                       </div>
                     )}
 
-                    {selectedProject && (
+                    {selectedProject && selectedBranch && (
                       <>
                         <LayoutHeaderDivider />
                         <BranchDropdown />

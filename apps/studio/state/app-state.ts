@@ -62,21 +62,6 @@ export const appState = proxy({
     }
   },
 
-  isMfaEnforced: false,
-  setIsMfaEnforced: (value: boolean) => {
-    appState.isMfaEnforced = value
-  },
-
-  showCreateBranchModal: false,
-  setShowCreateBranchModal: (value: boolean) => {
-    appState.showCreateBranchModal = value
-  },
-
-  showAiSettingsModal: false,
-  setShowAiSettingsModal: (value: boolean) => {
-    appState.showAiSettingsModal = value
-  },
-
   showSidebar: true,
   setShowSidebar: (value: boolean) => {
     appState.showSidebar = value
