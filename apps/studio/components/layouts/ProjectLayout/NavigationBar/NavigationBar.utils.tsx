@@ -1,3 +1,6 @@
+
+
+import { Activity } from 'lucide-react'
 import { Blocks, FileText, Lightbulb, List, Settings } from 'lucide-react'
 
 import { ICON_SIZE, ICON_STROKE_WIDTH } from 'components/interfaces/Sidebar'
@@ -15,14 +18,53 @@ import {
   SqlEditor,
   Storage,
   TableEditor,
+  Home,
 } from 'icons'
 import { PROJECT_STATUS } from 'lib/constants'
+
+/* ----------------------------------------------------------------
+   PROJECT-LEVEL ROUTES (NEW)
+   /org/:orgRef/project/:projectRef/*
+   No branchRef here.
+----------------------------------------------------------------- */
+export const generateProjectRoutes = (
+  orgRef: string,
+  projectRef?: string
+): Route[] => {
+  return [
+    {
+      key: 'project-overview',
+      label: 'Project overview',
+      icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link: projectRef && `/org/${orgRef}/project/${projectRef}`,
+    },
+    {
+      key: 'resource-limits',
+      label: 'Resource Limits',
+      icon: <Activity size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link: projectRef && `/org/${orgRef}/project/${projectRef}/resource-limits`,
+    },
+    {
+      key: 'project-settings',
+      label: 'Project settings',
+      icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link: projectRef && `/org/${orgRef}/project/${projectRef}/settings`,
+      // later you could add items: [...] if you split project settings internally
+    },
+  ]
+}
+
+/* ----------------------------------------------------------------
+   BRANCH-LEVEL ROUTES (EXISTING)
+   /org/:orgRef/project/:projectRef/branch/:branchRef/*
+   These feed the "Branch" sidebar.
+----------------------------------------------------------------- */
 
 export const generateToolRoutes = (
   orgRef: string,
   projectRef?: string,
   project?: ProjectDetail,
-  branchRef?: string,
+  branchRef?: string
 ): Route[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
   const buildingUrl = `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`
@@ -37,7 +79,13 @@ export const generateToolRoutes = (
         (isProjectBuilding
           ? buildingUrl
           : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`),
-      linkElement: <EditorIndexPageLink orgRef={orgRef} projectRef={projectRef} branchRef={branchRef} />,
+      linkElement: (
+        <EditorIndexPageLink
+          orgRef={orgRef}
+          projectRef={projectRef}
+          branchRef={branchRef}
+        />
+      ),
     },
     {
       key: 'sql',
@@ -45,16 +93,25 @@ export const generateToolRoutes = (
       icon: <SqlEditor size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
         projectRef &&
-        (isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql`),
+        (isProjectBuilding
+          ? buildingUrl
+          : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/sql`),
     },
   ]
 }
+
 export const generateProductRoutes = (
   orgRef: string,
   projectRef?: string,
   project?: ProjectDetail,
   branchRef?: string,
-  features?: { auth?: boolean; edgeFunctions?: boolean; storage?: boolean; realtime?: boolean;  backups?: boolean  }
+  features?: {
+    auth?: boolean
+    edgeFunctions?: boolean
+    storage?: boolean
+    realtime?: boolean
+    backups?: boolean
+  }
 ): Route[] => {
   const isProjectActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
   const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
@@ -64,7 +121,6 @@ export const generateProductRoutes = (
   const edgeFunctionsEnabled = features?.edgeFunctions ?? true
   const storageEnabled = features?.storage ?? true
   const realtimeEnabled = features?.realtime ?? true
-  const backupsEnabled = features?.backups ?? true
   const databaseMenu = generateDatabaseMenu(orgRef, project)
   const authMenu = generateAuthMenu(orgRef, projectRef!, branchRef!, {
     showPolicies: features?.auth ?? false,
@@ -179,26 +235,15 @@ export const generateOtherRoutes = (
             ? `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs`
             : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/explorer`),
     },
-    // {
-    //   key: 'reports',
-    //   label: 'Reports',
-    //   icon: <Reports size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-    //   link: ref && (isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/reports`),
-    // },
-
-    // {
-    //   key: 'logs',
-    //   label: 'Logs',
-    //   icon: <List size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-    //   link: ref && (isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs`),
-    // },
     {
       key: 'api',
       label: 'API Docs',
       icon: <FileText size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
         projectRef &&
-        (isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api`),
+        (isProjectBuilding
+          ? buildingUrl
+          : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api`),
     },
     {
       key: 'integrations',
@@ -220,12 +265,15 @@ export const generateSettingsRoutes = (
   branchRef?: string
 ): Route[] => {
   const settingsMenu = generateSettingsMenu(orgRef, projectRef!, branchRef, project)
+
   return [
     {
-      key: 'settings',
-      label: 'Project Settings',
+      key: 'branch-settings',
+      label: 'Branch settings', // renamed from "Project Settings"
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link: projectRef && `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,
+      link:
+        projectRef &&
+        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,
       items: settingsMenu,
     },
   ]

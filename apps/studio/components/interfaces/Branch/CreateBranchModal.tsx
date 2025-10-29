@@ -1,5 +1,4 @@
 import { Eye, EyeOff } from 'lucide-react'
-import { Eye, EyeOff } from 'lucide-react'
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react'
 import {
   Button,

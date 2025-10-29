@@ -1,3 +1,5 @@
+// Sidebar.tsx
+
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { isUndefined } from 'lodash'
 import {
@@ -13,11 +15,22 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { ComponentProps, ComponentPropsWithoutRef, FC, ReactNode, useEffect } from 'react'
-import { LOCAL_STORAGE_KEYS, useIsMFAEnabled, useParams } from 'common'
+import {
+  ComponentProps,
+  ComponentPropsWithoutRef,
+  FC,
+  ReactNode,
+  useEffect,
+} from 'react'
+import {
+  LOCAL_STORAGE_KEYS,
+  useIsMFAEnabled,
+  useParams,
+} from 'common'
 import {
   generateOtherRoutes,
   generateProductRoutes,
+  generateProjectRoutes,
   generateSettingsRoutes,
   generateToolRoutes,
 } from 'components/layouts/ProjectLayout/NavigationBar/NavigationBar.utils'
@@ -61,7 +74,8 @@ const SidebarMotion = motion(SidebarPrimitive) as FC<
   }
 >
 
-export interface SidebarProps extends ComponentPropsWithoutRef<typeof SidebarPrimitive> {}
+export interface SidebarProps
+  extends ComponentPropsWithoutRef<typeof SidebarPrimitive> {}
 
 export const Sidebar = ({ className, ...props }: SidebarProps) => {
   const { setOpen } = useSidebar()
@@ -100,19 +114,36 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     type="text"
-                    className={`w-min px-1.5 mx-0.5 ${sidebarBehaviour === 'open' ? '!px-2' : ''}`}
-                    icon={<PanelLeftDashed size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />}
+                    className={`w-min px-1.5 mx-0.5 ${
+                      sidebarBehaviour === 'open' ? '!px-2' : ''
+                    }`}
+                    icon={
+                      <PanelLeftDashed
+                        size={ICON_SIZE}
+                        strokeWidth={ICON_STROKE_WIDTH}
+                      />
+                    }
                   />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent side="top" align="start" className="w-40">
+                <DropdownMenuContent
+                  side="top"
+                  align="start"
+                  className="w-40"
+                >
                   <DropdownMenuRadioGroup
                     value={sidebarBehaviour}
-                    onValueChange={(value) => setSidebarBehaviour(value as SidebarBehaviourType)}
+                    onValueChange={(value) =>
+                      setSidebarBehaviour(value as SidebarBehaviourType)
+                    }
                   >
                     <DropdownMenuLabel>Sidebar control</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuRadioItem value="open">Expanded</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="closed">Collapsed</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="open">
+                      Expanded
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="closed">
+                      Collapsed
+                    </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="expandable">
                       Expand on hover
                     </DropdownMenuRadioItem>
@@ -127,18 +158,24 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
   )
 }
 
+/* -------------------------------------------------
+   SidebarContent decides WHICH LEVEL to show:
+   - Org sidebar (no projectRef)
+   - Project sidebar (projectRef && !branchRef)
+   - Branch sidebar (projectRef && branchRef)
+-------------------------------------------------- */
+
 export const SidebarContent = ({ footer }: { footer?: ReactNode }) => {
-  const { ref: projectRef } = useParams()
+  const { ref: projectRef, branch: branchRef } = useParams()
+
+  const which =
+    !projectRef ? 'org' : projectRef && !branchRef ? 'project' : 'branch'
 
   return (
     <>
       <AnimatePresence mode="wait">
         <SidebarContentPrimitive>
-          {projectRef ? (
-            <motion.div key="project-links">
-              <ProjectLinks />
-            </motion.div>
-          ) : (
+          {which === 'org' && (
             <motion.div
               key="org-links"
               initial={{ opacity: 0, y: -20 }}
@@ -149,14 +186,37 @@ export const SidebarContent = ({ footer }: { footer?: ReactNode }) => {
               <OrganizationLinks />
             </motion.div>
           )}
+
+          {which === 'project' && (
+            <motion.div
+              key="project-links"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              <ProjectSidebarLinks />
+            </motion.div>
+          )}
+
+          {which === 'branch' && (
+            <motion.div key="branch-links">
+              <BranchSidebarLinks />
+            </motion.div>
+          )}
         </SidebarContentPrimitive>
       </AnimatePresence>
+
       <SidebarFooter>
         <SidebarGroup className="p-0">{footer}</SidebarGroup>
       </SidebarFooter>
     </>
   )
 }
+
+/* -------------------------------------------------
+   Shared Nav Button
+-------------------------------------------------- */
 
 export function SideBarNavLink({
   route,
@@ -206,6 +266,10 @@ export function SideBarNavLink({
   )
 }
 
+/* -------------------------------------------------
+   Status dot helper for Advisors menu item
+-------------------------------------------------- */
+
 const ActiveDot = (errorArray: any[], warningArray: any[]) => {
   return (
     <div
@@ -221,13 +285,69 @@ const ActiveDot = (errorArray: any[], warningArray: any[]) => {
   )
 }
 
-const ProjectLinks = () => {
+/* -------------------------------------------------
+   PROJECT SIDEBAR (NEW LEVEL)
+   /org/:orgRef/project/:projectRef/*
+   No branchRef here.
+-------------------------------------------------- */
+
+export const ProjectSidebarLinks = () => {
   const router = useRouter()
-  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug: string; ref?: string, branch?: string }
+  const { slug: orgRef, ref: projectRef } = useParams() as {
+    slug: string
+    ref?: string
+  }
+
+  const projectRoutes = generateProjectRoutes(orgRef, projectRef)
+
+  // For project-level pages, the path looks like:
+  // /org/[orgRef]/project/[projectRef]/[section?]
+  const pathParts = router.pathname.split('/')
+  const activeRoute = pathParts[5] // may be undefined on /project/:projectRef root
+
+  return (
+    <SidebarMenu>
+      <SidebarGroup className="gap-0.5">
+        {projectRoutes.map((route, i) => (
+          <SideBarNavLink
+            key={`project-routes-${i}`}
+            route={route}
+            active={
+              (!activeRoute && route.key === 'project-overview') ||
+              activeRoute === route.key ||
+              router.asPath.includes(route.key)
+            }
+          />
+        ))}
+      </SidebarGroup>
+    </SidebarMenu>
+  )
+}
+
+/* -------------------------------------------------
+   BRANCH SIDEBAR (OLD ProjectLinks)
+   /org/:orgRef/project/:projectRef/branch/:branchRef/*
+   This is what used to be "ProjectLinks", now
+   correctly scoped as branch-level.
+-------------------------------------------------- */
+
+const BranchSidebarLinks = () => {
+  const router = useRouter()
+  const {
+    slug: orgRef,
+    ref: projectRef,
+    branch: branchRef,
+  } = useParams() as { slug: string; ref?: string; branch?: string }
+
   const { data: project } = useSelectedProjectQuery()
   const { securityLints, errorLints } = useLints()
 
-  const activeRoute = router.pathname.split('/')[5]
+  // branch-level pages look like:
+  // /org/[orgRef]/project/[projectRef]/branch/[branchRef]/[section]/...
+  // split('/') => ['', 'org', orgRef, 'project', projectRef, 'branch', branchRef, <section>, ...]
+  // so section = index 7
+  const pathParts = router.pathname.split('/')
+  const activeRoute = pathParts[7]
 
   const {
     projectAuthAll: authEnabled,
@@ -241,18 +361,30 @@ const ProjectLinks = () => {
     'realtime:all',
   ])
 
+  // Build groups
   const toolRoutes = generateToolRoutes(orgRef, projectRef, project, branchRef)
-  const productRoutes = generateProductRoutes(orgRef, projectRef, project, branchRef, {
-    auth: authEnabled,
-    edgeFunctions: edgeFunctionsEnabled,
-    storage: storageEnabled,
-    realtime: realtimeEnabled,
-  })
-  const projectLinks = [
+  const productRoutes = generateProductRoutes(
+    orgRef,
+    projectRef,
+    project,
+    branchRef,
+    {
+      auth: authEnabled,
+      edgeFunctions: edgeFunctionsEnabled,
+      storage: storageEnabled,
+      realtime: realtimeEnabled,
+    }
+  )
+
+  // Static branch-specific links (minus Resource Limits,
+  // which moved to project scope)
+  const branchLinks = [
     {
       key: 'database-backup-schedules',
       label: 'Backup Schedules',
-      icon: <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      icon: (
+        <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+      ),
       link:
         projectRef &&
         `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
@@ -267,39 +399,56 @@ const ProjectLinks = () => {
         `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
       isActive:
         router.asPath.includes('/database/backups/pitr') ||
-        router.asPath.includes('/database/backups/restore-to-new-project'),
+        router.asPath.includes(
+          '/database/backups/restore-to-new-project'
+        ),
     },
-    {
-      key: 'resource-limits',
-      label: 'Resource Limits',
-      icon: <Activity size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link:
-        projectRef &&
-        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/resource-limits`,
-      isActive: router.asPath.includes('/resource-limits'),
-    },
-
   ]
 
-  const otherRoutes = generateOtherRoutes(orgRef, projectRef, project, branchRef, {
-    unifiedLogs: true,
-  })
-  const settingsRoutes = generateSettingsRoutes(orgRef, projectRef, project, branchRef)
+  const otherRoutes = generateOtherRoutes(
+    orgRef,
+    projectRef,
+    project,
+    branchRef,
+    {
+      unifiedLogs: true,
+    }
+  )
+  const settingsRoutes = generateSettingsRoutes(
+    orgRef,
+    projectRef,
+    project,
+    branchRef
+  )
 
   return (
     <SidebarMenu>
+      {/* "Branch overview" (was Project overview) */}
       <SidebarGroup className="gap-0.5">
         <SideBarNavLink
-          key="home"
-          active={isUndefined(activeRoute) && !isUndefined(router.query.ref)}
+          key="branch-overview"
+          active={
+            isUndefined(activeRoute) && !isUndefined(router.query.ref)
+          }
           route={{
-            key: 'HOME',
-            label: 'Project overview',
-            icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`,
-            linkElement: <ProjectIndexPageLink slug={orgRef} projectRef={projectRef} branchRef={branchRef} />,
+            key: 'branch-overview',
+            label: 'Branch overview',
+            icon: (
+              <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+            ),
+            link:
+              projectRef &&
+              `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`,
+            linkElement: (
+              <ProjectIndexPageLink
+                slug={orgRef}
+                projectRef={projectRef}
+                branchRef={branchRef}
+              />
+            ),
           }}
         />
+
         {toolRoutes.map((route, i) => (
           <SideBarNavLink
             key={`tools-routes-${i}`}
@@ -308,7 +457,9 @@ const ProjectLinks = () => {
           />
         ))}
       </SidebarGroup>
+
       <Separator className="w-[calc(100%-1rem)] mx-auto" />
+
       <SidebarGroup className="gap-0.5">
         {productRoutes.map((route, i) => (
           <SideBarNavLink
@@ -317,12 +468,18 @@ const ProjectLinks = () => {
             active={activeRoute === route.key}
           />
         ))}
-        {projectLinks.map(({ isActive, ...route }) => (
-          <SideBarNavLink key={route.key} route={route} active={isActive} />
+
+        {branchLinks.map(({ isActive, ...route }) => (
+          <SideBarNavLink
+            key={route.key}
+            route={route}
+            active={isActive}
+          />
         ))}
       </SidebarGroup>
-      
+
       <Separator className="w-[calc(100%-1rem)] mx-auto" />
+
       <SidebarGroup className="gap-0.5">
         {otherRoutes.map((route, i) => {
           if (route.key === 'advisors') {
@@ -336,14 +493,6 @@ const ProjectLinks = () => {
                 />
               </div>
             )
-          } else if (route.key === 'logs') {
-            return (
-              <SideBarNavLink
-                key={`other-routes-${i}`}
-                route={route}
-                active={activeRoute === route.key}
-              />
-            )
           } else {
             return (
               <SideBarNavLink
@@ -355,7 +504,8 @@ const ProjectLinks = () => {
           }
         })}
       </SidebarGroup>
-      {/* Settings routes to be added in with project/org nav */}
+
+      {/* Branch settings (was Project Settings) */}
       <SidebarGroup className="gap-0.5">
         {settingsRoutes.map((route, i) => (
           <SideBarNavLink
@@ -369,13 +519,18 @@ const ProjectLinks = () => {
   )
 }
 
+/* -------------------------------------------------
+   ORG SIDEBAR (unchanged)
+-------------------------------------------------- */
+
 const OrganizationLinks = () => {
   const router = useRouter()
   const { slug } = useParams()
 
   const { data: org } = useSelectedOrganizationQuery()
   const isUserMFAEnabled = useIsMFAEnabled()
-  const disableAccessMfa = org?.organization_requires_mfa && !isUserMFAEnabled
+  const disableAccessMfa =
+    org?.organization_requires_mfa && !isUserMFAEnabled
 
   // Get the full current path
   const currentPath = router.asPath
@@ -405,12 +560,12 @@ const OrganizationLinks = () => {
     {
       label: 'Metering',
       href: `/org/${slug}/metering`,
-      key: 'usage', // Changed to match the path
+      key: 'usage',
       icon: <ChartArea size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
     {
       label: 'Backups',
-      href: `/org/${slug}/backups`, // Updated to match the key
+      href: `/org/${slug}/backups`,
       key: 'backups',
       icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
@@ -426,12 +581,9 @@ const OrganizationLinks = () => {
   const isActive = (key: string, href: string) => {
     // Special case for projects which is the root
     if (key === 'projects') {
-      // Check if we're exactly at the org root
-      console.log(`current path: ${currentPath} and slug is: ${slug}`)
       return (
         currentPath === `/org/${slug}` ||
         currentPath === `/org/${slug}/` ||
-        // Fallback: check if path ends with just the org slug
         currentPath.endsWith(`/org/${slug}`) ||
         currentPath.endsWith(`/org/${slug}/`)
       )
