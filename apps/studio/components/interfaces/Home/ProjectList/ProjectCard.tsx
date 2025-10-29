@@ -10,6 +10,7 @@ import { ProjectCardStatus } from './ProjectCardStatus'
 import { useParams } from 'common'
 import { useBranchesQuery } from 'data/branches/branches-query'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
+import { useMemo } from 'react'
 
 export interface ProjectCardProps {
   project: ProjectInfo
@@ -24,13 +25,20 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
 
   const { data: branches, isLoading } = useBranchesQuery({ orgSlug: orgRef, projectRef })
   const mainBranch = branches?.find((branch) => branch.id === default_branch_id)
+  const onlyBranch = branches?.length === 1 ? branches[0] : undefined
 
   const isBranchingEnabled = true
   const isGithubIntegrated = githubIntegration !== undefined
   const githubRepository = githubIntegration?.metadata.name ?? undefined
   const projectStatus = inferProjectStatus(project)
 
-  if (!isLoading && !mainBranch) console.error('No main branch found for project', project)
+  const selectedBranch = mainBranch?.id ?? onlyBranch?.id ?? undefined
+  const branchLink = useMemo(() => {
+    if (selectedBranch) {
+      return `/org/${orgRef}/project/${projectRef}/branch/${selectedBranch}`
+    }
+    return `/new/${orgRef}/${projectRef}`
+  }, [selectedBranch, orgRef, projectRef])
 
   return (
     <li className="list-none">
@@ -38,7 +46,7 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
         <ShimmeringLoader className="w-full h-[32px] w-6 p-0" />
       ) : (
         <CardButton
-          linkHref={`/org/${orgRef}/project/${projectRef}/branch/${mainBranch?.id}`}
+          linkHref={branchLink}
           className="h-44 !px-0 group pt-5 pb-0"
           title={
             <div className="w-full justify-between space-y-1.5 px-5">

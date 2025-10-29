@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 
 import { useParams } from 'common'
 import { ClientLibrary, ExampleProject } from 'components/interfaces/Home'
@@ -15,27 +15,17 @@ import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
-import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
-import {
-  cn,
-  Tabs_Shadcn_,
-  TabsContent_Shadcn_,
-  TabsList_Shadcn_,
-  TabsTrigger_Shadcn_,
-} from 'ui'
+import { cn, Tabs_Shadcn_, TabsContent_Shadcn_, TabsList_Shadcn_, TabsTrigger_Shadcn_ } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Home: NextPageWithLayout = () => {
-  const { data: organization } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const snap = useAppStateSnapshot()
-  const { ref, enableBranching, slug, branch: branchRef } = useParams()
+  const { ref, slug, branch: branchRef } = useParams()
 
   const {
     projectHomepageShowAllClientLibraries: showAllClientLibraries,
@@ -54,16 +44,7 @@ const Home: NextPageWithLayout = () => {
     return CLIENT_LIBRARIES.filter((library) => library.language === 'JavaScript')
   }, [showAllClientLibraries])
 
-  const hasShownEnableBranchingModalRef = useRef(false)
   const isPaused = project?.status === PROJECT_STATUS.INACTIVE
-
-  useEffect(() => {
-    if (enableBranching && !hasShownEnableBranchingModalRef.current) {
-      hasShownEnableBranchingModalRef.current = true
-      snap.setShowCreateBranchModal(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enableBranching])
 
   const { data: tablesData, isLoading: isLoadingTables } = useTablesQuery({
     branch,
@@ -160,9 +141,7 @@ const Home: NextPageWithLayout = () => {
         <>
           <div className="py-16 border-b border-muted">
             <div className="mx-auto max-w-7xl space-y-16">
-              {project?.status !== PROJECT_STATUS.INACTIVE && (
-               <ProjectUsageSection />
-              )}
+              {project?.status !== PROJECT_STATUS.INACTIVE && <ProjectUsageSection />}
               {project?.status !== PROJECT_STATUS.INACTIVE && <AdvisorWidget />}
             </div>
           </div>

@@ -47,7 +47,7 @@ export const useBranchQuery = <TData = BranchData>(
   { enabled = true, ...options }: UseQueryOptions<BranchData, BranchError, TData> = {}
 ) =>
   useQuery<BranchData, BranchError, TData>(
-    branchKeys.detail(projectRef, branchRef),
+    branchKeys.detail(orgRef, projectRef, branchRef),
     ({ signal }) => getBranch({ orgRef, projectRef, branchRef }, signal),
     {
       enabled:

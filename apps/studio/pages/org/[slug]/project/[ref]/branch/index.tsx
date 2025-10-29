@@ -26,7 +26,6 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 const BranchesPage: NextPageWithLayout = () => {
   const router = useRouter()
   const { slug, ref } = useParams()
-  const snap = useAppStateSnapshot()
   const { data: project } = useSelectedProjectQuery()
   const { data: selectedOrg } = useSelectedOrganizationQuery()
 
@@ -116,7 +115,7 @@ useEffect(() => {
                       isLoading={isLoading}
                       isSuccess={isSuccess}
                       mainBranch={mainBranch}
-                      onSelectCreateBranch={() => snap.setShowCreateBranchModal(true)}
+                      onSelectCreateBranch={() => router.push(`/new/${slug}/${ref}`)}
                       onSelectDeleteBranch={setSelectedBranchToDelete}
                     />
                   )}
@@ -151,14 +150,15 @@ useEffect(() => {
 
 BranchesPage.getLayout = (page) => {
   const BranchesPageWrapper = () => {
-    const snap = useAppStateSnapshot()
+    const { slug, ref } = useParams()
+    const router = useRouter()
     const { can: canCreateBranches } = useCheckPermissions("project:branches:create")
 
     const primaryActions = (
       <ButtonTooltip
         type="primary"
         disabled={!canCreateBranches}
-        onClick={() => snap.setShowCreateBranchModal(true)}
+        onClick={() => router.push(`/new/${slug}/${ref}`)}
         tooltip={{
           content: {
             side: 'bottom',
