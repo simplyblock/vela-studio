@@ -5,7 +5,7 @@ import { ProjectList } from 'components/interfaces/Home/ProjectList'
 import HomePageActions from 'components/interfaces/HomePageActions'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import OrganizationLayout from 'components/layouts/OrganizationLayout'
-import { ScaffoldContainerLegacy } from 'components/layouts/Scaffold'
+import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import { InlineLink } from 'components/ui/InlineLink'
 import { useAutoProjectsPrefetch } from 'data/projects/projects-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
@@ -27,7 +27,7 @@ const ProjectsPage: NextPageWithLayout = () => {
   useAutoProjectsPrefetch()
 
   return (
-    <ScaffoldContainerLegacy>
+    <ScaffoldContainer>
       {disableAccessMfa ? (
         <Admonition type="note" title={`The organization "${org?.name}" has MFA enforced`}>
           <p className="!m-0">
@@ -54,7 +54,7 @@ const ProjectsPage: NextPageWithLayout = () => {
           </div>
         </div>
       )}
-    </ScaffoldContainerLegacy>
+    </ScaffoldContainer>
   )
 }
 
