@@ -88,7 +88,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
 
   const router = useRouter()
 
-  const { data: org } = useSelectedOrganizationQuery()
+  const { data: organization } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
   const { data: projectLimits } = useProjectLimitsQuery({ orgSlug: slug, projectRef: ref })
 
@@ -121,9 +121,9 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
         label: resourceType,
         min: systemDefinition.min / systemDefinition.step,
         max: systemDefinition.max / systemDefinition.step,
-        step: 1,
+        step: resourceType === 'iops' ? systemDefinition.step : 1,
         unit: systemDefinition.unit || 'IOPS',
-        divider: systemDefinition.step,
+        divider: resourceType === 'iops' ? 1 : systemDefinition.step,
       }
     }
 
@@ -133,34 +133,30 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
       label: sliderNames[resourceType],
       min: min / step,
       max: (max_per_branch ?? 0) / step,
-      step: 1,
+      step: resourceType === 'iops' ? step : 1,
       unit: unit || 'IOPS',
-      divider: step,
+      divider: resourceType === 'iops' ? 1 : step,
     }
   }
 
   const limits = useMemo(() => {
-    const t = {
+    return {
       milli_vcpu: makeLimit('milli_vcpu', projectLimits),
       ram: makeLimit('ram', projectLimits),
       iops: makeLimit('iops', projectLimits),
       database_size: makeLimit('database_size', projectLimits),
       storage_size: makeLimit('storage_size', projectLimits),
     }
-    return t
   }, [projectLimits, resourceLimitsDefinitions])
 
-  let environments: EnvironmentType[] = []
-  if (org) {
-    const envTypes: string[] = org.env_types
-
-    environments = [
-      ...envTypes.map((type) => ({
-        label: type,
-        value: type,
-      })),
-    ]
-  }
+  const environments = useMemo<EnvironmentType[]>(() => {
+    if (!organization) return []
+    const envTypes: string[] = organization.env_types
+    return envTypes.map((type) => ({
+      label: type,
+      value: type,
+    }))
+  }, [organization])
 
   const [isOrgCreationConfirmationModalVisible, setIsOrgCreationConfirmationModalVisible] =
     useState(false)
@@ -265,7 +261,9 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
         deployment: {
           database_password: values.databasePassword,
           database_size: values.resources.database_size * limits.database_size.divider,
-          storage_size: values.enableStorageService ? values.resources.storage_size * limits.storage_size.divider : undefined,
+          storage_size: values.enableStorageService
+            ? values.resources.storage_size * limits.storage_size.divider
+            : undefined,
           milli_vcpu: values.resources.milli_vcpu * limits.milli_vcpu.divider,
           memory_bytes: values.resources.ram * limits.ram.divider,
           iops: values.resources.iops * limits.iops.divider,
