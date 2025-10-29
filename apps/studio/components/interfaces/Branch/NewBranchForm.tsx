@@ -54,6 +54,8 @@ const FormSchema = z.object({
   enableStorageService: z.boolean(),
   enableHighAvailability: z.boolean(),
   readReplicas: z.number(),
+  withConfig: z.boolean().optional(),
+  withData: z.boolean().optional(),
   resources: z.object({
     milli_vcpu: z.number(),
     ram: z.number(),
@@ -113,6 +115,8 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
       enableStorageService: false,
       enableHighAvailability: false,
       readReplicas: 0,
+      withConfig: true,
+      withData: true,
       resources: {
         milli_vcpu: 0,
         ram: 0,
@@ -226,6 +230,8 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
         orgRef: slug,
         projectRef: ref,
         branchName: values.name,
+        withConfig: branch ? values.withConfig : undefined,
+        withData: branch ? values.withData : undefined,
         deployment: resourceAllocations,
       },
       {
@@ -341,18 +347,62 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                   resource allocations as the source branch.
                 </Label_Shadcn_>
               </div>
-              <div className="flex gap-3 pl-1 items-center">
-                <Checkbox_Shadcn_
-                  id="enable-storage-service"
-                  checked={adjustableResources}
-                  onCheckedChange={(checked) => setAdjustableResources(checked === true)}
-                />
-                <Label_Shadcn_
-                  htmlFor="enable-storage-service"
-                  className="text-foreground text-xs font-medium leading-tight"
-                >
-                  Adjust branch resource allocation
-                </Label_Shadcn_>
+              <div className="pl-1">
+                <div className="flex gap-3 pl-1 items-center">
+                  <FormField_Shadcn_
+                    control={form.control}
+                    name="withConfig"
+                    render={({ field }) => (
+                      <>
+                        <Checkbox_Shadcn_
+                          id="copy-configuration"
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(checked === true)}
+                        />
+                        <Label_Shadcn_
+                          htmlFor="copy-configuration"
+                          className="text-foreground text-xs font-medium leading-tight"
+                        >
+                          Clone branch configuration
+                        </Label_Shadcn_>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className="flex gap-3 pl-1 mt-2 items-center">
+                  <FormField_Shadcn_
+                    control={form.control}
+                    name="withData"
+                    render={({ field }) => (
+                      <>
+                        <Checkbox_Shadcn_
+                          id="copy-data"
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(checked === true)}
+                        />
+                        <Label_Shadcn_
+                          htmlFor="copy-data"
+                          className="text-foreground text-xs font-medium leading-tight"
+                        >
+                          Clone branch data
+                        </Label_Shadcn_>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className="flex gap-3 pl-1 mt-2 items-center">
+                  <Checkbox_Shadcn_
+                    id="adjustable-resources"
+                    checked={adjustableResources}
+                    onCheckedChange={(checked) => setAdjustableResources(checked === true)}
+                  />
+                  <Label_Shadcn_
+                    htmlFor="adjustable-resources"
+                    className="text-foreground text-xs font-medium leading-tight"
+                  >
+                    Adjust branch resource allocation
+                  </Label_Shadcn_>
+                </div>
               </div>
             </div>
           )}
