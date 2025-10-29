@@ -112,12 +112,10 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
     const systemDefinition = (resourceLimitsDefinitions || []).find(
       (limit) => limit.resource_type === resourceType
     )
-    console.log('systemDefinition', systemDefinition)
     if (!systemDefinition)
       return { label: resourceType, min: 0, max: 0, step: 1, unit: '', divider: 1 }
 
     const projectLimit = (limits || []).find((limit) => limit.resource === resourceType)
-    console.log('projectLimit', projectLimit)
     if (!projectLimit) {
       return {
         label: resourceType,
@@ -142,7 +140,6 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
   }
 
   const limits = useMemo(() => {
-    console.log(projectLimits)
     const t = {
       milli_vcpu: makeLimit('milli_vcpu', projectLimits),
       ram: makeLimit('ram', projectLimits),
@@ -150,7 +147,6 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
       database_size: makeLimit('database_size', projectLimits),
       storage_size: makeLimit('storage_size', projectLimits),
     }
-    console.log(t)
     return t
   }, [projectLimits, resourceLimitsDefinitions])
 
