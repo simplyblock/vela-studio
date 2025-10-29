@@ -85,12 +85,14 @@ const BranchesPage: NextPageWithLayout = () => {
     )
   }
 
-  useEffect(() => {
-    if (!isSuccessBranches) return
-    if (branches?.length || 0) {
-      return router.push(`/new/${slug}/${ref}?name=main`)
-    }
-  }, [router, isSuccessBranches, branches])
+useEffect(() => {
+  if (!isSuccessBranches) return;
+
+  if (branches?.length || 0) {
+    router.push(`/new/${slug}/${ref}?name=main`);
+  }
+}, [router, isSuccessBranches, branches]);
+
 
   return (
     <>

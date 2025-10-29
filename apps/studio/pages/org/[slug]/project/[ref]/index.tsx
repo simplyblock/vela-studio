@@ -3,8 +3,6 @@ import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 
 import DefaultLayout from 'components/layouts/DefaultLayout'
-import { ProjectScopeLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectScopedLayout'
-
 import { useParams } from 'common'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useBranchesQuery } from 'data/branches/branches-query'
