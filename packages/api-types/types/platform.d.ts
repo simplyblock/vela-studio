@@ -3015,7 +3015,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/config/pgbouncer': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/pgbouncer': {
     parameters: {
       query?: never
       header?: never
@@ -3033,7 +3033,7 @@ export interface paths {
     patch: operations['PgbouncerConfigController_updatePgbouncerConfig']
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/config/pgbouncer/status': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/pgbouncer/status': {
     parameters: {
       query?: never
       header?: never
@@ -18845,6 +18845,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }
@@ -18855,7 +18856,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'PgbouncerConfigResponse'>
+          'application/json': VelaType<'BranchPgbouncerConfigStatus'>
         }
       }
       /** @description Failed to retrieve project's pgbouncer config */
@@ -18875,12 +18876,13 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'UpdatePgbouncerConfigBody'>
+        'application/json': VelaType<'BranchPgbouncerConfigUpdate'>
       }
     }
     responses: {
@@ -18889,7 +18891,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'UpdatePoolingConfigResponse'>
+          'application/json': VelaType<'BranchPgbouncerConfigStatus'>
         }
       }
       403: {
@@ -18915,6 +18917,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }

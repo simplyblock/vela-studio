@@ -84,8 +84,14 @@ export const databaseKeys = {
     projectId: string | undefined,
     branchId: string | undefined
   ) => ['branches', orgId, projectId, branchId, 'max-connections'] as const,
-  pgbouncerStatus: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'pgbouncer', 'status'] as const,
-  pgbouncerConfig: (orgSlug: string | undefined, projectRef: string | undefined) =>
-    ['projects', orgSlug, projectRef, 'pgbouncer', 'config'] as const,
+  pgbouncerStatus: (
+    orgSlug: string | undefined,
+    projectRef: string | undefined,
+    branchId: string | undefined
+  ) => ['projects', orgSlug, projectRef, branchId, 'pgbouncer', 'status'] as const,
+  pgbouncerConfig: (
+    orgSlug: string | undefined,
+    projectRef: string | undefined,
+    branchId: string | undefined
+  ) => ['projects', orgSlug, projectRef, branchId, 'pgbouncer', 'config'] as const,
 }

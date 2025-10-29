@@ -57,7 +57,7 @@ export type UpdateDateRange = (from: string, to: string) => void
 export default DatabaseReport
 
 const DatabaseUsage = () => {
-  const { db, chart, ref: projectRef, slug: orgRef, branch: branchRef } = useParams()
+  const { db, chart, ref: projectRef, slug: orgRef, branch: branchId } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
@@ -94,6 +94,7 @@ const DatabaseUsage = () => {
   const { data: poolerConfig } = usePgbouncerConfigQuery({
     orgSlug: org?.slug,
     projectRef: project?.id,
+    branchId
   })
   const { can: canUpdateDiskSizeConfig } = useCheckPermissions("project:settings:write")
 

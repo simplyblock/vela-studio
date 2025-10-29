@@ -506,7 +506,7 @@ export const getReportAttributesV2: (
           attribute: 'pg_pooler_max_connections',
           provider: 'reference-line',
           label: 'Max pooler connections',
-          value: poolerConfig?.max_client_conn,
+          value: poolerConfig?.max_client_conn ?? undefined,
           tooltip: 'Maximum allowed pooler connections for your current compute size',
           isMaxValue: true,
         },

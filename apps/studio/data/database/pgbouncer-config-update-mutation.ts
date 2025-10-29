@@ -9,6 +9,7 @@ import { databaseKeys } from './keys'
 export type PgbouncerConfigurationUpdateVariables = {
   ref: string
   slug: string
+  branchId: string
 } & Pick<
   components['schemas']['UpdatePgbouncerConfigBody'],
   'default_pool_size' | 'max_client_conn' | 'ignore_startup_parameters'
@@ -17,26 +18,32 @@ export type PgbouncerConfigurationUpdateVariables = {
 export async function updatePgbouncerConfiguration({
   slug,
   ref,
+  branchId,
   default_pool_size,
   max_client_conn,
   ignore_startup_parameters,
 }: PgbouncerConfigurationUpdateVariables) {
   if (!slug) return console.error('Organization slug is required')
   if (!ref) return console.error('Project ref is required')
+  if (!branchId) return console.error('Branch id is required')
 
-  const { data, error } = await patch('/platform/organizations/{slug}/projects/{ref}/config/pgbouncer', {
-    params: {
-      path: {
-        slug: slug,
-        ref: ref,
+  const { data, error } = await patch(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/pgbouncer',
+    {
+      params: {
+        path: {
+          slug: slug,
+          ref: ref,
+          branch: branchId,
+        },
       },
-    },
-    body: {
-      default_pool_size,
-      max_client_conn,
-      ignore_startup_parameters,
-    },
-  })
+      body: {
+        default_pool_size,
+        max_client_conn,
+        ignore_startup_parameters,
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -64,8 +71,8 @@ export const usePgbouncerConfigurationUpdateMutation = ({
     PgbouncerConfigurationUpdateVariables
   >((vars) => updatePgbouncerConfiguration(vars), {
     async onSuccess(data, variables, context) {
-      const { ref, slug } = variables
-      await queryClient.invalidateQueries(databaseKeys.pgbouncerConfig(slug, ref))
+      const { ref, slug, branchId } = variables
+      await queryClient.invalidateQueries(databaseKeys.pgbouncerConfig(slug, ref, branchId))
       await onSuccess?.(data, variables, context)
     },
     async onError(data, variables, context) {
