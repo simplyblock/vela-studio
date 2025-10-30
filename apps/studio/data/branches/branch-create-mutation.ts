@@ -13,6 +13,7 @@ export type BranchCreateVariables = {
   branchName: string
   withData?: boolean
   withConfig?: boolean
+  envType?: string
   deployment?: components['schemas']['DeploymentParameters']
 }
 
@@ -24,6 +25,7 @@ export async function createBranch({
   withData,
   withConfig,
   deployment,
+  envType,
 }: BranchCreateVariables) {
   const { data, error } = await post('/platform/organizations/{slug}/projects/{ref}/branches', {
     params: {
@@ -34,12 +36,25 @@ export async function createBranch({
     },
     body: {
       name: branchName,
-      source: branchRef ? {
-        branch_id: branchRef,
-        config_copy: withConfig,
-        copy_data: withData,
-      } : undefined,
-      deployment: deployment
+      env_type: envType,
+      source: branchRef
+        ? {
+            branch_id: branchRef,
+            config_copy: withConfig,
+            copy_data: withData,
+            deployment_parameters: deployment
+              ? {
+                  milli_vcpu: deployment.milli_vcpu,
+                  memory_bytes: deployment.memory_bytes,
+                  iops: deployment.iops,
+                  database_size: deployment.database_size,
+                  storage_size: deployment.storage_size,
+                  enable_file_storage: deployment.enable_file_storage,
+                }
+              : undefined,
+          }
+        : undefined,
+      deployment: !branchRef ? deployment : undefined,
     },
   })
 

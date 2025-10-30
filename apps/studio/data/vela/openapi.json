@@ -34528,6 +34528,16 @@
                 "type": "null"
               }
             ]
+          },
+          "restore": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BranchRestoreParameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -34932,6 +34942,43 @@
         ],
         "title": "BranchResizeStatusEntry",
         "description": "Single service's resize state and the timestamp when it was observed."
+      },
+      "BranchRestoreParameters": {
+        "properties": {
+          "backup_id": {
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
+          },
+          "config_copy": {
+            "type": "boolean",
+            "title": "Config Copy",
+            "default": true
+          },
+          "deployment_parameters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BranchSourceDeploymentParameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "backup_id"
+        ],
+        "title": "BranchRestoreParameters"
       },
       "BranchSourceDeploymentParameters": {
         "properties": {

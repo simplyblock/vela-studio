@@ -18790,6 +18790,7 @@ export interface components {
             env_type?: string | null;
             source?: components["schemas"]["BranchSourceParameters"] | null;
             deployment?: components["schemas"]["DeploymentParameters"] | null;
+            restore?: components["schemas"]["BranchRestoreParameters"] | null;
         };
         /** BranchPasswordReset */
         BranchPasswordReset: {
@@ -18913,6 +18914,21 @@ export interface components {
             timestamp: string;
         } & {
             [key: string]: unknown;
+        };
+        /** BranchRestoreParameters */
+        BranchRestoreParameters: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            backup_id: string;
+            /**
+             * Config Copy
+             * @default true
+             */
+            config_copy?: boolean;
+            deployment_parameters?: components["schemas"]["BranchSourceDeploymentParameters"] | null;
         };
         /** BranchSourceDeploymentParameters */
         BranchSourceDeploymentParameters: {
