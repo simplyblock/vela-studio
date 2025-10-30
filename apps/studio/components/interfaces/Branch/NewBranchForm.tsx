@@ -232,6 +232,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
         branchName: values.name,
         withConfig: branch ? values.withConfig : undefined,
         withData: branch ? values.withData : undefined,
+        envType: values.environmentType,
         deployment: resourceAllocations,
       },
       {

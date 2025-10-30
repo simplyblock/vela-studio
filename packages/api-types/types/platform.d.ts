@@ -222,6 +222,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/projects/{ref}/backups/restore': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BackupsController_restoreBackupToNewBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups': {
     parameters: {
       query?: never
@@ -11253,18 +11269,18 @@ export interface operations {
     }
     requestBody: {
       content: {
-        "application/json": VelaType<"ResizeParameters">;
-      };
-    };
+        'application/json': VelaType<'ResizeParameters'>
+      }
+    }
     responses: {
       /** @description Successful Response */
       202: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": unknown;
-        };
+          'application/json': unknown
+        }
       }
       /** @description Validation Error */
       422: {
@@ -11724,6 +11740,45 @@ export interface operations {
         }
         content: {
           'application/json': VelaType<'BackupDeletePublic'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupsController_restoreBackupToNewBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'BranchCreate'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'BranchPublic'>
         }
       }
       403: {
@@ -22048,7 +22103,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": VelaType<'AvailablePostgresqlVersion'>[]
+          'application/json': VelaType<'AvailablePostgresqlVersion'>[]
         }
       }
       500: {
