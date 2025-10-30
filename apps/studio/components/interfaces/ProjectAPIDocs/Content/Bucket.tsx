@@ -9,9 +9,9 @@ import ResourceContent from '../ResourceContent'
 import type { ContentProps } from './Content.types'
 
 const Bucket = ({ language, apikey, endpoint }: ContentProps) => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const snap = useAppStateSnapshot()
-  const { data } = useBucketsQuery({ projectRef: ref })
+  const { data } = useBucketsQuery({ orgRef, projectRef, branchRef })
 
   const resource = snap.activeDocsSection[1]
   const buckets = data ?? []

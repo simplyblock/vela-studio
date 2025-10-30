@@ -45,7 +45,7 @@ export const useOrganizationUsageQuery = <TData = OrganizationUsageData>(
     ...options,
     queryKey: resourcesKeys.organizationUsage(orgSlug),
     queryFn: async (context: QueryFunctionContext) =>
-      getOrganizationUsage({ orgSlug }, context.signal),
+      getOrganizationUsage({ orgRef: orgSlug }, context.signal),
     enabled: enabled && typeof orgSlug !== 'undefined',
   })
 }

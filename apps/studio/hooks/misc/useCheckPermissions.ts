@@ -226,7 +226,7 @@ export function useBranchPermissionQuery({
     isLoading: isBranchesLoading,
     isSuccess: isBranchesSuccess,
   } = useBranchesQuery({
-    orgSlug: orgId,
+    orgRef: orgId,
     projectRef: projectId,
   })
 

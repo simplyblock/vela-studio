@@ -51,7 +51,7 @@ export const useProjectUsageQuery = <TData = ProjectUsageData>(
     ...options,
     queryKey: resourcesKeys.projectUsage(orgSlug, projectRef),
     queryFn: async (context: QueryFunctionContext) =>
-      getProjectUsage({ orgSlug, projectRef }, context.signal),
+      getProjectUsage({ orgRef: orgSlug, projectRef }, context.signal),
     enabled: enabled && typeof orgSlug !== 'undefined' && typeof projectRef !== 'undefined',
   })
 }

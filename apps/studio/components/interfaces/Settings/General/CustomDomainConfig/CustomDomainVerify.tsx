@@ -22,12 +22,12 @@ import DNSRecord from './DNSRecord'
 import { DNSTableHeaders } from './DNSTableHeaders'
 
 const CustomDomainVerify = () => {
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef } = useParams()
   const [isNotVerifiedYet, setIsNotVerifiedYet] = useState(false)
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef, projectRef })
 
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
   const customDomain = customDomainData?.customDomain
   const isSSLCertificateDeploying =
     customDomain?.ssl.status !== undefined && customDomain.ssl.txt_name === undefined

@@ -6,7 +6,6 @@ import { useParams } from 'common'
 import CreateBucketModal from 'components/interfaces/Storage/CreateBucketModal'
 import ShimmeringLoader from 'components/ui/ShimmeringLoader'
 import { useBucketsQuery } from 'data/storage/buckets-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import { Alert_Shadcn_, AlertDescription_Shadcn_, AlertTitle_Shadcn_, Menu } from 'ui'
 import {
@@ -21,7 +20,6 @@ import BucketRow from './BucketRow'
 const StorageMenu = () => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef, bucketId } = useParams()
-  const { data: projectDetails } = useSelectedProjectQuery()
   const snap = useStorageExplorerStateSnapshot()
 
   const [searchText, setSearchText] = useState<string>('')
@@ -38,7 +36,7 @@ const StorageMenu = () => {
     isLoading,
     isError,
     isSuccess,
-  } = useBucketsQuery({ projectRef })
+  } = useBucketsQuery({ orgRef, projectRef, branchRef })
   const sortedBuckets =
     snap.sortBucket === 'alphabetical'
       ? buckets.sort((a, b) =>
@@ -99,7 +97,7 @@ const StorageMenu = () => {
 
             {isError && (
               <div className="px-2">
-                <Alert_Shadcn_ variant='warning'>
+                <Alert_Shadcn_ variant="warning">
                   <AlertTitle_Shadcn_ className="text-xs tracking-normal">
                     'Failed to fetch buckets'
                   </AlertTitle_Shadcn_>
@@ -134,6 +132,7 @@ const StorageMenu = () => {
                       bucket={bucket}
                       orgRef={orgRef}
                       projectRef={projectRef}
+                      branchRef={branchRef}
                       isSelected={isSelected}
                     />
                   )
@@ -144,14 +143,11 @@ const StorageMenu = () => {
 
           <div className="w-full bg-dash-sidebar px-3 py-6 sticky bottom-0 border-t border-border">
             <Menu.Group title={<span className="uppercase font-mono">Configuration</span>} />
-            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/policies`}>
+            <Link
+              href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/policies`}
+            >
               <Menu.Item rounded active={page === 'policies'}>
                 <p className="truncate">Policies</p>
-              </Menu.Item>
-            </Link>
-            <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/settings`}>
-              <Menu.Item rounded active={page === 'settings'}>
-                <p className="truncate">Settings</p>
               </Menu.Item>
             </Link>
           </div>

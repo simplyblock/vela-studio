@@ -24,9 +24,9 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const StoragePolicies = () => {
   const { data: branch } = useSelectedBranchQuery()
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
-  const { data, isLoading: isLoadingBuckets } = useBucketsQuery({ projectRef })
+  const { data, isLoading: isLoadingBuckets } = useBucketsQuery({ orgRef, projectRef, branchRef })
   const buckets = data ?? []
 
   const [selectedPolicyToEdit, setSelectedPolicyToEdit] = useState<any>({})

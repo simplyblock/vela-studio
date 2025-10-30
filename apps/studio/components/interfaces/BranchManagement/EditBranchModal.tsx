@@ -38,7 +38,7 @@ export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalPro
 
   const projectRef = projectDetails !== undefined ? ref : undefined
 
-  const { data: branches } = useBranchesQuery({ orgSlug, projectRef })
+  const { data: branches } = useBranchesQuery({ orgRef: orgSlug, projectRef })
 
   const { mutate: updateBranch, isLoading: isUpdating } = useBranchUpdateMutation({
     onSuccess: (data) => {
@@ -89,7 +89,7 @@ export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalPro
       projectRef: string
       branch: string
     } = {
-      orgSlug,
+      orgRef: orgSlug,
       branchRef: ref,
       projectRef,
       branch: data.branchName,

@@ -51,7 +51,7 @@ const Home: NextPageWithLayout = () => {
     schema: 'public',
   })
   const { data: functionsData, isLoading: isLoadingFunctions } = useEdgeFunctionsQuery({
-    orgSlug: slug,
+    orgRef: slug,
     projectRef: project?.id,
   })
   const { data: replicasData, isLoading: isLoadingReplicas } = useReadReplicasQuery({

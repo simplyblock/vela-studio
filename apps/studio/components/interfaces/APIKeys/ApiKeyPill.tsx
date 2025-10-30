@@ -38,7 +38,7 @@ export function ApiKeyPill({
     refetch: refetchApiKey,
   } = useAPIKeyIdQuery(
     {
-      orgSlug,
+      orgRef: orgSlug,
       projectRef,
       id: apiKey.id as string,
       reveal: true, // Request the unmasked key

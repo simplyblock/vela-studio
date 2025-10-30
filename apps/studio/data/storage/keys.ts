@@ -1,5 +1,9 @@
 export const storageKeys = {
-  buckets: (projectRef: string | undefined) => ['projects', projectRef, 'buckets'] as const,
+  buckets: (
+    orgRef: string | undefined,
+    projectRef: string | undefined,
+    branchRef: string | undefined
+  ) => ['projects', orgRef, projectRef, branchRef, 'buckets'] as const,
   archive: (projectRef: string | undefined) => ['projects', projectRef, 'archive'] as const,
   icebergNamespaces: (catalog: string, warehouse: string) =>
     ['catalog', catalog, 'warehouse', warehouse, 'namespaces'] as const,

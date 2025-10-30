@@ -90,7 +90,7 @@ export function LogsSidebarMenuV2() {
 
   const { data: etlData, isLoading: isETLLoading } = useReplicationSourcesQuery(
     {
-      orgSlug: slug, projectRef: ref,
+      orgRef: slug, projectRef: ref,
     },
   )
 

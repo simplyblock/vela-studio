@@ -49,14 +49,14 @@ export const useDatabasePoliciesQuery = <TData = DatabasePoliciesData>(
     ...options
   }: UseQueryOptions<DatabasePoliciesData, DatabasePoliciesError, TData> = {}
 ) => {
-  const { data: project } = useSelectedProjectQuery()
-  const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  // FIXME: Bring back isActive back
+  //const isActive = branch?.service_status.database === PROJECT_STATUS.ACTIVE_HEALTHY
 
   return useQuery<DatabasePoliciesData, DatabasePoliciesError, TData>(
     databasePoliciesKeys.list(branch?.organization_id, branch?.project_id, branch?.id, schema),
     ({ signal }) => getDatabasePolicies({ branch, schema }, signal),
     {
-      enabled: enabled && typeof branch !== 'undefined' && isActive,
+      enabled: enabled && typeof branch !== 'undefined', //&& isActive,
       ...options,
     }
   )

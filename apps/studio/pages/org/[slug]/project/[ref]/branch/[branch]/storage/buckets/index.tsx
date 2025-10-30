@@ -12,9 +12,9 @@ import type { NextPageWithLayout } from 'types'
  * PageLayout is used to setup layout - as usual it will requires inject global store
  */
 const PageLayout: NextPageWithLayout = () => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
-  const { error, isError } = useBucketsQuery({ projectRef: ref })
+  const { error, isError } = useBucketsQuery({ orgRef, projectRef, branchRef })
 
   if (!project) return null
 

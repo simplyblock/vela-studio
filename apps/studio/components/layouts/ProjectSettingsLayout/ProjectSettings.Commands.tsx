@@ -35,12 +35,6 @@ export function useProjectSettingsGotoCommands(options?: CommandOptions) {
         defaultHidden: true,
       },
       {
-        id: 'nav-project-settings-storage',
-        name: 'Storage Settings',
-        route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/settings`,
-        defaultHidden: true,
-      },
-      {
         id: 'nav-project-settings-custom-domains',
         name: 'Custom Domains',
         route: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general#custom-domains`,

@@ -43,7 +43,7 @@ export const useProjectServiceStatusQuery = <TData = ProjectServiceStatusData>(
 ) =>
   useQuery<ProjectServiceStatusData, ProjectServiceStatusError, TData>(
     serviceStatusKeys.serviceStatus(orgSlug, projectRef),
-    ({ signal }) => getProjectServiceStatus({ orgSlug, projectRef }, signal),
+    ({ signal }) => getProjectServiceStatus({ orgRef: orgSlug, projectRef }, signal),
     {
       enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
       ...options,

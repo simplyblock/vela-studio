@@ -78,7 +78,7 @@ export const useRealtimeMessages = (
     enableBroadcast,
   } = config
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef: projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef: projectRef })
 
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.endpoint

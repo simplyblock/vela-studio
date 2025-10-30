@@ -73,7 +73,7 @@ export const BranchDropdown = () => {
     isLoading,
     isError,
     isSuccess,
-  } = useBranchesQuery({ orgSlug, projectRef: ref }, { enabled: Boolean(projectDetails) })
+  } = useBranchesQuery({ orgRef: orgSlug, projectRef: ref }, { enabled: Boolean(projectDetails) })
 
   const selectedBranch = branches?.find((branch) => branch.id === branchRef)
 

@@ -19,7 +19,7 @@ function DocsLayout({ title, children }: { title: string; children: ReactElement
   const isPaused = selectedProject?.status === PROJECT_STATUS.INACTIVE
 
   const { data, isLoading, error } = useOpenAPISpecQuery(
-    { orgSlug: orgRef!, projectRef: projectRef },
+    { orgRef: orgRef!, projectRef: projectRef },
     { enabled: !isPaused }
   )
 

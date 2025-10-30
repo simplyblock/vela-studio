@@ -6,7 +6,9 @@ import type { ResponseError } from 'types'
 import { customDomainKeys } from './keys'
 
 export type CustomDomainReverifyVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
 }
 
 export async function reverifyCustomDomain({ projectRef }: CustomDomainReverifyVariables) {
@@ -34,8 +36,8 @@ export const useCustomDomainReverifyMutation = ({
     (vars) => reverifyCustomDomain(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(customDomainKeys.list(projectRef))
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(customDomainKeys.list(orgRef, projectRef, branchRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

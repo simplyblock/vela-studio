@@ -38,6 +38,6 @@ export const useEdgeFunctionsQuery = <TData = EdgeFunctionsData>(
 ) =>
   useQuery<EdgeFunctionsData, EdgeFunctionsError, TData>(
     edgeFunctionsKeys.list(projectRef),
-    ({ signal }) => getEdgeFunctions({ orgSlug, projectRef }, signal),
+    ({ signal }) => getEdgeFunctions({ orgRef: orgSlug, projectRef }, signal),
     { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

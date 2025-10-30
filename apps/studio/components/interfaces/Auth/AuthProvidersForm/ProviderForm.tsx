@@ -62,12 +62,12 @@ export const ProviderForm = ({ config, provider }: ProviderFormProps) => {
 
   const { can: canUpdateConfig } = useCheckPermissions('branch:auth:admin')
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgId, projectRef: projectId })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgId, projectRef: projectId })
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.endpoint
   const apiUrl = `${protocol}://${endpoint}`
 
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef: projectId })
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef: orgId, projectRef: projectId })
 
   const providerIcon = useMemo(() => authProviderIcon(config), [config])
 

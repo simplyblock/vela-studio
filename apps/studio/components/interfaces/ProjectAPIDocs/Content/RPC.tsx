@@ -15,9 +15,9 @@ export const RPC = ({ language }: ContentProps) => {
   const snap = useAppStateSnapshot()
 
   const { data: jsonSchema, refetch: refetchJsonSchema } = useProjectJsonSchemaQuery({
-    orgSlug: slug, projectRef: ref,
+    orgRef: slug, projectRef: ref,
   })
-  const { data, refetch: refetchOpenAPISpec } = useOpenAPISpecQuery({ orgSlug: slug, projectRef: ref })
+  const { data, refetch: refetchOpenAPISpec } = useOpenAPISpecQuery({ orgRef: slug, projectRef: ref })
   const functions = data?.functions ?? []
 
   const rpcName = snap.activeDocsSection[1]

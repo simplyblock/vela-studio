@@ -35,6 +35,6 @@ export const useReplicationSourcesQuery = <TData = ReplicationSourcesData>(
 ) =>
   useQuery<ReplicationSourcesData, ResponseError, TData>(
     replicationKeys.sources(orgSlug, projectRef),
-    ({ signal }) => fetchReplicationSources({ orgSlug, projectRef }, signal),
+    ({ signal }) => fetchReplicationSources({ orgRef: orgSlug, projectRef }, signal),
     { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

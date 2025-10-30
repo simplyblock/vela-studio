@@ -23,7 +23,7 @@ const Egress = ({
   currentBillingCycleSelected,
 }: EgressProps) => {
   const { data: egressData, isLoading: isLoadingDbEgressData } = useOrgDailyStatsQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     metric: PricingMetric.EGRESS,
     interval: '1d',
@@ -32,7 +32,7 @@ const Egress = ({
   })
 
   const { data: cachedEgressData, isLoading: isLoadingCachedEgress } = useOrgDailyStatsQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     metric: PricingMetric.CACHED_EGRESS,
     interval: '1d',

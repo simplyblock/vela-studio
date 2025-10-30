@@ -48,7 +48,7 @@ const DiskUsage = ({
     error,
   } = useOrgProjectsQuery(
     {
-      orgSlug: orgRef,
+      orgRef: orgRef,
     },
     {
       enabled: currentBillingCycleSelected,

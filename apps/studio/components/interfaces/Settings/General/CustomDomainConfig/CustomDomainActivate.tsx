@@ -21,7 +21,7 @@ export type CustomDomainActivateProps = {
 const CustomDomainActivate = ({ orgSlug, projectRef, customDomain }: CustomDomainActivateProps) => {
   const [isActivateConfirmModalVisible, setIsActivateConfirmModalVisible] = useState(false)
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef })
   const { mutate: checkCNAMERecord, isLoading: isCheckingRecord } = useCheckCNAMERecordMutation()
   const { mutate: activateCustomDomain, isLoading: isActivating } = useCustomDomainActivateMutation(
     {

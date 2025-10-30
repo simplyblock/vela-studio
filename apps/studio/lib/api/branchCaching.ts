@@ -14,8 +14,8 @@ export function getBranchOrRefresh(
   orgId: string,
   projectId: string,
   branchId: string,
-  retriever: () => Promise<Branch>
-): Promise<Branch> {
+  retriever: () => Promise<Branch | undefined>
+): Promise<Branch | undefined> {
   const key = branchKey(orgId, projectId, branchId)
   return branchCache.cacheable(
     () => {

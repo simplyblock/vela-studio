@@ -27,7 +27,7 @@ const EdgeFunctionsPage: NextPageWithLayout = () => {
     isLoading,
     isError,
     isSuccess,
-  } = useEdgeFunctionsQuery({ orgSlug, projectRef: ref })
+  } = useEdgeFunctionsQuery({ orgRef: orgSlug, projectRef: ref })
 
   const hasFunctions = (functions ?? []).length > 0
 

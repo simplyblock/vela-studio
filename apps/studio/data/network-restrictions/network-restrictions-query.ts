@@ -58,6 +58,6 @@ export const useNetworkRestrictionsQuery = <TData = NetworkRestrictionsData>(
 ) =>
   useQuery<NetworkRestrictionsData, NetworkRestrictionsError, TData>(
     networkRestrictionKeys.list(orgSlug, projectRef),
-    ({ signal }) => getNetworkRestrictions({ orgSlug, projectRef }, signal),
+    ({ signal }) => getNetworkRestrictions({ orgRef: orgSlug, projectRef }, signal),
     { enabled: enabled && typeof projectRef !== 'undefined', ...options }
   )

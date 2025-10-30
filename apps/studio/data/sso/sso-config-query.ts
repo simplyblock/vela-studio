@@ -48,7 +48,7 @@ export const useOrgSSOConfigQuery = <TData = OrgSSOConfigData>(
 
   return useQuery<OrgSSOConfigData, OrgSSOConfigError, TData>(
     orgSSOKeys.orgSSOConfig(orgSlug),
-    ({ signal }) => getOrgSSOConfig({ orgSlug }, signal),
+    ({ signal }) => getOrgSSOConfig({ orgRef: orgSlug }, signal),
     {
       enabled: enabled && typeof orgSlug !== 'undefined' && canSetupSSOConfig,
       ...options,

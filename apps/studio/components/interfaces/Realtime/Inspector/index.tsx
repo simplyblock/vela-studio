@@ -18,7 +18,7 @@ export const RealtimeInspector = () => {
   const [sendMessageShown, setSendMessageShown] = useState(false)
   const [realtimeConfig, setRealtimeConfig] = useState<RealtimeConfig>({
     enabled: false,
-    orgSlug: slug!,
+    orgRef: slug!,
     projectRef: ref!,
     channelName: '',
     logLevel: 'info',

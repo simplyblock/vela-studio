@@ -49,7 +49,7 @@ export const useDocumentQuery = <TData = DocumentData>(
 ) =>
   useQuery<DocumentData, DocumentError, TData>(
     documentKeys.resource(orgSlug, docType),
-    ({ signal }) => getDocument({ orgSlug, docType }, signal),
+    ({ signal }) => getDocument({ orgRef: orgSlug, docType }, signal),
     {
       enabled: enabled && typeof orgSlug !== 'undefined' && typeof docType !== 'undefined',
       ...options,

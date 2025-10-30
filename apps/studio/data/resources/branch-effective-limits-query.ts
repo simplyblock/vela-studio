@@ -57,7 +57,7 @@ export const useBranchEffectiveLimitsQuery = <TData = BranchEffectiveLimitsData>
     ...options,
     queryKey: resourcesKeys.branchEffectiveLimits(orgSlug, projectRef, branchId),
     queryFn: async (context: QueryFunctionContext) =>
-      getBranchEffectiveLimits({ orgSlug, projectRef }, context.signal),
+      getBranchEffectiveLimits({ orgRef: orgSlug, projectRef }, context.signal),
     enabled:
       enabled &&
       typeof orgSlug !== 'undefined' &&

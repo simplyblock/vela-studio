@@ -32,7 +32,7 @@ const AddRestrictionModal = ({
   const { ref } = useParams()
   const { slug: orgSlug } = getPathReferences()
 
-  const { data } = useNetworkRestrictionsQuery({ orgSlug, projectRef: ref }, { enabled: type !== undefined })
+  const { data } = useNetworkRestrictionsQuery({ orgRef: orgSlug, projectRef: ref }, { enabled: type !== undefined })
   const ipv4Restrictions = data?.config?.dbAllowedCidrs ?? []
   // @ts-ignore [Joshen] API typing issue
   const ipv6Restrictions = data?.config?.dbAllowedCidrsV6 ?? []

@@ -27,18 +27,18 @@ const DocView = () => {
   const functionPath = 'rpc/'
   const DEFAULT_KEY = { name: 'hide', key: 'SUPABASE_KEY' }
 
-  const { slug: orgSlug, ref: projectRef, page, resource, rpc } = useParams()
+  const { slug: orgRef, ref: projectRef, page, resource, rpc } = useParams()
   const [selectedLang, setSelectedLang] = useState<any>('js')
   const [selectedApikey, setSelectedApiKey] = useState<any>(DEFAULT_KEY)
 
-  const { data: settings, error: settingsError } = useProjectSettingsV2Query({ orgSlug, projectRef })
+  const { data: settings, error: settingsError } = useProjectSettingsV2Query({ orgRef, projectRef })
   const {
     data: jsonSchema,
     error: jsonSchemaError,
     isLoading,
     refetch,
-  } = useProjectJsonSchemaQuery({ orgSlug, projectRef })
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
+  } = useProjectJsonSchemaQuery({ orgRef, projectRef })
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
 
   const refreshDocs = async () => await refetch()
 

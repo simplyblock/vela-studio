@@ -47,6 +47,6 @@ export const useBranchesQuery = <TData = BranchesData>(
 ) =>
   useQuery<BranchesData, BranchesError, TData>(
     branchKeys.list(orgSlug, projectRef),
-    ({ signal }) => getBranches({ orgSlug, projectRef }, signal),
+    ({ signal }) => getBranches({ orgRef: orgSlug, projectRef }, signal),
     { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

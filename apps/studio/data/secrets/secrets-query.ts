@@ -34,6 +34,6 @@ export const useSecretsQuery = <TData = SecretsData>(
 ) =>
   useQuery<SecretsData, SecretsError, TData>(
     secretsKeys.list(orgSlug, projectRef),
-    ({ signal }) => getSecrets({ orgSlug, projectRef }, signal),
+    ({ signal }) => getSecrets({ orgRef: orgSlug, projectRef }, signal),
     { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

@@ -21,13 +21,13 @@ const SSLConfiguration = () => {
   const { data: project } = useSelectedProjectQuery()
   const [isEnforced, setIsEnforced] = useState(false)
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef: ref })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef: ref })
   const {
     data: sslEnforcementConfiguration,
     isLoading,
     isSuccess,
   } = useSSLEnforcementQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef: ref,
   })
   const { mutate: updateSSLEnforcement, isLoading: isSubmitting } = useSSLEnforcementUpdateMutation(

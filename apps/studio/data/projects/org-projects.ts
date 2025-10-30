@@ -35,7 +35,7 @@ export const useOrgProjectsQuery = <TData = OrgProjectsData>(
 ) =>
   useQuery<OrgProjectsData, OrgProjectsError, TData>(
     projectKeys.orgProjects(orgSlug),
-    ({ signal }) => getOrgProjects({ orgSlug }, signal),
+    ({ signal }) => getOrgProjects({ orgRef: orgSlug }, signal),
     {
       enabled: enabled && typeof orgSlug !== 'undefined',
       ...options,

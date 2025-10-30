@@ -130,7 +130,7 @@ const PreviewFilterPanelWithUniversal = ({
 
   const logName = router.pathname.split('/').pop()
 
-  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref, orgSlug: slug })
+  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef: ref, orgRef: slug })
 
   const showDatabaseSelector = LOG_ROUTES_WITH_REPLICA_SUPPORT.includes(router.pathname)
 

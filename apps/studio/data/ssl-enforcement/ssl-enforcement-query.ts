@@ -49,6 +49,6 @@ export const useSSLEnforcementQuery = <TData = SSLEnforcementData>(
 ) =>
   useQuery<SSLEnforcementData, SSLEnforcementError, TData>(
     sslEnforcementKeys.list(orgSlug, projectRef),
-    ({ signal }) => getSSLEnforcementConfiguration({ orgSlug, projectRef }, signal),
+    ({ signal }) => getSSLEnforcementConfiguration({ orgRef: orgSlug, projectRef }, signal),
     { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
   )

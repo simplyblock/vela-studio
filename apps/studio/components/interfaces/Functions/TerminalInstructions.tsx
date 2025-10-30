@@ -28,14 +28,14 @@ export const TerminalInstructions = forwardRef<
   TerminalInstructionsProps
 >(({ closable = false, removeBorder = false, ...props }, ref) => {
   const router = useRouter()
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const [showInstructions, setShowInstructions] = useState(!closable)
 
   const { data: tokens } = useAccessTokensQuery()
   const { data: apiKeys } = useAPIKeysQuery({ branch })
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef, projectRef })
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
 
   const { anonKey, publishableKey } = getKeys(apiKeys)
   const apiKey = publishableKey?.api_key ?? anonKey?.api_key ?? '[YOUR ANON KEY]'

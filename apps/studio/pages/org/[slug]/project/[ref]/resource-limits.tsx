@@ -66,9 +66,9 @@ const LABELS: Record<LimitKey, string> = {
 const ResourceLimit: NextPageWithLayout = () => {
   const { orgSlug, ref: projectRef } = useParams()
 
-  const { data: limitsData } = useProjectLimitsQuery({ orgSlug, projectRef })
+  const { data: limitsData } = useProjectLimitsQuery({ orgRef: orgSlug, projectRef })
   const { data: definitions } = useResourceLimitDefinitionsQuery()
-  const { data: usageData } = useProjectUsageQuery({ orgSlug, projectRef })
+  const { data: usageData } = useProjectUsageQuery({ orgRef: orgSlug, projectRef })
   const { mutateAsync: updateLimit } = useProjectLimitUpdateMutation()
 
   // normalize usage
@@ -176,7 +176,7 @@ const ResourceLimit: NextPageWithLayout = () => {
         }
 
         await updateLimit({
-          orgSlug,
+          orgRef: orgSlug,
           projectRef,
           limit: payload,
         })

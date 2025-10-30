@@ -51,7 +51,7 @@ export const useProjectLimitsQuery = <TData = ProjectLimitsData>(
     ...options,
     queryKey: resourcesKeys.projectLimits(orgSlug, projectRef),
     queryFn: async (context: QueryFunctionContext) =>
-      getProjectLimits({ orgSlug, projectRef }, context.signal),
+      getProjectLimits({ orgRef: orgSlug, projectRef }, context.signal),
     enabled: enabled && typeof orgSlug !== 'undefined' && typeof projectRef !== 'undefined',
   })
 }

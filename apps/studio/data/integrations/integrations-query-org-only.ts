@@ -29,7 +29,7 @@ export const useOrgIntegrationsQuery = <TData = IntegrationsData>(
 ) =>
   useQuery<IntegrationsData, IntegrationsError, TData>(
     integrationKeys.integrationsListWithOrg(orgSlug),
-    ({ signal }) => getIntegrations({ orgSlug }, signal),
+    ({ signal }) => getIntegrations({ orgRef: orgSlug }, signal),
     {
       enabled: enabled && typeof orgSlug !== 'undefined',
       staleTime: 30 * 60 * 1000, // 30 minutes

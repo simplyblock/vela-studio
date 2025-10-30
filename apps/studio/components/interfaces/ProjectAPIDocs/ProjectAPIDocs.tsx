@@ -36,7 +36,7 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
  */
 
 const ProjectAPIDocs = () => {
-  const { slug: orgSlug, ref } = useParams()
+  const { slug: orgRef, ref } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const snap = useAppStateSnapshot()
   const isIntroduction =
@@ -52,11 +52,11 @@ const ProjectAPIDocs = () => {
     { enabled: snap.showProjectApiDocs }
   )
   const { data: settings } = useProjectSettingsV2Query(
-    { orgSlug, projectRef: ref },
+    { orgRef, projectRef: ref },
     { enabled: snap.showProjectApiDocs }
   )
   const { data: customDomainData } = useCustomDomainsQuery(
-    { projectRef: ref },
+    { orgRef, projectRef: ref },
     { enabled: snap.showProjectApiDocs }
   )
 

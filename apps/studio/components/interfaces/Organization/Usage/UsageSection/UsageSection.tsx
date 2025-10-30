@@ -38,7 +38,7 @@ const UsageSection = ({
     isLoading: isLoadingUsage,
     isError: isErrorUsage,
     isSuccess: isSuccessUsage,
-  } = useOrgUsageQuery({ orgSlug })
+  } = useOrgUsageQuery({ orgRef: orgSlug })
 
   const categoryMeta = USAGE_CATEGORIES(subscription).find(
     (category) => category.key === categoryKey

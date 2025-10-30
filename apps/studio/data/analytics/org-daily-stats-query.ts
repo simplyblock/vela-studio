@@ -170,7 +170,7 @@ export const useOrgDailyStatsQuery = <TData = OrgDailyStatsData>(
   useQuery<OrgDailyStatsData, OrgDailyStatsError, TData>(
     analyticsKeys.orgDailyStats(orgSlug, { metric, startDate, endDate, interval, projectRef }),
     ({ signal }) =>
-      getOrgDailyStats({ orgSlug, metric, startDate, endDate, interval, projectRef }, signal),
+      getOrgDailyStats({ orgRef: orgSlug, metric, startDate, endDate, interval, projectRef }, signal),
     {
       enabled:
         enabled &&

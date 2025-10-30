@@ -48,7 +48,7 @@ export const useOrganizationLimitsQuery = <TData = OrganizationLimitsData>(
     ...options,
     queryKey: resourcesKeys.organizationLimits(orgSlug),
     queryFn: async (context: QueryFunctionContext) =>
-      getOrganizationLimits({ orgSlug }, context.signal),
+      getOrganizationLimits({ orgRef: orgSlug }, context.signal),
     enabled: enabled && typeof orgSlug !== 'undefined',
   })
 }

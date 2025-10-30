@@ -47,7 +47,7 @@ export const usePgbouncerConfigQuery = <TData = PgbouncerConfigData>(
 ) =>
   useQuery<PgbouncerConfigData, PgbouncerConfigError, TData>(
     databaseKeys.pgbouncerConfig(orgSlug, projectRef, branchId),
-    ({ signal }) => getPgbouncerConfig({ orgSlug, projectRef, branchId }, signal),
+    ({ signal }) => getPgbouncerConfig({ orgRef: orgSlug, projectRef, branchId }, signal),
     {
       enabled: enabled && typeof projectRef !== 'undefined' && typeof branchId !== 'undefined',
       ...options,
