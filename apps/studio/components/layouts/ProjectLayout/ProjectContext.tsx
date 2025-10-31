@@ -33,5 +33,5 @@ export const ProjectContextProvider = ({
 
 export const useIsProjectActive = () => {
   const { data: project } = useSelectedProjectQuery()
-  return project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  return project?.status === PROJECT_STATUS.STARTED
 }

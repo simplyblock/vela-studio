@@ -14,7 +14,7 @@ export const ResizingState = () => {
       // rerender every 4 seconds while the project is resizing. Once resizing is complete, it will
       // no longer show this state.
       refetchInterval(data) {
-        return data?.status !== PROJECT_STATUS.ACTIVE_HEALTHY ? 4000 : false
+        return data?.status !== PROJECT_STATUS.STARTED ? 4000 : false
       },
     }
   )

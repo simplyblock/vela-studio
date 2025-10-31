@@ -63,7 +63,7 @@ const DiskUsage = ({
             const isBranchExceedingFreeQuota =
               project.is_branch && project.databases.some((db) => (db.disk_volume_size_gb ?? 8) > 8)
 
-            const isActiveProject = project.status !== PROJECT_STATUS.INACTIVE
+            const isActiveProject = project.status !== PROJECT_STATUS.PAUSED
 
             const isHostedOnAws = project.databases.every((db) => db.cloud_provider === 'AWS')
 

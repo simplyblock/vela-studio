@@ -242,7 +242,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
   const organizationProjects =
     allProjects?.filter(
       (project) =>
-        project.organization_id === currentOrg?.id && project.status !== PROJECT_STATUS.INACTIVE
+        project.organization_id === currentOrg?.id && project.status !== PROJECT_STATUS.PAUSED
     ) ?? []
 
   const isAdmin = useCheckPermissions('env:projects:create')

@@ -45,7 +45,7 @@ export const ServiceList = () => {
 
   return (
     <ScaffoldSection isFullWidth id="api-settings" className="gap-6">
-      {!isLoading && project?.status !== PROJECT_STATUS.ACTIVE_HEALTHY ? (
+      {!isLoading && project?.status !== PROJECT_STATUS.STARTED ? (
         <Alert_Shadcn_ variant="destructive">
           <AlertCircle size={16} />
           <AlertTitle_Shadcn_>

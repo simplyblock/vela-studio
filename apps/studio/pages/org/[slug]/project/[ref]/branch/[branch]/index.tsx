@@ -44,7 +44,7 @@ const Home: NextPageWithLayout = () => {
     return CLIENT_LIBRARIES.filter((library) => library.language === 'JavaScript')
   }, [showAllClientLibraries])
 
-  const isPaused = project?.status === PROJECT_STATUS.INACTIVE
+  const isPaused = project?.status === PROJECT_STATUS.PAUSED
 
   const { data: tablesData, isLoading: isLoadingTables } = useTablesQuery({
     branch,
@@ -79,7 +79,7 @@ const Home: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="flex items-center">
-              {project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && (
+              {project?.status === PROJECT_STATUS.STARTED && (
                 <div className="flex items-center gap-x-6">
                   <div className="flex flex-col gap-y-1">
                     <Link
@@ -125,7 +125,7 @@ const Home: NextPageWithLayout = () => {
                   </div>
                 </div>
               )}
-              {project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && (
+              {project?.status === PROJECT_STATUS.STARTED && (
                 <div className="ml-6 border-l flex items-center w-[145px] justify-end">
                   <ServiceStatus />
                 </div>
@@ -141,14 +141,14 @@ const Home: NextPageWithLayout = () => {
         <>
           <div className="py-16 border-b border-muted">
             <div className="mx-auto max-w-7xl space-y-16">
-              {project?.status !== PROJECT_STATUS.INACTIVE && <ProjectUsageSection />}
-              {project?.status !== PROJECT_STATUS.INACTIVE && <AdvisorWidget />}
+              {project?.status !== PROJECT_STATUS.PAUSED && <ProjectUsageSection />}
+              {project?.status !== PROJECT_STATUS.PAUSED && <AdvisorWidget />}
             </div>
           </div>
 
           <div className="bg-surface-100/5 py-16">
             <div className="mx-auto max-w-7xl space-y-16">
-              {project?.status !== PROJECT_STATUS.INACTIVE && (
+              {project?.status !== PROJECT_STATUS.PAUSED && (
                 <>
                   <div className="space-y-8">
                     <h2 className="text-lg">Client libraries</h2>

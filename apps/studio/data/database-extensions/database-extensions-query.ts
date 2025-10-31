@@ -50,7 +50,7 @@ export const useDatabaseExtensionsQuery = <TData = DatabaseExtensionsData>(
   }: UseQueryOptions<DatabaseExtensionsData, DatabaseExtensionsError, TData> = {}
 ) => {
   const { data: project } = useSelectedProjectQuery()
-  const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  const isActive = project?.status === PROJECT_STATUS.STARTED
 
   return useQuery<DatabaseExtensionsData, DatabaseExtensionsError, TData>(
     databaseExtensionsKeys.list(branch?.organization_id, branch?.project_id, branch?.id),

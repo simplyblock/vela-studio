@@ -63,7 +63,7 @@ export const useProjectUpgradingStatusQuery = <TData = ProjectUpgradingStatusDat
 
         const interval =
           // Transited to UPGRADING state via client, but job not yet picked up
-          (projectStatus === PROJECT_STATUS.UPGRADING &&
+          (projectStatus === PROJECT_STATUS.MIGRATING &&
             response.databaseUpgradeStatus?.status !== DatabaseUpgradeStatus.Upgrading) ||
           // Project currently getting upgraded
           response.databaseUpgradeStatus?.status === DatabaseUpgradeStatus.Upgrading

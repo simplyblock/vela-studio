@@ -37,7 +37,7 @@ export const Connect = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const isActiveHealthy = selectedProject?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  const isActiveHealthy = selectedProject?.status === PROJECT_STATUS.STARTED
 
   const [showConnect, setShowConnect] = useQueryState(
     'showConnect',

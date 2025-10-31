@@ -21,7 +21,6 @@ const OrgIndexPage: NextPageWithLayout = () => {
       if (lastVisitedOrganization.length > 0) router.push(`/org/${lastVisitedOrganization}`)
       else router.push('/organizations')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess])
 
   return (

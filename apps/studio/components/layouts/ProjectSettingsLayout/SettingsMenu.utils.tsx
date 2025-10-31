@@ -15,12 +15,11 @@ export const generateSettingsMenu = (
     storage?: boolean
   }
 ): ProductMenuGroup[] => {
-  const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
+  const isProjectBuilding = project?.status === PROJECT_STATUS.STARTING
   const buildingUrl = `/org/${orgRef}/project/${projectRef}`
 
   const authEnabled = features?.auth ?? true
   const edgeFunctionsEnabled = features?.edgeFunctions ?? true
-  const storageEnabled = features?.storage ?? true
 
   return [
     {

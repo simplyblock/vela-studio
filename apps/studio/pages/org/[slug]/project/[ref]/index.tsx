@@ -35,10 +35,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     isLoading: isLoadingBranches,
     isError: isErrorBranches,
     error: branchesError,
-  } = useBranchesQuery(
-    { orgRef: slug, projectRef },
-    { enabled: !!slug && !!projectRef }
-  )
+  } = useBranchesQuery({ orgRef: slug, projectRef }, { enabled: !!slug && !!projectRef })
 
   // any resource warnings tied to this project
   const {
@@ -98,36 +95,22 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
               <h1 className="text-3xl text-foreground">{project?.name ?? projectRef}</h1>
 
               <p className="text-sm text-foreground-light">
-                Project ref:{' '}
-                <span className="font-mono text-xs">{projectRef}</span>
+                Project ref: <span className="font-mono text-xs">{projectRef}</span>
               </p>
 
               <ProjectStatusBadge status={project?.status} />
 
-
-
               {isErrorWarnings && (
-                <AlertError
-                  subject="Failed to load resource warnings"
-                  error={warningsError}
-                />
+                <AlertError subject="Failed to load resource warnings" error={warningsError} />
               )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 sm:items-start">
-              <Button
-                asChild
-                type="default"
-              >
-                <Link href={`/org/${slug}/project/${projectRef}/settings`}>
-                  Project settings
-                </Link>
+              <Button asChild type="default">
+                <Link href={`/org/${slug}/project/${projectRef}/settings`}>Project settings</Link>
               </Button>
 
-              <Button
-                asChild
-                type="default"
-              >
+              <Button asChild type="default">
                 <Link href={`/org/${slug}/project/${projectRef}/resource-limits`}>
                   Resource limits
                 </Link>
@@ -150,18 +133,13 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <Button
-              asChild
-              type="default"
-            >
-              <Link href={`/org/${slug}/project/${projectRef}/settings`}>
-                Manage branches
-              </Link>
+            <Button asChild type="default">
+              <Link href={`/org/${slug}/project/${projectRef}/settings`}>Manage branches</Link>
             </Button>
           </div>
 
           {branches.length === 0 ? (
-            <EmptyBranchesState slug={slug} projectRef={projectRef} />
+            <EmptyBranchesState slug={slug} projectRef={projectRef} projectName={project.name} />
           ) : (
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {branches.map((branch: any) => (
@@ -194,12 +172,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                   </div>
 
                   <div className="pt-3">
-                    <Button
-                      asChild
-                      size="tiny"
-                      type="default"
-                      block
-                    >
+                    <Button asChild size="tiny" type="default" block>
                       <Link
                         href={`/org/${slug}/project/${projectRef}/branch/${branch.ref ?? branch.id}`}
                       >
@@ -220,9 +193,9 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
 const ProjectStatusBadge = ({ status }: { status?: string }) => {
   if (!status) return null
 
-  const isHealthy = status === PROJECT_STATUS.ACTIVE_HEALTHY
-  const isInactive = status === PROJECT_STATUS.INACTIVE
-  const isComingUp = status === PROJECT_STATUS.COMING_UP
+  const isHealthy = status === PROJECT_STATUS.STARTED
+  const isInactive = status === PROJECT_STATUS.PAUSED
+  const isComingUp = status === PROJECT_STATUS.STARTING
 
   if (isHealthy) {
     return (
@@ -299,21 +272,23 @@ const BranchesSkeleton = () => {
 const EmptyBranchesState = ({
   slug,
   projectRef,
+  projectName,
 }: {
   slug: string
   projectRef: string
+  projectName: string
 }) => {
   return (
     <div className="rounded border border-dashed p-6 text-center space-y-3 bg-surface-100">
-      <p className="text-sm text-foreground">
-        No branches found for this project
-      </p>
+      <p className="text-sm text-foreground">No branches found for this project</p>
       <p className="text-xs text-foreground-light">
         Branches let you isolate environments (preview, staging, prod, etc.)
       </p>
       <Button asChild type="default" size="tiny">
-        <Link href={`/org/${slug}/project/${projectRef}/settings`}>
-          Create / manage branches
+        <Link
+          href={`/new/${slug}/${projectRef}?name=${encodeURIComponent(projectName + "'s branch")}`}
+        >
+          Create your first branch
         </Link>
       </Button>
     </div>

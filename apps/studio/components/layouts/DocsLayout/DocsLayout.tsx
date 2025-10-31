@@ -16,7 +16,7 @@ function DocsLayout({ title, children }: { title: string; children: ReactElement
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
-  const isPaused = selectedProject?.status === PROJECT_STATUS.INACTIVE
+  const isPaused = selectedProject?.status === PROJECT_STATUS.PAUSED
 
   const { data, isLoading, error } = useOpenAPISpecQuery(
     { orgRef: orgRef!, projectRef: projectRef },

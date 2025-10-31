@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIsMFAEnabled, useParams } from 'common'
 import { ProjectList } from 'components/interfaces/Home/ProjectList'
@@ -12,17 +12,27 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { PROJECT_STATUS } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
 import { Admonition } from 'ui-patterns'
+import { useRouter } from 'next/router'
 
 const ProjectsPage: NextPageWithLayout = () => {
-  const { data: org } = useSelectedOrganizationQuery()
+  const router = useRouter()
+
+  const { data: org, isLoading, isError, error } = useSelectedOrganizationQuery()
   const isUserMFAEnabled = useIsMFAEnabled()
   const disableAccessMfa = org?.organization_requires_mfa && !isUserMFAEnabled
 
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<string[]>([
-    PROJECT_STATUS.ACTIVE_HEALTHY,
-    PROJECT_STATUS.INACTIVE,
+    PROJECT_STATUS.STARTED,
+    PROJECT_STATUS.PAUSED,
   ])
+
+  useEffect(() => {
+    if (isLoading) return
+    console.log(isError, error, org)
+    if (typeof org === 'undefined' || (isError && error && error.code === 404))
+      router.push("/organizations")
+  }, [org, isLoading, isError])
 
   useAutoProjectsPrefetch()
 

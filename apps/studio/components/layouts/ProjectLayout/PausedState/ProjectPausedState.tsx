@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import { ExternalLink, PauseCircle } from 'lucide-react'
+import { PauseCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -11,26 +10,17 @@ import { z } from 'zod'
 import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { useFreeProjectLimitCheckQuery } from 'data/organizations/free-project-limit-check-query'
 import { PostgresEngine, ReleaseChannel } from 'data/projects/new-project.constants'
 import { useProjectPauseStatusQuery } from 'data/projects/project-pause-status-query'
-import { useProjectRestoreMutation } from 'data/projects/project-restore-mutation'
-import { setProjectStatus } from 'data/projects/projects-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { PROJECT_STATUS } from 'lib/constants'
-import {
-  AlertDescription_Shadcn_,
-  AlertTitle_Shadcn_,
-  Alert_Shadcn_,
-  Button,
-  Form_Shadcn_,
-  Modal,
-} from 'ui'
+import { Button, Form_Shadcn_, Modal } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns/ShimmeringLoader'
 import { RestorePaidPlanProjectNotice } from '../RestorePaidPlanProjectNotice'
 import { PauseDisabledState } from './PauseDisabledState'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { setProjectStatus } from '../../../../data/projects/projects-query'
+import { useProjectRestoreMutation } from '../../../../data/projects/project-restore-mutation'
 
 export interface ProjectPausedStateProps {
   product?: string
@@ -50,7 +40,6 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const queryClient = useQueryClient()
   const { data: project } = useSelectedProjectQuery()
-  const { data: selectedOrganization } = useSelectedOrganizationQuery()
 
   const {
     data: pauseStatus,
@@ -58,48 +47,35 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
     isError,
     isSuccess,
     isLoading,
-  } = useProjectPauseStatusQuery({ ref: projectRef }, { enabled: project?.status === PROJECT_STATUS.INACTIVE })
-
-  const finalDaysRemainingBeforeRestoreDisabled =
-    pauseStatus?.remaining_days_till_restore_disabled ??
-    pauseStatus?.max_days_till_restore_disabled ??
-    0
-
-  const isFreePlan = selectedOrganization?.plan?.id === 'free'
-  const isRestoreDisabled = isSuccess && !pauseStatus.can_restore
-
-  const { data: membersExceededLimit } = useFreeProjectLimitCheckQuery(
-    { slug: orgRef },
-    { enabled: isFreePlan }
+  } = useProjectPauseStatusQuery(
+    { ref: projectRef },
+    { enabled: project?.status === PROJECT_STATUS.PAUSED }
   )
 
-  const hasMembersExceedingFreeTierLimit = (membersExceededLimit || []).length > 0
-  const [showConfirmRestore, setShowConfirmRestore] = useState(false)
+  const isRestoreDisabled = isSuccess && !pauseStatus.can_restore
+
+  const [showConfirmResume, setShowConfirmResume] = useState(false)
   const [showFreeProjectLimitWarning, setShowFreeProjectLimitWarning] = useState(false)
 
   const { mutate: restoreProject, isLoading: isRestoring } = useProjectRestoreMutation({
     onSuccess: (_, variables) => {
-      setProjectStatus(queryClient, orgRef!, variables.ref, PROJECT_STATUS.RESTORING)
-      toast.success('Restoring project')
+      setProjectStatus(queryClient, orgRef!, variables.ref, PROJECT_STATUS.STARTING)
+      toast.success('Resuming project')
     },
   })
 
-  const canResumeProject = useCheckPermissions("env:projects:pause")
+  const canResumeProject = useCheckPermissions('env:projects:pause')
 
-  const onSelectRestore = () => {
-    if (!canResumeProject) {
-      toast.error('You do not have the required permissions to restore this project')
-    } else if (hasMembersExceedingFreeTierLimit) setShowFreeProjectLimitWarning(true)
-    else setShowConfirmRestore(true)
-  }
-
-  const onConfirmRestore = async (values: z.infer<typeof FormSchema>) => {
-    if (!project) {
+  const onSelectResume = () => {
+    if (!canResumeProject)
+      return toast.error('You do not have the required permissions to restore this project')
+    else if (!project) {
       return toast.error('Unable to restore: project is required')
     }
-
     restoreProject({ ref: project.id })
   }
+
+  const onConfirmRestore = async (values: z.infer<typeof FormSchema>) => {}
 
   const FormSchema = z.object({
     postgresVersionSelection: z.string(),
@@ -146,48 +122,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                 )}
                 {isSuccess && (
                   <>
-                    {isRestoreDisabled ? (
-                      <PauseDisabledState />
-                    ) : isFreePlan ? (
-                      <>
-                        <Alert_Shadcn_>
-                          <AlertTitle_Shadcn_>
-                            Project can be restored through the dashboard within the next{' '}
-                            {finalDaysRemainingBeforeRestoreDisabled} day
-                            {finalDaysRemainingBeforeRestoreDisabled > 1 ? 's' : ''}
-                          </AlertTitle_Shadcn_>
-                          <AlertDescription_Shadcn_>
-                            Free projects cannot be restored through the dashboard if they are
-                            paused for more than{' '}
-                            <span className="text-foreground">
-                              {pauseStatus?.max_days_till_restore_disabled} days
-                            </span>
-                            . The latest that your project can be restored is by{' '}
-                            <span className="text-foreground">
-                              {dayjs()
-                                .utc()
-                                .add(pauseStatus.remaining_days_till_restore_disabled ?? 0, 'day')
-                                .format('DD MMM YYYY')}
-                            </span>
-                            . However, your database backup and Storage objects will still be
-                            available for download thereafter.
-                          </AlertDescription_Shadcn_>
-                          <AlertDescription_Shadcn_ className="mt-3">
-                            <Button asChild type="default" icon={<ExternalLink />}>
-                              <a
-                                target="_blank"
-                                rel="noreferrer"
-                                href="https://supabase.com/docs/guides/platform/migrating-and-upgrading-projects#time-limits"
-                              >
-                                More information
-                              </a>
-                            </Button>
-                          </AlertDescription_Shadcn_>
-                        </Alert_Shadcn_>
-                      </>
-                    ) : (
-                      <RestorePaidPlanProjectNotice />
-                    )}
+                    {isRestoreDisabled ? <PauseDisabledState /> : <RestorePaidPlanProjectNotice />}
                   </>
                 )}
               </div>
@@ -198,7 +133,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                     size="tiny"
                     type="default"
                     disabled={!canResumeProject}
-                    onClick={onSelectRestore}
+                    onClick={onSelectResume}
                     tooltip={{
                       content: {
                         side: 'bottom',
@@ -208,21 +143,15 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
                       },
                     }}
                   >
-                    Restore project
+                    Resume project
                   </ButtonTooltip>
-                  {isFreePlan ? (
-                    <Button asChild type="primary">
-                      <Link
-                        href={`/org/${orgRef}/billing?panel=subscriptionPlan&source=projectPausedStateRestore`}
-                      >
-                        Upgrade to Pro
-                      </Link>
-                    </Button>
-                  ) : (
-                    <Button asChild type="default">
-                      <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`}>View project settings</Link>
-                    </Button>
-                  )}
+                  <Button asChild type="default">
+                    <Link
+                      href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`}
+                    >
+                      View project settings
+                    </Link>
+                  </Button>
                 </div>
               )}
             </div>
@@ -232,11 +161,11 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
 
       <Modal
         hideFooter
-        visible={showConfirmRestore}
+        visible={showConfirmResume}
         size={'small'}
         title="Restore this project"
         description="Confirm to restore this project? Your project's data will be restored to when it was initially paused."
-        onCancel={() => setShowConfirmRestore(false)}
+        onCancel={() => setShowConfirmResume(false)}
         header={'Restore this project'}
       >
         <Form_Shadcn_ {...form}>
@@ -245,7 +174,7 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
               <Button
                 type="default"
                 disabled={isRestoring}
-                onClick={() => setShowConfirmRestore(false)}
+                onClick={() => setShowConfirmResume(false)}
               >
                 Cancel
               </Button>
@@ -269,14 +198,6 @@ export const ProjectPausedState = ({ product }: ProjectPausedStateProps) => {
             The following members have reached their maximum limits for the number of active free
             plan projects within organizations where they are an administrator or owner:
           </p>
-          <ul className="pl-5 text-sm list-disc text-foreground-light">
-            {(membersExceededLimit || []).map((member, idx: number) => (
-              <li key={`member-${idx}`}>
-                {member.username || member.primary_email} (Limit: {member.free_project_limit} free
-                projects)
-              </li>
-            ))}
-          </ul>
           <p className="text-sm text-foreground-light">
             These members will need to either delete, pause, or upgrade one or more of these
             projects before you're able to unpause this project.

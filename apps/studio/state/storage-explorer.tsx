@@ -1825,7 +1825,7 @@ const StorageExplorerStateContext = createContext<StorageExplorerState>(
 export const StorageExplorerStateContextProvider = ({ children }: PropsWithChildren) => {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch, isLoading: isBranchLoading } = useSelectedBranchQuery()
-  const isPaused = project?.status === PROJECT_STATUS.INACTIVE
+  const isPaused = project?.status === PROJECT_STATUS.PAUSED
 
   const [state, setState] = useState(() => createStorageExplorerState(DEFAULT_STATE_CONFIG))
   const stateRef = useLatest(state)
@@ -1884,7 +1884,16 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
         })
       )
     }
-  }, [project?.id, stateRef, isPaused, resumableUploadUrl, protocol, endpoint, orgRef, isBranchLoading])
+  }, [
+    project?.id,
+    stateRef,
+    isPaused,
+    resumableUploadUrl,
+    protocol,
+    endpoint,
+    orgRef,
+    isBranchLoading,
+  ])
 
   return (
     <StorageExplorerStateContext.Provider value={state}>

@@ -167,7 +167,7 @@ export function DiskManagementForm() {
     !canUpdateDiskConfiguration
 
   const isDirty = !!Object.keys(form.formState.dirtyFields).length
-  const isProjectResizing = project?.status === PROJECT_STATUS.RESIZING
+  const isProjectResizing = project?.status === PROJECT_STATUS.MIGRATING
   const isProjectRequestingDiskChanges = isRequestingChanges && !isProjectResizing
   const noPermissions = isPermissionsLoaded && !canUpdateDiskConfiguration
 
@@ -183,7 +183,7 @@ export function DiskManagementForm() {
       onError: () => {},
       onSuccess: () => {
         //Manually set project status to RESIZING, Project status should be RESIZING on next project status request.
-        setProjectStatus(queryClient, org!.slug, projectRef!, PROJECT_STATUS.RESIZING)
+        setProjectStatus(queryClient, org!.slug, projectRef!, PROJECT_STATUS.MIGRATING)
       },
     })
   const { mutateAsync: updateDiskAutoscaleConfig, isLoading: isUpdatingDiskAutoscaleConfig } =

@@ -41,7 +41,7 @@ export const useProjectLintsQuery = <TData = ProjectLintsData>(
   { enabled = true, ...options }: UseQueryOptions<ProjectLintsData, ProjectLintsError, TData> = {}
 ) => {
   const { data: project } = useSelectedProjectQuery()
-  const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  const isActive = project?.status === PROJECT_STATUS.STARTED
 
   return useQuery<ProjectLintsData, ProjectLintsError, TData>(
     lintKeys.lint(branch?.organization_id, branch?.project_id, branch?.id),
