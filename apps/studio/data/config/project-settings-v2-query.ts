@@ -6,7 +6,7 @@ import { configKeys } from './keys'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export type ProjectSettingsVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
 }
 
@@ -19,16 +19,16 @@ export type ProjectSettings = components['schemas']['ProjectSettingsResponse'] &
 }
 
 export async function getProjectSettings(
-  { orgSlug, projectRef }: ProjectSettingsVariables,
+  { orgRef, projectRef }: ProjectSettingsVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/settings', {
     params: {
       path: {
-        slug: orgSlug,
+        slug: orgRef,
         ref: projectRef
       }
     },
@@ -43,7 +43,7 @@ type ProjectSettingsData = Awaited<ReturnType<typeof getProjectSettings>>
 type ProjectSettingsError = ResponseError
 
 export const useProjectSettingsV2Query = <TData = ProjectSettingsData>(
-  { orgSlug, projectRef }: ProjectSettingsVariables,
+  { orgRef, projectRef }: ProjectSettingsVariables,
   {
     enabled = true,
     ...options
@@ -52,10 +52,10 @@ export const useProjectSettingsV2Query = <TData = ProjectSettingsData>(
   const canReadAPIKeys = useCheckPermissions("branch:api:getkeys")
 
   return useQuery<ProjectSettingsData, ProjectSettingsError, TData>(
-    configKeys.settingsV2(orgSlug, projectRef),
-    ({ signal }) => getProjectSettings({ orgSlug, projectRef }, signal),
+    configKeys.settingsV2(orgRef, projectRef),
+    ({ signal }) => getProjectSettings({ orgRef, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
       refetchInterval(_data) {
         const data = _data as ProjectSettings | undefined
         const apiKeys = data?.service_api_keys ?? []

@@ -9,19 +9,25 @@ import { useCheckCNAMERecordMutation } from 'data/custom-domains/check-cname-mut
 import { useCustomDomainActivateMutation } from 'data/custom-domains/custom-domains-activate-mutation'
 import { useCustomDomainDeleteMutation } from 'data/custom-domains/custom-domains-delete-mutation'
 import type { CustomDomainResponse } from 'data/custom-domains/custom-domains-query'
-import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button } from 'ui'
+import { Alert_Shadcn_, AlertDescription_Shadcn_, AlertTitle_Shadcn_, Button } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 
 export type CustomDomainActivateProps = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
   customDomain: CustomDomainResponse
 }
 
-const CustomDomainActivate = ({ orgSlug, projectRef, customDomain }: CustomDomainActivateProps) => {
+const CustomDomainActivate = ({
+  orgRef,
+  projectRef,
+  branchRef,
+  customDomain,
+}: CustomDomainActivateProps) => {
   const [isActivateConfirmModalVisible, setIsActivateConfirmModalVisible] = useState(false)
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgRef, projectRef })
   const { mutate: checkCNAMERecord, isLoading: isCheckingRecord } = useCheckCNAMERecordMutation()
   const { mutate: activateCustomDomain, isLoading: isActivating } = useCustomDomainActivateMutation(
     {
@@ -42,16 +48,20 @@ const CustomDomainActivate = ({ orgSlug, projectRef, customDomain }: CustomDomai
   const endpoint = settings?.app_config?.endpoint
 
   const onActivateCustomDomain = async () => {
+    if (!orgRef) return console.error('Org ref is required')
     if (!projectRef) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
     checkCNAMERecord(
       { domain: customDomain.hostname },
-      { onSuccess: () => activateCustomDomain({ projectRef }) }
+      { onSuccess: () => activateCustomDomain({ orgRef, projectRef, branchRef }) }
     )
   }
 
   const onCancelCustomDomain = async () => {
+    if (!orgRef) return console.error('Org ref is required')
     if (!projectRef) return console.error('Project ref is required')
-    deleteCustomDomain({ projectRef })
+    if (!branchRef) return console.error('Branch ref is required')
+    deleteCustomDomain({ orgRef, projectRef, branchRef })
   }
 
   return (

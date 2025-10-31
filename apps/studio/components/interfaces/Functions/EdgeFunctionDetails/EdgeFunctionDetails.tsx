@@ -58,13 +58,13 @@ const FormSchema = z.object({
 export const EdgeFunctionDetails = () => {
   const { data: branch } = useSelectedBranchQuery()
   const router = useRouter()
-  const { slug, ref: projectRef, functionSlug } = useParams()
+  const { slug: orgRef, ref: projectRef, functionSlug } = useParams()
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const { can: canUpdateEdgeFunction } = useCheckPermissions("branch:edge:admin")
 
   const { data: apiKeys } = useAPIKeysQuery({ branch })
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: slug, projectRef })
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef, projectRef })
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
   const {
     data: selectedFunction,
     error,

@@ -23,7 +23,7 @@ const EdgeFunctionSecrets = () => {
   const { can: canUpdateSecrets } = useCheckPermissions("branch:edge:admin")
 
   const { data, error, isLoading, isSuccess, isError } = useSecretsQuery({
-    orgSlug, projectRef,
+    orgRef: orgSlug, projectRef,
   })
 
   const { mutate: deleteSecret, isLoading: isDeleting } = useSecretsDeleteMutation({

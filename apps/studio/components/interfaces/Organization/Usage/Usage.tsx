@@ -41,7 +41,7 @@ const Usage = () => {
     isLoading: isLoadingSubscription,
     isError: isErrorSubscription,
     isSuccess: isSuccessSubscription,
-  } = useOrgSubscriptionQuery({ orgSlug: orgRef })
+  } = useOrgSubscriptionQuery({ orgRef: orgRef })
 
   const orgProjects = projects?.filter((project) => project.organization_id === organization?.id)
 

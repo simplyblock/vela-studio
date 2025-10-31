@@ -6,13 +6,13 @@ import { resourcesKeys } from './keys'
 import { toast } from 'sonner'
 
 interface ProjectLimitUpdateVariables {
-  orgSlug: string
+  orgRef: string
   projectRef: string
   limit: components['schemas']['ProvLimitPayload']
 }
 
 async function updateProjectLimit(
-  { orgSlug, projectRef, limit }: ProjectLimitUpdateVariables,
+  { orgRef, projectRef, limit }: ProjectLimitUpdateVariables,
   signal?: AbortSignal
 ) {
   const { data, error } = await post(
@@ -20,7 +20,7 @@ async function updateProjectLimit(
     {
       params: {
         path: {
-          slug: orgSlug,
+          slug: orgRef,
           ref: projectRef,
         },
       },
@@ -49,7 +49,7 @@ export const useProjectLimitUpdateMutation = ({
     {
       async onSuccess(data, variables, context) {
         await queryClient.invalidateQueries(
-          resourcesKeys.projectLimits(variables.orgSlug, variables.projectRef)
+          resourcesKeys.projectLimits(variables.orgRef, variables.projectRef)
         )
         await onSuccess?.(data, variables, context)
       },

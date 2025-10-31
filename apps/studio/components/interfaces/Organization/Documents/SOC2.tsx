@@ -28,7 +28,7 @@ export const SOC2 = () => {
 
   const fetchSOC2 = async (orgSlug: string) => {
     try {
-      const soc2Link = await getDocument({ orgSlug, docType: 'soc2-type-2-report' })
+      const soc2Link = await getDocument({ orgRef: orgSlug, docType: 'soc2-type-2-report' })
       if (soc2Link?.fileUrl) window.open(soc2Link.fileUrl, '_blank')
       setIsOpen(false)
     } catch (error: any) {

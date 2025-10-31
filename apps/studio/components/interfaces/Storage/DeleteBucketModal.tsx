@@ -1,4 +1,4 @@
-import { get as _get, find } from 'lodash'
+import { find, get as _get } from 'lodash'
 import { useRouter } from 'next/router'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,7 +10,6 @@ import { useDatabasePoliciesQuery } from 'data/database-policies/database-polici
 import { useDatabasePolicyDeleteMutation } from 'data/database-policies/database-policy-delete-mutation'
 import { useBucketDeleteMutation } from 'data/storage/bucket-delete-mutation'
 import { Bucket, useBucketsQuery } from 'data/storage/buckets-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { formatPoliciesForStorage } from './Storage.utils'
 import {
   Button,
@@ -41,7 +40,6 @@ const formId = `delete-storage-bucket-form`
 export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModalProps) => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const schema = z.object({
@@ -54,7 +52,7 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
     resolver: zodResolver(schema),
   })
 
-  const { data } = useBucketsQuery({ projectRef })
+  const { data } = useBucketsQuery({ orgRef, projectRef, branchRef })
   const { data: policies } = useDatabasePoliciesQuery({
     branch,
     schema: 'storage',
@@ -101,9 +99,11 @@ export const DeleteBucketModal = ({ visible, bucket, onClose }: DeleteBucketModa
   const buckets = data ?? []
 
   const onSubmit: SubmitHandler<z.infer<typeof schema>> = async () => {
+    if (!orgRef) return console.error('Org ref is required')
     if (!projectRef) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
     if (!bucket) return console.error('No bucket is selected')
-    deleteBucket({ projectRef, id: bucket.id, type: bucket.type })
+    deleteBucket({ orgRef, projectRef, branchRef, id: bucket.id, type: bucket.type })
   }
 
   return (

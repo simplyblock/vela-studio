@@ -90,7 +90,7 @@ export const EdgeFunctionTesterSheet = ({ visible, onClose }: EdgeFunctionTester
 
   const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { data: config } = useProjectPostgrestConfigQuery({ branch })
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef })
   const { data: accessToken } = useSessionAccessTokenQuery({ enabled: true })
   const { serviceKey } = getKeys(apiKeys)
 

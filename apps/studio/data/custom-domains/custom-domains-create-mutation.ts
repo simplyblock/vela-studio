@@ -6,7 +6,9 @@ import type { ResponseError } from 'types'
 import { customDomainKeys } from './keys'
 
 export type CustomDomainCreateVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   customDomain: string
 }
 
@@ -39,8 +41,8 @@ export const useCustomDomainCreateMutation = ({
     (vars) => createCustomDomain(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(customDomainKeys.list(projectRef))
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(customDomainKeys.list(orgRef, projectRef, branchRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

@@ -6,16 +6,16 @@ import type { ResponseError } from 'types'
 import { orgSSOKeys } from './keys'
 
 export type OrgSSOConfigVariables = {
-  orgSlug?: string
+  orgRef?: string
 }
 
-export async function getOrgSSOConfig({ orgSlug }: OrgSSOConfigVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+export async function getOrgSSOConfig({ orgRef }: OrgSSOConfigVariables, signal?: AbortSignal) {
+  if (!orgRef) throw new Error('Organization slug is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/sso', {
     params: {
       path: {
-        slug: orgSlug,
+        slug: orgRef,
       },
     },
     signal,
@@ -39,7 +39,7 @@ export type OrgSSOConfigData = Awaited<ReturnType<typeof getOrgSSOConfig>>
 export type OrgSSOConfigError = ResponseError
 
 export const useOrgSSOConfigQuery = <TData = OrgSSOConfigData>(
-  { orgSlug }: OrgSSOConfigVariables,
+  { orgRef }: OrgSSOConfigVariables,
   { enabled = true, ...options }: UseQueryOptions<OrgSSOConfigData, OrgSSOConfigError, TData> = {}
 ) => {
   const { data: organization } = useSelectedOrganizationQuery()
@@ -47,10 +47,10 @@ export const useOrgSSOConfigQuery = <TData = OrgSSOConfigData>(
   const canSetupSSOConfig = ['team', 'enterprise'].includes(plan ?? '')
 
   return useQuery<OrgSSOConfigData, OrgSSOConfigError, TData>(
-    orgSSOKeys.orgSSOConfig(orgSlug),
-    ({ signal }) => getOrgSSOConfig({ orgSlug }, signal),
+    orgSSOKeys.orgSSOConfig(orgRef),
+    ({ signal }) => getOrgSSOConfig({ orgRef }, signal),
     {
-      enabled: enabled && typeof orgSlug !== 'undefined' && canSetupSSOConfig,
+      enabled: enabled && typeof orgRef !== 'undefined' && canSetupSSOConfig,
       ...options,
     }
   )

@@ -5,7 +5,9 @@ import type { ResponseError } from 'types'
 import { customDomainKeys } from './keys'
 
 export type CustomDomainsVariables = {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
 }
 
 type Settings = {
@@ -60,15 +62,24 @@ export type CustomDomainResponse = {
 }
 
 export async function getCustomDomains(
-  { projectRef }: CustomDomainsVariables,
+  { orgRef, projectRef }: CustomDomainsVariables,
   signal?: AbortSignal
 ) {
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error: _error } = await get('/v1/projects/{ref}/custom-hostname', {
-    params: { path: { ref: projectRef } },
-    signal,
-  })
+  const { data, error: _error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/custom-hostname',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+        },
+      },
+      signal,
+    }
+  )
 
   if (_error) {
     const error = _error as ResponseError
@@ -102,14 +113,14 @@ export type CustomDomainsData = Awaited<ReturnType<typeof getCustomDomains>>
 export type CustomDomainsError = ResponseError
 
 export const useCustomDomainsQuery = <TData = CustomDomainsData>(
-  { projectRef }: CustomDomainsVariables,
+  { orgRef, projectRef, branchRef }: CustomDomainsVariables,
   { enabled = true, ...options }: UseQueryOptions<CustomDomainsData, CustomDomainsError, TData> = {}
 ) => {
   return useQuery<CustomDomainsData, CustomDomainsError, TData>(
-    customDomainKeys.list(projectRef),
-    ({ signal }) => getCustomDomains({ projectRef }, signal),
+    customDomainKeys.list(orgRef, projectRef, branchRef),
+    ({ signal }) => getCustomDomains({ orgRef, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined' && typeof branchRef !== 'undefined',
       ...options,
     }
   )

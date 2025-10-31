@@ -6,11 +6,13 @@ import type { ResponseError } from 'types'
 import { customDomainKeys } from './keys'
 
 export type CustomDomainDeleteVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
 }
 
 export async function deleteCustomDomain({ projectRef }: CustomDomainDeleteVariables) {
-  const { data, error } = await del(`/v1/projects/{ref}/custom-hostname`, {
+  const { data, error } = await del(`/platform/organizations/{slug}/projects/{ref}/custom-hostname`, {
     params: {
       path: { ref: projectRef },
     },
@@ -36,12 +38,12 @@ export const useCustomDomainDeleteMutation = ({
     (vars) => deleteCustomDomain(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { orgRef, projectRef, branchRef } = variables
 
         // we manually setQueriesData here instead of using
         // the standard invalidateQueries is the custom domains
         // endpoint doesn't immediately return the new state
-        queryClient.setQueriesData(customDomainKeys.list(projectRef), () => {
+        queryClient.setQueriesData(customDomainKeys.list(orgRef, projectRef, branchRef), () => {
           return {
             customDomain: null,
             status: '0_no_hostname_configured',

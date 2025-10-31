@@ -1,4 +1,4 @@
-import { useIsLoggedIn } from 'common'
+import { useIsLoggedIn, useParams } from 'common'
 
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import {
@@ -226,7 +226,7 @@ export function useBranchPermissionQuery({
     isLoading: isBranchesLoading,
     isSuccess: isBranchesSuccess,
   } = useBranchesQuery({
-    orgSlug: orgId,
+    orgRef: orgId,
     projectRef: projectId,
   })
 
@@ -263,7 +263,7 @@ export function useCheckPermissions(requiredPermission: Permission | string): {
   isLoading: boolean
   isSuccess: boolean
 } {
-  const { slug: orgId, ref: projectId, branch: branchId } = getPathReferences()
+  const { slug: orgId, ref: projectId, branch: branchId } = useParams()
 
   if (typeof requiredPermission === 'string') {
     requiredPermission = transformToPermission(requiredPermission)

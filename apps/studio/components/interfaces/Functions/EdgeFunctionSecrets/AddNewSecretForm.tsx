@@ -65,7 +65,7 @@ const AddNewSecretForm = () => {
   })
 
   const { data: existingSecrets } = useSecretsQuery({
-    orgSlug, projectRef,
+    orgRef: orgSlug, projectRef,
   })
 
   function handlePaste(e: ClipboardEvent) {

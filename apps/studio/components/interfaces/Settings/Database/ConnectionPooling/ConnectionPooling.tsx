@@ -54,7 +54,7 @@ export const ConnectionPooling = () => {
     isLoading: isLoadingPgbouncerConfig,
     isError: isErrorPgbouncerConfig,
     isSuccess: isSuccessPgbouncerConfig,
-  } = usePgbouncerConfigQuery({ orgSlug: slug, projectRef, branchId })
+  } = usePgbouncerConfigQuery({ orgRef: slug, projectRef, branchId })
 
   const disablePoolModeSelection = useMemo(() => {
     return org?.plan?.id === 'free'

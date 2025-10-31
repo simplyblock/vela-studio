@@ -18,7 +18,7 @@ import {
 
 export const Restriction = () => {
   const { data: org } = useSelectedOrganizationQuery()
-  const { data: usage, isSuccess: isSuccessOrgUsage } = useOrgUsageQuery({ orgSlug: org?.slug })
+  const { data: usage, isSuccess: isSuccessOrgUsage } = useOrgUsageQuery({ orgRef: org?.slug })
 
   const pathname = usePathname()
   const isUsagePage = pathname?.endsWith('/usage')

@@ -34,7 +34,7 @@ const FormSchema = z.object({ channel: z.string(), isPrivate: z.boolean() })
 
 export const ChooseChannelPopover = ({ config, onChangeConfig }: ChooseChannelPopoverProps) => {
   const [open, setOpen] = useState(false)
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
   const { mutate: sendEvent } = useSendEventMutation()
 
@@ -58,7 +58,7 @@ export const ChooseChannelPopover = ({ config, onChangeConfig }: ChooseChannelPo
     sendEvent({
       action: 'realtime_inspector_listen_channel_clicked',
       groups: {
-        project: ref ?? 'Unknown',
+        project: projectRef ?? 'Unknown',
         organization: org?.slug ?? 'Unknown',
       },
     })
@@ -67,7 +67,7 @@ export const ChooseChannelPopover = ({ config, onChangeConfig }: ChooseChannelPo
 
     // [Joshen] Refresh if starting to listen + using temp API key, since it has a low refresh rate
     if (token.startsWith('sb_temp')) {
-      const data = await getTemporaryAPIKey({ projectRef: config.projectRef, expiry: 3600 })
+      const data = await getTemporaryAPIKey({ orgRef, projectRef: config.projectRef, branchRef, expiry: 3600 })
       token = data.api_key
     }
     onChangeConfig({

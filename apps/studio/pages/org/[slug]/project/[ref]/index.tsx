@@ -36,7 +36,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     isError: isErrorBranches,
     error: branchesError,
   } = useBranchesQuery(
-    { orgSlug: slug, projectRef },
+    { orgRef: slug, projectRef },
     { enabled: !!slug && !!projectRef }
   )
 

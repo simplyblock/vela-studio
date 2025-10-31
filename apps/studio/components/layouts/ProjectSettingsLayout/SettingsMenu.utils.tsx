@@ -113,17 +113,6 @@ export const generateSettingsMenu = (
               },
             ]
           : []),
-        ...(storageEnabled
-          ? [
-              {
-                name: 'Storage',
-                key: 'storage',
-                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/storage/settings`,
-                items: [],
-                rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-              },
-            ]
-          : []),
         ...(edgeFunctionsEnabled
           ? [
               {

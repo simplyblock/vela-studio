@@ -160,7 +160,7 @@ const Backups = () => {
         const results = await Promise.all(
           projectRefs.map(async (projectRef) => {
             try {
-              const branches = await getBranches({ orgSlug: orgId, projectRef }, controller.signal)
+              const branches = await getBranches({ orgRef: orgId, projectRef }, controller.signal)
               return { projectRef, branches }
             } catch (error: any) {
               if (error?.name !== 'AbortError') {

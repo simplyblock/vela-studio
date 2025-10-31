@@ -94,7 +94,7 @@ export const ServiceStatus = () => {
     refetch: refetchServiceStatus,
   } = useProjectServiceStatusQuery(
     {
-      orgSlug: orgRef,
+      orgRef: orgRef,
       projectRef,
     },
     {

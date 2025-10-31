@@ -28,7 +28,7 @@ const Compute = ({ orgSlug, projectRef, startDate, endDate }: ComputeProps) => {
     error,
     isSuccess,
   } = useOrgDailyComputeStatsQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     startDate,
     endDate,

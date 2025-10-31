@@ -9,19 +9,19 @@ import { ResponseError } from '../../types'
 import { resourcesKeys } from './keys'
 
 interface OrganizationLimitsVariables {
-  orgSlug?: string
+  orgRef?: string
 }
 
 async function getOrganizationLimits(
-  { orgSlug }: OrganizationLimitsVariables,
+  { orgRef }: OrganizationLimitsVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+  if (!orgRef) throw new Error('Organization slug is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/resources/limits', {
     params: {
       path: {
-        slug: orgSlug,
+        slug: orgRef,
       },
     },
     signal,
@@ -35,7 +35,7 @@ export type OrganizationLimitsData = Awaited<ReturnType<typeof getOrganizationLi
 export type OrganizationLimitsError = ResponseError
 
 export const useOrganizationLimitsQuery = <TData = OrganizationLimitsData>(
-  { orgSlug }: OrganizationLimitsVariables,
+  { orgRef }: OrganizationLimitsVariables,
   {
     enabled = true,
     ...options
@@ -46,9 +46,9 @@ export const useOrganizationLimitsQuery = <TData = OrganizationLimitsData>(
 ) => {
   return useQuery<OrganizationLimitsData, OrganizationLimitsError, TData>({
     ...options,
-    queryKey: resourcesKeys.organizationLimits(orgSlug),
+    queryKey: resourcesKeys.organizationLimits(orgRef),
     queryFn: async (context: QueryFunctionContext) =>
-      getOrganizationLimits({ orgSlug }, context.signal),
-    enabled: enabled && typeof orgSlug !== 'undefined',
+      getOrganizationLimits({ orgRef }, context.signal),
+    enabled: enabled && typeof orgRef !== 'undefined',
   })
 }

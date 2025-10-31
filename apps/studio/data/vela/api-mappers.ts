@@ -1,19 +1,15 @@
 import { components } from './vela-schema'
 import { Organization } from '../../types'
-import fs from 'node:fs'
 import { OrganizationMember } from '../organizations/organization-members-query'
 
 export type VelaOrganization = components['schemas']['Organization']
 export type VelaMember = components['schemas']['UserPublic']
 
-const isDocker = fs.existsSync('/.dockerenv')
-if (isDocker) console.log('Running in Docker, using fake encrypted connection string')
-
 export function mapOrganization(organization: VelaOrganization): Organization {
   return {
     id: organization.id!,
     name: organization.name!,
-    env_types: organization.environments.split(',').filter(env => env !== ""),
+    env_types: organization.environments.split(',').filter((env) => env !== ''),
     max_backups: organization.max_backups,
     slug: organization.id!,
     plan: {

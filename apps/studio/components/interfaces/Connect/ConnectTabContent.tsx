@@ -26,8 +26,8 @@ const ConnectTabContent = forwardRef<HTMLDivElement, ConnectContentTabProps>(
   ({ projectKeys, filePath, ...props }, ref) => {
     const { slug: orgSlug, ref: projectRef, branch: branchId } = useParams()
 
-    const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
-    const { data: pgbouncerConfig } = usePgbouncerConfigQuery({ orgSlug, projectRef, branchId })
+    const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef })
+    const { data: pgbouncerConfig } = usePgbouncerConfigQuery({ orgRef: orgSlug, projectRef, branchId })
 
     const DB_FIELDS = ['db_host', 'db_name', 'db_port', 'db_user', 'inserted_at']
     const emptyState = { db_user: '', db_host: '', db_port: '', db_name: '' }

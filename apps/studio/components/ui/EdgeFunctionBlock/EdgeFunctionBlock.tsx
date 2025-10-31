@@ -43,7 +43,7 @@ export const EdgeFunctionBlock = ({
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [isDeployed, setIsDeployed] = useState(false)
   const [showWarning, setShowWarning] = useState(false)
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgRef, projectRef })
   const { data: existingFunction } = useEdgeFunctionQuery({ projectRef, slug: functionName })
 
   const { mutate: sendEvent } = useSendEventMutation()
@@ -65,7 +65,7 @@ export const EdgeFunctionBlock = ({
 
     try {
       await deployFunction({
-        orgSlug: orgRef!,
+        orgRef: orgRef!,
         projectRef: projectRef,
         slug: functionName,
         metadata: {
@@ -146,7 +146,7 @@ export const EdgeFunctionBlock = ({
                 setShowWarning(false)
                 try {
                   await deployFunction({
-                    orgSlug: orgRef!,
+                    orgRef: orgRef!,
                     projectRef: projectRef,
                     slug: functionName,
                     metadata: {

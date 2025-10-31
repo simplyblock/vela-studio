@@ -61,7 +61,7 @@ const InstanceConfigurationUI = () => {
     refetch: refetchLoadBalancers,
     isSuccess: isSuccessLoadBalancers,
   } = useLoadBalancersQuery({
-    projectRef, orgSlug: orgRef
+    projectRef, orgRef: orgRef
   })
   const {
     data,

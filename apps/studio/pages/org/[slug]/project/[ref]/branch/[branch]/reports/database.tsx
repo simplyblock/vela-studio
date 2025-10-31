@@ -92,7 +92,7 @@ const DatabaseUsage = () => {
     branch,
   })
   const { data: poolerConfig } = usePgbouncerConfigQuery({
-    orgSlug: org?.slug,
+    orgRef: org?.slug,
     projectRef: project?.id,
     branchId
   })

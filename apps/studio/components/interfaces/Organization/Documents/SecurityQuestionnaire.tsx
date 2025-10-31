@@ -26,7 +26,7 @@ export const SecurityQuestionnaire = () => {
   const fetchQuestionnaire = async (orgSlug: string) => {
     try {
       const questionnaireLink = await getDocument({
-        orgSlug,
+        orgRef: orgSlug,
         docType: 'standard-security-questionnaire',
       })
       if (questionnaireLink?.fileUrl) window.open(questionnaireLink.fileUrl, '_blank')

@@ -5,7 +5,7 @@ import { ResponseError } from 'types'
 import { docsKeys } from './keys'
 
 export type ProjectJsonSchemaVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
 }
 
@@ -72,14 +72,19 @@ export type ProjectJsonSchemaResponse = {
 }
 
 export async function getProjectJsonSchema(
-  { orgSlug, projectRef }: ProjectJsonSchemaVariables,
+  { orgRef, projectRef }: ProjectJsonSchemaVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/api/rest', {
-    params: { path: { slug: orgSlug, ref: projectRef } },
+    params: {
+      path: {
+        slug: orgRef,
+        ref: projectRef,
+      },
+    },
     signal,
   })
 
@@ -91,17 +96,17 @@ export type ProjectJsonSchemaData = Awaited<ReturnType<typeof getProjectJsonSche
 export type ProjectJsonSchemaError = ResponseError
 
 export const useProjectJsonSchemaQuery = <TData = ProjectJsonSchemaData>(
-  { orgSlug, projectRef }: ProjectJsonSchemaVariables,
+  { orgRef, projectRef }: ProjectJsonSchemaVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ProjectJsonSchemaData, ProjectJsonSchemaError, TData> = {}
 ) =>
   useQuery<ProjectJsonSchemaData, ProjectJsonSchemaError, TData>(
-    docsKeys.jsonSchema(orgSlug, projectRef),
-    ({ signal }) => getProjectJsonSchema({ orgSlug, projectRef }, signal),
+    docsKeys.jsonSchema(orgRef, projectRef),
+    ({ signal }) => getProjectJsonSchema({ orgRef, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
       ...options,
     }
   )

@@ -105,11 +105,15 @@ export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalPro
 
   const onSubmit: SubmitHandler<z.infer<typeof BucketSchema>> = async (values) => {
     if (bucket === undefined) return console.error('Bucket is required')
+    if (orgRef === undefined) return console.error('Org ref is required')
     if (projectRef === undefined) return console.error('Project ref is required')
+    if (branchRef === undefined) return console.error('Branch ref is required')
 
     updateBucket(
       {
-        projectRef: projectRef,
+        orgRef,
+        projectRef,
+        branchRef,
         id: bucket.id,
         isPublic: values.public,
         file_size_limit: values.has_file_size_limit

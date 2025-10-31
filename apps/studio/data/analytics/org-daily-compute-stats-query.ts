@@ -8,7 +8,7 @@ import { analyticsKeys } from './keys'
 
 export type OrgDailyComputeStatsVariables = {
   // API parameters
-  orgSlug?: string
+  orgRef?: string
   startDate?: string
   endDate?: string
   projectRef?: string
@@ -18,10 +18,10 @@ export type OrgDailyComputeStatsVariables = {
 }
 
 export async function getOrgDailyComputeStats(
-  { orgSlug, startDate, endDate, projectRef }: OrgDailyComputeStatsVariables,
+  { orgRef, startDate, endDate, projectRef }: OrgDailyComputeStatsVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Org slug is required')
+  if (!orgRef) throw new Error('Org slug is required')
   if (!startDate) throw new Error('Start date is required')
   if (!endDate) throw new Error('End date is required')
 
@@ -32,7 +32,7 @@ export async function getOrgDailyComputeStats(
   if (projectRef) endpoint += `&projectRef=${projectRef}`
 
   const { data, error } = await get('/platform/organizations/{slug}/daily-stats/compute', {
-    params: { path: { slug: orgSlug }, query: { projectRef, startDate, endDate } },
+    params: { path: { slug: orgRef }, query: { projectRef, startDate, endDate } },
     signal,
   })
   if (error) handleError(error)
@@ -43,19 +43,19 @@ export type OrgDailyComputeStatsData = Awaited<ReturnType<typeof getOrgDailyComp
 export type OrgDailyComputeStatsError = ResponseError
 
 export const useOrgDailyComputeStatsQuery = <TData = OrgDailyComputeStatsData>(
-  { orgSlug, startDate, endDate, projectRef, dateFormat = 'DD MMM' }: OrgDailyComputeStatsVariables,
+  { orgRef, startDate, endDate, projectRef, dateFormat = 'DD MMM' }: OrgDailyComputeStatsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<OrgDailyComputeStatsData, OrgDailyComputeStatsError, TData> = {}
 ) =>
   useQuery<OrgDailyComputeStatsData, OrgDailyComputeStatsError, TData>(
-    analyticsKeys.orgDailyComputeStats(orgSlug, { startDate, endDate, projectRef }),
-    ({ signal }) => getOrgDailyComputeStats({ orgSlug, startDate, endDate, projectRef }, signal),
+    analyticsKeys.orgDailyComputeStats(orgRef, { startDate, endDate, projectRef }),
+    ({ signal }) => getOrgDailyComputeStats({ orgRef, startDate, endDate, projectRef }, signal),
     {
       enabled:
         enabled &&
-        typeof orgSlug !== 'undefined' &&
+        typeof orgRef !== 'undefined' &&
         typeof startDate !== 'undefined' &&
         typeof endDate !== 'undefined',
 

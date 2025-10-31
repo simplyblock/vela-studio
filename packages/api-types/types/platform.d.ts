@@ -2945,7 +2945,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/api-keys/temporary': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/api-keys/temporary': {
     parameters: {
       query?: never
       header?: never
@@ -4196,7 +4196,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets': {
     parameters: {
       query?: never
       header?: never
@@ -4214,7 +4214,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}': {
     parameters: {
       query?: never
       header?: never
@@ -4233,7 +4233,7 @@ export interface paths {
     patch: operations['StorageBucketIdController_updateBucket']
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/empty': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/empty': {
     parameters: {
       query?: never
       header?: never
@@ -4250,7 +4250,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects': {
     parameters: {
       query?: never
       header?: never
@@ -4267,7 +4267,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/copy': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/copy': {
     parameters: {
       query?: never
       header?: never
@@ -4284,7 +4284,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/download': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/download': {
     parameters: {
       query?: never
       header?: never
@@ -4301,7 +4301,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/list': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/list': {
     parameters: {
       query?: never
       header?: never
@@ -4318,7 +4318,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/move': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/move': {
     parameters: {
       query?: never
       header?: never
@@ -4335,7 +4335,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/public-url': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/public-url': {
     parameters: {
       query?: never
       header?: never
@@ -4352,7 +4352,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/sign': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/sign': {
     parameters: {
       query?: never
       header?: never
@@ -4369,7 +4369,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/sign-multi': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/sign-multi': {
     parameters: {
       query?: never
       header?: never
@@ -18662,8 +18662,9 @@ export interface operations {
       }
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22199,8 +22200,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22234,8 +22236,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22273,8 +22276,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22310,8 +22314,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22345,8 +22350,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22384,8 +22390,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22419,8 +22426,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22458,8 +22466,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22499,8 +22508,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22540,8 +22550,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22581,8 +22592,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22620,8 +22632,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22661,8 +22674,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22702,8 +22716,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }

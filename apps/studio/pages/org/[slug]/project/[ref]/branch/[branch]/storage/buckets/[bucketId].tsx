@@ -1,7 +1,6 @@
 import { useParams } from 'common'
 
 import { StorageExplorer } from 'components/interfaces/Storage'
-import { AnalyticBucketDetails } from 'components/interfaces/Storage/AnalyticBucketDetails'
 import StorageBucketsError from 'components/interfaces/Storage/StorageBucketsError'
 import { useSelectedBucket } from 'components/interfaces/Storage/StorageExplorer/useSelectedBucket'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -28,8 +27,6 @@ const PageLayout: NextPageWithLayout = () => {
           <div className="flex h-full w-full items-center justify-center">
             <p className="text-sm text-foreground-light">Bucket {bucketId} cannot be found</p>
           </div>
-        ) : bucket.type === 'ANALYTICS' ? (
-          <AnalyticBucketDetails bucket={bucket} />
         ) : (
           <StorageExplorer bucket={bucket} />
         )

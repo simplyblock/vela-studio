@@ -75,7 +75,7 @@ const NetworkRestrictions = () => {
   const [isDisallowingAll, setIsDisallowingAll] = useState(false)
   const [selectedRestrictionToRemove, setSelectedRestrictionToRemove] = useState<string>()
 
-  const { data, isLoading } = useNetworkRestrictionsQuery({ orgSlug, projectRef: ref })
+  const { data, isLoading } = useNetworkRestrictionsQuery({ orgRef: orgSlug, projectRef: ref })
   const { can: canUpdateNetworkRestrictions } = useCheckPermissions("branch:settings:admin")
 
   const hasAccessToRestrictions = data?.entitlement === 'allowed'

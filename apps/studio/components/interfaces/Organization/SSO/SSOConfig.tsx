@@ -76,7 +76,7 @@ export const SSOConfig = () => {
     isSuccess,
     isError,
     error: configError,
-  } = useOrgSSOConfigQuery({ orgSlug: organization?.slug }, { enabled: !!organization })
+  } = useOrgSSOConfigQuery({ orgRef: organization?.slug }, { enabled: !!organization })
 
   const isSSOProviderNotFound = ssoConfig === null
 

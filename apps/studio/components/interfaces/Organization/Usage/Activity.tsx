@@ -23,7 +23,7 @@ const Activity = ({
   currentBillingCycleSelected,
 }: ActivityProps) => {
   const { data: mauData, isLoading: isLoadingMauData } = useOrgDailyStatsQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     metric: PricingMetric.MONTHLY_ACTIVE_USERS,
     interval: '1d',
@@ -32,7 +32,7 @@ const Activity = ({
   })
 
   const { data: mauSSOData, isLoading: isLoadingMauSSOData } = useOrgDailyStatsQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     metric: PricingMetric.MONTHLY_ACTIVE_SSO_USERS,
     interval: '1d',
@@ -42,7 +42,7 @@ const Activity = ({
 
   const { data: assetTransformationsData, isLoading: isLoadingAssetTransformationsData } =
     useOrgDailyStatsQuery({
-      orgSlug,
+      orgRef: orgSlug,
       projectRef,
       metric: PricingMetric.STORAGE_IMAGES_TRANSFORMED,
       interval: '1d',
@@ -52,7 +52,7 @@ const Activity = ({
 
   const { data: funcInvocationsData, isLoading: isLoadingFuncInvocationsData } =
     useOrgDailyStatsQuery({
-      orgSlug,
+      orgRef: orgSlug,
       projectRef,
       metric: PricingMetric.FUNCTION_INVOCATIONS,
       interval: '1d',
@@ -62,7 +62,7 @@ const Activity = ({
 
   const { data: realtimeMessagesData, isLoading: isLoadingRealtimeMessagesData } =
     useOrgDailyStatsQuery({
-      orgSlug,
+      orgRef: orgSlug,
       projectRef,
       metric: PricingMetric.REALTIME_MESSAGE_COUNT,
       interval: '1d',
@@ -72,7 +72,7 @@ const Activity = ({
 
   const { data: realtimeConnectionsData, isLoading: isLoadingRealtimeConnectionsData } =
     useOrgDailyStatsQuery({
-      orgSlug,
+      orgRef: orgSlug,
       projectRef,
       metric: PricingMetric.REALTIME_PEAK_CONNECTIONS,
       interval: '1d',

@@ -1,17 +1,17 @@
 import { useParams } from 'common'
 import { useState } from 'react'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   Button,
+  Command_Shadcn_,
   CommandGroup_Shadcn_,
   CommandItem_Shadcn_,
   CommandList_Shadcn_,
-  Command_Shadcn_,
+  Popover_Shadcn_,
   PopoverContent_Shadcn_,
   PopoverTrigger_Shadcn_,
-  Popover_Shadcn_,
 } from 'ui'
 
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
@@ -24,17 +24,17 @@ import { Code } from 'lucide-react'
 import { DocsButton } from 'components/ui/DocsButton'
 
 const SecondLevelNav = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const snap = useAppStateSnapshot()
   const [open, setOpen] = useState(false)
 
-  const { data } = useOpenAPISpecQuery({ orgSlug: slug, projectRef: ref })
+  const { data } = useOpenAPISpecQuery({ orgRef: orgRef, projectRef })
   const tables = data?.tables ?? []
   const functions = data?.functions ?? []
   const [section, resource] = snap.activeDocsSection
 
-  const { data: buckets } = useBucketsQuery({ projectRef: ref })
-  const { data: edgeFunctions } = useEdgeFunctionsQuery({ projectRef: ref })
+  const { data: buckets } = useBucketsQuery({ orgRef, projectRef, branchRef })
+  const { data: edgeFunctions } = useEdgeFunctionsQuery({ projectRef })
   const bucket = (buckets ?? []).find((b) => b.name === resource)
 
   const content: { [key: string]: { title: string; options: any[]; docsUrl: string } } = {
