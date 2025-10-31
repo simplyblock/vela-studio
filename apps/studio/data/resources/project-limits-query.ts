@@ -9,15 +9,15 @@ import { ResponseError } from '../../types'
 import { resourcesKeys } from './keys'
 
 interface ProjectLimitsVariables {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
 }
 
 async function getProjectLimits(
-  { orgSlug, projectRef }: ProjectLimitsVariables,
+  { orgRef, projectRef }: ProjectLimitsVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+  if (!orgRef) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
   const { data, error } = await get(
@@ -25,7 +25,7 @@ async function getProjectLimits(
     {
       params: {
         path: {
-          slug: orgSlug,
+          slug: orgRef,
           ref: projectRef,
         },
       },
@@ -41,7 +41,7 @@ export type ProjectLimitsData = Awaited<ReturnType<typeof getProjectLimits>>
 export type ProjectLimitsError = ResponseError
 
 export const useProjectLimitsQuery = <TData = ProjectLimitsData>(
-  { orgSlug, projectRef }: ProjectLimitsVariables,
+  { orgRef, projectRef }: ProjectLimitsVariables,
   {
     enabled = true,
     ...options
@@ -49,9 +49,9 @@ export const useProjectLimitsQuery = <TData = ProjectLimitsData>(
 ) => {
   return useQuery<ProjectLimitsData, ProjectLimitsError, TData>({
     ...options,
-    queryKey: resourcesKeys.projectLimits(orgSlug, projectRef),
+    queryKey: resourcesKeys.projectLimits(orgRef, projectRef),
     queryFn: async (context: QueryFunctionContext) =>
-      getProjectLimits({ orgRef: orgSlug, projectRef }, context.signal),
-    enabled: enabled && typeof orgSlug !== 'undefined' && typeof projectRef !== 'undefined',
+      getProjectLimits({ orgRef, projectRef }, context.signal),
+    enabled: enabled && typeof orgRef !== 'undefined' && typeof projectRef !== 'undefined',
   })
 }

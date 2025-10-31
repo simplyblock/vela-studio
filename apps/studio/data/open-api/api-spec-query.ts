@@ -5,7 +5,7 @@ import type { ResponseError } from 'types'
 import { openApiKeys } from './keys'
 
 export type OpenAPISpecVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
 }
 
@@ -15,12 +15,20 @@ export type OpenAPISpecResponse = {
   functions: any[]
 }
 
-export async function getOpenAPISpec({ orgSlug, projectRef }: OpenAPISpecVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+export async function getOpenAPISpec(
+  { orgRef, projectRef }: OpenAPISpecVariables,
+  signal?: AbortSignal
+) {
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
 
   const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/api/rest`, {
-    params: { path: { slug: orgSlug, ref: projectRef } },
+    params: {
+      path: {
+        slug: orgRef,
+        ref: projectRef,
+      },
+    },
     signal,
   })
 
@@ -57,14 +65,14 @@ export type OpenAPISpecData = Awaited<OpenAPISpecResponse>
 export type OpenAPISpecError = ResponseError
 
 export const useOpenAPISpecQuery = <TData = OpenAPISpecData>(
-  { orgSlug, projectRef }: OpenAPISpecVariables,
+  { orgRef, projectRef }: OpenAPISpecVariables,
   { enabled = true, ...options }: UseQueryOptions<OpenAPISpecData, OpenAPISpecError, TData> = {}
 ) =>
   useQuery<OpenAPISpecData, OpenAPISpecError, TData>(
-    openApiKeys.apiSpec(orgSlug, projectRef),
-    ({ signal }) => getOpenAPISpec({ orgRef: orgSlug, projectRef }, signal),
+    openApiKeys.apiSpec(orgRef, projectRef),
+    ({ signal }) => getOpenAPISpec({ orgRef, projectRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined',
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
       ...options,
     }
   )

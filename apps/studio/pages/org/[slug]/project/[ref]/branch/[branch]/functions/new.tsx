@@ -138,7 +138,7 @@ const NewFunctionPage = () => {
     if (isDeploying || !projectRef) return
 
     deployFunction({
-      orgSlug: orgRef!,
+      orgRef: orgRef!,
       projectRef,
       slug: values.functionName,
       metadata: {

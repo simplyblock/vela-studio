@@ -75,11 +75,16 @@ export async function getProjectJsonSchema(
   { orgRef, projectRef }: ProjectJsonSchemaVariables,
   signal?: AbortSignal
 ) {
-  if (!orgRef) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/api/rest', {
-    params: { path: { slug: orgRef, ref: projectRef } },
+    params: {
+      path: {
+        slug: orgRef,
+        ref: projectRef,
+      },
+    },
     signal,
   })
 
@@ -99,7 +104,7 @@ export const useProjectJsonSchemaQuery = <TData = ProjectJsonSchemaData>(
 ) =>
   useQuery<ProjectJsonSchemaData, ProjectJsonSchemaError, TData>(
     docsKeys.jsonSchema(orgRef, projectRef),
-    ({ signal }) => getProjectJsonSchema({ orgSlug: orgRef, projectRef }, signal),
+    ({ signal }) => getProjectJsonSchema({ orgRef, projectRef }, signal),
     {
       enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
       ...options,

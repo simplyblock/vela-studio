@@ -19,15 +19,18 @@ export async function getLoadBalancers(
   if (!projectRef) throw new Error('Project ref is required')
   if (!orgRef) throw new Error('Organization slug is required')
 
-  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/load-balancers`, {
-    params: {
-      path: {
-        slug: orgRef,
-        ref: projectRef
-      }
-    },
-    signal,
-  })
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/load-balancers`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+        },
+      },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -42,7 +45,7 @@ export const useLoadBalancersQuery = <TData = LoadBalancersData>(
 ) => {
   return useQuery<LoadBalancersData, LoadBalancersError, TData>(
     replicaKeys.loadBalancers(projectRef),
-    ({ signal }) => getLoadBalancers({ projectRef, orgSlug: orgRef }, signal),
+    ({ signal }) => getLoadBalancers({ projectRef, orgRef }, signal),
     {
       enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
       ...options,

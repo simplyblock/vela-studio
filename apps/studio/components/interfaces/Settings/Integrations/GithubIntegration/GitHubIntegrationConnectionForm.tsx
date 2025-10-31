@@ -247,7 +247,7 @@ const GitHubIntegrationConnectionForm = ({
       })
     } else {
       updateBranch({
-        orgSlug: orgRef!,
+        orgRef: orgRef!,
         projectRef: selectedProject.id,
         branch: data.branchName,
       })
@@ -287,7 +287,7 @@ const GitHubIntegrationConnectionForm = ({
 
     if (prodBranch?.id) {
       updateBranch({
-        orgSlug: orgRef!,
+        orgRef: orgRef!,
         projectRef: selectedProject.id,
         branch: data.branchName || 'main',
       })

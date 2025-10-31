@@ -6,14 +6,18 @@ import { Integration } from './integrations.types'
 import { integrationKeys } from './keys'
 
 type IntegrationsVariables = {
-  orgSlug?: string
+  orgRef?: string
 }
 
-export async function getIntegrations({ orgSlug }: IntegrationsVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+export async function getIntegrations({ orgRef }: IntegrationsVariables, signal?: AbortSignal) {
+  if (!orgRef) throw new Error('orgRef is required')
 
   const { data, error } = await get('/platform/integrations/{slug}', {
-    params: { path: { slug: orgSlug } },
+    params: {
+      path: {
+        slug: orgRef,
+      },
+    },
   })
   if (error) handleError(error)
   return data as unknown as Integration[]
@@ -24,14 +28,14 @@ export type ProjectIntegrationConnectionsData = Awaited<ReturnType<typeof getInt
 export type IntegrationsError = ResponseError
 
 export const useOrgIntegrationsQuery = <TData = IntegrationsData>(
-  { orgSlug }: IntegrationsVariables,
+  { orgRef }: IntegrationsVariables,
   { enabled = true, ...options }: UseQueryOptions<IntegrationsData, IntegrationsError, TData> = {}
 ) =>
   useQuery<IntegrationsData, IntegrationsError, TData>(
-    integrationKeys.integrationsListWithOrg(orgSlug),
-    ({ signal }) => getIntegrations({ orgRef: orgSlug }, signal),
+    integrationKeys.integrationsListWithOrg(orgRef),
+    ({ signal }) => getIntegrations({ orgRef }, signal),
     {
-      enabled: enabled && typeof orgSlug !== 'undefined',
+      enabled: enabled && typeof orgRef !== 'undefined',
       staleTime: 30 * 60 * 1000, // 30 minutes
       ...options,
     }

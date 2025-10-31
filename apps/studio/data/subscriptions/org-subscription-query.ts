@@ -5,17 +5,21 @@ import { subscriptionKeys } from './keys'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export type OrgSubscriptionVariables = {
-  orgSlug?: string
+  orgRef?: string
 }
 
 export async function getOrgSubscription(
-  { orgSlug }: OrgSubscriptionVariables,
+  { orgRef }: OrgSubscriptionVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgSlug is required')
 
   const { error, data } = await get('/platform/organizations/{slug}/billing/subscription', {
-    params: { path: { slug: orgSlug } },
+    params: {
+      path: {
+        slug: orgRef,
+      },
+    },
     signal,
   })
 
@@ -27,19 +31,19 @@ export type OrgSubscriptionData = Awaited<ReturnType<typeof getOrgSubscription>>
 export type OrgSubscriptionError = ResponseError
 
 export const useOrgSubscriptionQuery = <TData = OrgSubscriptionData>(
-  { orgSlug }: OrgSubscriptionVariables,
+  { orgRef }: OrgSubscriptionVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<OrgSubscriptionData, OrgSubscriptionError, TData> = {}
 ) => {
-  const canReadSubscriptions = useCheckPermissions("branch:settings:admin")
+  const canReadSubscriptions = useCheckPermissions('branch:settings:admin')
 
   return useQuery<OrgSubscriptionData, OrgSubscriptionError, TData>(
-    subscriptionKeys.orgSubscription(orgSlug),
-    ({ signal }) => getOrgSubscription({ orgRef: orgSlug }, signal),
+    subscriptionKeys.orgSubscription(orgRef),
+    ({ signal }) => getOrgSubscription({ orgRef }, signal),
     {
-      enabled: enabled && canReadSubscriptions && typeof orgSlug !== 'undefined',
+      enabled: enabled && canReadSubscriptions && typeof orgRef !== 'undefined',
       staleTime: 60 * 60 * 1000, // 60 minutes
       ...options,
     }

@@ -10,11 +10,18 @@ import { Button } from 'ui'
 import ConfirmModal from 'ui-patterns/Dialogs/ConfirmDialog'
 
 export type CustomDomainDeleteProps = {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
   customDomain: CustomDomainResponse
 }
 
-const CustomDomainDelete = ({ projectRef, customDomain }: CustomDomainDeleteProps) => {
+const CustomDomainDelete = ({
+  orgRef,
+  projectRef,
+  branchRef,
+  customDomain,
+}: CustomDomainDeleteProps) => {
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false)
   const { mutate: deleteCustomDomain } = useCustomDomainDeleteMutation({
     onSuccess: () => {
@@ -26,8 +33,10 @@ const CustomDomainDelete = ({ projectRef, customDomain }: CustomDomainDeleteProp
   })
 
   const onDeleteCustomDomain = async () => {
+    if (!orgRef) return console.error('Org ref is required')
     if (!projectRef) return console.error('Project ref is required')
-    deleteCustomDomain({ projectRef })
+    if (!branchRef) return console.error('Branch ref is required')
+    deleteCustomDomain({ orgRef, projectRef, branchRef })
   }
 
   return (

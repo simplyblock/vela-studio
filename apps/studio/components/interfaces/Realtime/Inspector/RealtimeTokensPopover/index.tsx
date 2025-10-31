@@ -66,7 +66,7 @@ export const RealtimeTokensPopover = ({ config, onChangeConfig }: RealtimeTokens
       } else {
         try {
           const data = await getTemporaryAPIKey({
-            orgRef: config.orgSlug,
+            orgRef: config.orgRef,
             projectRef: config.projectRef,
             branchRef: branch?.id,
             expiry: 3600,

@@ -12,7 +12,6 @@ import {
   isValidAddress,
   normalize,
 } from './NetworkRestrictions.utils'
-import { getPathReferences } from 'data/vela/path-references'
 
 const IPV4_MAX_CIDR_BLOCK_SIZE = 32
 const IPV6_MAX_CIDR_BLOCK_SIZE = 128
@@ -30,9 +29,12 @@ const AddRestrictionModal = ({
 }: AddRestrictionModalProps) => {
   const formId = 'add-restriction-form'
   const { ref } = useParams()
-  const { slug: orgSlug } = getPathReferences()
+  const { slug: orgSlug } = useParams()
 
-  const { data } = useNetworkRestrictionsQuery({ orgRef: orgSlug, projectRef: ref }, { enabled: type !== undefined })
+  const { data } = useNetworkRestrictionsQuery(
+    { orgRef: orgSlug, projectRef: ref },
+    { enabled: type !== undefined }
+  )
   const ipv4Restrictions = data?.config?.dbAllowedCidrs ?? []
   // @ts-ignore [Joshen] API typing issue
   const ipv6Restrictions = data?.config?.dbAllowedCidrsV6 ?? []

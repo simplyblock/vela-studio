@@ -12,23 +12,21 @@ import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useSSLEnforcementQuery } from 'data/ssl-enforcement/ssl-enforcement-query'
 import { useSSLEnforcementUpdateMutation } from 'data/ssl-enforcement/ssl-enforcement-update-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Alert, Button, Switch, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const SSLConfiguration = () => {
-  const { slug: orgSlug, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [isEnforced, setIsEnforced] = useState(false)
 
-  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef: ref })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef, projectRef })
   const {
     data: sslEnforcementConfiguration,
     isLoading,
     isSuccess,
   } = useSSLEnforcementQuery({
-    orgRef: orgSlug,
-    projectRef: ref,
+    orgRef,
+    projectRef,
   })
   const { mutate: updateSSLEnforcement, isLoading: isSubmitting } = useSSLEnforcementUpdateMutation(
     {
@@ -42,7 +40,7 @@ const SSLConfiguration = () => {
     }
   )
 
-  const { can: canUpdateSSLEnforcement } = useCheckPermissions("branch:settings:admin")
+  const { can: canUpdateSSLEnforcement } = useCheckPermissions('branch:settings:admin')
   const initialIsEnforced = isSuccess
     ? sslEnforcementConfiguration.appliedSuccessfully &&
       sslEnforcementConfiguration.currentConfig.database
@@ -64,10 +62,14 @@ const SSLConfiguration = () => {
   }, [isLoading])
 
   const toggleSSLEnforcement = async () => {
-    if (!orgSlug) return console.error('Organization slug is required')
-    if (!ref) return console.error('Project ref is required')
+    if (!orgRef) return console.error('Organization slug is required')
+    if (!projectRef) return console.error('Project ref is required')
     setIsEnforced(!isEnforced)
-    updateSSLEnforcement({ orgSlug, projectRef: ref, requestedConfig: { database: !isEnforced } })
+    updateSSLEnforcement({
+      orgSlug: orgRef,
+      projectRef: projectRef,
+      requestedConfig: { database: !isEnforced },
+    })
   }
 
   return (

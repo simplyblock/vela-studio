@@ -5,16 +5,16 @@ import { ResponseError } from 'types'
 import { databaseKeys } from './keys'
 
 export type PgbouncerStatusVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
   branchId?: string
 }
 
 export async function getPgbouncerStatus(
-  { orgSlug, projectRef, branchId }: PgbouncerStatusVariables,
+  { orgRef, projectRef, branchId }: PgbouncerStatusVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
   if (!branchId) throw new Error('branchId is required')
 
@@ -23,7 +23,7 @@ export async function getPgbouncerStatus(
     {
       params: {
         path: {
-          slug: orgSlug,
+          slug: orgRef,
           ref: projectRef,
           branch: branchId,
         },
@@ -39,15 +39,15 @@ export type PgbouncerStatusData = Awaited<ReturnType<typeof getPgbouncerStatus>>
 export type PgbouncerStatusError = ResponseError
 
 export const usePgbouncerStatusQuery = <TData = PgbouncerStatusData>(
-  { projectRef, orgSlug, branchId }: PgbouncerStatusVariables,
+  { projectRef, orgRef, branchId }: PgbouncerStatusVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<PgbouncerStatusData, PgbouncerStatusError, TData> = {}
 ) =>
   useQuery<PgbouncerStatusData, PgbouncerStatusError, TData>(
-    databaseKeys.pgbouncerStatus(orgSlug, projectRef, branchId),
-    ({ signal }) => getPgbouncerStatus({ orgRef: orgSlug, projectRef, branchId }, signal),
+    databaseKeys.pgbouncerStatus(orgRef, projectRef, branchId),
+    ({ signal }) => getPgbouncerStatus({ orgRef, projectRef, branchId }, signal),
     {
       enabled: enabled && typeof projectRef !== 'undefined',
       ...options,

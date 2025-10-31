@@ -1,25 +1,33 @@
-import { UseQueryOptions, useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 
 import { get, handleError } from 'data/fetchers'
 import { ResponseError } from 'types'
 import { replicationKeys } from './keys'
 
 type ReplicationSourcesParams = {
-  orgSlug?: string,
+  orgRef?: string
   projectRef?: string
 }
 
 async function fetchReplicationSources(
-  { orgSlug, projectRef }: ReplicationSourcesParams,
+  { orgRef, projectRef }: ReplicationSourcesParams,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
 
-  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/replication/sources', {
-    params: { path: { slug: orgSlug, ref: projectRef } },
-    signal,
-  })
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/replication/sources',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+        },
+      },
+      signal,
+    }
+  )
   if (error) {
     handleError(error)
   }
@@ -30,11 +38,14 @@ async function fetchReplicationSources(
 export type ReplicationSourcesData = Awaited<ReturnType<typeof fetchReplicationSources>>
 
 export const useReplicationSourcesQuery = <TData = ReplicationSourcesData>(
-  { orgSlug, projectRef }: ReplicationSourcesParams,
+  { orgRef, projectRef }: ReplicationSourcesParams,
   { enabled = true, ...options }: UseQueryOptions<ReplicationSourcesData, ResponseError, TData> = {}
 ) =>
   useQuery<ReplicationSourcesData, ResponseError, TData>(
-    replicationKeys.sources(orgSlug, projectRef),
-    ({ signal }) => fetchReplicationSources({ orgRef: orgSlug, projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
+    replicationKeys.sources(orgRef, projectRef),
+    ({ signal }) => fetchReplicationSources({ orgRef, projectRef }, signal),
+    {
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
+      ...options,
+    }
   )

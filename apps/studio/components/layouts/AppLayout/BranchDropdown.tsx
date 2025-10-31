@@ -62,7 +62,7 @@ const BranchLink = ({
 
 export const BranchDropdown = () => {
   const router = useRouter()
-  const { slug: orgSlug, ref, branch: branchRef } = useParams()
+  const { slug: orgRef, ref, branch: branchRef } = useParams()
   const snap = useAppStateSnapshot()
   const { data: projectDetails } = useSelectedProjectQuery()
 
@@ -73,7 +73,7 @@ export const BranchDropdown = () => {
     isLoading,
     isError,
     isSuccess,
-  } = useBranchesQuery({ orgRef: orgSlug, projectRef: ref }, { enabled: Boolean(projectDetails) })
+  } = useBranchesQuery({ orgRef, projectRef: ref }, { enabled: Boolean(projectDetails) })
 
   const selectedBranch = branches?.find((branch) => branch.id === branchRef)
 
@@ -103,7 +103,7 @@ export const BranchDropdown = () => {
       {isSuccess && (
         <>
           <Link
-            href={`/org/${orgSlug}/project/${ref}/branch/${branchRef}`}
+            href={`/org/${orgRef}/project/${ref}/branch/${branchRef}`}
             className="flex items-center gap-2 flex-shrink-0 text-sm"
           >
             <span className="text-foreground max-w-32 lg:max-w-none truncate">
@@ -156,7 +156,7 @@ export const BranchDropdown = () => {
                       }}
                     >
                       <Link
-                        href={`/new/${orgSlug}/${ref}`}
+                        href={`/new/${orgRef}/${ref}`}
                         className="w-full flex items-center gap-2"
                       >
                         <Plus size={14} strokeWidth={1.5} />
@@ -173,7 +173,7 @@ export const BranchDropdown = () => {
                       }}
                     >
                       <Link
-                        href={`/new/${orgSlug}/${ref}/${branchRef}?name=Clone%20of%20${selectedBranch?.name}`}
+                        href={`/new/${orgRef}/${ref}/${branchRef}?name=Clone%20of%20${selectedBranch?.name}`}
                         className="w-full flex items-center gap-2"
                       >
                         <Copy size={14} strokeWidth={1.5} />
@@ -188,7 +188,7 @@ export const BranchDropdown = () => {
                       onClick={() => setOpen(false)}
                     >
                       <Link
-                        href={`/org/${orgSlug}/project/${ref}/branch`}
+                        href={`/org/${orgRef}/project/${ref}/branch`}
                         className="w-full flex items-center gap-2"
                       >
                         <ListTree size={14} strokeWidth={1.5} />

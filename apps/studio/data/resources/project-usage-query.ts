@@ -9,15 +9,15 @@ import { ResponseError } from '../../types'
 import { resourcesKeys } from './keys'
 
 interface ProjectUsageVariables {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
 }
 
 async function getProjectUsage(
-  { orgSlug, projectRef }: ProjectUsageVariables,
+  { orgRef, projectRef }: ProjectUsageVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+  if (!orgRef) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
   const { data, error } = await get(
@@ -25,7 +25,7 @@ async function getProjectUsage(
     {
       params: {
         path: {
-          slug: orgSlug,
+          slug: orgRef,
           ref: projectRef,
         },
       },
@@ -41,7 +41,7 @@ export type ProjectUsageData = Awaited<ReturnType<typeof getProjectUsage>>
 export type ProjectUsageError = ResponseError
 
 export const useProjectUsageQuery = <TData = ProjectUsageData>(
-  { orgSlug, projectRef }: ProjectUsageVariables,
+  { orgRef, projectRef }: ProjectUsageVariables,
   {
     enabled = true,
     ...options
@@ -49,9 +49,9 @@ export const useProjectUsageQuery = <TData = ProjectUsageData>(
 ) => {
   return useQuery<ProjectUsageData, ProjectUsageError, TData>({
     ...options,
-    queryKey: resourcesKeys.projectUsage(orgSlug, projectRef),
+    queryKey: resourcesKeys.projectUsage(orgRef, projectRef),
     queryFn: async (context: QueryFunctionContext) =>
-      getProjectUsage({ orgRef: orgSlug, projectRef }, context.signal),
-    enabled: enabled && typeof orgSlug !== 'undefined' && typeof projectRef !== 'undefined',
+      getProjectUsage({ orgRef, projectRef }, context.signal),
+    enabled: enabled && typeof orgRef !== 'undefined' && typeof projectRef !== 'undefined',
   })
 }

@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vela'
-import { mapBranch } from '../../../../../../../../data/vela/api-mappers'
 
 const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref } = getPlatformQueryParams(req, 'slug', 'ref')
@@ -21,7 +20,7 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
           response: 'full',
         },
       },
-      body: req.body
+      body: req.body,
     }
   )
 

@@ -9,16 +9,16 @@ import { ResponseError } from '../../types'
 import { resourcesKeys } from './keys'
 
 interface OrganizationUsageVariables {
-  orgSlug?: string
+  orgRef?: string
 }
 
-async function getOrganizationUsage({ orgSlug }: OrganizationUsageVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+async function getOrganizationUsage({ orgRef }: OrganizationUsageVariables, signal?: AbortSignal) {
+  if (!orgRef) throw new Error('Organization slug is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/resources/usage', {
     params: {
       path: {
-        slug: orgSlug,
+        slug: orgRef,
       },
     },
     signal,
@@ -32,7 +32,7 @@ export type OrganizationUsageData = Awaited<ReturnType<typeof getOrganizationUsa
 export type OrganizationUsageError = ResponseError
 
 export const useOrganizationUsageQuery = <TData = OrganizationUsageData>(
-  { orgSlug }: OrganizationUsageVariables,
+  { orgRef }: OrganizationUsageVariables,
   {
     enabled = true,
     ...options
@@ -43,9 +43,9 @@ export const useOrganizationUsageQuery = <TData = OrganizationUsageData>(
 ) => {
   return useQuery<OrganizationUsageData, OrganizationUsageError, TData>({
     ...options,
-    queryKey: resourcesKeys.organizationUsage(orgSlug),
+    queryKey: resourcesKeys.organizationUsage(orgRef),
     queryFn: async (context: QueryFunctionContext) =>
-      getOrganizationUsage({ orgRef: orgSlug }, context.signal),
-    enabled: enabled && typeof orgSlug !== 'undefined',
+      getOrganizationUsage({ orgRef }, context.signal),
+    enabled: enabled && typeof orgRef !== 'undefined',
   })
 }

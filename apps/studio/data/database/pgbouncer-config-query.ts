@@ -5,16 +5,16 @@ import { ResponseError } from 'types'
 import { databaseKeys } from './keys'
 
 export type PgbouncerConfigVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
   branchId?: string
 }
 
 export async function getPgbouncerConfig(
-  { orgSlug, projectRef, branchId }: PgbouncerConfigVariables,
+  { orgRef, projectRef, branchId }: PgbouncerConfigVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
   if (!branchId) throw new Error('branchId is required')
 
@@ -23,7 +23,7 @@ export async function getPgbouncerConfig(
     {
       params: {
         path: {
-          slug: orgSlug,
+          slug: orgRef,
           ref: projectRef,
           branch: branchId,
         },
@@ -39,15 +39,15 @@ export type PgbouncerConfigData = Awaited<ReturnType<typeof getPgbouncerConfig>>
 export type PgbouncerConfigError = ResponseError
 
 export const usePgbouncerConfigQuery = <TData = PgbouncerConfigData>(
-  { orgSlug, projectRef, branchId }: PgbouncerConfigVariables,
+  { orgRef, projectRef, branchId }: PgbouncerConfigVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<PgbouncerConfigData, PgbouncerConfigError, TData> = {}
 ) =>
   useQuery<PgbouncerConfigData, PgbouncerConfigError, TData>(
-    databaseKeys.pgbouncerConfig(orgSlug, projectRef, branchId),
-    ({ signal }) => getPgbouncerConfig({ orgRef: orgSlug, projectRef, branchId }, signal),
+    databaseKeys.pgbouncerConfig(orgRef, projectRef, branchId),
+    ({ signal }) => getPgbouncerConfig({ orgRef: orgRef, projectRef, branchId }, signal),
     {
       enabled: enabled && typeof projectRef !== 'undefined' && typeof branchId !== 'undefined',
       ...options,

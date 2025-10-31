@@ -6,18 +6,23 @@ import type { ResponseError } from 'types'
 import { secretsKeys } from './keys'
 
 export type SecretsVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
 }
 
 export type ProjectSecret = components['schemas']['SecretResponse']
 
-export async function getSecrets({ orgSlug, projectRef }: SecretsVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+export async function getSecrets({ orgRef, projectRef }: SecretsVariables, signal?: AbortSignal) {
+  if (!orgRef) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
   const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/secrets`, {
-    params: { path: { slug: orgSlug, ref: projectRef } },
+    params: {
+      path: {
+        slug: orgRef,
+        ref: projectRef,
+      },
+    },
     signal,
   })
 
@@ -29,11 +34,14 @@ export type SecretsData = Awaited<ReturnType<typeof getSecrets>>
 export type SecretsError = ResponseError
 
 export const useSecretsQuery = <TData = SecretsData>(
-  { orgSlug, projectRef }: SecretsVariables,
+  { orgRef, projectRef }: SecretsVariables,
   { enabled = true, ...options }: UseQueryOptions<SecretsData, SecretsError, TData> = {}
 ) =>
   useQuery<SecretsData, SecretsError, TData>(
-    secretsKeys.list(orgSlug, projectRef),
-    ({ signal }) => getSecrets({ orgRef: orgSlug, projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
+    secretsKeys.list(orgRef, projectRef),
+    ({ signal }) => getSecrets({ orgRef, projectRef }, signal),
+    {
+      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
+      ...options,
+    }
   )

@@ -9,16 +9,16 @@ import { ResponseError } from '../../types'
 import { resourcesKeys } from './keys'
 
 interface BranchEffectiveLimitsVariables {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
   branchId?: string
 }
 
 async function getBranchEffectiveLimits(
-  { orgSlug, projectRef, branchId }: BranchEffectiveLimitsVariables,
+  { orgRef, projectRef, branchId }: BranchEffectiveLimitsVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+  if (!orgRef) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
   if (!branchId) throw new Error('Branch id is required')
 
@@ -27,7 +27,7 @@ async function getBranchEffectiveLimits(
     {
       params: {
         path: {
-          slug: orgSlug,
+          slug: orgRef,
           ref: projectRef,
           branch: branchId,
         },
@@ -44,7 +44,7 @@ export type BranchEffectiveLimitsData = Awaited<ReturnType<typeof getBranchEffec
 export type BranchEffectiveLimitsError = ResponseError
 
 export const useBranchEffectiveLimitsQuery = <TData = BranchEffectiveLimitsData>(
-  { orgSlug, projectRef, branchId }: BranchEffectiveLimitsVariables,
+  { orgRef, projectRef, branchId }: BranchEffectiveLimitsVariables,
   {
     enabled = true,
     ...options
@@ -55,12 +55,12 @@ export const useBranchEffectiveLimitsQuery = <TData = BranchEffectiveLimitsData>
 ) => {
   return useQuery<BranchEffectiveLimitsData, BranchEffectiveLimitsError, TData>({
     ...options,
-    queryKey: resourcesKeys.branchEffectiveLimits(orgSlug, projectRef, branchId),
+    queryKey: resourcesKeys.branchEffectiveLimits(orgRef, projectRef, branchId),
     queryFn: async (context: QueryFunctionContext) =>
-      getBranchEffectiveLimits({ orgRef: orgSlug, projectRef }, context.signal),
+      getBranchEffectiveLimits({ orgRef, projectRef }, context.signal),
     enabled:
       enabled &&
-      typeof orgSlug !== 'undefined' &&
+      typeof orgRef !== 'undefined' &&
       typeof projectRef !== 'undefined' &&
       typeof branchId !== 'undefined',
   })

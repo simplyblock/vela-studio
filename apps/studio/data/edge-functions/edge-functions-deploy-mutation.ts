@@ -10,8 +10,8 @@ export type EdgeFunctionsDeployVariables = {
   projectRef: string
   slug: string
   metadata: components['schemas']['FunctionDeployBody']['metadata']
-  files: { name: string; content: string }[];
-  orgSlug:string;
+  files: { name: string; content: string }[]
+  orgRef: string
 }
 
 export async function deployEdgeFunction({
@@ -19,30 +19,41 @@ export async function deployEdgeFunction({
   slug,
   metadata,
   files,
-  orgSlug
+  orgRef,
 }: EdgeFunctionsDeployVariables) {
   if (!projectRef) throw new Error('projectRef is required')
-if (!orgSlug) throw new Error('orgSlug is required')
-  const { data, error } = await post(`/platform/organizations/{slug}/projects/{ref}/functions/deploy`, {
-    params: { path: { slug: orgSlug,ref: projectRef }, query: { slug: slug } }, 
-    body: {
-      file: files as any,
-      metadata,
-    },
-    bodySerializer(body) {
-      const formData = new FormData()
+  if (!orgRef) throw new Error('orgRef is required')
+  const { data, error } = await post(
+    `/platform/organizations/{slug}/projects/{ref}/functions/deploy`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+        },
+        query: {
+          slug: slug,
+        },
+      },
+      body: {
+        file: files as any,
+        metadata,
+      },
+      bodySerializer(body) {
+        const formData = new FormData()
 
-      formData.append('metadata', JSON.stringify(body.metadata))
+        formData.append('metadata', JSON.stringify(body.metadata))
 
-      body?.file?.forEach((f: any) => {
-        const file = f as { name: string; content: string }
-        const blob = new Blob([file.content], { type: 'text/plain' })
-        formData.append('file', blob, file.name)
-      })
+        body?.file?.forEach((f: any) => {
+          const file = f as { name: string; content: string }
+          const blob = new Blob([file.content], { type: 'text/plain' })
+          formData.append('file', blob, file.name)
+        })
 
-      return formData
-    },
-  })
+        return formData
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data

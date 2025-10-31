@@ -2,17 +2,17 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { get, handleError } from 'data/fetchers'
 import { sslEnforcementKeys } from './keys'
 
-export type SSLEnforcementVariables = { orgSlug?: string, projectRef?: string }
+export type SSLEnforcementVariables = { orgRef?: string, projectRef?: string }
 
 export async function getSSLEnforcementConfiguration(
-  { orgSlug, projectRef }: SSLEnforcementVariables,
+  { orgRef, projectRef }: SSLEnforcementVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
 
   const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/ssl-enforcement`, {
-    params: { path: { slug: orgSlug, ref: projectRef } },
+    params: { path: { slug: orgRef, ref: projectRef } },
     signal,
   })
 
@@ -41,14 +41,14 @@ export type SSLEnforcementData = Awaited<ReturnType<typeof getSSLEnforcementConf
 export type SSLEnforcementError = unknown
 
 export const useSSLEnforcementQuery = <TData = SSLEnforcementData>(
-  { orgSlug, projectRef }: SSLEnforcementVariables,
+  { orgRef, projectRef }: SSLEnforcementVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<SSLEnforcementData, SSLEnforcementError, TData> = {}
 ) =>
   useQuery<SSLEnforcementData, SSLEnforcementError, TData>(
-    sslEnforcementKeys.list(orgSlug, projectRef),
-    ({ signal }) => getSSLEnforcementConfiguration({ orgRef: orgSlug, projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
+    sslEnforcementKeys.list(orgRef, projectRef),
+    ({ signal }) => getSSLEnforcementConfiguration({ orgRef, projectRef }, signal),
+    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined', ...options }
   )

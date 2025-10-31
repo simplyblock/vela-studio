@@ -19,9 +19,9 @@ const RemoveRestrictionModal = ({
   onClose,
 }: RemoveRestrictionModalProps) => {
   const { ref } = useParams()
-  const { slug: orgSlug } = getPathReferences()
+  const { slug: orgRef } = getPathReferences()
 
-  const { data } = useNetworkRestrictionsQuery({ orgRef: orgSlug, projectRef: ref }, { enabled: visible })
+  const { data } = useNetworkRestrictionsQuery({ orgRef, projectRef: ref }, { enabled: visible })
   const ipv4Restrictions = data?.config?.dbAllowedCidrs ?? []
   // @ts-ignore [Joshen] API typing issue
   const ipv6Restrictions: string[] = data?.config?.dbAllowedCidrsV6 ?? []
@@ -39,7 +39,7 @@ const RemoveRestrictionModal = ({
     restrictedIps.length === 1 && restrictedIps[0] === selectedRestriction
 
   const onSubmit = async () => {
-    if (!orgSlug) return console.error('Organization slug is required')
+    if (!orgRef) return console.error('Organization slug is required')
     if (!ref) return console.error('Project ref is required')
     if (!selectedRestriction) return console.error('Missing selected restriction')
 
@@ -52,13 +52,18 @@ const RemoveRestrictionModal = ({
 
     if (dbAllowedCidrs.length === 0 && dbAllowedCidrsV6.length === 0) {
       applyNetworkRestrictions({
-        orgSlug,
+        orgSlug: orgRef,
         projectRef: ref,
         dbAllowedCidrs: ['0.0.0.0/0'],
         dbAllowedCidrsV6: ['::/0'],
       })
     } else {
-      applyNetworkRestrictions({ orgSlug, projectRef: ref, dbAllowedCidrs, dbAllowedCidrsV6 })
+      applyNetworkRestrictions({
+        orgSlug: orgRef,
+        projectRef: ref,
+        dbAllowedCidrs,
+        dbAllowedCidrsV6,
+      })
     }
   }
 

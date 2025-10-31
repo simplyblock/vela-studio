@@ -12,9 +12,9 @@ import { useCustomDomainsQuery } from 'data/custom-domains/custom-domains-query'
 import { useCustomDomainReverifyMutation } from 'data/custom-domains/custom-domains-reverify-mutation'
 import { useInterval } from 'hooks/misc/useInterval'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
   Button,
   WarningIcon,
 } from 'ui'
@@ -22,7 +22,7 @@ import DNSRecord from './DNSRecord'
 import { DNSTableHeaders } from './DNSTableHeaders'
 
 const CustomDomainVerify = () => {
-  const { slug: orgRef, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [isNotVerifiedYet, setIsNotVerifiedYet] = useState(false)
 
   const { data: settings } = useProjectSettingsV2Query({ orgRef, projectRef })
@@ -54,8 +54,10 @@ const CustomDomainVerify = () => {
   const isValidating = (customDomain?.ssl.txt_name ?? '') === ''
 
   const onReverifyCustomDomain = () => {
+    if (!orgRef) return console.error('Org ref is required')
     if (!projectRef) return console.error('Project ref is required')
-    reverifyCustomDomain({ projectRef })
+    if (!branchRef) return console.error('Branch ref is required')
+    reverifyCustomDomain({ orgRef, projectRef, branchRef })
   }
 
   useInterval(
@@ -65,8 +67,10 @@ const CustomDomainVerify = () => {
   )
 
   const onCancelCustomDomain = async () => {
+    if (!orgRef) return console.error('Org ref is required')
     if (!projectRef) return console.error('Project ref is required')
-    deleteCustomDomain({ projectRef })
+    if (!branchRef) return console.error('Branch ref is required')
+    deleteCustomDomain({ orgRef, projectRef, branchRef })
   }
 
   return (

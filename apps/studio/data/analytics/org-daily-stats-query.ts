@@ -112,7 +112,7 @@ export const computeUsageMetricLabel = (computeUsageMetric: ComputeUsageMetric) 
 
 export type OrgDailyStatsVariables = {
   // API parameters
-  orgSlug?: string
+  orgRef?: string
   metric?: PricingMetric
   startDate?: string
   endDate?: string
@@ -124,17 +124,17 @@ export type OrgDailyStatsVariables = {
 }
 
 export async function getOrgDailyStats(
-  { orgSlug, metric, startDate, endDate, interval = '1d', projectRef }: OrgDailyStatsVariables,
+  { orgRef, metric, startDate, endDate, interval = '1d', projectRef }: OrgDailyStatsVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Org slug is required')
+  if (!orgRef) throw new Error('Org slug is required')
   if (!metric) throw new Error('Metric is required')
   if (!startDate) throw new Error('Start date is required')
   if (!endDate) throw new Error('Start date is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/daily-stats', {
     params: {
-      path: { slug: orgSlug },
+      path: { slug: orgRef },
       query: {
         metric,
         startDate,
@@ -156,7 +156,7 @@ export type OrgDailyStatsError = unknown
 
 export const useOrgDailyStatsQuery = <TData = OrgDailyStatsData>(
   {
-    orgSlug,
+    orgRef,
     metric,
     startDate,
     endDate,
@@ -168,13 +168,13 @@ export const useOrgDailyStatsQuery = <TData = OrgDailyStatsData>(
   { enabled = true, ...options }: UseQueryOptions<OrgDailyStatsData, OrgDailyStatsError, TData> = {}
 ) =>
   useQuery<OrgDailyStatsData, OrgDailyStatsError, TData>(
-    analyticsKeys.orgDailyStats(orgSlug, { metric, startDate, endDate, interval, projectRef }),
+    analyticsKeys.orgDailyStats(orgRef, { metric, startDate, endDate, interval, projectRef }),
     ({ signal }) =>
-      getOrgDailyStats({ orgRef: orgSlug, metric, startDate, endDate, interval, projectRef }, signal),
+      getOrgDailyStats({ orgRef, metric, startDate, endDate, interval, projectRef }, signal),
     {
       enabled:
         enabled &&
-        typeof orgSlug !== 'undefined' &&
+        typeof orgRef !== 'undefined' &&
         typeof metric !== 'undefined' &&
         typeof startDate !== 'undefined' &&
         typeof endDate !== 'undefined',

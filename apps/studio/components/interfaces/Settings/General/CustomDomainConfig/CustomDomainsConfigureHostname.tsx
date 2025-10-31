@@ -8,7 +8,6 @@ import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useCheckCNAMERecordMutation } from 'data/custom-domains/check-cname-mutation'
 import { useCustomDomainCreateMutation } from 'data/custom-domains/custom-domains-create-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Form, Input } from 'ui'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
@@ -17,24 +16,25 @@ const schema = yup.object({
 })
 
 const CustomDomainsConfigureHostname = () => {
-  const { slug: orgSlug, ref } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const { mutate: checkCNAMERecord, isLoading: isCheckingRecord } = useCheckCNAMERecordMutation()
   const { mutate: createCustomDomain, isLoading: isCreating } = useCustomDomainCreateMutation()
-  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef: ref })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef, projectRef })
 
   const FORM_ID = 'custom-domains-form'
   const endpoint = settings?.app_config?.endpoint
-  const { can: canConfigureCustomDomain } = useCheckPermissions("branch:settings:admin")
+  const { can: canConfigureCustomDomain } = useCheckPermissions('branch:settings:admin')
   const onCreateCustomDomain = async (values: yup.InferType<typeof schema>) => {
-    if (!ref) return console.error('Project ref is required')
+    if (!orgRef) return console.error('Org ref is required')
+    if (!projectRef) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
 
     checkCNAMERecord(
       { domain: values.domain },
       {
         onSuccess: () => {
-          createCustomDomain({ projectRef: ref, customDomain: values.domain })
+          createCustomDomain({ orgRef, projectRef, branchRef, customDomain: values.domain })
         },
       }
     )
