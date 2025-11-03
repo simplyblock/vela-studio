@@ -70,7 +70,7 @@ export const ResizeBranchModal = ({
 
   // Load current effective limits/resources when modal opens
   const { data: current, isFetching } = useBranchEffectiveLimitsQuery(
-    { orgSlug, projectRef, branchId },
+    { orgRef: orgSlug, projectRef, branchId },
     { enabled: open }
   )
 
