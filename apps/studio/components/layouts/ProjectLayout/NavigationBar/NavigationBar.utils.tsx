@@ -17,11 +17,7 @@ import {
   Storage,
   TableEditor,
 } from 'icons'
-import { PROJECT_STATUS } from 'lib/constants' /* ----------------------------------------------------------------
-   PROJECT-LEVEL ROUTES (NEW)
-   /org/:orgRef/project/:projectRef/*
-   No branchRef here.
------------------------------------------------------------------ */
+import { PROJECT_STATUS } from 'lib/constants'
 
 /* ----------------------------------------------------------------
    PROJECT-LEVEL ROUTES (NEW)
@@ -198,9 +194,9 @@ export const generateOtherRoutes = (
   orgRef: string,
   projectRef?: string,
   project?: ProjectDetail,
-  monitoringEndpoint?: string,
   branchRef?: string,
-
+  monitoringEndpoint?: string,
+  accessToken?: string,
   features?: { unifiedLogs?: boolean }
 ): Route[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.STARTING
@@ -231,14 +227,14 @@ export const generateOtherRoutes = (
             ? `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs`
             : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/explorer`),
     },
-    ...(monitoringEndpoint && branchRef
+    ...(monitoringEndpoint && accessToken && branchRef
       ? [
           {
             key: 'grafana',
             label: 'Monitoring',
             icon: <SearchCheck size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link: monitoringEndpoint,
-            target: "_blank",
+            link: `${monitoringEndpoint}?jwt=${accessToken}`,
+            target: '_blank',
           },
         ]
       : []),

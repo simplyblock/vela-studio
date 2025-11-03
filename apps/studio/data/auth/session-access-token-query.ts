@@ -19,7 +19,7 @@ export async function getSessionAccessToken() {
     return extendedSession?.access_token
   } catch (e: any) {
     // ignore the error
-    return null
+    return undefined
   }
 }
 

@@ -62,6 +62,12 @@ import {
   useSidebar,
 } from 'ui'
 import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
+import { useSession } from 'next-auth/react'
+import { Session } from 'common/keycloak'
+import {
+  getSessionAccessToken,
+  useSessionAccessTokenQuery,
+} from '../../data/auth/session-access-token-query'
 
 export const ICON_SIZE = 32
 export const ICON_STROKE_WIDTH = 1.5
@@ -343,6 +349,8 @@ const BranchSidebarLinks = () => {
   const { data: branch } = useSelectedBranchQuery()
   const { securityLints, errorLints } = useLints()
 
+  const { data: accessToken } = useSessionAccessTokenQuery()
+
   // branch-level pages look like:
   // /org/[orgRef]/project/[projectRef]/branch/[branchRef]/[section]/...
   // split('/') => ['', 'org', orgRef, 'project', projectRef, 'branch', branchRef, <section>, ...]
@@ -413,6 +421,7 @@ const BranchSidebarLinks = () => {
     project,
     branchRef,
     monitoringEndpoint,
+    accessToken,
     {
       unifiedLogs: true,
     }
