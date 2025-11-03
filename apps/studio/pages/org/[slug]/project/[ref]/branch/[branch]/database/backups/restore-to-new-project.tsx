@@ -73,7 +73,7 @@ const RestoreToNewProject = () => {
     isError,
   } = useCloneBackupsQuery({ projectRef: project?.id })
 
-  const isActiveHealthy = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  const isActiveHealthy = project?.status === PROJECT_STATUS.STARTED
   const { can: canReadPhysicalBackups, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:read")
   const { can: canTriggerPhysicalBackups } = useCheckPermissions("branch:settings:admin")
   const PITR_ENABLED = cloneBackups?.pitr_enabled

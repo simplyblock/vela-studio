@@ -4,36 +4,26 @@ import { PROJECT_STATUS } from 'lib/constants'
 export const inferProjectStatus = (project: ProjectInfo) => {
   let status = undefined
   switch (project.status) {
-    case PROJECT_STATUS.ACTIVE_HEALTHY:
-      status = 'isHealthy'
+    case PROJECT_STATUS.STARTED:
+      status = 'isStarted'
       break
-    case PROJECT_STATUS.GOING_DOWN:
     case PROJECT_STATUS.PAUSING:
       status = 'isPausing'
       break
-    case PROJECT_STATUS.INACTIVE:
+    case PROJECT_STATUS.PAUSED:
       status = 'isPaused'
       break
-    case PROJECT_STATUS.PAUSE_FAILED:
-      status = 'isPauseFailed'
+    case PROJECT_STATUS.DELETING:
+      status = 'isDeleting'
       break
-    case PROJECT_STATUS.RESTARTING:
-      status = 'isRestarting'
+    case PROJECT_STATUS.MIGRATING:
+      status = 'isMigrating'
       break
-    case PROJECT_STATUS.RESIZING:
-      status = 'isResizing'
-      break
-    case PROJECT_STATUS.RESTORING:
-      status = 'isRestoring'
-      break
-    case PROJECT_STATUS.RESTORE_FAILED:
-      status = 'isRestoreFailed'
-      break
-    case PROJECT_STATUS.UPGRADING:
-      status = 'isUpgrading'
+    case PROJECT_STATUS.ERROR:
+      status = 'isError'
       break
     case PROJECT_STATUS.UNKNOWN:
-    case PROJECT_STATUS.COMING_UP:
+    case PROJECT_STATUS.STARTING:
       status = 'isComingUp'
       break
   }

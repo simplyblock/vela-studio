@@ -28,7 +28,7 @@ const RpcContent = ({
   refreshDocs,
 }: RpcContentProps) => {
   const { slug: orgSlug, ref: projectRef } = useParams()
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef })
   const protocol = settings?.app_config?.protocol ?? 'https'
   const hostEndpoint = settings?.app_config?.endpoint ?? ''
   const endpoint = `${protocol}://${hostEndpoint ?? ''}`

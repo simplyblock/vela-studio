@@ -6,18 +6,22 @@ import { documentKeys } from './keys'
 export type DocType = 'standard-security-questionnaire' | 'soc2-type-2-report'
 
 export type DocumentVariables = {
-  orgSlug?: string
+  orgRef?: string
   docType?: DocType
 }
 
-export async function getDocument({ orgSlug, docType }: DocumentVariables, signal?: AbortSignal) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+export async function getDocument({ orgRef, docType }: DocumentVariables, signal?: AbortSignal) {
+  if (!orgRef) throw new Error('orgRef is required')
 
   if (docType === 'standard-security-questionnaire') {
     const { data, error } = await get(
       `/platform/organizations/{slug}/documents/standard-security-questionnaire`,
       {
-        params: { path: { slug: orgSlug } },
+        params: {
+          path: {
+            slug: orgRef,
+          },
+        },
         signal,
       }
     )
@@ -30,7 +34,7 @@ export async function getDocument({ orgSlug, docType }: DocumentVariables, signa
     const { data, error } = await get(
       `/platform/organizations/{slug}/documents/soc2-type-2-report`,
       {
-        params: { path: { slug: orgSlug } },
+        params: { path: { slug: orgRef } },
         signal,
       }
     )
@@ -44,14 +48,14 @@ export type DocumentData = Awaited<ReturnType<typeof getDocument>>
 export type DocumentError = ResponseError
 
 export const useDocumentQuery = <TData = DocumentData>(
-  { orgSlug, docType }: DocumentVariables,
+  { orgRef, docType }: DocumentVariables,
   { enabled = true, ...options }: UseQueryOptions<DocumentData, DocumentError, TData> = {}
 ) =>
   useQuery<DocumentData, DocumentError, TData>(
-    documentKeys.resource(orgSlug, docType),
-    ({ signal }) => getDocument({ orgSlug, docType }, signal),
+    documentKeys.resource(orgRef, docType),
+    ({ signal }) => getDocument({ orgRef, docType }, signal),
     {
-      enabled: enabled && typeof orgSlug !== 'undefined' && typeof docType !== 'undefined',
+      enabled: enabled && typeof orgRef !== 'undefined' && typeof docType !== 'undefined',
       ...options,
     }
   )

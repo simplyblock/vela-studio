@@ -1693,6 +1693,131 @@
       }
     },
     "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/pgbouncer-config": {
+      "get": {
+        "tags": [
+          "organization",
+          "organization",
+          "project",
+          "project",
+          "branch",
+          "branch"
+        ],
+        "summary": "Organizations:Projects:Branch:Get-Pgbouncer-Config",
+        "operationId": "organizations:projects:branch:get-pgbouncer-config",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchPgbouncerConfigStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "tags": [
           "organization",
@@ -34403,6 +34528,16 @@
                 "type": "null"
               }
             ]
+          },
+          "restore": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BranchRestoreParameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -34808,6 +34943,129 @@
         "title": "BranchResizeStatusEntry",
         "description": "Single service's resize state and the timestamp when it was observed."
       },
+      "BranchRestoreParameters": {
+        "properties": {
+          "backup_id": {
+            "type": "string",
+            "maxLength": 26,
+            "minLength": 26,
+            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+            "format": "ulid",
+            "title": "ULID",
+            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+            "examples": [
+              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+              "01H945P9C3K2QJ8F7N6M4R2E8V"
+            ]
+          },
+          "config_copy": {
+            "type": "boolean",
+            "title": "Config Copy",
+            "default": true
+          },
+          "deployment_parameters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BranchSourceDeploymentParameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "backup_id"
+        ],
+        "title": "BranchRestoreParameters"
+      },
+      "BranchSourceDeploymentParameters": {
+        "properties": {
+          "database_size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "multipleOf": 1000000000.0,
+                "maximum": 100000000000000.0,
+                "minimum": 1000000000.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Database Size"
+          },
+          "storage_size": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "multipleOf": 1000000000.0,
+                "maximum": 1000000000000.0,
+                "minimum": 500000000.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Storage Size"
+          },
+          "milli_vcpu": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "multipleOf": 100.0,
+                "maximum": 64000.0,
+                "minimum": 2000.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Milli Vcpu"
+          },
+          "memory_bytes": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "multipleOf": 134217728.0,
+                "maximum": 274877906944.0,
+                "minimum": 2147483648.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memory Bytes"
+          },
+          "iops": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 2147483647.0,
+                "minimum": 100.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iops"
+          },
+          "enable_file_storage": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enable File Storage"
+          }
+        },
+        "type": "object",
+        "title": "BranchSourceDeploymentParameters"
+      },
       "BranchSourceParameters": {
         "properties": {
           "branch_id": {
@@ -34832,6 +35090,16 @@
             "type": "boolean",
             "title": "Data Copy",
             "default": false
+          },
+          "deployment_parameters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BranchSourceDeploymentParameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",

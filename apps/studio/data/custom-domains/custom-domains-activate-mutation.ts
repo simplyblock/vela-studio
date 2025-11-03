@@ -6,7 +6,9 @@ import type { ResponseError } from 'types'
 import { customDomainKeys } from './keys'
 
 export type CustomDomainActivateVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
 }
 
 export async function activateCustomDomain({ projectRef }: CustomDomainActivateVariables) {
@@ -34,8 +36,8 @@ export const useCustomDomainActivateMutation = ({
     (vars) => activateCustomDomain(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(customDomainKeys.list(projectRef))
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(customDomainKeys.list(orgRef, projectRef, branchRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

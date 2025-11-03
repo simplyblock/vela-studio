@@ -6,7 +6,6 @@ import z from 'zod'
 
 import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import { setValueAsNullableNumber } from 'components/ui/Forms/Form.constants'
 import { FormActions } from 'components/ui/Forms/FormActions'
 import { InlineLink } from 'components/ui/InlineLink'
@@ -16,13 +15,12 @@ import { usePgbouncerConfigQuery } from 'data/database/pgbouncer-config-query'
 import { usePgbouncerConfigurationUpdateMutation } from 'data/database/pgbouncer-config-update-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
+  Alert_Shadcn_,
   AlertDescription_Shadcn_,
   AlertTitle_Shadcn_,
-  Alert_Shadcn_,
-  Badge,
+  Form_Shadcn_,
   FormControl_Shadcn_,
   FormField_Shadcn_,
-  Form_Shadcn_,
   Input_Shadcn_,
   Separator,
 } from 'ui'
@@ -43,11 +41,12 @@ const PoolingConfigurationFormSchema = z.object({
  * [Joshen] PgBouncer configuration will be the main endpoint for GET and PATCH of pooling config
  */
 export const ConnectionPooling = () => {
-  const { slug, ref: projectRef } = useParams()
+  const { slug, ref: projectRef, branch: branchId } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
   const { data: branch } = useSelectedBranchQuery()
 
-  const { can: canUpdateConnectionPoolingConfiguration } = useCheckPermissions("branch:settings:admin")
+  const { can: canUpdateConnectionPoolingConfiguration } =
+    useCheckPermissions('branch:settings:admin')
 
   const {
     data: pgbouncerConfig,
@@ -55,7 +54,7 @@ export const ConnectionPooling = () => {
     isLoading: isLoadingPgbouncerConfig,
     isError: isErrorPgbouncerConfig,
     isSuccess: isSuccessPgbouncerConfig,
-  } = usePgbouncerConfigQuery({ orgSlug: slug, projectRef })
+  } = usePgbouncerConfigQuery({ orgRef: slug, projectRef, branchId })
 
   const disablePoolModeSelection = useMemo(() => {
     return org?.plan?.id === 'free'
@@ -80,20 +79,21 @@ export const ConnectionPooling = () => {
   })
   const { default_pool_size } = form.watch()
   const connectionPoolingUnavailable = pgbouncerConfig?.pool_mode === null
-  const ignoreStartupParameters = pgbouncerConfig?.ignore_startup_parameters
 
   const onSubmit: SubmitHandler<z.infer<typeof PoolingConfigurationFormSchema>> = async (data) => {
-    const { default_pool_size } = data
+    const { default_pool_size, max_client_conn } = data
 
     if (!slug) return console.error('Organization slug is required')
     if (!projectRef) return console.error('Project ref is required')
+    if (!branchId) return console.error('Branch id is required')
 
     updatePoolerConfig(
       {
         slug: slug,
         ref: projectRef,
+        branchId,
         default_pool_size: default_pool_size === null ? undefined : default_pool_size,
-        ignore_startup_parameters: ignoreStartupParameters ?? '',
+        max_client_conn: max_client_conn === null ? undefined : max_client_conn,
       },
       {
         onSuccess: (data) => {
@@ -127,13 +127,7 @@ export const ConnectionPooling = () => {
           <div className="w-full flex items-center justify-between">
             <div className="flex items-center gap-x-2">
               <p>Connection pooling configuration</p>
-              {disablePoolModeSelection ? (
-                <Badge>Shared Pooler</Badge>
-              ) : (
-                <Badge>Shared/Dedicated Pooler</Badge>
-              )}
             </div>
-            <DocsButton href="https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler" />
           </div>
         }
         footer={

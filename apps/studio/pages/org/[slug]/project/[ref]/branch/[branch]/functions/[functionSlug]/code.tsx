@@ -21,16 +21,16 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const CodePage = () => {
-  const { ref,slug, functionSlug } = useParams()
+  const { slug: orgRef, ref: projectRef, functionSlug } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const { mutate: sendEvent } = useSendEventMutation()
   const [showDeployWarning, setShowDeployWarning] = useState(false)
-  const { can: canDeployFunction } = useCheckPermissions("branch:egde:admin")
+  const { can: canDeployFunction } = useCheckPermissions('branch:egde:admin')
 
-  const { data: selectedFunction } = useEdgeFunctionQuery({ projectRef: ref, slug: functionSlug })
+  const { data: selectedFunction } = useEdgeFunctionQuery({ projectRef, slug: functionSlug })
   const {
     data: functionFiles,
     isLoading: isLoadingFiles,
@@ -39,7 +39,7 @@ const CodePage = () => {
     error: filesError,
   } = useEdgeFunctionBodyQuery(
     {
-      projectRef: ref,
+      projectRef,
       slug: functionSlug,
     },
     {
@@ -67,7 +67,8 @@ const CodePage = () => {
   })
 
   const onUpdate = async () => {
-    if (isDeploying || !ref || !functionSlug || !selectedFunction || files.length === 0) return
+    if (isDeploying || !projectRef || !functionSlug || !selectedFunction || files.length === 0)
+      return
 
     try {
       const newEntrypointPath = selectedFunction.entrypoint_path?.split('/').pop()
@@ -99,8 +100,8 @@ const CodePage = () => {
       }
 
       deployFunction({
-        orgSlug:slug as string,
-        projectRef: ref,
+        orgRef: orgRef!,
+        projectRef,
         slug: selectedFunction.slug,
         metadata: {
           name: selectedFunction.name,
@@ -139,14 +140,14 @@ const CodePage = () => {
     setShowDeployWarning(true)
     sendEvent({
       action: 'edge_function_deploy_updates_button_clicked',
-      groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
     })
   }
 
   const handleDeployConfirm = () => {
     sendEvent({
       action: 'edge_function_deploy_updates_confirm_clicked',
-      groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
     })
     onUpdate()
   }

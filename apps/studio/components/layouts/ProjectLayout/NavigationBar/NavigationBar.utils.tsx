@@ -66,7 +66,7 @@ export const generateToolRoutes = (
   project?: ProjectDetail,
   branchRef?: string
 ): Route[] => {
-  const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
+  const isProjectBuilding = project?.status === PROJECT_STATUS.STARTING
   const buildingUrl = `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`
 
   return [
@@ -113,8 +113,8 @@ export const generateProductRoutes = (
     backups?: boolean
   }
 ): Route[] => {
-  const isProjectActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
-  const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
+  const isProjectActive = project?.status === PROJECT_STATUS.STARTED
+  const isProjectBuilding = project?.status === PROJECT_STATUS.STARTING
   const buildingUrl = `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`
 
   const authEnabled = features?.auth ?? true
@@ -207,7 +207,7 @@ export const generateOtherRoutes = (
   branchRef?: string,
   features?: { unifiedLogs?: boolean }
 ): Route[] => {
-  const isProjectBuilding = project?.status === PROJECT_STATUS.COMING_UP
+  const isProjectBuilding = project?.status === PROJECT_STATUS.STARTING
   const buildingUrl = `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`
 
   const unifiedLogsEnabled = features?.unifiedLogs ?? false

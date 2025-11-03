@@ -19,7 +19,7 @@ interface HeaderProps {
 
 export const Header = ({ config, onChangeConfig }: HeaderProps) => {
   const { mutate: sendEvent } = useSendEventMutation()
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
   const { can: canReadAPIKeys } = useCheckPermissions("branch:api:getkeys")
 
@@ -37,7 +37,7 @@ export const Header = ({ config, onChangeConfig }: HeaderProps) => {
           onClick={async () => {
             // [Joshen] Refresh if starting to listen + using temp API key, since it has a low refresh rate
             if (!config.enabled && config.token.startsWith('sb_temp')) {
-              const data = await getTemporaryAPIKey({ projectRef: config.projectRef, expiry: 3600 })
+              const data = await getTemporaryAPIKey({ orgRef, projectRef: config.projectRef, branchRef, expiry: 3600 })
               const token = data.api_key
               onChangeConfig({ ...config, token, enabled: !config.enabled })
             } else {
@@ -49,7 +49,7 @@ export const Header = ({ config, onChangeConfig }: HeaderProps) => {
               sendEvent({
                 action: 'realtime_inspector_listen_channel_clicked',
                 groups: {
-                  project: ref ?? 'Unknown',
+                  project: projectRef ?? 'Unknown',
                   organization: org?.slug ?? 'Unknown',
                 },
               })

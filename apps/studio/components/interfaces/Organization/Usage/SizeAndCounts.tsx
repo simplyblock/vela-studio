@@ -23,7 +23,7 @@ const SizeAndCounts = ({
   currentBillingCycleSelected,
 }: SizeAndCountsProps) => {
   const { data: dbSizeData, isLoading: isLoadingDbSizeData } = useOrgDailyStatsQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     metric: PricingMetric.DATABASE_SIZE,
     interval: '1d',
@@ -32,7 +32,7 @@ const SizeAndCounts = ({
   })
 
   const { data: storageSizeData, isLoading: isLoadingStorageSizeData } = useOrgDailyStatsQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     metric: PricingMetric.STORAGE_SIZE,
     interval: '1d',

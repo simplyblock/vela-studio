@@ -6,21 +6,21 @@ import { branchKeys } from './keys'
 import { Branch } from 'data/branches/branch-query'
 
 export type BranchesVariables = {
-  orgSlug?: string
+  orgRef?: string
   projectRef?: string
 }
 
 export async function getBranches(
-  { orgSlug, projectRef }: BranchesVariables,
+  { orgRef, projectRef }: BranchesVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('Organization slug is required')
+  if (!orgRef) throw new Error('Organization slug is required')
   if (!projectRef) throw new Error('Project ref is required')
 
   const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/branches`, {
     params: {
       path: {
-        slug: orgSlug,
+        slug: orgRef,
         ref: projectRef,
       },
     },
@@ -42,11 +42,11 @@ export type BranchesData = Branch[]
 export type BranchesError = ResponseError
 
 export const useBranchesQuery = <TData = BranchesData>(
-  { orgSlug, projectRef }: BranchesVariables,
+  { orgRef, projectRef }: BranchesVariables,
   { enabled = true, ...options }: UseQueryOptions<BranchesData, BranchesError, TData> = {}
 ) =>
   useQuery<BranchesData, BranchesError, TData>(
-    branchKeys.list(orgSlug, projectRef),
-    ({ signal }) => getBranches({ orgSlug, projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
+    branchKeys.list(orgRef, projectRef),
+    ({ signal }) => getBranches({ orgRef: orgRef, projectRef }, signal),
+    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined', ...options }
   )

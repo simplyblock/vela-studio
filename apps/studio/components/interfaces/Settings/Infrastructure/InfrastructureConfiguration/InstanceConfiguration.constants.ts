@@ -17,7 +17,7 @@ export const NODE_SEP = 20
 export const REPLICA_STATUS: {
   [key: string]: components['schemas']['DatabaseStatusResponse']['status']
 } = {
-  ...PROJECT_STATUS,
+  //...PROJECT_STATUS, // FIXME replica status needs to be fixed
   INIT_READ_REPLICA: 'INIT_READ_REPLICA',
   INIT_READ_REPLICA_FAILED: 'INIT_READ_REPLICA_FAILED',
 }

@@ -33,12 +33,12 @@ interface EditBranchModalProps {
 
 // TODO: Do we still use this?
 export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalProps) => {
-  const { slug: orgSlug, ref } = useParams()
+  const { slug: orgRef, ref } = useParams()
   const { data: projectDetails } = useSelectedProjectQuery()
 
   const projectRef = projectDetails !== undefined ? ref : undefined
 
-  const { data: branches } = useBranchesQuery({ orgSlug, projectRef })
+  const { data: branches } = useBranchesQuery({ orgRef, projectRef })
 
   const { mutate: updateBranch, isLoading: isUpdating } = useBranchUpdateMutation({
     onSuccess: (data) => {
@@ -79,17 +79,17 @@ export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalPro
   const canSubmit = isFormValid && !isUpdating
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    if (!orgSlug) return console.error('Organization slug is required')
+    if (!orgRef) return console.error('Organization slug is required')
     if (!projectRef) return console.error('Project ref is required')
     if (!ref) return console.error('Branch ref is required')
 
     const payload: {
-      orgSlug: string
+      orgRef: string
       branchRef: string
       projectRef: string
       branch: string
     } = {
-      orgSlug,
+      orgRef,
       branchRef: ref,
       projectRef,
       branch: data.branchName,

@@ -40,11 +40,11 @@ const FirstLevelNav = () => {
     return true
   })
 
-  const { data } = useOpenAPISpecQuery({ orgSlug: orgRef, projectRef: projectRef })
+  const { data } = useOpenAPISpecQuery({ orgRef: orgRef, projectRef: projectRef })
   const tables = data?.tables ?? []
   const functions = data?.functions ?? []
 
-  const { data: buckets } = useBucketsQuery({ projectRef: projectRef })
+  const { data: buckets } = useBucketsQuery({ orgRef, projectRef, branchRef })
   const { data: edgeFunctions } = useEdgeFunctionsQuery({ projectRef: projectRef })
 
   return (

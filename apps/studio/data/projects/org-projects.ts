@@ -6,19 +6,21 @@ import type { ResponseError } from 'types'
 import { projectKeys } from './keys'
 
 export type OrgProjectsVariables = {
-  orgSlug?: string
+  orgRef?: string
 }
 
 export type OrgProjectsResponse = components['schemas']['OrganizationProjectsResponse']
 
 export async function getOrgProjects(
-  { orgSlug }: OrgProjectsVariables,
+  { orgRef }: OrgProjectsVariables,
   signal?: AbortSignal
 ): Promise<OrgProjectsResponse> {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgRef is required')
   const { data, error } = await get(`/platform/organizations/{slug}/org-projects`, {
     params: {
-      path: { slug: orgSlug },
+      path: {
+        slug: orgRef,
+      },
     },
     signal,
   })
@@ -30,14 +32,14 @@ export type OrgProjectsData = Awaited<ReturnType<typeof getOrgProjects>>
 export type OrgProjectsError = ResponseError
 
 export const useOrgProjectsQuery = <TData = OrgProjectsData>(
-  { orgSlug }: OrgProjectsVariables,
+  { orgRef }: OrgProjectsVariables,
   { enabled = true, ...options }: UseQueryOptions<OrgProjectsData, OrgProjectsError, TData> = {}
 ) =>
   useQuery<OrgProjectsData, OrgProjectsError, TData>(
-    projectKeys.orgProjects(orgSlug),
-    ({ signal }) => getOrgProjects({ orgSlug }, signal),
+    projectKeys.orgProjects(orgRef),
+    ({ signal }) => getOrgProjects({ orgRef }, signal),
     {
-      enabled: enabled && typeof orgSlug !== 'undefined',
+      enabled: enabled && typeof orgRef !== 'undefined',
       ...options,
     }
   )

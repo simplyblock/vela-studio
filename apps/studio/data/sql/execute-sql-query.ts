@@ -136,7 +136,7 @@ export const useExecuteSqlQuery = <TData = ExecuteSqlData>(
   { enabled = true, ...options }: UseQueryOptions<ExecuteSqlData, ExecuteSqlError, TData> = {}
 ) => {
   const { data: project } = useSelectedProjectQuery()
-  const isActive = project?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  const isActive = project?.status === PROJECT_STATUS.STARTED
 
   return useQuery<ExecuteSqlData, ExecuteSqlError, TData>(
     sqlKeys.query(branch?.organization_id, branch?.project_id, branch?.id, queryKey ?? [btoa(sql)]),

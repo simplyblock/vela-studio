@@ -37,7 +37,7 @@ export const Connect = () => {
   const { slug: orgSlug, ref: projectRef } = useParams()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
-  const isActiveHealthy = selectedProject?.status === PROJECT_STATUS.ACTIVE_HEALTHY
+  const isActiveHealthy = selectedProject?.status === PROJECT_STATUS.STARTED
 
   const [showConnect, setShowConnect] = useQueryState(
     'showConnect',
@@ -55,7 +55,7 @@ export const Connect = () => {
       ?.children.find((child) => child.key === selectedChild)?.children[0]?.key || ''
   )
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef }, { enabled: showConnect })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef }, { enabled: showConnect })
   const { can: canReadAPIKeys } = useCheckPermissions("branch:api:getkeys")
 
   const handleParentChange = (value: string) => {

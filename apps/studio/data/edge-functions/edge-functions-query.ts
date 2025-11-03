@@ -4,21 +4,21 @@ import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { edgeFunctionsKeys } from './keys'
 
-export type EdgeFunctionsVariables = { orgSlug?: string; projectRef?: string }
+export type EdgeFunctionsVariables = { orgRef?: string; projectRef?: string }
 
 export type EdgeFunctionsResponse = components['schemas']['FunctionResponse']
 
 export async function getEdgeFunctions(
-  { orgSlug, projectRef }: EdgeFunctionsVariables,
+  { orgRef, projectRef }: EdgeFunctionsVariables,
   signal?: AbortSignal
 ) {
-  if (!orgSlug) throw new Error('orgSlug is required')
+  if (!orgRef) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
 
   const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/functions`, {
     params: {
       path: {
-        slug: orgSlug,
+        slug: orgRef,
         ref: projectRef,
       },
     },
@@ -33,11 +33,11 @@ export type EdgeFunctionsData = Awaited<ReturnType<typeof getEdgeFunctions>>
 export type EdgeFunctionsError = ResponseError
 
 export const useEdgeFunctionsQuery = <TData = EdgeFunctionsData>(
-  { orgSlug, projectRef }: EdgeFunctionsVariables,
+  { orgRef, projectRef }: EdgeFunctionsVariables,
   { enabled = true, ...options }: UseQueryOptions<EdgeFunctionsData, EdgeFunctionsError, TData> = {}
 ) =>
   useQuery<EdgeFunctionsData, EdgeFunctionsError, TData>(
     edgeFunctionsKeys.list(projectRef),
-    ({ signal }) => getEdgeFunctions({ orgSlug, projectRef }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgSlug !== 'undefined', ...options }
+    ({ signal }) => getEdgeFunctions({ orgRef: orgRef, projectRef }, signal),
+    { enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined', ...options }
   )

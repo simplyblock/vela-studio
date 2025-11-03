@@ -39,7 +39,7 @@ export const Overview = ({
   const { slug: orgSlug, ref: projectRef } = useParams()
   
   const { data: branches, isLoading: isBranchesLoading } = useBranchesQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef
   })
 

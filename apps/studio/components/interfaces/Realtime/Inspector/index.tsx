@@ -12,14 +12,14 @@ import { RealtimeConfig, useRealtimeMessages } from './useRealtimeMessages'
  * Acts as a container component for the entire log display
  */
 export const RealtimeInspector = () => {
-  const { slug, ref } = useParams()
+  const { slug: orgRef, ref: projectRef } = useParams()
   const { data: org } = useSelectedOrganizationQuery()
 
   const [sendMessageShown, setSendMessageShown] = useState(false)
   const [realtimeConfig, setRealtimeConfig] = useState<RealtimeConfig>({
     enabled: false,
-    orgSlug: slug!,
-    projectRef: ref!,
+    orgRef: orgRef!,
+    projectRef: projectRef!,
     channelName: '',
     logLevel: 'info',
     token: '', // will be filled out by RealtimeTokensPopover
@@ -55,7 +55,7 @@ export const RealtimeInspector = () => {
         onSelectConfirm={(v) => {
           sendEvent({
             action: 'realtime_inspector_broadcast_sent',
-            groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+            groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
           })
           sendMessage(v.message, v.payload, () => setSendMessageShown(false))
         }}

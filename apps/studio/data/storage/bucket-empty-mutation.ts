@@ -6,17 +6,31 @@ import type { ResponseError } from 'types'
 import { storageKeys } from './keys'
 
 export type BucketEmptyVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   id: string
 }
 
-export async function emptyBucket({ projectRef, id }: BucketEmptyVariables) {
+export async function emptyBucket({ orgRef, projectRef, branchRef, id }: BucketEmptyVariables) {
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
-  if (!id) throw new Error('Bucket name is requried')
+  if (!branchRef) throw new Error('branchRef is required')
+  if (!id) throw new Error('Bucket name is required')
 
-  const { data, error } = await post('/platform/storage/{ref}/buckets/{id}/empty', {
-    params: { path: { id, ref: projectRef } },
-  })
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/empty',
+    {
+      params: {
+        path: {
+          id,
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -38,8 +52,8 @@ export const useBucketEmptyMutation = ({
     (vars) => emptyBucket(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(storageKeys.buckets(projectRef))
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(storageKeys.buckets(orgRef, projectRef, branchRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

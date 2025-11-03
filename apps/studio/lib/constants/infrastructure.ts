@@ -1,7 +1,7 @@
 import { components } from 'data/vela/vela-schema'
 
 export const PROJECT_STATUS: {
-  [key: string]: components['schemas']['ProjectPublic']['status']
+  [key in components['schemas']['ProjectPublic']['status']]: components['schemas']['ProjectPublic']['status']
 } = {
   PAUSING: 'PAUSING',
   PAUSED: 'PAUSED',

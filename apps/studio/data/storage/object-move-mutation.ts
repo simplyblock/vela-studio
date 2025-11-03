@@ -1,35 +1,44 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query'
+import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { handleError, post } from 'data/fetchers'
 import { ResponseError } from 'types'
 
 type MoveStorageObjectParams = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   bucketId?: string
   from: string
   to: string
 }
 export const moveStorageObject = async ({
+  orgRef,
   projectRef,
+  branchRef,
   bucketId,
   from,
   to,
 }: MoveStorageObjectParams) => {
   if (!bucketId) throw new Error('bucketId is required')
 
-  const { data, error } = await post('/platform/storage/{ref}/buckets/{id}/objects/move', {
-    params: {
-      path: {
-        ref: projectRef,
-        id: bucketId,
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/move',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+          id: bucketId,
+        },
       },
-    },
-    body: {
-      from,
-      to,
-    },
-  })
+      body: {
+        from,
+        to,
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -37,7 +46,7 @@ export const moveStorageObject = async ({
 
 type MoveBucketObjectData = Awaited<ReturnType<typeof moveStorageObject>>
 
-export const useGetSignBucketObjectMutation = ({
+export const useBucketObjectMoveMutation = ({
   onSuccess,
   onError,
   ...options

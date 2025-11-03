@@ -1,4 +1,4 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query'
+import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { components } from 'data/api'
@@ -6,28 +6,35 @@ import { handleError, post } from 'data/fetchers'
 import { ResponseError } from 'types'
 
 type SignBucketObjectParams = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   bucketId?: string
   path: string
   expiresIn: number
   options?: components['schemas']['GetSignedUrlBody']['options']
 }
 export const signBucketObject = async (
-  { projectRef, bucketId, path, expiresIn, options }: SignBucketObjectParams,
+  { orgRef, projectRef, branchRef, bucketId, path, expiresIn, options }: SignBucketObjectParams,
   signal?: AbortSignal
 ) => {
   if (!bucketId) throw new Error('bucketId is required')
 
-  const { data, error } = await post('/platform/storage/{ref}/buckets/{id}/objects/sign', {
-    params: {
-      path: {
-        ref: projectRef,
-        id: bucketId,
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/sign',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+          id: bucketId,
+        },
       },
-    },
-    body: { path, expiresIn, options },
-    signal,
-  })
+      body: { path, expiresIn, options },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data

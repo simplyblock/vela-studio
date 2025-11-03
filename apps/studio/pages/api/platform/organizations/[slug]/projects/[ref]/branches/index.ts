@@ -20,7 +20,7 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
           response: 'full',
         },
       },
-      body: req.body
+      body: req.body,
     }
   )
 

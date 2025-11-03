@@ -18,17 +18,17 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const ServiceList = () => {
   const { data: project, isLoading } = useSelectedProjectQuery()
-  const { slug: orgSlug, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
   const {
     data: databases,
     isError,
     isLoading: isLoadingDatabases,
   } = useReadReplicasQuery({ branch })
-  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef, orgSlug })
+  const { data: loadBalancers } = useLoadBalancersQuery({ projectRef, orgRef })
 
   // Get the API service
   const isCustomDomainActive = customDomainData?.customDomain?.status === 'active'
@@ -45,7 +45,7 @@ export const ServiceList = () => {
 
   return (
     <ScaffoldSection isFullWidth id="api-settings" className="gap-6">
-      {!isLoading && project?.status !== PROJECT_STATUS.ACTIVE_HEALTHY ? (
+      {!isLoading && project?.status !== PROJECT_STATUS.STARTED ? (
         <Alert_Shadcn_ variant="destructive">
           <AlertCircle size={16} />
           <AlertTitle_Shadcn_>

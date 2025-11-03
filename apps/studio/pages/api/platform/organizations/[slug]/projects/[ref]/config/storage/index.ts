@@ -7,7 +7,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { ref } = getPlatformQueryParams(req, 'ref')
 
   return res.status(200).json({
-    fileSizeLimit: 0,
+    fileSizeLimit: 52428800, // TODO: Fixed to 50MB for now
     features: {
       imageTransformation: {
         enabled: false,

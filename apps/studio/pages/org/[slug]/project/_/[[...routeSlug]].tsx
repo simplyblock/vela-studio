@@ -45,8 +45,8 @@ const GenericProjectPage: NextPage = () => {
 
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<string[]>([
-    PROJECT_STATUS.ACTIVE_HEALTHY,
-    PROJECT_STATUS.INACTIVE,
+    PROJECT_STATUS.STARTED,
+    PROJECT_STATUS.PAUSED,
   ])
 
   const [lastVisitedOrgSlug] = useLocalStorageQuery(

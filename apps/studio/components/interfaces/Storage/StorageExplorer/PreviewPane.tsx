@@ -25,11 +25,13 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 const PREVIEW_SIZE_LIMIT = 10 * 1024 * 1024 // 10MB
 
 const PreviewFile = ({ item }: { item: StorageItem }) => {
-  const { projectRef, selectedBucket } = useStorageExplorerStateSnapshot()
+  const { orgRef, projectRef, branchRef, selectedBucket } = useStorageExplorerStateSnapshot()
 
   const { data: previewUrl, isLoading } = useFetchFileUrlQuery({
+    orgRef,
+    projectRef,
+    branchRef,
     file: item,
-    projectRef: projectRef,
     bucket: selectedBucket,
   })
 
@@ -126,7 +128,7 @@ const PreviewPane = () => {
   } = useStorageExplorerStateSnapshot()
   const { onCopyUrl } = useCopyUrl()
 
-  const canUpdateFiles = useCheckPermissions("branch:settings:admin")
+  const canUpdateFiles = useCheckPermissions('branch:settings:admin')
 
   if (!file) return null
 

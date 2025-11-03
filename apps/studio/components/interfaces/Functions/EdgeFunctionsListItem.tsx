@@ -5,7 +5,6 @@ import { useState } from 'react'
 
 import { useCustomDomainsQuery } from 'data/custom-domains/custom-domains-query'
 import type { EdgeFunctionsResponse } from 'data/edge-functions/edge-functions-query'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { copyToClipboard, TableCell, TableRow, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { getPathReferences } from 'data/vela/path-references'
 
@@ -16,10 +15,9 @@ interface EdgeFunctionsListItemProps {
 export const EdgeFunctionsListItem = ({ function: item }: EdgeFunctionsListItemProps) => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = getPathReferences()
-  const { data: project } = useSelectedProjectQuery()
   const [isCopied, setIsCopied] = useState(false)
 
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef })
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
 
   // get the .co or .net TLD from the restUrl
   const functionUrl = `https://${projectRef}.supabase.co/functions/v1/${item.slug}` // FIXME: hardcoded url
@@ -33,7 +31,9 @@ export const EdgeFunctionsListItem = ({ function: item }: EdgeFunctionsListItemP
     <TableRow
       key={item.id}
       onClick={() => {
-        router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${item.slug}`)
+        router.push(
+          `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/${item.slug}`
+        )
       }}
       className="cursor-pointer"
     >

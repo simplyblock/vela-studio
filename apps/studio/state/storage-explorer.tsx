@@ -1,5 +1,5 @@
 import { capitalize, chunk, compact, find, findIndex, has, isObject, uniq, uniqBy } from 'lodash'
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useState } from 'react'
 import { useLatest } from 'react-use'
 import { toast } from 'sonner'
 import * as tus from 'tus-js-client'
@@ -35,7 +35,6 @@ import {
   getFilesDataTransferItems,
 } from 'components/interfaces/Storage/StorageExplorer/StorageExplorer.utils'
 import { convertFromBytes } from 'components/interfaces/Storage/StorageSettings/StorageSettings.utils'
-import { InlineLink } from 'components/ui/InlineLink'
 import { getTemporaryAPIKey } from 'data/api-keys/temp-api-keys-query'
 import { configKeys } from 'data/config/keys'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
@@ -51,7 +50,7 @@ import { PROJECT_STATUS } from 'lib/constants'
 import { tryParseJson } from 'lib/helpers'
 import { lookupMime } from 'lib/mime'
 import { Button, SONNER_DEFAULT_DURATION, SonnerProgress } from 'ui'
-import { getOrganizationSlug } from 'data/vela/organization-path-slug'
+import { useSelectedBranchQuery } from '../data/branches/selected-branch-query'
 
 type UploadProgress = {
   percentage: number
@@ -346,7 +345,9 @@ function createStorageExplorerState({
 
       if (pathToFolder.length > 0) {
         await deleteBucketObject({
+          orgRef: state.orgRef,
           projectRef: state.projectRef,
+          branchRef: state.branchRef,
           bucketId: state.selectedBucket.id,
           paths: [`${pathToFolder}/${EMPTY_FOLDER_PLACEHOLDER_FILE_NAME}`],
         })
@@ -395,7 +396,9 @@ function createStorageExplorerState({
         const data = await listBucketObjects(
           {
             bucketId,
+            orgRef: state.orgRef,
             projectRef: state.projectRef,
+            branchRef: state.branchRef,
             path: prefix,
             options,
           },
@@ -454,7 +457,9 @@ function createStorageExplorerState({
       try {
         const data = await listBucketObjects(
           {
+            orgRef: state.orgRef,
             projectRef: state.projectRef,
+            branchRef: state.branchRef,
             bucketId: state.selectedBucket.id,
             path: prefix,
             options,
@@ -518,7 +523,9 @@ function createStorageExplorerState({
 
           try {
             const data = await listBucketObjects({
+              orgRef: state.orgRef,
               projectRef: state.projectRef,
+              branchRef: state.branchRef,
               bucketId: state.selectedBucket.id,
               path: prefix,
               options,
@@ -575,7 +582,9 @@ function createStorageExplorerState({
     validateParentFolderEmpty: async (parentFolderPrefix: string) => {
       try {
         const data = await listBucketObjects({
+          orgRef: state.orgRef,
           projectRef: state.projectRef,
+          branchRef: state.branchRef,
           bucketId: state.selectedBucket.id,
           path: parentFolderPrefix,
           options: {
@@ -678,7 +687,9 @@ function createStorageExplorerState({
               progress = progress + 1 / files.length
               try {
                 await moveStorageObject({
+                  orgRef: state.orgRef,
                   projectRef: state.projectRef,
+                  branchRef: state.branchRef,
                   bucketId: state.selectedBucket.id,
                   from: fromPath,
                   to: toPath,
@@ -934,7 +945,9 @@ function createStorageExplorerState({
       for (;;) {
         try {
           const data = await listBucketObjects({
+            orgRef: state.orgRef,
             projectRef: state.projectRef,
+            branchRef: state.branchRef,
             bucketId: state.selectedBucket.id,
             path: formattedPathToFolder,
             options,
@@ -1018,15 +1031,6 @@ function createStorageExplorerState({
               {numberOfFilesRejected > 1 ? 's are' : ' is'} beyond the global upload limit of{' '}
               {value}
               {unit}.
-            </p>
-            <p className="text-foreground-light">
-              You can change the global file size upload limit in{' '}
-              <InlineLink
-                href={`/org/${orgRef}/project/${state.projectRef}/branch/${branchRef}/storage/settings`}
-              >
-                Storage settings
-              </InlineLink>
-              .
             </p>
           </div>,
           { duration: 8000 }
@@ -1192,7 +1196,11 @@ function createStorageExplorerState({
               chunkSize,
               onBeforeRequest: async (req) => {
                 try {
-                  const data = await getTemporaryAPIKey({ projectRef: state.projectRef })
+                  const data = await getTemporaryAPIKey({
+                    orgRef: state.orgRef,
+                    projectRef: state.projectRef,
+                    branchRef: state.branchRef,
+                  })
                   req.setHeader('apikey', data.api_key)
                 } catch (error) {
                   throw error
@@ -1304,7 +1312,9 @@ function createStorageExplorerState({
 
         if (numberOfFilesUploadedSuccess > 0) {
           await deleteBucketObject({
+            orgRef: state.orgRef,
             projectRef: state.projectRef,
+            branchRef: state.branchRef,
             bucketId: state.selectedBucket.id,
             paths: [`${pathToFile}/${EMPTY_FOLDER_PLACEHOLDER_FILE_NAME}`],
           })
@@ -1384,7 +1394,9 @@ function createStorageExplorerState({
 
           try {
             await moveStorageObject({
+              orgRef: state.orgRef,
               projectRef: state.projectRef,
+              branchRef: state.branchRef,
               bucketId: state.selectedBucket.id,
               from: fromPath,
               to: toPath,
@@ -1448,7 +1460,9 @@ function createStorageExplorerState({
       const batches = chunk(prefixes, BATCH_SIZE).map((batch) => () => {
         progress = progress + batch.length / prefixes.length
         return deleteBucketObject({
+          orgRef: state.orgRef,
           projectRef: state.projectRef,
+          branchRef: state.branchRef,
           bucketId: state.selectedBucket.id,
           paths: batch as string[],
         })
@@ -1586,7 +1600,9 @@ function createStorageExplorerState({
 
         try {
           await moveStorageObject({
+            orgRef: state.orgRef,
             projectRef: state.projectRef,
+            branchRef: state.branchRef,
             bucketId: state.selectedBucket.id,
             from: fromPath,
             to: toPath,
@@ -1808,21 +1824,24 @@ const StorageExplorerStateContext = createContext<StorageExplorerState>(
 
 export const StorageExplorerStateContextProvider = ({ children }: PropsWithChildren) => {
   const { data: project } = useSelectedProjectQuery()
-  const isPaused = project?.status === PROJECT_STATUS.INACTIVE
+  const { data: branch, isLoading: isBranchLoading } = useSelectedBranchQuery()
+  const isPaused = project?.status === PROJECT_STATUS.PAUSED
 
   const [state, setState] = useState(() => createStorageExplorerState(DEFAULT_STATE_CONFIG))
   const stateRef = useLatest(state)
-  const orgRef = getOrganizationSlug()
-  const { branch: branchRef } = useParams()
+  const { slug: orgRef, branch: branchRef } = useParams()
 
   const { data: settings } = useProjectSettingsV2Query({
-    orgSlug: orgRef,
+    orgRef: orgRef,
     projectRef: project?.id,
   })
 
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.endpoint
-  const resumableUploadUrl = `https://${endpoint}/storage/v1/upload/resumable`
+  const resumableUploadUrl = useMemo(
+    () => `${branch?.database.service_endpoint_uri}/storage/v1/upload/resumable`,
+    [branch]
+  )
 
   // [Joshen] JFYI opting with the useEffect here as the storage explorer state was being loaded
   // before the project details were ready, hence the store kept returning project ref as undefined
@@ -1832,7 +1851,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
   useEffect(() => {
     const hasDataReady = !!project?.id
 
-    if (!isPaused && hasDataReady) {
+    if (!isBranchLoading && !isPaused && hasDataReady) {
       setState(
         createStorageExplorerState({
           projectRef: project?.id ?? '',
@@ -1840,7 +1859,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
           branchRef: branchRef ?? '',
           supabaseClient: async () => {
             try {
-              const data = await getTemporaryAPIKey({ projectRef: project.id })
+              const data = await getTemporaryAPIKey({ orgRef, projectRef: project.id, branchRef })
               const clientEndpoint = `https://${endpoint}`
 
               return createClient(clientEndpoint, data.api_key, {
@@ -1865,7 +1884,16 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
         })
       )
     }
-  }, [project?.id, stateRef, isPaused, resumableUploadUrl, protocol, endpoint, orgRef])
+  }, [
+    project?.id,
+    stateRef,
+    isPaused,
+    resumableUploadUrl,
+    protocol,
+    endpoint,
+    orgRef,
+    isBranchLoading,
+  ])
 
   return (
     <StorageExplorerStateContext.Provider value={state}>

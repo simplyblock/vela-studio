@@ -48,7 +48,7 @@ const TotalUsage = ({
     isError: isErrorUsage,
     isSuccess: isSuccessUsage,
   } = useOrgUsageQuery({
-    orgSlug,
+    orgRef: orgSlug,
     projectRef,
     start: !currentBillingCycleSelected && startDate ? new Date(startDate) : undefined,
     end: !currentBillingCycleSelected && endDate ? new Date(endDate) : undefined,

@@ -29,7 +29,7 @@ export const PauseDisabledState = () => {
 
   const { data: pauseStatus } = useProjectPauseStatusQuery(
     { ref },
-    { enabled: project?.status === PROJECT_STATUS.INACTIVE }
+    { enabled: project?.status === PROJECT_STATUS.PAUSED }
   )
 
   const { data: storageArchive } = useStorageArchiveQuery(

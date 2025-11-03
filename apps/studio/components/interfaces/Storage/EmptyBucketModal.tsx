@@ -7,12 +7,12 @@ import { useStorageExplorerStateSnapshot } from 'state/storage-explorer'
 import {
   Button,
   Dialog,
-  DialogHeader,
-  DialogTitle,
   DialogContent,
+  DialogFooter,
+  DialogHeader,
   DialogSection,
   DialogSectionSeparator,
-  DialogFooter,
+  DialogTitle,
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 
@@ -23,7 +23,7 @@ export interface EmptyBucketModalProps {
 }
 
 export const EmptyBucketModal = ({ visible, bucket, onClose }: EmptyBucketModalProps) => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { fetchFolderContents } = useStorageExplorerStateSnapshot()
 
   const { mutate: emptyBucket, isLoading } = useBucketEmptyMutation({
@@ -41,9 +41,11 @@ export const EmptyBucketModal = ({ visible, bucket, onClose }: EmptyBucketModalP
   })
 
   const onEmptyBucket = async () => {
+    if (!orgRef) return console.error('Org ref is required')
     if (!projectRef) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
     if (!bucket) return console.error('No bucket is selected')
-    emptyBucket({ projectRef, id: bucket.id })
+    emptyBucket({ orgRef, projectRef, branchRef, id: bucket.id })
   }
 
   return (

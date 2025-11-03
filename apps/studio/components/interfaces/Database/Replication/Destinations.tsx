@@ -24,7 +24,7 @@ export const Destinations = () => {
     isLoading: isSourcesLoading,
     isError: isSourcesError,
   } = useReplicationSourcesQuery({
-    orgSlug, projectRef,
+    orgRef: orgSlug, projectRef,
   })
 
   const sourceId = sourcesData?.sources.find((s) => s.name === projectRef)?.id

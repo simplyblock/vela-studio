@@ -24,10 +24,10 @@ interface ConnectContentTabProps extends HTMLAttributes<HTMLDivElement> {
 
 const ConnectTabContent = forwardRef<HTMLDivElement, ConnectContentTabProps>(
   ({ projectKeys, filePath, ...props }, ref) => {
-    const { slug: orgSlug, ref: projectRef } = useParams()
+    const { slug: orgSlug, ref: projectRef, branch: branchId } = useParams()
 
-    const { data: settings } = useProjectSettingsV2Query({ orgSlug, projectRef })
-    const { data: pgbouncerConfig } = usePgbouncerConfigQuery({ orgSlug, projectRef })
+    const { data: settings } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef })
+    const { data: pgbouncerConfig } = usePgbouncerConfigQuery({ orgRef: orgSlug, projectRef, branchId })
 
     const DB_FIELDS = ['db_host', 'db_name', 'db_port', 'db_user', 'inserted_at']
     const emptyState = { db_user: '', db_host: '', db_port: '', db_name: '' }
@@ -45,21 +45,6 @@ const ConnectTabContent = forwardRef<HTMLDivElement, ConnectContentTabProps>(
       },
       metadata: { projectRef },
     })
-
-    const connectionStringsDedicated =
-      poolingConfigurationDedicated !== undefined
-        ? getConnectionStrings({
-            connectionInfo,
-            poolingInfo: {
-              connectionString: poolingConfigurationDedicated.connection_string,
-              db_host: poolingConfigurationDedicated.db_host,
-              db_name: poolingConfigurationDedicated.db_name,
-              db_port: poolingConfigurationDedicated.db_port,
-              db_user: poolingConfigurationDedicated.db_user,
-            },
-            metadata: { projectRef },
-          })
-        : undefined
 
     const ContentFile = useMemo(() => {
       return dynamic<ConnectContentTabProps>(() => import(`./content/${filePath}/content`), {
@@ -79,8 +64,6 @@ const ConnectTabContent = forwardRef<HTMLDivElement, ConnectContentTabProps>(
           connectionStringPooler={{
             transactionShared: connectionStringsShared.pooler.uri,
             sessionShared: connectionStringsShared.pooler.uri.replace('6543', '5432'),
-            transactionDedicated: connectionStringsDedicated?.pooler.uri,
-            sessionDedicated: connectionStringsDedicated?.pooler.uri.replace('6543', '5432'),
             direct: connectionStringsShared.direct.uri,
           }}
         />

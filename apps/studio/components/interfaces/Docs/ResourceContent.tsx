@@ -26,11 +26,11 @@ const ResourceContent = ({
   showApiKey,
   refreshDocs,
 }: ResourceContentProps) => {
-  const { slug, ref } = useParams()
-  const { data: customDomainData } = useCustomDomainsQuery({ projectRef: ref })
+  const { slug: orgRef, ref: projectRef } = useParams()
+  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
   const { realtimeAll: realtimeEnabled } = useIsFeatureEnabled(['realtime:all'])
 
-  const { data: jsonSchema } = useProjectJsonSchemaQuery({ orgSlug: slug, projectRef: ref })
+  const { data: jsonSchema } = useProjectJsonSchemaQuery({ orgRef, projectRef })
   const { paths, definitions } = jsonSchema || {}
 
   const endpoint =

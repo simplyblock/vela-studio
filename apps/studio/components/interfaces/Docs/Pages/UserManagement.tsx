@@ -19,7 +19,7 @@ export default function UserManagement({ selectedLang, showApiKey }: UserManagem
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const keyToShow = showApiKey ? showApiKey : 'SUPABASE_KEY'
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgRef, projectRef })
   const protocol = settings?.app_config?.protocol ?? 'https'
   const hostEndpoint = settings?.app_config?.endpoint ?? ''
   const endpoint = `${protocol}://${hostEndpoint ?? ''}`

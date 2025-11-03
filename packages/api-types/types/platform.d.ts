@@ -222,6 +222,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/projects/{ref}/backups/restore': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['BackupsController_restoreBackupToNewBranch']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/backups': {
     parameters: {
       query?: never
@@ -2929,7 +2945,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/api-keys/temporary': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/api-keys/temporary': {
     parameters: {
       query?: never
       header?: never
@@ -3015,7 +3031,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/config/pgbouncer': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/pgbouncer': {
     parameters: {
       query?: never
       header?: never
@@ -3033,7 +3049,7 @@ export interface paths {
     patch: operations['PgbouncerConfigController_updatePgbouncerConfig']
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/config/pgbouncer/status': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/pgbouncer/status': {
     parameters: {
       query?: never
       header?: never
@@ -4180,7 +4196,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets': {
     parameters: {
       query?: never
       header?: never
@@ -4198,7 +4214,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}': {
     parameters: {
       query?: never
       header?: never
@@ -4217,7 +4233,7 @@ export interface paths {
     patch: operations['StorageBucketIdController_updateBucket']
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/empty': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/empty': {
     parameters: {
       query?: never
       header?: never
@@ -4234,7 +4250,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects': {
     parameters: {
       query?: never
       header?: never
@@ -4251,7 +4267,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/copy': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/copy': {
     parameters: {
       query?: never
       header?: never
@@ -4268,7 +4284,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/download': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/download': {
     parameters: {
       query?: never
       header?: never
@@ -4285,7 +4301,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/list': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/list': {
     parameters: {
       query?: never
       header?: never
@@ -4302,7 +4318,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/move': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/move': {
     parameters: {
       query?: never
       header?: never
@@ -4319,7 +4335,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/public-url': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/public-url': {
     parameters: {
       query?: never
       header?: never
@@ -4336,7 +4352,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/sign': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/sign': {
     parameters: {
       query?: never
       header?: never
@@ -4353,7 +4369,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/storage/{ref}/buckets/{id}/objects/sign-multi': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/sign-multi': {
     parameters: {
       query?: never
       header?: never
@@ -11253,18 +11269,18 @@ export interface operations {
     }
     requestBody: {
       content: {
-        "application/json": VelaType<"ResizeParameters">;
-      };
-    };
+        'application/json': VelaType<'ResizeParameters'>
+      }
+    }
     responses: {
       /** @description Successful Response */
       202: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": unknown;
-        };
+          'application/json': unknown
+        }
       }
       /** @description Validation Error */
       422: {
@@ -11724,6 +11740,45 @@ export interface operations {
         }
         content: {
           'application/json': VelaType<'BackupDeletePublic'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project backups */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  BackupsController_restoreBackupToNewBranch: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'BranchCreate'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'BranchPublic'>
         }
       }
       403: {
@@ -18607,8 +18662,9 @@ export interface operations {
       }
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18845,6 +18901,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }
@@ -18855,7 +18912,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'PgbouncerConfigResponse'>
+          'application/json': VelaType<'BranchPgbouncerConfigStatus'>
         }
       }
       /** @description Failed to retrieve project's pgbouncer config */
@@ -18875,12 +18932,13 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'UpdatePgbouncerConfigBody'>
+        'application/json': VelaType<'BranchPgbouncerConfigUpdate'>
       }
     }
     responses: {
@@ -18889,7 +18947,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'UpdatePoolingConfigResponse'>
+          'application/json': VelaType<'BranchPgbouncerConfigStatus'>
         }
       }
       403: {
@@ -18915,6 +18973,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }
@@ -22045,7 +22104,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          "application/json": VelaType<'AvailablePostgresqlVersion'>[]
+          'application/json': VelaType<'AvailablePostgresqlVersion'>[]
         }
       }
       500: {
@@ -22141,8 +22200,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22176,8 +22236,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22215,8 +22276,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22252,8 +22314,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22287,8 +22350,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22326,8 +22390,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22361,8 +22426,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22400,8 +22466,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22441,8 +22508,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22482,8 +22550,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22523,8 +22592,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22562,8 +22632,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22603,8 +22674,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -22644,8 +22716,9 @@ export interface operations {
       path: {
         /** @description Storage bucket id */
         id: string
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }

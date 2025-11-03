@@ -45,7 +45,7 @@ const EdgeFunctionsUsage = () => {
   const { ref } = useParams()
   const { slug: orgSlug } = getPathReferences()
   const { data: functions, isLoading: isLoadingFunctions } = useEdgeFunctionsQuery({
-    orgSlug, projectRef: ref,
+    orgRef: orgSlug, projectRef: ref,
   })
   const [isOpen, setIsOpen] = useState(false)
   const [functionIds, setFunctionIds] = useState<string[]>([])

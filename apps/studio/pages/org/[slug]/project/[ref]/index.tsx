@@ -60,10 +60,7 @@ const deleteBranch = useBranchDeleteMutation({
     isLoading: isLoadingBranches,
     isError: isErrorBranches,
     error: branchesError,
-  } = useBranchesQuery(
-    { orgSlug: slug, projectRef },
-    { enabled: !!slug && !!projectRef }
-  )
+  } = useBranchesQuery({ orgRef: slug, projectRef }, { enabled: !!slug && !!projectRef })
 
   // any resource warnings tied to this project
   const {
@@ -186,7 +183,7 @@ const onConfirmDeleteBranch = async () => {
           </div>
 
           {branches.length === 0 ? (
-            <EmptyBranchesState slug={slug} projectRef={projectRef} />
+            <EmptyBranchesState slug={slug} projectRef={projectRef} projectName={project.name} />
           ) : (
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {branches.map((branch: any) => (
@@ -312,9 +309,9 @@ const onConfirmDeleteBranch = async () => {
 const ProjectStatusBadge = ({ status }: { status?: string }) => {
   if (!status) return null
 
-  const isHealthy = status === PROJECT_STATUS.ACTIVE_HEALTHY
-  const isInactive = status === PROJECT_STATUS.INACTIVE
-  const isComingUp = status === PROJECT_STATUS.COMING_UP
+  const isHealthy = status === PROJECT_STATUS.STARTED
+  const isInactive = status === PROJECT_STATUS.PAUSED
+  const isComingUp = status === PROJECT_STATUS.STARTING
 
   if (isHealthy) {
     return (
@@ -391,9 +388,11 @@ const BranchesSkeleton = () => {
 const EmptyBranchesState = ({
   slug,
   projectRef,
+  projectName,
 }: {
   slug: string
   projectRef: string
+  projectName: string
 }) => {
   return (
     <div className="rounded border border-dashed p-6 text-center space-y-3 bg-surface-100">
@@ -402,8 +401,10 @@ const EmptyBranchesState = ({
         Branches let you isolate environments (preview, staging, prod, etc.)
       </p>
       <Button asChild type="default" size="tiny">
-        <Link href={`/org/${slug}/project/${projectRef}/settings`}>
-          Create / manage branches
+        <Link
+          href={`/new/${slug}/${projectRef}?name=${encodeURIComponent(projectName + "'s branch")}`}
+        >
+          Create your first branch
         </Link>
       </Button>
     </div>

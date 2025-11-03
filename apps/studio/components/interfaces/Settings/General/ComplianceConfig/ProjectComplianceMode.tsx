@@ -27,7 +27,7 @@ const ComplianceConfig = () => {
     isError,
     isLoading,
     isSuccess,
-  } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef: projectRef })
+  } = useProjectSettingsV2Query({ orgRef: orgRef, projectRef: projectRef })
   const initialIsSensitive = settings?.is_sensitive || false
 
   const { mutate: updateComplianceConfig, isLoading: isSubmitting } =

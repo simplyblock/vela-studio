@@ -39,12 +39,12 @@ const BuildingState = () => {
   useProjectStatusQuery(
     { projectRef: ref },
     {
-      enabled: project?.status !== PROJECT_STATUS.ACTIVE_HEALTHY,
+      enabled: project?.status !== PROJECT_STATUS.STARTED,
       refetchInterval: (res) => {
-        return res?.status === PROJECT_STATUS.ACTIVE_HEALTHY ? false : 4000
+        return res?.status === PROJECT_STATUS.STARTED ? false : 4000
       },
       onSuccess: async (res) => {
-        if (res.status === PROJECT_STATUS.ACTIVE_HEALTHY) {
+        if (res.status === PROJECT_STATUS.STARTED) {
           if (ref) invalidateProjectDetailsQuery(queryClient, slug as string, ref)
           invalidateProjectsQuery(queryClient)
         }
@@ -135,7 +135,7 @@ const BuildingState = () => {
           </div>
         </div>
       </div>
-      {project.status === PROJECT_STATUS.COMING_UP && (
+      {project.status === PROJECT_STATUS.STARTING && (
         <div className="mx-auto my-16 w-full max-w-7xl space-y-16">
           <div className="space-y-8">
             <div className="mx-6">

@@ -52,7 +52,7 @@ export const APIKeys = () => {
     data: settings,
     isError: isProjectSettingsError,
     isLoading: isProjectSettingsLoading,
-  } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
+  } = useProjectSettingsV2Query({ orgRef: orgRef, projectRef })
 
   const { data: apiKeys } = useAPIKeysQuery({ branch })
   const { anonKey, serviceKey } = getKeys(apiKeys)

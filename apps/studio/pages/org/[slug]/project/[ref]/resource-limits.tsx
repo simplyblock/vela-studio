@@ -64,11 +64,11 @@ const LABELS: Record<LimitKey, string> = {
 -------------------------------------------------------------------*/
 
 const ResourceLimit: NextPageWithLayout = () => {
-  const { orgSlug, ref: projectRef } = useParams()
+  const { ref: orgRef, ref: projectRef } = useParams()
 
-  const { data: limitsData } = useProjectLimitsQuery({ orgSlug, projectRef })
+  const { data: limitsData } = useProjectLimitsQuery({ orgRef, projectRef })
   const { data: definitions } = useResourceLimitDefinitionsQuery()
-  const { data: usageData } = useProjectUsageQuery({ orgSlug, projectRef })
+  const { data: usageData } = useProjectUsageQuery({ orgRef, projectRef })
   const { mutateAsync: updateLimit } = useProjectLimitUpdateMutation()
 
   // normalize usage
@@ -135,7 +135,7 @@ const ResourceLimit: NextPageWithLayout = () => {
      Save handler
   -------------------------------------------------------------------*/
   const handleSave = async () => {
-    if (!orgSlug || !projectRef) {
+    if (!orgRef || !projectRef) {
       toast.error('Missing organization or project reference')
       return
     }
@@ -176,7 +176,7 @@ const ResourceLimit: NextPageWithLayout = () => {
         }
 
         await updateLimit({
-          orgSlug,
+          orgRef,
           projectRef,
           limit: payload,
         })

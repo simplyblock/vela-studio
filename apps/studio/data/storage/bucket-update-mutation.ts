@@ -7,7 +7,9 @@ import type { ResponseError } from 'types'
 import { storageKeys } from './keys'
 
 export type BucketUpdateVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   id: string
   isPublic: boolean
   file_size_limit: number | null
@@ -24,23 +26,37 @@ type UpdateStorageBucketBody = Omit<
 }
 
 export async function updateBucket({
+  orgRef,
   projectRef,
+  branchRef,
   id,
   isPublic,
   file_size_limit,
   allowed_mime_types,
 }: BucketUpdateVariables) {
+  if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
-  if (!id) throw new Error('Bucket name is requried')
+  if (!branchRef) throw new Error('branchRef is required')
+  if (!id) throw new Error('Bucket name is required')
 
   const payload: Partial<UpdateStorageBucketBody> = { public: isPublic }
   if (file_size_limit !== undefined) payload.file_size_limit = file_size_limit
   if (allowed_mime_types !== undefined) payload.allowed_mime_types = allowed_mime_types
 
-  const { data, error } = await patch('/platform/storage/{ref}/buckets/{id}', {
-    params: { path: { id, ref: projectRef } },
-    body: payload as any,
-  })
+  const { data, error } = await patch(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}',
+    {
+      params: {
+        path: {
+          id,
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: payload as any,
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -62,8 +78,8 @@ export const useBucketUpdateMutation = ({
     (vars) => updateBucket(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(storageKeys.buckets(projectRef))
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(storageKeys.buckets(orgRef, projectRef, branchRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

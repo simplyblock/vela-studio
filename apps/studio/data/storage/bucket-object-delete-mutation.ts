@@ -1,32 +1,39 @@
-import { UseMutationOptions, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 
 import { del, handleError } from 'data/fetchers'
 import { toast } from 'sonner'
 import { ResponseError } from 'types'
 
 type DeleteBucketObjectParams = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   bucketId?: string
   paths: string[]
 }
 export const deleteBucketObject = async (
-  { projectRef, bucketId, paths }: DeleteBucketObjectParams,
+  { orgRef, projectRef, branchRef, bucketId, paths }: DeleteBucketObjectParams,
   signal?: AbortSignal
 ) => {
   if (!bucketId) throw new Error('bucketId is required')
 
-  const { data, error } = await del('/platform/storage/{ref}/buckets/{id}/objects', {
-    params: {
-      path: {
-        ref: projectRef,
-        id: bucketId,
+  const { data, error } = await del(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+          id: bucketId,
+        },
       },
-    },
-    body: {
-      paths,
-    },
-    signal,
-  })
+      body: {
+        paths,
+      },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data

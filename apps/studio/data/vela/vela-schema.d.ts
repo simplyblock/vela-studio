@@ -154,7 +154,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Organizations:Projects:Branch:Get-Pgbouncer-Config */
+        get: operations["organizations:projects:branch:get-pgbouncer-config"];
         put?: never;
         post?: never;
         delete?: never;
@@ -18789,6 +18790,7 @@ export interface components {
             env_type?: string | null;
             source?: components["schemas"]["BranchSourceParameters"] | null;
             deployment?: components["schemas"]["DeploymentParameters"] | null;
+            restore?: components["schemas"]["BranchRestoreParameters"] | null;
         };
         /** BranchPasswordReset */
         BranchPasswordReset: {
@@ -18913,6 +18915,36 @@ export interface components {
         } & {
             [key: string]: unknown;
         };
+        /** BranchRestoreParameters */
+        BranchRestoreParameters: {
+            /**
+             * ULID
+             * Format: ulid
+             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
+             */
+            backup_id: string;
+            /**
+             * Config Copy
+             * @default true
+             */
+            config_copy?: boolean;
+            deployment_parameters?: components["schemas"]["BranchSourceDeploymentParameters"] | null;
+        };
+        /** BranchSourceDeploymentParameters */
+        BranchSourceDeploymentParameters: {
+            /** Database Size */
+            database_size?: number | null;
+            /** Storage Size */
+            storage_size?: number | null;
+            /** Milli Vcpu */
+            milli_vcpu?: number | null;
+            /** Memory Bytes */
+            memory_bytes?: number | null;
+            /** Iops */
+            iops?: number | null;
+            /** Enable File Storage */
+            enable_file_storage?: boolean | null;
+        };
         /** BranchSourceParameters */
         BranchSourceParameters: {
             /**
@@ -18931,6 +18963,7 @@ export interface components {
              * @default false
              */
             data_copy?: boolean;
+            deployment_parameters?: components["schemas"]["BranchSourceDeploymentParameters"] | null;
         };
         /** BranchStatus */
         BranchStatus: {
@@ -22031,6 +22064,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    "organizations:projects:branch:get-pgbouncer-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BranchPgbouncerConfigStatus"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };

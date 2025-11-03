@@ -6,28 +6,27 @@ import type { ResponseError } from 'types'
 import { branchKeys } from './keys'
 
 export type BranchUpdateVariables = {
-  orgSlug: string
+  orgRef: string
   projectRef: string
   branch: string
 }
 
-export async function updateBranch({
-  orgSlug,
-  projectRef,
-  branch,
-}: BranchUpdateVariables) {
-  const { data, error } = await put('/platform/organizations/{slug}/projects/{ref}/branches/{branch}', {
-    params: {
-      path: {
-        slug: orgSlug,
-        ref: projectRef,
-        branch: branch
+export async function updateBranch({ orgRef, projectRef, branch }: BranchUpdateVariables) {
+  const { data, error } = await put(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branch,
+        },
       },
-    },
-    body: {
-      name: branch,
-    },
-  })
+      body: {
+        name: branch,
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -48,8 +47,8 @@ export const useBranchUpdateMutation = ({
     (vars) => updateBranch(vars),
     {
       async onSuccess(data, variables, context) {
-        const { orgSlug, projectRef } = variables
-        await queryClient.invalidateQueries(branchKeys.list(orgSlug, projectRef))
+        const { orgRef, projectRef } = variables
+        await queryClient.invalidateQueries(branchKeys.list(orgRef, projectRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

@@ -7,33 +7,38 @@ import type { ResponseError } from 'types'
 import { storageKeys } from './keys'
 
 export type BucketCreateVariables = Omit<CreateStorageBucketBody, 'public'> & {
+  orgRef: string
   projectRef: string
+  branchRef: string
   isPublic: boolean
 }
 
 type CreateStorageBucketBody = components['schemas']['CreateStorageBucketBody']
 
 export async function createBucket({
+  orgRef,
   projectRef,
+  branchRef,
   id,
-  type,
   isPublic,
-  file_size_limit,
-  allowed_mime_types,
 }: BucketCreateVariables) {
   if (!projectRef) throw new Error('projectRef is required')
   if (!id) throw new Error('Bucket name is required')
 
-  const payload: CreateStorageBucketBody = { id, type, public: isPublic }
-  if (type === 'STANDARD') {
-    if (file_size_limit) payload.file_size_limit = file_size_limit
-    if (allowed_mime_types) payload.allowed_mime_types = allowed_mime_types
-  }
-
-  const { data, error } = await post('/platform/storage/{ref}/buckets', {
-    params: { path: { ref: projectRef } },
-    body: payload,
-  })
+  const payload: CreateStorageBucketBody = { id, public: isPublic }
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: payload,
+    }
+  )
 
   if (error) handleError(error)
   return data as { name: string }
@@ -55,8 +60,8 @@ export const useBucketCreateMutation = ({
     (vars) => createBucket(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
-        await queryClient.invalidateQueries(storageKeys.buckets(projectRef))
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(storageKeys.buckets(orgRef, projectRef, branchRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {

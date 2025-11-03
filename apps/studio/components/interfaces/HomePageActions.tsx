@@ -63,8 +63,8 @@ const HomePageActions = ({
               <p className="text-xs">Filter projects by status</p>
               <div className="flex flex-col">
                 {[
-                  { key: PROJECT_STATUS.ACTIVE_HEALTHY, label: 'Active' },
-                  { key: PROJECT_STATUS.INACTIVE, label: 'Paused' },
+                  { key: PROJECT_STATUS.STARTED, label: 'Active' },
+                  { key: PROJECT_STATUS.PAUSED, label: 'Paused' },
                 ].map(({ key, label }) => (
                   <div key={key} className="group flex items-center justify-between py-0.5">
                     <div className="flex items-center gap-x-2">

@@ -16,7 +16,7 @@ export default function Introduction({ selectedLang }: Props) {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
 
-  const { data: settings } = useProjectSettingsV2Query({ orgSlug: orgRef, projectRef })
+  const { data: settings } = useProjectSettingsV2Query({ orgRef: orgRef, projectRef })
   const { data: config, isSuccess } = useProjectPostgrestConfigQuery({ branch })
 
   const protocol = settings?.app_config?.protocol ?? 'https'

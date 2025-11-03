@@ -15,7 +15,7 @@ export function useApiUrlCommand() {
 
   const { data: project } = useSelectedProjectQuery()
   const { data: settings } = useProjectSettingsV2Query(
-    { orgSlug, projectRef: project?.id },
+    { orgRef: orgSlug, projectRef: project?.id },
     { enabled: !!project }
   )
 

@@ -22,8 +22,6 @@ import LoadingState from './LoadingState'
 import PausingState from './PausingState'
 import ProductMenuBar from './ProductMenuBar'
 import { ResizingState } from './ResizingState'
-import RestartingState from './RestartingState'
-import { UpgradingState } from './UpgradingState'
 
 // [Joshen] This is temporary while we unblock users from managing their project
 // if their project is not responding well for any reason. Eventually needs a bit of an overhaul
@@ -91,10 +89,10 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
     const projectName = selectedProject?.name
     const organizationName = selectedOrganization?.name
 
-    const isPaused = selectedProject?.status === PROJECT_STATUS.INACTIVE
+    const isPaused = selectedProject?.status === PROJECT_STATUS.PAUSED
     const showProductMenu = selectedProject
-      ? selectedProject.status === PROJECT_STATUS.ACTIVE_HEALTHY ||
-        (selectedProject.status === PROJECT_STATUS.COMING_UP &&
+      ? selectedProject.status === PROJECT_STATUS.STARTED ||
+        (selectedProject.status === PROJECT_STATUS.STARTING &&
           router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/settings')) ||
         router.pathname.includes('/org/[slug]/project/[ref]/branch')
       : true
@@ -263,27 +261,24 @@ const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapp
   const { data: selectedProject } = useSelectedProjectQuery()
 
   const isBranchesPage = router.pathname.includes('/org/[slug]/project/[ref]/branch')
-  const isSettingsPages = router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/settings')
+  const isSettingsPages = router.pathname.includes(
+    '/org/[slug]/project/[ref]/branch/[branch]/settings'
+  )
   const isVaultPage = router.pathname === '/org/[slug]/project/[ref]/branch/[branch]/settings/vault'
-  const isBackupsPage = router.pathname.includes('/org/[slug]/project/[ref]/branch/[branch]/database/backups')
+  const isBackupsPage = router.pathname.includes(
+    '/org/[slug]/project/[ref]/branch/[branch]/database/backups'
+  )
 
   const requiresDbConnection: boolean =
     (!isSettingsPages && !routesToIgnoreDBConnection.includes(router.pathname)) || isVaultPage
   const requiresPostgrestConnection = !routesToIgnorePostgrestConnection.includes(router.pathname)
   const requiresProjectDetails = !routesToIgnoreProjectDetailsRequest.includes(router.pathname)
 
-  const isRestarting = selectedProject?.status === PROJECT_STATUS.RESTARTING
-  const isResizing = selectedProject?.status === PROJECT_STATUS.RESIZING
-  const isProjectUpgrading = selectedProject?.status === PROJECT_STATUS.UPGRADING
-  const isProjectRestoring = selectedProject?.status === PROJECT_STATUS.RESTORING
-  const isProjectRestoreFailed = selectedProject?.status === PROJECT_STATUS.RESTORE_FAILED
+  const isResizing = selectedProject?.status === PROJECT_STATUS.MIGRATING
   const isProjectBuilding =
-    selectedProject?.status === PROJECT_STATUS.COMING_UP ||
+    selectedProject?.status === PROJECT_STATUS.STARTING ||
     selectedProject?.status === PROJECT_STATUS.UNKNOWN
-  const isProjectPausing =
-    selectedProject?.status === PROJECT_STATUS.GOING_DOWN ||
-    selectedProject?.status === PROJECT_STATUS.PAUSING
-  const isProjectPauseFailed = selectedProject?.status === PROJECT_STATUS.PAUSE_FAILED
+  const isProjectPausing = selectedProject?.status === PROJECT_STATUS.PAUSING
   const isProjectOffline = selectedProject?.status === 'PAUSED'
 
   useEffect(() => {
@@ -294,16 +289,8 @@ const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapp
     return router.pathname.endsWith('[ref]') ? <LoadingState /> : <Loading />
   }
 
-  if (isRestarting && !isBackupsPage) {
-    return <RestartingState />
-  }
-
   if (isResizing && !isBackupsPage) {
     return <ResizingState />
-  }
-
-  if (isProjectUpgrading && !isBackupsPage) {
-    return <UpgradingState />
   }
 
   if (isProjectPausing) {

@@ -676,7 +676,7 @@ export interface paths {
     patch: operations['v1-update-storage-config']
     trace?: never
   }
-  '/v1/projects/{ref}/custom-hostname': {
+  '/platform/organizations/{slug}/projects/{ref}/custom-hostname': {
     parameters: {
       query?: never
       header?: never
@@ -5694,7 +5694,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
       }
       cookie?: never
