@@ -1,13 +1,17 @@
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-
+import { Play, Pause, Trash2 } from 'lucide-react'
+import { useBranchPauseMutation } from 'data/branches/branch-pause-mutation'
+import { useBranchResumeMutation } from 'data/branches/branch-resume-mutation'
+import { useBranchDeleteMutation } from 'data/branches/branch-delete-mutation'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { useParams } from 'common'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useBranchesQuery } from 'data/branches/branches-query'
 import { useResourceWarningsQuery } from 'data/usage/resource-warnings-query'
 import { PROJECT_STATUS } from 'lib/constants'
+import { TimestampInfo } from 'ui-patterns'
 
 import AlertError from 'components/ui/AlertError'
 
@@ -16,10 +20,31 @@ import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBa
 import type { NextPageWithLayout } from 'types'
 import ShimmeringCard from 'components/interfaces/Home/ProjectList/ShimmeringCard'
 import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectLayout'
+import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import ResizeBranchModal from 'components/interfaces/Branch/ResizeBranchModal'
 
 const ProjectOverviewPage: NextPageWithLayout = () => {
   const router = useRouter()
   const { slug, ref: projectRef } = useParams() as { slug: string; ref?: string }
+  // track which branch is being toggled/deleted (for button spinners/disable)
+const [togglingId, setTogglingId] = useState<string | null>(null)
+const [deletingId, setDeletingId] = useState<string | null>(null)
+
+// pause / resume
+const pauseBranch = useBranchPauseMutation({
+  onSettled: () => setTogglingId(null),
+})
+const resumeBranch = useBranchResumeMutation({
+  onSettled: () => setTogglingId(null),
+})
+
+// delete
+const deleteBranch = useBranchDeleteMutation({
+  onSettled: () => {
+    setDeletingId(null)
+    setDeleteTarget(null)
+  },
+})
 
   // project info
   const {
@@ -49,6 +74,9 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     if (!project?.id) return undefined
     return resourceWarnings.find((w) => w.project === project.id)
   }, [project?.id, resourceWarnings])
+
+  // ── Local state for delete confirmation ─────────────────────────────────────
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null)
 
   // ---- Loading state ----
   if (isProjectLoading || isLoadingBranches || !projectRef || !slug) {
@@ -83,6 +111,32 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     )
   }
 
+// Heuristic: treat branch as running when not paused.
+// (Adjust if your API exposes a definitive status)
+const isBranchRunning = (branch: any) => !branch?.is_paused
+
+const onToggleBranch = (branch: any) => {
+  const branchKey = branch.name as string
+  setTogglingId(branch.id)
+
+  if (isBranchRunning(branch)) {
+    pauseBranch.mutate({ orgSlug: slug!, projectRef: projectRef!, branch: branchKey })
+  } else {
+    resumeBranch.mutate({ orgSlug: slug!, projectRef: projectRef!, branch: branchKey })
+  }
+}
+
+const onConfirmDeleteBranch = async () => {
+  if (!deleteTarget) return
+  setDeletingId(deleteTarget.id)
+  deleteBranch.mutate({
+    orgSlug: slug!,
+    projectRef: projectRef!,
+    branch: deleteTarget.name, // keep in sync with cache update (filters by name)
+  })
+}
+
+
   return (
     <div className="w-full px-4 py-8">
       <div className="mx-auto max-w-7xl flex flex-col gap-y-8">
@@ -106,14 +160,8 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 sm:items-start">
-              <Button asChild type="default">
-                <Link href={`/org/${slug}/project/${projectRef}/settings`}>Project settings</Link>
-              </Button>
-
-              <Button asChild type="default">
-                <Link href={`/org/${slug}/project/${projectRef}/resource-limits`}>
-                  Resource limits
-                </Link>
+              <Button className="text-black" asChild type={'primary'}>
+                <Link href={`/new/${slug}/${projectRef}/`}>Create Branch</Link>
               </Button>
             </div>
           </div>
@@ -132,10 +180,6 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                 Each branch is an isolated environment of this project.
               </p>
             </div>
-
-            <Button asChild type="default">
-              <Link href={`/org/${slug}/project/${projectRef}/settings`}>Manage branches</Link>
-            </Button>
           </div>
 
           {branches.length === 0 ? (
@@ -149,7 +193,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                     'rounded border border-default bg-surface-100 p-4 flex flex-col justify-between'
                   )}
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     <p className="text-sm text-foreground font-medium flex items-center justify-between">
                       <span className="truncate">{branch.name}</span>
                       {branch.is_default && (
@@ -162,14 +206,65 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                     <p className="text-xs text-foreground-light font-mono break-all">
                       {branch.ref || branch.id}
                     </p>
-
                     {branch.created_at && (
-                      <p className="text-xs text-foreground-lighter">
-                        Created {branch.created_at}
-                        {/* TODO: format date pretty if you have a util */}
-                      </p>
+                      <div className="text-xs text-foreground-lighter">
+                        Created{' '}
+                        <TimestampInfo
+                          utcTimestamp={branch.created_at}
+                          displayAs="local"             // shows local time inline
+                          labelFormat="DD MMM HH:mm"    // inline format (what you see in the cell)
+                          format="YYYY-MM-DD HH:mm:ss"  // tooltip row format
+                        />
+                      </div>
                     )}
+
+                    </div>
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <Button
+                      size="tiny"
+                      type="default"
+                      onClick={() => onToggleBranch(branch)}
+                      disabled={togglingId === branch.id || deletingId === branch.id}
+                      loading={togglingId === branch.id}
+                      aria-label={`${isBranchRunning(branch) ? 'Stop' : 'Start'} branch ${branch.name ?? branch.id}`}
+                    >
+                      {isBranchRunning(branch) ? (
+                        <span className="inline-flex items-center gap-1">
+                          <Pause size={14} /> Stop
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1">
+                          <Play size={14} /> Start
+                        </span>
+                      )}
+                    </Button>
+
+                    <Button
+                      size="tiny"
+                      type="default"
+                      className="text-red-600"
+                      onClick={() =>
+                        setDeleteTarget({
+                          id: branch.id,
+                          name: branch.name ?? branch.ref ?? branch.id,
+                        })
+                      }
+                      disabled={togglingId === branch.id || deletingId === branch.id}
+                      aria-label={`Delete branch ${branch.name ?? branch.id}`}
+                    >
+                      <span className="inline-flex items-center gap-1">
+                        <Trash2 size={14} /> Delete
+                      </span>
+                    </Button>
+                    <ResizeBranchModal
+                      orgSlug={slug}
+                      projectRef={projectRef}
+                      branchId={branch.id} 
+                      triggerClassName="!ml-auto" 
+                    />
                   </div>
+
 
                   <div className="pt-3">
                     <Button asChild size="tiny" type="default" block>
@@ -186,6 +281,27 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
           )}
         </section>
       </div>
+
+      {/* Delete confirmation modal */}
+      <ConfirmationModal
+        size="medium"
+        loading={false}
+        visible={!!deleteTarget}
+        title={
+          deleteTarget ? `Delete branch “${deleteTarget.name}”?` : 'Delete branch'
+        }
+        confirmLabel="Delete branch"
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={onConfirmDeleteBranch}
+        variant="warning" // change to "danger" if your component supports it
+      >
+        <div className="text-sm text-foreground-light space-y-2">
+          <p>
+            This action permanently deletes the branch and its resources. This cannot be undone.
+          </p>
+          <p>Are you sure you want to proceed?</p>
+        </div>
+      </ConfirmationModal>
     </div>
   )
 }

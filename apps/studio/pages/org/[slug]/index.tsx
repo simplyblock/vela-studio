@@ -47,7 +47,7 @@ const ProjectsPage: NextPageWithLayout = () => {
           </p>
         </Admonition>
       ) : (
-        <div>
+        <div className='p-2'> 
           <HomePageActions
             search={search}
             setSearch={setSearch}
