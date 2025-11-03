@@ -1,7 +1,4 @@
-
-
-import { Activity } from 'lucide-react'
-import { Blocks, FileText, Lightbulb, List, Settings } from 'lucide-react'
+import { Activity, Blocks, FileText, Lightbulb, List, SearchCheck, Settings } from 'lucide-react'
 
 import { ICON_SIZE, ICON_STROKE_WIDTH } from 'components/interfaces/Sidebar'
 import { generateAuthMenu } from 'components/layouts/AuthLayout/AuthLayout.utils'
@@ -14,23 +11,24 @@ import {
   Auth,
   Database,
   EdgeFunctions,
+  Home,
   Realtime,
   SqlEditor,
   Storage,
   TableEditor,
-  Home,
 } from 'icons'
-import { PROJECT_STATUS } from 'lib/constants'
+import { PROJECT_STATUS } from 'lib/constants' /* ----------------------------------------------------------------
+   PROJECT-LEVEL ROUTES (NEW)
+   /org/:orgRef/project/:projectRef/*
+   No branchRef here.
+----------------------------------------------------------------- */
 
 /* ----------------------------------------------------------------
    PROJECT-LEVEL ROUTES (NEW)
    /org/:orgRef/project/:projectRef/*
    No branchRef here.
 ----------------------------------------------------------------- */
-export const generateProjectRoutes = (
-  orgRef: string,
-  projectRef?: string
-): Route[] => {
+export const generateProjectRoutes = (orgRef: string, projectRef?: string): Route[] => {
   return [
     {
       key: 'project-overview',
@@ -80,11 +78,7 @@ export const generateToolRoutes = (
           ? buildingUrl
           : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`),
       linkElement: (
-        <EditorIndexPageLink
-          orgRef={orgRef}
-          projectRef={projectRef}
-          branchRef={branchRef}
-        />
+        <EditorIndexPageLink orgRef={orgRef} projectRef={projectRef} branchRef={branchRef} />
       ),
     },
     {
@@ -204,7 +198,9 @@ export const generateOtherRoutes = (
   orgRef: string,
   projectRef?: string,
   project?: ProjectDetail,
+  monitoringEndpoint?: string,
   branchRef?: string,
+
   features?: { unifiedLogs?: boolean }
 ): Route[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.STARTING
@@ -235,6 +231,17 @@ export const generateOtherRoutes = (
             ? `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs`
             : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/explorer`),
     },
+    ...(monitoringEndpoint && branchRef
+      ? [
+          {
+            key: 'grafana',
+            label: 'Monitoring',
+            icon: <SearchCheck size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+            link: monitoringEndpoint,
+            target: "_blank",
+          },
+        ]
+      : []),
     {
       key: 'api',
       label: 'API Docs',
@@ -272,8 +279,7 @@ export const generateSettingsRoutes = (
       label: 'Branch settings', // renamed from "Project Settings"
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
-        projectRef &&
-        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,
+        projectRef && `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,
       items: settingsMenu,
     },
   ]
