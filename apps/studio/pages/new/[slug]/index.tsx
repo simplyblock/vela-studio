@@ -68,6 +68,7 @@ import { useAvailablePostgresVersionsQuery } from 'data/platform/available-postg
    Constants / schemas
 -------------------------------------------------------------------*/
 
+
 const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
 const sizesWithNoCostConfirmationRequired: DesiredInstanceSize[] = ['micro', 'small']
 
@@ -133,6 +134,58 @@ const FormSchema = z
   })
 
 export type CreateProjectForm = z.infer<typeof FormSchema>
+
+
+/* ------------------------------------------------------------------
+   Helper component
+-------------------------------------------------------------------*/
+type LimitsConfig = typeof SLIDER_CONFIG
+
+// Reusable slider row (label + current value on right + slider)
+const SliderRow = ({
+  id,
+  label,
+  value,
+  min,
+  max,
+  step,
+  unit,
+  disabled,
+  onChange,
+  helper,
+}: {
+  id: string
+  label: string
+  value: number
+  min: number
+  max: number
+  step: number
+  unit: string
+  disabled?: boolean
+  onChange: (v: number[]) => void
+  helper?: React.ReactNode
+}) => (
+  <div className="space-y-2">
+    <div className="flex items-center justify-between text-[12px] leading-none">
+      <Label_Shadcn_ htmlFor={id} className="text-foreground whitespace-nowrap pr-2">
+        {label}
+      </Label_Shadcn_>
+      <span className="text-foreground-muted whitespace-nowrap">
+        {value} {unit}
+      </span>
+    </div>
+    <Slider_Shadcn_
+      id={id}
+      min={min}
+      max={max}
+      step={step}
+      value={[value]}
+      onValueChange={onChange}
+      disabled={disabled}
+    />
+    {helper}
+  </div>
+)
 
 /* ------------------------------------------------------------------
    Page component
@@ -311,6 +364,25 @@ const CreateProjectPage: NextPageWithLayout = () => {
     },
   })
 
+
+  useEffect(() => {
+    const include = form.watch('includeFileStorage')
+    if (!include) {
+      form.setValue('perBranchLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
+      form.setValue('projectLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
+    }
+    // react-hook-form watch subscriptions aren't auto-cleaned in effects,
+    // so we subscribe explicitly:
+    const sub = form.watch((v, { name }) => {
+      if (name === 'includeFileStorage' && v?.includeFileStorage === false) {
+        form.setValue('perBranchLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
+        form.setValue('projectLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
+      }
+    })
+    return () => sub.unsubscribe()
+  }, [form])
+
+
   function generatePassword() {
     const password = generateStrongPassword()
     form.setValue('dbPass', password, { shouldValidate: true })
@@ -399,27 +471,51 @@ const CreateProjectPage: NextPageWithLayout = () => {
     if (projectName) form.setValue('projectName', projectName || '')
   }, [slug, projectName, form])
 
-  const handleBranchSliderChange = useCallback(
-    (key: SliderKey) => (value: number[]) => {
-      const [next] = value
-      form.setValue(`perBranchLimits.${key}`, next ?? limitConfig[key].min, {
-        shouldDirty: true,
-        shouldValidate: false,
-      })
-    },
-    [form]
-  )
+ // ── SYNCED SLIDER HANDLERS (raise the lower side to the higher side) ──
+const handleBranchSliderChange = useCallback(
+  (key: SliderKey) => (value: number[]) => {
+    const [next] = value
+    const safeNext = next ?? limitConfig[key].min
 
-  const handleProjectLimitSliderChange = useCallback(
-    (key: SliderKey) => (value: number[]) => {
-      const [next] = value
-      form.setValue(`projectLimits.${key}`, next ?? limitConfig[key].min, {
+    // Set per-branch value
+    form.setValue(`perBranchLimits.${key}`, safeNext, {
+      shouldDirty: true,
+      shouldValidate: false,
+    })
+
+    // If branch exceeds current project limit, bump project up
+    const projectVal = form.getValues(`projectLimits.${key}`)
+    if (safeNext > projectVal) {
+      form.setValue(`projectLimits.${key}`, safeNext, {
         shouldDirty: true,
         shouldValidate: false,
       })
-    },
-    [form]
-  )
+    }
+  },
+  [form, limitConfig]
+)
+
+const handleProjectLimitSliderChange = useCallback(
+  (key: SliderKey) => (value: number[]) => {
+    const [next] = value
+    const safeNext = next ?? limitConfig[key].min
+
+    const branchVal = form.getValues(`perBranchLimits.${key}`)
+
+    // Clamp: project must be at least branch, and within slider bounds
+    const clamped =
+      Math.max(branchVal, Math.min(safeNext, limitConfig[key].max))
+
+    form.setValue(`projectLimits.${key}`, clamped, {
+      shouldDirty: true,
+      shouldValidate: false,
+    })
+
+    // We do NOT auto-lower per-branch. If project goes up, branch stays as-is.
+  },
+  [form, limitConfig]
+)
+
 
   return (
     <Form_Shadcn_ {...form}>
@@ -449,9 +545,9 @@ const CreateProjectPage: NextPageWithLayout = () => {
             </section>
 
             {/* ──────────────────────────────────────────────── */}
-            {/* TOP ROW: Project config / Branch / Credentials  */}
+            {/* TOP ROW: Project config / Credentials  */}
             {/* ──────────────────────────────────────────────── */}
-            <section className="grid grid-cols-1 gap-10 xl:grid-cols-3 xl:items-start">
+            <section className="grid grid-cols-1 gap-10 xl:grid-cols-2 xl:items-start">
               {/* COL 1: Organization / Project / Env */}
               <div className="space-y-6">
                 {isAdmin && !isInvalidSlug && (
@@ -579,16 +675,13 @@ const CreateProjectPage: NextPageWithLayout = () => {
                             {hasSpecialCharacters && <SpecialSymbolsCallout />}
 
                             <PasswordStrengthBar
+                              generateStrongPassword={generatePassword} 
                               passwordStrengthScore={form.getValues('dbPassStrength')}
                               password={field.value}
                               passwordStrengthMessage={passwordStrengthMessage}
                             />
                           </div>
 
-                          <p className="text-[11px] leading-snug text-foreground-muted">
-                            This is the password to your Postgres database, so it needs to be
-                            strong.
-                          </p>
                         </div>
                       )
                     }}
@@ -630,12 +723,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                   />
                 </div>
 
-                {/* Generate password CTA */}
-                <div>
-                  <Button type="default" size="tiny" htmlType="button" onClick={generatePassword}>
-                    Generate strong password
-                  </Button>
-                </div>
+
 
                 <FormField_Shadcn_
                   control={form.control}
@@ -688,37 +776,39 @@ const CreateProjectPage: NextPageWithLayout = () => {
                     const { label, min, max, step, unit } = limitConfig[key]
                     const value = form.watch(`perBranchLimits.${key}`)
 
+                    const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
+
                     return (
-                      <div key={key} className="space-y-2">
-                        <div className="flex items-center justify-between text-[12px] leading-none">
-                          <Label_Shadcn_
-                            htmlFor={`sizing-${key}`}
-                            className="text-foreground whitespace-nowrap pr-2"
-                          >
-                            {label}
-                          </Label_Shadcn_>
-                          <span className="text-foreground-muted whitespace-nowrap">
-                            {value} {unit}
-                          </span>
-                        </div>
-                        <Slider_Shadcn_
-                          id={`sizing-${key}`}
-                          min={min}
-                          max={max}
-                          step={step}
-                          value={[value]}
-                          onValueChange={handleBranchSliderChange(key)}
-                        />
-                      </div>
+                      <SliderRow
+                        key={key}
+                        id={`sizing-${key}`}
+                        label={label}
+                        value={value}
+                        min={min}
+                        max={max}
+                        step={step}
+                        unit={unit}
+                        disabled={storageDisabled}
+                        onChange={handleBranchSliderChange(key)}
+                        helper={
+                          key === 'storage' && storageDisabled ? (
+                            <div className='mt-2'>
+                              <Label_Shadcn_ className="text-xs text-muted-foreground">
+                                Check “Include file storage” to enable the slider
+                              </Label_Shadcn_>
+                            </div>
+                          ) : null
+                        }
+                      />
                     )
                   })}
                 </div>
 
                 <p className="text-[11px] leading-snug text-foreground-muted">
-                  Resource allocation for this branch. These values will eventually control cost and
-                  performance.
+                  Resource allocation for this branch. These values will eventually control cost and performance.
                 </p>
               </section>
+
 
               {/* Project limits card */}
               <section className="rounded-lg border p-5 space-y-4">
@@ -729,28 +819,30 @@ const CreateProjectPage: NextPageWithLayout = () => {
                     const { label, min, max, step, unit } = limitConfig[key]
                     const value = form.watch(`projectLimits.${key}`)
 
+                    const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
+
                     return (
-                      <div key={key} className="space-y-2">
-                        <div className="flex items-center justify-between text-[12px] leading-none">
-                          <Label_Shadcn_
-                            htmlFor={`project-limits-${key}`}
-                            className="text-foreground whitespace-nowrap pr-2"
-                          >
-                            {label}
-                          </Label_Shadcn_>
-                          <span className="text-foreground-muted whitespace-nowrap">
-                            {value} {unit}
-                          </span>
-                        </div>
-                        <Slider_Shadcn_
-                          id={`project-limits-${key}`}
-                          min={min}
-                          max={max}
-                          step={step}
-                          value={[value]}
-                          onValueChange={handleProjectLimitSliderChange(key)}
-                        />
-                      </div>
+                      <SliderRow
+                        key={key}
+                        id={`project-limits-${key}`}
+                        label={label}
+                        value={value}
+                        min={min}
+                        max={max}
+                        step={step}
+                        unit={unit}
+                        disabled={storageDisabled}
+                        onChange={handleProjectLimitSliderChange(key)}
+                        helper={
+                          key === 'storage' && storageDisabled ? (
+                            <div className='mt-2'>
+                              <Label_Shadcn_ className="text-xs text-muted-foreground">
+                                Check “Include file storage” to enable the slider
+                              </Label_Shadcn_>
+                            </div>
+                          ) : null
+                        }
+                      />
                     )
                   })}
                 </div>
@@ -759,6 +851,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                   Global ceilings across all branches in this project.
                 </p>
               </section>
+
             </section>
 
             {/* ──────────────────────────────────────────────── */}
@@ -900,14 +993,14 @@ const CreateProjectPage: NextPageWithLayout = () => {
             <p>
               Creating this project can increase your monthly costs by ${additionalMonthlySpend},
               independent of how actively you use it. By clicking "I understand", you agree to the
-              additional costs.{' '}
+              additional costs.
               <Link
                 href="https://supabase.com/docs/guides/platform/manage-your-usage/compute"
                 target="_blank"
                 className="underline"
               >
                 Compute costs
-              </Link>{' '}
+              </Link>
               are non-refundable.
             </p>
           </div>

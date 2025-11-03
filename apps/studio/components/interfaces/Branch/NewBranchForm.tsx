@@ -8,6 +8,7 @@ import Panel from 'components/ui/Panel'
 import {
   Button,
   Checkbox_Shadcn_,
+  FormDescription_Shadcn_,
   FormField_Shadcn_,
   Input_Shadcn_,
   Label_Shadcn_,
@@ -67,6 +68,8 @@ type FormState = z.infer<typeof FormSchema>
 
 const NewBranchForm = ({}: NewBranchFormProps) => {
   const { slug, ref, branch } = useParams()
+  const [areResourcesInitialized, setAreResourcesInitialized] = useState(false)
+
   const router = useRouter()
 
   const [newBranchLoading, setNewBranchLoading] = useState(false)
@@ -147,29 +150,39 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
   }, [branch])
 
   useEffect(() => {
-    if (!limits) return
-    const values = form.getValues()
-    const keys = Object.keys(limits) as ResourceType[]
-    keys.forEach((key) => {
-      if (key === 'storage_size' && !values.enableStorageService) return
-      form.setValue(
-        `resources.${key}`,
-        values.resources[key] === 0 ? limits[key].min : values.resources[key]
-      )
-    })
-  }, [limits])
+  if (!limits) return;
+  if (areResourcesInitialized) return;
 
-  const handleBranchSliderChange = useCallback(
-    (key: ResourceType) => (value: number[]) => {
-      if (!limits) return
-      const [next] = value
-      form.setValue(`resources.${key}`, next ?? limits[key].min, {
-        shouldDirty: true,
-        shouldValidate: false,
-      })
-    },
-    [form]
-  )
+  const values = form.getValues();
+  const keys = Object.keys(limits) as ResourceType[];
+
+  keys.forEach((key) => {
+    if (key === 'storage_size' && !values.enableStorageService) return;
+
+    const current = values.resources[key];
+    const fallback = limits[key].min;
+
+    form.setValue(`resources.${key}`, current === 0 ? fallback : current, {
+      shouldDirty: false,
+      shouldValidate: false,
+    });
+  });
+
+  setAreResourcesInitialized(true);
+}, [limits, areResourcesInitialized, form]);
+
+
+const handleBranchSliderChange = useCallback(
+  (key: ResourceType) => (value: number[]) => {
+    const [next] = value
+    form.setValue(`resources.${key}`, next, {
+      shouldDirty: true,
+      shouldValidate: false,
+    })
+  },
+  [form]
+)
+
 
   function validateBranchName(name: any) {
     const value = name ? name.trim() : ''
@@ -273,7 +286,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                       {value} {unit}
                     </span>
                   </div>
-                  <Slider_Shadcn_
+                  <Slider_Shadcn_ 
                     id={`sizing-${key}`}
                     min={min}
                     max={max}
@@ -282,6 +295,15 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                     onValueChange={handleBranchSliderChange(key)}
                     disabled={!enabled}
                   />
+                  {(key === 'storage_size' && !enableStorageService)  && (
+                    <div className='mt-2'>
+                      <Label_Shadcn_
+                      className="text-xs text-muted-foreground"
+                    >
+                     Check “Include storage” to enable the slider
+                    </Label_Shadcn_>
+                    </div>
+                  )}
                 </div>
               )
             })}
@@ -599,7 +621,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
               </div>
             </section>
           </div>
-          {!isLimitsLoading && adjustableResources && renderSliders()}
+          {!isLimitsLoading && adjustableResources && areResourcesInitialized &&  renderSliders()}
         </Panel.Content>
       </Panel>
     </form>
