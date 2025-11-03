@@ -3,7 +3,6 @@
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { isUndefined } from 'lodash'
 import {
-  Activity,
   Blocks,
   Boxes,
   CalendarClock,
@@ -62,6 +61,7 @@ import {
   Sidebar as SidebarPrimitive,
   useSidebar,
 } from 'ui'
+import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
 
 export const ICON_SIZE = 32
 export const ICON_STROKE_WIDTH = 1.5
@@ -257,7 +257,7 @@ export function SideBarNavLink({
     <SidebarMenuItem>
       {route.link && !disabled ? (
         <SidebarMenuButton {...buttonProps} asChild>
-          <Link href={route.link}>{content}</Link>
+          <Link href={route.link} target={route?.target}>{content}</Link>
         </SidebarMenuButton>
       ) : (
         <SidebarMenuButton {...buttonProps}>{content}</SidebarMenuButton>
@@ -340,6 +340,7 @@ const BranchSidebarLinks = () => {
   } = useParams() as { slug: string; ref?: string; branch?: string }
 
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { securityLints, errorLints } = useLints()
 
   // branch-level pages look like:
@@ -405,11 +406,13 @@ const BranchSidebarLinks = () => {
     },
   ]
 
+  const monitoringEndpoint = branch?.database.monitoring_endpoint_uri
   const otherRoutes = generateOtherRoutes(
     orgRef,
     projectRef,
     project,
     branchRef,
+    monitoringEndpoint,
     {
       unifiedLogs: true,
     }

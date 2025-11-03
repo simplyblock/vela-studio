@@ -33911,33 +33911,7 @@
         ],
         "title": "ApiKeyDetails"
       },
-      "AuditLog-Input": {
-        "properties": {
-          "action": {
-            "$ref": "#/components/schemas/Action"
-          },
-          "actor": {
-            "$ref": "#/components/schemas/Actor"
-          },
-          "target": {
-            "$ref": "#/components/schemas/Target"
-          },
-          "occurred_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Occurred At"
-          }
-        },
-        "type": "object",
-        "required": [
-          "action",
-          "actor",
-          "target",
-          "occurred_at"
-        ],
-        "title": "AuditLog"
-      },
-      "AuditLog-Output": {
+      "AuditLog": {
         "properties": {
           "action": {
             "$ref": "#/components/schemas/Action"
@@ -34758,7 +34732,6 @@
             "type": "string",
             "maxLength": 50,
             "minLength": 1,
-            "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
             "title": "Name"
           },
           "env_type": {
@@ -35301,6 +35274,10 @@
             "type": "string",
             "title": "Service Endpoint Uri"
           },
+          "monitoring_endpoint_uri": {
+            "type": "string",
+            "title": "Monitoring Endpoint Uri"
+          },
           "version": {
             "type": "string",
             "title": "Version"
@@ -35318,6 +35295,7 @@
           "name",
           "encrypted_connection_string",
           "service_endpoint_uri",
+          "monitoring_endpoint_uri",
           "version",
           "has_replicas"
         ],
@@ -35499,7 +35477,7 @@
         "properties": {
           "result": {
             "items": {
-              "$ref": "#/components/schemas/AuditLog-Output"
+              "$ref": "#/components/schemas/AuditLog"
             },
             "type": "array",
             "title": "Result"
@@ -36814,19 +36792,23 @@
         "properties": {
           "row_index": {
             "type": "integer",
-            "title": "Row Index"
+            "title": "Row Index",
+            "description": "Stable zero-based identifier for the schedule row; used to map backups and NextBackup records."
           },
           "interval": {
             "type": "integer",
-            "title": "Interval"
+            "title": "Interval",
+            "description": "Number of time units between automatic backups for this row."
           },
           "unit": {
             "type": "string",
-            "title": "Unit"
+            "title": "Unit",
+            "description": "Time unit for interval"
           },
           "retention": {
             "type": "integer",
-            "title": "Retention"
+            "title": "Retention",
+            "description": "Maximum number of backups to retain for this row before pruning."
           }
         },
         "type": "object",
@@ -36878,8 +36860,7 @@
               {
                 "type": "string",
                 "maxLength": 50,
-                "minLength": 1,
-                "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+                "minLength": 1
               },
               {
                 "type": "null"
@@ -36892,8 +36873,7 @@
               {
                 "type": "string",
                 "maxLength": 50,
-                "minLength": 1,
-                "pattern": "^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$"
+                "minLength": 1
               },
               {
                 "type": "null"

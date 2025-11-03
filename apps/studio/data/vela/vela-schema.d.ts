@@ -18595,18 +18595,7 @@ export interface components {
             description: string;
         };
         /** AuditLog */
-        "AuditLog-Input": {
-            action: components["schemas"]["Action"];
-            actor: components["schemas"]["Actor"];
-            target: components["schemas"]["Target"];
-            /**
-             * Occurred At
-             * Format: date-time
-             */
-            occurred_at: string;
-        };
-        /** AuditLog */
-        "AuditLog-Output": {
+        AuditLog: {
             action: components["schemas"]["Action"];
             actor: components["schemas"]["Actor"];
             target: components["schemas"]["Target"];
@@ -19032,6 +19021,8 @@ export interface components {
             encrypted_connection_string: string;
             /** Service Endpoint Uri */
             service_endpoint_uri: string;
+            /** Monitoring Endpoint Uri */
+            monitoring_endpoint_uri: string;
             /** Version */
             version: string;
             /** Has Replicas */
@@ -19109,7 +19100,7 @@ export interface components {
         /** OrganizationAuditLog */
         OrganizationAuditLog: {
             /** Result */
-            result: components["schemas"]["AuditLog-Output"][];
+            result: components["schemas"]["AuditLog"][];
             /** Retention Period */
             retention_period: number;
         };
@@ -19539,13 +19530,25 @@ export interface components {
         };
         /** ScheduleRow */
         ScheduleRow: {
-            /** Row Index */
+            /**
+             * Row Index
+             * @description Stable zero-based identifier for the schedule row; used to map backups and NextBackup records.
+             */
             row_index: number;
-            /** Interval */
+            /**
+             * Interval
+             * @description Number of time units between automatic backups for this row.
+             */
             interval: number;
-            /** Unit */
+            /**
+             * Unit
+             * @description Time unit for interval
+             */
             unit: string;
-            /** Retention */
+            /**
+             * Retention
+             * @description Maximum number of backups to retain for this row before pruning.
+             */
             retention: number;
         };
         /** Status */
