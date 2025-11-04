@@ -157,12 +157,27 @@ export const handleError = (
       'retryAfter' in error && typeof error.retryAfter === 'number' ? error.retryAfter : undefined
 
     if (errorCode === 401) {
-      const location = encodeURIComponent(window.location.pathname + (window.location.search ? `?${window.location.search}` : ''))
+      const location = encodeURIComponent(
+        window.location.pathname + (window.location.search ? `?${window.location.search}` : '')
+      )
       window.location.href = `/sign-in?returnTo=${location}`
     }
 
     if (errorMessage) {
       throw new ResponseError(errorMessage, errorCode, requestId, retryAfter)
+    }
+
+    if (
+      errorCode === 422 &&
+      error &&
+      'message' in error &&
+      error.message &&
+      typeof error.message === 'object' &&
+      'detail' in error.message &&
+      error.message.detail &&
+      typeof error.message.detail === 'object'
+    ) {
+      throw new ResponseError('Validation error', errorCode, requestId, retryAfter, error.message.detail)
     }
   }
 
