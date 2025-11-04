@@ -132,7 +132,7 @@ const onConfirmDeleteBranch = async () => {
   deleteBranch.mutate({
     orgSlug: slug!,
     projectRef: projectRef!,
-    branch: deleteTarget.name, // keep in sync with cache update (filters by name)
+    branch: deleteTarget.id, // keep in sync with cache update (filters by name)
   })
 }
 

@@ -4,15 +4,15 @@ import { toast } from 'sonner'
 
 import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import {
-  Card,
   Button,
-  Input_Shadcn_,
+  Card,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  Input_Shadcn_,
 } from 'ui'
 
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
@@ -141,12 +141,10 @@ const Environments = () => {
   const onSave = () => {
     if (!slug) return
     const normalized = items.map((s) => s.trim()).filter((s) => s.length > 0 && !hasSpaces(s))
-
-    // TODO: uncomment this section once we have the env_types on this mutation
     mutation.mutate({
       slug,
       name: org?.name,
-      // env_types: normalized,
+      env_types: normalized,
     })
   }
 
@@ -174,7 +172,8 @@ const Environments = () => {
             <div>
               <h2 className="text-base font-medium text-foreground">Environment types</h2>
               <p className="text-sm text-foreground-light">
-                Add, rename, or remove environment type labels. Examples: <em>production</em>, <em>staging</em>, <em>preview</em>.
+                Add, rename, or remove environment type labels. Examples: <em>production</em>,{' '}
+                <em>staging</em>, <em>preview</em>.
               </p>
             </div>
           </div>
@@ -231,9 +230,7 @@ const Environments = () => {
                             Remove
                           </Button>
                         </div>
-                        {isInvalid && (
-                          <p className="text-[11px] text-red-600 pl-5">{reason}</p>
-                        )}
+                        {isInvalid && <p className="text-[11px] text-red-600 pl-5">{reason}</p>}
                       </li>
                     )
                   })}
@@ -263,9 +260,7 @@ const Environments = () => {
               </Button>
             </div>
             {draft && hasSpaces(draft) && (
-              <p className="text-[11px] text-red-600">
-                No spaces allowed in environment names.
-              </p>
+              <p className="text-[11px] text-red-600">No spaces allowed in environment names.</p>
             )}
 
             {/* Footer actions */}
@@ -305,16 +300,22 @@ const Environments = () => {
             </DialogDescription>
           </DialogHeader>
 
-        <div className="text-sm text-foreground-light p-1">
-          {pendingDeleteIndex !== null ? (
-            <>Remove <strong>{items[pendingDeleteIndex] || 'this environment'}</strong>?</>
-          ) : null}
-        </div>
+          <div className="text-sm text-foreground-light p-1">
+            {pendingDeleteIndex !== null ? (
+              <>
+                Remove <strong>{items[pendingDeleteIndex] || 'this environment'}</strong>?
+              </>
+            ) : null}
+          </div>
 
-        <DialogFooter className="gap-2">
-          <Button type="default" onClick={() => setPendingDeleteIndex(null)}>Cancel</Button>
-          <Button type="danger" onClick={confirmRemove}>Remove</Button>
-        </DialogFooter>
+          <DialogFooter className="gap-2">
+            <Button type="default" onClick={() => setPendingDeleteIndex(null)}>
+              Cancel
+            </Button>
+            <Button type="danger" onClick={confirmRemove}>
+              Remove
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </ScaffoldContainer>

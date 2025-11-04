@@ -1301,7 +1301,7 @@ export interface paths {
     get: operations['OrganizationsController_getOrganizations']
     put?: never
     /** Creates an organization */
-    post: operations['OrganizationsController_createOrganizationWithTier']
+    post: operations['OrganizationsController_createOrganization']
     delete?: never
     options?: never
     head?: never
@@ -13231,7 +13231,7 @@ export interface operations {
       }
     }
   }
-  OrganizationsController_createOrganizationWithTier: {
+  OrganizationsController_createOrganization: {
     parameters: {
       query?: never
       header?: never
@@ -13240,7 +13240,9 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'CreateOrganizationBody'>
+        'application/json': Omit<VelaType<'OrganizationCreate'>, "environments"> & {
+          env_types?: string[]
+        }
       }
     }
     responses: {
@@ -13249,7 +13251,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'CreateOrganizationResponse'>
+          'application/json': VelaType<'Organization'>
         }
       }
       /** @description Unexpected error creating an organization */
@@ -13334,7 +13336,9 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'UpdateOrganizationBody'>
+        'application/json': Omit<VelaType<'OrganizationUpdate'>, "environments"> & {
+          env_types?: string[]
+        }
       }
     }
     responses: {
@@ -13342,9 +13346,7 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content: {
-          'application/json': PlatformType<'UpdateOrganizationResponse'>
-        }
+        content?: never
       }
       403: {
         headers: {

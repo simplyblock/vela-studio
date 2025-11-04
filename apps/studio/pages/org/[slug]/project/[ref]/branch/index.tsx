@@ -43,7 +43,7 @@ const BranchesPage: NextPageWithLayout = () => {
     isLoading: isLoadingBranches,
     isError: isErrorBranches,
     isSuccess: isSuccessBranches,
-  } = useBranchesQuery({ projectRef })
+  } = useBranchesQuery({ orgRef: slug, projectRef })
   const [[mainBranch]] = partition(branches, (branch) => branch.name === 'main')
 
   const isError = isErrorBranches

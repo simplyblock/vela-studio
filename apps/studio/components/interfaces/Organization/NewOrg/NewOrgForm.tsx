@@ -17,7 +17,6 @@ interface NewOrgFormProps {}
 
 const formSchema = z.object({
   name: z.string().min(1),
-  spend_cap: z.boolean(),
 })
 
 type FormState = z.infer<typeof formSchema>
@@ -41,7 +40,6 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
 
   const [formState, setFormState] = useState<FormState>({
     name: '',
-    spend_cap: true,
   })
 
   const [searchParams] = useQueryStates({
@@ -56,10 +54,9 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
   useEffect(() => {
     if (!router.isReady) return
 
-    const { name, spend_cap } = router.query
+    const { name } = router.query
 
     if (typeof name === 'string') updateForm('name', name)
-    if (typeof spend_cap === 'string') updateForm('spend_cap', spend_cap === 'true')
   }, [router.isReady])
 
   useEffect(() => {
@@ -73,7 +70,7 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
 
   const { mutate: createOrganization } = useOrganizationCreateMutation({
     onSuccess: async (org) => {
-      onOrganizationCreated(org as { slug: string })
+      onOrganizationCreated({ slug: org?.id! })
     },
     onError: (data) => {
       toast.error(data.message, { duration: 10_000 })
