@@ -1,7 +1,5 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-
-import type { components } from 'data/api'
 import { handleError, patch } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
@@ -9,22 +7,23 @@ import { organizationKeys } from './keys'
 export type OrganizationUpdateVariables = {
   slug: string
   name?: string
-  opt_in_tags?: string[]
+  env_types?: string[]
+  max_backups?: number
 }
 
 export async function updateOrganization({
   slug,
   name,
-  opt_in_tags,
+  env_types,
+  max_backups,
 }: OrganizationUpdateVariables) {
-  // @ts-ignore [Joshen] API spec is wrong
-  const payload: components['schemas']['UpdateOrganizationBody'] = {}
-  if (name) payload.name = name
-  if (opt_in_tags) payload.opt_in_tags = opt_in_tags as any
-
   const { data, error } = await patch('/platform/organizations/{slug}', {
     params: { path: { slug } },
-    body: payload,
+    body: {
+      name,
+      max_backups,
+      env_types,
+    },
   })
 
   if (error) handleError(error)
@@ -47,55 +46,7 @@ export const useOrganizationUpdateMutation = ({
     (vars) => updateOrganization(vars),
     {
       async onSuccess(data, variables, context) {
-        queryClient.setQueriesData(
-          {
-            queryKey: organizationKeys.list(),
-            exact: true,
-          },
-          (prev: components['schemas']['OrganizationResponse'][] | undefined) => {
-            if (!prev) return prev
-
-            return prev.map((org) => {
-              if (org.slug !== variables.slug) return org
-
-              return {
-                ...org,
-                name: variables.name || org.name,
-                opt_in_tags: variables.opt_in_tags || org.opt_in_tags,
-              }
-            })
-          }
-        )
-
-        queryClient.setQueriesData(
-          {
-            queryKey: organizationKeys.customerProfile(data.slug),
-            exact: true,
-          },
-          (prev: components['schemas']['CustomerResponse'] | undefined) => {
-            if (!prev) return prev
-            return {
-              ...prev,
-            }
-          }
-        )
-
-        queryClient.setQueriesData(
-          {
-            queryKey: organizationKeys.detail(data.slug),
-            exact: true,
-          },
-          (prev: components['schemas']['OrganizationSlugResponse'] | undefined) => {
-            if (!prev) return prev
-            return {
-              ...prev,
-              name: variables.name || prev.name,
-              opt_in_tags: variables.opt_in_tags || prev.opt_in_tags,
-            }
-          }
-        )
-
-        await onSuccess?.(data, variables, context)
+        await queryClient.invalidateQueries({ queryKey: organizationKeys.detail(variables.slug) })
       },
       async onError(data, variables, context) {
         if (onError === undefined) {

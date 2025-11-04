@@ -3,6 +3,7 @@ import { getVelaClient } from 'data/vela/vela'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { mapOrganization } from 'data/vela/api-mappers'
+import { VelaType } from 'api-types/types/platform'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
@@ -25,13 +26,26 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 const handleUpdate = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
   const client = getVelaClient(req)
+
+  const payload = req.body as Omit<VelaType<'OrganizationUpdate'>, 'environments'> & {
+    env_types: string[]
+  }
+
   const createResponse = await client.put('/organizations/{organization_id}/', {
     params: {
       path: {
         organization_id: slug,
       },
     },
-    body: {},
+    body: {
+      name: payload.name,
+      max_backups: payload.max_backups,
+      environments: payload.env_types
+        ? payload.env_types.length === 0
+          ? ''
+          : payload.env_types.join(',')
+        : undefined,
+    },
   })
 
   if (createResponse.response.status !== 201) {
@@ -44,12 +58,12 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const client = getVelaClient(req)
 
-  return await client.proxyDelete(res, "/organizations/{organization_id}/", {
+  return await client.proxyDelete(res, '/organizations/{organization_id}/', {
     params: {
       path: {
-        organization_id: slug
-      }
-    }
+        organization_id: slug,
+      },
+    },
   })
 }
 
