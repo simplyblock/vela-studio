@@ -54,7 +54,7 @@ const LayoutHeader = ({
   headerTitle,
   showProductMenu,
 }: LayoutHeaderProps) => {
-  const { ref: projectRef, slug } = useParams()
+  const { ref: projectRef, slug,branch:BranchRef } = useParams()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const { data: selectedProject } = useSelectedProjectQuery()
   const { data: selectedBranch } = useSelectedBranchQuery()
@@ -171,7 +171,7 @@ const LayoutHeader = ({
             </div>
 
             <AnimatePresence>
-              {projectRef && (
+              {(projectRef && BranchRef) && (
                 <motion.div
                   className="ml-3 items-center gap-x-2 flex"
                   initial={{ opacity: 0, x: -20 }}

@@ -33,7 +33,7 @@ const TIME_UNITS = [
   { label: 'Months', value: 'months', minutes: 43200 },
 ] as const
 
-const MIN_INTERVAL_MINUTES = 15
+const MIN_INTERVAL_MINUTES = 1
 const DEFAULT_MAX_BACKUPS = 20
 
 type TimeUnit = (typeof TIME_UNITS)[number]['value']
