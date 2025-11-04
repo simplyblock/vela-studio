@@ -59,7 +59,7 @@ const Backups = () => {
   const {data:org} = useSelectedOrganizationQuery()
   let environments:environment[] = [{ label: 'All environments', value: 'all' },]
   if (org) {
-    const envTypes: string[] = org.env_types;
+    const envTypes: string[] = org.env_types ?? [];
 
     environments = [
       { label: 'All environments', value: 'all' },

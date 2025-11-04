@@ -55,7 +55,7 @@ export const RealtimeInspector = () => {
         onSelectConfirm={(v) => {
           sendEvent({
             action: 'realtime_inspector_broadcast_sent',
-            groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+            groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
           })
           sendMessage(v.message, v.payload, () => setSendMessageShown(false))
         }}

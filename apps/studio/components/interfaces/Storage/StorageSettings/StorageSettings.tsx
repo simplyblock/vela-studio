@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
-
-import { useParams } from 'common'
 import { ScaffoldSection } from 'components/layouts/Scaffold'
 import AlertError from 'components/ui/AlertError'
 import { InlineLink } from 'components/ui/InlineLink'
@@ -19,15 +17,15 @@ import {
   Card,
   CardContent,
   CardFooter,
+  Form_Shadcn_,
   FormControl_Shadcn_,
   FormField_Shadcn_,
-  Form_Shadcn_,
   Input_Shadcn_,
+  Select_Shadcn_,
   SelectContent_Shadcn_,
   SelectItem_Shadcn_,
   SelectTrigger_Shadcn_,
   SelectValue_Shadcn_,
-  Select_Shadcn_,
   Switch,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
@@ -46,10 +44,9 @@ interface StorageSettingsState {
 }
 
 const StorageSettings = () => {
-  const { slug, ref: projectRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
-  const canReadStorageSettings = useCheckPermissions("branch:settings:read")
-  const canUpdateStorageSettings = useCheckPermissions("branch:settings:admin")
+  const canReadStorageSettings = useCheckPermissions('branch:settings:read')
+  const canUpdateStorageSettings = useCheckPermissions('branch:settings:admin')
 
   const {
     data: config,
@@ -60,19 +57,18 @@ const StorageSettings = () => {
   } = useProjectStorageConfigQuery({ branch })
 
   const { data: organization } = useSelectedOrganizationQuery()
-  const isFreeTier = organization?.plan.id === 'free'
 
   const [initialValues, setInitialValues] = useState<StorageSettingsState>({
     fileSizeLimit: 0,
     unit: StorageSizeUnits.BYTES,
-    imageTransformationEnabled: !isFreeTier,
+    imageTransformationEnabled: false,
   })
 
   useEffect(() => {
     if (isSuccess && config) {
       const { fileSizeLimit, features } = config
       const { value, unit } = convertFromBytes(fileSizeLimit ?? 0)
-      const imageTransformationEnabled = features?.imageTransformation?.enabled ?? !isFreeTier
+      const imageTransformationEnabled = features?.imageTransformation?.enabled ?? false
 
       setInitialValues({
         fileSizeLimit: value,
@@ -181,7 +177,7 @@ const StorageSettings = () => {
                             type="number"
                             {...field}
                             className="w-full"
-                            disabled={isFreeTier || !canUpdateStorageSettings}
+                            disabled={!canUpdateStorageSettings}
                           />
                           <FormField_Shadcn_
                             control={form.control}
@@ -190,7 +186,7 @@ const StorageSettings = () => {
                               <Select_Shadcn_
                                 value={unitField.value}
                                 onValueChange={unitField.onChange}
-                                disabled={isFreeTier || !canUpdateStorageSettings}
+                                disabled={!canUpdateStorageSettings}
                               >
                                 <SelectTrigger_Shadcn_ className="w-[180px]">
                                   <SelectValue_Shadcn_ placeholder="Choose a prefix">
@@ -199,11 +195,7 @@ const StorageSettings = () => {
                                 </SelectTrigger_Shadcn_>
                                 <SelectContent_Shadcn_>
                                   {Object.values(StorageSizeUnits).map((unit: string) => (
-                                    <SelectItem_Shadcn_
-                                      key={unit}
-                                      disabled={isFreeTier}
-                                      value={unit}
-                                    >
+                                    <SelectItem_Shadcn_ key={unit} value={unit}>
                                       {unit}
                                     </SelectItem_Shadcn_>
                                   ))}
@@ -239,7 +231,6 @@ const StorageSettings = () => {
                       <FormControl_Shadcn_>
                         <Switch
                           size="large"
-                          disabled={isFreeTier}
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />

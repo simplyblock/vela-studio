@@ -36,7 +36,7 @@ const Environments = () => {
   const queryClient = useQueryClient()
   const { data: org } = useSelectedOrganizationQuery()
 
-  const slug = org?.slug
+  const slug = org?.id
   const originalEnvTypes = useMemo<string[]>(
     () => (Array.isArray(org?.env_types) ? [...(org!.env_types as string[])] : []),
     [org?.env_types]
@@ -146,7 +146,6 @@ const Environments = () => {
     mutation.mutate({
       slug,
       name: org?.name,
-      opt_in_tags: org?.opt_in_tags as any,
       // env_types: normalized,
     })
   }

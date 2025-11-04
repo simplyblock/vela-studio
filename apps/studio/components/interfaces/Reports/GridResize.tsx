@@ -138,7 +138,7 @@ export const GridResize = ({
     )
     sendEvent({
       action: 'custom_report_assistant_sql_block_added',
-      groups: { project: ref ?? 'Unknown', organization: selectedOrg?.slug ?? 'Unknown' },
+      groups: { project: ref ?? 'Unknown', organization: selectedOrg?.id ?? 'Unknown' },
     })
   }
 

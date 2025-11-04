@@ -13,7 +13,7 @@ export function useSelectedOrganizationQuery({
     enabled: isLoggedIn && enabled,
     select: (data) => {
       return data.find((org) => {
-        if (slug !== undefined) return org.slug === slug
+        if (slug !== undefined) return org.id === slug
         return undefined
       })
     },

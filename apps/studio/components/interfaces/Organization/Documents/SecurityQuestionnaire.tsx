@@ -1,5 +1,4 @@
 import { Download } from 'lucide-react'
-import Link from 'next/link'
 import { toast } from 'sonner'
 
 import {
@@ -16,12 +15,10 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const SecurityQuestionnaire = () => {
   const { data: organization } = useSelectedOrganizationQuery()
-  const slug = organization?.slug
+  const slug = organization?.id
   const { mutate: sendEvent } = useSendEventMutation()
 
-  const { can: canReadSubscriptions } = useCheckPermissions("branch:settings:read")
-
-  const currentPlan = organization?.plan
+  const { can: canReadSubscriptions } = useCheckPermissions('branch:settings:read')
 
   const fetchQuestionnaire = async (orgSlug: string) => {
     try {
@@ -53,28 +50,20 @@ export const SecurityQuestionnaire = () => {
           ) : (
             <>
               <div className="flex items-center justify-center h-full">
-                {currentPlan?.id === 'free' || currentPlan?.id === 'pro' ? (
-                  <Link
-                    href={`/org/${slug}/billing?panel=subscriptionPlan&source=securityQuestionnaire`}
-                  >
-                    <Button type="default">Upgrade to Team</Button>
-                  </Link>
-                ) : (
-                  <Button
-                    type="default"
-                    icon={<Download />}
-                    onClick={() => {
-                      sendEvent({
-                        action: 'document_view_button_clicked',
-                        properties: { documentName: 'Standard Security Questionnaire' },
-                        groups: { organization: organization?.slug ?? 'Unknown' },
-                      })
-                      if (slug) fetchQuestionnaire(slug)
-                    }}
-                  >
-                    Download Questionnaire
-                  </Button>
-                )}
+                <Button
+                  type="default"
+                  icon={<Download />}
+                  onClick={() => {
+                    sendEvent({
+                      action: 'document_view_button_clicked',
+                      properties: { documentName: 'Standard Security Questionnaire' },
+                      groups: { organization: organization?.id ?? 'Unknown' },
+                    })
+                    if (slug) fetchQuestionnaire(slug)
+                  }}
+                >
+                  Download Questionnaire
+                </Button>
               </div>
             </>
           )}

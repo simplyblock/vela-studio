@@ -184,7 +184,7 @@ const DefaultHeader = () => {
                                 properties: { tableType: 'Existing Table' },
                                 groups: {
                                   project: projectRef ?? 'Unknown',
-                                  organization: org?.slug ?? 'Unknown',
+                                  organization: org?.id ?? 'Unknown',
                                 },
                               })
                             }}

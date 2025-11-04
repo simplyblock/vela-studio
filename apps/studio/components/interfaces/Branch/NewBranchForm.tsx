@@ -8,7 +8,6 @@ import Panel from 'components/ui/Panel'
 import {
   Button,
   Checkbox_Shadcn_,
-  FormDescription_Shadcn_,
   FormField_Shadcn_,
   Input_Shadcn_,
   Label_Shadcn_,
@@ -98,7 +97,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
 
   const environments = useMemo<EnvironmentType[]>(() => {
     if (!organization) return []
-    const envTypes: string[] = organization.env_types
+    const envTypes = organization.env_types ?? []
     return envTypes.map((type) => ({
       label: type,
       value: type,
@@ -154,39 +153,37 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
   }, [branch])
 
   useEffect(() => {
-  if (!limits) return;
-  if (areResourcesInitialized) return;
+    if (!limits) return
+    if (areResourcesInitialized) return
 
-  const values = form.getValues();
-  const keys = Object.keys(limits) as ResourceType[];
+    const values = form.getValues()
+    const keys = Object.keys(limits) as ResourceType[]
 
-  keys.forEach((key) => {
-    if (key === 'storage_size' && !values.enableStorageService) return;
+    keys.forEach((key) => {
+      if (key === 'storage_size' && !values.enableStorageService) return
 
-    const current = values.resources[key];
-    const fallback = limits[key].min;
+      const current = values.resources[key]
+      const fallback = limits[key].min
 
-    form.setValue(`resources.${key}`, current === 0 ? fallback : current, {
-      shouldDirty: false,
-      shouldValidate: false,
-    });
-  });
-
-  setAreResourcesInitialized(true);
-}, [limits, areResourcesInitialized, form]);
-
-
-const handleBranchSliderChange = useCallback(
-  (key: ResourceType) => (value: number[]) => {
-    const [next] = value
-    form.setValue(`resources.${key}`, next, {
-      shouldDirty: true,
-      shouldValidate: false,
+      form.setValue(`resources.${key}`, current === 0 ? fallback : current, {
+        shouldDirty: false,
+        shouldValidate: false,
+      })
     })
-  },
-  [form]
-)
 
+    setAreResourcesInitialized(true)
+  }, [limits, areResourcesInitialized, form])
+
+  const handleBranchSliderChange = useCallback(
+    (key: ResourceType) => (value: number[]) => {
+      const [next] = value
+      form.setValue(`resources.${key}`, next, {
+        shouldDirty: true,
+        shouldValidate: false,
+      })
+    },
+    [form]
+  )
 
   function validateBranchName(name: any) {
     const value = name ? name.trim() : ''
@@ -293,7 +290,7 @@ const handleBranchSliderChange = useCallback(
                       {value} {unit}
                     </span>
                   </div>
-                  <Slider_Shadcn_ 
+                  <Slider_Shadcn_
                     id={`sizing-${key}`}
                     min={min}
                     max={max}
@@ -302,13 +299,11 @@ const handleBranchSliderChange = useCallback(
                     onValueChange={handleBranchSliderChange(key)}
                     disabled={!enabled}
                   />
-                  {(key === 'storage_size' && !enableStorageService)  && (
-                    <div className='mt-2'>
-                      <Label_Shadcn_
-                      className="text-xs text-muted-foreground"
-                    >
-                     Check “Include storage” to enable the slider
-                    </Label_Shadcn_>
+                  {key === 'storage_size' && !enableStorageService && (
+                    <div className="mt-2">
+                      <Label_Shadcn_ className="text-xs text-muted-foreground">
+                        Check “Include storage” to enable the slider
+                      </Label_Shadcn_>
                     </div>
                   )}
                 </div>
@@ -672,7 +667,7 @@ const handleBranchSliderChange = useCallback(
               </div>
             </section>
           </div>
-          {!isLimitsLoading && adjustableResources && areResourcesInitialized &&  renderSliders()}
+          {!isLimitsLoading && adjustableResources && areResourcesInitialized && renderSliders()}
         </Panel.Content>
       </Panel>
     </form>

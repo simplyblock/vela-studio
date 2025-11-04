@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { useIsMFAEnabled, useParams } from 'common'
+import { useIsMFAEnabled } from 'common'
 import { ProjectList } from 'components/interfaces/Home/ProjectList'
 import HomePageActions from 'components/interfaces/HomePageActions'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -19,7 +19,7 @@ const ProjectsPage: NextPageWithLayout = () => {
 
   const { data: org, isLoading, isError, error } = useSelectedOrganizationQuery()
   const isUserMFAEnabled = useIsMFAEnabled()
-  const disableAccessMfa = org?.organization_requires_mfa && !isUserMFAEnabled
+  const disableAccessMfa = org?.require_mfa && !isUserMFAEnabled
 
   const [search, setSearch] = useState('')
   const [filterStatus, setFilterStatus] = useState<string[]>([
@@ -31,7 +31,7 @@ const ProjectsPage: NextPageWithLayout = () => {
     if (isLoading) return
     console.log(isError, error, org)
     if (typeof org === 'undefined' || (isError && error && error.code === 404))
-      router.push("/organizations")
+      router.push('/organizations')
   }, [org, isLoading, isError])
 
   useAutoProjectsPrefetch()
@@ -47,7 +47,7 @@ const ProjectsPage: NextPageWithLayout = () => {
           </p>
         </Admonition>
       ) : (
-        <div className='p-2'> 
+        <div className="p-2">
           <HomePageActions
             search={search}
             setSearch={setSearch}

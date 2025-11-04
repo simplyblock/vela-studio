@@ -59,12 +59,11 @@ const APIAuthorizationPage: NextPageWithLayout = () => {
   useEffect(() => {
     if (isSuccessOrganizations && organizations.length > 0) {
       if (organization_slug) {
-        setSelectedOrgSlug(organizations.find(({ slug }) => slug === organization_slug)?.slug)
+        setSelectedOrgSlug(organizations.find(({ id }) => id === organization_slug)?.id)
       } else {
-        setSelectedOrgSlug(organizations[0].slug)
+        setSelectedOrgSlug(organizations[0].id)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessOrganizations])
 
   const onApproveRequest = async () => {
@@ -134,7 +133,7 @@ const APIAuthorizationPage: NextPageWithLayout = () => {
 
   if (isApproved) {
     const approvedOrganization = organizations?.find(
-      (org) => org?.slug === requester.approved_organization_slug
+      (org) => org?.id === requester.approved_organization_slug
     )
 
     return (
@@ -259,9 +258,9 @@ const APIAuthorizationPage: NextPageWithLayout = () => {
           >
             {(organizations ?? []).map((organization) => (
               <Listbox.Option
-                key={organization?.slug}
+                key={organization?.id}
                 label={organization?.name}
-                value={organization?.slug}
+                value={organization?.id}
               >
                 {organization.name}
               </Listbox.Option>

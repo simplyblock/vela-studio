@@ -17,7 +17,6 @@ import { useBranchesQuery } from 'data/branches/branches-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
 import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
 import { Branch } from 'data/branches/branch-query'
@@ -35,7 +34,8 @@ const BranchesPage: NextPageWithLayout = () => {
 
   const projectRef = project !== undefined ? ref : undefined
 
-  const { can: canReadBranches, isSuccess: isPermissionsLoaded } = useCheckPermissions("env:projects:read")
+  const { can: canReadBranches, isSuccess: isPermissionsLoaded } =
+    useCheckPermissions('env:projects:read')
 
   const {
     data: branches,
@@ -61,7 +61,7 @@ const BranchesPage: NextPageWithLayout = () => {
     if (selectedBranchToDelete == undefined) return console.error('No branch selected')
     const { id: branch, project_id: projectRef, organization_id: orgSlug } = selectedBranchToDelete
     deleteBranch(
-      { orgSlug, projectRef, branch  },
+      { orgSlug, projectRef, branch },
       {
         onSuccess: () => {
           if (branch === ref) {
@@ -76,7 +76,7 @@ const BranchesPage: NextPageWithLayout = () => {
             },
             groups: {
               project: projectRef ?? 'Unknown',
-              organization: selectedOrg?.slug ?? 'Unknown',
+              organization: selectedOrg?.id ?? 'Unknown',
             },
           })
         },
@@ -84,14 +84,13 @@ const BranchesPage: NextPageWithLayout = () => {
     )
   }
 
-useEffect(() => {
-  if (!isSuccessBranches) return;
+  useEffect(() => {
+    if (!isSuccessBranches) return
 
-  if (branches?.length || 0) {
-    router.push(`/new/${slug}/${ref}?name=main`);
-  }
-}, [router, isSuccessBranches, branches]);
-
+    if (branches?.length || 0) {
+      router.push(`/new/${slug}/${ref}?name=main`)
+    }
+  }, [router, isSuccessBranches, branches])
 
   return (
     <>
@@ -152,7 +151,7 @@ BranchesPage.getLayout = (page) => {
   const BranchesPageWrapper = () => {
     const { slug, ref } = useParams()
     const router = useRouter()
-    const { can: canCreateBranches } = useCheckPermissions("project:branches:create")
+    const { can: canCreateBranches } = useCheckPermissions('project:branches:create')
 
     const primaryActions = (
       <ButtonTooltip

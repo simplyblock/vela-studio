@@ -151,7 +151,7 @@ const NewFunctionPage = () => {
     sendEvent({
       action: 'edge_function_deploy_button_clicked',
       properties: { origin: 'functions_editor' },
-      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
     })
   }
 
@@ -165,7 +165,7 @@ const NewFunctionPage = () => {
       sendEvent({
         action: 'edge_function_template_clicked',
         properties: { templateName: template.name, origin: 'editor_page' },
-        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
       })
     }
   }
@@ -291,7 +291,7 @@ const NewFunctionPage = () => {
         aiMetadata={{
           projectRef: project?.id,
           connectionString: branch?.database.encrypted_connection_string,
-          orgSlug: org?.slug,
+          orgSlug: org?.id,
         }}
       />
 

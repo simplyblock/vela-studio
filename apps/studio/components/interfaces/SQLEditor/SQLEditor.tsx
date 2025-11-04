@@ -14,7 +14,6 @@ import { lintKeys } from 'data/lint/keys'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useExecuteSqlMutation } from 'data/sql/execute-sql-mutation'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
-import { isError } from 'data/utils/error-check'
 import { useSchemasForAi } from 'hooks/misc/useSchemasForAi'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
@@ -47,7 +46,7 @@ import {
 } from 'ui'
 import { useSqlEditorDiff, useSqlEditorPrompt } from './hooks'
 import { RunQueryWarningModal } from './RunQueryWarningModal'
-import { ROWS_PER_PAGE_OPTIONS, sqlAiDisclaimerComment } from './SQLEditor.constants'
+import { ROWS_PER_PAGE_OPTIONS } from './SQLEditor.constants'
 import { DiffType, IStandaloneCodeEditor, IStandaloneDiffEditor } from './SQLEditor.types'
 import {
   checkDestructiveQuery,
@@ -94,8 +93,7 @@ export const SQLEditor = () => {
     defaultSqlDiff,
     closeDiff,
   } = useSqlEditorDiff()
-  const { promptState, setPromptState, resetPrompt } =
-    useSqlEditorPrompt()
+  const { promptState, setPromptState, resetPrompt } = useSqlEditorPrompt()
 
   const editorRef = useRef<IStandaloneCodeEditor | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
@@ -288,7 +286,7 @@ export const SQLEditor = () => {
 
         sendEvent({
           action: 'sql_editor_query_run_button_clicked',
-          groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+          groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
         })
       }
     },
@@ -368,7 +366,7 @@ export const SQLEditor = () => {
       sendEvent({
         action: 'assistant_sql_diff_handler_evaluated',
         properties: { handlerAccepted: true },
-        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
       })
 
       setSelectedDiffType(DiffType.Modification)
@@ -383,7 +381,7 @@ export const SQLEditor = () => {
     sendEvent({
       action: 'assistant_sql_diff_handler_evaluated',
       properties: { handlerAccepted: false },
-      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
     })
     resetPrompt()
     closeDiff()
@@ -412,7 +410,7 @@ export const SQLEditor = () => {
             projectRef: project?.id,
             connectionString: branch?.database.encrypted_connection_string,
             language: 'sql',
-            orgSlug: org?.slug,
+            orgSlug: org?.id,
             ...(options?.body ?? {}),
           }),
         })
@@ -445,7 +443,7 @@ export const SQLEditor = () => {
       }
     },
     [
-      org?.slug,
+      org?.id,
       branch?.database.encrypted_connection_string,
       project?.id,
       setPromptState,

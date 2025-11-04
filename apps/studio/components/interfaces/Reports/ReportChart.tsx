@@ -124,7 +124,7 @@ const ReportChart = ({
             onMouseEnter={() => setIsHoveringUpgrade(true)}
             onMouseLeave={() => setIsHoveringUpgrade(false)}
           >
-            <Link href={`/org/${org?.slug}/billing?panel=subscriptionPlan&source=reports`}>
+            <Link href={`/org/${org?.id}/billing?panel=subscriptionPlan&source=reports`}>
               Upgrade to{' '}
               <span className="capitalize">
                 {!!chart.availableIn?.length ? chart.availableIn[0] : 'Pro'}

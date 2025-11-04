@@ -5,7 +5,6 @@ import { TerminalInstructions } from 'components/interfaces/Functions/TerminalIn
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
-  AiIconAnimation,
   Button,
   Dialog,
   DialogContent,
@@ -40,7 +39,7 @@ export const DeployEdgeFunctionButton = () => {
             sendEvent({
               action: 'edge_function_via_editor_button_clicked',
               properties: { origin: 'secondary_action' },
-              groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+              groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
             })
           }}
           className="gap-4"
@@ -60,7 +59,7 @@ export const DeployEdgeFunctionButton = () => {
                 sendEvent({
                   action: 'edge_function_via_cli_button_clicked',
                   properties: { origin: 'secondary_action' },
-                  groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                  groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
                 })
               }}
             >

@@ -1,7 +1,6 @@
-import _ from 'lodash'
 import { useRouter } from 'next/router'
 import { parseAsString, useQueryStates } from 'nuqs'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
@@ -9,19 +8,12 @@ import { LOCAL_STORAGE_KEYS } from 'common'
 import Panel from 'components/ui/Panel'
 import { useOrganizationCreateMutation } from 'data/organizations/organization-create-mutation'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
-import { useProjectsQuery } from 'data/projects/projects-query'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
-import {
-  Button,
-  Input_Shadcn_,
-  Label_Shadcn_,
-} from 'ui'
+import { Button, Input_Shadcn_, Label_Shadcn_ } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { SetupIntentResponse } from 'data/stripe/setup-intent-mutation'
 import { useProfile } from 'lib/profile'
 
-interface NewOrgFormProps {
-}
+interface NewOrgFormProps {}
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -38,18 +30,11 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
   const router = useRouter()
   const user = useProfile()
   const { data: organizations, isSuccess } = useOrganizationsQuery()
-  const { data: projects } = useProjectsQuery()
 
   const [lastVisitedOrganization] = useLocalStorageQuery(
     LOCAL_STORAGE_KEYS.LAST_VISITED_ORGANIZATION,
     ''
   )
-
-  const freeOrgs = (organizations || []).filter((it) => it.plan.id === 'free')
-
-  const projectsByOrg = useMemo(() => {
-    return _.groupBy(projects || [], 'organization_slug')
-  }, [projects])
 
   const [isOrgCreationConfirmationModalVisible, setIsOrgCreationConfirmationModalVisible] =
     useState(false)
@@ -219,8 +204,7 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
           setIsOrgCreationConfirmationModalVisible(false)
         }}
         variant={'warning'}
-      >
-      </ConfirmationModal>
+      ></ConfirmationModal>
     </form>
   )
 }

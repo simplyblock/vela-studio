@@ -199,7 +199,7 @@ const AuditLogs = () => {
                         (project) => project.id === log.target.metadata.project_ref
                       )
                       const organization = organizations?.find(
-                        (org) => org.slug === log.target.metadata.org_slug
+                        (org) => org.id === log.target.metadata.org_slug
                       )
 
                       const hasStatusCode = log.action.metadata[0]?.status !== undefined

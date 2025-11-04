@@ -30,7 +30,7 @@ const ExampleProject = ({ framework, title, description, url }: ExampleProjectPr
         sendEvent({
           action: 'example_project_card_clicked',
           properties: { cardTitle: title },
-          groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+          groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
         })
       }
     >

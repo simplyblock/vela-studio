@@ -102,14 +102,14 @@ export const OrganizationDetailsForm = () => {
             <FormItemLayout label="Organization slug" layout="flex-row-reverse">
               <PrePostTab
                 postTab={
-                  <CopyButton type="text" iconOnly text={selectedOrganization?.slug ?? ''} />
+                  <CopyButton type="text" iconOnly text={selectedOrganization?.id ?? ''} />
                 }
               >
                 <Input
                   disabled
                   className="w-64 max-w-full"
                   id="slug"
-                  value={selectedOrganization?.slug ?? ''}
+                  value={selectedOrganization?.id ?? ''}
                 />
               </PrePostTab>
             </FormItemLayout>

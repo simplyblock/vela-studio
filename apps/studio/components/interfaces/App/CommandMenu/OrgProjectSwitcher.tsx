@@ -70,11 +70,11 @@ export function useConfigureOrganizationCommand() {
           id: 'configure-organization',
           name: 'Configure organization',
           commands:
-            organizations?.map(({ name, slug }) => ({
-              id: `organization-${slug}`,
+            organizations?.map(({ name, id }) => ({
+              id: `organization-${id}`,
               name,
-              value: `${name} (${slug})`,
-              route: `/org/${slug}/general`,
+              value: `${name} (${id})`,
+              route: `/org/${id}/general`,
               icon: () => <Building />,
             })) ?? [],
         },

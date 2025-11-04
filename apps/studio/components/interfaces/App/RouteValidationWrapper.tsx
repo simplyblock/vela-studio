@@ -65,7 +65,7 @@ const RouteValidationWrapper = ({ children }: PropsWithChildren<{}>) => {
     if (orgsInitialized && slug) {
       // Check validity of organization that user is trying to access
       const organizations = organizationsRef.current ?? []
-      const isValidOrg = organizations.some((org) => org.slug === slug)
+      const isValidOrg = organizations.some((org) => org.id === slug)
 
       if (!isValidOrg) {
         toast.error("We couldn't find that organization")
@@ -114,22 +114,20 @@ const RouteValidationWrapper = ({ children }: PropsWithChildren<{}>) => {
       snap.setDashboardHistory(ref, 'editor', dashboardHistory.editor)
       snap.setDashboardHistory(ref, 'sql', dashboardHistory.sql)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessStorage, ref])
 
   useEffect(() => {
     if (organization) {
-      setLastVisitedOrganization(organization.slug)
+      setLastVisitedOrganization(organization.id!)
 
       if (
-        organization.organization_requires_mfa &&
+        organization.require_mfa &&
         !isUserMFAEnabled &&
         router.pathname !== '/org/[slug]'
       ) {
-        router.push(`/org/${organization.slug}`)
+        router.push(`/org/${organization.id}`)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [organization])
 
   return <>{children}</>

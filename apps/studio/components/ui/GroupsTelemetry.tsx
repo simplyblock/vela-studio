@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import { LOCAL_STORAGE_KEYS, useParams, useTelemetryCookie, useUser } from 'common'
+import { useParams, useTelemetryCookie } from 'common'
 import { useSendGroupsIdentifyMutation } from 'data/telemetry/send-groups-identify-mutation'
 import { useSendGroupsResetMutation } from 'data/telemetry/send-groups-reset-mutation'
 import { usePrevious } from 'hooks/deprecated'
@@ -49,7 +48,7 @@ const GroupsTelemetry = ({ hasAcceptedConsent }: { hasAcceptedConsent: boolean }
 
     if (hasAcceptedConsent) {
       if (ref && (isLandingOnProjectRoute || isEnteringProjectRoute)) {
-        sendGroupsIdentify({ organization_slug: organization?.slug, project_ref: ref as string })
+        sendGroupsIdentify({ organization_slug: organization?.id, project_ref: ref as string })
       } else if (slug && (isLandingOnOrgRoute || isEnteringOrgRoute)) {
         sendGroupsIdentify({ organization_slug: slug, project_ref: undefined })
       } else if (isLeavingProjectRoute || isLeavingOrgRoute) {
@@ -60,7 +59,6 @@ const GroupsTelemetry = ({ hasAcceptedConsent }: { hasAcceptedConsent: boolean }
       }
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasAcceptedConsent, slug, ref, router.pathname])
 
   return null

@@ -46,7 +46,7 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
   const [expandedLint, setExpandedLint] = useState<string>()
   const [selectedRuleToDelete, setSelectedRuleToDelete] = useState<string>()
 
-  const { data: members = [] } = useOrganizationMembersQuery({ slug: organization?.slug })
+  const { data: members = [] } = useOrganizationMembersQuery({ slug: organization?.id })
   const {
     data = { exceptions: [] },
     error,

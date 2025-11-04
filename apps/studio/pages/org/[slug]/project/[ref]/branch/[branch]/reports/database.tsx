@@ -19,7 +19,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import ChartHandler from 'components/ui/Charts/ChartHandler'
 import type { MultiAttribute } from 'components/ui/Charts/ComposedChart.utils'
 import ComposedChartHandler from 'components/ui/Charts/ComposedChartHandler'
-import GrafanaPromoBanner from 'components/ui/GrafanaPromoBanner'
 import Panel from 'components/ui/Panel'
 import { analyticsKeys } from 'data/analytics/keys'
 import { useProjectDiskResizeMutation } from 'data/config/project-disk-resize-mutation'
@@ -92,11 +91,11 @@ const DatabaseUsage = () => {
     branch,
   })
   const { data: poolerConfig } = usePgbouncerConfigQuery({
-    orgRef: org?.slug,
+    orgRef: org?.id,
     projectRef: project?.id,
-    branchId
+    branchId,
   })
-  const { can: canUpdateDiskSizeConfig } = useCheckPermissions("project:settings:write")
+  const { can: canUpdateDiskSizeConfig } = useCheckPermissions('project:settings:write')
 
   const REPORT_ATTRIBUTES = getReportAttributes(
     org!,
@@ -187,7 +186,6 @@ const DatabaseUsage = () => {
   return (
     <>
       <ReportHeader showDatabaseSelector title="Database" />
-      <GrafanaPromoBanner />
       <ReportStickyNav
         content={
           <>

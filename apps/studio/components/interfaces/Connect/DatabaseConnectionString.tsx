@@ -82,7 +82,7 @@ export const DatabaseConnectionString = () => {
     sendEvent({
       action: 'connection_string_copied',
       properties: { connectionType, lang, connectionMethod },
-      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
     })
   }
 

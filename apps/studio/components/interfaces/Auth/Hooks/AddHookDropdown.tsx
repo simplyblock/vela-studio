@@ -3,17 +3,15 @@ import { ChevronDown } from 'lucide-react'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useAuthConfigQuery } from 'data/auth/auth-config-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from 'ui'
-import { HOOKS_DEFINITIONS, HOOK_DEFINITION_TITLE, Hook } from './hooks.constants'
+import { Hook, HOOK_DEFINITION_TITLE, HOOKS_DEFINITIONS } from './hooks.constants'
 import { extractMethod, isValidHook } from './hooks.utils'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
@@ -29,10 +27,9 @@ export const AddHookDropdown = ({
   onSelectHook,
 }: AddHookDropdownProps) => {
   const { ref: projectRef } = useParams()
-  const { data: organization } = useSelectedOrganizationQuery()
 
   const { data: authConfig } = useAuthConfigQuery({ projectRef })
-  const { can: canUpdateAuthHook } = useCheckPermissions("branch:auth:admin")
+  const { can: canUpdateAuthHook } = useCheckPermissions('branch:auth:admin')
 
   const hooks: Hook[] = HOOKS_DEFINITIONS.map((definition) => {
     return {
@@ -46,10 +43,6 @@ export const AddHookDropdown = ({
   })
 
   const nonEnterpriseHookOptions = hooks.filter((h) => !isValidHook(h) && !h.enterprise)
-  const enterpriseHookOptions = hooks.filter((h) => !isValidHook(h) && h.enterprise)
-
-  const isTeamsOrEnterprisePlan =
-    organization?.plan.id === 'team' || organization?.plan.id === 'enterprise'
 
   if (!canUpdateAuthHook) {
     return (
@@ -82,43 +75,6 @@ export const AddHookDropdown = ({
         </div>
 
         <DropdownMenuSeparator />
-
-        {!isTeamsOrEnterprisePlan && (
-          <DropdownMenuLabel className="grid gap-1 bg-surface-200">
-            <p className="text-foreground-light">Team or Enterprise Plan required</p>
-            <p className="text-foreground-lighter text-xs">
-              The following hooks are not available on{' '}
-              <a
-                target="_href"
-                href={`https://supabase.com/dashboard/org/${organization?.slug ?? '_'}/billing`}
-                className="underline"
-              >
-                your plan
-              </a>
-              .
-            </p>
-          </DropdownMenuLabel>
-        )}
-        {enterpriseHookOptions.map((h) =>
-          isTeamsOrEnterprisePlan ? (
-            <DropdownMenuItem
-              key={h.title}
-              disabled={!isTeamsOrEnterprisePlan}
-              className=""
-              onClick={() => onSelectHook(h.title)}
-            >
-              {h.title}
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem
-              key={h.title}
-              disabled={!isTeamsOrEnterprisePlan}
-              onClick={() => onSelectHook(h.title)}
-            >
-              {h.title}
-            </DropdownMenuItem>
-          )
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

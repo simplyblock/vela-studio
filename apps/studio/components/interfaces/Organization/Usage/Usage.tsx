@@ -1,5 +1,4 @@
 import dayjs from 'dayjs'
-import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'common'
@@ -17,8 +16,6 @@ import { useOrgSubscriptionQuery } from 'data/subscriptions/org-subscription-que
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { TIME_PERIODS_BILLING, TIME_PERIODS_REPORTS } from 'lib/constants/metrics'
 import { cn, Listbox } from 'ui'
-import { Admonition } from 'ui-patterns'
-import { Restriction } from '../BillingSettings/Restriction'
 import Activity from './Activity'
 import Egress from './Egress'
 import Compute from './Compute'
@@ -31,7 +28,7 @@ const Usage = () => {
   const [dateRange, setDateRange] = useState<any>()
   const [selectedProjectRef, setSelectedProjectRef] = useState<string>()
 
-  const canReadSubscriptions = useCheckPermissions("org:metering:read")
+  const canReadSubscriptions = useCheckPermissions('org:metering:read')
 
   const { data: organization } = useSelectedOrganizationQuery()
   const { data: projects, isSuccess } = useProjectsQuery()
@@ -94,10 +91,6 @@ const Usage = () => {
       return new Date(dateRange.period_end.date).toISOString().slice(0, -5) + 'Z'
     }
   }, [dateRange, subscription])
-
-  const selectedProject = selectedProjectRef
-    ? orgProjects?.find((it) => it.id === selectedProjectRef)
-    : undefined
 
   if (!canReadSubscriptions) {
     return (
@@ -180,33 +173,6 @@ const Usage = () => {
           </div>
         </ScaffoldContainer>
       </div>
-
-      {selectedProjectRef ? (
-        <ScaffoldContainer className="mt-5">
-          <Admonition
-            type="default"
-            title="Usage filtered by project"
-            description={
-              <div>
-                You are currently viewing usage for the
-                {selectedProject?.name || selectedProjectRef} project. Supabase uses{' '}
-                <Link
-                  href="/docs/guides/platform/billing-on-supabase#organization-based-billing"
-                  target="_blank"
-                >
-                  organization-level billing
-                </Link>{' '}
-                and quotas. For billing purposes, we sum up usage from all your projects. To view
-                your usage quota, set the project filter above back to "All Projects".
-              </div>
-            }
-          />
-        </ScaffoldContainer>
-      ) : (
-        <ScaffoldContainer id="restriction" className="mt-5">
-          <Restriction />
-        </ScaffoldContainer>
-      )}
 
       <TotalUsage
         orgSlug={orgRef!}

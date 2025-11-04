@@ -196,7 +196,7 @@ const EdgeFunctionDetailsLayout = ({
                     action: 'edge_function_test_side_panel_opened',
                     groups: {
                       project: projectRef ?? 'Unknown',
-                      organization: org?.slug ?? 'Unknown',
+                      organization: org?.id ?? 'Unknown',
                     },
                   })
                 }}

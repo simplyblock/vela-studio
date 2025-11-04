@@ -123,19 +123,19 @@ const UtilityPanel = ({
               onDownloadAsCSV={() =>
                 sendEvent({
                   action: 'sql_editor_result_download_csv_clicked',
-                  groups: { project: ref ?? '', organization: org?.slug ?? '' },
+                  groups: { project: ref ?? '', organization: org?.id ?? '' },
                 })
               }
               onCopyAsMarkdown={() => {
                 sendEvent({
                   action: 'sql_editor_result_copy_markdown_clicked',
-                  groups: { project: ref ?? '', organization: org?.slug ?? '' },
+                  groups: { project: ref ?? '', organization: org?.id ?? '' },
                 })
               }}
               onCopyAsJSON={() => {
                 sendEvent({
                   action: 'sql_editor_result_copy_json_clicked',
-                  groups: { project: ref ?? '', organization: org?.slug ?? '' },
+                  groups: { project: ref ?? '', organization: org?.id ?? '' },
                 })
               }}
             />

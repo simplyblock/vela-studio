@@ -1,14 +1,12 @@
-import { OrganizationBase } from 'data/organizations/organizations-query'
-import { PlanId } from 'data/subscriptions/types'
 import { PermissionsData } from '../data/permissions/permissions-query'
 import { RolesData } from '../data/permissions/roles-query'
 import { OrganizationRolesData } from '../data/organizations/organization-roles-query'
+import { components } from '../data/vela/vela-schema'
 
 export type ArrayElement<T> = T extends (infer U)[] ? U : never
 
-export interface Organization extends OrganizationBase {
-  partner_id?: string
-  plan: { id: PlanId; name: string }
+export type Organization = Omit<components['schemas']['Organization'], "environments"> & {
+  env_types?: string[]
 }
 
 /**
@@ -72,7 +70,7 @@ export type ResourcePermission = ArrayElement<PermissionsData>
 export type OrganizationRole = ArrayElement<OrganizationRolesData>
 
 export interface Permission {
-  entity: "org" | "env" | "project" | "branch"
+  entity: 'org' | 'env' | 'project' | 'branch'
   resource: string
   action: string
 }

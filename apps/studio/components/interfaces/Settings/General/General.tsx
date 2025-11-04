@@ -9,16 +9,8 @@ import Panel from 'components/ui/Panel'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useProjectUpdateMutation } from 'data/projects/project-update-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useProjectByRefQuery, useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import {
-  Alert_Shadcn_,
-  AlertDescription_Shadcn_,
-  AlertTitle_Shadcn_,
-  Button,
-  Form,
-  Input,
-  WarningIcon,
-} from 'ui'
+import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { Button, Form, Input } from 'ui'
 import PauseProjectButton from './Infrastructure/PauseProjectButton'
 import RestartServerButton from './Infrastructure/RestartServerButton'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
@@ -31,16 +23,16 @@ const General = () => {
 
   const formId = 'project-general-settings'
   const initialValues = { name: project?.name ?? '', ref: project?.id ?? '' }
-  const { can: canUpdateProject } = useCheckPermissions("project:settings:write")
+  const { can: canUpdateProject } = useCheckPermissions('project:settings:write')
 
   const { mutate: updateProject, isLoading: isUpdating } = useProjectUpdateMutation()
 
   const onSubmit = async (values: any, { resetForm }: any) => {
     if (!project?.id) return console.error('Ref is required')
-    if (!organization?.slug) return console.error('Slug is required')
+    if (!organization?.id) return console.error('Slug is required')
 
     updateProject(
-      { orgRef: organization.slug, ref: project.id, name: values.name.trim() },
+      { orgRef: organization.id, ref: project.id, name: values.name.trim() },
       {
         onSuccess: ({ name }) => {
           resetForm({ values: { name }, initialValues: { name } })
@@ -141,7 +133,7 @@ const General = () => {
                   </div>
                   <div>
                     <Button asChild type="default">
-                      <Link href={`/org/${organization?.slug}/usage?projectRef=${project?.id}`}>
+                      <Link href={`/org/${organization?.id}/usage?projectRef=${project?.id}`}>
                         View project usage
                       </Link>
                     </Button>

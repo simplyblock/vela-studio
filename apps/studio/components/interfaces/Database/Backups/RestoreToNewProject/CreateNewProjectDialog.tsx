@@ -8,7 +8,6 @@ import { z } from 'zod'
 import PasswordStrengthBar from 'components/ui/PasswordStrengthBar'
 import { useProjectCloneMutation } from 'data/projects/clone-mutation'
 import { useCloneBackupsQuery } from 'data/projects/clone-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { passwordStrength } from 'lib/helpers'
 import { generateStrongPassword } from 'lib/project'
@@ -49,7 +48,6 @@ export const CreateNewProjectDialog = ({
   additionalMonthlySpend,
 }: CreateNewProjectDialogProps) => {
   const { data: project } = useSelectedProjectQuery()
-  const { data: organization } = useSelectedOrganizationQuery()
 
   const [passwordStrengthScore, setPasswordStrengthScore] = useState(0)
   const [passwordStrengthMessage, setPasswordStrengthMessage] = useState('')
@@ -67,12 +65,7 @@ export const CreateNewProjectDialog = ({
     },
   })
 
-  const isFreePlan = organization?.plan?.id === 'free'
-
-  const { data: cloneBackups } = useCloneBackupsQuery(
-    { projectRef: project?.id },
-    { enabled: !isFreePlan }
-  )
+  const { data: cloneBackups } = useCloneBackupsQuery({ projectRef: project?.id })
   const hasPITREnabled = cloneBackups?.pitr_enabled
 
   const { mutate: triggerClone, isLoading: cloneMutationLoading } = useProjectCloneMutation({

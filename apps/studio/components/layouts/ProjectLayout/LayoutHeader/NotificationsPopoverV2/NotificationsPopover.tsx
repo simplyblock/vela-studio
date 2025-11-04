@@ -212,7 +212,7 @@ export const NotificationsPopoverV2 = () => {
                     getOrganizationById: (id: string) =>
                       organizations?.find((org) => org.id === id)!,
                     getOrganizationBySlug: (slug: string) =>
-                      organizations?.find((org) => org.slug === slug)!,
+                      organizations?.find((org) => org.id === slug)!,
                     onUpdateNotificationStatus: (id: string, status: 'archived' | 'seen') => {
                       updateNotifications({ ids: [id], status })
                     },

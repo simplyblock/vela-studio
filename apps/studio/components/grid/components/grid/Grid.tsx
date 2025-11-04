@@ -89,7 +89,7 @@ export const Grid = memo(
             action: eventName,
             groups: {
               project: project?.id ?? 'Unknown',
-              organization: org?.slug ?? 'Unknown',
+              organization: org?.id ?? 'Unknown',
             },
           })
         },
@@ -193,7 +193,7 @@ export const Grid = memo(
                                   properties: { tableType: 'Existing Table' },
                                   groups: {
                                     project: project?.id ?? 'Unknown',
-                                    organization: org?.slug ?? 'Unknown',
+                                    organization: org?.id ?? 'Unknown',
                                   },
                                 })
                               }}

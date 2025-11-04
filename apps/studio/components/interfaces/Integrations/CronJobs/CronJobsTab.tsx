@@ -84,7 +84,7 @@ export const CronjobsTab = () => {
       onSelectEdit: (job: any) => {
         sendEvent({
           action: 'cron_job_update_clicked',
-          groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+          groups: { project: ref ?? 'Unknown', organization: org?.id ?? 'Unknown' },
         })
         setCreateCronJobSheetShown(true)
         setCronJobForEditing(job)
@@ -92,12 +92,12 @@ export const CronjobsTab = () => {
       onSelectDelete: (job: CronJob) => {
         sendEvent({
           action: 'cron_job_delete_clicked',
-          groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+          groups: { project: ref ?? 'Unknown', organization: org?.id ?? 'Unknown' },
         })
         setCronJobForDeletion(job)
       },
     })
-  }, [org?.slug, ref, sendEvent, setCreateCronJobSheetShown])
+  }, [org?.id, ref, sendEvent, setCreateCronJobSheetShown])
 
   // check pg_cron version to see if it supports seconds
   const pgCronExtension = extensions.find((ext) => ext.name === 'pg_cron')
@@ -124,7 +124,7 @@ export const CronjobsTab = () => {
   const onOpenCreateJobSheet = () => {
     sendEvent({
       action: 'cron_job_create_clicked',
-      groups: { project: project?.id ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: project?.id ?? 'Unknown', organization: org?.id ?? 'Unknown' },
     })
     setCreateCronJobSheetShown(true)
   }
@@ -205,7 +205,7 @@ export const CronjobsTab = () => {
                         action: 'cron_job_history_clicked',
                         groups: {
                           project: ref ?? 'Unknown',
-                          organization: org?.slug ?? 'Unknown',
+                          organization: org?.id ?? 'Unknown',
                         },
                       })
 

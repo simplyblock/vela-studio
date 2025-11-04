@@ -37,7 +37,7 @@ const OrganizationsPage: NextPageWithLayout = () => {
     search.length === 0
       ? organizations
       : organizations?.filter(
-          (x) => x.name.toLowerCase().includes(search) || x.slug.toLowerCase().includes(search)
+          (x) => x.name.toLowerCase().includes(search) || x.id?.toLowerCase().includes(search)
         )
 
   useEffect(() => {

@@ -61,7 +61,7 @@ export const useProjectsQuery = <TData = ProjectsData>({
 export function prefetchProjects(client: QueryClient, organization?: Organization | undefined) {
   if (typeof organization === 'undefined') return Promise.resolve()
   return client.prefetchQuery(projectKeys.list(), ({ signal }) =>
-    getProjects({ signal, orgRef: organization?.slug })
+    getProjects({ signal, orgRef: organization?.id })
   )
 }
 
@@ -90,7 +90,7 @@ export function invalidateProjectsQuery(client: QueryClient) {
 
 export function setProjectStatus(
   client: QueryClient,
-  slug: Organization['slug'],
+  slug: Organization['id'],
   projectRef: ProjectDetail['id'],
   status: ProjectDetail['status']
 ) {
@@ -122,7 +122,7 @@ export function setProjectStatus(
 
 export function setProjectPostgrestStatus(
   client: QueryClient,
-  slug: Organization['slug'],
+  slug: Organization['id'],
   projectRef: ProjectDetail['id'],
   status: ProjectDetail['status']
 ) {

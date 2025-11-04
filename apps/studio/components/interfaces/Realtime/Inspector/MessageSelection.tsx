@@ -79,7 +79,7 @@ const MessageSelection = ({ log, onClose }: MessageSelectionProps) => {
                 onClick={() => {
                   sendEvent({
                     action: 'realtime_inspector_copy_message_clicked',
-                    groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+                    groups: { project: ref ?? 'Unknown', organization: org?.id ?? 'Unknown' },
                   })
                 }}
               />

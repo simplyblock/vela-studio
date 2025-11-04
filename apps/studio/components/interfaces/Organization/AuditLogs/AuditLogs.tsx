@@ -100,7 +100,7 @@ const AuditLogs = () => {
       }
     })
 
-  const currentOrganization = organizations?.find((o) => o.slug === slug)
+  const currentOrganization = organizations?.find((o) => o.id === slug)
   const minDate = dayjs().subtract(retentionPeriod, 'days')
   const maxDate = dayjs()
 
@@ -313,7 +313,7 @@ const AuditLogs = () => {
                         (project) => project.id === log.target.metadata.project_ref
                       )
                       const organization = organizations?.find(
-                        (org) => org.slug === log.target.metadata.org_slug
+                        (org) => org.id === log.target.metadata.org_slug
                       )
 
                       const hasStatusCode = log.action.metadata[0]?.status !== undefined

@@ -143,7 +143,7 @@ export const MetricOptions = ({ config, handleChartSelection }: MetricOptionsPro
                             action: 'custom_report_add_sql_block_clicked',
                             groups: {
                               project: projectRef ?? 'Unknown',
-                              organization: selectedOrganization?.slug ?? 'Unknown',
+                              organization: selectedOrganization?.id ?? 'Unknown',
                             },
                           })
                         }

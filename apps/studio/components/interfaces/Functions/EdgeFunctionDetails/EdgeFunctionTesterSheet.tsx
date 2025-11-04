@@ -441,7 +441,7 @@ export const EdgeFunctionTesterSheet = ({ visible, onClose }: EdgeFunctionTester
                       },
                       groups: {
                         project: projectRef ?? 'Unknown',
-                        organization: org?.slug ?? 'Unknown',
+                        organization: org?.id ?? 'Unknown',
                       },
                     })
                   }

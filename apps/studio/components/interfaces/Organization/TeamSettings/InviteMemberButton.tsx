@@ -72,15 +72,13 @@ export const InviteMemberButton = () => {
     .filter((project) => project.organization_id === organization?.id)
     .sort((a, b) => a.name.localeCompare(b.name))
 
-  const currentPlan = organization?.plan
-
   const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
   const hasOrgRole =
     (userMemberData?.role_ids ?? []).length === 1 &&
     orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
 
   const { rolesAddable } = useGetRolesManagementPermissions(
-    organization?.slug,
+    organization?.id,
     orgScopedRoles,
     permissions ?? []
   )
@@ -380,15 +378,6 @@ export const InviteMemberButton = () => {
                           Learn more
                         </Link>
                       </Button>
-                      {(currentPlan?.id === 'free' || currentPlan?.id === 'pro') && (
-                        <Button asChild type="default">
-                          <Link
-                            href={`/org/${slug}/billing?panel=subscriptionPlan&source=inviteMemberSSO`}
-                          >
-                            Upgrade to Team
-                          </Link>
-                        </Button>
-                      )}
                     </div>
                   </div>
                 }

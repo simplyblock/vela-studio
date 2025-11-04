@@ -11,7 +11,7 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 export const DeleteOrganizationButton = () => {
   const router = useRouter()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
-  const { slug: orgSlug, name: orgName } = selectedOrganization ?? {}
+  const { id: orgSlug, name: orgName } = selectedOrganization ?? {}
 
   const [isOpen, setIsOpen] = useState(false)
   const [value, setValue] = useState('')

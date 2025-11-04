@@ -65,7 +65,7 @@ const DiskSizeConfigurationModal = ({
             </p>
             <Button asChild type="default" className="mt-3">
               <Link
-                href={`/org/${organization?.slug}/billing?panel=costControl`}
+                href={`/org/${organization?.id}/billing?panel=costControl`}
                 target="_blank"
               >
                 Disable spend cap

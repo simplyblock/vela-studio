@@ -122,23 +122,23 @@ export const NotificationsFilter = ({ activeTab }: { activeTab: 'inbox' | 'archi
                 <DropdownMenuLabel>Organizations</DropdownMenuLabel>
                 {(organizations ?? []).map((org) => (
                   <CommandItem_Shadcn_
-                    key={org.slug}
+                    key={org.id}
                     value={org.name.replaceAll('"', '')}
                     className="flex items-center gap-x-2"
                     onSelect={() => {
-                      snap.setFilters(org.slug, 'organizations')
+                      snap.setFilters(org.id!, 'organizations')
                     }}
                   >
                     <Label_Shadcn_
-                      htmlFor={`${org.slug}`}
+                      htmlFor={`${org.id}`}
                       className={cn(
                         'flex items-center gap-x-2 text-xs text-foreground-light transition-colors',
-                        snap.filterOrganizations.includes(org.slug) && 'text-foreground'
+                        snap.filterOrganizations.includes(org.id!) && 'text-foreground'
                       )}
                     >
                       <Checkbox_Shadcn_
-                        name={`${org.slug}`}
-                        checked={snap.filterOrganizations.includes(org.slug)}
+                        name={`${org.id}`}
+                        checked={snap.filterOrganizations.includes(org.id!)}
                         className=""
                       ></Checkbox_Shadcn_>
                       {org.name}

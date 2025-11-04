@@ -6,17 +6,6 @@ import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
 
 export type OrganizationVariables = { slug?: string }
-export type OrganizationDetail = components['schemas']['OrganizationSlugResponse']
-
-function castOrganizationSlugResponseToOrganization(
-  org: components['schemas']['OrganizationSlugResponse']
-) {
-  return {
-    ...org,
-    managed_by: org.slug.startsWith('vercel_icfg_') ? 'vercel-marketplace' : 'supabase',
-    partner_id: org.slug.startsWith('vercel_') ? org.slug.replace('vercel_', '') : undefined,
-  }
-}
 
 export async function getOrganization({ slug }: OrganizationVariables, signal?: AbortSignal) {
   if (!slug) throw new Error('Organization slug is required')
@@ -26,7 +15,7 @@ export async function getOrganization({ slug }: OrganizationVariables, signal?: 
     signal,
   })
   if (error) handleError(error)
-  return castOrganizationSlugResponseToOrganization(data)
+  return data
 }
 
 export type OrganizationsData = Awaited<ReturnType<typeof getOrganization>>

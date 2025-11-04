@@ -1,11 +1,11 @@
 // components/interfaces/SubSideBar/RbacSubSideBar.tsx
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { SubSideBar } from './SubSidebar'
-import { Users, Shield, UserCog, FileText, LogIn, Mail, Lock, Link as LinkIcon } from 'lucide-react'
+import { Shield, UserCog, Users } from 'lucide-react'
 
 export const RbacSubSideBar = () => {
   const organization = useSelectedOrganizationQuery()
-  const orgSlug = organization.data?.slug
+  const orgSlug = organization.data?.id
 
   const sections = [
     {

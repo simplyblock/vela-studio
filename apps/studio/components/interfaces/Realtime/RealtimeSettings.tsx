@@ -255,7 +255,7 @@ export const RealtimeSettings = () => {
                               <>
                                 You may adjust this setting in the{' '}
                                 <InlineLink
-                                  href={`/org/${organization?.slug}/billing?panel=costControl`}
+                                  href={`/org/${organization?.id}/billing?panel=costControl`}
                                 >
                                   organization billing settings
                                 </InlineLink>

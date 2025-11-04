@@ -1,19 +1,9 @@
 import { QueryClient, useQuery, UseQueryOptions } from '@tanstack/react-query'
 
-import { components } from 'api-types'
 import { get, handleError } from 'data/fetchers'
 import { useProfile } from 'lib/profile'
-import type { Organization, ResponseError } from 'types'
+import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
-
-export type OrganizationBase = components['schemas']['OrganizationResponse']
-
-export function castOrganizationResponseToOrganization(org: OrganizationBase): Organization {
-  return {
-    ...org,
-    partner_id: org.slug.startsWith('vercel_') ? org.slug.replace('vercel_', '') : undefined,
-  }
-}
 
 export async function getOrganizations({
   signal,
@@ -21,15 +11,13 @@ export async function getOrganizations({
 }: {
   signal?: AbortSignal
   headers?: Record<string, string>
-}): Promise<Organization[]> {
+}) {
   const { data, error } = await get('/platform/organizations', { signal, headers })
 
   if (error) handleError(error)
   if (!Array.isArray(data)) return []
 
-  return data
-    .map(castOrganizationResponseToOrganization)
-    .sort((a, b) => a.name.localeCompare(b.name))
+  return data.sort((a, b) => a.name.localeCompare(b.name))
 }
 
 export type OrganizationsData = Awaited<ReturnType<typeof getOrganizations>>

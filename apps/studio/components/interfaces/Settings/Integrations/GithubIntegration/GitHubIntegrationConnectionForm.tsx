@@ -334,7 +334,7 @@ const GitHubIntegrationConnectionForm = ({
 
     try {
       await deleteConnection({
-        organizationId: selectedOrganization!.id,
+        organizationId: selectedOrganization!.id!,
         connectionId: connection.id,
       })
 

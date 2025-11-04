@@ -72,7 +72,7 @@ export const CreateRuleSheet = ({ lint, open, onOpenChange }: CreateRuleSheetPro
 
   const routeCategory = router.pathname.split('/').pop()
   const { data: organization } = useSelectedOrganizationQuery()
-  const { data: members = [] } = useOrganizationMembersQuery({ slug: organization?.slug })
+  const { data: members = [] } = useOrganizationMembersQuery({ slug: organization?.id })
 
   const { mutate: createRule, isLoading: isCreating } = useLintRuleCreateMutation({
     onSuccess: (_, vars) => {
