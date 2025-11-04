@@ -1,8 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { debounce } from 'lodash'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -10,13 +9,9 @@ import { z } from 'zod'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import { NotOrganizationOwnerWarning } from 'components/interfaces/Organization/NewProject'
 import { OrgNotFound } from 'components/interfaces/Organization/OrgNotFound'
-import { SPECIAL_CHARS_REGEX } from 'components/interfaces/ProjectCreation/ProjectCreation.constants'
-import { SpecialSymbolsCallout } from 'components/interfaces/ProjectCreation/SpecialSymbolsCallout'
 
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { WizardLayoutWithoutAuth } from 'components/layouts/WizardLayout'
-
-import PasswordStrengthBar from 'components/ui/PasswordStrengthBar'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 
 import { useAuthorizedAppsQuery } from 'data/oauth/authorized-apps-query'
@@ -31,9 +26,7 @@ import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { withAuth } from 'hooks/misc/withAuth'
-import { DEFAULT_MINIMUM_PASSWORD_STRENGTH, PROJECT_STATUS } from 'lib/constants'
-import passwordStrength from 'lib/password-strength'
-import { generateStrongPassword } from 'lib/project'
+import { PROJECT_STATUS } from 'lib/constants'
 import { useResourceLimitDefinitionsQuery } from 'data/resource-limits/resource-limit-definitions-query'
 import type { NextPageWithLayout } from 'types'
 
@@ -53,7 +46,6 @@ import {
   Slider_Shadcn_,
 } from 'ui'
 
-import { Eye, EyeOff } from 'lucide-react'
 import { getPathReferences } from 'data/vela/path-references'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import WideWizardLayout from 'components/layouts/WideWizardLayout'
@@ -72,7 +64,7 @@ const SLIDER_KEYS: SliderKey[] = ['vcpu', 'ram', 'nvme', 'iops', 'storage']
 const LABELS: Record<SliderKey, string> = {
   vcpu: 'vCPU',
   ram: 'RAM',
-  nvme: 'Database storage', // Renamed label here
+  nvme: 'Database storage',
   iops: 'IOPS',
   storage: 'Storage',
 }
@@ -87,53 +79,37 @@ type LimitCfg = {
 }
 type LimitMap = Record<SliderKey, LimitCfg>
 
-const FormSchema = z
-  .object({
-    organization: z.string({
-      required_error: 'Please select an organization',
-    }),
-    projectName: z
-      .string()
-      .trim()
-      .min(1, 'Please enter a project name.')
-      .min(3, 'Project name must be at least 3 characters long.')
-      .max(64, 'Project name must be no longer than 64 characters.'),
-    postgresVersion: z
-      .string({
-        required_error: 'Please enter a Postgres version.',
-      })
-      .optional(),
-    dbPassStrength: z.number(),
-    dbPass: z
-      .string({ required_error: 'Please enter a database password.' })
-      .min(1, 'Password is required.'),
-    dbPassConfirm: z.string().min(1, 'Please confirm your password.'),
-    instanceSize: z.string(),
-    dataApi: z.boolean(),
-    useApiSchema: z.boolean(),
-    postgresVersionSelection: z.string(),
-    includeFileStorage: z.boolean(),
-    enableHa: z.boolean(),
-    readReplicas: z.number(),
-    perBranchLimits: z.object({
-      vcpu: z.number(),
-      ram: z.number(),
-      nvme: z.number(),
-      iops: z.number(),
-      storage: z.number(),
-    }),
-    projectLimits: z.object({
-      vcpu: z.number(),
-      ram: z.number(),
-      nvme: z.number(),
-      iops: z.number(),
-      storage: z.number(),
-    }),
-  })
-  .refine((vals) => vals.dbPass === vals.dbPassConfirm, {
-    message: 'Passwords do not match.',
-    path: ['dbPassConfirm'],
-  })
+const FormSchema = z.object({
+  organization: z.string({ required_error: 'Please select an organization' }),
+  projectName: z
+    .string()
+    .trim()
+    .min(1, 'Please enter a project name.')
+    .min(3, 'Project name must be at least 3 characters long.')
+    .max(64, 'Project name must be no longer than 64 characters.'),
+  postgresVersion: z.string().optional(),
+  instanceSize: z.string(),
+  dataApi: z.boolean(),
+  useApiSchema: z.boolean(),
+  postgresVersionSelection: z.string(),
+  includeFileStorage: z.boolean(),
+  enableHa: z.boolean(),
+  readReplicas: z.number(),
+  perBranchLimits: z.object({
+    vcpu: z.number(),
+    ram: z.number(),
+    nvme: z.number(),
+    iops: z.number(),
+    storage: z.number(),
+  }),
+  projectLimits: z.object({
+    vcpu: z.number(),
+    ram: z.number(),
+    nvme: z.number(),
+    iops: z.number(),
+    storage: z.number(),
+  }),
+})
 
 export type CreateProjectForm = z.infer<typeof FormSchema>
 
@@ -219,12 +195,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
   const { data: approvedOAuthApps } = useAuthorizedAppsQuery({ slug }, { enabled: slug !== '_' })
   const hasOAuthApps = approvedOAuthApps && approvedOAuthApps.length > 0
 
-  const [passwordStrengthMessage, setPasswordStrengthMessage] = useState('')
-  const [passwordStrengthWarning, setPasswordStrengthWarning] = useState('')
-
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
   const [isComputeCostsConfirmationModalVisible, setIsComputeCostsConfirmationModalVisible] =
     useState(false)
 
@@ -236,82 +206,81 @@ const CreateProjectPage: NextPageWithLayout = () => {
   // --- BUILD DYNAMIC CONFIG ONLY ---
   const GIB = 1024 * 1024 * 1024
 
+  const limitConfig: LimitMap | null = useMemo(() => {
+    if (!limitDefinitions) return null
 
-const limitConfig: LimitMap | null = useMemo(() => {
-  if (!limitDefinitions) return null
-
-  const keyMap: Record<string, SliderKey> = {
-    milli_vcpu: 'vcpu',
-    ram: 'ram',
-    storage_size: 'storage',
-    iops: 'iops',
-    database_size: 'nvme',
-  }
-
-  const map = {} as LimitMap
-
-  limitDefinitions.forEach((item) => {
-    const k = keyMap[item.resource_type]
-    if (!k) return
-
-    switch (item.resource_type) {
-      case 'milli_vcpu': {
-        const divider = 1000 // millis -> vCPU
-        map[k] = {
-          label: LABELS[k],         // e.g. 'vCPU'
-          min: (item.min ?? 0) / divider,
-          max: (item.max ?? 0) / divider,
-          step: 0.1,                // 0.1 vCPU increments
-          unit: 'vCPU',
-          divider,
-        }
-        break
-      }
-
-      case 'ram': {
-        const divider = GIB        // bytes -> GiB
-        map[k] = {
-          label: LABELS[k],         // 'RAM'
-          min: (item.min ?? 0) / divider,
-          max: (item.max ?? 0) / divider,
-          step: 0.125,              // 128 MiB
-          unit: 'GiB',
-          divider,
-        }
-        break
-      }
-
-      case 'iops': {
-        const divider = 1
-        map[k] = {
-          label: LABELS[k],         // 'IOPS'
-          min: item.min ?? 0,       // no scaling
-          max: item.max ?? 0,
-          step: Math.max(1, item.step ?? 100),
-          unit: 'IOPS',
-          divider,
-        }
-        break
-      }
-
-      case 'database_size':
-      case 'storage_size': {
-        const divider = 10_000_000_000 // 10 GB steps from API
-        map[k] = {
-          label: LABELS[k],         // 'Database storage' / 'Storage'
-          min: (item.min ?? 0) / divider,
-          max: (item.max ?? 0) / divider,
-          step: 1,                  // 10 GB per tick
-          unit: 'GB',
-          divider,
-        }
-        break
-      }
+    const keyMap: Record<string, SliderKey> = {
+      milli_vcpu: 'vcpu',
+      ram: 'ram',
+      storage_size: 'storage',
+      iops: 'iops',
+      database_size: 'nvme',
     }
-  })
 
-  return map
-}, [limitDefinitions])
+    const map = {} as LimitMap
+
+    limitDefinitions.forEach((item) => {
+      const k = keyMap[item.resource_type]
+      if (!k) return
+
+      switch (item.resource_type) {
+        case 'milli_vcpu': {
+          const divider = 1000 // millis -> vCPU
+          map[k] = {
+            label: LABELS[k],
+            min: (item.min ?? 0) / divider,
+            max: (item.max ?? 0) / divider,
+            step: 0.1,
+            unit: 'vCPU',
+            divider,
+          }
+          break
+        }
+
+        case 'ram': {
+          const divider = GIB // bytes -> GiB
+          map[k] = {
+            label: LABELS[k],
+            min: (item.min ?? 0) / divider,
+            max: (item.max ?? 0) / divider,
+            step: 0.125, // 128 MiB
+            unit: 'GiB',
+            divider,
+          }
+          break
+        }
+
+        case 'iops': {
+          const divider = 1
+          map[k] = {
+            label: LABELS[k],
+            min: item.min ?? 0,
+            max: item.max ?? 0,
+            step: Math.max(1, item.step ?? 100),
+            unit: 'IOPS',
+            divider,
+          }
+          break
+        }
+
+        case 'database_size':
+        case 'storage_size': {
+          const divider = 10_000_000_000 // 10 GB steps from API
+          map[k] = {
+            label: LABELS[k],
+            min: (item.min ?? 0) / divider,
+            max: (item.max ?? 0) / divider,
+            step: 1, // 10 GB per tick
+            unit: 'GB',
+            divider,
+          }
+          break
+        }
+      }
+    })
+
+    return map
+  }, [limitDefinitions])
 
   const {
     mutate: createProject,
@@ -351,31 +320,6 @@ const limitConfig: LimitMap | null = useMemo(() => {
   const isEmptyOrganizations = (organizations?.length ?? 0) <= 0 && isOrganizationsSuccess
   const canCreateProject = isAdmin
 
-  const delayedCheckPasswordStrength = useRef(
-    debounce((value) => checkPasswordStrength(value), 300)
-  ).current
-
-  async function checkPasswordStrength(value: string) {
-    const { message, warning, strength } = await passwordStrength(value)
-
-    form.setValue('dbPassStrength', strength)
-    form.trigger('dbPassStrength')
-    form.trigger('dbPass')
-
-    setPasswordStrengthWarning(warning)
-    setPasswordStrengthMessage(message)
-  }
-
-  FormSchema.superRefine(({ dbPassStrength }, refinementContext) => {
-    if (dbPassStrength < DEFAULT_MINIMUM_PASSWORD_STRENGTH) {
-      refinementContext.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['dbPass'],
-        message: passwordStrengthWarning || 'Password not secure enough',
-      })
-    }
-  })
-
   const form = useForm<CreateProjectForm>({
     resolver: zodResolver(FormSchema),
     mode: 'onChange',
@@ -383,9 +327,6 @@ const limitConfig: LimitMap | null = useMemo(() => {
       organization: slug,
       projectName: projectName || '',
       postgresVersion: '',
-      dbPass: '',
-      dbPassConfirm: '',
-      dbPassStrength: 0,
       instanceSize: sizes[0], // internal only
       dataApi: true,
       useApiSchema: false,
@@ -425,13 +366,6 @@ const limitConfig: LimitMap | null = useMemo(() => {
     })
     return () => sub.unsubscribe()
   }, [form])
-
-  function generatePassword() {
-    const password = generateStrongPassword()
-    form.setValue('dbPass', password, { shouldValidate: true })
-    form.setValue('dbPassConfirm', password, { shouldValidate: true })
-    delayedCheckPasswordStrength(password)
-  }
 
   const additionalMonthlySpend = 0
 
@@ -558,8 +492,6 @@ const limitConfig: LimitMap | null = useMemo(() => {
         shouldDirty: true,
         shouldValidate: false,
       })
-
-      // We do NOT auto-lower per-branch. If project goes up, branch stays as-is.
     },
     [form, limitConfig]
   )
@@ -592,7 +524,7 @@ const limitConfig: LimitMap | null = useMemo(() => {
             </section>
 
             {/* ──────────────────────────────────────────────── */}
-            {/* TOP ROW: Project config / Credentials           */}
+            {/* TOP ROW: Project config / PG version            */}
             {/* ──────────────────────────────────────────────── */}
             <section className="grid grid-cols-1 gap-10 xl:grid-cols-2 xl:items-start">
               {/* COL 1: Organization / Project */}
@@ -645,7 +577,12 @@ const limitConfig: LimitMap | null = useMemo(() => {
                   />
                 )}
 
-                <FormField_Shadcn_
+               
+              </div>
+
+              {/* COL 2: Custom PG version (password fields removed) */}
+              <div className="space-y-6">
+                 <FormField_Shadcn_
                   control={form.control}
                   name="projectName"
                   render={({ field }) => (
@@ -664,143 +601,6 @@ const limitConfig: LimitMap | null = useMemo(() => {
                       />
                     </div>
                   )}
-                />
-              </div>
-
-              {/* COL 2: Pg creds + custom PG version */}
-              <div className="space-y-6">
-                {/* Password + Confirm */}
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Password */}
-                  <FormField_Shadcn_
-                    control={form.control}
-                    name="dbPass"
-                    render={({ field }) => {
-                      const hasSpecialCharacters =
-                        field.value.length > 0 && !field.value.match(SPECIAL_CHARS_REGEX)
-
-                      return (
-                        <div className="space-y-2 col-span-1">
-                          <Label_Shadcn_
-                            htmlFor="project-password"
-                            className="text-xs font-medium text-foreground whitespace-nowrap"
-                          >
-                            Pg master password
-                          </Label_Shadcn_>
-
-                          <div className="relative">
-                            <Input_Shadcn_
-                              id="project-password"
-                              type={showPassword ? 'text' : 'password'}
-                              autoComplete="new-password"
-                              placeholder="give a strong password"
-                              className="h-9 pr-10 text-sm"
-                              {...field}
-                              onChange={async (event) => {
-                                field.onChange(event)
-                                form.trigger('dbPassStrength')
-                                const value = event.target.value
-                                if (value === '') {
-                                  await form.setValue('dbPassStrength', 0)
-                                  await form.trigger('dbPass')
-                                } else {
-                                  await delayedCheckPasswordStrength(value)
-                                }
-                              }}
-                            />
-                            <button
-                              type="button"
-                              aria-label={showPassword ? 'Hide password' : 'Show password'}
-                              className="absolute inset-y-0 right-2 flex items-center text-foreground-muted"
-                              onClick={() => setShowPassword((prev) => !prev)}
-                            >
-                              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                            </button>
-                          </div>
-
-                          <div className="space-y-2">
-                            {hasSpecialCharacters && <SpecialSymbolsCallout />}
-
-                            <PasswordStrengthBar
-                              generateStrongPassword={generatePassword}
-                              passwordStrengthScore={form.getValues('dbPassStrength')}
-                              password={field.value}
-                              passwordStrengthMessage={passwordStrengthMessage}
-                            />
-                          </div>
-                        </div>
-                      )
-                    }}
-                  />
-
-                  {/* Confirm password */}
-                  <FormField_Shadcn_
-                    control={form.control}
-                    name="dbPassConfirm"
-                    render={({ field }) => (
-                      <div className="space-y-2 col-span-1">
-                        <Label_Shadcn_
-                          htmlFor="project-password-confirm"
-                          className="text-xs font-medium text-foreground whitespace-nowrap"
-                        >
-                          Confirm password
-                        </Label_Shadcn_>
-
-                        <div className="relative">
-                          <Input_Shadcn_
-                            id="project-password-confirm"
-                            type={showConfirmPassword ? 'text' : 'password'}
-                            autoComplete="new-password"
-                            placeholder="Repeat the password"
-                            className="h-9 pr-10 text-sm"
-                            {...field}
-                          />
-                          <button
-                            type="button"
-                            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                            className="absolute inset-y-0 right-2 flex items-center text-foreground-muted"
-                            onClick={() => setShowConfirmPassword((prev) => !prev)}
-                          >
-                            {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  />
-                </div>
-
-                <FormField_Shadcn_
-                  control={form.control}
-                  name="postgresVersion"
-                  render={({ field }) => {
-                    const availableVersions = availablePostgresVersions || []
-                    const defaultVersion =
-                      availableVersions.find((version) => version.default)?.value || ''
-                    return (
-                      <div className="space-y-2">
-                        <Label_Shadcn_
-                          htmlFor="custom-pg-version"
-                          className="text-xs font-medium text-foreground whitespace-nowrap"
-                        >
-                          Custom Postgres version
-                        </Label_Shadcn_>
-                        <Select_Shadcn_ disabled={availableVersions.length < 2} value={defaultVersion}>
-                          <SelectTrigger_Shadcn_>
-                            <SelectValue_Shadcn_ placeholder="Select PostgreSQL version" />
-                          </SelectTrigger_Shadcn_>
-                          <SelectContent_Shadcn_>
-                            {availableVersions.map((version) => {
-                              return (
-                                <SelectItem_Shadcn_ key={version.value} value={version.value}>
-                                  {version.label}
-                                </SelectItem_Shadcn_>
-                              )
-                            })}
-                          </SelectContent_Shadcn_>
-                        </Select_Shadcn_>
-                      </div>
-                    )
-                  }}
                 />
               </div>
             </section>
@@ -1038,7 +838,7 @@ const limitConfig: LimitMap | null = useMemo(() => {
         >
           <div className="text-sm text-foreground-light space-y-1">
             <p>
-              Creating this project can increase your monthly costs by ${additionalMonthlySpend},
+              Creating this project can increase your monthly costs by ${0},
               independent of how actively you use it. By clicking "I understand", you agree to the
               additional costs.
               <Link
