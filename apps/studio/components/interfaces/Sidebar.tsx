@@ -7,6 +7,7 @@ import {
   Boxes,
   CalendarClock,
   ChartArea,
+  Container,
   HardDrive,
   PanelLeftDashed,
   Settings,
@@ -532,7 +533,7 @@ const BranchSidebarLinks = () => {
 }
 
 /* -------------------------------------------------
-   ORG SIDEBAR (unchanged)
+   ORG SIDEBAR 
 -------------------------------------------------- */
 
 const OrganizationLinks = () => {
@@ -553,6 +554,12 @@ const OrganizationLinks = () => {
       href: `/org/${slug}`,
       key: 'projects',
       icon: <Boxes size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+    },
+    {
+      label: 'Environments',
+      href: `/org/${slug}/env`,
+      key: 'env',
+      icon: <Container size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
     {
       label: 'RBAC',

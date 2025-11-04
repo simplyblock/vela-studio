@@ -64,26 +64,28 @@ import { useAvailablePostgresVersionsQuery } from 'data/platform/available-postg
    Constants / schemas
 -------------------------------------------------------------------*/
 
-/* ------------------------------------------------------------------
-   Constants / schemas
--------------------------------------------------------------------*/
-
-
 const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
 const sizesWithNoCostConfirmationRequired: DesiredInstanceSize[] = ['micro', 'small']
 
 type SliderKey = 'vcpu' | 'ram' | 'nvme' | 'iops' | 'storage'
-
-const SLIDER_CONFIG: Record<
-  SliderKey,
-  { label: string; min: number; max: number; step: number; unit: string; divider: number }
-> = {
-  vcpu: { label: 'vCPU', min: 1, max: 32, step: 1, unit: 'vCPU', divider: 1 },
-  ram: { label: 'RAM', min: 1, max: 128, step: 1, unit: 'GB', divider: 1 },
-  nvme: { label: 'NVMe', min: 10, max: 1000, step: 1, unit: 'GB', divider: 10 },
-  iops: { label: 'IOPS', min: 1000, max: 20000, step: 1, unit: 'IOPS', divider: 500 },
-  storage: { label: 'Storage', min: 50, max: 2000, step: 1, unit: 'GB', divider: 50 },
+const SLIDER_KEYS: SliderKey[] = ['vcpu', 'ram', 'nvme', 'iops', 'storage']
+const LABELS: Record<SliderKey, string> = {
+  vcpu: 'vCPU',
+  ram: 'RAM',
+  nvme: 'Database storage', // Renamed label here
+  iops: 'IOPS',
+  storage: 'Storage',
 }
+
+type LimitCfg = {
+  label: string
+  min: number
+  max: number
+  step: number
+  unit: string
+  divider: number
+}
+type LimitMap = Record<SliderKey, LimitCfg>
 
 const FormSchema = z
   .object({
@@ -135,11 +137,9 @@ const FormSchema = z
 
 export type CreateProjectForm = z.infer<typeof FormSchema>
 
-
 /* ------------------------------------------------------------------
    Helper component
 -------------------------------------------------------------------*/
-type LimitsConfig = typeof SLIDER_CONFIG
 
 // Reusable slider row (label + current value on right + slider)
 const SliderRow = ({
@@ -233,39 +233,85 @@ const CreateProjectPage: NextPageWithLayout = () => {
   // --- FETCH RESOURCE LIMIT DEFINITIONS ---
   const { data: limitDefinitions } = useResourceLimitDefinitionsQuery()
 
-  // --- BUILD DYNAMIC CONFIG ---
-  const limitConfig = useMemo(() => {
-    if (!limitDefinitions) return SLIDER_CONFIG
+  // --- BUILD DYNAMIC CONFIG ONLY ---
+  const GIB = 1024 * 1024 * 1024
 
-    const map: Record<string, (typeof SLIDER_CONFIG)['vcpu']> = { ...SLIDER_CONFIG }
 
-    limitDefinitions.forEach((item) => {
-      // Map API resource_type to local key
-      const keyMap: Record<string, SliderKey> = {
-        milli_vcpu: 'vcpu',
-        ram: 'ram',
-        storage_size: 'storage',
-        iops: 'iops',
-        database_size: 'nvme',
+const limitConfig: LimitMap | null = useMemo(() => {
+  if (!limitDefinitions) return null
+
+  const keyMap: Record<string, SliderKey> = {
+    milli_vcpu: 'vcpu',
+    ram: 'ram',
+    storage_size: 'storage',
+    iops: 'iops',
+    database_size: 'nvme',
+  }
+
+  const map = {} as LimitMap
+
+  limitDefinitions.forEach((item) => {
+    const k = keyMap[item.resource_type]
+    if (!k) return
+
+    switch (item.resource_type) {
+      case 'milli_vcpu': {
+        const divider = 1000 // millis -> vCPU
+        map[k] = {
+          label: LABELS[k],         // e.g. 'vCPU'
+          min: (item.min ?? 0) / divider,
+          max: (item.max ?? 0) / divider,
+          step: 0.1,                // 0.1 vCPU increments
+          unit: 'vCPU',
+          divider,
+        }
+        break
       }
 
-      const k = keyMap[item.resource_type]
-      if (!k) return
-
-      const step = item.step
-
-      map[k] = {
-        label: SLIDER_CONFIG[k].label,
-        // branch: local min/max; project: API min/max
-        min: item.min / step,
-        max: item.max / step,
-        step: 1,
-        unit: item.unit ?? SLIDER_CONFIG[k].unit,
-        divider: step,
+      case 'ram': {
+        const divider = GIB        // bytes -> GiB
+        map[k] = {
+          label: LABELS[k],         // 'RAM'
+          min: (item.min ?? 0) / divider,
+          max: (item.max ?? 0) / divider,
+          step: 0.125,              // 128 MiB
+          unit: 'GiB',
+          divider,
+        }
+        break
       }
-    })
-    return map
-  }, [limitDefinitions])
+
+      case 'iops': {
+        const divider = 1
+        map[k] = {
+          label: LABELS[k],         // 'IOPS'
+          min: item.min ?? 0,       // no scaling
+          max: item.max ?? 0,
+          step: Math.max(1, item.step ?? 100),
+          unit: 'IOPS',
+          divider,
+        }
+        break
+      }
+
+      case 'database_size':
+      case 'storage_size': {
+        const divider = 10_000_000_000 // 10 GB steps from API
+        map[k] = {
+          label: LABELS[k],         // 'Database storage' / 'Storage'
+          min: (item.min ?? 0) / divider,
+          max: (item.max ?? 0) / divider,
+          step: 1,                  // 10 GB per tick
+          unit: 'GB',
+          divider,
+        }
+        break
+      }
+    }
+  })
+
+  return map
+}, [limitDefinitions])
 
   const {
     mutate: createProject,
@@ -364,15 +410,13 @@ const CreateProjectPage: NextPageWithLayout = () => {
     },
   })
 
-
+  // When file storage disabled, zero out both storage sliders
   useEffect(() => {
     const include = form.watch('includeFileStorage')
     if (!include) {
       form.setValue('perBranchLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
       form.setValue('projectLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
     }
-    // react-hook-form watch subscriptions aren't auto-cleaned in effects,
-    // so we subscribe explicitly:
     const sub = form.watch((v, { name }) => {
       if (name === 'includeFileStorage' && v?.includeFileStorage === false) {
         form.setValue('perBranchLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
@@ -381,7 +425,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
     })
     return () => sub.unsubscribe()
   }, [form])
-
 
   function generatePassword() {
     const password = generateStrongPassword()
@@ -418,8 +461,12 @@ const CreateProjectPage: NextPageWithLayout = () => {
       console.error('Unable to retrieve current organization')
       return
     }
+    if (!limitConfig) {
+      toast.error('Resource limits not loaded yet. Please wait a moment and try again.')
+      return
+    }
 
-    const { projectName, postgresVersion } = values
+    const { postgresVersion } = values
 
     const data: ProjectCreateVariables = {
       organizationSlug: currentOrg.slug,
@@ -471,51 +518,51 @@ const CreateProjectPage: NextPageWithLayout = () => {
     if (projectName) form.setValue('projectName', projectName || '')
   }, [slug, projectName, form])
 
- // ── SYNCED SLIDER HANDLERS (raise the lower side to the higher side) ──
-const handleBranchSliderChange = useCallback(
-  (key: SliderKey) => (value: number[]) => {
-    const [next] = value
-    const safeNext = next ?? limitConfig[key].min
+  // ── SYNCED SLIDER HANDLERS (raise the lower side to the higher side) ──
+  const handleBranchSliderChange = useCallback(
+    (key: SliderKey) => (value: number[]) => {
+      if (!limitConfig) return
+      const [next] = value
+      const safeNext = next ?? limitConfig[key].min
 
-    // Set per-branch value
-    form.setValue(`perBranchLimits.${key}`, safeNext, {
-      shouldDirty: true,
-      shouldValidate: false,
-    })
-
-    // If branch exceeds current project limit, bump project up
-    const projectVal = form.getValues(`projectLimits.${key}`)
-    if (safeNext > projectVal) {
-      form.setValue(`projectLimits.${key}`, safeNext, {
+      // Set per-branch value
+      form.setValue(`perBranchLimits.${key}`, safeNext, {
         shouldDirty: true,
         shouldValidate: false,
       })
-    }
-  },
-  [form, limitConfig]
-)
 
-const handleProjectLimitSliderChange = useCallback(
-  (key: SliderKey) => (value: number[]) => {
-    const [next] = value
-    const safeNext = next ?? limitConfig[key].min
+      // If branch exceeds current project limit, bump project up
+      const projectVal = form.getValues(`projectLimits.${key}`)
+      if (safeNext > projectVal) {
+        form.setValue(`projectLimits.${key}`, safeNext, {
+          shouldDirty: true,
+          shouldValidate: false,
+        })
+      }
+    },
+    [form, limitConfig]
+  )
 
-    const branchVal = form.getValues(`perBranchLimits.${key}`)
+  const handleProjectLimitSliderChange = useCallback(
+    (key: SliderKey) => (value: number[]) => {
+      if (!limitConfig) return
+      const [next] = value
+      const safeNext = next ?? limitConfig[key].min
 
-    // Clamp: project must be at least branch, and within slider bounds
-    const clamped =
-      Math.max(branchVal, Math.min(safeNext, limitConfig[key].max))
+      const branchVal = form.getValues(`perBranchLimits.${key}`)
 
-    form.setValue(`projectLimits.${key}`, clamped, {
-      shouldDirty: true,
-      shouldValidate: false,
-    })
+      // Clamp: project must be at least branch, and within slider bounds
+      const clamped = Math.max(branchVal, Math.min(safeNext, limitConfig[key].max))
 
-    // We do NOT auto-lower per-branch. If project goes up, branch stays as-is.
-  },
-  [form, limitConfig]
-)
+      form.setValue(`projectLimits.${key}`, clamped, {
+        shouldDirty: true,
+        shouldValidate: false,
+      })
 
+      // We do NOT auto-lower per-branch. If project goes up, branch stays as-is.
+    },
+    [form, limitConfig]
+  )
 
   return (
     <Form_Shadcn_ {...form}>
@@ -545,10 +592,10 @@ const handleProjectLimitSliderChange = useCallback(
             </section>
 
             {/* ──────────────────────────────────────────────── */}
-            {/* TOP ROW: Project config / Credentials  */}
+            {/* TOP ROW: Project config / Credentials           */}
             {/* ──────────────────────────────────────────────── */}
             <section className="grid grid-cols-1 gap-10 xl:grid-cols-2 xl:items-start">
-              {/* COL 1: Organization / Project / Env */}
+              {/* COL 1: Organization / Project */}
               <div className="space-y-6">
                 {isAdmin && !isInvalidSlug && (
                   <FormField_Shadcn_
@@ -620,7 +667,7 @@ const handleProjectLimitSliderChange = useCallback(
                 />
               </div>
 
-              {/* COL 3: Pg creds + custom PG version */}
+              {/* COL 2: Pg creds + custom PG version */}
               <div className="space-y-6">
                 {/* Password + Confirm */}
                 <div className="grid grid-cols-2 gap-4">
@@ -675,13 +722,12 @@ const handleProjectLimitSliderChange = useCallback(
                             {hasSpecialCharacters && <SpecialSymbolsCallout />}
 
                             <PasswordStrengthBar
-                              generateStrongPassword={generatePassword} 
+                              generateStrongPassword={generatePassword}
                               passwordStrengthScore={form.getValues('dbPassStrength')}
                               password={field.value}
                               passwordStrengthMessage={passwordStrengthMessage}
                             />
                           </div>
-
                         </div>
                       )
                     }}
@@ -723,14 +769,13 @@ const handleProjectLimitSliderChange = useCallback(
                   />
                 </div>
 
-
-
                 <FormField_Shadcn_
                   control={form.control}
                   name="postgresVersion"
                   render={({ field }) => {
                     const availableVersions = availablePostgresVersions || []
-                    const defaultVersion = availableVersions.find(version => version.default)?.value || ''
+                    const defaultVersion =
+                      availableVersions.find((version) => version.default)?.value || ''
                     return (
                       <div className="space-y-2">
                         <Label_Shadcn_
@@ -739,17 +784,14 @@ const handleProjectLimitSliderChange = useCallback(
                         >
                           Custom Postgres version
                         </Label_Shadcn_>
-                        <Select_Shadcn_
-                          disabled={availableVersions.length < 2}
-                          value={defaultVersion}
-                        >
+                        <Select_Shadcn_ disabled={availableVersions.length < 2} value={defaultVersion}>
                           <SelectTrigger_Shadcn_>
                             <SelectValue_Shadcn_ placeholder="Select PostgreSQL version" />
                           </SelectTrigger_Shadcn_>
                           <SelectContent_Shadcn_>
                             {availableVersions.map((version) => {
                               return (
-                                <SelectItem_Shadcn_ value={version.value}>
+                                <SelectItem_Shadcn_ key={version.value} value={version.value}>
                                   {version.label}
                                 </SelectItem_Shadcn_>
                               )
@@ -771,87 +813,92 @@ const handleProjectLimitSliderChange = useCallback(
               <section className="rounded-lg border p-5 space-y-4">
                 <p className="font-medium text-sm text-foreground">Sizing (per branch)</p>
 
-                <div className="grid grid-cols-1 gap-y-4">
-                  {(Object.keys(SLIDER_CONFIG) as SliderKey[]).map((key) => {
-                    const { label, min, max, step, unit } = limitConfig[key]
-                    const value = form.watch(`perBranchLimits.${key}`)
+                {!limitConfig ? (
+                  <p className="text-sm text-foreground-muted">Loading limits…</p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-y-4">
+                    {SLIDER_KEYS.map((key) => {
+                      const { label, min, max, step, unit } = limitConfig[key]
+                      const value = form.watch(`perBranchLimits.${key}`)
+                      const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
 
-                    const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
-
-                    return (
-                      <SliderRow
-                        key={key}
-                        id={`sizing-${key}`}
-                        label={label}
-                        value={value}
-                        min={min}
-                        max={max}
-                        step={step}
-                        unit={unit}
-                        disabled={storageDisabled}
-                        onChange={handleBranchSliderChange(key)}
-                        helper={
-                          key === 'storage' && storageDisabled ? (
-                            <div className='mt-2'>
-                              <Label_Shadcn_ className="text-xs text-muted-foreground">
-                                Check “Include file storage” to enable the slider
-                              </Label_Shadcn_>
-                            </div>
-                          ) : null
-                        }
-                      />
-                    )
-                  })}
-                </div>
+                      return (
+                        <SliderRow
+                          key={key}
+                          id={`sizing-${key}`}
+                          label={label}
+                          value={value}
+                          min={min}
+                          max={max}
+                          step={step}
+                          unit={unit}
+                          disabled={storageDisabled}
+                          onChange={handleBranchSliderChange(key)}
+                          helper={
+                            key === 'storage' && storageDisabled ? (
+                              <div className="mt-2">
+                                <Label_Shadcn_ className="text-xs text-muted-foreground">
+                                  Check “Include file storage” to enable the slider
+                                </Label_Shadcn_>
+                              </div>
+                            ) : null
+                          }
+                        />
+                      )
+                    })}
+                  </div>
+                )}
 
                 <p className="text-[11px] leading-snug text-foreground-muted">
-                  Resource allocation for this branch. These values will eventually control cost and performance.
+                  Resource allocation for this branch. These values will eventually control cost and
+                  performance.
                 </p>
               </section>
-
 
               {/* Project limits card */}
               <section className="rounded-lg border p-5 space-y-4">
                 <p className="font-medium text-sm text-foreground">Project limits</p>
 
-                <div className="grid grid-cols-1 gap-y-4">
-                  {(Object.keys(SLIDER_CONFIG) as SliderKey[]).map((key) => {
-                    const { label, min, max, step, unit } = limitConfig[key]
-                    const value = form.watch(`projectLimits.${key}`)
+                {!limitConfig ? (
+                  <p className="text-sm text-foreground-muted">Loading limits…</p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-y-4">
+                    {SLIDER_KEYS.map((key) => {
+                      const { label, min, max, step, unit } = limitConfig[key]
+                      const value = form.watch(`projectLimits.${key}`)
+                      const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
 
-                    const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
-
-                    return (
-                      <SliderRow
-                        key={key}
-                        id={`project-limits-${key}`}
-                        label={label}
-                        value={value}
-                        min={min}
-                        max={max}
-                        step={step}
-                        unit={unit}
-                        disabled={storageDisabled}
-                        onChange={handleProjectLimitSliderChange(key)}
-                        helper={
-                          key === 'storage' && storageDisabled ? (
-                            <div className='mt-2'>
-                              <Label_Shadcn_ className="text-xs text-muted-foreground">
-                                Check “Include file storage” to enable the slider
-                              </Label_Shadcn_>
-                            </div>
-                          ) : null
-                        }
-                      />
-                    )
-                  })}
-                </div>
+                      return (
+                        <SliderRow
+                          key={key}
+                          id={`project-limits-${key}`}
+                          label={label}
+                          value={value}
+                          min={min}
+                          max={max}
+                          step={step}
+                          unit={unit}
+                          disabled={storageDisabled}
+                          onChange={handleProjectLimitSliderChange(key)}
+                          helper={
+                            key === 'storage' && storageDisabled ? (
+                              <div className="mt-2">
+                                <Label_Shadcn_ className="text-xs text-muted-foreground">
+                                  Check “Include file storage” to enable the slider
+                                </Label_Shadcn_>
+                              </div>
+                            ) : null
+                          }
+                        />
+                      )
+                    })}
+                  </div>
+                )}
 
                 <p className="text-[11px] leading-snug text-foreground-muted">
                   Global ceilings across all branches in this project.
                 </p>
               </section>
-
             </section>
 
             {/* ──────────────────────────────────────────────── */}
