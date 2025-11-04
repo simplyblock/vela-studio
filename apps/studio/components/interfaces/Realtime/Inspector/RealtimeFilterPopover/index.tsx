@@ -206,7 +206,7 @@ export const RealtimeFilterPopover = ({ config, onChangeConfig }: RealtimeFilter
         onConfirm={() => {
           sendEvent({
             action: 'realtime_inspector_filters_applied',
-            groups: { project: ref ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+            groups: { project: ref ?? 'Unknown', organization: org?.id ?? 'Unknown' },
           })
           onChangeConfig(tempConfig)
           setApplyConfigOpen(false)

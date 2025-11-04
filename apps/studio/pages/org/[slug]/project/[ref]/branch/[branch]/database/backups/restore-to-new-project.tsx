@@ -81,7 +81,6 @@ const RestoreToNewProject = () => {
   const IS_PG15_OR_ABOVE = dbVersion >= 15
   const targetVolumeSizeGb = cloneBackups?.target_volume_size_gb
   const targetComputeSize = cloneBackups?.target_compute_size
-  const planId = organization?.plan?.id ?? 'free'
   const { data } = useDiskAttributesQuery({ projectRef: project?.id })
   const storageType = data?.attributes?.type ?? 'gp3'
 
@@ -266,7 +265,7 @@ const RestoreToNewProject = () => {
   const additionalMonthlySpend = projectSpecToMonthlyPrice({
     targetVolumeSizeGb: targetVolumeSizeGb ?? 0,
     targetComputeSize: targetComputeSize ?? 'nano',
-    planId: planId ?? 'free',
+    planId: 'free',
     storageType: storageType as DiskType,
   })
 

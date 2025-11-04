@@ -32,7 +32,7 @@ export const OrganizationDropdown = () => {
 
   const organizationCreationEnabled = useIsFeatureEnabled('organizations:create')
 
-  const slug = selectedOrganization?.slug
+  const slug = selectedOrganization?.id
   const orgName = selectedOrganization?.name
 
   const [open, setOpen] = useState(false)
@@ -77,13 +77,13 @@ export const OrganizationDropdown = () => {
                 <ScrollArea className={(organizations || []).length > 7 ? 'h-[210px]' : ''}>
                   {organizations?.map((org) => {
                     const href = !!routeSlug
-                      ? router.pathname.replace('[slug]', org.slug)
-                      : `/org/${org.slug}`
+                      ? router.pathname.replace('[slug]', org.id!)
+                      : `/org/${org.id}`
 
                     return (
                       <CommandItem_Shadcn_
-                        key={org.slug}
-                        value={`${org.name.replaceAll('"', '')} - ${org.slug}`}
+                        key={org.id}
+                        value={`${org.name.replaceAll('"', '')} - ${org.id}`}
                         className="cursor-pointer w-full"
                         onSelect={() => {
                           setOpen(false)
@@ -95,7 +95,7 @@ export const OrganizationDropdown = () => {
                           <div className="flex items-center gap-2">
                             <span>{org.name}</span>
                           </div>
-                          {org.slug === slug && <Check size={16} />}
+                          {org.id === slug && <Check size={16} />}
                         </Link>
                       </CommandItem_Shadcn_>
                     )

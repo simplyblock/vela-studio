@@ -80,7 +80,7 @@ const GenericProjectPage: NextPage = () => {
   }
 
   const [[lastVisitedOrganization], otherOrganizations] = useMemo(
-    () => partition(organizations, (org) => org.slug === lastVisitedOrgSlug),
+    () => partition(organizations, (org) => org.id === lastVisitedOrgSlug),
     [lastVisitedOrgSlug, organizations]
   )
 

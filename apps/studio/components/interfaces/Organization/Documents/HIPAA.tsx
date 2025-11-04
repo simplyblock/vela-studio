@@ -43,7 +43,7 @@ export const HIPAA = () => {
                 onClick={() =>
                   sendEvent({
                     action: 'hipaa_request_button_clicked',
-                    groups: { organization: organization?.slug ?? 'Unknown' },
+                    groups: { organization: organization?.id ?? 'Unknown' },
                   })
                 }
               >

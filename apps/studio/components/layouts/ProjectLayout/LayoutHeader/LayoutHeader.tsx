@@ -71,7 +71,7 @@ const LayoutHeader = ({
 
   // We only want to query the org usage and check for possible over-ages for plans without usage billing enabled (free or pro with spend cap)
   const { data: orgUsage } = useOrgUsageQuery(
-    { orgRef: selectedOrganization?.slug }
+    { orgRef: selectedOrganization?.id }
   )
 
   const exceedingLimits = useMemo(() => {
@@ -133,7 +133,7 @@ const LayoutHeader = ({
 
                     {exceedingLimits && (
                       <div className="ml-2">
-                        <Link href={`/org/${selectedOrganization?.slug}/usage`}>
+                        <Link href={`/org/${selectedOrganization?.id}/usage`}>
                           <Badge variant="destructive" className="whitespace-nowrap">
                             Exceeding usage limits
                           </Badge>

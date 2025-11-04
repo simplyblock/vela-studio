@@ -95,9 +95,9 @@ const GenericOrganizationPage: NextPage = () => {
                 )}
               >
                 {organizations?.map((organization) => (
-                  <li key={organization.slug} className="col-span-1">
+                  <li key={organization.id} className="col-span-1">
                     <CardButton
-                      linkHref={urlRewriterFactory(routeSlug)(organization.slug)}
+                      linkHref={urlRewriterFactory(routeSlug)(organization.id!)}
                       title={
                         <div className="flex w-full flex-row justify-between gap-1">
                           <span className="flex-shrink truncate">{organization.name}</span>
@@ -106,7 +106,7 @@ const GenericOrganizationPage: NextPage = () => {
                       footer={
                         <div className="flex items-end justify-between">
                           <span className="text-sm lowercase text-foreground-light">
-                            {organization.slug}
+                            {organization.id}
                           </span>
                         </div>
                       }

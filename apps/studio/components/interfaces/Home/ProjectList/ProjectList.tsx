@@ -105,7 +105,7 @@ const ProjectList = ({
 
   return (
     <OrganizationProjects
-      key={organization.slug}
+      key={organization.id}
       organization={organization}
       projects={orgProjects}
       resourceWarnings={resourceWarnings ?? []}
@@ -198,7 +198,7 @@ const OrganizationProjects = ({
     return null
 
   return (
-    <div className="space-y-3" key={organization.slug}>
+    <div className="space-y-3" key={organization.id}>
       {isLoadingPermissions || isLoadingProjects ? (
         <ul className="mx-auto grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
           <ShimmeringCard />
@@ -221,7 +221,7 @@ const OrganizationProjects = ({
               />
             </div>
           ) : isEmpty ? (
-            <NoProjectsState slug={organization.slug} />
+            <NoProjectsState slug={organization.id!} />
           ) : (
             filteredProjectsByStatus?.map((project) => (
               <ProjectCard

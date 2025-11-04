@@ -226,10 +226,6 @@ export const getReportAttributesV2: (
   maxConnections?: MaxConnectionsData,
   poolerConfig?: PgbouncerConfigData
 ) => ReportAttributes[] = (org, project, diskConfig, maxConnections, poolerConfig) => {
-  const isFreePlan = org?.plan?.id === 'free'
-  const computeSize = 'medium'
-  const isSpendCapEnabled = org?.plan.id !== 'free'
-
   return [
     {
       id: 'ram-usage',
@@ -486,7 +482,6 @@ export const getReportAttributesV2: (
       syncId: 'database-reports',
       valuePrecision: 0,
       availableIn: ['pro', 'team'],
-      hide: isFreePlan,
       showTooltip: true,
       showLegend: true,
       showMaxValue: true,
@@ -509,29 +504,6 @@ export const getReportAttributesV2: (
           value: poolerConfig?.max_client_conn ?? undefined,
           tooltip: 'Maximum allowed pooler connections for your current compute size',
           isMaxValue: true,
-        },
-      ],
-    },
-    {
-      id: 'supavisor-connections-active',
-      label: 'Shared Pooler (Supavisor) client connections',
-      syncId: 'database-reports',
-      valuePrecision: 0,
-      availableIn: ['pro', 'team'],
-      hide: isFreePlan,
-      showTooltip: false,
-      showLegend: false,
-      showMaxValue: false,
-      showGrid: true,
-      YAxisProps: { width: 30 },
-      hideChartType: false,
-      defaultChartStyle: 'line',
-      attributes: [
-        {
-          attribute: 'supavisor_connections_active',
-          provider: 'infra-monitoring',
-          label: 'supavisor',
-          tooltip: 'Supavisor connections',
         },
       ],
     },
@@ -584,26 +556,6 @@ export const getReportAttributesV2: (
           label: 'Disk Size',
           tooltip: 'Disk Size refers to the total space your project occupies on disk',
         },
-        !isFreePlan &&
-          (isSpendCapEnabled
-            ? {
-                attribute: 'pg_database_size_percent_paid_spendCap',
-                provider: 'reference-line',
-                isReferenceLine: true,
-                strokeDasharray: '4 2',
-                label: 'Spend cap enabled',
-                value: diskConfig?.attributes?.size_gb! * 1024 * 1024 * 1024,
-                className: '[&_line]:!stroke-yellow-800 [&_line]:!opacity-100',
-                opacity: 1,
-              }
-            : {
-                attribute: 'pg_database_size_percent_paid',
-                provider: 'reference-line',
-                isReferenceLine: true,
-                label: '90% - Disk resize threshold',
-                className: '[&_line]:!stroke-yellow-800',
-                value: diskConfig?.attributes?.size_gb! * 1024 * 1024 * 1024 * 0.9,
-              }),
       ],
     },
   ]

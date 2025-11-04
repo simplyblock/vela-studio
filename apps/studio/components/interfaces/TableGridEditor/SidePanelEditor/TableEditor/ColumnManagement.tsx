@@ -173,7 +173,7 @@ const ColumnManagement = ({
                         properties: { tableType: 'New Table' },
                         groups: {
                           project: projectRef ?? 'Unknown',
-                          organization: org?.slug ?? 'Unknown',
+                          organization: org?.id ?? 'Unknown',
                         },
                       })
                     }}

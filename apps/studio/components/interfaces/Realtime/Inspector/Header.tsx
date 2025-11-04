@@ -50,7 +50,7 @@ export const Header = ({ config, onChangeConfig }: HeaderProps) => {
                 action: 'realtime_inspector_listen_channel_clicked',
                 groups: {
                   project: projectRef ?? 'Unknown',
-                  organization: org?.slug ?? 'Unknown',
+                  organization: org?.id ?? 'Unknown',
                 },
               })
             }

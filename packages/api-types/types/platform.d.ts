@@ -13217,7 +13217,9 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'OrganizationResponse'>[]
+          'application/json': (Omit<VelaType<'Organization'>, "environments"> & {
+            env_types?: string[]
+          })[]
         }
       }
       /** @description Failed to retrieve user's organizations */
@@ -13276,7 +13278,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'OrganizationSlugResponse'>
+          'application/json': VelaType<'Organization'>
         }
       }
       403: {

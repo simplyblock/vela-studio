@@ -16,7 +16,7 @@ export function Telemetry() {
       API_URL={API_URL}
       hasAcceptedConsent={hasAcceptedConsent}
       enabled={true}
-      organizationSlug={organization?.slug}
+      organizationSlug={organization?.id}
     />
   )
 }

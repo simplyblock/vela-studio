@@ -140,7 +140,6 @@ const SpreadsheetImport = ({
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handler = useCallback(debounce(readSpreadsheetText, debounceDuration), [])
   const onInputChange = (event: any) => {
     setInput(event.target.value)
@@ -170,7 +169,7 @@ const SpreadsheetImport = ({
       saveContent({ file: uploadedFile, ...spreadsheetData, selectedHeaders, resolve })
       sendEvent({
         action: 'import_data_added',
-        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
       })
     }
   }

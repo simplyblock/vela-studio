@@ -7,12 +7,7 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import {
-  Button,
-  PopoverContent_Shadcn_,
-  PopoverTrigger_Shadcn_,
-  Popover_Shadcn_,
-} from 'ui'
+import { Button, Popover_Shadcn_, PopoverContent_Shadcn_, PopoverTrigger_Shadcn_ } from 'ui'
 
 export const HelpPopover = () => {
   const router = useRouter()
@@ -20,9 +15,6 @@ export const HelpPopover = () => {
   const { data: org } = useSelectedOrganizationQuery()
 
   const { mutate: sendEvent } = useSendEventMutation()
-
-  const projectRef = router.query.ref
-  const supportUrl = `/support/new${projectRef ? `?projectRef=${projectRef}` : ''}`
 
   return (
     <Popover_Shadcn_>
@@ -42,7 +34,7 @@ export const HelpPopover = () => {
           onClick={() => {
             sendEvent({
               action: 'help_button_clicked',
-              groups: { project: project?.id, organization: org?.slug },
+              groups: { project: project?.id, organization: org?.id },
             })
           }}
         />

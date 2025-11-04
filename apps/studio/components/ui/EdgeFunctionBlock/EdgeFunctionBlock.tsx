@@ -78,7 +78,7 @@ export const EdgeFunctionBlock = ({
       sendEvent({
         action: 'edge_function_deploy_button_clicked',
         properties: { origin: 'functions_ai_assistant' },
-        groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+        groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
       })
     } catch (error) {
       toast.error(

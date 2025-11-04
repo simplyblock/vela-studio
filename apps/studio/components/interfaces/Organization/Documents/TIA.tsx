@@ -35,7 +35,7 @@ export const TIA = () => {
               sendEvent({
                 action: 'document_view_button_clicked',
                 properties: { documentName: 'TIA' },
-                groups: { organization: organization?.slug ?? 'Unknown' },
+                groups: { organization: organization?.id ?? 'Unknown' },
               })
             }
           >

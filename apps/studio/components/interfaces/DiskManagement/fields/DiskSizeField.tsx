@@ -1,6 +1,5 @@
 import { UseFormReturn } from 'react-hook-form'
 import { DocsButton } from 'components/ui/DocsButton'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { GB } from 'lib/constants'
 import { Button, FormControl_Shadcn_, FormField_Shadcn_, Input_Shadcn_ } from 'ui'
@@ -29,7 +28,6 @@ export function DiskSizeField({
   setAdvancedSettingsOpenState,
 }: DiskSizeFieldProps) {
   const { control, formState, setValue, trigger, getValues, resetField, watch } = form
-  const { data: org } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
 
@@ -40,7 +38,7 @@ export function DiskSizeField({
   const watchedStorageType = watch('storageType')
   const watchedTotalSize = watch('totalSize')
 
-  const planId = org?.plan.id ?? 'free'
+  const planId = 'free'
 
   const { includedDiskGB: includedDiskGBMeta } =
     PLAN_DETAILS?.[planId as keyof typeof PLAN_DETAILS] ?? {}
@@ -111,7 +109,6 @@ export function DiskSizeField({
           />
           <span className="text-foreground-lighter text-sm">
             {includedDiskGB > 0 &&
-              org?.plan.id &&
               `Your plan includes ${includedDiskGB} GB of disk size for ${watchedStorageType}.`}
 
             <div className="mt-3">

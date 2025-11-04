@@ -36,7 +36,7 @@ export const DeleteProjectModal = ({
 
   async function handleDeleteProject() {
     if (project === undefined) return
-    deleteProject({ projectRef: project.id, organizationSlug: organization?.slug })
+    deleteProject({ projectRef: project.id, organizationSlug: organization?.id })
   }
 
   return (
@@ -50,9 +50,7 @@ export const DeleteProjectModal = ({
         title: 'This action cannot be undone.',
         description: 'All project data will be lost, and cannot be undone',
       }}
-      text={
-        `This will permanently delete the ${project?.name} project and all of its data.`
-      }
+      text={`This will permanently delete the ${project?.name} project and all of its data.`}
       confirmPlaceholder="Type the project name in here"
       confirmString={project?.name || ''}
       confirmLabel="I understand, delete this project"
@@ -60,7 +58,6 @@ export const DeleteProjectModal = ({
       onCancel={() => {
         if (!isSubmitting) onClose()
       }}
-    >
-    </TextConfirmModal>
+    ></TextConfirmModal>
   )
 }

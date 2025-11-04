@@ -19,8 +19,8 @@ export const HomeIcon = () => {
 
   const getDefaultOrgRedirect = () => {
     if (lastVisitedOrganization) return `/org/${lastVisitedOrganization}`
-    if (selectedOrganization?.slug) return `/org/${selectedOrganization.slug}`
-    if (organizations && organizations.length > 0) return `/org/${organizations[0].slug}`
+    if (selectedOrganization?.id) return `/org/${selectedOrganization.id}`
+    if (organizations && organizations.length > 0) return `/org/${organizations[0].id}`
     return '/organizations'
   }
 

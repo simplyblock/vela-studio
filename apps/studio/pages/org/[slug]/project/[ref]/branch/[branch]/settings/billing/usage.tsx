@@ -22,9 +22,9 @@ const ProjectBillingUsage: NextPageWithLayout = () => {
     let redirectUrl
 
     if (['cpu', 'ram', 'disk_io'].includes(hash)) {
-      redirectUrl = `/org/${organization.slug}/project/${projectRef}/branch/${branchRef}/settings/infrastructure#${hash}`
+      redirectUrl = `/org/${organization.id}/project/${projectRef}/branch/${branchRef}/settings/infrastructure#${hash}`
     } else {
-      redirectUrl = `/org/${organization.slug}/usage?projectRef=${projectRef}`
+      redirectUrl = `/org/${organization.id}/usage?projectRef=${projectRef}`
     }
 
     router.push(redirectUrl)

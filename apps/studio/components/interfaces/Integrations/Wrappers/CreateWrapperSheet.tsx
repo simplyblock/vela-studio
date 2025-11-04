@@ -176,7 +176,7 @@ export const CreateWrapperSheet = ({
         },
         groups: {
           project: project?.id ?? 'Unknown',
-          organization: org?.slug ?? 'Unknown',
+          organization: org?.id ?? 'Unknown',
         },
       })
     } catch (error) {

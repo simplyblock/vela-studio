@@ -1,5 +1,4 @@
 import { Download } from 'lucide-react'
-import Link from 'next/link'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import {
@@ -17,12 +16,10 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const SOC2 = () => {
   const { data: organization } = useSelectedOrganizationQuery()
-  const slug = organization?.slug
+  const slug = organization?.id
   const { mutate: sendEvent } = useSendEventMutation()
 
-  const { can: canReadSubscriptions } = useCheckPermissions("branch:settings:read")
-
-  const currentPlan = organization?.plan
+  const { can: canReadSubscriptions } = useCheckPermissions('branch:settings:read')
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -51,26 +48,20 @@ export const SOC2 = () => {
           <NoPermission resourceText="access our SOC2 Type 2 report" />
         ) : (
           <div className="flex items-center justify-center h-full">
-            {currentPlan?.id === 'free' || currentPlan?.id === 'pro' ? (
-              <Link href={`/org/${slug}/billing?panel=subscriptionPlan&source=soc2`}>
-                <Button type="default">Upgrade to Team</Button>
-              </Link>
-            ) : (
-              <Button
-                type="default"
-                icon={<Download />}
-                onClick={() => {
-                  sendEvent({
-                    action: 'document_view_button_clicked',
-                    properties: { documentName: 'SOC2' },
-                    groups: { organization: organization?.slug ?? 'Unknown' },
-                  })
-                  setIsOpen(true)
-                }}
-              >
-                Download SOC2 Type 2 Report
-              </Button>
-            )}
+            <Button
+              type="default"
+              icon={<Download />}
+              onClick={() => {
+                sendEvent({
+                  action: 'document_view_button_clicked',
+                  properties: { documentName: 'SOC2' },
+                  groups: { organization: organization?.id ?? 'Unknown' },
+                })
+                setIsOpen(true)
+              }}
+            >
+              Download SOC2 Type 2 Report
+            </Button>
           </div>
         )}
         <ConfirmationModal

@@ -17,7 +17,7 @@ import TextConfirmModal from 'ui-patterns/Dialogs/TextConfirmModal'
 export const DPA = () => {
   const { profile } = useProfile()
   const { data: organization } = useSelectedOrganizationQuery()
-  const slug = organization?.slug
+  const slug = organization?.id
 
   const [isOpen, setIsOpen] = useState(false)
 

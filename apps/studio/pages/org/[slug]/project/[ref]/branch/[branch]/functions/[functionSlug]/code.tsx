@@ -140,14 +140,14 @@ const CodePage = () => {
     setShowDeployWarning(true)
     sendEvent({
       action: 'edge_function_deploy_updates_button_clicked',
-      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
     })
   }
 
   const handleDeployConfirm = () => {
     sendEvent({
       action: 'edge_function_deploy_updates_confirm_clicked',
-      groups: { project: projectRef ?? 'Unknown', organization: org?.slug ?? 'Unknown' },
+      groups: { project: projectRef ?? 'Unknown', organization: org?.id ?? 'Unknown' },
     })
     onUpdate()
   }
@@ -223,7 +223,7 @@ const CodePage = () => {
             aiMetadata={{
               projectRef: project?.id,
               connectionString: branch?.database.encrypted_connection_string,
-              orgSlug: org?.slug,
+              orgSlug: org?.id,
             }}
           />
           <div className="flex items-center bg-background-muted justify-end p-4 border-t bg-surface-100 shrink-0">

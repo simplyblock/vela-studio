@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -47,12 +46,8 @@ import { IOPSField } from './fields/IOPSField'
 import { StorageTypeField } from './fields/StorageTypeField'
 import { ThroughputField } from './fields/ThroughputField'
 import { DiskCountdownRadial } from './ui/DiskCountdownRadial'
-import {
-  DiskType,
-  RESTRICTED_COMPUTE_FOR_THROUGHPUT_ON_GP3,
-} from './ui/DiskManagement.constants'
+import { DiskType, RESTRICTED_COMPUTE_FOR_THROUGHPUT_ON_GP3 } from './ui/DiskManagement.constants'
 import { NoticeBar } from './ui/NoticeBar'
-import { SpendCapDisabledSection } from './ui/SpendCapDisabledSection'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
@@ -68,7 +63,8 @@ export function DiskManagementForm() {
     (warning) => warning.project === project?.id
   )
   const isReadOnlyMode = projectResourceWarnings?.is_readonly_mode_enabled
-  const { can: canUpdateDiskConfiguration, isSuccess: isPermissionsLoaded } = useCheckPermissions("branch:settings:admin")
+  const { can: canUpdateDiskConfiguration, isSuccess: isPermissionsLoaded } =
+    useCheckPermissions('branch:settings:admin')
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const [refetchInterval, setRefetchInterval] = useState<number | false>(false)
   const [message, setMessageState] = useState<DiskManagementMessage | null>(null)
@@ -132,9 +128,7 @@ export function DiskManagementForm() {
   }
 
   const form = useForm<DiskStorageSchemaType>({
-    resolver: zodResolver(
-      CreateDiskStorageSchema(defaultValues.totalSize)
-    ),
+    resolver: zodResolver(CreateDiskStorageSchema(defaultValues.totalSize)),
     defaultValues,
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -149,22 +143,18 @@ export function DiskManagementForm() {
 
   const isRequestingChanges = data?.requested_modification !== undefined
   const readReplicas = (databases ?? []).filter((db) => db.identifier !== projectRef)
-  const isPlanUpgradeRequired = org?.plan.id === 'free'
 
   const { formState } = form
   const usedSize = Math.round(((diskUtil?.metrics.fs_used_bytes ?? 0) / GB) * 100) / 100
   const totalSize = formState.defaultValues?.totalSize || 0
   const usedPercentage = (usedSize / totalSize) * 100
 
-  const disableIopsThroughputConfig =
-    RESTRICTED_COMPUTE_FOR_THROUGHPUT_ON_GP3.includes(form.watch('computeSize')) &&
-    org?.plan.id !== 'free'
+  const disableIopsThroughputConfig = RESTRICTED_COMPUTE_FOR_THROUGHPUT_ON_GP3.includes(
+    form.watch('computeSize')
+  )
 
   const disableDiskInputs =
-    isRequestingChanges ||
-    isPlanUpgradeRequired ||
-    isWithinCooldownWindow ||
-    !canUpdateDiskConfiguration
+    isRequestingChanges || isWithinCooldownWindow || !canUpdateDiskConfiguration
 
   const isDirty = !!Object.keys(form.formState.dirtyFields).length
   const isProjectResizing = project?.status === PROJECT_STATUS.MIGRATING
@@ -183,7 +173,7 @@ export function DiskManagementForm() {
       onError: () => {},
       onSuccess: () => {
         //Manually set project status to RESIZING, Project status should be RESIZING on next project status request.
-        setProjectStatus(queryClient, org!.slug, projectRef!, PROJECT_STATUS.MIGRATING)
+        setProjectStatus(queryClient, org!.id, projectRef!, PROJECT_STATUS.MIGRATING)
       },
     })
   const { mutateAsync: updateDiskAutoscaleConfig, isLoading: isUpdatingDiskAutoscaleConfig } =
@@ -264,22 +254,6 @@ export function DiskManagementForm() {
     <Form_Shadcn_ {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8">
         <ScaffoldContainer className="relative flex flex-col gap-10" bottomPadding>
-          <NoticeBar
-            type="default"
-            visible={isPlanUpgradeRequired}
-            title="Compute and Disk configuration is not available on the Free Plan"
-            actions={
-              <Button type="default" asChild>
-                <Link
-                  href={`/org/${org?.slug}/billing?panel=subscriptionPlan&source=diskManagementConfigure`}
-                >
-                  Upgrade plan
-                </Link>
-              </Button>
-            }
-            description="You will need to upgrade to at least the Pro Plan to configure compute and disk"
-          />
-
           {isProjectResizing || isProjectRequestingDiskChanges || noPermissions ? (
             <div className="relative flex flex-col gap-10">
               <DiskMangementRestartRequiredSection
@@ -302,7 +276,6 @@ export function DiskManagementForm() {
             </div>
           ) : null}
           <Separator />
-          <SpendCapDisabledSection />
           <div className="flex flex-col gap-y-3">
             <DiskCountdownRadial />
             {!isReadOnlyMode && usedPercentage >= 90 && isWithinCooldownWindow && (
@@ -348,8 +321,8 @@ export function DiskManagementForm() {
               <div className="flex flex-col items-start">
                 <span className="text-sm text-foreground">Advanced disk settings</span>
                 <span className="text-sm text-foreground-light text-left">
-                  Specify additional settings for your disk, including autoscaling
-                  configuration, IOPS, throughput, and disk type.
+                  Specify additional settings for your disk, including autoscaling configuration,
+                  IOPS, throughput, and disk type.
                 </span>
               </div>
               <ChevronRight

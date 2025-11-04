@@ -42,6 +42,7 @@ export const useGetRolesManagementPermissions = (
 
 
 export const hasMultipleOwners = (members: OrganizationMember[] = [], roles: Role[] = []) => {
+  // FIXME: @Chris needs permission check for organization owner
   const membersWhoAreOwners = members.filter((member) => {
     const [memberRoleId] = member.role_ids ?? []
     const role = roles.find((role: Role) => role.id === memberRoleId)

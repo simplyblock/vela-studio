@@ -15,18 +15,8 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import {
-  ComponentProps,
-  ComponentPropsWithoutRef,
-  FC,
-  ReactNode,
-  useEffect,
-} from 'react'
-import {
-  LOCAL_STORAGE_KEYS,
-  useIsMFAEnabled,
-  useParams,
-} from 'common'
+import { ComponentProps, ComponentPropsWithoutRef, FC, ReactNode, useEffect } from 'react'
+import { LOCAL_STORAGE_KEYS, useIsMFAEnabled, useParams } from 'common'
 import {
   generateOtherRoutes,
   generateProductRoutes,
@@ -53,22 +43,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Separator,
+  Sidebar as SidebarPrimitive,
   SidebarContent as SidebarContentPrimitive,
   SidebarFooter,
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  Sidebar as SidebarPrimitive,
   useSidebar,
 } from 'ui'
 import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
-import { useSession } from 'next-auth/react'
-import { Session } from 'common/keycloak'
-import {
-  getSessionAccessToken,
-  useSessionAccessTokenQuery,
-} from '../../data/auth/session-access-token-query'
+import { useSessionAccessTokenQuery } from '../../data/auth/session-access-token-query'
 
 export const ICON_SIZE = 32
 export const ICON_STROKE_WIDTH = 1.5
@@ -81,8 +66,7 @@ const SidebarMotion = motion(SidebarPrimitive) as FC<
   }
 >
 
-export interface SidebarProps
-  extends ComponentPropsWithoutRef<typeof SidebarPrimitive> {}
+export interface SidebarProps extends ComponentPropsWithoutRef<typeof SidebarPrimitive> {}
 
 export const Sidebar = ({ className, ...props }: SidebarProps) => {
   const { setOpen } = useSidebar()
@@ -121,36 +105,19 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     type="text"
-                    className={`w-min px-1.5 mx-0.5 ${
-                      sidebarBehaviour === 'open' ? '!px-2' : ''
-                    }`}
-                    icon={
-                      <PanelLeftDashed
-                        size={ICON_SIZE}
-                        strokeWidth={ICON_STROKE_WIDTH}
-                      />
-                    }
+                    className={`w-min px-1.5 mx-0.5 ${sidebarBehaviour === 'open' ? '!px-2' : ''}`}
+                    icon={<PanelLeftDashed size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />}
                   />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="top"
-                  align="start"
-                  className="w-40"
-                >
+                <DropdownMenuContent side="top" align="start" className="w-40">
                   <DropdownMenuRadioGroup
                     value={sidebarBehaviour}
-                    onValueChange={(value) =>
-                      setSidebarBehaviour(value as SidebarBehaviourType)
-                    }
+                    onValueChange={(value) => setSidebarBehaviour(value as SidebarBehaviourType)}
                   >
                     <DropdownMenuLabel>Sidebar control</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuRadioItem value="open">
-                      Expanded
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="closed">
-                      Collapsed
-                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="open">Expanded</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="closed">Collapsed</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="expandable">
                       Expand on hover
                     </DropdownMenuRadioItem>
@@ -175,8 +142,7 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
 export const SidebarContent = ({ footer }: { footer?: ReactNode }) => {
   const { ref: projectRef, branch: branchRef } = useParams()
 
-  const which =
-    !projectRef ? 'org' : projectRef && !branchRef ? 'project' : 'branch'
+  const which = !projectRef ? 'org' : projectRef && !branchRef ? 'project' : 'branch'
 
   return (
     <>
@@ -264,7 +230,9 @@ export function SideBarNavLink({
     <SidebarMenuItem>
       {route.link && !disabled ? (
         <SidebarMenuButton {...buttonProps} asChild>
-          <Link href={route.link} target={route?.target}>{content}</Link>
+          <Link href={route.link} target={route?.target}>
+            {content}
+          </Link>
         </SidebarMenuButton>
       ) : (
         <SidebarMenuButton {...buttonProps}>{content}</SidebarMenuButton>
@@ -373,18 +341,12 @@ const BranchSidebarLinks = () => {
 
   // Build groups
   const toolRoutes = generateToolRoutes(orgRef, projectRef, project, branchRef)
-  const productRoutes = generateProductRoutes(
-    orgRef,
-    projectRef,
-    project,
-    branchRef,
-    {
-      auth: authEnabled,
-      edgeFunctions: edgeFunctionsEnabled,
-      storage: storageEnabled,
-      realtime: realtimeEnabled,
-    }
-  )
+  const productRoutes = generateProductRoutes(orgRef, projectRef, project, branchRef, {
+    auth: authEnabled,
+    edgeFunctions: edgeFunctionsEnabled,
+    storage: storageEnabled,
+    realtime: realtimeEnabled,
+  })
 
   // Static branch-specific links (minus Resource Limits,
   // which moved to project scope)
@@ -392,9 +354,7 @@ const BranchSidebarLinks = () => {
     {
       key: 'database-backup-schedules',
       label: 'Backup Schedules',
-      icon: (
-        <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
-      ),
+      icon: <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
         projectRef &&
         `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
@@ -409,9 +369,7 @@ const BranchSidebarLinks = () => {
         `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
       isActive:
         router.asPath.includes('/database/backups/pitr') ||
-        router.asPath.includes(
-          '/database/backups/restore-to-new-project'
-        ),
+        router.asPath.includes('/database/backups/restore-to-new-project'),
     },
   ]
 
@@ -427,12 +385,7 @@ const BranchSidebarLinks = () => {
       unifiedLogs: true,
     }
   )
-  const settingsRoutes = generateSettingsRoutes(
-    orgRef,
-    projectRef,
-    project,
-    branchRef
-  )
+  const settingsRoutes = generateSettingsRoutes(orgRef, projectRef, project, branchRef)
 
   return (
     <SidebarMenu>
@@ -440,24 +393,14 @@ const BranchSidebarLinks = () => {
       <SidebarGroup className="gap-0.5">
         <SideBarNavLink
           key="branch-overview"
-          active={
-            isUndefined(activeRoute) && !isUndefined(router.query.ref)
-          }
+          active={isUndefined(activeRoute) && !isUndefined(router.query.ref)}
           route={{
             key: 'branch-overview',
             label: 'Branch overview',
-            icon: (
-              <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
-            ),
-            link:
-              projectRef &&
-              `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`,
+            icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+            link: projectRef && `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`,
             linkElement: (
-              <ProjectIndexPageLink
-                slug={orgRef}
-                projectRef={projectRef}
-                branchRef={branchRef}
-              />
+              <ProjectIndexPageLink slug={orgRef} projectRef={projectRef} branchRef={branchRef} />
             ),
           }}
         />
@@ -483,11 +426,7 @@ const BranchSidebarLinks = () => {
         ))}
 
         {branchLinks.map(({ isActive, ...route }) => (
-          <SideBarNavLink
-            key={route.key}
-            route={route}
-            active={isActive}
-          />
+          <SideBarNavLink key={route.key} route={route} active={isActive} />
         ))}
       </SidebarGroup>
 
@@ -542,8 +481,7 @@ const OrganizationLinks = () => {
 
   const { data: org } = useSelectedOrganizationQuery()
   const isUserMFAEnabled = useIsMFAEnabled()
-  const disableAccessMfa =
-    org?.organization_requires_mfa && !isUserMFAEnabled
+  const disableAccessMfa = org?.require_mfa && !isUserMFAEnabled
 
   // Get the full current path
   const currentPath = router.asPath

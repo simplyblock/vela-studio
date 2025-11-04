@@ -17,11 +17,11 @@ export const OrganizationCard = ({
   const isUserMFAEnabled = useIsMFAEnabled()
   const { data: allProjects = [] } = useProjectsQuery()
 
-  const numProjects = allProjects.filter((x) => x.organization_id === organization.slug).length
-  const isMfaRequired = organization.organization_requires_mfa
+  const numProjects = allProjects.filter((x) => x.organization_id === organization.id).length
+  const isMfaRequired = organization.require_mfa
 
   return (
-    <Link href={href ?? `/org/${organization.slug}`}>
+    <Link href={href ?? `/org/${organization.id}`}>
       <ActionCard
         bgColor="bg border"
         className={cn('flex items-center min-h-[70px] [&>div]:w-full [&>div]:items-center')}
@@ -30,7 +30,7 @@ export const OrganizationCard = ({
         description={
           <div className="flex items-center justify-between text-xs text-foreground-light font-sans">
             <div className="flex items-center gap-x-1.5">
-              <span>Reference: {organization.slug}</span>
+              <span>Reference: {organization.id}</span>
               {numProjects > 0 && (
                 <>
                   <span>•</span>

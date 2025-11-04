@@ -5,22 +5,17 @@ import { handleError, post } from 'data/fetchers'
 import { permissionKeys } from 'data/permissions/keys'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
-import { castOrganizationResponseToOrganization } from './organizations-query'
-import type { CustomerAddress } from './types'
 
 export type OrganizationCreateVariables = {
   name: string
-  address?: CustomerAddress | null
 }
 
-export async function createOrganization({
-  name,
-  address,
-}: OrganizationCreateVariables) {
+export async function createOrganization({ name }: OrganizationCreateVariables) {
   const { data, error } = await post('/platform/organizations', {
     body: {
       name,
-      address: address ?? undefined,
+      max_backups: 20, // FIXME: Should this be a configurable value?
+      env_types: ['Production', 'Staging', 'Development'],
     },
   })
 
@@ -55,7 +50,7 @@ export const useOrganizationCreateMutation = ({
             },
             (prev: any) => {
               if (!prev) return prev
-              return [...prev, castOrganizationResponseToOrganization(data)]
+              return [...prev, data]
             }
           )
 

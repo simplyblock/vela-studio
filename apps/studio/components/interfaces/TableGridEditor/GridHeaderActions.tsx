@@ -159,7 +159,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
       },
       groups: {
         project: project?.id ?? 'Unknown',
-        organization: org?.slug ?? 'Unknown',
+        organization: org?.id ?? 'Unknown',
       },
     })
 

@@ -1,7 +1,6 @@
 import { Box, Check, ChevronsUpDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { ParsedUrlQuery } from 'querystring'
 import { useState } from 'react'
 
 import { useParams } from 'common'
@@ -13,44 +12,19 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { Organization } from 'types'
 import {
   Button,
+  cn,
+  Command_Shadcn_,
   CommandEmpty_Shadcn_,
   CommandGroup_Shadcn_,
   CommandInput_Shadcn_,
   CommandItem_Shadcn_,
   CommandList_Shadcn_,
   CommandSeparator_Shadcn_,
-  Command_Shadcn_,
+  Popover_Shadcn_,
   PopoverContent_Shadcn_,
   PopoverTrigger_Shadcn_,
-  Popover_Shadcn_,
   ScrollArea,
-  cn,
 } from 'ui'
-
-// [Fran] the idea is to let users change projects without losing the current page,
-// but at the same time we need to redirect correctly between urls that might be
-// unique to a project e.g. '/project/projectRef/editor/tableId'
-// Right now, I'm gonna assume that any router query after the projectId,
-// is a unique project id/marker so we'll redirect the user to the
-// highest common route with just projectRef in the router queries.
-
-export const sanitizeRoute = (route: string, routerQueries: ParsedUrlQuery) => {
-  const queryArray = Object.entries(routerQueries)
-
-  if (queryArray.length > 1) {
-    // [Joshen] Ideally we shouldn't use hard coded numbers, but temp workaround
-    // for storage bucket route since its longer
-    const isStorageBucketRoute = 'bucketId' in routerQueries
-    const isSecurityAdvisorRoute = 'preset' in routerQueries
-
-    return route
-      .split('/')
-      .slice(0, isStorageBucketRoute || isSecurityAdvisorRoute ? 5 : 4)
-      .join('/')
-  } else {
-    return route
-  }
-}
 
 const ProjectLink = ({
   project,
@@ -90,8 +64,8 @@ const ProjectLink = ({
 
 export const ProjectDropdown = () => {
   const router = useRouter()
-  const { ref, slug } = useParams()
-  const { data: project,isLoading: isLoadingProject } = useSelectedProjectQuery()
+  const { slug } = useParams()
+  const { data: project, isLoading: isLoadingProject } = useSelectedProjectQuery()
   const { data: allProjects, isLoading: isLoadingProjects } = useProjectsQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
 
@@ -117,9 +91,7 @@ export const ProjectDropdown = () => {
         className="flex items-center gap-2 flex-shrink-0 text-sm"
       >
         <Box size={14} strokeWidth={1.5} className="text-foreground-lighter" />
-        <span className="text-foreground max-w-32 lg:max-w-none truncate">
-          {project?.name}
-        </span>
+        <span className="text-foreground max-w-32 lg:max-w-none truncate">{project?.name}</span>
       </Link>
       <Popover_Shadcn_ open={open} onOpenChange={setOpen} modal={false}>
         <PopoverTrigger_Shadcn_ asChild>
@@ -150,12 +122,12 @@ export const ProjectDropdown = () => {
                       className="cursor-pointer w-full"
                       onSelect={() => {
                         setOpen(false)
-                        router.push(`/new/${selectedOrganization?.slug}`)
+                        router.push(`/new/${selectedOrganization?.id}`)
                       }}
                       onClick={() => setOpen(false)}
                     >
                       <Link
-                        href={`/new/${selectedOrganization?.slug}`}
+                        href={`/new/${selectedOrganization?.id}`}
                         onClick={() => {
                           setOpen(false)
                         }}

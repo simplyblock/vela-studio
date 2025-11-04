@@ -369,7 +369,7 @@ const TableEditor = ({
                 },
                 groups: {
                   project: project?.id ?? 'Unknown',
-                  organization: org?.slug ?? 'Unknown',
+                  organization: org?.id ?? 'Unknown',
                 },
               })
               onUpdateField({ isRealtimeEnabled: !tableFields.isRealtimeEnabled })

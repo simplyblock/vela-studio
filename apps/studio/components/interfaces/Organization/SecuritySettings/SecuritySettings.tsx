@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -18,9 +17,6 @@ import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
 import {
-  Alert_Shadcn_,
-  AlertDescription_Shadcn_,
-  AlertTitle_Shadcn_,
   Button,
   Card,
   CardContent,
@@ -32,7 +28,6 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  WarningIcon,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
@@ -46,11 +41,9 @@ const SecuritySettings = () => {
   const { profile } = useProfile()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
   const { data: members } = useOrganizationMembersQuery({ slug })
-  const { can: canReadMfaConfig } = useCheckPermissions("org:auth:read")
-  const { can: canUpdateMfaConfig } = useCheckPermissions("org:auth:admin")
+  const { can: canReadMfaConfig } = useCheckPermissions('org:auth:read')
+  const { can: canUpdateMfaConfig } = useCheckPermissions('org:auth:admin')
   const { mutate: sendEvent } = useSendEventMutation()
-
-  const isPaidPlan = selectedOrganization?.plan.id !== 'free'
 
   const {
     data: mfaConfig,
@@ -96,7 +89,7 @@ const SecuritySettings = () => {
     members?.find((member) => member.primary_email == profile?.primary_email)?.mfa_enabled || false
 
   const onSubmit = (values: { enforceMfa: boolean }) => {
-    if (!slug || !isPaidPlan) return
+    if (!slug) return
     toggleMfa({ slug, setEnforced: values.enforceMfa })
   }
 
@@ -110,34 +103,7 @@ const SecuritySettings = () => {
 
   return (
     <ScaffoldContainerLegacy>
-      {!isPaidPlan && (
-        <Alert_Shadcn_
-          variant="default"
-          title="Organization MFA enforcement is not available on Free plan"
-        >
-          <WarningIcon />
-          <div className="flex flex-col md:flex-row pt-1 gap-4">
-            <div className="grow">
-              <AlertTitle_Shadcn_>
-                Organization MFA enforcement is not available on Free plan
-              </AlertTitle_Shadcn_>
-              <AlertDescription_Shadcn_ className="flex flex-row justify-between gap-3">
-                <p>Upgrade to Pro or above to enforce MFA requirements for your organization.</p>
-              </AlertDescription_Shadcn_>
-            </div>
-
-            <div className="flex items-center">
-              <Button type="primary" asChild>
-                <Link href={`/org/${slug}/billing?panel=subscriptionPlan&source=mfa`}>
-                  Upgrade subscription
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </Alert_Shadcn_>
-      )}
-
-      {(isErrorMfa || mfaError) && isPaidPlan && (
+      {(isErrorMfa || mfaError) && (
         <AlertError error={mfaError} subject="Failed to retrieve MFA enforcement status" />
       )}
 
@@ -149,7 +115,7 @@ const SecuritySettings = () => {
         </Card>
       )}
 
-      {isSuccessMfa && isPaidPlan && (
+      {isSuccessMfa && (
         <Form_Shadcn_ {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Card>
@@ -170,12 +136,7 @@ const SecuritySettings = () => {
                               <Switch
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
-                                disabled={
-                                  !isPaidPlan ||
-                                  !canUpdateMfaConfig ||
-                                  !hasMFAEnabled ||
-                                  isUpdatingMfa
-                                }
+                                disabled={!canUpdateMfaConfig || !hasMFAEnabled || isUpdatingMfa}
                               />
                             </div>
                           </TooltipTrigger>
@@ -202,7 +163,7 @@ const SecuritySettings = () => {
                   <Button
                     type="default"
                     disabled={isLoadingMfa || isUpdatingMfa}
-                    onClick={() => form.reset({ enforceMfa: isPaidPlan ? mfaConfig : false })}
+                    onClick={() => form.reset({ enforceMfa: mfaConfig })}
                   >
                     Cancel
                   </Button>
@@ -211,11 +172,7 @@ const SecuritySettings = () => {
                   type="primary"
                   htmlType="submit"
                   disabled={
-                    !isPaidPlan ||
-                    !canUpdateMfaConfig ||
-                    isUpdatingMfa ||
-                    isLoadingMfa ||
-                    !form.formState.isDirty
+                    !canUpdateMfaConfig || isUpdatingMfa || isLoadingMfa || !form.formState.isDirty
                   }
                   loading={isUpdatingMfa}
                 >

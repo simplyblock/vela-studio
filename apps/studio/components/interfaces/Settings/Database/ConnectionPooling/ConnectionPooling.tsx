@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Fragment, useEffect, useMemo } from 'react'
+import { Fragment, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
@@ -13,7 +13,6 @@ import Panel from 'components/ui/Panel'
 import { useMaxConnectionsQuery } from 'data/database/max-connections-query'
 import { usePgbouncerConfigQuery } from 'data/database/pgbouncer-config-query'
 import { usePgbouncerConfigurationUpdateMutation } from 'data/database/pgbouncer-config-update-mutation'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   Alert_Shadcn_,
   AlertDescription_Shadcn_,
@@ -42,7 +41,6 @@ const PoolingConfigurationFormSchema = z.object({
  */
 export const ConnectionPooling = () => {
   const { slug, ref: projectRef, branch: branchId } = useParams()
-  const { data: org } = useSelectedOrganizationQuery()
   const { data: branch } = useSelectedBranchQuery()
 
   const { can: canUpdateConnectionPoolingConfiguration } =
@@ -55,10 +53,6 @@ export const ConnectionPooling = () => {
     isError: isErrorPgbouncerConfig,
     isSuccess: isSuccessPgbouncerConfig,
   } = usePgbouncerConfigQuery({ orgRef: slug, projectRef, branchId })
-
-  const disablePoolModeSelection = useMemo(() => {
-    return org?.plan?.id === 'free'
-  }, [org])
 
   const { data: maxConnData } = useMaxConnectionsQuery({
     branch,

@@ -50,7 +50,6 @@ import { getPathReferences } from 'data/vela/path-references'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import WideWizardLayout from 'components/layouts/WideWizardLayout'
 import { components } from 'data/vela/vela-schema'
-import { useAvailablePostgresVersionsQuery } from 'data/platform/available-postgresql-versions-query'
 
 /* ------------------------------------------------------------------
    Constants / schemas
@@ -177,8 +176,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
     LOCAL_STORAGE_KEYS.LAST_VISITED_ORGANIZATION,
     ''
   )
-
-  const { data: availablePostgresVersions } = useAvailablePostgresVersionsQuery()
 
   useEffect(() => {
     if (slug === 'last-visited-org') {
@@ -381,7 +378,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
           instanceSize: values.instanceSize,
         },
         groups: {
-          organization: currentOrg?.slug ?? 'Unknown',
+          organization: currentOrg?.id ?? 'Unknown',
         },
       })
       setIsComputeCostsConfirmationModalVisible(true)
@@ -403,7 +400,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
     const { postgresVersion } = values
 
     const data: ProjectCreateVariables = {
-      organizationSlug: currentOrg.slug,
+      organizationSlug: currentOrg.id!,
       parameters: {
         name: values.projectName,
         max_backups: 100, // FIXME: fill in correct value
@@ -559,7 +556,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                                 {organizations?.map((x) => (
                                   <SelectItem_Shadcn_
                                     key={x.id}
-                                    value={x.slug}
+                                    value={x.id!}
                                     className="flex justify-between"
                                   >
                                     <span className="mr-2">{x.name}</span>
@@ -576,13 +573,11 @@ const CreateProjectPage: NextPageWithLayout = () => {
                     )}
                   />
                 )}
-
-               
               </div>
 
               {/* COL 2: Custom PG version (password fields removed) */}
               <div className="space-y-6">
-                 <FormField_Shadcn_
+                <FormField_Shadcn_
                   control={form.control}
                   name="projectName"
                   render={({ field }) => (
@@ -838,9 +833,8 @@ const CreateProjectPage: NextPageWithLayout = () => {
         >
           <div className="text-sm text-foreground-light space-y-1">
             <p>
-              Creating this project can increase your monthly costs by ${0},
-              independent of how actively you use it. By clicking "I understand", you agree to the
-              additional costs.
+              Creating this project can increase your monthly costs by ${0}, independent of how
+              actively you use it. By clicking "I understand", you agree to the additional costs.
               <Link
                 href="https://supabase.com/docs/guides/platform/manage-your-usage/compute"
                 target="_blank"
@@ -860,10 +854,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
 /* ------------------------------------------------------------------
    Helpers / Layout wrappers
 -------------------------------------------------------------------*/
-
-const instanceLabel = (_instance: string | undefined): string => {
-  return 'Micro'
-}
 
 const PageLayout = withAuth(({ children }: PropsWithChildren) => {
   return <WizardLayoutWithoutAuth>{children}</WizardLayoutWithoutAuth>

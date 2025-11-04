@@ -193,7 +193,7 @@ const MessagesTable = ({
                           action: 'realtime_inspector_message_clicked',
                           groups: {
                             project: ref ?? 'Unknown',
-                            organization: org?.slug ?? 'Unknown',
+                            organization: org?.id ?? 'Unknown',
                           },
                         })
                         setFocusedLog(row)

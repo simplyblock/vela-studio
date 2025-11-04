@@ -11,16 +11,7 @@ export function mapOrganization(organization: VelaOrganization): Organization {
     name: organization.name!,
     env_types: organization.environments.split(',').filter((env) => env !== ''),
     max_backups: organization.max_backups,
-    slug: organization.id!,
-    plan: {
-      id: 'enterprise',
-      name: 'Enterprise',
-    },
-    is_owner: false,
-    opt_in_tags: [],
-    organization_requires_mfa: false,
-    restriction_data: {},
-    restriction_status: null,
+    require_mfa: organization.require_mfa,
   }
 }
 
