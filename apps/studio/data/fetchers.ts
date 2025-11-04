@@ -156,6 +156,11 @@ export const handleError = (
     const retryAfter =
       'retryAfter' in error && typeof error.retryAfter === 'number' ? error.retryAfter : undefined
 
+    if (errorCode === 401) {
+      const location = encodeURIComponent(window.location.pathname + (window.location.search ? `?${window.location.search}` : ''))
+      window.location.href = `/sign-in?returnTo=${location}`
+    }
+
     if (errorMessage) {
       throw new ResponseError(errorMessage, errorCode, requestId, retryAfter)
     }
