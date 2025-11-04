@@ -36,6 +36,7 @@ import {
   ResourceType,
   useBranchSliderResourceLimits,
 } from 'data/resource-limits/branch-slider-resource-limits'
+import { useBranchesQuery } from '../../../data/branches/branches-query'
 
 type EnvironmentType = {
   label: string
@@ -81,6 +82,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
   const { data: availablePostgresVersions } = useAvailablePostgresVersionsQuery()
   const { data: organization } = useSelectedOrganizationQuery()
   const { data: project } = useSelectedProjectQuery()
+  const { data: branches } = useBranchesQuery({ orgRef: slug, projectRef: ref })
   const { data: sourceBranch } = useBranchQuery(
     { orgRef: slug, projectRef: ref, branchRef: branch },
     { enabled: !!branch }
@@ -185,9 +187,15 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
     [form]
   )
 
-  function validateBranchName(name: any) {
+  function validateBranchNameLength(name: any) {
     const value = name ? name.trim() : ''
-    return value.length >= 1
+    if (value.length === 0) return false
+    return value.length < 255
+  }
+
+  function validateBranchName(name: any) {
+    const existingBranch = (branches ?? []).find((b) => b.name === name)
+    return existingBranch === undefined
   }
 
   const checkPasswordStrength = async (value: string) => {
@@ -208,9 +216,14 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
     if (!limits) {
       return toast.error('Resource limits not available')
     }
-    const isBranchNameValid = validateBranchName(values.name)
+    const isBranchNameValid = validateBranchNameLength(values.name)
     if (!isBranchNameValid) {
       return toast.error('Branch name is empty')
+    }
+
+    const isBranchNameUnique = validateBranchName(values.name)
+    if (!isBranchNameUnique) {
+      return toast.error('Branch name already exists')
     }
 
     if (!slug || !ref) return

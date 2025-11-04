@@ -31,7 +31,7 @@ const sliderNames = {
 const MAX_INTEGER = Number.MAX_SAFE_INTEGER
 const GB = 1000000000
 const TB = 1000 * GB
-const MIB = 1048576
+const MIB = 1024 * 1024
 const GIB = 1024 * MIB
 
 const selectSystemResourceType = (resourceType: ResourceType, limits?: ResourceLimit[]) =>
@@ -52,10 +52,9 @@ const iopsLimit = (
   const { min, max, step } = systemLimit ? systemLimit : { min: 100, max: 100000000, step: 100 }
 
   const maxResources = source?.max_resources
-  const usedResources = source?.used_resources
 
   const maxIops = Math.min(max_per_branch, max)
-  const minIops = Math.max(usedResources?.iops ?? min, min)
+  const minIops = min
 
   return {
     min: minIops,
@@ -79,12 +78,12 @@ const vcpuLimit = (
   const { min, max, step } = systemLimit ? systemLimit : { min: 2000, max: 64000, step: 100 }
 
   const maxResources = source?.max_resources
-  const usedResources = source?.used_resources
 
+  console.log(max_per_branch, max)
   const maxMillis = Math.min(max_per_branch, max)
-  const minMillis = Math.max(usedResources?.milli_vcpu ?? min, min)
+  const minMillis = min
 
-  return {
+  const test = {
     min: minMillis / step,
     max: maxMillis / step,
     step: 1,
@@ -92,6 +91,8 @@ const vcpuLimit = (
     divider: step,
     initial: (maxResources?.iops ?? minMillis) / step,
   }
+  console.log(test)
+  return test
 }
 
 const memoryLimit = (
@@ -108,16 +109,15 @@ const memoryLimit = (
     : { min: 2 * GIB, max: 256 * GIB, step: 128, unit: 'MiB' }
 
   const maxResources = source?.max_resources
-  const usedResources = source?.used_resources
   const maxMemory = Math.min(max_per_branch, max)
-  const minMemory = Math.max(usedResources?.ram_bytes ?? min, min)
+  const minMemory = min
 
   return {
     min: minMemory / GIB,
     max: maxMemory / GIB,
     step: 0.125,
     unit: 'GiB',
-    divider: step,
+    divider: GIB,
     initial: (maxResources?.iops ?? minMemory) / GIB,
   }
 }
@@ -136,10 +136,9 @@ const databaseSizeLimit = (
     : { min: GB, max: 100 * TB, step: GB, unit: 'GB' }
 
   const maxResources = source?.max_resources
-  const usedResources = source?.used_resources
 
   const maxSize = Math.min(max_per_branch, max)
-  const minSize = Math.max(usedResources?.nvme_bytes ?? min, min)
+  const minSize = Math.max(maxResources?.nvme_bytes ?? min, min)
 
   return {
     min: minSize / step,
@@ -165,10 +164,9 @@ const storageSizeLimit = (
     : { min: GB, max: TB, step: GB, unit: 'GB' }
 
   const maxResources = source?.max_resources
-  const usedResources = source?.used_resources
 
   const maxSize = Math.min(max_per_branch, max)
-  const minSize = Math.max(usedResources?.storage_bytes ?? min, min)
+  const minSize = Math.max(maxResources?.storage_bytes ?? min, min)
 
   return {
     min: minSize / step,
@@ -226,7 +224,15 @@ export function useBranchSliderResourceLimits(
         label: sliderNames.storage_size,
       },
     }
-  }, [systemDefinitionsLoading, projectLimitsLoading, systemDefinitions, projectLimits, slug, ref, source])
+  }, [
+    systemDefinitionsLoading,
+    projectLimitsLoading,
+    systemDefinitions,
+    projectLimits,
+    slug,
+    ref,
+    source,
+  ])
 
   return {
     isLoading: systemDefinitionsLoading || projectLimitsLoading,

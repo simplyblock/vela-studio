@@ -26,7 +26,6 @@ import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { withAuth } from 'hooks/misc/withAuth'
-import { PROJECT_STATUS } from 'lib/constants'
 import { useResourceLimitDefinitionsQuery } from 'data/resource-limits/resource-limit-definitions-query'
 import type { NextPageWithLayout } from 'types'
 
@@ -304,12 +303,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
     components['schemas']['ProjectPublic'][] | undefined
   >(undefined)
 
-  const organizationProjects =
-    allProjects?.filter(
-      (project) =>
-        project.organization_id === currentOrg?.id && project.status !== PROJECT_STATUS.PAUSED
-    ) ?? []
-
   const isAdmin = useCheckPermissions('env:projects:create')
 
   const isInvalidSlug = isOrganizationsSuccess && currentOrg === undefined
@@ -328,7 +321,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
       dataApi: true,
       useApiSchema: false,
       postgresVersionSelection: '',
-      includeFileStorage: false,
+      includeFileStorage: true,
       enableHa: false,
       readReplicas: 0,
       perBranchLimits: {
@@ -347,6 +340,11 @@ const CreateProjectPage: NextPageWithLayout = () => {
       },
     },
   })
+
+  useEffect(() => {
+    if (projectName) return
+    form.setValue("projectName", projectName!)
+  }, [projectName])
 
   // When file storage disabled, zero out both storage sliders
   useEffect(() => {
@@ -590,7 +588,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                       </Label_Shadcn_>
                       <Input_Shadcn_
                         id="project-name"
-                        placeholder="give-your-project-a-name"
+                        placeholder="Your project's name"
                         className="h-9 text-sm"
                         {...field}
                       />
