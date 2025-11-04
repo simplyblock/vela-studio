@@ -175,7 +175,7 @@ export const handleError = (
       typeof error.message === 'object' &&
       'detail' in error.message &&
       error.message.detail &&
-      typeof error.message.detail === 'object'
+      Array.isArray(error.message.detail)
     ) {
       throw new ResponseError('Validation error', errorCode, requestId, retryAfter, error.message.detail)
     }
