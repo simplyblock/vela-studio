@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -9,11 +9,9 @@ import { z } from 'zod'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import { NotOrganizationOwnerWarning } from 'components/interfaces/Organization/NewProject'
 import { OrgNotFound } from 'components/interfaces/Organization/OrgNotFound'
-
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { WizardLayoutWithoutAuth } from 'components/layouts/WizardLayout'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-
 import { useAuthorizedAppsQuery } from 'data/oauth/authorized-apps-query'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { DesiredInstanceSize } from 'data/projects/new-project.constants'
@@ -28,7 +26,6 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { withAuth } from 'hooks/misc/withAuth'
 import { useResourceLimitDefinitionsQuery } from 'data/resource-limits/resource-limit-definitions-query'
 import type { NextPageWithLayout } from 'types'
-
 import {
   Button,
   Checkbox_Shadcn_,
@@ -44,21 +41,17 @@ import {
   SelectValue_Shadcn_,
   Slider_Shadcn_,
 } from 'ui'
-
 import { getPathReferences } from 'data/vela/path-references'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 import WideWizardLayout from 'components/layouts/WideWizardLayout'
 import { components } from 'data/vela/vela-schema'
 
-/* ------------------------------------------------------------------
-   Constants / schemas
--------------------------------------------------------------------*/
-
-const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
-const sizesWithNoCostConfirmationRequired: DesiredInstanceSize[] = ['micro', 'small']
+/* ------------------------------------------------------------------ */
+/* Types / labels                                                     */
+/* ------------------------------------------------------------------ */
 
 type SliderKey = 'vcpu' | 'ram' | 'nvme' | 'iops' | 'storage'
-const SLIDER_KEYS: SliderKey[] = ['vcpu', 'ram', 'nvme', 'iops', 'storage']
+
 const LABELS: Record<SliderKey, string> = {
   vcpu: 'vCPU',
   ram: 'RAM',
@@ -75,7 +68,20 @@ type LimitCfg = {
   unit: string
   divider: number
 }
-type LimitMap = Record<SliderKey, LimitCfg>
+type LimitMap = Partial<Record<SliderKey, LimitCfg>>
+
+// API mapping for submit payload
+const FORM_TO_API: Record<SliderKey, 'milli_vcpu' | 'ram' | 'iops' | 'database_size' | 'storage_size'> = {
+  vcpu: 'milli_vcpu',
+  ram: 'ram',
+  iops: 'iops',
+  nvme: 'database_size',
+  storage: 'storage_size',
+}
+
+/* ------------------------------------------------------------------ */
+/* Schema                                                             */
+/* ------------------------------------------------------------------ */
 
 const FormSchema = z.object({
   organization: z.string({ required_error: 'Please select an organization' }),
@@ -85,7 +91,6 @@ const FormSchema = z.object({
     .min(1, 'Please enter a project name.')
     .min(3, 'Project name must be at least 3 characters long.')
     .max(64, 'Project name must be no longer than 64 characters.'),
-  postgresVersion: z.string().optional(),
   instanceSize: z.string(),
   dataApi: z.boolean(),
   useApiSchema: z.boolean(),
@@ -93,29 +98,16 @@ const FormSchema = z.object({
   includeFileStorage: z.boolean(),
   enableHa: z.boolean(),
   readReplicas: z.number(),
-  perBranchLimits: z.object({
-    vcpu: z.number(),
-    ram: z.number(),
-    nvme: z.number(),
-    iops: z.number(),
-    storage: z.number(),
-  }),
-  projectLimits: z.object({
-    vcpu: z.number(),
-    ram: z.number(),
-    nvme: z.number(),
-    iops: z.number(),
-    storage: z.number(),
-  }),
+  perBranchLimits: z.record(z.number()),
+  projectLimits: z.record(z.number()),
 })
 
 export type CreateProjectForm = z.infer<typeof FormSchema>
 
-/* ------------------------------------------------------------------
-   Helper component
--------------------------------------------------------------------*/
+/* ------------------------------------------------------------------ */
+/* Reusable slider row                                                */
+/* ------------------------------------------------------------------ */
 
-// Reusable slider row (label + current value on right + slider)
 const SliderRow = ({
   id,
   label,
@@ -161,9 +153,13 @@ const SliderRow = ({
   </div>
 )
 
-/* ------------------------------------------------------------------
-   Page component
--------------------------------------------------------------------*/
+/* ------------------------------------------------------------------ */
+/* Page                                                               */
+/* ------------------------------------------------------------------ */
+
+const sizes: DesiredInstanceSize[] = ['micro', 'small', 'medium']
+const sizesWithNoCostConfirmationRequired: DesiredInstanceSize[] = ['micro', 'small']
+const GIB = 1024 * 1024 * 1024
 
 const CreateProjectPage: NextPageWithLayout = () => {
   const router = useRouter()
@@ -171,113 +167,172 @@ const CreateProjectPage: NextPageWithLayout = () => {
   const { slug } = getPathReferences()
 
   const { data: currentOrg } = useSelectedOrganizationQuery()
-  const [lastVisitedOrganization] = useLocalStorageQuery(
-    LOCAL_STORAGE_KEYS.LAST_VISITED_ORGANIZATION,
-    ''
-  )
+  const [lastVisitedOrganization] = useLocalStorageQuery(LOCAL_STORAGE_KEYS.LAST_VISITED_ORGANIZATION, '')
 
   useEffect(() => {
     if (slug === 'last-visited-org') {
-      if (lastVisitedOrganization) {
-        router.replace(`/new/${lastVisitedOrganization}`, undefined, { shallow: true })
-      } else {
-        router.replace(`/new/_`, undefined, { shallow: true })
-      }
+      if (lastVisitedOrganization) router.replace(`/new/${lastVisitedOrganization}`, undefined, { shallow: true })
+      else router.replace(`/new/_`, undefined, { shallow: true })
     }
   }, [slug, lastVisitedOrganization, router])
 
   const { mutate: sendEvent } = useSendEventMutation()
-
   const { data: approvedOAuthApps } = useAuthorizedAppsQuery({ slug }, { enabled: slug !== '_' })
-  const hasOAuthApps = approvedOAuthApps && approvedOAuthApps.length > 0
+  const hasOAuthApps = !!approvedOAuthApps?.length
 
-  const [isComputeCostsConfirmationModalVisible, setIsComputeCostsConfirmationModalVisible] =
-    useState(false)
+  const [isComputeCostsConfirmationModalVisible, setIsComputeCostsConfirmationModalVisible] = useState(false)
 
   const { data: organizations, isSuccess: isOrganizationsSuccess } = useOrganizationsQuery()
+  const isAdmin = useCheckPermissions('env:projects:create')
+  const isInvalidSlug = isOrganizationsSuccess && currentOrg === undefined
+  const orgNotFound = isOrganizationsSuccess && (organizations?.length ?? 0) > 0 && isInvalidSlug
+  const isEmptyOrganizations = (organizations?.length ?? 0) <= 0 && isOrganizationsSuccess
+  const canCreateProject = isAdmin
 
-  // --- FETCH RESOURCE LIMIT DEFINITIONS ---
+  // Dynamic limit definitions
   const { data: limitDefinitions } = useResourceLimitDefinitionsQuery()
 
-  // --- BUILD DYNAMIC CONFIG ONLY ---
-  const GIB = 1024 * 1024 * 1024
-
+  // Build dynamic limitConfig from API
   const limitConfig: LimitMap | null = useMemo(() => {
     if (!limitDefinitions) return null
 
-    const keyMap: Record<string, SliderKey> = {
-      milli_vcpu: 'vcpu',
-      ram: 'ram',
-      storage_size: 'storage',
-      iops: 'iops',
-      database_size: 'nvme',
-    }
+    const map: LimitMap = {}
 
-    const map = {} as LimitMap
-
-    limitDefinitions.forEach((item) => {
-      const k = keyMap[item.resource_type]
-      if (!k) return
-
-      switch (item.resource_type) {
+    for (const def of limitDefinitions) {
+      switch (def.resource_type) {
         case 'milli_vcpu': {
-          const divider = 1000 // millis -> vCPU
+          const k: SliderKey = 'vcpu'
+          const divider = 1000
           map[k] = {
             label: LABELS[k],
-            min: (item.min ?? 0) / divider,
-            max: (item.max ?? 0) / divider,
+            min: (def.min ?? 0) / divider,
+            max: (def.max ?? 0) / divider,
             step: 0.1,
             unit: 'vCPU',
             divider,
           }
           break
         }
-
         case 'ram': {
-          const divider = GIB // bytes -> GiB
+          const k: SliderKey = 'ram'
+          const divider = GIB
           map[k] = {
             label: LABELS[k],
-            min: (item.min ?? 0) / divider,
-            max: (item.max ?? 0) / divider,
-            step: 0.125, // 128 MiB
+            min: (def.min ?? 0) / divider,
+            max: (def.max ?? 0) / divider,
+            step: 0.125, // 128MiB
             unit: 'GiB',
             divider,
           }
           break
         }
-
         case 'iops': {
-          const divider = 1
+          const k: SliderKey = 'iops'
           map[k] = {
             label: LABELS[k],
-            min: item.min ?? 0,
-            max: item.max ?? 0,
-            step: Math.max(1, item.step ?? 100),
+            min: def.min ?? 0,
+            max: def.max ?? 0,
+            step: Math.max(1, def.step ?? 100),
             unit: 'IOPS',
+            divider: 1,
+          }
+          break
+        }
+        case 'database_size': {
+          const k: SliderKey = 'nvme'
+          const divider = 10_000_000_000 // 10 GB
+          map[k] = {
+            label: LABELS[k],
+            min: (def.min ?? 0) / divider,
+            max: (def.max ?? 0) / divider,
+            step: 1,
+            unit: 'GB',
             divider,
           }
           break
         }
-
-        case 'database_size':
         case 'storage_size': {
-          const divider = 10_000_000_000 // 10 GB steps from API
+          const k: SliderKey = 'storage'
+          const divider = 10_000_000_000 // 10 GB
           map[k] = {
             label: LABELS[k],
-            min: (item.min ?? 0) / divider,
-            max: (item.max ?? 0) / divider,
-            step: 1, // 10 GB per tick
+            min: (def.min ?? 0) / divider,
+            max: (def.max ?? 0) / divider,
+            step: 1,
             unit: 'GB',
             divider,
           }
           break
         }
       }
-    })
+    }
 
     return map
   }, [limitDefinitions])
 
+  // Slider keys derived from API
+  const sliderKeys = useMemo(
+    () => (limitConfig ? (Object.keys(limitConfig) as SliderKey[]) : []),
+    [limitConfig]
+  )
+
+  // React Hook Form
+  const form = useForm<CreateProjectForm>({
+    resolver: zodResolver(FormSchema),
+    mode: 'onChange',
+    defaultValues: {
+      organization: slug,
+      projectName: projectName || '',
+      instanceSize: sizes[0],
+      dataApi: true,
+      useApiSchema: false,
+      postgresVersionSelection: '',
+      includeFileStorage: true,
+      enableHa: false,
+      readReplicas: 0,
+      perBranchLimits: {}, // set after limits load
+      projectLimits: {},   // set after limits load
+    },
+  })
+
+  // Initialize sliders once limits are available
+  useEffect(() => {
+    if (!limitConfig) return
+
+    const perBranchDefaults: Record<string, number> = {}
+    const projectDefaults: Record<string, number> = {}
+
+    for (const key of sliderKeys) {
+      const cfg = limitConfig[key]!
+      perBranchDefaults[key] = cfg.min
+      projectDefaults[key] = cfg.min
+    }
+
+    if (!form.getValues('includeFileStorage') && sliderKeys.includes('storage')) {
+      perBranchDefaults['storage'] = 0
+      projectDefaults['storage'] = 0
+    }
+
+    form.reset({
+      ...form.getValues(),
+      perBranchLimits: perBranchDefaults,
+      projectLimits: projectDefaults,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [limitConfig, sliderKeys.join('|')])
+
+  // Zero out storage if toggled off
+  useEffect(() => {
+    const sub = form.watch((v, { name }) => {
+      if (name === 'includeFileStorage' && v?.includeFileStorage === false && sliderKeys.includes('storage')) {
+        form.setValue('perBranchLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
+        form.setValue('projectLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
+      }
+    })
+    return () => sub.unsubscribe()
+  }, [form, sliderKeys])
+
+  // Submit mutation
   const {
     mutate: createProject,
     isLoading: isCreatingNewProject,
@@ -286,84 +341,41 @@ const CreateProjectPage: NextPageWithLayout = () => {
     onSuccess: (res) => {
       sendEvent({
         action: 'project_creation_simple_version_submitted',
-        properties: {
-          instanceSize: form.getValues('instanceSize'),
-        },
-        groups: {
-          project: res.id,
-          organization: res.organization_id,
-        },
+        properties: { instanceSize: form.getValues('instanceSize') },
+        groups: { project: res.id, organization: res.organization_id },
       })
       router.push(`/org/${slug}/project/${res.id}/building`)
+    },
+    onError(error, variables, context) {
+      console.group('❌ Project creation error callback')
+      console.log('Error object:', error)
+      console.log('Error.message:', error?.message)
+      console.log('Error.detail:', (error as any)?.detail)
+      console.log('Mutation variables (input):', variables)
+      console.log('Mutation context (if any):', context)
+      console.groupEnd()
+      toast.error(error?.message)
     },
   })
 
   const { data: allProjectsFromApi } = useProjectsQuery()
-  const [allProjects, setAllProjects] = useState<
-    components['schemas']['ProjectPublic'][] | undefined
-  >(undefined)
-
-  const isAdmin = useCheckPermissions('env:projects:create')
-
-  const isInvalidSlug = isOrganizationsSuccess && currentOrg === undefined
-  const orgNotFound = isOrganizationsSuccess && (organizations?.length ?? 0) > 0 && isInvalidSlug
-  const isEmptyOrganizations = (organizations?.length ?? 0) <= 0 && isOrganizationsSuccess
-  const canCreateProject = isAdmin
-
-  const form = useForm<CreateProjectForm>({
-    resolver: zodResolver(FormSchema),
-    mode: 'onChange',
-    defaultValues: {
-      organization: slug,
-      projectName: projectName || '',
-      postgresVersion: '',
-      instanceSize: sizes[0], // internal only
-      dataApi: true,
-      useApiSchema: false,
-      postgresVersionSelection: '',
-      includeFileStorage: true,
-      enableHa: false,
-      readReplicas: 0,
-      perBranchLimits: {
-        vcpu: 2,
-        ram: 8,
-        nvme: 100,
-        iops: 3000,
-        storage: 200,
-      },
-      projectLimits: {
-        vcpu: 8,
-        ram: 32,
-        nvme: 500,
-        iops: 8000,
-        storage: 1000,
-      },
-    },
-  })
+  const [allProjects, setAllProjects] = useState<components['schemas']['ProjectPublic'][] | undefined>(undefined)
 
   useEffect(() => {
-    if (projectName) return
-    form.setValue("projectName", projectName!)
-  }, [projectName])
+    if (allProjectsFromApi && !allProjects) setAllProjects(allProjectsFromApi)
+  }, [allProjectsFromApi, allProjects])
 
-  // When file storage disabled, zero out both storage sliders
   useEffect(() => {
-    const include = form.watch('includeFileStorage')
-    if (!include) {
-      form.setValue('perBranchLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
-      form.setValue('projectLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
-    }
-    const sub = form.watch((v, { name }) => {
-      if (name === 'includeFileStorage' && v?.includeFileStorage === false) {
-        form.setValue('perBranchLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
-        form.setValue('projectLimits.storage', 0, { shouldDirty: true, shouldValidate: false })
-      }
-    })
-    return () => sub.unsubscribe()
-  }, [form])
+    if (isEmptyOrganizations) router.push(`/new`)
+  }, [isEmptyOrganizations, router])
 
+  useEffect(() => {
+    if (slug && slug !== '_') form.setValue('organization', slug)
+    if (projectName) form.setValue('projectName', projectName || '')
+  }, [slug, projectName, form])
+
+  // Submit handlers
   const additionalMonthlySpend = 0
-
   const onSubmitWithComputeCostsConfirmation = async (values: CreateProjectForm) => {
     const launchingLargerInstance =
       values.instanceSize &&
@@ -372,12 +384,8 @@ const CreateProjectPage: NextPageWithLayout = () => {
     if (additionalMonthlySpend > 0 && (hasOAuthApps || launchingLargerInstance)) {
       sendEvent({
         action: 'project_creation_simple_version_confirm_modal_opened',
-        properties: {
-          instanceSize: values.instanceSize,
-        },
-        groups: {
-          organization: currentOrg?.id ?? 'Unknown',
-        },
+        properties: { instanceSize: values.instanceSize },
+        groups: { organization: currentOrg?.id ?? 'Unknown' },
       })
       setIsComputeCostsConfirmationModalVisible(true)
     } else {
@@ -391,105 +399,63 @@ const CreateProjectPage: NextPageWithLayout = () => {
       return
     }
     if (!limitConfig) {
-      toast.error('Resource limits not loaded yet. Please wait a moment and try again.')
+      toast.error('Resource limits not loaded yet. Please try again in a moment.')
       return
     }
 
-    const { postgresVersion } = values
+    const per_branch_limits: Record<string, number> = {}
+    const project_limits: Record<string, number> = {}
+
+    for (const key of sliderKeys) {
+      const apiKey = FORM_TO_API[key]
+      const divider = limitConfig[key]!.divider
+      per_branch_limits[apiKey] = (values.perBranchLimits as any)[key] * divider
+      project_limits[apiKey] = (values.projectLimits as any)[key] * divider
+    }
+
+    if (!values.includeFileStorage && sliderKeys.includes('storage')) {
+      per_branch_limits['storage_size'] = 0
+      project_limits['storage_size'] = 0
+    }
 
     const data: ProjectCreateVariables = {
       organizationSlug: currentOrg.id!,
       parameters: {
         name: values.projectName,
-        max_backups: 100, // FIXME: fill in correct value
-        per_branch_limits: {
-          milli_vcpu: values.perBranchLimits.vcpu * limitConfig.vcpu.divider,
-          ram: values.perBranchLimits.ram * limitConfig.ram.divider,
-          iops: values.perBranchLimits.iops * limitConfig.iops.divider,
-          database_size: values.perBranchLimits.nvme * limitConfig.nvme.divider,
-          storage_size: values.perBranchLimits.storage * limitConfig.storage.divider,
-        },
-        project_limits: {
-          milli_vcpu: values.projectLimits.vcpu * limitConfig.vcpu.divider,
-          ram: values.projectLimits.ram * limitConfig.ram.divider,
-          iops: values.projectLimits.iops * limitConfig.iops.divider,
-          database_size: values.projectLimits.nvme * limitConfig.nvme.divider,
-          storage_size: values.projectLimits.storage * limitConfig.storage.divider,
-        },
+        max_backups: 100,
+        per_branch_limits,
+        project_limits,
       },
-    }
-
-    if (postgresVersion) {
-      if (!postgresVersion.match(/1[2-9]\..*/)) {
-        toast.error(
-          `Invalid Postgres version, should start with a number between 12-19, a dot and additional characters, i.e. 15.2 or 15.2.0-3`
-        )
-      }
     }
 
     createProject(data)
   }
 
-  useEffect(() => {
-    if (allProjectsFromApi && !allProjects) {
-      setAllProjects(allProjectsFromApi)
+  // Slider onChange creators (clamp + sync rules)
+  const handlePerBranchChange = (key: SliderKey) => (v: number[]) => {
+    if (!limitConfig) return
+    const cfg = limitConfig[key]!
+    const next = v[0] ?? cfg.min
+    const safe = Math.max(cfg.min, Math.min(next, cfg.max))
+    form.setValue(`perBranchLimits.${key}`, safe, { shouldDirty: true, shouldValidate: false })
+    const projVal = form.getValues(`projectLimits.${key}`)
+    if (safe > projVal) {
+      form.setValue(`projectLimits.${key}`, safe, { shouldDirty: true, shouldValidate: false })
     }
-  }, [allProjectsFromApi, allProjects, setAllProjects])
+  }
 
-  useEffect(() => {
-    if (isEmptyOrganizations) {
-      router.push(`/new`)
-    }
-  }, [isEmptyOrganizations, router])
+  const handleProjectChange = (key: SliderKey) => (v: number[]) => {
+    if (!limitConfig) return
+    const cfg = limitConfig[key]!
+    const next = v[0] ?? cfg.min
+    const branchVal = form.getValues(`perBranchLimits.${key}`)
+    const clamped = Math.max(branchVal, Math.max(cfg.min, Math.min(next, cfg.max)))
+    form.setValue(`projectLimits.${key}`, clamped, { shouldDirty: true, shouldValidate: false })
+  }
 
-  useEffect(() => {
-    if (slug && slug !== '_') form.setValue('organization', slug)
-    if (projectName) form.setValue('projectName', projectName || '')
-  }, [slug, projectName, form])
-
-  // ── SYNCED SLIDER HANDLERS (raise the lower side to the higher side) ──
-  const handleBranchSliderChange = useCallback(
-    (key: SliderKey) => (value: number[]) => {
-      if (!limitConfig) return
-      const [next] = value
-      const safeNext = next ?? limitConfig[key].min
-
-      // Set per-branch value
-      form.setValue(`perBranchLimits.${key}`, safeNext, {
-        shouldDirty: true,
-        shouldValidate: false,
-      })
-
-      // If branch exceeds current project limit, bump project up
-      const projectVal = form.getValues(`projectLimits.${key}`)
-      if (safeNext > projectVal) {
-        form.setValue(`projectLimits.${key}`, safeNext, {
-          shouldDirty: true,
-          shouldValidate: false,
-        })
-      }
-    },
-    [form, limitConfig]
-  )
-
-  const handleProjectLimitSliderChange = useCallback(
-    (key: SliderKey) => (value: number[]) => {
-      if (!limitConfig) return
-      const [next] = value
-      const safeNext = next ?? limitConfig[key].min
-
-      const branchVal = form.getValues(`perBranchLimits.${key}`)
-
-      // Clamp: project must be at least branch, and within slider bounds
-      const clamped = Math.max(branchVal, Math.min(safeNext, limitConfig[key].max))
-
-      form.setValue(`projectLimits.${key}`, clamped, {
-        shouldDirty: true,
-        shouldValidate: false,
-      })
-    },
-    [form, limitConfig]
-  )
+  /* ------------------------------------------------------------------ */
+  /* Render                                                              */
+  /* ------------------------------------------------------------------ */
 
   return (
     <Form_Shadcn_ {...form}>
@@ -507,22 +473,16 @@ const CreateProjectPage: NextPageWithLayout = () => {
           </div>
         </header>
 
-        {/* Main content */}
+        {/* Main */}
         <main className="flex-1 px-12 py-8">
           <div className="max-w-[1600px] mx-auto w-full space-y-10">
-            {/* Banners (org permission, org not found) */}
             <section>
-              {isOrganizationsSuccess && !isAdmin && !orgNotFound && (
-                <NotOrganizationOwnerWarning slug={slug} />
-              )}
+              {isOrganizationsSuccess && !isAdmin && !orgNotFound && <NotOrganizationOwnerWarning slug={slug} />}
               {orgNotFound && <OrgNotFound slug={slug} />}
             </section>
 
-            {/* ──────────────────────────────────────────────── */}
-            {/* TOP ROW: Project config / PG version            */}
-            {/* ──────────────────────────────────────────────── */}
+            {/* Top row: Organization / Project */}
             <section className="grid grid-cols-1 gap-10 xl:grid-cols-2 xl:items-start">
-              {/* COL 1: Organization / Project */}
               <div className="space-y-6">
                 {isAdmin && !isInvalidSlug && (
                   <FormField_Shadcn_
@@ -530,13 +490,9 @@ const CreateProjectPage: NextPageWithLayout = () => {
                     name="organization"
                     render={({ field }) => (
                       <div className="space-y-2">
-                        <Label_Shadcn_
-                          htmlFor="organization"
-                          className="text-xs font-medium text-foreground whitespace-nowrap"
-                        >
+                        <Label_Shadcn_ htmlFor="organization" className="text-xs font-medium text-foreground whitespace-nowrap">
                           Organization
                         </Label_Shadcn_>
-
                         {(organizations?.length ?? 0) > 0 && (
                           <Select_Shadcn_
                             onValueChange={(orgSlug) => {
@@ -552,11 +508,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                             <SelectContent_Shadcn_>
                               <SelectGroup_Shadcn_>
                                 {organizations?.map((x) => (
-                                  <SelectItem_Shadcn_
-                                    key={x.id}
-                                    value={x.id!}
-                                    className="flex justify-between"
-                                  >
+                                  <SelectItem_Shadcn_ key={x.id} value={x.id!} className="flex justify-between">
                                     <span className="mr-2">{x.name}</span>
                                   </SelectItem_Shadcn_>
                                 ))}
@@ -573,60 +525,47 @@ const CreateProjectPage: NextPageWithLayout = () => {
                 )}
               </div>
 
-              {/* COL 2: Custom PG version (password fields removed) */}
               <div className="space-y-6">
                 <FormField_Shadcn_
                   control={form.control}
                   name="projectName"
                   render={({ field }) => (
                     <div className="space-y-2">
-                      <Label_Shadcn_
-                        htmlFor="project-name"
-                        className="text-xs font-medium text-foreground whitespace-nowrap"
-                      >
+                      <Label_Shadcn_ htmlFor="project-name" className="text-xs font-medium text-foreground whitespace-nowrap">
                         Project name
                       </Label_Shadcn_>
-                      <Input_Shadcn_
-                        id="project-name"
-                        placeholder="Your project's name"
-                        className="h-9 text-sm"
-                        {...field}
-                      />
+                      <Input_Shadcn_ id="project-name" placeholder="Your project's name" className="h-9 text-sm" {...field} />
                     </div>
                   )}
                 />
               </div>
             </section>
 
-            {/* ──────────────────────────────────────────────── */}
-            {/* SECOND ROW: Branch sizing  |  Project limits    */}
-            {/* ──────────────────────────────────────────────── */}
+            {/* Row 2: Per-branch / Project limits */}
             <section className="grid gap-10 xl:grid-cols-2">
-              {/* Branch sizing card */}
+              {/* Per-branch */}
               <section className="rounded-lg border p-5 space-y-4">
                 <p className="font-medium text-sm text-foreground">Sizing (per branch)</p>
-
                 {!limitConfig ? (
                   <p className="text-sm text-foreground-muted">Loading limits…</p>
                 ) : (
                   <div className="grid grid-cols-1 gap-y-4">
-                    {SLIDER_KEYS.map((key) => {
-                      const { label, min, max, step, unit } = limitConfig[key]
-                      const value = form.watch(`perBranchLimits.${key}`)
+                    {sliderKeys.map((key) => {
+                      const cfg = limitConfig[key]!
+                      const value = (form.watch(`perBranchLimits.${key}`) ?? cfg.min) as number
                       const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
-
                       return (
                         <SliderRow
                           key={key}
                           id={`sizing-${key}`}
-                          label={label}
+                          label={cfg.label}
                           value={value}
-                          min={min}
-                          max={max}
-                          step={step}
-                          unit={unit}
+                          min={cfg.min}
+                          max={cfg.max}
+                          step={cfg.step}
+                          unit={cfg.unit}
                           disabled={storageDisabled}
-                          onChange={handleBranchSliderChange(key)}
+                          onChange={handlePerBranchChange(key)}
                           helper={
                             key === 'storage' && storageDisabled ? (
                               <div className="mt-2">
@@ -641,38 +580,34 @@ const CreateProjectPage: NextPageWithLayout = () => {
                     })}
                   </div>
                 )}
-
                 <p className="text-[11px] leading-snug text-foreground-muted">
-                  Resource allocation for this branch. These values will eventually control cost and
-                  performance.
+                  Resource allocation for this branch. These values will eventually control cost and performance.
                 </p>
               </section>
 
-              {/* Project limits card */}
+              {/* Project */}
               <section className="rounded-lg border p-5 space-y-4">
                 <p className="font-medium text-sm text-foreground">Project limits</p>
-
                 {!limitConfig ? (
                   <p className="text-sm text-foreground-muted">Loading limits…</p>
                 ) : (
                   <div className="grid grid-cols-1 gap-y-4">
-                    {SLIDER_KEYS.map((key) => {
-                      const { label, min, max, step, unit } = limitConfig[key]
-                      const value = form.watch(`projectLimits.${key}`)
+                    {sliderKeys.map((key) => {
+                      const cfg = limitConfig[key]!
+                      const value = (form.watch(`projectLimits.${key}`) ?? cfg.min) as number
                       const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
-
                       return (
                         <SliderRow
                           key={key}
                           id={`project-limits-${key}`}
-                          label={label}
+                          label={cfg.label}
                           value={value}
-                          min={min}
-                          max={max}
-                          step={step}
-                          unit={unit}
+                          min={cfg.min}
+                          max={cfg.max}
+                          step={cfg.step}
+                          unit={cfg.unit}
                           disabled={storageDisabled}
-                          onChange={handleProjectLimitSliderChange(key)}
+                          onChange={handleProjectChange(key)}
                           helper={
                             key === 'storage' && storageDisabled ? (
                               <div className="mt-2">
@@ -687,16 +622,13 @@ const CreateProjectPage: NextPageWithLayout = () => {
                     })}
                   </div>
                 )}
-
                 <p className="text-[11px] leading-snug text-foreground-muted">
                   Global ceilings across all branches in this project.
                 </p>
               </section>
             </section>
 
-            {/* ──────────────────────────────────────────────── */}
-            {/* THIRD ROW: Availability & storage (full width)  */}
-            {/* ──────────────────────────────────────────────── */}
+            {/* Row 3: Availability & storage */}
             <section className="rounded-lg border p-5 space-y-6">
               <div className="space-y-4">
                 <p className="font-medium text-sm text-foreground">Availability &amp; storage</p>
@@ -750,20 +682,10 @@ const CreateProjectPage: NextPageWithLayout = () => {
                   name="readReplicas"
                   render={({ field }) => (
                     <div className="space-y-1 max-w-[200px]">
-                      <Label_Shadcn_
-                        htmlFor="read-replicas"
-                        className="text-xs font-medium text-foreground whitespace-nowrap"
-                      >
+                      <Label_Shadcn_ htmlFor="read-replicas" className="text-xs font-medium text-foreground whitespace-nowrap">
                         Read replicas
                       </Label_Shadcn_>
-                      <Input_Shadcn_
-                        id="read-replicas"
-                        type="number"
-                        value={field.value}
-                        disabled
-                        readOnly
-                        className="h-9 text-sm"
-                      />
+                      <Input_Shadcn_ id="read-replicas" type="number" value={field.value} disabled readOnly className="h-9 text-sm" />
                       <p className="text-[11px] leading-snug text-foreground-muted">Coming soon</p>
                     </div>
                   )}
@@ -772,13 +694,8 @@ const CreateProjectPage: NextPageWithLayout = () => {
 
               <div className="rounded-md border p-3 text-[11px] leading-snug text-foreground-muted">
                 <p>
-                  This project may incur usage-based costs once created. Review your organization’s
-                  billing plan and limits.{' '}
-                  <Link
-                    href="https://supabase.com/docs/guides/platform/manage-your-usage/compute"
-                    target="_blank"
-                    className="underline"
-                  >
+                  This project may incur usage-based costs once created. Review your organization’s billing plan and limits.{' '}
+                  <Link href="https://supabase.com/docs/guides/platform/manage-your-usage/compute" target="_blank" className="underline">
                     Learn more
                   </Link>
                   .
@@ -788,7 +705,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
           </div>
         </main>
 
-        {/* Sticky footer with actions */}
+        {/* Footer */}
         <footer className="sticky bottom-0 border-t bg-surface/90 backdrop-blur px-12 py-4">
           <div className="max-w-[1600px] mx-auto w-full flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end">
             <div className="flex items-center gap-2 sm:ml-auto">
@@ -827,20 +744,16 @@ const CreateProjectPage: NextPageWithLayout = () => {
             await onSubmit(values)
             setIsComputeCostsConfirmationModalVisible(false)
           }}
-          variant={'warning'}
+          variant="warning"
         >
           <div className="text-sm text-foreground-light space-y-1">
             <p>
-              Creating this project can increase your monthly costs by ${0}, independent of how
-              actively you use it. By clicking "I understand", you agree to the additional costs.
-              <Link
-                href="https://supabase.com/docs/guides/platform/manage-your-usage/compute"
-                target="_blank"
-                className="underline"
-              >
-                Compute costs
+              Creating this project can increase your monthly costs by ${0}, independent of how actively you use it. By clicking
+              "I understand", you agree to the additional costs.{' '}
+              <Link href="https://supabase.com/docs/guides/platform/manage-your-usage/compute" target="_blank" className="underline">
+                Learn more
               </Link>
-              are non-refundable.
+              .
             </p>
           </div>
         </ConfirmationModal>
@@ -849,9 +762,9 @@ const CreateProjectPage: NextPageWithLayout = () => {
   )
 }
 
-/* ------------------------------------------------------------------
-   Helpers / Layout wrappers
--------------------------------------------------------------------*/
+/* ------------------------------------------------------------------ */
+/* Layout wrappers                                                     */
+/* ------------------------------------------------------------------ */
 
 const PageLayout = withAuth(({ children }: PropsWithChildren) => {
   return <WizardLayoutWithoutAuth>{children}</WizardLayoutWithoutAuth>
