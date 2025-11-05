@@ -36,6 +36,7 @@ services:
       - '../packages:/app/packages'
       - 'nextjs-compiler-cache:/app/apps/studio/.next/cache'
     environment:
+      DEV_MODE: 'true'
       STUDIO_PG_META_URL: http://meta:8080
       PLATFORM_PG_META_URL: http://meta:8080
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

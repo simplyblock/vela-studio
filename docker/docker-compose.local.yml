@@ -10,7 +10,7 @@ name: vela-studio
 services:
   studio:
     container_name: vela-studio
-    image: simplyblock/vela-studio:main
+    image: simplyblock/vela-studio:latest
     ports:
       - '8082:8082/tcp'
     restart: unless-stopped
@@ -29,7 +29,7 @@ services:
       analytics:
         condition: service_healthy
     environment:
-      STUDIO_PG_META_URL: http://meta:8080
+      DEV_MODE: 'true'
       PLATFORM_PG_META_URL: http://meta:8080
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
