@@ -261,7 +261,7 @@ class ServerKeycloakManager implements KeycloakManager {
   #buildAuthOptions(): AuthOptions {
     return {
       secret: this.#config.secret,
-      debug: process.env.NODE_ENV !== 'production',
+      debug: true,
       logger: {
         debug: console.log,
         error: console.log,
