@@ -8,6 +8,9 @@ const nextConfig = {
   output: 'standalone',
   experimental: {
     webpackBuildWorker: true,
+    serverActions: {
+      localStorage: false
+    }
   },
   async rewrites() {
     return []
