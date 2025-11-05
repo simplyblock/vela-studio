@@ -62,6 +62,7 @@ COPY --from=builder /app/apps/studio/.next/static ./apps/studio/.next/static
 RUN chown -R node:node /app
 USER node
 EXPOSE 3000
+ENV HOSTNAME="0.0.0.0"
 #ENTRYPOINT ["docker-entrypoint.sh"]
 HEALTHCHECK --interval=5s --timeout=5s --retries=3 CMD node -e "fetch('http://localhost:3000/api/healthz').then((r) => {if (r.status !== 200) throw new Error(r.status)})"
 CMD ["node", "apps/studio/server.js"]
