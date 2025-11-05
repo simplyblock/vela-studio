@@ -1,5 +1,9 @@
 import { Cacheables } from 'cacheables'
 import { Branch } from 'data/branches/branch-query'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { getKeycloakManager } from 'common/keycloak'
+import { getVelaClient, maybeHandleError } from '../../data/vela/vela'
+import { getPlatformQueryParams } from './platformQueryParams'
 
 const branchCache = new Cacheables()
 
@@ -14,12 +18,35 @@ export function getBranchOrRefresh(
   orgId: string,
   projectId: string,
   branchId: string,
-  retriever: () => Promise<Branch | undefined>
+  req: NextApiRequest,
+  res: NextApiResponse
 ): Promise<Branch | undefined> {
   const key = branchKey(orgId, projectId, branchId)
   return branchCache.cacheable(
-    () => {
-      return retriever()
+    async () => {
+      const session = await getKeycloakManager().getSession(req, res)
+      const accessToken = session?.access_token
+      if (!accessToken) {
+        throw Error('Invalid access token')
+      }
+      const client = getVelaClient(req)
+      const response = await client.get(
+        '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/',
+        {
+          params: {
+            path: {
+              organization_id: orgId,
+              project_id: projectId,
+              branch_id: branchId,
+            },
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      if (maybeHandleError(res, response)) return
+      return response.data!
     },
     key,
     {

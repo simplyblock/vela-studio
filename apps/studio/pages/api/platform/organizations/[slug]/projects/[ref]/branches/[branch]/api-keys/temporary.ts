@@ -6,23 +6,7 @@ import { getVelaClient, maybeHandleError } from 'data/vela/vela'
 
 const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
-  const branchEntity = await getBranchOrRefresh(slug, ref, branch, async () => {
-    const client = getVelaClient(req)
-    const response = await client.get(
-      '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/',
-      {
-        params: {
-          path: {
-            organization_id: slug,
-            project_id: ref,
-            branch_id: branch,
-          },
-        },
-      }
-    )
-    if (maybeHandleError(res, response)) return
-    return response.data!
-  })
+  const branchEntity = await getBranchOrRefresh(slug, ref, branch, req, res)
 
   if (!branchEntity) {
     return res.status(404).json({
