@@ -261,7 +261,7 @@ class ServerKeycloakManager implements KeycloakManager {
   #buildAuthOptions(): AuthOptions {
     return {
       secret: this.#config.secret,
-      debug: true,
+      debug: process.env.NODE_ENV !== 'production',
       logger: {
         debug: console.log,
         error: console.log,
@@ -338,6 +338,10 @@ const newServerKeycloakManager = (): KeycloakManager => {
   const secret = process.env.NEXTAUTH_SECRET
   if (!secret) {
     throw new Error('NEXTAUTH_SECRET is not set')
+  }
+  const authUrl = process.env.NEXTAUTH_URL
+  if (!authUrl) {
+    throw new Error('NEXTAUTH_URL is not set')
   }
   return new ServerKeycloakManager({
     secret,
