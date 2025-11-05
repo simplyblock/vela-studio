@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { fetchGet } from 'data/fetchers'
 import { constructHeaders } from 'lib/api/apiHelpers'
 import apiWrapper from 'lib/api/apiWrapper'
-import { PG_META_URL } from 'lib/constants'
+import { getPgMetaUrl } from 'lib/api/getPgMetaUrl'
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
   apiWrapper(req, res, handler, { withAuth: true })
@@ -42,7 +42,7 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const headers = constructHeaders(req.headers)
 
   const response = await fetchGet(
-    `${PG_META_URL}/generators/typescript?included_schema=${includedSchema}&excluded_schemas=${excludedSchema}`,
+    `${getPgMetaUrl(req)}/generators/typescript?included_schema=${includedSchema}&excluded_schemas=${excludedSchema}`,
     { headers }
   )
 

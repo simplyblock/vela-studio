@@ -4,7 +4,7 @@ import { paths } from 'api-types'
 import { fetchPost } from 'data/fetchers'
 import { constructHeaders } from 'lib/api/apiHelpers'
 import apiWrapper from 'lib/api/apiWrapper'
-import { PG_META_URL } from 'lib/constants'
+import { getPgMetaRedirectUrl } from '../branches/[branch]/meta/tables'
 
 export default (req: NextApiRequest, res: NextApiResponse) => apiWrapper(req, res, handler)
 
@@ -27,7 +27,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ResponseData>
   const headers = constructHeaders(req.headers)
   try {
     const response = await fetchPost(
-      `${PG_META_URL}/query`,
+      getPgMetaRedirectUrl(req, 'query'),
       { query: enrichQuery(LINT_SQL) },
       { headers }
     )
