@@ -18,11 +18,12 @@ export type LINT_TYPES = ProjectLintResponse[0]['name']
 export async function getProjectLints({ branch }: ProjectLintsVariables, signal?: AbortSignal) {
   if (!branch) throw new Error('Branch is required')
 
-  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/run-lints`, {
+  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/branches/{branch}/run-lints`, {
     params: {
       path: {
         slug: branch.organization_id,
         ref: branch.project_id,
+        branch: branch.id,
       },
     },
     signal,

@@ -4,7 +4,7 @@ import { paths } from 'api-types'
 import { fetchPost } from 'data/fetchers'
 import { constructHeaders } from 'lib/api/apiHelpers'
 import apiWrapper from 'lib/api/apiWrapper'
-import { getPgMetaRedirectUrl } from '../branches/[branch]/meta/tables'
+import { getPgMetaRedirectUrl } from '../meta/tables'
 
 export default (req: NextApiRequest, res: NextApiResponse) => apiWrapper(req, res, handler)
 
@@ -21,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 type ResponseData =
-  paths['/platform/organizations/{slug}/projects/{ref}/run-lints']['get']['responses']['200']['content']['application/json']
+  paths['/platform/organizations/{slug}/projects/{ref}/branches/{branch}/run-lints']['get']['responses']['200']['content']['application/json']
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse<ResponseData>) => {
   const headers = constructHeaders(req.headers)
