@@ -3,7 +3,9 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { fetchGet } from 'data/fetchers'
 import { constructHeaders } from 'lib/api/apiHelpers'
 import apiWrapper from 'lib/api/apiWrapper'
-import { PG_META_URL } from 'lib/constants'
+import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
+import { getBranchOrRefresh } from 'lib/api/branchCaching'
+import { getPgMetaUrl } from '../../../../../../../../../../lib/api/getPgMetaUrl'
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
   apiWrapper(req, res, handler, { withAuth: true })
@@ -38,7 +40,8 @@ export function getPgMetaRedirectUrl(req: NextApiRequest, endpoint: string) {
     return query
   }, new URLSearchParams())
 
-  let url = `${PG_META_URL}/${endpoint}`
+  const pgMetaEndpoint = getPgMetaUrl(req)
+  let url = `${pgMetaEndpoint}/${endpoint}`
   if (Object.keys(req.query).length > 0) {
     url += `?${query}`
   }
@@ -51,7 +54,7 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (response.error) {
     const { code, message } = response.error
-    return res.status(code || 500).json({ message })
+    return res.status(code ?? 500).json({ message })
   } else {
     return res.status(200).json(response)
   }

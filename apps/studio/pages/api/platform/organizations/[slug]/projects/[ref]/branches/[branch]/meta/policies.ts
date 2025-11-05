@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { fetchGet } from 'data/fetchers'
 import { constructHeaders } from 'lib/api/apiHelpers'
 import apiWrapper from 'lib/api/apiWrapper'
-import { PG_META_URL } from 'lib/constants'
+import { getPgMetaRedirectUrl } from './tables'
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
   apiWrapper(req, res, handler, { withAuth: true })
@@ -22,11 +22,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 const handleGetAll = async (req: NextApiRequest, res: NextApiResponse) => {
   const headers = constructHeaders(req.headers)
-  const response = await fetchGet(`${PG_META_URL}/policies`, { headers })
+  const response = await fetchGet(getPgMetaRedirectUrl(req, 'policies'), { headers })
 
   if (response.error) {
     const { code, message } = response.error
-    return res.status(code).json({ message })
+    return res.status(code ?? 500).json({ message })
   } else {
     return res.status(200).json(response)
   }
