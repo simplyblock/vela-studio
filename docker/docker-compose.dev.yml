@@ -34,7 +34,7 @@ services:
     volumes:
       - '../apps:/app/apps'
       - '../packages:/app/packages'
-      - 'nextjs-compiler-cache:/app/apps/studio/.next/cache'
+      - 'nextjs-compiler-cache:/app/apps/studio/.next/dev/cache'
     environment:
       PLATFORM_PG_META_URL: http://meta:8080
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
