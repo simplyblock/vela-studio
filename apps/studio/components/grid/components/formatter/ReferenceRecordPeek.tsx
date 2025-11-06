@@ -31,13 +31,16 @@ export const ReferenceRecordPeek = ({ table, column, value }: ReferenceRecordPee
 
   const { data, error, isSuccess, isError, isLoading } = useTableRowsQuery(
     {
-      branch,
+      branch: branch!,
       tableId: table.id,
       filters: [{ column, operator: '=', value }],
       page: 1,
       limit: 10,
     },
-    { keepPreviousData: true }
+    {
+      enabled: !!branch,
+      keepPreviousData: true,
+    }
   )
 
   const primaryKeys = table.primary_keys.map((x) => x.name)

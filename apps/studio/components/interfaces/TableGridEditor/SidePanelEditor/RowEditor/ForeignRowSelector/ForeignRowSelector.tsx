@@ -91,7 +91,7 @@ const ForeignRowSelector = ({
 
   const { data, isLoading, isSuccess, isError, isRefetching } = useTableRowsQuery(
     {
-      branch,
+      branch: branch!,
       tableId: table?.id,
       sorts,
       filters,
@@ -100,6 +100,7 @@ const ForeignRowSelector = ({
       roleImpersonationState: roleImpersonationState as RoleImpersonationState,
     },
     {
+      enabled: !!branch,
       keepPreviousData: true,
     }
   )
