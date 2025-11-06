@@ -41,7 +41,7 @@ export const TableGridEditor = ({
   const tabs = useTabsStateSnapshot()
 
   useLoadTableEditorStateFromLocalStorageIntoUrl({
-    branchId: branchRef,
+    branchId: branch?.id,
     table: selectedTable,
   })
 

@@ -12,7 +12,7 @@ import type { NextPageWithLayout } from 'types'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const TableEditorPage: NextPageWithLayout = () => {
-  const { id: _id, ref: projectRef } = useParams()
+  const { id: _id } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const id = _id ? Number(_id) : undefined
   const store = useTabsStateSnapshot()
@@ -30,7 +30,7 @@ const TableEditorPage: NextPageWithLayout = () => {
    */
 
   useEffect(() => {
-    if (selectedTable && projectRef) {
+    if (selectedTable && branch) {
       const tabId = createTabId(selectedTable.entity_type, { id: selectedTable.id })
       if (!store.tabsMap[tabId]) {
         store.addTab({
@@ -48,7 +48,7 @@ const TableEditorPage: NextPageWithLayout = () => {
         store.makeTabActive(tabId)
       }
     }
-  }, [selectedTable, id, projectRef])
+  }, [selectedTable, id, branch])
 
   return <TableGridEditor isLoadingSelectedTable={isLoading} selectedTable={selectedTable} />
 }
