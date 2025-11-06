@@ -44,12 +44,12 @@ const DatabaseTables: NextPageWithLayout = () => {
         </ScaffoldSection>
       </ScaffoldContainer>
 
-      {branch !== undefined &&
-        selectedTableToEdit !== undefined &&
+      {branch &&
+        selectedTableToEdit &&
         isTableLike(selectedTableToEdit) && (
           <TableEditorTableStateContextProvider
             key={`table-editor-table-${selectedTableToEdit.id}`}
-            branch={branch}
+            branchId={branch.id}
             table={selectedTableToEdit}
           >
             <DeleteConfirmationDialogs selectedTable={selectedTableToEdit} />

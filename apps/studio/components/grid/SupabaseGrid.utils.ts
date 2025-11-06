@@ -11,7 +11,6 @@ import { FilterOperatorOptions } from './components/header/filter/Filter.constan
 import { STORAGE_KEY_PREFIX } from './constants'
 import type { Sort, SupaColumn, SupaTable } from './types'
 import { formatClipboardValue } from './utils/common'
-import { Branch } from 'data/branches/branch-query'
 
 export function formatSortURLParams(tableName: string, sort?: string[]): Sort[] {
   if (Array.isArray(sort)) {
@@ -124,11 +123,11 @@ export function getStorageKey(prefix: string, ref: string) {
 }
 
 export function loadTableEditorStateFromLocalStorage(
-  branch: Branch,
+  branchId: string,
   tableName: string,
   schema?: string | null
 ): SavedState | undefined {
-  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branch.id)
+  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branchId)
   const jsonStr = localStorage.getItem(storageKey)
   if (!jsonStr) return
   const json = JSON.parse(jsonStr)
@@ -137,21 +136,21 @@ export function loadTableEditorStateFromLocalStorage(
 }
 
 export function saveTableEditorStateToLocalStorage({
-  branch,
+  branchId,
   tableName,
   schema,
   gridColumns,
   sorts,
   filters,
 }: {
-  branch: Branch
+  branchId: string
   tableName: string
   schema?: string | null
   gridColumns?: CalculatedColumn<any, any>[]
   sorts?: string[]
   filters?: string[]
 }) {
-  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branch.project_id)
+  const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branchId)
   const savedStr = localStorage.getItem(storageKey)
   const tableKey = !schema || schema == 'public' ? tableName : `${schema}.${tableName}`
 
@@ -178,23 +177,23 @@ export const saveTableEditorStateToLocalStorageDebounced = AwesomeDebouncePromis
 )
 
 export function useLoadTableEditorStateFromLocalStorageIntoUrl({
-  branch,
+  branchId,
   table,
 }: {
-  branch?: Branch
+  branchId?: string
   table: Entity | undefined
 }) {
   const [_, setParams] = useUrlState({
     arrayKeys: ['sort', 'filter'],
   })
   useEffect(() => {
-    if (!branch || !table) {
+    if (!branchId || !table) {
       return
     }
 
     const searchParams = new URLSearchParams(window.location.search)
 
-    const savedState = loadTableEditorStateFromLocalStorage(branch, table.name, table.schema)
+    const savedState = loadTableEditorStateFromLocalStorage(branchId, table.name, table.schema)
 
     // If no sort params are set, use saved state
 
@@ -211,7 +210,7 @@ export function useLoadTableEditorStateFromLocalStorageIntoUrl({
     if (params) {
       setParams((prevParams) => ({ ...prevParams, ...params }))
     }
-  }, [branch, table])
+  }, [branchId, table])
 }
 
 export const handleCopyCell = (

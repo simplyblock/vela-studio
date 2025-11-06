@@ -41,7 +41,7 @@ export const TableGridEditor = ({
   const tabs = useTabsStateSnapshot()
 
   useLoadTableEditorStateFromLocalStorageIntoUrl({
-    branch,
+    branchId: branchRef,
     table: selectedTable,
   })
 
@@ -156,9 +156,10 @@ export const TableGridEditor = ({
   return (
     // When any click happens in a table tab, the tab becomes permanent
     <div className="h-full" onClick={() => tabs.makeActiveTabPermanent()}>
+      {branch && (
       <TableEditorTableStateContextProvider
         key={`table-editor-table-${selectedTable.id}`}
-        branch={branch!}
+        branchId={branch.id!}
         table={selectedTable}
         editable={editable}
       >
@@ -191,6 +192,7 @@ export const TableGridEditor = ({
           onTableDeleted={onTableDeleted}
         />
       </TableEditorTableStateContextProvider>
+        )}
     </div>
   )
 }

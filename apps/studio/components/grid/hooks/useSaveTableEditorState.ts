@@ -28,7 +28,7 @@ export function useSaveTableEditorState() {
 
         if (tableName) {
           saveTableEditorStateToLocalStorage({
-            branch,
+            branchId: branch.id,
             tableName,
             schema,
             ...dataToSave,

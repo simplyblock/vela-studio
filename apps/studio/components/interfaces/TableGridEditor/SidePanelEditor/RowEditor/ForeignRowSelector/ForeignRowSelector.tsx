@@ -142,7 +142,7 @@ const ForeignRowSelector = ({
 
           {branch && table && isSuccess && (
             <TableEditorTableStateContextProvider
-              branch={branch}
+              branchId={branch.id}
               table={table}
               editable={false}
             >
