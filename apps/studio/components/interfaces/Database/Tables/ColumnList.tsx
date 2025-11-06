@@ -126,7 +126,7 @@ export const ColumnList = ({
                   </Table.th>,
                   <Table.th key="type">Data Type</Table.th>,
                   <Table.th key="format">Format</Table.th>,
-                  <Table.th key="format" className="text-center">
+                  <Table.th key="nullable" className="text-center">
                     Nullable
                   </Table.th>,
                   <Table.th key="buttons"></Table.th>,

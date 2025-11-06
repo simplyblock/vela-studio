@@ -99,7 +99,7 @@ export type TableRowsCountVariables = Omit<GetTableRowsCountArgs, 'table'> & {
   queryClient: QueryClient
   tableId?: number
   roleImpersonationState?: RoleImpersonationState
-  branch?: Branch
+  branch: Branch
 }
 
 export type TableRowsCountData = TableRowsCount

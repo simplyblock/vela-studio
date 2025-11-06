@@ -98,7 +98,7 @@ export const Grid = memo(
       const { data } = useForeignKeyConstraintsQuery({
         branch,
         schema: table?.schema ?? undefined,
-      })
+      }, { enabled: !!branch })
 
       function getColumnForeignKey(columnName: string) {
         const { targetTableSchema, targetTableName, targetColumnName } =

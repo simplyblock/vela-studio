@@ -1,4 +1,3 @@
-
 import saveAs from 'file-saver'
 import { ArrowUp, ChevronDown, FileText, Trash } from 'lucide-react'
 import Link from 'next/link'
@@ -39,7 +38,7 @@ import { FilterPopover } from './filter/FilterPopover'
 import { formatRowsForCSV } from './Header.utils'
 import { SortPopover } from './sort/SortPopover'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
-import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions' // [Joshen] CSV exports require this guard as a fail-safe if the table is
 // [Joshen] CSV exports require this guard as a fail-safe if the table is
 // just too large for a browser to keep all the rows in memory before
 // exporting. Either that or export as multiple CSV sheets with max n rows each
@@ -86,7 +85,7 @@ const DefaultHeader = () => {
 
   const snap = useTableEditorTableStateSnapshot()
   const tableEditorSnap = useTableEditorStateSnapshot()
-  const { can: canCreateColumns } = useCheckPermissions("branch:settings:admin")
+  const { can: canCreateColumns } = useCheckPermissions('branch:settings:admin')
   const { mutate: sendEvent } = useSendEventMutation()
 
   const onAddRow =
@@ -237,25 +236,30 @@ const RowHeader = () => {
   const [isExporting, setIsExporting] = useState(false)
   const [showExportModal, setShowExportModal] = useState(false)
 
-  const { data } = useTableRowsQuery({
-    branch,
-    tableId: snap.table.id,
-    sorts,
-    filters,
-    page: snap.page,
-    limit: tableEditorSnap.rowsPerPage,
-    roleImpersonationState: roleImpersonationState as RoleImpersonationState,
-  })
+  const { data } = useTableRowsQuery(
+    {
+      branch: branch!,
+      tableId: snap.table.id,
+      sorts,
+      filters,
+      page: snap.page,
+      limit: tableEditorSnap.rowsPerPage,
+      roleImpersonationState: roleImpersonationState as RoleImpersonationState,
+    },
+    {
+      enabled: !!branch,
+    }
+  )
 
   const { data: countData } = useTableRowsCountQuery(
     {
-      branch,
+      branch: branch!,
       tableId: snap.table.id,
       filters,
       enforceExactCount: snap.enforceExactCount,
       roleImpersonationState: roleImpersonationState as RoleImpersonationState,
     },
-    { keepPreviousData: true }
+    { enabled: !!branch, keepPreviousData: true }
   )
 
   const allRows = data?.rows ?? []

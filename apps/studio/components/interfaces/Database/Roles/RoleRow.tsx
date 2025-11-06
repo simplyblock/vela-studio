@@ -90,7 +90,7 @@ export const RoleRow = ({ role, disabled = false, onSelectDelete }: RoleRowProps
         return (
           <Collapsible open={isExpanded}>
             <Collapsible.Trigger asChild>
-              <button
+              <a
                 id="collapsible-trigger"
                 type="button"
                 className="group flex w-full items-center justify-between rounded py-3 px-4 md:px-6 text-foreground"
@@ -151,7 +151,7 @@ export const RoleRow = ({ role, disabled = false, onSelectDelete }: RoleRowProps
                     </DropdownMenu>
                   )}
                 </div>
-              </button>
+              </a>
             </Collapsible.Trigger>
             <Collapsible.Content>
               <div className="group border-t border-default bg-surface-100 py-6 px-5 md:px-20 text-foreground">

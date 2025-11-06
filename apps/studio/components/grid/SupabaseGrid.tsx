@@ -49,7 +49,7 @@ export const SupabaseGrid = ({
 
   const { data, error, isSuccess, isError, isLoading, isRefetching } = useTableRowsQuery(
     {
-      branch,
+      branch: branch!,
       tableId,
       sorts,
       filters,
@@ -58,6 +58,7 @@ export const SupabaseGrid = ({
       roleImpersonationState: roleImpersonationState as RoleImpersonationState,
     },
     {
+      enabled: !!branch,
       keepPreviousData: true,
       retryDelay: (retryAttempt, error: any) => {
         const doesNotExistError = error && error.message?.includes('does not exist')

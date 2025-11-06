@@ -1,3 +1,5 @@
+"use client"
+
 import { PropsWithChildren, createContext, useContext, useEffect, useRef } from 'react'
 import { CalculatedColumn } from 'react-data-grid'
 import { proxy, ref, subscribe, useSnapshot } from 'valtio'
@@ -235,7 +237,7 @@ export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof use
   console.log("state", state, typeof state)
   // as TableEditorTableState so this doesn't get marked as readonly,
   // making adopting this state easier since we're migrating from react-tracked
-  return useSnapshot(state ?? {}, options) as TableEditorTableState
+  return useSnapshot(state, options) as TableEditorTableState
 }
 
 export type TableEditorTableStateSnapshot = ReturnType<typeof useTableEditorTableStateSnapshot>

@@ -28,7 +28,6 @@ const Pagination = () => {
   const { id: _id, slug: orgRef, branch: branchRef } = useParams()
   const id = _id ? Number(_id) : undefined
 
-  const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
   const tableEditorSnap = useTableEditorStateSnapshot()
   const snap = useTableEditorTableStateSnapshot()
@@ -58,13 +57,14 @@ const Pagination = () => {
 
   const { data, isLoading, isSuccess, isError, isFetching, error } = useTableRowsCountQuery(
     {
-      branch,
+      branch: branch!,
       tableId: snap.table.id,
       filters,
       enforceExactCount: snap.enforceExactCount,
       roleImpersonationState: roleImpersonationState as RoleImpersonationState,
     },
     {
+      enabled: !!branch,
       keepPreviousData: true,
     }
   )

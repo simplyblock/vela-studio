@@ -18,6 +18,9 @@ export async function getTableEditor({ branch, id }: TableEditorVariables, signa
   if (!id) {
     throw new Error('id is required')
   }
+  if (!branch) {
+    throw new Error('branch is required')
+  }
 
   const sql = getTableEditorSql(id)
   const { result } = await executeSql(

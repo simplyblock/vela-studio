@@ -173,7 +173,7 @@ export type TableRows = { rows: SupaRow[] }
 
 export type TableRowsVariables = Omit<GetTableRowsArgs, 'table'> & {
   queryClient: QueryClient
-  branch?: Branch
+  branch: Branch
   tableId?: number
 }
 
