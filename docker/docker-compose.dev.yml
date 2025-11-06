@@ -36,8 +36,6 @@ services:
       - '../packages:/app/packages'
       - 'nextjs-compiler-cache:/app/apps/studio/.next/cache'
     environment:
-      DEV_MODE: 'true'
-      STUDIO_PG_META_URL: http://meta:8080
       PLATFORM_PG_META_URL: http://meta:8080
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
@@ -63,6 +61,7 @@ services:
       VELA_PLATFORM_EXT_BASE_URL: http://localhost:8000/
       VELA_PLATFORM_EXT_API_SERVICE_URL: http://localhost:8000/api
       NEXTAUTH_SECRET: 'super-long-random-nextauth-secret'
+      VELA_PLATFORM_DEV_MODE: 'true'
 
   controller:
     container_name: vela-controller
