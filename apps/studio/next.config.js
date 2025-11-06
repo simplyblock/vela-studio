@@ -7,8 +7,10 @@ const nextConfig = {
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
   output: 'standalone',
   experimental: {
-    webpackBuildWorker: true,
+    //webpackBuildWorker: true,
+    turbopackFileSystemCacheForDev: true,
   },
+  productionBrowserSourceMaps: true,
   async rewrites() {
     return []
   },
@@ -437,6 +439,10 @@ const nextConfig = {
   eslint: {
     // We are already running linting via GH action, this will skip linting during production build on Vercel
     ignoreDuringBuilds: true,
+  },
+  generateBuildId: async () => {
+    // This could be anything, using the latest git hash
+    return process.env.GIT_HASH
   },
 }
 
