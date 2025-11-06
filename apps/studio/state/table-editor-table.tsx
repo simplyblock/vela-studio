@@ -233,6 +233,7 @@ export const TableEditorTableStateContextProvider = ({
 
 export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof useSnapshot>[1]) => {
   const state = useContext(TableEditorTableStateContext)
+  console.log("state", state, typeof state)
   if (state === undefined) {
     try {
       new Error()
