@@ -14,7 +14,7 @@ export async function createOrganization({ name }: OrganizationCreateVariables) 
   const { data, error } = await post('/platform/organizations', {
     body: {
       name,
-      max_backups: 20, // FIXME: Should this be a configurable value?
+      max_backups: 100, // FIXME: Should this be a configurable value?
       env_types: ['Production', 'Staging', 'Development'],
     },
   })

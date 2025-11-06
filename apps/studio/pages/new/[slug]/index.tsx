@@ -422,7 +422,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
       organizationSlug: currentOrg.id!,
       parameters: {
         name: values.projectName,
-        max_backups: 100,
+        max_backups: 20,
         per_branch_limits,
         project_limits,
       },
