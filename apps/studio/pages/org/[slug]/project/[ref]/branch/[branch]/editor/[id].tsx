@@ -13,11 +13,11 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const TableEditorPage: NextPageWithLayout = () => {
   const { id: _id } = useParams()
-  const { data: branch } = useSelectedBranchQuery()
+  const { data: branch, isLoading: isBranchLoading } = useSelectedBranchQuery()
   const id = _id ? Number(_id) : undefined
   const store = useTabsStateSnapshot()
 
-  const { data: selectedTable, isLoading } = useTableEditorQuery({
+  const { data: selectedTable, isLoading: isTableLoading } = useTableEditorQuery({
     branch,
     id,
   })
@@ -50,7 +50,7 @@ const TableEditorPage: NextPageWithLayout = () => {
     }
   }, [selectedTable, id, branch])
 
-  return <TableGridEditor isLoadingSelectedTable={isLoading} selectedTable={selectedTable} />
+  return <TableGridEditor isLoadingSelectedTable={isTableLoading || isBranchLoading} selectedTable={selectedTable} />
 }
 
 TableEditorPage.getLayout = (page) => (

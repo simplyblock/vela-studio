@@ -15,7 +15,7 @@ export function useSaveTableEditorState() {
     (dataToSave: { filters?: string[]; sorts?: string[] }) => {
       if (!branch) {
         return console.warn(
-          '[useSaveTableEditorState] ProjectRef missing, cannot save or trigger side effects.'
+          '[useSaveTableEditorState] Branch missing, cannot save or trigger side effects.'
         )
       }
 

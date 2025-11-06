@@ -207,7 +207,6 @@ export const TableEditorTableStateContextProvider = ({
         })
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -234,16 +233,9 @@ export const TableEditorTableStateContextProvider = ({
 export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof useSnapshot>[1]) => {
   const state = useContext(TableEditorTableStateContext)
   console.log("state", state, typeof state)
-  if (state === undefined) {
-    try {
-      new Error()
-    } catch (e) {
-      console.error(e)
-    }
-  }
   // as TableEditorTableState so this doesn't get marked as readonly,
   // making adopting this state easier since we're migrating from react-tracked
-  return useSnapshot(state, options) as TableEditorTableState
+  return useSnapshot(state ?? {}, options) as TableEditorTableState
 }
 
 export type TableEditorTableStateSnapshot = ReturnType<typeof useTableEditorTableStateSnapshot>

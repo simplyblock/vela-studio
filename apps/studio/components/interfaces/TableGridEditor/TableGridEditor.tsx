@@ -56,13 +56,13 @@ export const TableGridEditor = ({
 
   const onClearDashboardHistory = useCallback(() => {
     if (projectRef) appSnap.setDashboardHistory(projectRef, 'editor', undefined)
-  }, [appSnap, projectRef])
+  }, [appSnap, branchRef])
 
   const onTableCreated = useCallback(
     (table: { id: number }) => {
       router.push(`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${table.id}`)
     },
-    [projectRef, router]
+    [branchRef, router]
   )
 
   const onTableDeleted = useCallback(async () => {
@@ -77,7 +77,7 @@ export const TableGridEditor = ({
   const { isSchemaLocked } = useIsProtectedSchema({ schema: selectedTable?.schema ?? '' })
 
   // NOTE: DO NOT PUT HOOKS AFTER THIS LINE
-  if (isLoadingSelectedTable || !projectRef) {
+  if (isLoadingSelectedTable || !branch || !branchRef) {
     return (
       <div className="flex flex-col">
         <div className="h-10 bg-dash-sidebar dark:bg-surface-100" />
@@ -118,7 +118,7 @@ export const TableGridEditor = ({
                 asChild
                 type="default"
                 className="mt-2"
-                onClick={() => appSnap.setDashboardHistory(projectRef, 'editor', undefined)}
+                onClick={() => appSnap.setDashboardHistory(branchRef, 'editor', undefined)}
               >
                 <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor/${openTabs[0].split('-')[1]}`}>
                   Close tab
@@ -129,7 +129,7 @@ export const TableGridEditor = ({
                 asChild
                 type="default"
                 className="mt-2"
-                onClick={() => appSnap.setDashboardHistory(projectRef, 'editor', undefined)}
+                onClick={() => appSnap.setDashboardHistory(branchRef, 'editor', undefined)}
               >
                 <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/editor`}>Head back</Link>
               </Button>
@@ -156,10 +156,10 @@ export const TableGridEditor = ({
   return (
     // When any click happens in a table tab, the tab becomes permanent
     <div className="h-full" onClick={() => tabs.makeActiveTabPermanent()}>
-      {branch && (
+      {branch && branch.id && (
       <TableEditorTableStateContextProvider
         key={`table-editor-table-${selectedTable.id}`}
-        branchId={branch.id!}
+        branchId={branch.id}
         table={selectedTable}
         editable={editable}
       >
