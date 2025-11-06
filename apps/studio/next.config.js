@@ -10,7 +10,7 @@ const nextConfig = {
     //webpackBuildWorker: true,
     turbopackFileSystemCacheForDev: true,
   },
-  //productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: true,
   async rewrites() {
     return []
   },
