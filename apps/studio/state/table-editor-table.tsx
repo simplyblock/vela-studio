@@ -233,8 +233,13 @@ export const TableEditorTableStateContextProvider = ({
 
 export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof useSnapshot>[1]) => {
   const state = useContext(TableEditorTableStateContext)
-  console.log("state: ", JSON.stringify(state, null, 2))
-  console.log("options: ", JSON.stringify(options, null, 2))
+  if (state === undefined) {
+    try {
+      new Error()
+    } catch (e) {
+      console.error(e)
+    }
+  }
   // as TableEditorTableState so this doesn't get marked as readonly,
   // making adopting this state easier since we're migrating from react-tracked
   return useSnapshot(state, options) as TableEditorTableState
