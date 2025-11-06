@@ -14,10 +14,11 @@ export async function getSessionAccessToken() {
     const extendedSession = session as Session | null
     const aboutToExpire = isExpired(extendedSession?.expires_in ?? 0)
     if (aboutToExpire) {
-      return undefined
+      console.warn('Session is about to expire')
     }
     return extendedSession?.access_token
   } catch (e: any) {
+    console.error(e)
     // ignore the error
     return undefined
   }
