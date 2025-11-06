@@ -440,10 +440,10 @@ const nextConfig = {
     // We are already running linting via GH action, this will skip linting during production build on Vercel
     ignoreDuringBuilds: true,
   },
-  generateBuildId: async () => {
+  /*generateBuildId: async () => {
     // This could be anything, using the latest git hash
     return process.env.GIT_HASH
-  },
+  },*/
 }
 
 module.exports = nextConfig
