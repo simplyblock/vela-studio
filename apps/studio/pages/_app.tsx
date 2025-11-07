@@ -94,9 +94,9 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
               <AuthProvider>
                 <ProfileProvider>
                   <Head>
-                    <title>Supabase</title>
+                    <title>Vela: Serverless PostgreSQL</title>
                     <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-                    <meta property="og:image" content={`${BASE_PATH}/img/supabase-logo.png`} />
+                    <meta property="og:image" content={`${BASE_PATH}/img/vela-logo-black.png`} />
                     {/* [Alaister]: This has to be an inline style tag here and not a separate component due to next/font */}
                     <style
                       dangerouslySetInnerHTML={{
