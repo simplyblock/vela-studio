@@ -8,10 +8,11 @@ import { branchKeys } from './keys'
 export type BranchUpdateVariables = {
   orgRef: string
   projectRef: string
-  branch: string
+  branchRef: string
+  name: string
 }
 
-export async function updateBranch({ orgRef, projectRef, branch }: BranchUpdateVariables) {
+export async function updateBranch({ orgRef, projectRef, branchRef, name }: BranchUpdateVariables) {
   const { data, error } = await put(
     '/platform/organizations/{slug}/projects/{ref}/branches/{branch}',
     {
@@ -19,11 +20,11 @@ export async function updateBranch({ orgRef, projectRef, branch }: BranchUpdateV
         path: {
           slug: orgRef,
           ref: projectRef,
-          branch: branch,
+          branch: branchRef,
         },
       },
       body: {
-        name: branch,
+        name,
       },
     }
   )
@@ -47,7 +48,8 @@ export const useBranchUpdateMutation = ({
     (vars) => updateBranch(vars),
     {
       async onSuccess(data, variables, context) {
-        const { orgRef, projectRef } = variables
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(branchKeys.detail(orgRef, projectRef, branchRef))
         await queryClient.invalidateQueries(branchKeys.list(orgRef, projectRef))
         await onSuccess?.(data, variables, context)
       },

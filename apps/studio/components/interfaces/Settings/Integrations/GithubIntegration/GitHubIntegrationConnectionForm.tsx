@@ -249,7 +249,8 @@ const GitHubIntegrationConnectionForm = ({
       updateBranch({
         orgRef: orgRef!,
         projectRef: selectedProject.id,
-        branch: data.branchName,
+        branchRef: branch.id,
+        name: data.branchName,
       })
     }
   }
@@ -289,7 +290,8 @@ const GitHubIntegrationConnectionForm = ({
       updateBranch({
         orgRef: orgRef!,
         projectRef: selectedProject.id,
-        branch: data.branchName || 'main',
+        branchRef: prodBranch?.id,
+        name: data.branchName || 'main',
       })
     }
 
