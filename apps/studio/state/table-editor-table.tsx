@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import { PropsWithChildren, createContext, useContext, useEffect, useRef } from 'react'
+import { createContext, PropsWithChildren, useContext, useEffect, useRef } from 'react'
 import { CalculatedColumn } from 'react-data-grid'
 import { proxy, ref, subscribe, useSnapshot } from 'valtio'
 import { proxySet } from 'valtio/utils'
@@ -32,8 +32,7 @@ export const createTableEditorTableState = ({
   onExpandJSONEditor: (column: string, row: SupaRow) => void
   onExpandTextEditor: (column: string, row: SupaRow) => void
 }) => {
-  const err = new Error();
-  console.error(err)
+  console.trace("createTableEditorTableState")
 
   const table = parseSupaTable(originalTable)
 
@@ -235,15 +234,22 @@ export const TableEditorTableStateContextProvider = ({
   )
 }
 
+// FIXME: @Chris @Ebrahim: This needs to be fixed correctly by figuring out where the context is missing
 export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof useSnapshot>[1]) => {
-  const err = new Error();
-  console.error(err)
-
+  console.trace("useTableEditorTableStateSnapshot")
   const state = useContext(TableEditorTableStateContext)
-  console.log("state", state, typeof state)
-  // as TableEditorTableState so this doesn't get marked as readonly,
-  // making adopting this state easier since we're migrating from react-tracked
-  return useSnapshot(state, options) as TableEditorTableState
+
+  const fallbackRef = useRef<TableEditorTableState | null>(null)
+  if (!fallbackRef.current) {
+    fallbackRef.current = proxy({} as unknown as TableEditorTableState)
+  }
+
+  const snap = useSnapshot((state ?? fallbackRef.current) as any, options) as TableEditorTableState
+
+  if (state == null) {
+    console.warn('TableEditorTableStateContext is undefined — using fallback proxy snapshot.')
+  }
+  return snap
 }
 
 export type TableEditorTableStateSnapshot = ReturnType<typeof useTableEditorTableStateSnapshot>
