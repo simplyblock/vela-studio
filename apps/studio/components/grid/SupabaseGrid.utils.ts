@@ -128,7 +128,7 @@ export function loadTableEditorStateFromLocalStorage(
   schema?: string | null
 ): SavedState | undefined {
   const err = new Error();
-  console.error("loadTableEditorStateFromLocalStorage", err.stack)
+  console.error(err)
 
   const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branchId)
   const jsonStr = localStorage.getItem(storageKey)
@@ -154,7 +154,7 @@ export function saveTableEditorStateToLocalStorage({
   filters?: string[]
 }) {
   const err = new Error();
-  console.error("saveTableEditorStateToLocalStorage", err.stack)
+  console.error(err)
 
   const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branchId)
   const savedStr = localStorage.getItem(storageKey)

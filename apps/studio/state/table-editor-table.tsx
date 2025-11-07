@@ -33,7 +33,7 @@ export const createTableEditorTableState = ({
   onExpandTextEditor: (column: string, row: SupaRow) => void
 }) => {
   const err = new Error();
-  console.error("createTableEditorTableState", err.stack)
+  console.error(err)
 
   const table = parseSupaTable(originalTable)
 
@@ -237,7 +237,7 @@ export const TableEditorTableStateContextProvider = ({
 
 export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof useSnapshot>[1]) => {
   const err = new Error();
-  console.error("useTableEditorTableStateSnapshot", err.stack)
+  console.error(err)
 
   const state = useContext(TableEditorTableStateContext)
   console.log("state", state, typeof state)
