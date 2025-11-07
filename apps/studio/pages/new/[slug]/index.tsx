@@ -79,6 +79,14 @@ const FORM_TO_API: Record<SliderKey, 'milli_vcpu' | 'ram' | 'iops' | 'database_s
   storage: 'storage_size',
 }
 
+const API_TO_FORM: Record<string, SliderKey | undefined> = Object.entries(FORM_TO_API).reduce(
+  (acc, [formKey, apiKey]) => {
+    acc[apiKey] = formKey as SliderKey
+    return acc
+  },
+  {} as Record<string, SliderKey | undefined>
+)
+
 /* ------------------------------------------------------------------ */
 /* Schema                                                             */
 /* ------------------------------------------------------------------ */
@@ -108,6 +116,7 @@ export type CreateProjectForm = z.infer<typeof FormSchema>
 /* Reusable slider row                                                */
 /* ------------------------------------------------------------------ */
 
+// Reusable slider row (label + current value on right + slider)
 const SliderRow = ({
   id,
   label,
@@ -119,6 +128,7 @@ const SliderRow = ({
   disabled,
   onChange,
   helper,
+  error,
 }: {
   id: string
   label: string
@@ -130,6 +140,7 @@ const SliderRow = ({
   disabled?: boolean
   onChange: (v: number[]) => void
   helper?: React.ReactNode
+  error?: string | null
 }) => (
   <div className="space-y-2">
     <div className="flex items-center justify-between text-[12px] leading-none">
@@ -150,8 +161,10 @@ const SliderRow = ({
       disabled={disabled}
     />
     {helper}
+    {error && <div className="text-xs text-destructive mt-1">{error}</div>}
   </div>
 )
+
 
 /* ------------------------------------------------------------------ */
 /* Page                                                               */
@@ -294,6 +307,91 @@ const CreateProjectPage: NextPageWithLayout = () => {
       projectLimits: {},   // set after limits load
     },
   })
+  const {
+  mutate: createProject,
+  isLoading: isCreatingNewProject,
+  isSuccess: isSuccessNewProject,
+} = useProjectCreateMutation({
+  onSuccess: (res) => {
+    sendEvent({
+      action: 'project_creation_simple_version_submitted',
+      properties: { instanceSize: form.getValues('instanceSize') },
+      groups: { project: res.id, organization: res.organization_id },
+    })
+    router.push(`/org/${slug}/project/${res.id}/building`)
+  },
+
+  onError(error, variables, context) {
+
+    const details = (error as any)?.detail
+
+    // If server returns validation details array => map them into form errors
+    if (Array.isArray(details) && details.length > 0) {
+      // Clear any prior server errors that we might have set (optional)
+      // We'll set each server error below.
+      let firstFieldToFocus: string | null = null
+
+      details.forEach((d: any) => {
+        try {
+          const loc = Array.isArray(d.loc) ? d.loc : []
+          // expected loc example: ["body","project_limits","iops"]
+          const area = loc[1] // 'project_limits' | 'per_branch_limits' | other
+          const apiField = loc[2] // 'iops', 'ram', 'milli_vcpu', etc.
+          const msg = d.msg || d.message || (error && (error as any).message) || 'Invalid value'
+
+          const formKey = API_TO_FORM[apiField]
+          if (!formKey) {
+            // Unknown API field, skip mapping to field-level error
+            console.warn('Unmapped API field in validation error:', apiField)
+            return
+          }
+
+          let targetName: string | null = null
+          if (area === 'project_limits' || area === 'project_limits') {
+            // map to projectLimits.<key>
+            targetName = `projectLimits.${formKey}`
+          } else if (area === 'per_branch_limits' || area === 'per_branch_limits') {
+            targetName = `perBranchLimits.${formKey}`
+          } else if (area === 'body' || area === 'root' || area === undefined) {
+            // fallback heuristics: prefer projectLimits first
+            targetName = `projectLimits.${formKey}`
+          }
+
+          if (targetName) {
+            // Set a field error that react-hook-form will render next to the slider
+            form.setError(
+              targetName as any,
+              {
+                type: 'server',
+                message: msg,
+              },
+              { shouldFocus: false }
+            )
+            if (!firstFieldToFocus) firstFieldToFocus = targetName
+          }
+        } catch (err) {
+          console.error('Failed to map server validation detail to form field', err, d)
+        }
+      })
+
+      // focus the first affected control (if available)
+      if (firstFieldToFocus) {
+        try {
+          form.setFocus(firstFieldToFocus as any)
+        } catch (e) {
+          // ignore if setFocus not available
+        }
+      }
+
+      // Show a non-intrusive toast too (optional)
+      toast.error('Please fix highlighted fields and try again.')
+      return
+    }
+
+    // fallback: non-structured error -> show toast with message
+    toast.error((error as any)?.message || 'Failed to create project')
+  },
+})
 
   // Initialize sliders once limits are available
   useEffect(() => {
@@ -332,31 +430,6 @@ const CreateProjectPage: NextPageWithLayout = () => {
     return () => sub.unsubscribe()
   }, [form, sliderKeys])
 
-  // Submit mutation
-  const {
-    mutate: createProject,
-    isLoading: isCreatingNewProject,
-    isSuccess: isSuccessNewProject,
-  } = useProjectCreateMutation({
-    onSuccess: (res) => {
-      sendEvent({
-        action: 'project_creation_simple_version_submitted',
-        properties: { instanceSize: form.getValues('instanceSize') },
-        groups: { project: res.id, organization: res.organization_id },
-      })
-      router.push(`/org/${slug}/project/${res.id}/building`)
-    },
-    onError(error, variables, context) {
-      console.group('❌ Project creation error callback')
-      console.log('Error object:', error)
-      console.log('Error.message:', error?.message)
-      console.log('Error.detail:', (error as any)?.detail)
-      console.log('Mutation variables (input):', variables)
-      console.log('Mutation context (if any):', context)
-      console.groupEnd()
-      toast.error(error?.message)
-    },
-  })
 
   const { data: allProjectsFromApi } = useProjectsQuery()
   const [allProjects, setAllProjects] = useState<components['schemas']['ProjectPublic'][] | undefined>(undefined)
@@ -554,6 +627,10 @@ const CreateProjectPage: NextPageWithLayout = () => {
                       const cfg = limitConfig[key]!
                       const value = (form.watch(`perBranchLimits.${key}`) ?? cfg.min) as number
                       const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
+
+                      // Fetch server/form validation error for this field (per-branch)
+                      const perBranchErrors = (form.formState.errors.perBranchLimits ?? {}) as Record<string, any>
+                      const errorMessage = perBranchErrors?.[key]?.message as string | undefined
                       return (
                         <SliderRow
                           key={key}
@@ -566,6 +643,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                           unit={cfg.unit}
                           disabled={storageDisabled}
                           onChange={handlePerBranchChange(key)}
+                          error={errorMessage}
                           helper={
                             key === 'storage' && storageDisabled ? (
                               <div className="mt-2">
@@ -596,6 +674,10 @@ const CreateProjectPage: NextPageWithLayout = () => {
                       const cfg = limitConfig[key]!
                       const value = (form.watch(`projectLimits.${key}`) ?? cfg.min) as number
                       const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
+
+                        // Fetch server/form validation error for this field (project)
+                        const projectErrors = (form.formState.errors.projectLimits ?? {}) as Record<string, any>
+                        const errorMessage = projectErrors?.[key]?.message as string | undefined
                       return (
                         <SliderRow
                           key={key}
@@ -608,6 +690,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                           unit={cfg.unit}
                           disabled={storageDisabled}
                           onChange={handleProjectChange(key)}
+                          error={errorMessage}
                           helper={
                             key === 'storage' && storageDisabled ? (
                               <div className="mt-2">
