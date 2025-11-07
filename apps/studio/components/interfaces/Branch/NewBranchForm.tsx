@@ -237,7 +237,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
 
     const resourceAllocations = adjustableResources
       ? {
-          database_password: values.databasePassword,
+          database_password: !branch ? values.databasePassword : undefined,
           database_image_tag: values.postgresVersion as any,
           enable_file_storage: values.enableStorageService,
           database_size: values.resources.database_size * limits.database_size.divider,
