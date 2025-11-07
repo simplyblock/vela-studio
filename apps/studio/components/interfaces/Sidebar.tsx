@@ -327,15 +327,14 @@ const BranchSidebarLinks = () => {
   const pathParts = router.pathname.split('/')
   const activeRoute = pathParts[7]
 
+  const storageEnabled = !!branch?.max_resources.storage_bytes
   const {
     projectAuthAll: authEnabled,
     projectEdgeFunctionAll: edgeFunctionsEnabled,
-    projectStorageAll: storageEnabled,
     realtimeAll: realtimeEnabled,
   } = useIsFeatureEnabled([
     'project_auth:all',
     'project_edge_function:all',
-    'project_storage:all',
     'realtime:all',
   ])
 

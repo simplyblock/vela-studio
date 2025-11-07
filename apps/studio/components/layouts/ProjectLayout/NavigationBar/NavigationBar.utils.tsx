@@ -109,7 +109,7 @@ export const generateProductRoutes = (
 
   const authEnabled = features?.auth ?? true
   const edgeFunctionsEnabled = features?.edgeFunctions ?? true
-  const storageEnabled = features?.storage ?? true
+  const storageEnabled = features?.storage ?? false
   const realtimeEnabled = features?.realtime ?? true
   const databaseMenu = generateDatabaseMenu(orgRef, project)
   const authMenu = generateAuthMenu(orgRef, projectRef!, branchRef!, {
