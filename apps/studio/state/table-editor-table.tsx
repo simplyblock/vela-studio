@@ -32,6 +32,9 @@ export const createTableEditorTableState = ({
   onExpandJSONEditor: (column: string, row: SupaRow) => void
   onExpandTextEditor: (column: string, row: SupaRow) => void
 }) => {
+  const err = new Error();
+  console.log("createTableEditorTableState", err.stack)
+
   const table = parseSupaTable(originalTable)
 
   const savedState = loadTableEditorStateFromLocalStorage(branchId, table.name, table.schema)
@@ -233,6 +236,9 @@ export const TableEditorTableStateContextProvider = ({
 }
 
 export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof useSnapshot>[1]) => {
+  const err = new Error();
+  console.log("useTableEditorTableStateSnapshot", err.stack)
+
   const state = useContext(TableEditorTableStateContext)
   console.log("state", state, typeof state)
   // as TableEditorTableState so this doesn't get marked as readonly,
