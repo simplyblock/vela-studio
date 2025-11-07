@@ -7,32 +7,36 @@ import { FormPanel } from 'components/ui/Forms/FormPanel'
 import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui/Forms/FormSection'
 import Panel from 'components/ui/Panel'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
-import { useProjectUpdateMutation } from 'data/projects/project-update-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { Button, Form, Input } from 'ui'
 import PauseProjectButton from './Infrastructure/PauseProjectButton'
 import RestartServerButton from './Infrastructure/RestartServerButton'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import { useBranchUpdateMutation } from '../../../../data/branches/branch-update-mutation'
 
 const General = () => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const { data: organization } = useSelectedOrganizationQuery()
 
   const isBranch = true // FIXME: Do we still need this?
 
-  const formId = 'project-general-settings'
-  const initialValues = { name: project?.name ?? '', ref: project?.id ?? '' }
-  const { can: canUpdateProject } = useCheckPermissions('project:settings:write')
+  const formId = 'branch-general-settings'
+  const initialValues = { name: branch?.name ?? '', ref: branch?.id ?? '' }
+  const { can: canUpdateBranch } = useCheckPermissions('branch:settings:write')
 
-  const { mutate: updateProject, isLoading: isUpdating } = useProjectUpdateMutation()
+  const { mutate: updateBranch, isLoading: isUpdating } = useBranchUpdateMutation()
 
   const onSubmit = async (values: any, { resetForm }: any) => {
-    if (!project?.id) return console.error('Ref is required')
-    if (!organization?.id) return console.error('Slug is required')
+    if (!branch) return console.error('Branch is required')
 
-    updateProject(
-      { orgRef: organization.id, ref: project.id, name: values.name.trim() },
+    updateBranch(
+      {
+        orgRef: branch.organization_id,
+        projectRef: branch.project_id,
+        branchRef: branch.id,
+        name: values.name.trim(),
+      },
       {
         onSuccess: ({ name }) => {
           resetForm({ values: { name }, initialValues: { name } })
@@ -44,7 +48,7 @@ const General = () => {
 
   return (
     <div>
-      {project === undefined ? (
+      {!branch ? (
         <GenericSkeletonLoader />
       ) : (
         <Form id={formId} initialValues={initialValues} onSubmit={onSubmit}>
@@ -52,7 +56,7 @@ const General = () => {
             const hasChanges = JSON.stringify(values) !== JSON.stringify(initialValues)
             return (
               <FormPanel
-                disabled={!canUpdateProject}
+                disabled={!canUpdateBranch}
                 footer={
                   <div className="flex py-4 px-8">
                     <FormActions
@@ -61,8 +65,8 @@ const General = () => {
                       hasChanges={hasChanges}
                       handleReset={handleReset}
                       helper={
-                        !canUpdateProject
-                          ? "You need additional permissions to manage this project's settings"
+                        !canUpdateBranch
+                          ? "You need additional permissions to manage this branch's settings"
                           : undefined
                       }
                     />
@@ -74,10 +78,10 @@ const General = () => {
                     <Input
                       id="name"
                       size="small"
-                      label="Project name"
-                      disabled={isBranch || !canUpdateProject}
+                      label="Branch name"
+                      disabled={isBranch || !canUpdateBranch}
                     />
-                    <Input copy disabled id="ref" size="small" label="Project ID" />
+                    <Input copy disabled id="ref" size="small" label="Branch Id" />
                   </FormSectionContent>
                 </FormSection>
               </FormPanel>
@@ -87,15 +91,15 @@ const General = () => {
       )}
       {!isBranch && (
         <>
-          <div className="mt-6" id="restart-project">
+          <div className="mt-6" id="restart-branch">
             <FormPanel>
               <div className="flex flex-col px-8 py-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-sm">Restart project</p>
+                    <p className="text-sm">Restart branch</p>
                     <div className="max-w-[420px]">
                       <p className="text-sm text-foreground-light">
-                        Your project will not be available for a few minutes.
+                        Your branch will not be available for a few minutes.
                       </p>
                     </div>
                   </div>
@@ -104,43 +108,19 @@ const General = () => {
               </div>
               <div
                 className="flex w-full items-center justify-between px-8 py-4"
-                id="pause-project"
+                id="pause-branch"
               >
                 <div>
-                  <p className="text-sm">Pause project</p>
+                  <p className="text-sm">Pause branch</p>
                   <div className="max-w-[420px]">
                     <p className="text-sm text-foreground-light">
-                      Your project will not be accessible while it is paused.
+                      Your branch will not be accessible while it is paused.
                     </p>
                   </div>
                 </div>
                 <PauseProjectButton />
               </div>
             </FormPanel>
-          </div>
-          <div className="mt-6">
-            <Panel>
-              <Panel.Content>
-                <div className="flex justify-between">
-                  <div className="flex space-x-4">
-                    <BarChart2 strokeWidth={2} />
-                    <div>
-                      <p className="text-sm">Project usage statistics have been moved</p>
-                      <p className="text-foreground-light text-sm">
-                        You may view your project's usage under your organization's settings
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <Button asChild type="default">
-                      <Link href={`/org/${organization?.id}/usage?projectRef=${project?.id}`}>
-                        View project usage
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </Panel.Content>
-            </Panel>
           </div>
         </>
       )}

@@ -87,12 +87,12 @@ export const EditBranchModal = ({ branch, visible, onClose }: EditBranchModalPro
       orgRef: string
       branchRef: string
       projectRef: string
-      branch: string
+      name: string
     } = {
       orgRef,
       branchRef: ref,
       projectRef,
-      branch: data.branchName,
+      name: data.branchName,
     }
 
     updateBranch(payload)

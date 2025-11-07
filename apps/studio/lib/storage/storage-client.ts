@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getPlatformQueryParams } from '../api/platformQueryParams'
 import { isDocker } from '../docker'
-import { getVelaClient, maybeHandleError } from 'data/vela/vela'
 import { getBranchOrRefresh } from '../api/branchCaching'
 
 const isInDocker = isDocker()
@@ -47,6 +46,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
     },
 
     createBucket: async (name: string, isPublic: boolean) => {
+      console.log(`Trying to create bucket at: ${storageEndpoint}/bucket`)
       const response = await fetch(`${storageEndpoint}/bucket`, {
         method: 'POST',
         headers: {

@@ -2,20 +2,32 @@ import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react
 import { toast } from 'sonner'
 
 import { handleError, patch } from 'data/fetchers'
-import { projectKeys } from 'data/projects/keys'
 import type { ResponseError } from 'types'
-import { getPathReferences } from '../vela/path-references'
+import { branchKeys } from '../branches/keys'
 
 export type DatabasePasswordResetVariables = {
+  slug: string
   ref: string
+  branch: string
   password: string
 }
 
-export async function resetDatabasePassword({ ref, password }: DatabasePasswordResetVariables) {
+export async function resetDatabasePassword({
+  slug,
+  ref,
+  branch,
+  password,
+}: DatabasePasswordResetVariables) {
   if (!ref) return console.error('Project ref is required')
 
-  const { data, error } = await patch('/platform/projects/{ref}/db-password', {
-    params: { path: { ref } },
+  const { data, error } = await patch('/platform/organizations/{slug}/projects/{ref}/branches/{branch}/db-password', {
+    params: {
+      path: {
+        slug,
+        ref,
+        branch,
+      },
+    },
     body: { password },
   })
 
@@ -34,13 +46,14 @@ export const useDatabasePasswordResetMutation = ({
   'mutationFn'
 > = {}) => {
   const queryClient = useQueryClient()
-  const { slug } = getPathReferences()
 
   return useMutation<DatabasePasswordResetData, ResponseError, DatabasePasswordResetVariables>(
     (vars) => resetDatabasePassword(vars),
     {
       async onSuccess(data, variables, context) {
-        await queryClient.invalidateQueries(projectKeys.detail(slug as string, variables.ref))
+        await queryClient.invalidateQueries(
+          branchKeys.detail(variables.slug, variables.ref, variables.branch)
+        )
 
         await onSuccess?.(data, variables, context)
       },

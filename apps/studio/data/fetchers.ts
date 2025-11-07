@@ -182,7 +182,7 @@ export const handleError = (
   }
 
   if (error !== null && typeof error === 'object' && 'stack' in error) {
-    console.error(error.stack)
+    console.error(error)
   }
 
   // throw a generic error if we don't know what the error is. The message is intentionally vague because it might show

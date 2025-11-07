@@ -1,30 +1,25 @@
 import {
-  ComplianceConfig,
   General,
-  TransferProjectPanel,
 } from 'components/interfaces/Settings/General'
 import { DeleteProjectPanel } from 'components/interfaces/Settings/General/DeleteProjectPanel/DeleteProjectPanel'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import SettingsLayout from 'components/layouts/ProjectSettingsLayout/SettingsLayout'
 import { ScaffoldContainer, ScaffoldHeader, ScaffoldTitle } from 'components/layouts/Scaffold'
-import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import type { NextPageWithLayout } from 'types'
 
 const ProjectSettings: NextPageWithLayout = () => {
-  const { projectsTransfer: projectTransferEnabled } = useIsFeatureEnabled(['projects:transfer'])
-
   return (
     <>
       <ScaffoldContainer>
         <ScaffoldHeader>
-          <ScaffoldTitle>Project Settings</ScaffoldTitle>
+          <ScaffoldTitle>Branch Settings</ScaffoldTitle>
         </ScaffoldHeader>
       </ScaffoldContainer>
       <ScaffoldContainer className="flex flex-col gap-10" bottomPadding>
         <General />
 
-        <ComplianceConfig />
-        {projectTransferEnabled && <TransferProjectPanel />}
+        {/* FIXME: Disabled since don't have branch transfer right now */ }
+        {/* branchTransferEnabled && <TransferBranchPanel /> */}
         <DeleteProjectPanel />
       </ScaffoldContainer>
     </>

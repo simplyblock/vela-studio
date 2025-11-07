@@ -12,7 +12,7 @@ import { Button, InfoIcon, Listbox, Loading, Modal, WarningIcon } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
-const TransferProjectButton = () => {
+const TransferBranchButton = () => {
   const { data: project } = useSelectedProjectQuery()
   const projectRef = project?.id
   const projectOrgId = project?.organization_id
@@ -283,4 +283,4 @@ const TransferProjectButton = () => {
   )
 }
 
-export default TransferProjectButton
+export default TransferBranchButton

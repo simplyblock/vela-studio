@@ -82,26 +82,11 @@ export const generateSettingsMenu = (
           url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/addons`,
           items: [],
         },
-        {
-          name: 'Vault',
-          key: 'vault',
-          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/integrations/vault/overview`,
-          items: [],
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-          label: 'Alpha',
-        },
       ],
     },
     {
       title: 'Configuration',
       items: [
-        {
-          name: 'Database',
-          key: 'database',
-          url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`,
-          items: [],
-          rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
-        },
         ...(authEnabled
           ? [
               {
@@ -109,17 +94,6 @@ export const generateSettingsMenu = (
                 key: 'auth',
                 url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/auth`,
                 items: [],
-              },
-            ]
-          : []),
-        ...(edgeFunctionsEnabled
-          ? [
-              {
-                name: 'Edge Functions',
-                key: 'functions',
-                url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/functions/secrets`,
-                items: [],
-                rightIcon: <ArrowUpRight strokeWidth={1} className="h-4 w-4" />,
               },
             ]
           : []),

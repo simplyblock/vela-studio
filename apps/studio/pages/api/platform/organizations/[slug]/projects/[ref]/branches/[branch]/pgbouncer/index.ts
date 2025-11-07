@@ -21,7 +21,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   )
 }
 
-const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
+const handlePatch = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
   const client = getVelaClient(req)
   return client.proxyPatch(
@@ -41,7 +41,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const apiHandler = apiBuilder((builder) => {
-  builder.useAuth().get(handleGet).put(handlePut)
+  builder.useAuth().get(handleGet).patch(handlePatch)
 })
 
 export default apiHandler

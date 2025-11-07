@@ -8,7 +8,6 @@ import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import Panel from 'components/ui/Panel'
 import PasswordStrengthBar from 'components/ui/PasswordStrengthBar'
 import { useDatabasePasswordResetMutation } from 'data/database/database-password-reset-mutation'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { DEFAULT_MINIMUM_PASSWORD_STRENGTH } from 'lib/constants'
 import passwordStrength from 'lib/password-strength'
 import { generateStrongPassword } from 'lib/project'
@@ -16,9 +15,8 @@ import { Button, Input, Modal } from 'ui'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const ResetDbPassword = ({ disabled = false }) => {
-  const { ref } = useParams()
+  const { slug, ref, branch } = useParams()
   const isProjectActive = useIsProjectActive()
-  const { data: project } = useSelectedProjectQuery()
   const { can: canResetDbPassword } = useCheckPermissions("branch:db:admin")
 
   const [showResetDbPass, setShowResetDbPass] = useState<boolean>(false)
@@ -66,10 +64,12 @@ const ResetDbPassword = ({ disabled = false }) => {
   }
 
   const confirmResetDbPass = async () => {
+    if (!slug) return console.error('Organization ref is required')
     if (!ref) return console.error('Project ref is required')
+    if (!branch) return console.error('Branch ref is required')
 
     if (passwordStrengthScore >= DEFAULT_MINIMUM_PASSWORD_STRENGTH) {
-      resetDatabasePassword({ ref, password })
+      resetDatabasePassword({ slug, ref, branch, password })
     }
   }
 

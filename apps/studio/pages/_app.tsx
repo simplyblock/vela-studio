@@ -78,7 +78,7 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page)
 
   const errorBoundaryHandler = (error: Error, info: ErrorInfo) => {
-    console.error(error.stack)
+    console.error(error)
   }
 
   useThemeSandbox()

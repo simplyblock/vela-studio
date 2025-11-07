@@ -6,10 +6,10 @@ import LangSelector from 'components/interfaces/Docs/LangSelector'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import DocsLayout from 'components/layouts/DocsLayout/DocsLayout'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
-import { useCustomDomainsQuery } from 'data/custom-domains/custom-domains-query'
 import { useProjectJsonSchemaQuery } from 'data/docs/project-json-schema-query'
 import { snakeToCamel } from 'lib/helpers'
 import type { NextPageWithLayout } from 'types'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const PageConfig: NextPageWithLayout = () => {
   return <DocView />
@@ -28,6 +28,7 @@ const DocView = () => {
   const DEFAULT_KEY = { name: 'hide', key: 'SUPABASE_KEY' }
 
   const { slug: orgRef, ref: projectRef, page, resource, rpc } = useParams()
+  const { data: branch } = useSelectedBranchQuery()
   const [selectedLang, setSelectedLang] = useState<any>('js')
   const [selectedApikey, setSelectedApiKey] = useState<any>(DEFAULT_KEY)
 
@@ -38,16 +39,10 @@ const DocView = () => {
     isLoading,
     refetch,
   } = useProjectJsonSchemaQuery({ orgRef, projectRef })
-  const { data: customDomainData } = useCustomDomainsQuery({ orgRef, projectRef })
 
   const refreshDocs = async () => await refetch()
 
-  const protocol = settings?.app_config?.protocol ?? 'https'
-  const hostEndpoint = settings?.app_config?.endpoint
-  const endpoint =
-    customDomainData?.customDomain?.status === 'active'
-      ? `https://${customDomainData.customDomain?.hostname}`
-      : `${protocol}://${hostEndpoint ?? '-'}`
+  const endpoint = `${branch?.database.service_endpoint_uri}/rest`
 
   const { paths } = jsonSchema || {}
   const PAGE_KEY: any = resource || rpc || page || 'index'
