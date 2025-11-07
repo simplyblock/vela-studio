@@ -1,4 +1,3 @@
-import { DiskManagementPanelForm } from 'components/interfaces/DiskManagement/DiskManagementPanelForm'
 import { ConnectionPooling, NetworkRestrictions } from 'components/interfaces/Settings/Database'
 import { DatabaseReadOnlyAlert } from 'components/interfaces/Settings/Database/DatabaseReadOnlyAlert'
 import ResetDbPassword from 'components/interfaces/Settings/Database/DatabaseSettings/ResetDbPassword'
@@ -26,7 +25,6 @@ const ProjectSettings: NextPageWithLayout = () => {
           </div>
 
           <SSLConfiguration />
-          <DiskManagementPanelForm />
           <NetworkRestrictions />
         </div>
       </ScaffoldContainer>
