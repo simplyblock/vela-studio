@@ -19,7 +19,7 @@ const buttonVariants = cva(
   font-regular 
   ease-out 
   duration-200 
-  rounded-2xl
+  rounded-md
   outline-none 
   transition-all 
   outline-0 
