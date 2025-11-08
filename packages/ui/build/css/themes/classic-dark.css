@@ -9,14 +9,15 @@
   --secondary-default: 0deg 0% 100%;
   --secondary-400: 0deg 0% 100%;
   --secondary-200: 0deg 0% 100%;
-  --brand-link: 153.1deg 60.2% 52.7%;
-  --brand-button: 151.8deg 47.1% 40.8%;
-  --brand-default: 153.1deg 60.2% 52.7%;
-  --brand-600: 153deg 59.5% 70%;
-  --brand-500: 153.5deg 61.8% 21.6%;
-  --brand-400: 153.3deg 65.2% 13.5%;
-  --brand-300: 153.8deg 69.6% 9%;
-  --brand-200: 152.5deg 75% 6.3%;
+  /* brand (base color set to #245cdf) */
+  --brand-link: 222deg 74% 51%;
+  --brand-button: 222deg 74% 51%;
+  --brand-default: 222deg 74% 51%;
+  --brand-600: 222deg 74% 60%;
+  --brand-500: 222deg 74% 36%;
+  --brand-400: 222deg 74% 51%;
+  --brand-300: 222deg 74% 20%;
+  --brand-200: 222deg 74% 12%;
   --warning-default: 38.9deg 100% 57.1%;
   --warning-600: 38.9deg 89.8% 49.8%;
   --warning-500: 34.8deg 90.9% 21.6%;
