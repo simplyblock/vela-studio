@@ -1,4 +1,4 @@
-import { Boxes, Lock } from 'lucide-react'
+import { HousePlug, Lock } from 'lucide-react'
 import Link from 'next/link'
 
 import { useIsMFAEnabled } from 'common'
@@ -25,7 +25,7 @@ export const OrganizationCard = ({
       <ActionCard
         bgColor="bg border"
         className={cn('flex items-center min-h-[70px] [&>div]:w-full [&>div]:items-center')}
-        icon={<Boxes size={18} strokeWidth={1} className="text-foreground" />}
+  icon={<HousePlug size={18} strokeWidth={1} className="text-foreground" />}
         title={organization.name}
         description={
           <div className="flex items-center justify-between text-xs text-foreground-light font-sans">

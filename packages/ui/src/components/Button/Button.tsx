@@ -25,7 +25,8 @@ const buttonVariants = cva(
   outline-0 
   focus-visible:outline-4 
   focus-visible:outline-offset-1
-  border
+  border-[1px]
+  shadow-none
   `,
   {
     variants: {
@@ -33,12 +34,17 @@ const buttonVariants = cva(
         primary: `
           bg-brand-400 dark:bg-brand-500 
           hover:bg-brand/80 dark:hover:bg-brand/50
-          text-foreground
-          border-brand-500/75 dark:border-brand/30
-          hover:border-brand-600 dark:hover:border-brand
-          focus-visible:outline-brand-600
+          text-white
+          hover:text-white
+          border-brand-400 dark:border-brand-500
+          hover:border-brand-400/80 dark:hover:border-brand-500/50
+          focus-visible:outline-brand-600/50
+          focus-visible:text-white
           data-[state=open]:bg-brand-400/80 dark:data-[state=open]:bg-brand-500/80
-          data-[state=open]:outline-brand-600
+          data-[state=open]:outline-brand-600/50
+          data-[state=open]:text-white
+          data-[state=open]:border-brand-400/80 dark:data-[state=open]:border-brand-500/80
+          shadow-none
           `,
         default: `
           text-foreground
@@ -168,7 +174,7 @@ const IconContainerVariants = cva('', {
       xxxlarge: '[&_svg]:h-[42px] [&_svg]:w-[42px]',
     },
     type: {
-      primary: 'text-brand-600',
+      primary: 'text-white',
       default: 'text-foreground-lighter',
       secondary: 'text-border-muted',
       alternative: 'text-foreground-lighter',
@@ -186,7 +192,7 @@ export type LoadingVariantProps = VariantProps<typeof loadingVariants>
 const loadingVariants = cva('', {
   variants: {
     type: {
-      primary: 'text-brand-600',
+      primary: 'text-white',
       default: 'text-foreground-lighter',
       secondary: 'text-border-muted',
       alternative: 'text-foreground-lighter',

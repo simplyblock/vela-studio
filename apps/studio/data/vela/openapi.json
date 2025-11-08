@@ -1559,6 +1559,133 @@
         }
       }
     },
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/status": {
+      "get": {
+        "tags": [
+          "organization",
+          "organization",
+          "project",
+          "project",
+          "branch",
+          "branch"
+        ],
+        "summary": "Organizations:Projects:Branch:Status",
+        "operationId": "organizations:projects:branch:status",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BranchStatusPublic"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPError"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/reset-password": {
       "post": {
         "tags": [
@@ -34730,8 +34857,8 @@
           },
           "name": {
             "type": "string",
-            "maxLength": 50,
             "minLength": 1,
+            "pattern": "^[^\\x00]*$",
             "title": "Name"
           },
           "env_type": {
@@ -34777,25 +34904,6 @@
           "max_resources": {
             "$ref": "#/components/schemas/ResourcesDefinition"
           },
-          "resize_status": {
-            "type": "string",
-            "enum": [
-              "NONE",
-              "PENDING",
-              "RESIZING",
-              "FILESYSTEM_RESIZE_PENDING",
-              "COMPLETED",
-              "FAILED"
-            ],
-            "title": "Resize Status"
-          },
-          "resize_statuses": {
-            "additionalProperties": {
-              "$ref": "#/components/schemas/BranchResizeStatusEntry"
-            },
-            "type": "object",
-            "title": "Resize Statuses"
-          },
           "assigned_labels": {
             "items": {
               "type": "string"
@@ -34825,9 +34933,6 @@
               "ERROR"
             ],
             "title": "Status"
-          },
-          "service_status": {
-            "$ref": "#/components/schemas/BranchStatus"
           },
           "pitr_enabled": {
             "type": "boolean",
@@ -34875,13 +34980,10 @@
           "organization_id",
           "database",
           "max_resources",
-          "resize_status",
-          "resize_statuses",
           "assigned_labels",
           "used_resources",
           "api_keys",
           "status",
-          "service_status",
           "pitr_enabled",
           "created_at",
           "created_by"
@@ -35179,6 +35281,39 @@
         ],
         "title": "BranchStatus"
       },
+      "BranchStatusPublic": {
+        "properties": {
+          "resize_status": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "PENDING",
+              "RESIZING",
+              "FILESYSTEM_RESIZE_PENDING",
+              "COMPLETED",
+              "FAILED"
+            ],
+            "title": "Resize Status"
+          },
+          "resize_statuses": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BranchResizeStatusEntry"
+            },
+            "type": "object",
+            "title": "Resize Statuses"
+          },
+          "service_status": {
+            "$ref": "#/components/schemas/BranchStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "resize_status",
+          "resize_statuses",
+          "service_status"
+        ],
+        "title": "BranchStatusPublic"
+      },
       "BranchUpdate": {
         "properties": {
           "name": {
@@ -35274,10 +35409,6 @@
             "type": "string",
             "title": "Service Endpoint Uri"
           },
-          "monitoring_endpoint_uri": {
-            "type": "string",
-            "title": "Monitoring Endpoint Uri"
-          },
           "version": {
             "type": "string",
             "title": "Version"
@@ -35295,7 +35426,6 @@
           "name",
           "encrypted_connection_string",
           "service_endpoint_uri",
-          "monitoring_endpoint_uri",
           "version",
           "has_replicas"
         ],
@@ -36859,8 +36989,8 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 50,
-                "minLength": 1
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$"
               },
               {
                 "type": "null"
@@ -36872,8 +37002,8 @@
             "anyOf": [
               {
                 "type": "string",
-                "maxLength": 50,
-                "minLength": 1
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$"
               },
               {
                 "type": "null"
