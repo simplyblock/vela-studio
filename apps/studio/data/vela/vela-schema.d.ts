@@ -130,6 +130,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations:Projects:Branch:Status */
+        get: operations["organizations:projects:branch:status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/reset-password": {
         parameters: {
             query?: never;
@@ -18856,15 +18873,6 @@ export interface components {
             organization_id: string;
             database: components["schemas"]["DatabaseInformation"];
             max_resources: components["schemas"]["ResourcesDefinition"];
-            /**
-             * Resize Status
-             * @enum {string}
-             */
-            resize_status: "NONE" | "PENDING" | "RESIZING" | "FILESYSTEM_RESIZE_PENDING" | "COMPLETED" | "FAILED";
-            /** Resize Statuses */
-            resize_statuses: {
-                [key: string]: components["schemas"]["BranchResizeStatusEntry"];
-            };
             /** Assigned Labels */
             assigned_labels: string[];
             used_resources: components["schemas"]["ResourceUsageDefinition"];
@@ -18874,7 +18882,6 @@ export interface components {
              * @enum {string}
              */
             status: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
-            service_status: components["schemas"]["BranchStatus"];
             /** Pitr Enabled */
             pitr_enabled: boolean;
             /**
@@ -18982,6 +18989,19 @@ export interface components {
              */
             rest: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
         };
+        /** BranchStatusPublic */
+        BranchStatusPublic: {
+            /**
+             * Resize Status
+             * @enum {string}
+             */
+            resize_status: "NONE" | "PENDING" | "RESIZING" | "FILESYSTEM_RESIZE_PENDING" | "COMPLETED" | "FAILED";
+            /** Resize Statuses */
+            resize_statuses: {
+                [key: string]: components["schemas"]["BranchResizeStatusEntry"];
+            };
+            service_status: components["schemas"]["BranchStatus"];
+        };
         /** BranchUpdate */
         BranchUpdate: {
             /** Name */
@@ -19021,8 +19041,6 @@ export interface components {
             encrypted_connection_string: string;
             /** Service Endpoint Uri */
             service_endpoint_uri: string;
-            /** Monitoring Endpoint Uri */
-            monitoring_endpoint_uri: string;
             /** Version */
             version: string;
             /** Has Replicas */
@@ -21962,6 +21980,66 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BranchStatusPublic"];
+                };
             };
             /** @description Not authenticated */
             401: {

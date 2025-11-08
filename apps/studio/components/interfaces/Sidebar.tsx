@@ -372,7 +372,7 @@ const BranchSidebarLinks = () => {
     },
   ]
 
-  const monitoringEndpoint = branch?.database.monitoring_endpoint_uri
+  const monitoringEndpoint = branch?.database ? (branch.database as any)['monitoring_endpoint_uri'] : undefined
   const otherRoutes = generateOtherRoutes(
     orgRef,
     projectRef,
