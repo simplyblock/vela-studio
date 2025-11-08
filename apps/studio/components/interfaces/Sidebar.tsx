@@ -4,14 +4,14 @@ import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { isUndefined } from 'lodash'
 import {
   Blocks,
-  Boxes,
   CalendarClock,
   ChartArea,
-  Container,
+  CopyPlus,
   HardDrive,
   PanelLeftDashed,
+  PanelsTopLeft,
   Settings,
-  Shield,
+  ShieldEllipsis,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -490,20 +490,20 @@ const OrganizationLinks = () => {
       label: 'Projects',
       href: `/org/${slug}`,
       key: 'projects',
-      icon: <Boxes size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+        icon: <PanelsTopLeft size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
     {
       label: 'Environments',
       href: `/org/${slug}/env`,
       key: 'env',
-      icon: <Container size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      icon: <CopyPlus size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
-    {
-      label: 'RBAC',
-      href: `/org/${slug}/rbac`,
-      key: 'rbac',
-      icon: <Shield size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-    },
+      {
+        label: 'RBAC',
+        href: `/org/${slug}/rbac`,
+        key: 'rbac',
+        icon: <ShieldEllipsis size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      },
   ]
 
   const navMenuItems = [

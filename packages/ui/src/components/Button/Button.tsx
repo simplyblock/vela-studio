@@ -19,13 +19,14 @@ const buttonVariants = cva(
   font-regular 
   ease-out 
   duration-200 
-  rounded-lg
+  rounded-2xl
   outline-none 
   transition-all 
   outline-0 
   focus-visible:outline-4 
   focus-visible:outline-offset-1
-  border
+  border-[1px]
+  shadow-none
   `,
   {
     variants: {
@@ -34,11 +35,16 @@ const buttonVariants = cva(
           bg-brand-400 dark:bg-brand-500 
           hover:bg-brand/80 dark:hover:bg-brand/50
           text-white
-          border-brand-500/75 dark:border-brand-30
-          hover:border-brand-600 dark:hover:border-brand
-          focus-visible:outline-brand-600
+          hover:text-white
+          border-brand-400 dark:border-brand-500
+          hover:border-brand-400/80 dark:hover:border-brand-500/50
+          focus-visible:outline-brand-600/50
+          focus-visible:text-white
           data-[state=open]:bg-brand-400/80 dark:data-[state=open]:bg-brand-500/80
-          data-[state=open]:outline-brand-600
+          data-[state=open]:outline-brand-600/50
+          data-[state=open]:text-white
+          data-[state=open]:border-brand-400/80 dark:data-[state=open]:border-brand-500/80
+          shadow-none
           `,
         default: `
           text-foreground

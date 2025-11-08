@@ -1,5 +1,5 @@
 import { partition } from 'lodash'
-import { AlertTriangleIcon, Boxes } from 'lucide-react'
+import { AlertTriangleIcon, HousePlug } from 'lucide-react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -110,7 +110,7 @@ const GenericProjectPage: NextPage = () => {
                 {!!lastVisitedOrganization && (
                   <>
                     <h2 className="flex items-center gap-2">
-                      <Boxes size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+                      <HousePlug size={14} strokeWidth={1.5} className="text-foreground-lighter" />
                       {lastVisitedOrganization.name}
                       <Badge variant="default">Recently visited</Badge>
                     </h2>
@@ -125,7 +125,7 @@ const GenericProjectPage: NextPage = () => {
                 {otherOrganizations.map((organization) => (
                   <Fragment key={organization.id}>
                     <h2 className="flex items-center gap-2">
-                      <Boxes size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+                      <HousePlug size={14} strokeWidth={1.5} className="text-foreground-lighter" />
                       {organization.name}
                     </h2>
                     <ProjectList
