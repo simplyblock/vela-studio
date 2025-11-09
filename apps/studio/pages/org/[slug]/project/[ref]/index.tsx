@@ -22,6 +22,8 @@ import ShimmeringCard from 'components/interfaces/Home/ProjectList/ShimmeringCar
 import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectLayout'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import ResizeBranchModal from 'components/interfaces/Branch/ResizeBranchModal'
+import { BranchResourceBadge } from 'components/interfaces/Branch/BranchResourceBadge'
+import ProjectResourcesPanel from 'components/interfaces/Project/ProjectResourcesPanel'
 
 const ProjectOverviewPage: NextPageWithLayout = () => {
   const router = useRouter()
@@ -61,6 +63,7 @@ const deleteBranch = useBranchDeleteMutation({
     isError: isErrorBranches,
     error: branchesError,
   } = useBranchesQuery({ orgRef: slug, projectRef }, { enabled: !!slug && !!projectRef })
+
 
   // any resource warnings tied to this project
   const {
@@ -160,13 +163,14 @@ const onConfirmDeleteBranch = async () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 sm:items-start">
-              <Button className="text-black" asChild type={'primary'}>
+              <Button className="text-black" asChild type="primary">
                 <Link href={`/new/${slug}/${projectRef}/`}>Create Branch</Link>
               </Button>
             </div>
           </div>
 
           <ProjectUpgradeFailedBanner />
+          <ProjectResourcesPanel orgRef={slug} projectRef={projectRef} />
         </section>
 
         {/* ———————————————————
@@ -193,32 +197,43 @@ const onConfirmDeleteBranch = async () => {
                     'rounded border border-default bg-surface-100 p-4 flex flex-col justify-between'
                   )}
                 >
-                  <div className="space-y-2">
-                    <p className="text-sm text-foreground font-medium flex items-center justify-between">
-                      <span className="truncate">{branch.name}</span>
-                      {branch.is_default && (
-                        <span className="text-xs rounded bg-surface-300 px-1.5 py-0.5 text-foreground-light border border-default">
-                          default
-                        </span>
+                  <div className="flex items-start gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-foreground font-medium flex items-center gap-3">
+                        <span className="truncate">{branch.name}</span>
+                        {branch.is_default && (
+                          <span className="text-xs rounded bg-surface-300 px-1.5 py-0.5 text-foreground-light border border-default">
+                            default
+                          </span>
+                        )}
+                      </p>
+
+                      <p className="text-xs text-foreground-light font-mono break-all">
+                        {branch.ref || branch.id}
+                      </p>
+
+                      {branch.created_at && (
+                        <div className="text-xs text-foreground-lighter">
+                          Created
+                          <TimestampInfo
+                            utcTimestamp={branch.created_at}
+                            displayAs="local"
+                            labelFormat="DD MMM HH:mm"
+                            format="YYYY-MM-DD HH:mm:ss"
+                          />
+                        </div>  
                       )}
-                    </p>
-
-                    <p className="text-xs text-foreground-light font-mono break-all">
-                      {branch.ref || branch.id}
-                    </p>
-                    {branch.created_at && (
-                      <div className="text-xs text-foreground-lighter">
-                        Created{' '}
-                        <TimestampInfo
-                          utcTimestamp={branch.created_at}
-                          displayAs="local"             // shows local time inline
-                          labelFormat="DD MMM HH:mm"    // inline format (what you see in the cell)
-                          format="YYYY-MM-DD HH:mm:ss"  // tooltip row format
-                        />
-                      </div>
-                    )}
-
                     </div>
+
+                    {/* Resource usage badge on the right */}
+                    <div className="shrink-0 ml-2">
+                      <BranchResourceBadge
+                        max_resources={branch.max_resources}
+                        used_resources={branch.used_resources}
+                        size={36}
+                      />
+                    </div>
+                  </div>
 
                   <div className="flex items-center gap-2 pt-2">
                     <Button

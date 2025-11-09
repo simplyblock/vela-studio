@@ -13,6 +13,7 @@ import { useParams } from 'common'
 import { useBranchesQuery } from 'data/branches/branches-query'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { Button } from 'ui'
+import ProjectResourcesBadge from 'components/interfaces/Project/ProjectResourcesBadge'
 
 export interface ProjectCardProps {
   project: ProjectInfo
@@ -63,21 +64,32 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
           className="h-44 !px-0 group pt-5 pb-0"
           title={
             <div className="w-full justify-between space-y-2 px-5">
-              {/* Name + reference */}
-              <div className="flex items-center justify-between gap-2">
-                <p className="truncate text-sm">{name}</p>
-              </div>
-              <span className="text-xs lowercase text-foreground-light">
-                reference: {project.id}
-              </span>
+              {/* Top row: Name + right-side small items */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="truncate text-sm">{name}</p>
+                  <span className="text-xs lowercase text-foreground-light block mt-1">
+                    reference: {project.id}
+                  </span>
+                </div>
 
-              {/* Badges row */}
+                {/* Right side — small inline badges (kept compact) */}
+                <div className="flex items-center gap-2 ml-3 shrink-0">
+                  {/* Project-level resources badge (small) */}
+                  <div className="flex items-center justify-center mt-5">
+                    <ProjectResourcesBadge orgRef={orgRef} projectRef={projectRef} size={28} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Badges row (icons + repo name) */}
               <div className="flex items-center gap-x-1.5">
                 {isBranchingEnabled && (
                   <div className="w-fit p-1 border rounded-md flex items-center">
                     <GitBranch size={12} strokeWidth={1.5} />
                   </div>
                 )}
+
                 {isGithubIntegrated && (
                   <>
                     <div className="w-fit p-1 border rounded-md flex items-center">
