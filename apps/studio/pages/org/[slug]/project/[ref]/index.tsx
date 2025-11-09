@@ -35,6 +35,8 @@ const isStatusActive = (s?: string) => (s ? ACTIVE_STATUSES.includes(s as Branch
 const isStatusStopped = (s?: string) => (s ? STOPPED_STATUS.includes(s as BranchSystemStatus) : false)
 const isStatusTransitional = (s?: string) => (s ? TRANSITIONAL.includes(s as BranchSystemStatus) : false)
 const isStatusError = (s?: string) => (s ? ERROR_STATUSES.includes(s as BranchSystemStatus) : false)
+import { BranchResourceBadge } from 'components/interfaces/Branch/BranchResourceBadge'
+import ProjectResourcesPanel from 'components/interfaces/Project/ProjectResourcesPanel'
 
 const ProjectOverviewPage: NextPageWithLayout = () => {
   const router = useRouter()
@@ -75,6 +77,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     isError: isErrorBranches,
     error: branchesError,
   } = useBranchesQuery({ orgRef: slug, projectRef }, { enabled: !!slug && !!projectRef, refetchInterval: 5000 })
+
 
   // any resource warnings tied to this project
   const {
@@ -179,13 +182,14 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 sm:items-start">
-              <Button className="text-black" asChild type={'primary'}>
+              <Button className="text-black" asChild type="primary">
                 <Link href={`/new/${slug}/${projectRef}/`}>Create Branch</Link>
               </Button>
             </div>
           </div>
 
           <ProjectUpgradeFailedBanner />
+          <ProjectResourcesPanel orgRef={slug} projectRef={projectRef} />
         </section>
 
         {/* ———————————————————
@@ -205,149 +209,163 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
             <EmptyBranchesState slug={slug} projectRef={projectRef} projectName={project.name} />
           ) : (
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {branches.map((branch: Branch) => {
-                const status = branch.status
-                const toggling = togglingId === branch.id
-                const deleting = deletingId === branch.id
+  {branches.map((branch: Branch) => {
+    const status = branch.status
+    const toggling = togglingId === branch.id
+    const deleting = deletingId === branch.id
 
-                // Action button render variants:
-                // - transitional status => disabled with spinner text
-                // - active => Pause
-                // - stopped => Start
-                // - error/unknown => disabled with warning icon
-                let ActionButton = null
+    // Action button variants
+    let ActionButton: React.ReactNode = null
 
-                if (isStatusTransitional(status)) {
-                  ActionButton = (
-                    <Button size="tiny" type="default" disabled>
-                      <span className="inline-flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full border border-muted animate-spin" />
-                        <span className="text-xs">Working…</span>
-                      </span>
-                    </Button>
-                  )
-                } else if (isStatusActive(status)) {
-                  ActionButton = (
-                    <Button
-                      size="tiny"
-                      type="default"
-                      onClick={() => onToggleBranch(branch)}
-                      disabled={toggling || deleting}
-                      loading={toggling}
-                      aria-label={`Stop branch ${branch.name ?? branch.id}`}
-                    >
-                      <span className="inline-flex items-center gap-1">
-                        <Pause size={14} /> Stop
-                      </span>
-                    </Button>
-                  )
-                } else if (isStatusStopped(status)) {
-                  ActionButton = (
-                    <Button
-                      size="tiny"
-                      type="default"
-                      onClick={() => onToggleBranch(branch)}
-                      disabled={toggling || deleting}
-                      loading={toggling}
-                      aria-label={`Start branch ${branch.name ?? branch.id}`}
-                    >
-                      <span className="inline-flex items-center gap-1">
-                        <Play size={14} /> Start
-                      </span>
-                    </Button>
-                  )
-                } else if (isStatusError(status)) {
-                  ActionButton = (
-                    <Button size="tiny" type="default" disabled className="text-yellow-600">
-                      <span className="inline-flex items-center gap-1">
-                        <AlertTriangle size={14} /> Issue
-                      </span>
-                    </Button>
-                  )
-                } else {
-                  // Fallback: disable
-                  ActionButton = (
-                    <Button size="tiny" type="default" disabled>
-                      N/A
-                    </Button>
-                  )
-                }
+    if (isStatusTransitional(status)) {
+      ActionButton = (
+        <Button size="tiny" type="default" disabled>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full border border-muted animate-spin" />
+            <span className="text-xs">Working…</span>
+          </span>
+        </Button>
+      )
+    } else if (isStatusActive(status)) {
+      ActionButton = (
+        <Button
+          size="tiny"
+          type="default"
+          onClick={() => onToggleBranch(branch)}
+          disabled={toggling || deleting}
+          loading={toggling}
+          aria-label={`Stop branch ${branch.name ?? branch.id}`}
+        >
+          <span className="inline-flex items-center gap-1">
+            <Pause size={14} /> Stop
+          </span>
+        </Button>
+      )
+    } else if (isStatusStopped(status)) {
+      ActionButton = (
+        <Button
+          size="tiny"
+          type="default"
+          onClick={() => onToggleBranch(branch)}
+          disabled={toggling || deleting}
+          loading={toggling}
+          aria-label={`Start branch ${branch.name ?? branch.id}`}
+        >
+          <span className="inline-flex items-center gap-1">
+            <Play size={14} /> Start
+          </span>
+        </Button>
+      )
+    } else if (isStatusError(status)) {
+      ActionButton = (
+        <Button size="tiny" type="default" disabled className="text-yellow-600">
+          <span className="inline-flex items-center gap-1">
+            <AlertTriangle size={14} /> Issue
+          </span>
+        </Button>
+      )
+    } else {
+      // fallback: disabled
+      ActionButton = (
+        <Button size="tiny" type="default" disabled>
+          N/A
+        </Button>
+      )
+    }
 
-                // Open button: allowed only when branch is active (healthy/unhealthy)
-                const openAllowed = isStatusActive(status)
+    // Open allowed only when active
+    const openAllowed = isStatusActive(status)
 
-                return (
-                  <li
-                    key={branch.id}
-                    className={cn('rounded border border-default bg-surface-100 p-4 flex flex-col justify-between')}
-                  >
-                    <div className="space-y-2">
-                      <div className='flex justify-between'>
-                        <p className="text-sm text-foreground font-medium flex items-center justify-between">
-                          <span className="truncate">{branch.name}</span>
-                          {project.default_branch_id == branch.id && (
-                            <span className="text-xs rounded bg-surface-300 px-1.5 py-0.5 text-foreground-light border border-default">
-                              default
-                            </span>
-                          )}
-                        </p>
-                        <div className="ml-3 flex-shrink-0">
-                            <BranchStatusBadge status={branch.status} />
-                        </div>         
-                      </div>             
-                      <div>
-                        <BranchEnvBadge env={branch.env_type} size='sm'/>
-                      </div>
-                      <p className="text-xs text-foreground-light font-mono break-all">{branch.id}</p>
+    return (
+      <li
+        key={branch.id}
+        className={cn('rounded border border-default bg-surface-100 p-4 flex flex-col justify-between')}
+      >
+        <div className="space-y-2">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-sm text-foreground font-medium flex items-center gap-3">
+                <span className="truncate">{branch.name}</span>
+                {project.default_branch_id == branch.id && (
+                  <span className="text-xs rounded bg-surface-300 px-1.5 py-0.5 text-foreground-light border border-default">
+                    default
+                  </span>
+                )}
+              </p>
 
-                      {branch.created_at && (
-                        <div className="text-xs text-foreground-lighter">
-                          Created{' '}
-                          <TimestampInfo
-                            utcTimestamp={branch.created_at}
-                            displayAs="local"
-                            labelFormat="DD MMM HH:mm"
-                            format="YYYY-MM-DD HH:mm:ss"
-                          />
-                        </div>
-                      )}
-                    </div>
+              <p className="text-xs text-foreground-light font-mono break-all">{branch.id}</p>
 
-                    <div className="flex items-center gap-2 pt-2">
-                      {ActionButton}
+              {branch.created_at && (
+                <div className="text-xs text-foreground-lighter">
+                  Created{' '}
+                  <TimestampInfo
+                    utcTimestamp={branch.created_at}
+                    displayAs="local"
+                    labelFormat="DD MMM HH:mm"
+                    format="YYYY-MM-DD HH:mm:ss"
+                  />
+                </div>
+              )}
+            </div>
 
-                      <Button
-                        size="tiny"
-                        type="default"
-                        className="text-red-600"
-                        onClick={() =>
-                          setDeleteTarget({
-                            id: branch.id,
-                            name: branch.name ?? branch.id,
-                          })
-                        }
-                        disabled={toggling || deleting}
-                        aria-label={`Delete branch ${branch.name ?? branch.id}`}
-                      >
-                        <span className="inline-flex items-center gap-1">
-                          <Trash2 size={14} /> Delete
-                        </span>
-                      </Button>
+            {/* right column: status badge + compact resource badge */}
+            <div className="flex flex-col items-end ml-3 shrink-0 space-y-2">
+              <div>
+                <BranchStatusBadge status={branch.status} />
+              </div>
 
-                      <ResizeBranchModal orgSlug={slug} projectRef={projectRef} branchId={branch.id} triggerClassName="!ml-auto" />
-                    </div>
+              <div>
+                <BranchResourceBadge
+                  max_resources={branch.max_resources}
+                  used_resources={branch.used_resources}
+                  size={36}
+                />
+              </div>
+            </div>
+          </div>
 
-                    <div className="pt-3">
-                      <Button asChild size="tiny" type="default" block disabled={!openAllowed}>
-                        <Link href={`/org/${slug}/project/${projectRef}/branch/${branch.id}`}>
-                          Open branch
-                        </Link>
-                      </Button>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
+          {/* env badge on its own row so it doesn't crowd name */}
+          <div className="mt-1">
+            <BranchEnvBadge env={branch.env_type} size="sm" />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 pt-2">
+          {ActionButton}
+
+          <Button
+            size="tiny"
+            type="default"
+            className="text-red-600"
+            onClick={() =>
+              setDeleteTarget({
+                id: branch.id,
+                name: branch.name ?? branch.id,
+              })
+            }
+            disabled={toggling || deleting}
+            aria-label={`Delete branch ${branch.name ?? branch.id}`}
+          >
+            <span className="inline-flex items-center gap-1">
+              <Trash2 size={14} /> Delete
+            </span>
+          </Button>
+
+          <ResizeBranchModal orgSlug={slug} projectRef={projectRef} branchId={branch.id} triggerClassName="!ml-auto" />
+        </div>
+
+        <div className="pt-3">
+          <Button asChild size="tiny" type="default" block disabled={!openAllowed}>
+            <Link href={`/org/${slug}/project/${projectRef}/branch/${branch.id}`}>
+              Open branch
+            </Link>
+          </Button>
+        </div>
+      </li>
+    )
+  })}
+</ul>
+
           )}
         </section>
       </div>
