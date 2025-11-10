@@ -23,7 +23,7 @@ export const generateSettingsMenu = (
 
   return [
     {
-      title: 'Project Settings',
+      title: 'Branch Settings',
       items: [
         {
           name: 'General',
@@ -82,21 +82,6 @@ export const generateSettingsMenu = (
           url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/addons`,
           items: [],
         },
-      ],
-    },
-    {
-      title: 'Configuration',
-      items: [
-        ...(authEnabled
-          ? [
-              {
-                name: 'Authentication',
-                key: 'auth',
-                url: isProjectBuilding ? buildingUrl : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/auth`,
-                items: [],
-              },
-            ]
-          : []),
       ],
     },
   ]
