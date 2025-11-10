@@ -46,6 +46,7 @@ export const useOrganizationUpdateMutation = ({
     (vars) => updateOrganization(vars),
     {
       async onSuccess(data, variables, context) {
+        await queryClient.invalidateQueries({ queryKey: organizationKeys.list() })
         await queryClient.invalidateQueries({ queryKey: organizationKeys.detail(variables.slug) })
         if (onSuccess) {
           await onSuccess(data, variables, context)
