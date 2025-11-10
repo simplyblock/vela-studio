@@ -12,6 +12,7 @@ import {
   PanelsTopLeft,
   Settings,
   ShieldEllipsis,
+  ShieldUser,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -502,7 +503,7 @@ const OrganizationLinks = () => {
         label: 'RBAC',
         href: `/org/${slug}/rbac`,
         key: 'rbac',
-        icon: <ShieldEllipsis size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+        icon: <ShieldUser size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       },
   ]
 
