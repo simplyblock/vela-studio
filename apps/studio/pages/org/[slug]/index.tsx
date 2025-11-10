@@ -13,6 +13,7 @@ import { PROJECT_STATUS } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
 import { Admonition } from 'ui-patterns'
 import { useRouter } from 'next/router'
+import OrganizationResourcesPanel from 'components/interfaces/Organization/OrganizationResourcesPanel'
 
 const ProjectsPage: NextPageWithLayout = () => {
   const router = useRouter()
@@ -54,6 +55,9 @@ const ProjectsPage: NextPageWithLayout = () => {
             filterStatus={filterStatus}
             setFilterStatus={setFilterStatus}
           />
+          <div className="my-6">
+            <OrganizationResourcesPanel orgRef={org?.id  ?? undefined} />
+          </div>          
 
           <div className="my-6 space-y-8">
             <ProjectList

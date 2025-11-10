@@ -39,6 +39,7 @@ const ProjectList = ({
     isError: isErrorProjects,
     error: projectsError,
   } = useProjectsQuery()
+  console.log({allProjects})
   const {
     isLoading: isLoadingPermissions,
     isError: isErrorPermissions,
