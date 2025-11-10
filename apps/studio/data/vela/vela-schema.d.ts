@@ -18877,11 +18877,7 @@ export interface components {
             assigned_labels: string[];
             used_resources: components["schemas"]["ResourceUsageDefinition"];
             api_keys: components["schemas"]["BranchApiKeys"];
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
+            status: components["schemas"]["BranchServiceStatus"];
             /** Pitr Enabled */
             pitr_enabled: boolean;
             /**
@@ -18926,6 +18922,11 @@ export interface components {
             config_copy?: boolean;
             deployment_parameters?: components["schemas"]["BranchSourceDeploymentParameters"] | null;
         };
+        /**
+         * BranchServiceStatus
+         * @enum {string}
+         */
+        BranchServiceStatus: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "PAUSING" | "PAUSED" | "RESUMING" | "UNKNOWN" | "ERROR";
         /** BranchSourceDeploymentParameters */
         BranchSourceDeploymentParameters: {
             /** Database Size */
@@ -18963,31 +18964,11 @@ export interface components {
         };
         /** BranchStatus */
         BranchStatus: {
-            /**
-             * Database
-             * @enum {string}
-             */
-            database: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
-            /**
-             * Storage
-             * @enum {string}
-             */
-            storage: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
-            /**
-             * Realtime
-             * @enum {string}
-             */
-            realtime: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
-            /**
-             * Meta
-             * @enum {string}
-             */
-            meta: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
-            /**
-             * Rest
-             * @enum {string}
-             */
-            rest: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "UNKNOWN" | "ERROR";
+            database: components["schemas"]["BranchServiceStatus"];
+            storage: components["schemas"]["BranchServiceStatus"];
+            realtime: components["schemas"]["BranchServiceStatus"];
+            meta: components["schemas"]["BranchServiceStatus"];
+            rest: components["schemas"]["BranchServiceStatus"];
         };
         /** BranchStatusPublic */
         BranchStatusPublic: {
@@ -19041,6 +19022,8 @@ export interface components {
             encrypted_connection_string: string;
             /** Service Endpoint Uri */
             service_endpoint_uri: string;
+            /** Monitoring Endpoint Uri */
+            monitoring_endpoint_uri: string | null;
             /** Version */
             version: string;
             /** Has Replicas */

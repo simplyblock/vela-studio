@@ -4055,6 +4055,11 @@
         ],
         "summary": "Set Branch Allocations",
         "operationId": "set_branch_allocations",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -4114,6 +4119,11 @@
         ],
         "summary": "Get Branch Allocations",
         "operationId": "get_branch_allocations",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -4165,6 +4175,11 @@
         ],
         "summary": "Get Project Usage",
         "operationId": "get_project_usage",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4250,6 +4265,11 @@
         ],
         "summary": "Get Org Usage",
         "operationId": "get_org_usage",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4335,6 +4355,11 @@
         ],
         "summary": "Set Organization Provisioning Limit",
         "operationId": "set_organization_provisioning_limit",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4394,6 +4419,11 @@
         ],
         "summary": "Get Organization Provisioning Limits",
         "operationId": "get_organization_provisioning_limits",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4449,6 +4479,11 @@
         ],
         "summary": "Set Project Provisioning Limit",
         "operationId": "set_project_provisioning_limit",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4508,6 +4543,11 @@
         ],
         "summary": "Get Project Provisioning Limits",
         "operationId": "get_project_provisioning_limits",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4563,6 +4603,11 @@
         ],
         "summary": "Set Organization Consumption Limit",
         "operationId": "set_organization_consumption_limit",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4622,6 +4667,11 @@
         ],
         "summary": "Get Organization Consumption Limits",
         "operationId": "get_organization_consumption_limits",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4677,6 +4727,11 @@
         ],
         "summary": "Set Project Consumption Limit",
         "operationId": "set_project_consumption_limit",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4736,6 +4791,11 @@
         ],
         "summary": "Get Project Consumption Limits",
         "operationId": "get_project_consumption_limits",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4791,6 +4851,11 @@
         ],
         "summary": "Branch Effective Limit",
         "operationId": "branch_effective_limit",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -4928,8 +4993,16 @@
     },
     "/backup/organizations/{organization_id}/schedule": {
       "post": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Add Org Backup Schedule",
         "operationId": "add_org_backup_schedule",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5001,8 +5074,16 @@
         }
       },
       "put": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Replace Org Backup Schedule",
         "operationId": "replace_org_backup_schedule",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5074,8 +5155,16 @@
         }
       },
       "get": {
+        "tags": [
+          "backup"
+        ],
         "summary": "List Org Schedules",
         "operationId": "list_org_schedules",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5142,8 +5231,16 @@
     },
     "/backup/branches/{branch_id}/schedule": {
       "post": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Add Branch Backup Schedule",
         "operationId": "add_branch_backup_schedule",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -5219,8 +5316,16 @@
         }
       },
       "put": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Replace Branch Backup Schedule",
         "operationId": "replace_branch_backup_schedule",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -5296,8 +5401,16 @@
         }
       },
       "get": {
+        "tags": [
+          "backup"
+        ],
         "summary": "List Branch Schedules",
         "operationId": "list_branch_schedules",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -5364,8 +5477,16 @@
     },
     "/backup/organizations/{organization_id}/": {
       "get": {
+        "tags": [
+          "backup"
+        ],
         "summary": "List Org Backups",
         "operationId": "list_org_backups",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5440,8 +5561,16 @@
     },
     "/backup/branches/{branch_id}/": {
       "get": {
+        "tags": [
+          "backup"
+        ],
         "summary": "List Branch Backups",
         "operationId": "list_branch_backups",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -5514,8 +5643,16 @@
         }
       },
       "post": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Manual Backup",
         "operationId": "manual_backup",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -5562,8 +5699,16 @@
     },
     "/backup/schedule/{schedule_id}/": {
       "delete": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Delete Schedule",
         "operationId": "delete_schedule",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "schedule_id",
@@ -5618,8 +5763,16 @@
     },
     "/backup/{backup_id}": {
       "delete": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Delete Backup",
         "operationId": "delete_backup",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "backup_id",
@@ -5666,8 +5819,16 @@
     },
     "/backup/branches/{branch_id}/info": {
       "get": {
+        "tags": [
+          "backup"
+        ],
         "summary": "Get Branch Backup Info",
         "operationId": "get_branch_backup_info",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -5719,6 +5880,11 @@
         ],
         "summary": "Create Role",
         "operationId": "create_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5779,6 +5945,11 @@
         "summary": "List Roles",
         "description": "List all roles and their access rights within an organization",
         "operationId": "list_roles",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5834,6 +6005,11 @@
         ],
         "summary": "Modify Role",
         "operationId": "modify_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5911,6 +6087,11 @@
         ],
         "summary": "Delete Role",
         "operationId": "delete_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -5981,6 +6162,11 @@
         "summary": "Assign Role",
         "description": "Assign a role to a user in one or more contexts. The context is passed as JSON.",
         "operationId": "assign_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "user_id",
@@ -6070,6 +6256,11 @@
         ],
         "summary": "Unassign Role",
         "operationId": "unassign_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "user_id",
@@ -6171,6 +6362,11 @@
         "summary": "Api Check Access",
         "description": "Example POST JSON:\n{\n    \"access\": \"project:settings:update\",\n    \"project_id\": \"01ABCDEF2345XYZ\"\n}",
         "operationId": "api_check_access",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -6243,6 +6439,11 @@
         "summary": "List Role Assignments",
         "description": "List role-user assignments within an organization.\nOptionally filter by user_id.",
         "operationId": "list_role_assignments",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -6324,7 +6525,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -6360,7 +6566,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -6380,7 +6591,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -6564,7 +6780,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -6578,7 +6799,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -6647,7 +6873,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -6734,7 +6965,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -6755,7 +6991,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -6835,7 +7076,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -6915,7 +7161,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -6997,7 +7248,12 @@
             "description": "Conflict"
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7083,7 +7339,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7170,7 +7431,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -7201,7 +7467,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -7223,7 +7494,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7301,7 +7577,12 @@
           "201": {
             "description": "Created"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7387,7 +7668,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -7409,7 +7695,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7501,7 +7792,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7598,7 +7894,12 @@
             }
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7678,7 +7979,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7758,7 +8064,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7837,7 +8148,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -7860,7 +8176,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -7955,7 +8276,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8045,7 +8371,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -8079,7 +8410,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8169,7 +8505,12 @@
           "201": {
             "description": "Created"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8262,7 +8603,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8349,7 +8695,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -8382,7 +8733,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -8404,7 +8760,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8484,7 +8845,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8564,7 +8930,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8646,7 +9017,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8727,7 +9103,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8806,7 +9187,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -8893,7 +9279,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -8924,7 +9315,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -8946,7 +9342,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9033,7 +9434,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -9064,7 +9470,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -9086,7 +9497,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9173,7 +9589,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9253,7 +9674,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9333,7 +9759,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9415,7 +9846,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9516,7 +9952,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9600,7 +10041,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -9619,7 +10065,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9703,7 +10154,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -9722,7 +10178,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9801,7 +10262,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9883,7 +10349,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -9909,7 +10380,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -9988,7 +10464,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -10017,7 +10498,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -10037,7 +10523,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10126,7 +10617,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10213,7 +10709,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -10236,7 +10737,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10331,7 +10837,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -10362,7 +10873,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -10384,7 +10900,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10481,7 +11002,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10566,7 +11092,12 @@
             }
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10653,7 +11184,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -10676,7 +11212,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -10699,7 +11240,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10794,7 +11340,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10900,7 +11451,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -10995,7 +11551,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -11018,7 +11579,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -11041,7 +11607,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11128,7 +11699,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11227,7 +11803,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11321,7 +11902,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11403,7 +11989,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -11429,7 +12020,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11508,7 +12104,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -11537,7 +12138,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -11557,7 +12163,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11646,7 +12257,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11733,7 +12349,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -11756,7 +12377,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -11851,7 +12477,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -11882,7 +12513,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -11904,7 +12540,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12001,7 +12642,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12086,7 +12732,12 @@
             }
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12173,7 +12824,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -12196,7 +12852,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -12219,7 +12880,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12314,7 +12980,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12420,7 +13091,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12515,7 +13191,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -12538,7 +13219,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -12561,7 +13247,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12648,7 +13339,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12747,7 +13443,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12832,7 +13533,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -12853,7 +13559,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -12986,7 +13697,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -13009,7 +13725,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -13087,7 +13808,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -13114,7 +13840,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -13192,7 +13923,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -13268,7 +14004,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -13294,7 +14035,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -13305,7 +14051,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -13389,6 +14140,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "put": {
@@ -13408,6 +14164,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -13494,6 +14255,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -13665,6 +14431,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "post": {
@@ -13684,6 +14455,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -13780,6 +14556,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -13867,6 +14648,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -13973,6 +14759,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -14144,6 +14935,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "post": {
@@ -14163,6 +14959,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -14259,6 +15060,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -14346,6 +15152,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -14452,6 +15263,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -14620,6 +15436,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "post": {
@@ -14649,6 +15470,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -14827,6 +15653,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -15003,6 +15834,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "put": {
@@ -15035,6 +15871,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "delete": {
@@ -15058,6 +15899,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -15224,6 +16070,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -15403,6 +16254,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -15582,6 +16438,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -15780,6 +16641,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "post": {
@@ -15799,6 +16665,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -15901,6 +16772,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -15998,6 +16874,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "put": {
@@ -16027,6 +16908,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "delete": {
@@ -16047,6 +16933,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -16147,6 +17038,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -16247,6 +17143,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -16331,6 +17232,11 @@
         },
         "tags": [
           "branch-auth"
+        ],
+        "security": [
+          {
+            "HTTPBearer": []
+          }
         ]
       },
       "parameters": [
@@ -16416,7 +17322,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -16519,7 +17430,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -16612,7 +17528,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -16715,7 +17636,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -16808,7 +17734,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -16901,7 +17832,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -16994,7 +17930,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -17012,7 +17953,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17097,7 +18043,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -17108,7 +18059,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17196,7 +18152,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17283,7 +18244,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -17303,7 +18269,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17417,7 +18388,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17531,7 +18507,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17635,7 +18616,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17736,7 +18722,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17828,7 +18819,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -17936,7 +18932,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18039,7 +19040,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18124,7 +19130,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -18151,7 +19162,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18241,7 +19257,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18329,7 +19350,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18418,7 +19444,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18526,7 +19557,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18614,7 +19650,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18701,7 +19742,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -18721,7 +19767,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18811,7 +19862,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -18899,7 +19955,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -18922,7 +19983,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19018,7 +20084,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -19049,7 +20120,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -19071,7 +20147,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19169,7 +20250,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19254,7 +20340,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19339,7 +20430,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19464,7 +20560,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -19499,7 +20600,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19601,7 +20707,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -19641,7 +20752,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -19672,7 +20788,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19777,7 +20898,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -19817,7 +20943,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -19857,7 +20988,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -19970,7 +21106,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20066,7 +21207,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20198,7 +21344,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20299,7 +21450,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -20342,7 +21498,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20473,7 +21634,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20559,7 +21725,12 @@
             }
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20647,7 +21818,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -20670,7 +21846,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -20693,7 +21874,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20789,7 +21975,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20896,7 +22087,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -20992,7 +22188,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -21015,7 +22216,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -21038,7 +22244,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21126,7 +22337,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21226,7 +22442,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21311,7 +22532,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21400,7 +22626,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21485,7 +22716,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21593,7 +22829,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21703,7 +22944,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -21722,7 +22968,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21807,7 +23058,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -21836,7 +23092,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -21856,7 +23117,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -21952,7 +23218,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22033,7 +23304,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22115,7 +23391,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22199,7 +23480,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -22225,7 +23511,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22307,7 +23598,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22391,7 +23687,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -22417,7 +23718,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22499,7 +23805,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22583,7 +23894,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -22609,7 +23925,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22773,7 +24094,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -22787,7 +24113,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22866,7 +24197,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -22889,7 +24225,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -22981,7 +24322,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23125,7 +24471,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -23155,7 +24506,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23252,7 +24608,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23327,7 +24688,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -23353,7 +24719,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -23363,7 +24734,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23506,7 +24882,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -23536,7 +24917,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23620,7 +25006,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -23647,7 +25038,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23762,7 +25158,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23849,7 +25250,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -23936,7 +25342,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -23959,7 +25370,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -23982,7 +25398,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24078,7 +25499,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24185,7 +25611,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24284,7 +25715,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -24319,7 +25755,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -24354,7 +25795,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24444,7 +25890,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24545,7 +25996,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24643,7 +26099,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24766,7 +26227,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -24792,7 +26258,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24868,7 +26339,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -24894,7 +26370,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -24905,7 +26386,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -24992,7 +26478,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25076,7 +26567,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -25103,7 +26599,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25190,7 +26691,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25277,7 +26783,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -25297,7 +26808,12 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25391,7 +26907,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -25422,7 +26943,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -25444,7 +26970,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25528,7 +27059,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25623,7 +27159,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25698,7 +27239,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25779,7 +27325,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -25878,7 +27429,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -25917,7 +27473,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -25943,7 +27504,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26042,7 +27608,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -26085,7 +27656,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -26119,7 +27695,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26199,7 +27780,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26339,7 +27925,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -26365,7 +27956,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26468,7 +28064,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26569,7 +28170,12 @@
           "400": {
             "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26645,7 +28251,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -26671,7 +28282,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -26685,7 +28301,12 @@
           "400": {
             "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26772,7 +28393,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -26804,7 +28430,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -26902,7 +28533,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -26930,7 +28566,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27063,7 +28704,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -27092,7 +28738,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27177,7 +28828,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27274,7 +28930,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27381,7 +29042,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27479,7 +29145,12 @@
           "400": {
             "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -27504,7 +29175,12 @@
           "400": {
             "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27613,7 +29289,12 @@
           "400": {
             "description": "Bad Request"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27716,7 +29397,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27808,7 +29494,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -27887,7 +29578,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28003,7 +29699,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -28038,7 +29739,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28128,7 +29834,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -28162,7 +29873,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -28190,7 +29906,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28305,7 +30026,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -28341,7 +30067,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -28378,7 +30109,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28481,7 +30217,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28573,7 +30314,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28662,7 +30408,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -28702,7 +30453,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28795,7 +30551,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -28835,7 +30596,12 @@
           "409": {
             "description": "Conflict"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -28866,7 +30632,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -28962,7 +30733,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -29002,7 +30778,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -29042,7 +30823,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -29146,7 +30932,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -29242,7 +31033,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -29365,7 +31161,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -29457,7 +31258,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -29500,7 +31306,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -29622,7 +31433,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -29716,7 +31532,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -29811,7 +31632,12 @@
             "description": "Internal Server Error"
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30009,7 +31835,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -30044,7 +31875,12 @@
             "description": "Internal Server Error",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30122,7 +31958,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -30151,7 +31992,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30322,7 +32168,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30401,7 +32252,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -30431,7 +32287,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30510,7 +32371,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30599,7 +32465,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -30634,7 +32505,12 @@
             "description": "Internal Server Error",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -30652,7 +32528,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30743,7 +32624,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30834,7 +32720,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -30928,7 +32819,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31017,7 +32913,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31110,7 +33011,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31213,7 +33119,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31307,7 +33218,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31409,7 +33325,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31501,7 +33422,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31632,7 +33558,12 @@
             "description": "Internal Server Error",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31722,7 +33653,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31826,7 +33762,12 @@
             "description": "Conflict",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -31854,7 +33795,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -31976,7 +33922,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32075,7 +34026,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32167,7 +34123,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -32200,7 +34161,12 @@
             "description": "Internal Server Error",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32298,7 +34264,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32378,7 +34349,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32481,7 +34457,12 @@
           "404": {
             "description": "Not Found"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32577,7 +34558,12 @@
             "description": "Internal Server Error",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32688,7 +34674,12 @@
             "content": {}
           }
         },
-        "deprecated": true
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32775,7 +34766,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -32862,7 +34858,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -32885,7 +34886,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -32908,7 +34914,12 @@
           "204": {
             "description": "No Content"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33004,7 +35015,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33111,7 +35127,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33210,7 +35231,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -33245,7 +35271,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -33280,7 +35311,12 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33370,7 +35406,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33471,7 +35512,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33587,7 +35633,12 @@
             "description": "Internal Server Error",
             "content": {}
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33677,7 +35728,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -33769,7 +35825,12 @@
           "403": {
             "description": "Forbidden"
           }
-        }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
       },
       "parameters": [
         {
@@ -34918,21 +36979,7 @@
             "$ref": "#/components/schemas/BranchApiKeys"
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "ACTIVE_HEALTHY",
-              "STOPPED",
-              "STARTING",
-              "ACTIVE_UNHEALTHY",
-              "CREATING",
-              "DELETING",
-              "UPDATING",
-              "RESTARTING",
-              "STOPPING",
-              "UNKNOWN",
-              "ERROR"
-            ],
-            "title": "Status"
+            "$ref": "#/components/schemas/BranchServiceStatus"
           },
           "pitr_enabled": {
             "type": "boolean",
@@ -35054,6 +37101,26 @@
           "backup_id"
         ],
         "title": "BranchRestoreParameters"
+      },
+      "BranchServiceStatus": {
+        "type": "string",
+        "enum": [
+          "ACTIVE_HEALTHY",
+          "STOPPED",
+          "STARTING",
+          "ACTIVE_UNHEALTHY",
+          "CREATING",
+          "DELETING",
+          "UPDATING",
+          "RESTARTING",
+          "STOPPING",
+          "PAUSING",
+          "PAUSED",
+          "RESUMING",
+          "UNKNOWN",
+          "ERROR"
+        ],
+        "title": "BranchServiceStatus"
       },
       "BranchSourceDeploymentParameters": {
         "properties": {
@@ -35186,89 +37253,19 @@
       "BranchStatus": {
         "properties": {
           "database": {
-            "type": "string",
-            "enum": [
-              "ACTIVE_HEALTHY",
-              "STOPPED",
-              "STARTING",
-              "ACTIVE_UNHEALTHY",
-              "CREATING",
-              "DELETING",
-              "UPDATING",
-              "RESTARTING",
-              "STOPPING",
-              "UNKNOWN",
-              "ERROR"
-            ],
-            "title": "Database"
+            "$ref": "#/components/schemas/BranchServiceStatus"
           },
           "storage": {
-            "type": "string",
-            "enum": [
-              "ACTIVE_HEALTHY",
-              "STOPPED",
-              "STARTING",
-              "ACTIVE_UNHEALTHY",
-              "CREATING",
-              "DELETING",
-              "UPDATING",
-              "RESTARTING",
-              "STOPPING",
-              "UNKNOWN",
-              "ERROR"
-            ],
-            "title": "Storage"
+            "$ref": "#/components/schemas/BranchServiceStatus"
           },
           "realtime": {
-            "type": "string",
-            "enum": [
-              "ACTIVE_HEALTHY",
-              "STOPPED",
-              "STARTING",
-              "ACTIVE_UNHEALTHY",
-              "CREATING",
-              "DELETING",
-              "UPDATING",
-              "RESTARTING",
-              "STOPPING",
-              "UNKNOWN",
-              "ERROR"
-            ],
-            "title": "Realtime"
+            "$ref": "#/components/schemas/BranchServiceStatus"
           },
           "meta": {
-            "type": "string",
-            "enum": [
-              "ACTIVE_HEALTHY",
-              "STOPPED",
-              "STARTING",
-              "ACTIVE_UNHEALTHY",
-              "CREATING",
-              "DELETING",
-              "UPDATING",
-              "RESTARTING",
-              "STOPPING",
-              "UNKNOWN",
-              "ERROR"
-            ],
-            "title": "Meta"
+            "$ref": "#/components/schemas/BranchServiceStatus"
           },
           "rest": {
-            "type": "string",
-            "enum": [
-              "ACTIVE_HEALTHY",
-              "STOPPED",
-              "STARTING",
-              "ACTIVE_UNHEALTHY",
-              "CREATING",
-              "DELETING",
-              "UPDATING",
-              "RESTARTING",
-              "STOPPING",
-              "UNKNOWN",
-              "ERROR"
-            ],
-            "title": "Rest"
+            "$ref": "#/components/schemas/BranchServiceStatus"
           }
         },
         "type": "object",
@@ -35409,6 +37406,17 @@
             "type": "string",
             "title": "Service Endpoint Uri"
           },
+          "monitoring_endpoint_uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monitoring Endpoint Uri"
+          },
           "version": {
             "type": "string",
             "title": "Version"
@@ -35426,6 +37434,7 @@
           "name",
           "encrypted_connection_string",
           "service_endpoint_uri",
+          "monitoring_endpoint_uri",
           "version",
           "has_replicas"
         ],
