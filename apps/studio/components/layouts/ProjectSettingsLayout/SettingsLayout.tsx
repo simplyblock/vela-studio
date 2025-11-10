@@ -3,7 +3,6 @@ import { PropsWithChildren } from 'react'
 
 import { useParams } from 'common'
 import { ProductMenu } from 'components/ui/ProductMenu'
-import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
@@ -24,21 +23,7 @@ const SettingsLayout = ({ title, children }: PropsWithChildren<SettingsLayoutPro
     ? router.pathname.split('/')[7]
     : router.pathname.split('/')[6]
 
-  const {
-    projectAuthAll: authEnabled,
-    projectEdgeFunctionAll: edgeFunctionsEnabled,
-    projectStorageAll: storageEnabled,
-  } = useIsFeatureEnabled([
-    'project_auth:all',
-    'project_edge_function:all',
-    'project_storage:all',
-  ])
-
-  const menuRoutes = generateSettingsMenu(orgRef!, projectRef, branchRef, project, {
-    auth: authEnabled,
-    edgeFunctions: edgeFunctionsEnabled,
-    storage: storageEnabled,
-  })
+  const menuRoutes = generateSettingsMenu(orgRef!, projectRef, branchRef, project)
 
   return (
     <ProjectLayout

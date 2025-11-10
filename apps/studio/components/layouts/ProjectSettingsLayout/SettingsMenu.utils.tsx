@@ -1,5 +1,3 @@
-import { ArrowUpRight } from 'lucide-react'
-
 import type { ProductMenuGroup } from 'components/ui/ProductMenu/ProductMenu.types'
 import type { ProjectDetail } from 'data/projects/project-detail-query'
 import { PROJECT_STATUS } from 'lib/constants'
@@ -9,17 +7,9 @@ export const generateSettingsMenu = (
   projectRef?: string,
   branchRef?: string,
   project?: ProjectDetail,
-  features?: {
-    auth?: boolean
-    edgeFunctions?: boolean
-    storage?: boolean
-  }
 ): ProductMenuGroup[] => {
   const isProjectBuilding = project?.status === PROJECT_STATUS.STARTING
   const buildingUrl = `/org/${orgRef}/project/${projectRef}`
-
-  const authEnabled = features?.auth ?? true
-  const edgeFunctionsEnabled = features?.edgeFunctions ?? true
 
   return [
     {
