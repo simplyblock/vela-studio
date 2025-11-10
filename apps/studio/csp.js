@@ -2,6 +2,7 @@ const BASE_URL = process.env.VELA_PLATFORM_EXT_BASE_URL
 if (!BASE_URL) {
   throw new Error("Environment variable VELA_PLATFORM_EXT_BASE_URL not set")
 }
+console.info(`Using ${BASE_URL} as CSP base.`)
 
 const API_URL = new URL(BASE_URL).origin
 
