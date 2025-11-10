@@ -15,7 +15,7 @@ type SourceDeploymentParameters = components['schemas']['BranchSourceDeploymentP
 type BranchCloneVariables = {
   orgRef: string
   projectRef: string
-  branchRef: string
+  branchRef?: string
   branchName: string
   envType?: string
   withConfig?: boolean
@@ -26,7 +26,7 @@ type BranchCloneVariables = {
 type BranchRestoreVariables = {
   orgRef: string
   projectRef: string
-  backupRef: string
+  backupRef?: string
   branchName: string
   envType?: string
   withConfig?: boolean

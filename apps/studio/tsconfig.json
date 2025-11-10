@@ -45,6 +45,7 @@
   "exclude": [
     "node_modules",
     "public/deno/*.ts",
-    ".next/types"
+    ".next/types",
+    ".next/dev/types",
   ]
 }
