@@ -26,9 +26,9 @@ export const ProfileImage = ({ alt, src, placeholder, className }: ProfileImageP
   ) : (
     placeholder ?? (
       <figure
-        className={cn('bg-foreground rounded-full flex items-center justify-center', className)}
+        className={cn('bg-purple-900 rounded-full flex items-center justify-center', className)}
       >
-        <User size={18} strokeWidth={1.5} className="text-background" />
+        <User size={18} strokeWidth={1.5} className="text-white" />
       </figure>
     )
   )

@@ -90,7 +90,7 @@
     "json-logic-js": "^2.0.2",
     "keycloak-js": "^26.2.0",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.436.0",
+    "lucide-react": "^0.553.0",
     "markdown-table": "^3.0.3",
     "memoize-one": "^5.0.1",
     "mime-db": "^1.53.0",
