@@ -32,7 +32,6 @@ export const UserSettings = () => {
             placeholder="Filter members"
           />
           <ScaffoldActionsGroup className="w-full md:w-auto">
-            <DocsButton href="https://supabase.com/docs/guides/platform/access-control" />
             <InviteMemberButton />
           </ScaffoldActionsGroup>
         </ScaffoldActionsContainer>

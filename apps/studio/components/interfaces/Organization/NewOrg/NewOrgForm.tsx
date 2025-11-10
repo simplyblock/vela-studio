@@ -157,9 +157,9 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
         className="overflow-visible"
       >
         <Panel.Content>
-          <p className="text-sm">This is your organization within Supabase.</p>
+          <p className="text-sm">This is your organization within Vela.</p>
           <p className="text-sm text-foreground-light">
-            For example, you can use the name of your company or department.
+            You can use the name of your company or department.
           </p>
         </Panel.Content>
         <Panel.Content className="Form section-block--body has-inputs-centered">

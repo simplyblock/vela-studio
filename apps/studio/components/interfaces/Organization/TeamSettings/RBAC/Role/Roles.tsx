@@ -8,7 +8,6 @@ import {
   ScaffoldSectionContent,
   ScaffoldTitle,
 } from 'components/layouts/Scaffold'
-import { DocsButton } from 'components/ui/DocsButton'
 import { Button } from 'ui'
 import { Input } from 'ui-patterns/DataInputs/Input'
 
@@ -61,7 +60,6 @@ export const Roles = () => {
             placeholder="Filter roles"
           />
           <ScaffoldActionsGroup className="w-full md:w-auto">
-            <DocsButton href="https://supabase.com/docs/guides/platform/access-control" />
             <Button size="small">Create role</Button>
           </ScaffoldActionsGroup>
         </ScaffoldActionsContainer>

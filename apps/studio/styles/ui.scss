@@ -302,13 +302,13 @@
 
 ::-moz-selection {
   /* Code for Firefox */
-  @apply bg-brand;
-  color: #333 !important;
+  background-color: #cfeefd;
+  color: #111 !important;
 }
 
 ::selection {
-  background-color: #6ee7b7;
-  color: #333 !important;
+  background-color: #cfeefd;
+  color: #111 !important;
 }
 
 .has-hidden-children {
