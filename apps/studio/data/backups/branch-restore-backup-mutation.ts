@@ -12,7 +12,7 @@ export interface RestoreBranchBackupVariables {
   branchName: string
   withConfig?: boolean
   envType?: string
-  deployment?: components['schemas']['DeploymentParameters']
+  deployment?: components['schemas']['BranchSourceDeploymentParameters']
 }
 
 export async function restoreBranchBackup(
