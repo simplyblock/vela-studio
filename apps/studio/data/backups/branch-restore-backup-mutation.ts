@@ -66,7 +66,7 @@ export async function restoreBranchBackup(
 
 type RestoreBranchBackupData = Awaited<ReturnType<typeof restoreBranchBackup>>
 
-export const useDeleteBranchBackupMutation = ({
+export const useRestoreBranchBackupMutation = ({
   onSuccess,
   onError,
   ...options
