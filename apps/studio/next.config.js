@@ -1,5 +1,3 @@
-const { getCSP } = require('./csp')
-
 /**
  * @type {import('next').NextConfig}
  */
@@ -346,10 +344,6 @@ const nextConfig = {
           {
             key: 'X-Content-Type-Options',
             value: 'no-sniff',
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: getCSP(),
           },
           {
             key: 'Referrer-Policy',

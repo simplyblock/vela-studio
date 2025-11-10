@@ -12,7 +12,7 @@ const PROJECTS_URL = `https://*.${hostWithPort}`
 const PROJECTS_URL_WS = `wss://*.${hostWithPort}`
 
 // construct the URL for the Websocket Local URLs
-const LOCAL_PROJECTS_URL_WS = []
+const LOCAL_PROJECTS_URL_WS: string[] = []
 if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
   LOCAL_PROJECTS_URL_WS.push(
     `ws://${hostWithPort}`,
@@ -34,7 +34,7 @@ const ASSETS_URL = BASE_URL
 
 const GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com'
 
-module.exports.getCSP = function getCSP() {
+export function getCSP() {
   const DEFAULT_SRC_URLS = [
     API_URL,
     BASE_URL,
