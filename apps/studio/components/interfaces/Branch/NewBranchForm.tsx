@@ -92,8 +92,10 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
 
   const { mutate: createBranch } = useBranchCreateMutation({
     onSuccess: (data) => {
-      if (!data) router.push(`/org/${slug}/project/${ref}`)
-      else router.push(`/org/${slug}/project/${ref}/branch/${data.id}`)
+      // on success always redirecting to projcet overview and poll for status 
+      // if (!data) router.push(`/org/${slug}/project/${ref}`)
+      // else router.push(`/org/${slug}/project/${ref}/branch/${data.id}`)
+      router.push(`/org/${slug}/project/${ref}`)
     },
   })
 
@@ -261,8 +263,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
       {
         onSuccess: (data) => {
           setNewBranchLoading(false)
-          if (data) router.push(`/org/${slug}/project/${ref}/branch/${data?.id}`)
-          else router.push(`/org/${slug}/project/${ref}`)
+          router.push(`/org/${slug}/project/${ref}`)
         },
         onError: (data) => {
           setNewBranchLoading(false)
