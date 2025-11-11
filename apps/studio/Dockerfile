@@ -12,6 +12,9 @@ FROM node:25-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
+ARG NEXT_PUBLIC_GIT_COMMIT_HASH="unknown"
+ARG NEXT_PUBLIC_BUILD_TIME="unknown"
+
 # Fixes issues with Sentry CLI and SSL certificates during build
 # TODO: Git is added because it's needed to build libpg, remove it once they publish a binary on the S3 bucket
 RUN apt-get update -qq && \

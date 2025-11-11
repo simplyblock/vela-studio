@@ -65,6 +65,9 @@ jobs:
           file: ./apps/studio/Dockerfile
           context: .
           target: production
+          build-args: |
+            NEXT_PUBLIC_GIT_COMMIT_HASH="${{ github.sha }}"
+            NEXT_PUBLIC_BUILD_TIME="${{ github.event.head_commit.timestamp || github.run_started_at }}"
 
       - name: Export digest
         run: |
