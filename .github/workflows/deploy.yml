@@ -1,0 +1,17 @@
+name: Notify vela controller repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository_dispatch event
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PRIVATE_REPO_PAT }}
+          repository: simplyblock/vela
+          event-type: public-merged
