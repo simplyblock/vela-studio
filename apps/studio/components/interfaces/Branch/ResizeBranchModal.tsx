@@ -20,6 +20,7 @@ type SliderKey = 'vcpu' | 'ram' | 'nvme' | 'iops' | 'storage' | 'storageCapacity
 type ResizeState = Record<SliderKey, number>
 
 const GiB = 1024 ** 3
+const GB = 1000 ** 3
 
 const SLIDER_CONFIG: Record<
   SliderKey,
@@ -41,12 +42,19 @@ const createInitialState = (): ResizeState => {
 }
 
 // Heuristic helpers for conversions
-const toGB = (val?: number | null) => {
+const toGiB = (val?: number | null) => {
   if (val == null) return undefined
-  // If value looks like bytes (≥ 1 GiB), convert to GB. Otherwise assume already GB.
+  // If value looks like bytes (≥ 1 GiB), convert to GiB. Otherwise assume already GiB.
   return val >= GiB ? Math.round(val / GiB) : Math.round(val)
 }
-const toBytes = (gb: number) => Math.round(gb * GiB)
+// Heuristic helpers for conversions
+const toGB = (val?: number | null) => {
+  if (val == null) return undefined
+  // If value looks like bytes (≥ 1 GB), convert to GB. Otherwise assume already GB.
+  return val >= GB ? Math.round(val / GB) : Math.round(val)
+}
+const gibToBytes = (gb: number) => Math.round(gb * GiB)
+const gbToBytes = (gb: number) => Math.round(gb * GB)
 
 const toVcpu = (milli?: number | null) => {
   if (milli == null) return undefined
@@ -84,7 +92,7 @@ export const ResizeBranchModal = ({
     const vcpu = toVcpu(current.milli_vcpu)
     if (vcpu !== undefined) next.vcpu = clampToRange('vcpu', vcpu)
 
-    const ramGB = toGB(current.ram)
+    const ramGB = toGiB(current.ram)
     if (ramGB !== undefined) next.ram = clampToRange('ram', ramGB)
 
     const iops = current.iops ?? undefined
@@ -136,10 +144,10 @@ export const ResizeBranchModal = ({
     // Convert back to API units
     const params = {
       milli_vcpu: toMilliVcpu(state.vcpu),
-      ram: toBytes(state.ram),
+      ram: gibToBytes(state.ram),
       iops: state.iops,
-      database_size: toBytes(state.nvme),
-      storage_size: toBytes(state.storageCapacity),
+      database_size: gbToBytes(state.nvme),
+      storage_size: gbToBytes(state.storageCapacity),
     }
 
     resize.mutate({
