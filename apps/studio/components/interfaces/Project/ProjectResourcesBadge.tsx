@@ -1,7 +1,10 @@
+// components/interfaces/Project/ProjectResourcesBadge.tsx
 import React, { useMemo } from 'react'
 import { Tooltip, TooltipTrigger, TooltipContent, cn } from 'ui'
 import { useProjectLimitsQuery } from 'data/resources/project-limits-query'
 import { useProjectUsageQuery } from 'data/resources/project-usage-query'
+import { divideValue, formatResource } from './utils'
+
 
 type ProjectLimitsItem = {
   resource: 'milli_vcpu' | 'ram' | 'iops' | 'storage_size' | 'database_size'
@@ -11,10 +14,6 @@ type ProjectLimitsItem = {
 
 /**
  * Accepts either fetched data or will fetch itself if orgRef + projectRef are provided.
- * You can call with either:
- *   <ProjectResourcesBadge orgRef={orgRef} projectRef={projectRef} />
- * or
- *   <ProjectResourcesBadge projectLimits={...} projectUsage={...} />
  */
 export const ProjectResourcesBadge = ({
   orgRef,
@@ -26,16 +25,17 @@ export const ProjectResourcesBadge = ({
   orgRef?: string
   projectRef?: string
   projectLimits?: ProjectLimitsItem[] | undefined
-  projectUsage?: {
-    milli_vcpu?: number | null | undefined
-    ram?: number | null | undefined
-    iops?: number | null | undefined
-    storage_size?: number | null | undefined
-    database_size?: number | null | undefined
-  } | undefined
+  projectUsage?:
+    | {
+        milli_vcpu?: number | null | undefined
+        ram?: number | null | undefined
+        iops?: number | null | undefined
+        storage_size?: number | null | undefined
+        database_size?: number | null | undefined
+      }
+    | undefined
   size?: number
 }) => {
-  // optionally fetch if not provided
   const limitsQuery = useProjectLimitsQuery(
     { orgRef: orgRef!, projectRef: projectRef! },
     { enabled: !projectLimits && !!orgRef && !!projectRef }
@@ -48,11 +48,9 @@ export const ProjectResourcesBadge = ({
   const limitsData: ProjectLimitsItem[] | undefined = projectLimits ?? (limitsQuery.data as any)
   const usageData = projectUsage ?? (usageQuery.data as any)
 
-  // derive rows same as BranchResourceBadge expects (label + percent + usedDisplay + maxDisplay)
   const rows = useMemo(() => {
     if (!limitsData && !usageData) return []
 
-    // helper to find max_total for a given resource key
     const findMax = (resourceName: string) => {
       if (!limitsData) return null
       const found = limitsData.find((x) => x.resource === resourceName)
@@ -70,101 +68,84 @@ export const ProjectResourcesBadge = ({
     // milli_vcpu -> vCPU
     {
       const maxRaw = findMax('milli_vcpu')
-      const usedRaw = (usageData as any)?.milli_vcpu ?? 0
-      const max = typeof maxRaw === 'number' ? maxRaw / 1000 : null
-      const used = typeof usedRaw === 'number' ? usedRaw / 1000 : 0
+      const usedRaw = (usageData as any)?.milli_vcpu ?? null
+      const max = divideValue('milli_vcpu', maxRaw)
+      const used = divideValue('milli_vcpu', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
       out.push({
         key: 'milli_vcpu',
         label: 'vCPU',
         percent,
-        usedDisplay: used === 0 ? '0 vCPU' : `${used % 1 === 0 ? used.toFixed(0) : used.toFixed(1)} vCPU`,
-        maxDisplay: max == null ? '—' : `${max % 1 === 0 ? max.toFixed(0) : max.toFixed(1)} vCPU`,
+        usedDisplay: formatResource('milli_vcpu', usedRaw),
+        maxDisplay: max == null ? '—' : formatResource('milli_vcpu', maxRaw),
       })
     }
 
-    // ram -> GiB (API field 'ram' expected to be bytes)
+    // ram -> GiB
     {
       const maxRaw = findMax('ram')
-      const usedRaw = (usageData as any)?.ram ?? 0
-      const max = typeof maxRaw === 'number' ? maxRaw : null
-      const used = typeof usedRaw === 'number' ? usedRaw : 0
+      const usedRaw = (usageData as any)?.ram ?? null
+      const max = divideValue('ram', maxRaw)
+      const used = divideValue('ram', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
-      const formatGiB = (b: number | null | undefined) => {
-        if (b == null) return '—'
-        const gib = b / (1024 ** 3)
-        return gib < 10 ? `${gib.toFixed(2)} GiB` : `${Math.round(gib)} GiB`
-      }
       out.push({
         key: 'ram',
         label: 'RAM',
         percent,
-        usedDisplay: formatGiB(used),
-        maxDisplay: formatGiB(max),
+        usedDisplay: formatResource('ram', usedRaw),
+        maxDisplay: max == null ? '—' : formatResource('ram', maxRaw),
       })
     }
 
-    // database_size -> GB (decimal GB)
+    // database_size -> GB
     {
       const maxRaw = findMax('database_size')
-      const usedRaw = (usageData as any)?.database_size ?? 0
-      const max = typeof maxRaw === 'number' ? maxRaw : null
-      const used = typeof usedRaw === 'number' ? usedRaw : 0
+      const usedRaw = (usageData as any)?.database_size ?? null
+      const max = divideValue('database_size', maxRaw)
+      const used = divideValue('database_size', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
-      const formatGB = (b: number | null | undefined) => {
-        if (b == null) return '—'
-        const gb = b / 1_000_000_000
-        return gb < 10 ? `${gb.toFixed(2)} GB` : `${Math.round(gb)} GB`
-      }
       out.push({
         key: 'database_size',
         label: 'Database',
         percent,
-        usedDisplay: formatGB(used),
-        maxDisplay: formatGB(max),
+        usedDisplay: formatResource('database_size', usedRaw),
+        maxDisplay: max == null ? '—' : formatResource('database_size', maxRaw),
       })
     }
 
     // storage_size -> GB
     {
       const maxRaw = findMax('storage_size')
-      const usedRaw = (usageData as any)?.storage_size ?? 0
-      const max = typeof maxRaw === 'number' ? maxRaw : null
-      const used = typeof usedRaw === 'number' ? usedRaw : 0
+      const usedRaw = (usageData as any)?.storage_size ?? null
+      const max = divideValue('storage_size', maxRaw)
+      const used = divideValue('storage_size', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
-      const formatGB = (b: number | null | undefined) => {
-        if (b == null) return '—'
-        const gb = b / 1_000_000_000
-        return gb < 10 ? `${gb.toFixed(2)} GB` : `${Math.round(gb)} GB`
-      }
       out.push({
         key: 'storage_size',
         label: 'Storage',
         percent,
-        usedDisplay: formatGB(used),
-        maxDisplay: formatGB(max),
+        usedDisplay: formatResource('storage_size', usedRaw),
+        maxDisplay: max == null ? '—' : formatResource('storage_size', maxRaw),
       })
     }
 
     // iops -> numeric
     {
       const maxRaw = findMax('iops')
-      const usedRaw = (usageData as any)?.iops ?? 0
+      const usedRaw = (usageData as any)?.iops ?? null
       const max = typeof maxRaw === 'number' ? maxRaw : null
       const used = typeof usedRaw === 'number' ? usedRaw : 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
-      const formatNum = (n: number | null | undefined) => (n == null ? '—' : n.toLocaleString())
       out.push({
         key: 'iops',
         label: 'IOPS',
         percent,
-        usedDisplay: formatNum(used),
-        maxDisplay: formatNum(max),
+        usedDisplay: maxRaw == null ? (usedRaw == null ? '—' : String(usedRaw)) : String(usedRaw),
+        maxDisplay: max == null ? '—' : String(max),
       })
     }
 
-    // filter out any resource with neither max nor used (optional)
-    return out.filter((r) => r.maxDisplay !== '—' || r.usedDisplay !== '—')
+    return out.filter((r) => r.usedDisplay !== '—' || r.maxDisplay !== '—')
   }, [limitsData, usageData])
 
   const mostUsed = useMemo(() => {
@@ -173,15 +154,13 @@ export const ProjectResourcesBadge = ({
     return sorted[0]
   }, [rows])
 
-  // SVG circle geometry
-  const stroke = 6
-  const radius = (size - stroke) / 2
+  const stroke = 8
+  const radius = Math.max(4, (size - stroke) / 2)
   const circumference = 2 * Math.PI * radius
   const pct = mostUsed ? Math.max(0, Math.min(100, mostUsed.percent)) : 0
   const dash = (circumference * pct) / 100
-  const remaining = circumference - dash
+  const remaining = Math.max(0, circumference - dash)
 
-  // color mapping (same idea as branch badge)
   const resourceColor = (key?: string) => {
     switch (key) {
       case 'milli_vcpu':
@@ -199,7 +178,6 @@ export const ProjectResourcesBadge = ({
     }
   }
 
-  // loading / no-data states
   const loading = (!projectLimits && limitsQuery.isLoading) || (!projectUsage && usageQuery.isLoading)
   const empty = rows.length === 0 && !loading
 
@@ -211,7 +189,7 @@ export const ProjectResourcesBadge = ({
           className="inline-flex items-center gap-2 p-0 bg-transparent border-0"
         >
           <div className="relative" style={{ width: size, height: size }}>
-            <svg width={size} height={size} className="block">
+            <svg width={size} height={size} className="block" aria-hidden>
               <g transform={`translate(${size / 2}, ${size / 2})`}>
                 <circle r={radius} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth={stroke} />
                 <circle
@@ -228,7 +206,7 @@ export const ProjectResourcesBadge = ({
               </g>
             </svg>
 
-            <div className="absolute inset-0 flex items-center justify-center text-[11px] font-medium" style={{ pointerEvents: 'none' }}>
+            <div className="absolute inset-0 flex items-center justify-center font-medium" style={{ pointerEvents: 'none', fontSize: 10 }}>
               {loading ? '…' : empty ? '—' : `${Math.round(pct)}%`}
             </div>
           </div>

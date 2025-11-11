@@ -77,7 +77,7 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
                 <div className="flex items-center gap-2 ml-3 shrink-0">
                   {/* Project-level resources badge (small) */}
                   <div className="flex items-center justify-center mt-5">
-                    <ProjectResourcesBadge orgRef={orgRef} projectRef={projectRef} size={28} />
+                    <ProjectResourcesBadge orgRef={orgRef} projectRef={projectRef} size={40} />
                   </div>
                 </div>
               </div>
@@ -137,9 +137,9 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
               </div>
             </div>
           }
-          footer={
-            <ProjectCardStatus projectStatus={projectStatus} resourceWarnings={resourceWarnings} />
-          }
+          // footer={
+          //   <ProjectCardStatus projectStatus={projectStatus} resourceWarnings={resourceWarnings} />
+          // }
           containerElement={<ProjectIndexPageLink slug={orgRef} projectRef={projectRef} />}
         />
       )}

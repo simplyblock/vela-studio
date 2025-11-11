@@ -1,14 +1,25 @@
+// components/OrganizationResourcesPanel.tsx
 import React, { useMemo } from 'react'
 import { useOrganizationLimitsQuery } from 'data/resources/organization-limits-query'
 import { useOrganizationUsageQuery } from 'data/resources/organization-usage-query'
 import { cn } from 'ui'
+import { divideValue, formatResource } from '../Project/utils'
+
 
 type Props = {
   orgRef?: string
 }
 
 type OrgLimitItem = {
-  resource: 'milli_vcpu' | 'ram' | 'iops' | 'storage_size' | 'database_size'
+  resource:
+    | 'milli_vcpu'
+    | 'ram'
+    | 'iops'
+    | 'storage_size'
+    | 'database_size'
+    | 'ram_bytes'
+    | 'nvme_bytes'
+    | 'storage_bytes'
   max_total: number | null
   max_per_branch: number | null
 }
@@ -40,7 +51,7 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
 
   const loading = loadingLimits || loadingUsage
 
-  // definitions: label, candidate keys for limits & usage, unit/divider and color
+  // definitions: label, candidate keys for limits & usage, and color
   const defs = useMemo(
     () => [
       {
@@ -48,8 +59,6 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
         label: 'vCPU',
         maxCandidates: ['milli_vcpu'],
         usedCandidates: ['milli_vcpu'],
-        unit: 'vCPU',
-        divider: 1000,
         colorClass: 'bg-sky-500',
       },
       {
@@ -57,8 +66,6 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
         label: 'RAM',
         maxCandidates: ['ram', 'ram_bytes'],
         usedCandidates: ['ram', 'ram_bytes'],
-        unit: 'GiB',
-        divider: 1024 ** 3,
         colorClass: 'bg-amber-500',
       },
       {
@@ -66,8 +73,6 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
         label: 'Database',
         maxCandidates: ['database_size', 'nvme_bytes'],
         usedCandidates: ['database_size', 'nvme_bytes'],
-        unit: 'GB',
-        divider: 1_000_000_000,
         colorClass: 'bg-violet-500',
       },
       {
@@ -75,8 +80,6 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
         label: 'IOPS',
         maxCandidates: ['iops'],
         usedCandidates: ['iops'],
-        unit: 'IOPS',
-        divider: 1,
         colorClass: 'bg-emerald-500',
       },
       {
@@ -84,8 +87,6 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
         label: 'Storage',
         maxCandidates: ['storage_size', 'storage_bytes'],
         usedCandidates: ['storage_size', 'storage_bytes'],
-        unit: 'GB',
-        divider: 1_000_000_000,
         colorClass: 'bg-sky-700',
       },
     ],
@@ -93,58 +94,58 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
   )
 
   const rows = useMemo(() => {
-    // nothing loaded yet
     if (!limits && !usage) return []
 
-    // helper: search limits array for resource candidate and return max_total (or null)
-    const getLimitValue = (candidates: string[]): number | null => {
-      if (!Array.isArray(limits)) return null
+    // helper: search limits array for resource candidate and return raw max_total (or null)
+    const getLimitRaw = (candidates: string[]): { key: string | null; raw: number | null } => {
+      if (!Array.isArray(limits)) return { key: null, raw: null }
       for (const candidate of candidates) {
         const found = limits.find((l: OrgLimitItem) => l.resource === candidate)
-        if (found && typeof found.max_total === 'number') return found.max_total
+        if (found && typeof found.max_total === 'number') return { key: candidate, raw: found.max_total }
       }
-      return null
+      return { key: null, raw: null }
     }
 
     // helper: read usage object by candidate keys
-    const getUsageValue = (candidates: string[]): number | null => {
-      if (!usage) return null
+    const getUsageRaw = (candidates: string[]): { key: string | null; raw: number | null } => {
+      if (!usage) return { key: null, raw: null }
       for (const candidate of candidates) {
         const val = (usage as any)[candidate]
-        if (typeof val === 'number') return val
+        if (typeof val === 'number') return { key: candidate, raw: val }
       }
-      return null
-    }
-
-    const fmt = (raw: number | null, unit: string, divider: number) => {
-      if (raw == null) return '—'
-      const v = raw / divider
-      if (unit === 'GiB' || unit === 'GB') {
-        return v < 10 ? `${v.toFixed(2)} ${unit}` : `${Math.round(v)} ${unit}`
-      }
-      if (unit === 'vCPU') {
-        return v % 1 === 0 ? `${v.toFixed(0)} ${unit}` : `${v.toFixed(1)} ${unit}`
-      }
-      return raw.toLocaleString()
+      return { key: null, raw: null }
     }
 
     return defs
       .map((d) => {
-        const maxRaw = getLimitValue(d.maxCandidates)
-        const usedRaw = getUsageValue(d.usedCandidates)
+        const { key: maxKey, raw: maxRaw } = getLimitRaw(d.maxCandidates)
+        const { key: usedKey, raw: usedRaw } = getUsageRaw(d.usedCandidates)
+
+        // Prefer to use the same key for dividing/formatting if possible:
+        // prefer the maxKey (so percent uses same unit as limit); else use usedKey; else first candidate
+        const chosenKey = maxKey ?? usedKey ?? d.maxCandidates[0] ?? d.usedCandidates[0]
 
         const maxNum = typeof maxRaw === 'number' ? maxRaw : null
-        const usedNum = typeof usedRaw === 'number' ? usedRaw : 0
+        const usedNumRaw = typeof usedRaw === 'number' ? usedRaw : 0
 
-        const pct = maxNum && maxNum > 0 ? Math.min(100, Math.max(0, (usedNum / maxNum) * 100)) : null
+        // divide values using shared util to produce numbers in display units
+        const maxDisplayNumber = maxKey ? divideValue(chosenKey!, maxNum) : null
+        const usedDisplayNumber = divideValue(chosenKey!, usedNumRaw) ?? 0
+
+        const pct =
+          maxDisplayNumber != null && typeof maxDisplayNumber === 'number' && maxDisplayNumber > 0
+            ? Math.min(100, Math.max(0, (usedDisplayNumber / maxDisplayNumber) * 100))
+            : null
 
         return {
           id: d.id,
           label: d.label,
-          usedRaw: usedRaw == null ? null : usedNum,
+          // keep raw numbers for logic if you need them later (original API numbers)
+          usedRaw: usedRaw == null ? null : usedNumRaw,
           maxRaw: maxRaw == null ? null : maxNum,
-          usedDisplay: fmt(usedRaw == null ? null : usedNum, d.unit, d.divider),
-          maxDisplay: maxRaw == null ? 'unlimited' : fmt(maxRaw, d.unit, d.divider),
+          // display strings come from shared formatter using the candidate key
+          usedDisplay: formatResource(chosenKey!, usedRaw),
+          maxDisplay: maxRaw == null ? 'unlimited' : formatResource(chosenKey!, maxRaw),
           pct,
           colorClass: d.colorClass,
         }
@@ -153,10 +154,11 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
       .filter((r) => r.usedRaw !== null || r.maxRaw !== null)
   }, [limits, usage, defs])
 
-  const mostUsed = rows
-    .slice()
-    .filter((r) => r.pct != null)
-    .sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0))[0] ?? null
+  const mostUsed =
+    rows
+      .slice()
+      .filter((r) => r.pct != null)
+      .sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0))[0] ?? null
 
   return (
     <div className="rounded-md border p-4 bg-surface-100">
