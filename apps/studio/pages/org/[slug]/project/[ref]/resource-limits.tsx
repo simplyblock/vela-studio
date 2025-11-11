@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useMemo } from 'react'
 import { useController, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -218,7 +216,7 @@ const ResourceLimit: NextPageWithLayout = () => {
       }
       case 'database_size':
       case 'storage_size': {
-        const divider = 10_000_000_000 // 10 GB chunks from API
+        const divider = 10_000_000_00 // 10 GB chunks from API
         map[k] = {
           label: LABELS[k],
           min: (def.min ?? 0) / divider,

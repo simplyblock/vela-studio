@@ -39,7 +39,7 @@ export const generateProjectRoutes = (orgRef: string, projectRef?: string): Rout
       link: projectRef && `/org/${orgRef}/project/${projectRef}/resource-limits`,
     },
     {
-      key: 'project-settings',
+      key: 'settings',
       label: 'Project settings',
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}/settings`,

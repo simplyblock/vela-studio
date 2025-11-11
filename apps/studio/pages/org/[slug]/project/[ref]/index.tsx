@@ -365,7 +365,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                         </span>
                       </Button>
 
-                      <ResizeBranchModal orgSlug={slug} projectRef={projectRef} branchId={branch.id} triggerClassName="!ml-auto" />
+                      <ResizeBranchModal orgSlug={slug} projectRef={projectRef} branchId={branch.id} branchMax={branch.max_resources} triggerClassName="!ml-auto" />
                     </div>
 
                     <div className="pt-3">
