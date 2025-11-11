@@ -17673,7 +17673,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'UpdateProjectBody'>
+        'application/json': VelaType<'ProjectUpdate'>
       }
     }
     responses: {
@@ -17681,9 +17681,7 @@ export interface operations {
         headers: {
           [name: string]: unknown
         }
-        content: {
-          'application/json': PlatformType<'ProjectRefResponse'>
-        }
+        content?: never
       }
       403: {
         headers: {
