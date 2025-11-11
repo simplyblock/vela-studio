@@ -50,12 +50,12 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
       return
     }
 
-    // IMPORTANT: the shared mutation currently expects { orgRef, ref, name }.
-    // We intentionally do NOT pass max_backups here (TODO: add once backend + mutation accept it).
+
     mutation.mutate({
       orgRef: slug,
       ref,
-      name: project?.name ?? '', // name is required by the shared mutation shape
+      name: project?.name ?? '', 
+      max_backups: parseInt(input),
     })
   }
 
@@ -95,7 +95,7 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
                 }}
                 placeholder="Leave empty for unlimited"
                 className={cn('h-10 text-sm w-full sm:w-[320px]', !parsed.ok ? 'border-red-600 ring-1 ring-red-600' : '')}
-                type="text"
+                type="number"
                 inputMode="numeric"
                 autoComplete="off"
                 onKeyDown={(e) => {
