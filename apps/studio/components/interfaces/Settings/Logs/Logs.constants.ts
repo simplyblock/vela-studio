@@ -215,7 +215,7 @@ from edge_logs
   cross join unnest(m.request) AS r
   cross join unnest(r.headers) AS h
 where
-  path like '%storage/v1/object/%'
+  path like '%storage/object/%'
 group by
   r.path, r.method
 order by
@@ -240,7 +240,7 @@ from
   cross join unnest(metadata.response) as response
   cross join unnest(response.headers) as responseHeaders
 where
-  (path like '%storage/v1/object/%' or path like '%storage/v1/render/%')
+  (path like '%storage/object/%' or path like '%storage/render/%')
   and request.method = 'GET'
 group by 1, 2, 3
 order by num_requests desc
@@ -261,7 +261,7 @@ from edge_logs f
   cross join unnest(m.request) as r
   cross join unnest(m.response) as res
   cross join unnest(res.headers) as h
-where starts_with(r.path, '/storage/v1/object')
+where starts_with(r.path, '/storage/object')
   and r.method = 'GET'
   and h.cf_cache_status in ('MISS', 'NONE/UNKNOWN', 'EXPIRED', 'BYPASS', 'DYNAMIC')
 group by path, search

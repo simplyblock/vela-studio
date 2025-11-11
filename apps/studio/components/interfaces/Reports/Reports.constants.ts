@@ -315,7 +315,7 @@ from edge_logs f
   cross join unnest(m.request) as r
   cross join unnest(m.response) as res
   cross join unnest(res.headers) as h
-where starts_with(r.path, '/storage/v1/object') and r.method = 'GET'
+where starts_with(r.path, '/storage/object') and r.method = 'GET'
   ${generateRegexpWhere(filters, false)}
 group by timestamp
 order by timestamp desc
@@ -335,7 +335,7 @@ from edge_logs f
   cross join unnest(m.request) as r
   cross join unnest(m.response) as res
   cross join unnest(res.headers) as h
-where starts_with(r.path, '/storage/v1/object')
+where starts_with(r.path, '/storage/object')
   and r.method = 'GET'
   and h.cf_cache_status in ('MISS', 'NONE/UNKNOWN', 'EXPIRED', 'BYPASS', 'DYNAMIC')
   ${generateRegexpWhere(filters, false)}

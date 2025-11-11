@@ -1039,7 +1039,7 @@ Upload a file to an existing bucket. RLS policy permissions required:
         key: 'storage-upload-file',
         title: undefined,
         bash: `
-curl -X POST '${endpoint}/storage/v1/object/${name}/folder/avatar1.png' \\
+curl -X POST '${endpoint}/storage/object/${name}/folder/avatar1.png' \\
 -H 'Content-Type: image/png' \\
 -H "Authorization: Bearer ${apikey}" \\
 --data-binary @/path/to/your/file'
@@ -1075,7 +1075,7 @@ Delete files within the bucket. RLS policy permissions required:
         key: 'storage-delete-files',
         title: undefined,
         bash: `
-curl -X DELETE '${endpoint}/storage/v1/object/${name}' \\
+curl -X DELETE '${endpoint}/storage/object/${name}' \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer ${apikey}" \\
 -d '{ "prefixes": ["file_name", "another_file_name"] }'
@@ -1104,7 +1104,7 @@ List all files within the bucket. RLS policy permissions required:
         key: 'storage-list-files',
         title: undefined,
         bash: `
-curl -X POST '${endpoint}/storage/v1/object/list/${name}' \\
+curl -X POST '${endpoint}/storage/object/list/${name}' \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer ${apikey}" \\
 -d '{ "limit": 100, "offset": 0, "prefix": "", "sortBy": { "column": "name", "order": "asc" } }'`,
@@ -1136,7 +1136,7 @@ Downloads a file from a private bucket. For public buckets, make a request to th
         key: 'storage-download-file',
         title: undefined,
         bash: `
-curl -X GET '${endpoint}/storage/v1/object/${name}/folder/avatar1.png' \\
+curl -X GET '${endpoint}/storage/object/${name}/folder/avatar1.png' \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer ${apikey}" \\
 --output avatar1.png
@@ -1165,7 +1165,7 @@ Create a signed URL which can be used to share a file for a fixed amount of time
         key: 'storage-create-signed-url',
         title: undefined,
         bash: `
-curl -X POST '${endpoint}/storage/v1/object/sign/${name}/folder/avatar1.png' \\
+curl -X POST '${endpoint}/storage/object/sign/${name}/folder/avatar1.png' \\
 -H "Content-Type: application/json" \\
 -H "Authorization: Bearer ${apikey}" \\
 -d '{ "expiresIn": 60 }'
@@ -1202,7 +1202,7 @@ RLS policy permissions required:
         bash: `
 # No bash command available.
 # You can construct the public URL by concatenating the bucket URL with the path to the asset
-# e.g ${endpoint}/storage/v1/object/public/${name}/folder/avatar1.png`,
+# e.g ${endpoint}/storage/object/public/${name}/folder/avatar1.png`,
         js: `
 const { data } = supabase
   .storage

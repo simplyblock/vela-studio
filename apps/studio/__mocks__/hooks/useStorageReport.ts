@@ -9,9 +9,9 @@ export const useStorageReport = vi.fn().mockReturnValue({
     topCacheMisses: [
       {
         count: 3,
-        path: '/storage/v1/object/public/videos/docs/guides/edge-functions-inference.mp4',
+        path: '/storage/object/public/videos/docs/guides/edge-functions-inference.mp4',
       },
-      { count: 2, path: '/storage/v1/object/public/videos/marketing/tabTableEditor.mp4' },
+      { count: 2, path: '/storage/object/public/videos/marketing/tabTableEditor.mp4' },
     ],
   },
   params: {

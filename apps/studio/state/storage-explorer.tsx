@@ -1829,7 +1829,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
   const protocol = settings?.app_config?.protocol ?? 'https'
   const endpoint = settings?.app_config?.endpoint
   const resumableUploadUrl = useMemo(
-    () => `${branch?.database.service_endpoint_uri}/storage/v1/upload/resumable`,
+    () => `${branch?.database.service_endpoint_uri}/storage/upload/resumable`,
     [branch]
   )
 

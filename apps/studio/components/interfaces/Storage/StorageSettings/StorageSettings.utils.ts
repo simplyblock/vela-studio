@@ -35,12 +35,12 @@ function getStorageURL(projectRef: string, protocol: string, endpoint?: string) 
 
 export function getConnectionURL(projectRef: string, protocol: string, endpoint?: string) {
   const url = getStorageURL(projectRef, protocol, endpoint)
-  url.pathname = '/storage/v1/s3'
+  url.pathname = '/storage/s3'
   return url.toString()
 }
 
 export function getCatalogURI(projectRef: string, protocol: string, endpoint?: string) {
   const url = getStorageURL(projectRef, protocol, endpoint)
-  url.pathname = '/storage/v1/iceberg'
+  url.pathname = '/storage/iceberg'
   return url.toString()
 }
