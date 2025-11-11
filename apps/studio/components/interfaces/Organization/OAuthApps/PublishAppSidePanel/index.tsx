@@ -347,7 +347,8 @@ export const PublishAppSidePanel = ({
                           to the user when adding an app to their organization and all of its
                           projects.
                         </span>
-
+ </div>
+  </div>
                     <ScopesPanel scopes={scopes} setScopes={setScopes} />
                   </div>
                 </div>
