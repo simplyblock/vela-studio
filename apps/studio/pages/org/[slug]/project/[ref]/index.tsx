@@ -151,7 +151,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     // defensive: only trigger if allowed
     if (!branchActionAvailable(branch)) return
 
-    const branchKey = branch.name as string
+    const branchKey = branch.id as string
     setTogglingId(branch.id)
 
     if (isStatusActive(branch.status)) {
