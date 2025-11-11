@@ -72,7 +72,7 @@ const CliLoginPage: NextPageWithLayout = () => {
             </p>
             <Admonition
               type="tip"
-              title="Browser login flow requires Supabase CLI version 1.219.0 and above."
+              title="Browser login flow requires Vela CLI version 1.219.0 and above."
               className="mt-16"
             />
           </>

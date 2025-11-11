@@ -44,7 +44,7 @@ const DatabaseFunctionsPage: NextPageWithLayout = () => {
           <div className="col-span-12">
             <FormHeader
               title="Database Functions"
-              docsUrl="https://supabase.com/docs/guides/database/functions"
+              docsUrl="https://vela.run/"
             />
             <FunctionsList
               createFunction={createFunction}

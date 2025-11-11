@@ -2,4 +2,4 @@ Apache Iceberg is an open table format for huge analytic datasets. It makes it p
 
 The Iceberg Wrapper is a foreign data wrapper that allows you to query data from Apache Iceberg tables directly within your Postgres database. This integration enables you to query Iceberg tables using standard SQL.
 
-By connecting Iceberg to your Supabase project, you can combine the power of Postgres with Iceberg's capabilities for managing large-scale analytical workloads.
+By connecting Iceberg to your Vela project, you can combine the power of Postgres with Iceberg's capabilities for managing large-scale analytical workloads.

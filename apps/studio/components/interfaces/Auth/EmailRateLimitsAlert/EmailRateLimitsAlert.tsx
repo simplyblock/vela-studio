@@ -20,7 +20,7 @@ export function EmailRateLimitsAlert() {
       <AlertDescription_Shadcn_>
         You're using the built-in email service. The service has rate limits and it's not meant to
         be used for production apps. Check the{' '}
-        <InlineLink href="https://supabase.com/docs/guides/platform/going-into-prod#auth-rate-limits">
+        <InlineLink href="https://vela.run/">
           documentation
         </InlineLink>{' '}
         for an up-to-date information on the current rate limits.

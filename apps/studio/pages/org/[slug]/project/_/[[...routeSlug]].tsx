@@ -25,7 +25,7 @@ const Header = () => {
         <Link href={`/org/${slug}/projects`}>
           <img
             src={`${BASE_PATH}/img/vela-icon.svg`}
-            alt="Supabase"
+            alt="Vela"
             className="border-default rounded border p-1 hover:border-white"
             style={{ height: 24 }}
           />

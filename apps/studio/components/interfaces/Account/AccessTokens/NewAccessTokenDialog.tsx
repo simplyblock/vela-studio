@@ -149,7 +149,7 @@ export const NewAccessTokenDialog = ({
                 </p>
                 <div className="mt-4">
                   <Button asChild type="default" icon={<ExternalLink />}>
-                    <a href="https://api.supabase.com/api/v0" target="_blank" rel="noreferrer">
+                    <a href="https://api.vela.run/api/v0" target="_blank" rel="noreferrer">
                       Experimental API documentation
                     </a>
                   </Button>

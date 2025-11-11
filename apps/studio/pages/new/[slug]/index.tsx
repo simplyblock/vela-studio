@@ -777,8 +777,8 @@ const CreateProjectPage: NextPageWithLayout = () => {
 
               <div className="rounded-md border p-3 text-[11px] leading-snug text-foreground-muted">
                 <p>
-                  This project may incur usage-based costs once created. Review your organization’s billing plan and limits.{' '}
-                  <Link href="https://supabase.com/docs/guides/platform/manage-your-usage/compute" target="_blank" className="underline">
+                  This project may incur usage-based costs once created. Review your organization's billing plan and limits.{' '}
+                  <Link href="https://vela.run/" target="_blank" className="underline">
                     Learn more
                   </Link>
                   .
@@ -833,7 +833,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
             <p>
               Creating this project can increase your monthly costs by ${0}, independent of how actively you use it. By clicking
               "I understand", you agree to the additional costs.{' '}
-              <Link href="https://supabase.com/docs/guides/platform/manage-your-usage/compute" target="_blank" className="underline">
+              <Link href="https://vela.run/" target="_blank" className="underline">
                 Learn more
               </Link>
               .

@@ -30,7 +30,7 @@ const IndexesPage: NextPageWithLayout = () => {
               target="_blank"
               rel="noreferrer"
               className="no-underline"
-              href="https://supabase.com/docs/guides/database/extensions/index_advisor"
+              href="https://vela.run/"
             >
               Index Advisor
             </a>
