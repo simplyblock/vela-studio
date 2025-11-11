@@ -1180,11 +1180,13 @@ function createStorageExplorerState({
             chunkSize = Math.min(chunkSize, 500 * 1024 * 1024)
             const uploadDataDuringCreation = file.size <= chunkSize
 
+            const { api_key } = await getTemporaryAPIKey({ orgRef, projectRef, branchRef })
             const upload = new tus.Upload(file, {
               endpoint: state.resumableUploadUrl,
               retryDelays: [0, 200, 500, 1500, 3000, 5000],
               headers: {
                 'x-source': 'supabase-dashboard',
+                'Authorization': `Bearer ${api_key}`
               },
               uploadDataDuringCreation: uploadDataDuringCreation,
               removeFingerprintOnSuccess: true,
@@ -1194,18 +1196,6 @@ function createStorageExplorerState({
                 ...fileOptions,
               },
               chunkSize,
-              onBeforeRequest: async (req) => {
-                try {
-                  const data = await getTemporaryAPIKey({
-                    orgRef: state.orgRef,
-                    projectRef: state.projectRef,
-                    branchRef: state.branchRef,
-                  })
-                  req.setHeader('apikey', data.api_key)
-                } catch (error) {
-                  throw error
-                }
-              },
               onShouldRetry(error) {
                 const status = error.originalResponse ? error.originalResponse.getStatus() : 0
                 const doNotRetryStatuses = [400, 403, 404, 409, 413, 415, 429]
