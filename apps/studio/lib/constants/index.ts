@@ -2,6 +2,9 @@
 // eslint-disable-next-line barrel-files/avoid-re-export-all
 export * from './infrastructure'
 
+export const VERSION_BUILD_HASH = process.env.NEXT_PUBLIC_GIT_COMMIT_HASH ?? 'unknown';
+export const VERSION_BUILD_TIME = process.env.NEXT_PUBLIC_BUILD_TIME ?? 'unknown';
+
 export const API_URL = (() => {
   if (process.env.NODE_ENV === 'test') return 'http://localhost:3000/api'
   //  If running in platform, use API_URL from the env var

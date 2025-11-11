@@ -526,6 +526,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/controller-version': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['ServiceUrlsController_getControllerVersion']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/auth/{ref}/config': {
     parameters: {
       query?: never
@@ -10412,6 +10428,31 @@ export interface operations {
         }
         content: {
           'application/json': PlatformType<'ServiceUrlsResponse'>
+        }
+      }
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  ServiceUrlsController_getControllerVersion: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'SystemVersion'>
         }
       }
       500: {

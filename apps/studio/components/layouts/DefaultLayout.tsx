@@ -13,6 +13,8 @@ import { OrganizationContextProvider } from './OrganizationContext'
 import { getOrganizationSlug } from 'data/vela/organization-path-slug'
 import { getProjectRef } from 'data/vela/project-path-ref'
 import { RbacSubSideBar } from 'components/interfaces/RbacSidebar'
+import { VERSION_BUILD_HASH, VERSION_BUILD_TIME } from '../../lib/constants'
+import { useVelaControllerVersionQuery } from '../../data/vela/vela-controller-version'
 
 export interface DefaultLayoutProps {
   headerTitle?: string
@@ -30,9 +32,30 @@ export interface DefaultLayoutProps {
  */
 const DefaultLayout = ({ children, headerTitle }: PropsWithChildren<DefaultLayoutProps>) => {
   const [isInitialized, setInitialized] = useState<boolean>(false)
+  const [versionVisible, setVersionVisible] = useState(false)
+
+  const { data: controllerVersion } = useVelaControllerVersionQuery()
+  const versionOrUnknown = (version: string | undefined) => {
+    if (!version || version.length === 0) {
+      return 'unknown'
+    }
+    return version
+  }
 
   useEffect(() => {
     setInitialized(true)
+  }, [])
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      // Check for Ctrl+Shift+V
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'v') {
+        e.preventDefault()
+        setVersionVisible((v) => !v)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
   }, [])
 
   const slug = getOrganizationSlug()
@@ -54,6 +77,16 @@ const DefaultLayout = ({ children, headerTitle }: PropsWithChildren<DefaultLayou
         <ProjectContextProvider projectRef={ref}>
           <AppBannerContextProvider>
             <div className="flex flex-col h-screen w-screen">
+              {versionVisible && (
+                <div className="flex-grow w-full max-h-6 h-6 text-center bg-purple-500 text-sm">
+                  <span>
+                    Vela-Studio: {versionOrUnknown(VERSION_BUILD_HASH)} (
+                    {versionOrUnknown(VERSION_BUILD_TIME)}) // Vela-Controller:{' '}
+                    {versionOrUnknown(controllerVersion?.commit_hash)} (
+                    {versionOrUnknown(controllerVersion?.timestamp)})
+                  </span>
+                </div>
+              )}
               {/* Top Banner */}
               <AppBannerWrapper />
               <div className="flex-shrink-0">

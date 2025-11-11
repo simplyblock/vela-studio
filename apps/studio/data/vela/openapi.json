@@ -4055,11 +4055,6 @@
         ],
         "summary": "Set Branch Allocations",
         "operationId": "set_branch_allocations",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -4119,11 +4114,6 @@
         ],
         "summary": "Get Branch Allocations",
         "operationId": "get_branch_allocations",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -4175,11 +4165,6 @@
         ],
         "summary": "Get Project Usage",
         "operationId": "get_project_usage",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4265,11 +4250,6 @@
         ],
         "summary": "Get Org Usage",
         "operationId": "get_org_usage",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4355,11 +4335,6 @@
         ],
         "summary": "Set Organization Provisioning Limit",
         "operationId": "set_organization_provisioning_limit",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4419,11 +4394,6 @@
         ],
         "summary": "Get Organization Provisioning Limits",
         "operationId": "get_organization_provisioning_limits",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4479,11 +4449,6 @@
         ],
         "summary": "Set Project Provisioning Limit",
         "operationId": "set_project_provisioning_limit",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4543,11 +4508,6 @@
         ],
         "summary": "Get Project Provisioning Limits",
         "operationId": "get_project_provisioning_limits",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4603,11 +4563,6 @@
         ],
         "summary": "Set Organization Consumption Limit",
         "operationId": "set_organization_consumption_limit",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4667,11 +4622,6 @@
         ],
         "summary": "Get Organization Consumption Limits",
         "operationId": "get_organization_consumption_limits",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "organization_id",
@@ -4727,11 +4677,6 @@
         ],
         "summary": "Set Project Consumption Limit",
         "operationId": "set_project_consumption_limit",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4791,11 +4736,6 @@
         ],
         "summary": "Get Project Consumption Limits",
         "operationId": "get_project_consumption_limits",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "project_id",
@@ -4851,11 +4791,6 @@
         ],
         "summary": "Branch Effective Limit",
         "operationId": "branch_effective_limit",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
         "parameters": [
           {
             "name": "branch_id",
@@ -4893,6 +4828,28 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/version": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Get System Version",
+        "description": "Provide build metadata for the running controller instance.",
+        "operationId": "get_system_version",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemVersion"
                 }
               }
             }
@@ -38970,6 +38927,22 @@
         },
         "type": "object",
         "title": "Status"
+      },
+      "SystemVersion": {
+        "properties": {
+          "commit_hash": {
+            "type": "string",
+            "title": "Commit Hash",
+            "default": ""
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "title": "SystemVersion"
       },
       "Target": {
         "properties": {

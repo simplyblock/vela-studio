@@ -9,6 +9,9 @@
     "studio#build": {
       "dependsOn": ["^build"],
       "env": [
+        "NEXT_PUBLIC_GIT_COMMIT_HASH",
+        "NEXT_PUBLIC_BUILD_TIME",
+
         "ANALYZE",
         "NEXT_PUBLIC_SUPPORT_API_URL",
         "NEXT_PUBLIC_CONTENT_API_URL",
