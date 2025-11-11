@@ -17,7 +17,6 @@ import DatabaseLayout from 'components/layouts/DatabaseLayout/DatabaseLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { ScaffoldContainer, ScaffoldSection } from 'components/layouts/Scaffold'
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { PgRole, useDatabaseRolesQuery } from 'data/database-roles/database-roles-query'
 import { useColumnPrivilegesQuery } from 'data/privileges/column-privileges-query'
@@ -217,7 +216,6 @@ const PrivilegesPage: NextPageWithLayout = () => {
                 <p>Grant or revoke privileges on a column based on user role.</p>
               </div>
             </div>
-            <DocsButton href="https://supabase.com/docs/guides/auth/column-level-security" />
           </div>
 
           {!diffWarningDismissed && (

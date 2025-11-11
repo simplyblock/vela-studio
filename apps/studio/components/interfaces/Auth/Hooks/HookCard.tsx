@@ -1,7 +1,6 @@
 import { Check, Webhook } from 'lucide-react'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { DocsButton } from 'components/ui/DocsButton'
 
 import { Badge, Input, copyToClipboard } from 'ui'
 import { Hook } from './hooks.constants'
@@ -108,7 +107,6 @@ export const HookCard = ({ hook, onSelect }: HookCardProps) => {
           >
             Configure hook
           </ButtonTooltip>
-          <DocsButton href={'https://supabase.com/docs/guides/auth/auth-hooks/' + hook.docSlug} />
         </div>
       </div>
       <div className="flex-1">

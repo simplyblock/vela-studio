@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 
 import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import { FormPanel } from 'components/ui/Forms/FormPanel'
 import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui/Forms/FormSection'
@@ -60,7 +59,6 @@ const ComplianceConfig = () => {
           title="High Compliance Configuration"
           description="For projects storing and processing sensitive data (HIPAA)"
         />
-        <DocsButton href="https://supabase.com/docs/guides/platform/hipaa-projects" />
       </div>
       <FormPanel>
         <FormSection

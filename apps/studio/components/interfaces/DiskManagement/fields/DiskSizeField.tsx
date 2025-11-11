@@ -1,5 +1,4 @@
 import { UseFormReturn } from 'react-hook-form'
-import { DocsButton } from 'components/ui/DocsButton'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { GB } from 'lib/constants'
 import { Button, FormControl_Shadcn_, FormField_Shadcn_, Input_Shadcn_ } from 'ui'
@@ -110,13 +109,6 @@ export function DiskSizeField({
           <span className="text-foreground-lighter text-sm">
             {includedDiskGB > 0 &&
               `Your plan includes ${includedDiskGB} GB of disk size for ${watchedStorageType}.`}
-
-            <div className="mt-3">
-              <DocsButton
-                abbrev={false}
-                href="https://supabase.com/docs/guides/platform/database-size"
-              />
-            </div>
           </span>
           <DiskTypeRecommendationSection
             form={form}

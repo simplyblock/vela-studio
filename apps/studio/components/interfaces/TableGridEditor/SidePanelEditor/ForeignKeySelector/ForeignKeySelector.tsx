@@ -11,7 +11,6 @@ import {
   SidePanel,
 } from 'ui'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import InformationBox from 'components/ui/InformationBox'
 import { FOREIGN_KEY_CASCADE_ACTION } from 'data/database/database-query-constants'
 import { useSchemasQuery } from 'data/database/schemas-query'
@@ -497,7 +496,6 @@ export const ForeignKeySelector = ({
                 label="Action if referenced row is removed"
                 // @ts-ignore
                 labelOptional={
-                  <DocsButton href="https://supabase.com/docs/guides/database/postgres/cascade-deletes" />
                 }
                 descriptionText={
                   <>

@@ -8,7 +8,6 @@ import { z } from 'zod'
 import { useParams } from 'common'
 import { LogDrainData, useLogDrainsQuery } from 'data/log-drains/log-drains-query'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import {
   Button,
   Form_Shadcn_,
@@ -530,11 +529,6 @@ export function LogDrainDestinationSheetForm({
               label={
                 <div className="flex flex-col gap-y-2 text-foreground-light">
                   Additional drain cost
-                  <DocsButton
-                    abbrev={false}
-                    className="w-min"
-                    href="https://supabase.com/docs/guides/platform/log-drains"
-                  />
                 </div>
               }
             >

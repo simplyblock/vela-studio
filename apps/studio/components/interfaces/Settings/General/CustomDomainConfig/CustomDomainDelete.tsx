@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import Panel from 'components/ui/Panel'
 import { useCustomDomainDeleteMutation } from 'data/custom-domains/custom-domains-delete-mutation'
 import type { CustomDomainResponse } from 'data/custom-domains/custom-domains-query'
@@ -60,7 +59,6 @@ const CustomDomainDelete = ({
 
       <Panel.Content className="w-full">
         <div className="flex items-center justify-between">
-          <DocsButton href="https://supabase.com/docs/guides/platform/custom-domains" />
           <Button
             type="danger"
             icon={<Trash />}

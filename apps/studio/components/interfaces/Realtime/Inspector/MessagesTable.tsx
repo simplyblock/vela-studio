@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import DataGrid, { Row } from 'react-data-grid'
 
 import { useParams } from 'common'
-import { DocsButton } from 'components/ui/DocsButton'
 import NoPermission from 'components/ui/NoPermission'
 import ShimmerLine from 'components/ui/ShimmerLine'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
@@ -94,7 +93,6 @@ const NoResultAlert = ({
                 <p className="text-foreground">Not sure what to do?</p>
                 <p className="text-foreground-lighter text-xs">Browse our documentation</p>
               </div>
-              <DocsButton href="https://supabase.com/docs/guides/realtime" />
             </div>
           </div>
         </>

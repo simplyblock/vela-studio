@@ -2,7 +2,6 @@ import { Check, ChevronDown } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { DocsButton } from 'components/ui/DocsButton'
 import InformationBox from 'components/ui/InformationBox'
 import { useCreateAndExposeAPISchemaMutation } from 'data/api-settings/create-and-expose-api-schema-mutation'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
@@ -117,11 +116,6 @@ export const HardenAPIModal = ({ visible, onClose }: HardenAPIModalProps) => {
             <code className="text-xs text-foreground">public</code> schema to{' '}
             <span className="text-brand">prevent accidental exposure of data</span>.
           </p>
-          <DocsButton
-            abbrev={false}
-            className="w-min mt-4"
-            href="https://supabase.com/docs/guides/database/hardening-data-api"
-          />
         </DialogSection>
 
         <DialogSectionSeparator />

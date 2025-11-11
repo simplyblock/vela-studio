@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 
 import AlertError from 'components/ui/AlertError'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { DocsButton } from 'components/ui/DocsButton'
 import { useLintRuleDeleteMutation } from 'data/lint/delete-lint-rule-mutation'
 import { useProjectLintRulesQuery } from 'data/lint/lint-rules-query'
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
@@ -84,7 +83,6 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
             {rules.length > 0 && <Badge>Disabled</Badge>}
           </div>
           <div className="flex items-center gap-x-2">
-            <DocsButton href={lint.docsLink} />
             {rules.length > 0 ? (
               <EnableRuleModal lint={lint} rule={rules[0]} />
             ) : (
@@ -121,7 +119,6 @@ export const AdvisorRuleItem = ({ lint }: AdvisorRuleItemProps) => {
                 )}
               </div>
               <div className="flex items-center gap-x-2">
-                <DocsButton href={lint.docsLink} />
                 <Button
                   type="default"
                   onClick={(e) => {

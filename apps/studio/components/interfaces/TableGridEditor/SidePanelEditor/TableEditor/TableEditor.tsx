@@ -3,7 +3,6 @@ import { isEmpty, isUndefined, noop } from 'lodash'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import { useDatabasePublicationsQuery } from 'data/database-publications/database-publications-query'
 import {
   CONSTRAINT_TYPE,
@@ -327,11 +326,6 @@ const TableEditor = ({
                   </>
                 }
               >
-                <DocsButton
-                  abbrev={false}
-                  className="mt-2"
-                  href="https://supabase.com/docs/guides/auth/row-level-security"
-                />
               </Admonition>
             ) : (
               <Admonition
@@ -345,11 +339,6 @@ const TableEditor = ({
                   </>
                 }
               >
-                <DocsButton
-                  abbrev={false}
-                  className="mt-2"
-                  href="https://supabase.com/docs/guides/auth/row-level-security"
-                />
               </Admonition>
             )}
           </>

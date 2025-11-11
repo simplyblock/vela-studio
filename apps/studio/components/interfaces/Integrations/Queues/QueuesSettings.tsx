@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import {
   FormPanelContainer,
@@ -284,7 +283,6 @@ export const QueuesSettings = () => {
               </FormPanelContent>
 
               <FormPanelFooter className="flex px-8 py-4 flex items-center justify-between">
-                <DocsButton href="https://github.com/tembo-io/pgmq?tab=readme-ov-file#sql-examples" />
                 <div className="flex items-center gap-x-2">
                   <Button
                     type="default"

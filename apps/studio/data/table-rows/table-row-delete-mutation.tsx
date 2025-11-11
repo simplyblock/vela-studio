@@ -4,7 +4,6 @@ import { toast } from 'sonner'
 import { Query } from '@supabase/pg-meta/src/query'
 import type { SupaRow } from 'components/grid/types'
 import { Markdown } from 'components/interfaces/Markdown'
-import { DocsButton } from 'components/ui/DocsButton'
 import { executeSql } from 'data/sql/execute-sql-query'
 import { Entity } from 'data/table-editor/table-editor-types'
 import { RoleImpersonationState, wrapWithRoleImpersonation } from 'lib/role-impersonation'
@@ -105,17 +104,6 @@ export const useTableRowDeleteMutation = ({
 
             toast(initialMessage, {
               description: <Markdown content={resolutionCTA} className="[&>p]:m-0" />,
-              action: (
-                <div className="w-full flex gap-x-2 !mx-0 mt-3">
-                  {/* [Joshen] Ideally we also are able to add this CTA but we can't guarantee this info without an on-demand fetch */}
-                  {/* <Button asChild key="cta-1" type="default">
-                    <Link href={`/project/${projectRef}/editor`}>
-                      View "{referencingTable}" table
-                    </Link>
-                  </Button> */}
-                  <DocsButton href="https://supabase.com/docs/guides/database/postgres/cascade-deletes" />
-                </div>
-              ),
             })
           } else if (isPkError) {
             toast('Unable to delete row(s) as table has no primary keys', {
@@ -125,9 +113,6 @@ export const useTableRowDeleteMutation = ({
                     Add a primary key column to your table first to serve as a unique identifier for
                     each row before updating or deleting the row.
                   </p>
-                  <div className="mt-3">
-                    <DocsButton href="https://supabase.com/docs/guides/database/tables#primary-keys" />
-                  </div>
                 </div>
               ),
             })

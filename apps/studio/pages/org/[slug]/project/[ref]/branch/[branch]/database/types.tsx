@@ -12,7 +12,6 @@ import {
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import type { NextPageWithLayout } from 'types'
 import { Button } from 'ui'
-import { DocsButton } from 'components/ui/DocsButton'
 
 const DatabaseEnumeratedTypes: NextPageWithLayout = () => {
   return (

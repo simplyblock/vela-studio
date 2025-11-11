@@ -3,15 +3,14 @@
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { isUndefined } from 'lodash'
 import {
-  Blocks,
   CalendarClock,
   ChartArea,
+  Blocks,
   CopyPlus,
   HardDrive,
   PanelLeftDashed,
   PanelsTopLeft,
   Settings,
-  ShieldEllipsis,
   ShieldUser,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -373,7 +372,7 @@ const BranchSidebarLinks = () => {
     },
   ]
 
-  const monitoringEndpoint = branch?.database?.monitoring_endpoint_uri ?? undefined
+  const monitoringEndpoint = branch?.database ? (branch.database as any)['monitoring_endpoint_uri'] : undefined
   const otherRoutes = generateOtherRoutes(
     orgRef,
     projectRef,

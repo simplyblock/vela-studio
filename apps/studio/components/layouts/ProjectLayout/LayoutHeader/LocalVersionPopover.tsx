@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import { InlineLink } from 'components/ui/InlineLink'
 import { useCLIReleaseVersionQuery } from 'data/misc/cli-release-version-query'
 import {
@@ -156,10 +155,6 @@ export const LocalVersionPopover = () => {
                       Latest Beta version: <span>{data.beta}</span>
                     </p>
                   }
-                  <DocsButton
-                    href="https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux#using-beta-version"
-                    className="!no-underline mt-2"
-                  />
                 </Admonition>
               </DialogSection>
             </DialogContent>

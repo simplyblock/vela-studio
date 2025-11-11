@@ -5,7 +5,6 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
-import { DocsButton } from 'components/ui/DocsButton'
 import { getTemporaryAPIKey } from 'data/api-keys/temp-api-keys-query'
 import { useSendEventMutation } from 'data/telemetry/send-event-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
@@ -170,11 +169,6 @@ export const ChooseChannelPopover = ({ config, onChangeConfig }: ChooseChannelPo
                     )}
                   />
 
-                  <DocsButton
-                    abbrev={false}
-                    className="w-min"
-                    href="https://supabase.com/docs/guides/realtime/authorization"
-                  />
                 </form>
               </Form_Shadcn_>
             </>
