@@ -1,7 +1,9 @@
+// components/interfaces/Project/ProjectResourcesPanel.tsx
 import React, { useMemo } from 'react'
 import { useProjectLimitsQuery } from 'data/resources/project-limits-query'
 import { useProjectUsageQuery } from 'data/resources/project-usage-query'
 import { cn } from 'ui'
+import { divideValue, formatResource,formatRawNumber } from './utils'
 
 type Props = {
   orgRef?: string
@@ -24,6 +26,7 @@ type ProjectUsageShape = {
 
 /**
  * Panel that shows project-wide limits (max_total) + current usage (project usage)
+ * Uses lib/resource-utils for dividing/formatting so logic is shared across components.
  */
 export default function ProjectResourcesPanel({ orgRef, projectRef }: Props) {
   const { data: limitsArr, isLoading: loadingLimits } = useProjectLimitsQuery(
@@ -37,104 +40,61 @@ export default function ProjectResourcesPanel({ orgRef, projectRef }: Props) {
 
   const loading = loadingLimits || loadingUsage
 
-  // normalized rows derived from the API shapes
   const rows = useMemo(() => {
-    // limitsArr: ProjectLimitItem[] | undefined
-    // usageObj: ProjectUsageShape | undefined
     if (!limitsArr && !usageObj) return []
 
-    // helper to find limit entry by resource name
     const findLimit = (resource: ProjectLimitItem['resource']) => {
       if (!Array.isArray(limitsArr)) return null
       return limitsArr.find((l) => l.resource === resource) ?? null
     }
 
+    // definitions map to the resource-utils keys (we keep same names)
     const defs: {
       key: ProjectLimitItem['resource']
       label: string
-      unit: 'vCPU' | 'GiB' | 'GB' | 'IOPS' | 'count'
-      divider: number
       color: string
       usageKey: keyof ProjectUsageShape
     }[] = [
-      {
-        key: 'milli_vcpu',
-        label: 'vCPU',
-        unit: 'vCPU',
-        divider: 1000, // api returns millis
-        color: 'bg-sky-500',
-        usageKey: 'milli_vcpu',
-      },
-      {
-        key: 'ram',
-        label: 'RAM',
-        unit: 'GiB',
-        divider: 1024 ** 3,
-        color: 'bg-amber-500',
-        usageKey: 'ram',
-      },
-      {
-        key: 'database_size',
-        label: 'Database',
-        unit: 'GB',
-        divider: 1_000_000_000,
-        color: 'bg-violet-500',
-        usageKey: 'database_size',
-      },
-      {
-        key: 'iops',
-        label: 'IOPS',
-        unit: 'IOPS',
-        divider: 1,
-        color: 'bg-emerald-500',
-        usageKey: 'iops',
-      },
-      {
-        key: 'storage_size',
-        label: 'Storage',
-        unit: 'GB',
-        divider: 1_000_000_000,
-        color: 'bg-sky-700',
-        usageKey: 'storage_size',
-      },
+      { key: 'milli_vcpu', label: 'vCPU', color: 'bg-sky-500', usageKey: 'milli_vcpu' },
+      { key: 'ram', label: 'RAM', color: 'bg-amber-500', usageKey: 'ram' },
+      { key: 'database_size', label: 'Database', color: 'bg-violet-500', usageKey: 'database_size' },
+      { key: 'iops', label: 'IOPS', color: 'bg-emerald-500', usageKey: 'iops' },
+      { key: 'storage_size', label: 'Storage', color: 'bg-sky-700', usageKey: 'storage_size' },
     ]
-
-    const fmt = (raw: number | null, unit: string, divider: number) => {
-      if (raw == null) return '—'
-      const v = raw / divider
-      if (unit === 'GiB' || unit === 'GB') {
-        return v < 10 ? `${v.toFixed(2)} ${unit}` : `${Math.round(v)} ${unit}`
-      }
-      if (unit === 'vCPU') {
-        return v % 1 === 0 ? `${v.toFixed(0)} ${unit}` : `${v.toFixed(1)} ${unit}`
-      }
-      return raw.toLocaleString()
-    }
 
     return defs.map((d) => {
       const limitEntry = findLimit(d.key)
       const maxTotalRaw = limitEntry ? limitEntry.max_total : null
       const usedRaw = (usageObj as any)?.[d.usageKey] ?? null
 
-      const max = typeof maxTotalRaw === 'number' ? maxTotalRaw : null
-      const used = typeof usedRaw === 'number' ? usedRaw : 0
+      // compute display numbers using helpers
+      const maxDisplay = d.key === 'iops'
+        ? (maxTotalRaw == null ? 'unlimited' : formatRawNumber(maxTotalRaw))
+        : (maxTotalRaw == null ? 'unlimited' : formatResource(d.key, maxTotalRaw))
 
-      const pct = max && max > 0 ? Math.min(100, Math.max(0, (used / max) * 100)) : null
+      const usedDisplay = d.key === 'iops'
+        ? (usedRaw == null ? '—' : formatRawNumber(usedRaw))
+        : formatResource(d.key, usedRaw)
+
+      // compute percent using divided numeric values
+      const maxNum = typeof maxTotalRaw === 'number' ? divideValue(d.key, maxTotalRaw) : null
+      const usedNum = typeof usedRaw === 'number' ? divideValue(d.key, usedRaw) : 0
+      //@ts-ignore
+      const pct = maxNum && maxNum > 0 ? Math.min(100, Math.max(0, (usedNum / maxNum) * 100)) : null
 
       return {
         key: d.key,
         label: d.label,
-        usedRaw: usedRaw == null ? null : used,
-        maxRaw: maxTotalRaw == null ? null : max,
-        usedDisplay: fmt(usedRaw == null ? null : used, d.unit, d.divider),
-        maxDisplay: maxTotalRaw == null ? 'unlimited' : fmt(maxTotalRaw, d.unit, d.divider),
+        usedRaw: usedRaw == null ? null : usedNum,
+        maxRaw: maxTotalRaw == null ? null : maxNum,
+        usedDisplay,
+        maxDisplay,
         pct,
         color: d.color,
       }
     })
   }, [limitsArr, usageObj])
 
-  // most used resource (by percent) for the compact top display
   const mostUsed = rows
     .slice()
     .filter((r) => r.pct != null)

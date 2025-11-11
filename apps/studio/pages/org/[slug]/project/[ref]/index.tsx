@@ -28,7 +28,7 @@ import BranchEnvBadge from 'components/interfaces/Branch/BranchEnvBadge'
 import { BranchResourceBadge } from 'components/interfaces/Branch/BranchResourceBadge'
 import ProjectResourcesPanel from 'components/interfaces/Project/ProjectResourcesPanel'
 
-const ACTIVE_STATUSES = ['ACTIVE_HEALTHY', 'ACTIVE_UNHEALTHY']
+const ACTIVE_STATUSES = ['ACTIVE_HEALTHY', 'ACTIVE_UNHEALTHY','UNKNOWN']
 const STOPPED_STATUS = ['STOPPED']
 const TRANSITIONAL_STATUSES = [
   'STARTING',
@@ -38,7 +38,7 @@ const TRANSITIONAL_STATUSES = [
   'RESTARTING',
   'STOPPING',
 ]
-const ERROR_STATUSES = ['UNKNOWN', 'ERROR']
+const ERROR_STATUSES = ['ERROR']
 
 const isStatusActive = (s?: string) =>
   !!s && ACTIVE_STATUSES.includes(s)
@@ -195,7 +195,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 sm:items-start">
-              <Button className="text-black" asChild type={'primary'}>
+              <Button asChild type={'primary'}>
                 <Link href={`/new/${slug}/${projectRef}/`}>Create Branch</Link>
               </Button>
             </div>
@@ -331,7 +331,8 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                             <BranchResourceBadge
                               max_resources={(branch as any).max_resources}
                               used_resources={(branch as any).used_resources}
-                              size={36}
+                              size={40}
+                              
                             />
                           </div>
                         </div>
