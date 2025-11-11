@@ -41,6 +41,7 @@ export default function RLSDisableModalContent() {
             </div>
           </li>
         </ul>
-
+            </div>
+            </div>
   )
 }
