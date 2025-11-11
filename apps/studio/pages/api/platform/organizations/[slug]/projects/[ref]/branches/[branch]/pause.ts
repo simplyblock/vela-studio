@@ -8,7 +8,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const client = getVelaClient(req)
   return client.proxyPost(
     res,
-    '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/pause',
+    '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/stop',
     {
       params: {
         path: {

@@ -10,15 +10,10 @@ export type ProjectUpdateVariables = {
   orgRef: string
   ref: string
   name: string
+  max_backups: number
 }
 
-export type ProjectUpdateResponse = {
-  id: number
-  ref: string
-  name: string
-}
-
-export async function updateProject({ orgRef, ref, name }: ProjectUpdateVariables) {
+export async function updateProject({ orgRef, ref, name, max_backups }: ProjectUpdateVariables) {
   const { data, error } = await patch('/platform/organizations/{slug}/projects/{ref}', {
     params: {
       path: {
@@ -26,7 +21,10 @@ export async function updateProject({ orgRef, ref, name }: ProjectUpdateVariable
         ref,
       },
     },
-    body: { name },
+    body: {
+      name,
+      max_backups,
+    },
   })
   if (error) handleError(error)
   return data
