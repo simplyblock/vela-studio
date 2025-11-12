@@ -132,7 +132,7 @@ export const S3Connection = () => {
                         layout="horizontal"
                         className="[&>*>label]:text-foreground"
                         label="Enable connection via S3 protocol"
-                        description="Allow clients to connect to VelaStorage via the S3 protocol"
+                        description="Allow clients to connect to Vela Storage via the S3 protocol"
                       >
                         <FormControl_Shadcn_>
                           <Switch

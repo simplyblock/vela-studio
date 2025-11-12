@@ -20,7 +20,7 @@ export type Scalars = {
   Float: { input: number; output: number }
 }
 
-/** A reference document containing a description of a VelaCLI command */
+/** A reference document containing a description of a Vela CLI command */
 export type CliCommandReference = SearchResult & {
   __typename?: 'CLICommandReference'
   /** The content of the reference document, as text */
@@ -31,7 +31,7 @@ export type CliCommandReference = SearchResult & {
   title?: Maybe<Scalars['String']['output']>
 }
 
-/** A reference document containing a description of a function from a Velaclient library */
+/** A reference document containing a description of a function from a Vela client library */
 export type ClientLibraryFunctionReference = SearchResult & {
   __typename?: 'ClientLibraryFunctionReference'
   /** The content of the reference document, as text */
@@ -46,7 +46,7 @@ export type ClientLibraryFunctionReference = SearchResult & {
   title?: Maybe<Scalars['String']['output']>
 }
 
-/** An error returned by a Velaservice */
+/** An error returned by a Vela service */
 export type Error = {
   __typename?: 'Error'
   /** The unique code identifying the error. The code is stable, and can be used for string matching during error handling. */
@@ -55,7 +55,7 @@ export type Error = {
   httpStatusCode?: Maybe<Scalars['Int']['output']>
   /** A human-readable message describing the error. The message is not stable, and should not be used for string matching during error handling. Use the code instead. */
   message?: Maybe<Scalars['String']['output']>
-  /** The Velaservice that returns this error. */
+  /** The Vela service that returns this error. */
   service: Service
 }
 
@@ -81,7 +81,7 @@ export type ErrorEdge = {
   node: Error
 }
 
-/** A document containing content from the Veladocs. This is a guide, which might describe a concept, or explain the steps for using or implementing a feature. */
+/** A document containing content from the Vela docs. This is a guide, which might describe a concept, or explain the steps for using or implementing a feature. */
 export type Guide = SearchResult & {
   __typename?: 'Guide'
   /** The full content of the document, including all subsections (both those matching and not matching any query string) and possibly more content */
@@ -118,13 +118,13 @@ export type PageInfo = {
 
 export type RootQueryType = {
   __typename?: 'RootQueryType'
-  /** Get the details of an error code returned from a Velaservice */
+  /** Get the details of an error code returned from a Vela service */
   error?: Maybe<Error>
-  /** Get error codes that can potentially be returned by Velaservices */
+  /** Get error codes that can potentially be returned by Vela services */
   errors?: Maybe<ErrorCollection>
   /** Get the GraphQL schema for this endpoint */
   schema: Scalars['String']['output']
-  /** Search the Veladocs for content matching a query string */
+  /** Search the Vela docs for content matching a query string */
   searchDocs?: Maybe<SearchResultCollection>
 }
 
@@ -157,7 +157,7 @@ export type SearchResult = {
   title?: Maybe<Scalars['String']['output']>
 }
 
-/** A collection of search results containing content from Veladocs */
+/** A collection of search results containing content from Vela docs */
 export type SearchResultCollection = {
   __typename?: 'SearchResultCollection'
   /** A list of edges containing nodes in this collection */
@@ -181,7 +181,7 @@ export enum Service {
   Storage = 'STORAGE',
 }
 
-/** A content chunk taken from a larger document in the Veladocs */
+/** A content chunk taken from a larger document in the Vela docs */
 export type Subsection = {
   __typename?: 'Subsection'
   /** The content of the subsection */
@@ -192,7 +192,7 @@ export type Subsection = {
   title?: Maybe<Scalars['String']['output']>
 }
 
-/** A collection of content chunks from a larger document in the Veladocs. */
+/** A collection of content chunks from a larger document in the Vela docs. */
 export type SubsectionCollection = {
   __typename?: 'SubsectionCollection'
   /** A list of edges containing nodes in this collection */
@@ -210,7 +210,7 @@ export type SubsectionEdge = {
   node: Subsection
 }
 
-/** A document describing how to troubleshoot an issue when using Vela*/
+/** A document describing how to troubleshoot an issue when using Vela */
 export type TroubleshootingGuide = SearchResult & {
   __typename?: 'TroubleshootingGuide'
   /** The full content of the troubleshooting guide */

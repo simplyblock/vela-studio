@@ -337,7 +337,7 @@ export const CreateQueueSheet = ({ isClosing, setIsClosing, onClose }: CreateQue
                   >
                     <Markdown
                       className="[&>p]:!leading-normal"
-                      content={`You may opt to manage your queues via any Velaclient libraries or PostgREST
+                      content={`You may opt to manage your queues via any Vela client libraries or PostgREST
                       endpoints by enabling this in the [queues settings](/project/${project?.id}/integrations/queues/settings).`}
                     />
                   </Admonition>

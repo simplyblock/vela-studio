@@ -14,7 +14,7 @@ export const CANCELLATION_REASONS = [
   },
   {
     value: 'I found it difficult to use or build with.',
-    label: 'What specific parts of Veladid you find difficult or frustrating?',
+    label: 'What specific parts of Vela did you find difficult or frustrating?',
   },
   {
     value: 'Performance or reliability insufficient.',

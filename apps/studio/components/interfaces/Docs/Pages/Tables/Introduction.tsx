@@ -67,7 +67,7 @@ const Introduction = ({ selectedLang }: IntroductionProps) => {
           </p>
           <h4>Still want GraphQL?</h4>
           <p>
-            If you still want to use GraphQL, you can. Velaprovides you with a full Postgres
+            If you still want to use GraphQL, you can. Vela provides you with a full Postgres
             database, so as long as your middleware can connect to the database then you can still
             use the tools you love. You can find the database connection details{' '}
             <Link href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/settings`}>in the settings.</Link>

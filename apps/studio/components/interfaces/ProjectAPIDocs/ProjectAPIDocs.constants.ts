@@ -55,9 +55,9 @@ const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_KEY);`,
     title: `Introduction`,
     description: `Vela makes it easy to manage your users.
 
-  Velaassigns each user a unique ID. You can reference this ID anywhere in your database. For example, you might create a \`profiles\` table references the user using a \`user_id\` field.
+  Vela assigns each user a unique ID. You can reference this ID anywhere in your database. For example, you might create a \`profiles\` table references the user using a \`user_id\` field.
 
-  Velaalready has built in the routes to sign up, login, and log out for managing users in your apps and websites.`,
+  Vela already has built in the routes to sign up, login, and log out for managing users in your apps and websites.`,
     js: undefined,
     bash: undefined,
   },
@@ -67,7 +67,7 @@ const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_KEY);`,
     title: `Sign up`,
     description: `Allow your users to sign up and create a new account
 
-  After they have signed up, all interactions using the Velaclient will be performed as "that user".`,
+  After they have signed up, all interactions using the Vela client will be performed as "that user".`,
     js: (apikey?: string, endpoint?: string) => `
 const { data, error } = await supabase.auth.signUp({
   email: 'someone@email.com',
@@ -89,7 +89,7 @@ curl -X POST '${endpoint}/auth/v1/signup' \\
     description: `
 If an account is created, users can login to your app.
 
-After they have logged in, all interactions using the VelaJS client will be performed as "that user".`,
+After they have logged in, all interactions using the Vela JS client will be performed as "that user".`,
     js: (apikey?: string, endpoint?: string) => `
 const { data, error } = await supabase.auth.signInWithPassword({
   email: 'someone@email.com',
@@ -113,7 +113,7 @@ curl -X POST '${endpoint}/auth/v1/token?grant_type=password' \\
     description: `
 Send a user a passwordless link which they can use to redeem an access_token.
 
-After they have clicked the link, all interactions using the VelaJS client will be performed as "that user".`,
+After they have clicked the link, all interactions using the Vela JS client will be performed as "that user".`,
     js: (apikey?: string, endpoint?: string) => `
 const { data, error } = await supabase.auth.signInWithOtp({
   email: 'someone@email.com'
@@ -211,7 +211,7 @@ Users can log in with Third Party OAuth like Google, Facebook, GitHub, and more.
 
 View all the available [Third Party OAuth providers](https://vela.run).
 
-After they have logged in, all interactions using the VelaJS client will be performed as "that user".
+After they have logged in, all interactions using the Vela JS client will be performed as "that user".
 
 Generate your Client ID and secret from: [Google](https://console.developers.google.com/apis/credentials), [Github](https://github.com/settings/applications/new), [Gitlab](https://gitlab.com/oauth/applications), [Facebook](https://developers.facebook.com/apps), and [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/use-oauth-on-bitbucket-cloud).`,
     js: (apikey?: string, endpoint?: string) => `
@@ -282,7 +282,7 @@ curl -X PUT '${endpoint}/auth/v1/user' \\
     key: 'log-out',
     category: 'user-management',
     title: `Log out`,
-    description: `After calling log out, all interactions using the VelaJS client will be "anonymous".`,
+    description: `After calling log out, all interactions using the Vela JS client will be "anonymous".`,
     js: (apikey?: string, endpoint?: string) => `
 const { error } = await supabase.auth.signOut()
     `,
@@ -300,7 +300,7 @@ curl -X POST '${endpoint}/auth/v1/logout' \\
     description: `
 Send a user a passwordless link which they can use to sign up and log in.
 
-After they have clicked the link, all interactions using the VelaJS client will be performed as "that user".
+After they have clicked the link, all interactions using the Vela JS client will be performed as "that user".
 
 This endpoint requires you use the \`service_role_key\` when initializing the client, and should only be invoked from the server, never from the client.`,
     js: (apikey?: string, endpoint?: string) => `
@@ -323,7 +323,7 @@ curl -X POST '${endpoint}/auth/v1/invite' \\
     title: `Introduction`,
     description: `Vela Storage makes it simple to upload and serve files of any size, providing a robust framework for file access controls.
 
-You can use VelaStorage to store images, videos, documents, and any other file type. Serve your assets with a global CDN to reduce latency from over 285 cities globally. VelaStorage includes a built-in image optimizer, so you can resize and compress your media files on the fly.`,
+You can use Vela Storage to store images, videos, documents, and any other file type. Serve your assets with a global CDN to reduce latency from over 285 cities globally. Vela Storage includes a built-in image optimizer, so you can resize and compress your media files on the fly.`,
     js: undefined,
     bash: undefined,
   },
@@ -333,7 +333,7 @@ You can use VelaStorage to store images, videos, documents, and any other file t
     category: 'edge-functions',
     title: 'Introduction',
     description: `
-Edge Functions are server-side TypeScript functions, distributed globally at the edge—close to your users. They can be used for listening to webhooks or integrating your Velaproject with third-parties like Stripe. Edge Functions are developed using Deno, which offers a few benefits to you as a developer:
+Edge Functions are server-side TypeScript functions, distributed globally at the edge—close to your users. They can be used for listening to webhooks or integrating your Vela project with third-parties like Stripe. Edge Functions are developed using Deno, which offers a few benefits to you as a developer:
 `,
     js: undefined,
     bash: undefined,
@@ -343,9 +343,9 @@ Edge Functions are server-side TypeScript functions, distributed globally at the
     category: 'edge-functions',
     title: 'Pre-requisites',
     description: `
-Follow the steps to prepare your Velaproject on your local machine.
+Follow the steps to prepare your Vela project on your local machine.
 
-- Install the Vela[CLI](https://vela.run/docs/guides/cli).
+- Install the Vela [CLI](https://vela.run/docs/guides/cli).
 - [Login to the CLI](https://vela.run/docs/reference/cli/usage#supabase-login) using the command: \`supabase login\`..
 - [Initialize Supabase](https://vela.run/docs/guides/getting-started/local-development#getting-started) inside your project using the command: \`supabase init\`..
 - [Link to your Remote Project](https://vela.run/docs/reference/cli/usage#supabase-link) using the command \`supabase link --project-ref [ref]\`..
@@ -359,9 +359,9 @@ Follow the steps to prepare your Velaproject on your local machine.
     category: 'edge-functions',
     title: 'Create an Edge Function',
     description: `
-Create a VelaEdge Function locally via the VelaCLI.
+Create a Vela Edge Function locally via the Vela CLI.
 `,
-    js: () => `// Create an edge function via the VelaCLI`,
+    js: () => `// Create an edge function via the Vela CLI`,
     bash: () => `
 supabase functions new hello-world
 `,
@@ -371,9 +371,9 @@ supabase functions new hello-world
     category: 'edge-functions',
     title: 'Deploy an Edge Function',
     description: `
-Deploy a VelaEdge Function to your Velaproject via the VelaCLI.
+Deploy a Vela Edge Function to your Vela project via the Vela CLI.
 `,
-    js: () => `// Deploy an edge function via the VelaCLI`,
+    js: () => `// Deploy an edge function via the Vela CLI`,
     bash: () => `supabase functions deploy hello-world --project-ref [ref]
 `,
   },
@@ -410,7 +410,7 @@ You can generate types from your database either through the [Vela CLI](https://
 If you have a GraphQL background, you might be wondering if you can fetch your data in a single round-trip. The answer is yes! The syntax is very similar. This example shows how you might achieve the same thing with Apollo GraphQL and Supabase.
 
 Still want GraphQL?
-If you still want to use GraphQL, you can. Velaprovides you with a full Postgres database, so as long as your middleware can connect to the database then you can still use the tools you love. You can find the database connection details [in the settings](/project/[ref]/database/settings).
+If you still want to use GraphQL, you can. Vela provides you with a full Postgres database, so as long as your middleware can connect to the database then you can still use the tools you love. You can find the database connection details [in the settings](/project/[ref]/database/settings).
 `,
     js: (apikey?: string, endpoint?: string) => `
 // With Apollo GraphQL
@@ -524,7 +524,7 @@ supabase
     description: `
 Unsubscribes and removes Realtime channel from Realtime client.
 
-Removing a channel is a great way to maintain the performance of your project's Realtime service as well as your database if you're listening to Postgres changes. Velawill automatically handle cleanup 30 seconds after a client is disconnected, but unused channels may cause degradation as more clients are simultaneously subscribed.
+Removing a channel is a great way to maintain the performance of your project's Realtime service as well as your database if you're listening to Postgres changes. Vela will automatically handle cleanup 30 seconds after a client is disconnected, but unused channels may cause degradation as more clients are simultaneously subscribed.
 `,
     js: () => `supabase.removeChannel(myChannel)`,
     bash: () => `# Realtime streams are only supported by our client libraries`,
@@ -536,7 +536,7 @@ Removing a channel is a great way to maintain the performance of your project's 
     description: `
 Unsubscribes and removes all Realtime channels from Realtime client.
 
-Removing a channel is a great way to maintain the performance of your project's Realtime service as well as your database if you're listening to Postgres changes. Velawill automatically handle cleanup 30 seconds after a client is disconnected, but unused channels may cause degradation as more clients are simultaneously subscribed.
+Removing a channel is a great way to maintain the performance of your project's Realtime service as well as your database if you're listening to Postgres changes. Vela will automatically handle cleanup 30 seconds after a client is disconnected, but unused channels may cause degradation as more clients are simultaneously subscribed.
 `,
     js: () => `supabase.removeChannels()`,
     bash: () => `# Realtime streams are only supported by our client libraries`,
@@ -1218,7 +1218,7 @@ const { data } = supabase
     title: 'Invoke an edge function',
     docsUrl: 'https://vela.run/docs/reference/javascript/functions-invoke',
     description: `
-Invokes a VelaEdge Function. Requires an Authorization header, and invoke params generally match the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) spec.
+Invokes a Vela Edge Function. Requires an Authorization header, and invoke params generally match the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) spec.
 
 When you pass in a body to your function, we automatically attach the \`Content-Type\` header for \`Blob\`, \`ArrayBuffer\`, \`File\`, \`FormData\` and \`String\`. If it doesn't match any of these types we assume the payload is \`json\`, serialize it and attach the \`Content-Type\` header as \`application/json\`. You can override this behavior by passing in a \`Content-Type\` header of your own.
 

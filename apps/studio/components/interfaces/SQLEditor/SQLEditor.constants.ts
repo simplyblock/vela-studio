@@ -16,7 +16,7 @@ export const NEW_SQL_SNIPPET_SKELETON: UserContent<SqlSnippets.Content> = {
 }
 
 export const sqlAiDisclaimerComment = `
--- VelaAI is experimental and may produce incorrect answers
+-- Vela AI is experimental and may produce incorrect answers
 -- Always verify the output before executing
 `.trim()
 

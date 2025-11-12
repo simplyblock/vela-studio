@@ -446,19 +446,19 @@ export const getReportAttributesV2: (
           provider: 'infra-monitoring',
           label: 'Reserved',
           tooltip:
-            'Administrative connections used by various Velaservices for internal operations and maintenance tasks',
+            'Administrative connections used by various Vela services for internal operations and maintenance tasks',
         },
         {
           attribute: 'client_connections_supabase_auth_admin',
           provider: 'infra-monitoring',
           label: 'Auth',
-          tooltip: 'Connection pool managed by VelaAuth',
+          tooltip: 'Connection pool managed by Vela Auth',
         },
         {
           attribute: 'client_connections_supabase_storage_admin',
           provider: 'infra-monitoring',
           label: 'Storage',
-          tooltip: 'Connection pool managed by VelaStorage',
+          tooltip: 'Connection pool managed by Vela Storage',
         },
         {
           attribute: 'client_connections_other',

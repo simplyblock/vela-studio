@@ -59,7 +59,7 @@ const DownloadSnippetModal = ({ id, ...props }: DownloadSnippetModalProps) => {
       hideFooter
       showCloseButton
       size="xlarge"
-      header={<p>Download snippet as local migration file via the VelaCLI.</p>}
+      header={<p>Download snippet as local migration file via the Vela CLI.</p>}
       {...props}
     >
       <div className="flex flex-col items-start justify-between gap-4 relative pt-2">

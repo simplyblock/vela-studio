@@ -10,7 +10,7 @@ type TableRolesAccessArgs = {
 
 /**
  * [Joshen] Specifically just checking for anon and authenticated roles since this is
- * just to verify if the table is exposed via the VelaAPI
+ * just to verify if the table is exposed via the Vela API
  */
 export const getTableRolesAccessSql = ({ schema, table }: TableRolesAccessArgs) => {
   const sql = /* SQL */ `

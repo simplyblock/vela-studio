@@ -39,7 +39,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<ProfileRespon
   // Platform specific endpoint
   const response: ProfileResponse = {
     id: 1,
-    primary_email: 'johndoe@supabase.io',
+    primary_email: 'johndoe@vela.run',
     username: 'johndoe',
     first_name: 'John',
     last_name: 'Doe',

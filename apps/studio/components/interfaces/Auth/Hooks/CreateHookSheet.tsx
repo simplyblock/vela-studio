@@ -386,7 +386,7 @@ export const CreateHookSheet = ({
                       render={({ field }) => (
                         <FormItemLayout
                           label="Postgres function"
-                          description="This function will be called by VelaAuth each time the hook is triggered"
+                          description="This function will be called by Vela Auth each time the hook is triggered"
                         >
                           <FormControl_Shadcn_>
                             <FunctionSelector

@@ -29,6 +29,6 @@ export const AVAILABLE_WEBHOOK_TYPES = [
     value: 'supabase_function',
     icon: `${BASE_PATH}/img/function-providers/supabase-severless-function.png`,
     label: 'Vela Edge Functions',
-    description: 'Choose a Velaedge function to run.',
+    description: 'Choose a Vela edge function to run.',
   }
 ]

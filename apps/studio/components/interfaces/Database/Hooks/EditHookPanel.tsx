@@ -172,7 +172,7 @@ export const EditHookPanel = ({ visible, selectedHook, onClose }: EditHookPanelP
         errors['http_url'] = 'Please provide a valid URL'
       }
     } else if (values.function_type === 'supabase_function') {
-      // For VelaEdge Functions
+      // For Vela Edge Functions
       if (values.http_url.includes('undefined')) {
         errors['http_url'] = 'No edge functions available for selection'
       }

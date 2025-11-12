@@ -190,7 +190,7 @@ const JWTSettings = () => {
                           <em className="text-foreground not-italic">
                             {legacyKey.status === 'in_use' ? 'sign and verify' : 'only verify'}
                           </em>{' '}
-                          JSON Web Tokens by Velaproducts.
+                          JSON Web Tokens by Vela products.
                         </p>
 
                         <Button type="default" asChild icon={<ExternalLink className="size-4" />}>
@@ -206,7 +206,7 @@ const JWTSettings = () => {
                       <Admonition
                         type="note"
                         title="Your project has revoked the legacy JWT secret"
-                        description="No new JSON Web Tokens are issued nor verified with it by Velaproducts."
+                        description="No new JSON Web Tokens are issued nor verified with it by Vela products."
                       />
                     )}
                     <Input
@@ -233,9 +233,9 @@ const JWTSettings = () => {
                       className="input-mono"
                       descriptionText={
                         legacyKey?.status === 'revoked'
-                          ? 'No longer used to sign JWTs by VelaAuth.'
+                          ? 'No longer used to sign JWTs by Vela Auth.'
                           : !legacyKey || legacyKey.status === 'in_use'
-                            ? 'Used to sign and verify JWTs issued by VelaAuth.'
+                            ? 'Used to sign and verify JWTs issued by Vela Auth.'
                             : 'Used only to verify JWTs.'
                       }
                       layout="horizontal"

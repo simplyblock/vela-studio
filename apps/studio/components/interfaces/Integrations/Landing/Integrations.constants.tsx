@@ -47,7 +47,7 @@ export type IntegrationDefinition = {
 } & ({ type: 'wrapper'; meta: WrapperMeta } | { type: 'postgres_extension' } | { type: 'custom' })
 
 const authorVela = {
-  name: 'Supabase',
+  name: 'Vela',
   websiteUrl: 'https://vela.run',
 }
 
@@ -181,7 +181,7 @@ const supabaseIntegrations: IntegrationDefinition[] = [
     ),
     description: 'Application level encryption for your project',
     docsUrl: 'https://vela.run/docs',
-    author: authorSupabase,
+    author: authorVela,
     navigation: [
       {
         route: 'overview',
@@ -225,7 +225,7 @@ const supabaseIntegrations: IntegrationDefinition[] = [
     description:
       'Send real-time data from your database to another system when a table event occurs',
     docsUrl: 'https://vela.run/docs',
-    author: authorSupabase,
+    author: authorVela,
     requiredExtensions: [],
     navigation: [
       {
@@ -279,7 +279,7 @@ const supabaseIntegrations: IntegrationDefinition[] = [
     ),
     description: 'Run GraphQL queries through our interactive in-browser IDE',
     docsUrl: 'https://vela.run/docs',
-    author: authorSupabase,
+    author: authorVela,
     navigation: [
       {
         route: 'overview',
@@ -330,7 +330,7 @@ const wrapperIntegrations: IntegrationDefinition[] = WRAPPERS.map((w) => {
     description: w.description,
     docsUrl: w.docsUrl,
     meta: w,
-    author: authorSupabase,
+    author: authorVela,
     navigation: [
       {
         route: 'overview',

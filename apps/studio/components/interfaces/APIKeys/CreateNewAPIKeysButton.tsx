@@ -57,7 +57,7 @@ export const CreateNewAPIKeysButton = () => {
           <AlertDialogDescription>
             This will create a default publishable key and a default secret key named{' '}
             <code>default</code>. These keys are required to connect your application to your
-            Velaproject.
+            Vela project.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

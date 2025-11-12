@@ -39,9 +39,9 @@ export default function Introduction({ selectedLang }: Props) {
             <InlineLink href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api`}>API settings</InlineLink>.
           </p>
           <p>
-            You can initialize a new Velaclient using the <code>createClient()</code> method.
-            The Velaclient is your entrypoint to the rest of the Velafunctionality and is
-            the easiest way to interact with everything we offer within the Velaecosystem.
+            You can initialize a new Vela client using the <code>createClient()</code> method.
+            The Vela client is your entrypoint to the rest of the Vela functionality and is
+            the easiest way to interact with everything we offer within the Vela ecosystem.
           </p>
         </article>
         <article className="code flex flex-col gap-y-2">

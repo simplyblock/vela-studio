@@ -32,7 +32,7 @@ export const CRONJOB_DEFINITIONS = [
     value: 'edge_function',
     icon: <EdgeFunctions strokeWidth={1} />,
     label: 'Vela Edge Function',
-    description: 'Choose a Velaedge function to run.',
+    description: 'Choose a Vela edge function to run.',
   },
 ]
 

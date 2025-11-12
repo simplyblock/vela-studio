@@ -280,7 +280,7 @@ const ResourceContent = ({
             <div className="doc-section">
               <article className="code-column text-foreground">
                 <p>
-                  Velaprovides realtime functionality and broadcasts database changes to
+                  Vela provides realtime functionality and broadcasts database changes to
                   authorized users depending on Row Level Security (RLS) policies.
                 </p>
                 <p>

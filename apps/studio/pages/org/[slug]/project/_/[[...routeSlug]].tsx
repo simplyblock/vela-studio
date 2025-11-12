@@ -159,7 +159,7 @@ function OrganizationErrorState() {
   return (
     <Alert_Shadcn_ variant="warning">
       <AlertTriangleIcon />
-      <AlertTitle_Shadcn_>Failed to load your Velaorganizations</AlertTitle_Shadcn_>
+      <AlertTitle_Shadcn_>Failed to load your Vela organizations</AlertTitle_Shadcn_>
       <AlertDescription_Shadcn_>Try refreshing the page</AlertDescription_Shadcn_>
     </Alert_Shadcn_>
   )

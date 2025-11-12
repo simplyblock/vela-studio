@@ -48,14 +48,14 @@ export const EXAMPLE_PROJECTS = [
   {
     framework: 'Svelte',
     title: 'Svelte kanban board',
-    description: 'A Trello clone using Velaas the storage system.',
+    description: 'A Trello clone using Vela as the storage system.',
     url: 'https://github.com/joshnuss/supabase-kanban',
     type: 'app',
   },
   {
     framework: 'nextjs',
     title: 'Next.js Realtime chat app',
-    description: 'Next.js Slack clone app using Velarealtime subscriptions',
+    description: 'Next.js Slack clone app using Vela realtime subscriptions',
     url: 'https://github.com/simplyblock/vela-studio/tree/master/examples/slack-clone/nextjs-slack-clone',
     type: 'app',
   },
@@ -76,7 +76,7 @@ export const EXAMPLE_PROJECTS = [
   {
     framework: 'NestJS',
     title: 'NestJS example',
-    description: 'NestJS example using VelaAuth',
+    description: 'NestJS example using Vela Auth',
     url: 'https://github.com/hiro1107/nestjs-supabase-auth',
     type: 'app',
   },

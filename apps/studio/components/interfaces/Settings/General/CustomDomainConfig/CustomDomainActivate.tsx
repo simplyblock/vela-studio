@@ -159,7 +159,7 @@ const CustomDomainActivate = ({
       >
         <p className="text-sm">
           This will activate the custom domain <code>{customDomain.hostname}</code>. Your project's
-          Veladomain will also remain active.
+          Vela domain will also remain active.
         </p>
       </ConfirmationModal>
     </>

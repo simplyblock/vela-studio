@@ -59,7 +59,7 @@ export function RotateKeyDialog({
       <DialogHeader>
         <DialogTitle>Rotate JWT signing key</DialogTitle>
         <DialogDescription>
-          Change the key used by VelaAuth to create new JSON Web Tokens. Non-expired tokens
+          Change the key used by Vela Auth to create new JSON Web Tokens. Non-expired tokens
           remain <span className="text-brand">valid and accepted</span>!
         </DialogDescription>
       </DialogHeader>
@@ -196,7 +196,7 @@ export function RotateKeyDialog({
                     className: 'max-w-[320px] p-4',
                     text: (
                       <p>
-                        Rotating the signing key only changes what key is used by VelaAuth to
+                        Rotating the signing key only changes what key is used by Vela Auth to
                         issue <em className="text-brand not-italic">new tokens</em>
                         .<br />
                         <br />
@@ -260,7 +260,7 @@ export function RotateKeyDialog({
                           <br />
                           Recommendation: Change all of your Edge Functions to no longer verify JWT
                           and implement the verification logic in the function's code yourself by
-                          using the Velaclient library or any other library for working with
+                          using the Vela client library or any other library for working with
                           JWT.
                         </p>
                       ),

@@ -188,7 +188,7 @@ export default function DiskSpaceBar({ form }: DiskSpaceBarProps) {
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="w-[310px] flex flex-col gap-y-1">
                     <p>
-                      Velaexpands your disk storage automatically when the database reached 90%
+                      Vela expands your disk storage automatically when the database reached 90%
                       of the disk size. However, any disk modifications, including auto-scaling, can
                       only take place once every 6 hours.
                     </p>

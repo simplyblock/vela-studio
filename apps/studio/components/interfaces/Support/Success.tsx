@@ -57,7 +57,7 @@ const Success = ({
           <div className="flex flex-col items-center px-12 space-y-2 text-center">
             <p>In the meantime, tap into our community</p>
             <p className="text-sm text-foreground-light">
-              Find the answers you need with fellow developers building with Velaby joining our
+              Find the answers you need with fellow developers building with Vela by joining our
               GitHub discussions or on Discord - build the next best thing together
             </p>
           </div>

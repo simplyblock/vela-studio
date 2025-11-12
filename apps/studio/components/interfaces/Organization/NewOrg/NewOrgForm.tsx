@@ -157,7 +157,7 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
         className="overflow-visible"
       >
         <Panel.Content>
-          <p className="text-sm">This is your organization within Vela.</p>
+          <p className="text-sm">This is your organization within Vela .</p>
           <p className="text-sm text-foreground-light">
             You can use the name of your company or department.
           </p>

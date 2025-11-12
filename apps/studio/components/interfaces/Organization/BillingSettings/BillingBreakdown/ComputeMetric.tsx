@@ -64,7 +64,7 @@ const ComputeMetric = ({ slug, metric, usage, relativeToSubscription }: ComputeM
           <div className="my-2">
             {usageMeta?.metric === ComputeUsageMetric.COMPUTE_HOURS_BRANCH ? (
               <p className="text-sm">
-                Each Preview branch is a separate environment with all Velaservices (Database,
+                Each Preview branch is a separate environment with all Vela services (Database,
                 Auth, Storage, etc.).{' '}
                 <Link
                   href="https://vela.run/docs/guides/platform/manage-your-usage/branching"

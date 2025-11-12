@@ -128,7 +128,7 @@ export const ChooseChannelPopover = ({ config, onChangeConfig }: ChooseChannelPo
                           </div>
                         </div>
                         <FormDescription_Shadcn_ className="text-xs text-foreground-lighter">
-                          The channel you initialize with the VelaRealtime client. Learn more
+                          The channel you initialize with the Vela Realtime client. Learn more
                           in{' '}
                           <a
                             target="_blank"

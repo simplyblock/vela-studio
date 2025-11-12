@@ -209,7 +209,7 @@ export const QueueTab = () => {
                         content={`
 RLS for queues is only relevant if exposure through PostgREST has been enabled, in which you can restrict and control who can manage this queue using Row Level Security.
 
-You may opt to manage your queues via any Velaclient libraries or PostgREST endpoints by enabling this in the [queues settings](/project/${project?.id}/integrations/queues/settings).`}
+You may opt to manage your queues via any Vela client libraries or PostgREST endpoints by enabling this in the [queues settings](/project/${project?.id}/integrations/queues/settings).`}
                       />
                       <Button
                         type="default"
