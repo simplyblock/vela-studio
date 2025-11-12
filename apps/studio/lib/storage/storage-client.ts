@@ -60,7 +60,7 @@ const loadAsynchronousKeys = async (
 }
 
 const signatureKeys = await loadAsynchronousKeys(storageSignaturePrivateKey, ES_ALG)
-const encryptionKeys = await loadAsynchronousKeys(storageEncryptionPrivateKey, ES_ALG)
+const encryptionKeys = await loadAsynchronousKeys(storageEncryptionPrivateKey, ENC_ALG)
 
 type SignedUrlPayload = {
   organizationId: string
