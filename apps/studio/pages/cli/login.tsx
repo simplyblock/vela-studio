@@ -50,8 +50,8 @@ const CliLoginPage: NextPageWithLayout = () => {
       <div className={`flex flex-col items-center justify-center h-full`}>
         {device_code ? (
           <>
-            <h2 className="py-2">Your Supabase Account is being used to login on Supabase CLI.</h2>
-            <p>Enter this verification code on Supabase CLI to authorize login.</p>
+            <h2 className="py-2">Your VelaAccount is being used to login on VelaCLI.</h2>
+            <p>Enter this verification code on VelaCLI to authorize login.</p>
             <div className="flex flex-row gap-2 py-10">
               <InputOTP maxLength={8} value={device_code} disabled>
                 <InputOTPGroup>

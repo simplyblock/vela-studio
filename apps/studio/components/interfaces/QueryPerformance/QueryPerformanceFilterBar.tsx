@@ -149,7 +149,7 @@ export const QueryPerformanceFilterBar = ({
         </Button>
         <DownloadResultsButton
           results={queryPerformanceQuery.data ?? []}
-          fileName={`Supabase Query Performance (${ref})`}
+          fileName={`Vela Query Performance (${ref})`}
         />
       </div>
     </div>

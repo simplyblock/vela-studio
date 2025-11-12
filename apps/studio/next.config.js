@@ -382,6 +382,10 @@ const nextConfig = {
         pathname: '/u/*',
       },
     ],
+       localPatterns: [
+      // allow all images under /img
+      { pathname: '/img/**' },
+    ],
   },
   transpilePackages: [
     'ui',

@@ -3,7 +3,7 @@ export const EDGE_FUNCTION_TEMPLATES = [
     value: 'hello-world',
     name: 'Simple Hello World',
     description: 'Basic function that returns a JSON response',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 interface reqPayload {
   name: string;
@@ -25,9 +25,9 @@ Deno.serve(async (req: Request) => {
   },
   {
     value: 'database-access',
-    name: 'Supabase Database Access',
-    description: 'Example using Supabase client to query your database',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    name: 'Vela Database Access',
+    description: 'Example using Velaclient to query your database',
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 
@@ -60,9 +60,9 @@ Deno.serve(async (req) => {
   },
   {
     value: 'storage-upload',
-    name: 'Supabase Storage Upload',
-    description: 'Upload files to Supabase Storage',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    name: 'Vela Storage Upload',
+    description: 'Upload files to VelaStorage',
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import { randomUUID } from 'node:crypto'
@@ -96,7 +96,7 @@ Deno.serve(async (req) => {
     value: 'node-api',
     name: 'Node Built-in API Example',
     description: 'Example using Node.js built-in crypto and http modules',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { randomBytes } from "node:crypto";
 import { createServer } from "node:http";
@@ -121,7 +121,7 @@ server.listen(9999);`,
     value: 'express',
     name: 'Express Server',
     description: 'Example using Express.js for routing',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import express from "npm:express@4.18.2";
 
@@ -139,7 +139,7 @@ app.listen(8000);`,
     value: 'openai-completion',
     name: 'OpenAI Text Completion',
     description: 'Generate text completions using OpenAI GPT-3',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import { OpenAI } from "npm:openai@4.8.0"
 
@@ -172,7 +172,7 @@ Deno.serve(async (req)=>{
     value: 'stripe-webhook',
     name: 'Stripe Webhook Example',
     description: 'Handle Stripe webhook events securely',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import Stripe from 'npm:stripe@12.0.0'
 
@@ -213,7 +213,7 @@ Deno.serve(async (request) => {
     value: 'resend-email',
     name: 'Send Emails',
     description: 'Send emails using the Resend API',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!
@@ -243,7 +243,7 @@ Deno.serve(async (req) => {
     value: 'image-transform',
     name: 'Image Transformation',
     description: 'Transform images using ImageMagick WASM',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import {
   ImageMagick,
@@ -271,7 +271,7 @@ Deno.serve(async (req) => {
     value: 'websocket-server',
     name: 'Websocket Server Example',
     description: 'Create a real-time WebSocket server',
-    content: `// Setup type definitions for built-in Supabase Runtime APIs
+    content: `// Setup type definitions for built-in VelaRuntime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 Deno.serve((req) => {
@@ -282,7 +282,7 @@ Deno.serve((req) => {
   const { socket, response } = Deno.upgradeWebSocket(req)
   socket.onopen = () => {
     console.log("client connected!")
-    socket.send('Welcome to Supabase Edge Functions!')
+    socket.send('Welcome to VelaEdge Functions!')
   }
   socket.onmessage = (e) => {
     console.log("client sent message:", e.data)

@@ -68,7 +68,7 @@ export const APIKeyDeleteDialog = ({ apiKey, lastSeen }: APIKeyDeleteDialogProps
         alert={{
           title: 'This cannot be undone',
           description: lastSeen
-            ? `This API key was used ${lastSeen.timestamp}. Make sure all backend components using it have been updated. Deletion will cause them to receive HTTP 401 Unauthorized status codes on all Supabase APIs.`
+            ? `This API key was used ${lastSeen.timestamp}. Make sure all backend components using it have been updated. Deletion will cause them to receive HTTP 401 Unauthorized status codes on all VelaAPIs.`
             : `This API key has not been used in the past 24 hours. Make sure you've updated all backend components using it before deletion.`,
         }}
       />

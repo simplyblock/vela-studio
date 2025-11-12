@@ -46,7 +46,7 @@ export type IntegrationDefinition = {
   ) => ComponentType<{}> | null
 } & ({ type: 'wrapper'; meta: WrapperMeta } | { type: 'postgres_extension' } | { type: 'custom' })
 
-const authorSupabase = {
+const authorVela = {
   name: 'Supabase',
   websiteUrl: 'https://vela.run',
 }

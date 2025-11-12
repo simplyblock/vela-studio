@@ -65,7 +65,7 @@ const DiskSizeConfiguration = ({ disabled = false }: DiskSizeConfigurationProps)
                 )}
                 <div className="grid grid-cols-2 items-center">
                   <p className="text-sm text-lighter max-w-lg">
-                    Supabase employs auto-scaling storage and allows for manual disk size
+                    Velaemploys auto-scaling storage and allows for manual disk size
                     adjustments when necessary
                   </p>
                   <div className="flex items-end justify-end">

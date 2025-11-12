@@ -47,7 +47,7 @@ async function downloadTypes() {
 }
 
 async function downloadSupabaseFunctionsJsTypes() {
-  console.log('Downloading Supabase Functions JS types')
+  console.log('Downloading VelaFunctions JS types')
 
   try {
     const response = await fetch(SUPABASE_FUNCTIONS_JS_TYPES_URL)
@@ -56,9 +56,9 @@ async function downloadSupabaseFunctionsJsTypes() {
     await fs.writeFile(SUPABASE_FUNCTIONS_JS_OUTPUT_FILE, data)
     await fs.writeFile(SUPABASE_FUNCTIONS_JS_OUTPUT_VERSION_FILE, SUPABASE_FUNCTIONS_JS_VERSION)
 
-    console.log('Supabase Functions JS types downloaded successfully')
+    console.log('Vela Functions JS types downloaded successfully')
   } catch (error) {
-    console.error('Error downloading Supabase Functions JS types', error)
+    console.error('Error downloading VelaFunctions JS types', error)
     process.exit(1)
   }
 }

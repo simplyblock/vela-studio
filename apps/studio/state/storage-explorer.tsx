@@ -302,7 +302,7 @@ function createStorageExplorerState({
       columnIndex: number
       onError?: () => void
     }) => {
-      if (!state.supabaseClient) return console.error('Supabase Client is missing')
+      if (!state.supabaseClient) return console.error('Vela Client is missing')
 
       const autofix = false
       const formattedName = state.sanitizeNameForDuplicateInColumn({

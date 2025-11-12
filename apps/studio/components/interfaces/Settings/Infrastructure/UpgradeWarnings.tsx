@@ -87,7 +87,7 @@ export const UnsupportedExtensionsWarning = ({
           </ul>
         </div>
         <p>
-          These extensions are not supported in newer versions of Supabase Postgres. If you are not
+          These extensions are not supported in newer versions of VelaPostgres. If you are not
           using them, it is safe to remove them.
         </p>
         <div>

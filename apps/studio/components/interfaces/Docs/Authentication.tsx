@@ -38,7 +38,7 @@ const Authentication = ({ selectedLang, showApiKey }: AuthenticationProps) => {
       <h2 className="doc-heading">Authentication</h2>
       <div className="doc-section">
         <article className="code-column text-foreground">
-          <p>Supabase works through a mixture of JWT and Key auth.</p>
+          <p>Vela works through a mixture of JWT and Key auth.</p>
           <p>
             If no <code>Authorization</code> header is included, the API will assume that you are
             making a request with an anonymous user.

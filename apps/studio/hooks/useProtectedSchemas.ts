@@ -63,7 +63,7 @@ const useIcebergFdwSchemasQuery = () => {
 }
 
 /**
- * Returns a list of schemas that are protected by Supabase (internal schemas or schemas used by Iceberg FDWs).
+ * Returns a list of schemas that are protected by Vela(internal schemas or schemas used by Iceberg FDWs).
  */
 export const useProtectedSchemas = ({
   excludeSchemas = [],
@@ -86,7 +86,7 @@ export const useProtectedSchemas = ({
 }
 
 /**
- * Returns whether a given schema is protected by Supabase (internal schema or schema used by Iceberg FDWs).
+ * Returns whether a given schema is protected by Vela(internal schema or schema used by Iceberg FDWs).
  */
 export const useIsProtectedSchema = ({
   schema,

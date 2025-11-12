@@ -156,9 +156,9 @@ export const PublicationsList = () => {
                           </TooltipTrigger>
                           <TooltipContent side="bottom">
                             {x.name === 'supabase_realtime'
-                              ? 'This publication is managed by Supabase and handles Postgres changes'
+                              ? 'This publication is managed by Velaand handles Postgres changes'
                               : x.name === 'supabase_realtime_messages_publication'
-                                ? 'This publication is managed by Supabase and handles broadcasts from the database'
+                                ? 'This publication is managed by Velaand handles broadcasts from the database'
                                 : undefined}
                           </TooltipContent>
                         </Tooltip>

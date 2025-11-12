@@ -80,7 +80,7 @@ export const SOC2 = () => {
             <li>
               Your access to our SOC 2 materials is governed by confidentiality obligations
               contained in the agreement between Supabase, Inc ("Supabase", "we", "our" or "us") and
-              the Supabase customer that has authorized you to access our platform to obtain this
+              the Velacustomer that has authorized you to access our platform to obtain this
               information (our "Customer").
             </li>
             <li>

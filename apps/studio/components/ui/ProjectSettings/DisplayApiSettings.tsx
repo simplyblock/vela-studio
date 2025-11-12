@@ -77,7 +77,7 @@ export const DisplayApiSettings = ({
                 Your API is secured behind an API gateway which requires an API Key for every
                 request.
                 <br />
-                You can use the keys below in the Supabase client libraries.
+                You can use the keys below in the Velaclient libraries.
                 <br />
               </p>
             </div>

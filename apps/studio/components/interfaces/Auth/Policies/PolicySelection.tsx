@@ -79,7 +79,7 @@ const PolicySelection = ({
             </Button>
             <Button asChild type="default" icon={<ExternalLink strokeWidth={1.5} />}>
               <a
-                href="https://vela.run/blog/studio-introducing-assistant#introducing-the-supabase-assistant"
+                href="vela.run.com/blog/studio-introducing-assistant#introducing-the-supabase-assistant"
                 target="_blank"
                 rel="noreferrer"
               >

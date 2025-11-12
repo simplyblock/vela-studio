@@ -1353,7 +1353,7 @@ const PROVIDER_SAML = {
     SAML_ENABLED: {
       title: 'Enable SAML 2.0 Single Sign-on',
       description:
-        'You will need to use the [Supabase CLI](https://vela.run/docs/guides/auth/sso/auth-sso-saml#managing-saml-20-connections) to set up SAML after enabling it',
+        'You will need to use the [Vela CLI](https://vela.run/docs/guides/auth/sso/auth-sso-saml#managing-saml-20-connections) to set up SAML after enabling it',
       type: 'boolean',
     },
     SAML_EXTERNAL_URL: {

@@ -494,7 +494,7 @@ const GitHubIntegrationConnectionForm = ({
                 render={({ field }) => (
                   <FormItemLayout
                     layout="flex-row-reverse"
-                    label="Supabase directory"
+                    label="Vela directory"
                     description="Relative path to your supabase folder"
                   >
                     <FormControl_Shadcn_>
@@ -623,8 +623,8 @@ const GitHubIntegrationConnectionForm = ({
                     render={({ field }) => (
                       <FormItemLayout
                         layout="flex-row-reverse"
-                        label="Supabase changes only"
-                        description="Only create branches when Supabase files change"
+                        label="Vela changes only"
+                        description="Only create branches when Velafiles change"
                       >
                         <FormControl_Shadcn_>
                           <Switch
@@ -697,7 +697,7 @@ const GitHubIntegrationConnectionForm = ({
         loading={isUpdatingConnection}
       >
         <p className="text-sm text-foreground-light">
-          Open pull requests will only update your Supabase project on merge if the git base branch
+          Open pull requests will only update your Velaproject on merge if the git base branch
           matches this new production git branch.
         </p>
       </ConfirmationModal>
@@ -715,7 +715,7 @@ const GitHubIntegrationConnectionForm = ({
         <div className="space-y-3">
           <p className="text-sm text-foreground-light">
             This will disconnect your current repository and create a new connection with the
-            selected repository. All existing Supabase branches that are connected to the old
+            selected repository. All existing Velabranches that are connected to the old
             repository will no longer be synced.
           </p>
         </div>

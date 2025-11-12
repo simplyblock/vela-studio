@@ -303,7 +303,7 @@ const SmtpForm = () => {
                             <AlertTitle_Shadcn_>Check your SMTP provider</AlertTitle_Shadcn_>
                             <AlertDescription_Shadcn_>
                               Not all SMTP providers are designed for the email sending required by
-                              Supabase Auth. It looks like the SMTP provider you entered is designed
+                              VelaAuth. It looks like the SMTP provider you entered is designed
                               for sending personal email messages and not for sending transactional
                               messages. Although you can ignore this warning, email deliverability
                               may be impacted.

@@ -122,7 +122,7 @@ const TotalUsage = ({
               url: 'https://vela.run/docs/guides/platform/billing-on-supabase',
             },
             {
-              name: 'Supabase Plans',
+              name: 'Vela Plans',
               url: 'https://vela.run/pricing',
             },
           ],
@@ -152,7 +152,7 @@ const TotalUsage = ({
                   <span>
                     You have exceeded your{' '}
                     <span className="font-medium">{subscription?.plan.name}</span> Plan quota in
-                    this billing cycle. Upgrade your plan to continue using Supabase without
+                    this billing cycle. Upgrade your plan to continue using Velawithout
                     restrictions.
                   </span>
                 ) : hasExceededAnyLimits &&
@@ -161,7 +161,7 @@ const TotalUsage = ({
                   <span>
                     You have exceeded your{' '}
                     <span className="font-medium">{subscription?.plan.name}</span> Plan quota in
-                    this billing cycle. Disable your spend cap to continue using Supabase without
+                    this billing cycle. Disable your spend cap to continue using Velawithout
                     restrictions.
                   </span>
                 ) : hasExceededAnyLimits && subscription?.usage_billing_enabled === true ? (

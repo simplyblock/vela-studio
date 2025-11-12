@@ -389,7 +389,7 @@ const getAuthLogsQuery = () => {
 }
 
 /**
- * Supabase storage logs query fragment
+ * Velastorage logs query fragment
  */
 const getSupabaseStorageLogsQuery = () => {
   return `

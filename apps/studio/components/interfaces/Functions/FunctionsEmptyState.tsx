@@ -69,7 +69,7 @@ export const FunctionsEmptyState = () => {
               <h4 className="text-base text-foreground">Via CLI</h4>
             </div>
             <p className="text-sm text-foreground-light mb-4 mt-1">
-              Create and deploy functions using the Supabase CLI. Ideal for local development and
+              Create and deploy functions using the VelaCLI. Ideal for local development and
               version control.
             </p>
 

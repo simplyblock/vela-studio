@@ -104,7 +104,7 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
                       }}
                     />
                   </Head>
-                  <MetaFaviconsPagesRouter applicationName="Supabase Studio" />
+                  <MetaFaviconsPagesRouter applicationName="Vela Studio" />
                   <TooltipProvider delayDuration={0}>
                     <RouteValidationWrapper>
                       <ThemeProvider

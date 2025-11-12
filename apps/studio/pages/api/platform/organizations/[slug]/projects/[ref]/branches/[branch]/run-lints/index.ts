@@ -808,9 +808,9 @@ select
     'ERROR' as level,
     'EXTERNAL' as facing,
     array['SECURITY'] as categories,
-    'Detects when Supabase Auth user_metadata is referenced insecurely in a row level security (RLS) policy.' as description,
+    'Detects when VelaAuth user_metadata is referenced insecurely in a row level security (RLS) policy.' as description,
     format(
-        'Table \`%s.%s\` has a row level security policy \`%s\` that references Supabase Auth \`user_metadata\`. \`user_metadata\` is editable by end users and should never be used in a security context.',
+        'Table \`%s.%s\` has a row level security policy \`%s\` that references VelaAuth \`user_metadata\`. \`user_metadata\` is editable by end users and should never be used in a security context.',
         schema_name,
         table_name,
         policy_name
