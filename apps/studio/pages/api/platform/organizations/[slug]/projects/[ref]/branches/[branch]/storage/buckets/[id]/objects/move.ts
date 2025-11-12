@@ -1,16 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
-import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { newStorageClient } from 'lib/storage/storage-client'
+import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 
-const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
+const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = getPlatformQueryParams(req, 'id')
-  const { paths } = req.body
+  const { from, to } = req.body
+
   const storageClient = await newStorageClient(req, res)
   if (!storageClient) return res.status(500).json({ error: 'Failed to created storage client' })
-  return storageClient.deleteObject(id, paths)
+  return storageClient.moveObject(id as string, from, to)
 }
 
-const apiHandler = apiBuilder((builder) => builder.useAuth().delete(handleDelete))
+const apiHandler = apiBuilder((builder) => builder.useAuth().post(handlePost))
 
 export default apiHandler

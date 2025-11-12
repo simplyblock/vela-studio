@@ -280,6 +280,62 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       return res.status(200).json(await response.json())
     },
 
+    downloadObject: async (name: string, path: string) => {
+      const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
+      const params = await getStorageParameters(slug, ref, branch)
+      if (!params) return res.status(401).json({ error: 'Unauthorized' })
+
+      const response = await fetch(`${params.storageEndpoint}/object/${name}/${path}`, {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      })
+
+      if (response.status === 404) {
+        return res.status(404).json({ error: 'Object not found' })
+      }
+      if (response.status !== 200) {
+        return res.status(response.status).json({ error: response.statusText })
+      }
+      return res
+        .status(200)
+        .setHeader('Content-Type', 'application/octet-stream')
+        .send(await response.arrayBuffer())
+    },
+
+    moveObject: async (source: string, from: string, to: string, destination?: string) => {
+      const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
+      const params = await getStorageParameters(slug, ref, branch)
+      if (!params) return res.status(401).json({ error: 'Unauthorized' })
+
+      const body = {
+        bucketId: source,
+        sourceKey: from,
+        destinationKey: to,
+        destinationBucket: destination,
+      }
+
+      const response = await fetch(`${params.storageEndpoint}/object/move`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+      if (response.status < 200 || response.status > 299) {
+        return res.status(response.status).json({ error: response.statusText })
+      }
+      return res.status(200).json(await response.json())
+    },
+
+    publicObjectUrl: async (name: string, path: string) => {
+      const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
+      const params = await getStorageParameters(slug, ref, branch)
+      if (!params) return res.status(401).json({ error: 'Unauthorized' })
+      return res.status(200).json({ publicUrl: `${params.storageEndpoint}/object/${name}/${path}` })
+    },
+
     createSignedObjectUrl: async (bucket: string, path: string, expiredIn: number) => {
       const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
       const params = await getStorageParameters(slug, ref, branch)
@@ -296,7 +352,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
         expiresAt
       )
 
-      return res.status(200).json({ data: signedUrl })
+      return res.status(200).json({ signedUrl })
     },
 
     retrieveSignedObjectUrl: async (hash: string, token: string) => {
@@ -317,7 +373,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       })
 
       if (response.status === 404) {
-        return res.status(200).json([])
+        return res.status(404).json({ error: 'Object not found' })
       }
       if (response.status !== 200) {
         return res.status(response.status).json({ error: response.statusText })

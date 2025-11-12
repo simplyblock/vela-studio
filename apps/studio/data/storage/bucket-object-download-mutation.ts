@@ -1,30 +1,45 @@
-import { UseMutationOptions, useMutation } from '@tanstack/react-query'
+import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { components } from 'data/api'
-import { fetchPost } from 'data/fetchers'
-import { API_URL } from 'lib/constants'
+import { handleError, post } from 'data/fetchers'
 import { ResponseError } from 'types'
 
 type DownloadBucketObjectParams = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   bucketId?: string
   path: string
   options?: components['schemas']['DownloadObjectBody']['options']
 }
 export const downloadBucketObject = async (
-  { projectRef, bucketId, path, options }: DownloadBucketObjectParams,
+  { orgRef, projectRef, branchRef, bucketId, path, options }: DownloadBucketObjectParams,
   signal?: AbortSignal
 ) => {
   if (!bucketId) throw new Error('bucketId is required')
 
-  const response = await fetchPost(
-    `${API_URL}/storage/${projectRef}/buckets/${bucketId}/objects/download`,
-    { path, options, abortSignal: signal }
+  const { data, error } = await post(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/download`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+          id: bucketId,
+        }
+      },
+      body: {
+        path,
+        options,
+      },
+      abortSignal: signal,
+    }
   )
 
-  if (response.error) throw response.error
-  return response
+  if (error) handleError(error)
+  return data
 }
 
 type BucketObjectDeleteData = Awaited<ReturnType<typeof downloadBucketObject>>
