@@ -312,7 +312,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
 
       const response = await fetch(payload.storageObjectUrl, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${params.token}`,
         },
       })
 
