@@ -133,10 +133,16 @@ jobs:
           images: ${{ env.REGISTRY_IMAGE }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest-{{sha}},enable={{is_default_branch}}
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+          flavor: |
+            latest=false
+            prefix=
+            suffix=
+          custom-sha-length: 7
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests
@@ -147,4 +153,3 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
-
