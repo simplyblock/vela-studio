@@ -63,7 +63,7 @@ const ProjectLints: NextPageWithLayout = () => {
       <FormHeader
         className="py-4 px-6 !mb-0"
         title="Performance Advisor"
-        docsUrl="https://supabase.com/docs/guides/database/database-linter"
+        docsUrl="https://vela.run/"
       />
       <LintPageTabs
         activeLints={activeLints}

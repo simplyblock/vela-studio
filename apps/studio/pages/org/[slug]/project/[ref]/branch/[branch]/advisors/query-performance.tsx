@@ -19,7 +19,6 @@ import { queriesFactory } from 'components/interfaces/Reports/Reports.utils'
 import AdvisorsLayout from 'components/layouts/AdvisorsLayout/AdvisorsLayout'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import DatabaseSelector from 'components/ui/DatabaseSelector'
-import { DocsButton } from 'components/ui/DocsButton'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import type { NextPageWithLayout } from 'types'
 
@@ -59,7 +58,6 @@ const QueryPerformanceReport: NextPageWithLayout = () => {
         actions={
           <div className="flex items-center gap-2">
             <EnableIndexAdvisorButton />
-            <DocsButton href="https://supabase.com/docs/guides/platform/performance#examining-query-performance" />
             <DatabaseSelector />
           </div>
         }

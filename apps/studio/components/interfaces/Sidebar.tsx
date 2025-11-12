@@ -3,15 +3,15 @@
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { isUndefined } from 'lodash'
 import {
-  Blocks,
   CalendarClock,
   ChartArea,
+  Blocks,
   CopyPlus,
   HardDrive,
   PanelLeftDashed,
   PanelsTopLeft,
   Settings,
-  ShieldEllipsis,
+  ShieldUser,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -502,7 +502,7 @@ const OrganizationLinks = () => {
         label: 'RBAC',
         href: `/org/${slug}/rbac`,
         key: 'rbac',
-        icon: <ShieldEllipsis size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+        icon: <ShieldUser size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       },
   ]
 

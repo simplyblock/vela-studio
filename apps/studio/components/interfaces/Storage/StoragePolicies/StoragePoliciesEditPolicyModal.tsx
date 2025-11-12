@@ -5,7 +5,6 @@ import { toast } from 'sonner'
 import { POLICY_MODAL_VIEWS } from 'components/interfaces/Auth/Policies/Policies.constants'
 import PolicySelection from 'components/interfaces/Auth/Policies/PolicySelection'
 import PolicyTemplates from 'components/interfaces/Auth/Policies/PolicyTemplates'
-import { DocsButton } from 'components/ui/DocsButton'
 import { ChevronLeft } from 'lucide-react'
 import { Modal } from 'ui'
 import {
@@ -184,7 +183,6 @@ const StoragePoliciesEditPolicyModal = ({
     return (
       <div className="w-full flex items-center justify-between gap-x-2 pr-6">
         <h4 className="m-0 truncate">{getTitle()}</h4>
-        <DocsButton href="https://supabase.com/docs/learn/auth-deep-dive/auth-policies" />
       </div>
     )
   }

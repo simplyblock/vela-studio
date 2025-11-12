@@ -1,4 +1,4 @@
-import { HousePlug, Check, ChevronsUpDown, Plus } from 'lucide-react'
+import { HouseHeart, Check, ChevronsUpDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -47,7 +47,7 @@ export const OrganizationDropdown = () => {
         href={slug ? `/org/${slug}` : '/organizations'}
         className="flex items-center gap-2 flex-shrink-0 text-sm"
       >
-  <HousePlug size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+  <HouseHeart size={14} strokeWidth={1.5} className="text-foreground-lighter" />
         <span
           className={cn(
             'max-w-32 lg:max-w-none truncate hidden md:block',

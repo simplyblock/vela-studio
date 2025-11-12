@@ -17,7 +17,6 @@ import {
 } from 'ui'
 import { Admonition } from 'ui-patterns'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { DocsButton } from 'components/ui/DocsButton'
 
 interface AdvancedConfigurationProps {
   form: UseFormReturn<CreateProjectForm>

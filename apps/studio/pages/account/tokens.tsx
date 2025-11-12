@@ -47,7 +47,7 @@ const UserAccessTokens: NextPageWithLayout = () => {
             <div className="flex items-center gap-x-2">
               <Button asChild type="default" icon={<ExternalLink />}>
                 <a
-                  href="https://supabase.com/docs/reference/api/introduction"
+                  href="https://vela.run/"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -56,7 +56,7 @@ const UserAccessTokens: NextPageWithLayout = () => {
               </Button>
               <Button asChild type="default" icon={<ExternalLink />}>
                 <a
-                  href="https://supabase.com/docs/reference/cli/start"
+                  href="https://vela.run/"
                   target="_blank"
                   rel="noreferrer"
                 >

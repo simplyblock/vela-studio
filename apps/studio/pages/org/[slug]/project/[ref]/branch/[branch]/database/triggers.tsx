@@ -47,7 +47,7 @@ const TriggersPage: NextPageWithLayout = () => {
             <FormHeader
               title="Database Triggers"
               description="Execute a set of actions automatically on specified table events"
-              docsUrl="https://supabase.com/docs/guides/database/postgres/triggers"
+              docsUrl="https://vela.run/"
             />
             <TriggersList
               createTrigger={createTrigger}

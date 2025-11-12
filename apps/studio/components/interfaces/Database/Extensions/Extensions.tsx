@@ -3,7 +3,6 @@ import { AlertCircle, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { useParams } from 'common'
-import { DocsButton } from 'components/ui/DocsButton'
 import InformationBox from 'components/ui/InformationBox'
 import NoSearchResults from 'components/ui/NoSearchResults'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
@@ -56,7 +55,6 @@ const Extensions = () => {
             className="w-52"
             icon={<Search size={14} />}
           />
-          <DocsButton href="https://supabase.com/docs/guides/database/extensions" />
         </div>
       </div>
 

@@ -1,6 +1,5 @@
 import { SimpleCodeBlock } from 'ui'
 import { useParams } from 'common'
-import { DocsButton } from 'components/ui/DocsButton'
 import { Markdown } from '../Markdown'
 
 interface ResourceContentProps {
@@ -22,7 +21,6 @@ const ResourceContent = ({ selectedLanguage, snippet, codeSnippets }: ResourceCo
       <div className="px-4 space-y-2">
         <div className="flex items-center justify-between">
           <h2 className="doc-heading">{snippet.title}</h2>
-          {snippet.docsUrl !== undefined && <DocsButton abbrev={false} href={snippet.docsUrl} />}
         </div>
         {snippet.description !== undefined && (
           <div className="doc-section">

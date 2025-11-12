@@ -8,7 +8,6 @@ import { toast } from 'sonner'
 
 import { useParams } from 'common'
 import { MAX_WIDTH_CLASSES, PADDING_CLASSES, ScaffoldContainer } from 'components/layouts/Scaffold'
-import { DocsButton } from 'components/ui/DocsButton'
 import {
   useDiskAttributesQuery,
   useRemainingDurationForDiskAttributeUpdate,
@@ -284,11 +283,6 @@ export function DiskManagementForm() {
                 title="Database size is currently over 90% of disk size"
                 description="Your project will enter read-only mode once you reach 95% of the disk space to prevent your database from exceeding the disk limitations"
               >
-                <DocsButton
-                  abbrev={false}
-                  className="mt-2"
-                  href="https://supabase.com/docs/guides/platform/database-size#read-only-mode"
-                />
               </Admonition>
             )}
             {isReadOnlyMode && (
@@ -297,11 +291,6 @@ export function DiskManagementForm() {
                 title="Project is currently in read-only mode"
                 description="You will need to manually override read-only mode and reduce the database size to below 95% of the disk size"
               >
-                <DocsButton
-                  abbrev={false}
-                  className="mt-2"
-                  href="https://supabase.com/docs/guides/platform/database-size#disabling-read-only-mode"
-                />
               </Admonition>
             )}
           </div>

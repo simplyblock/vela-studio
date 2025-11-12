@@ -1,6 +1,6 @@
-# Supabase Studio
+# Vela Studio
 
-A dashboard for managing your self-hosted Supabase project, and used on our [hosted platform](https://supabase.com/dashboard). Built with:
+A dashboard for managing your self-hosted Vela project, and used on our [hosted platform](https://vela.run/dashboard). Built with:
 
 - [Next.js](https://nextjs.org/)
 - [Tailwind](https://tailwindcss.com/)
@@ -19,7 +19,7 @@ As such, the features exposed on Studio for existing deployments are limited to 
 
 ## Managing Project Settings
 
-Project settings are managed outside of the Dashboard. If you use docker compose, you should manage the settings in your docker-compose file. If you're deploying Supabase to your own cloud, you should store your secrets and env vars in a vault or secrets manager.
+Project settings are managed outside of the Dashboard. If you use docker compose, you should manage the settings in your docker-compose file. If you're deploying Vela to your own cloud, you should store your secrets and env vars in a vault or secrets manager.
 
 ## How to contribute?
 
@@ -34,14 +34,14 @@ Project settings are managed outside of the Dashboard. If you use docker compose
 ### Developer Quickstart
 
 > [!NOTE]  
-> **Supabase internal use:** To develop on Studio locally with the backend services, see the instructions in the [internal `infrastructure` repo](https://github.com/supabase/infrastructure/blob/develop/docs/contributing.md).
+> **Vela internal use:** To develop on Studio locally with the backend services, see the instructions in the [internal `infrastructure` repo](https://github.com/supabase/infrastructure/blob/develop/docs/contributing.md).
 
 ```bash
 # You'll need to be on Node v20
 # in /studio
 
 npm i # install dependencies
-npm run dev:secrets:pull # Supabase internal use: if you are working on the platform version of the Studio
+npm run dev:secrets:pull # Vela internal use: if you are working on the platform version of the Studio
 npm run dev # start dev server
 npm run test # run tests
 npm run -- --watch # run tests in watch mode
@@ -49,7 +49,7 @@ npm run -- --watch # run tests in watch mode
 
 ## Running within a self-hosted environment
 
-Follow the [self-hosting guide](https://supabase.com/docs/guides/hosting/docker) to get started.
+Follow the [self-hosting guide](https://vela.run/ to get started.
 
 ```
 cd ..

@@ -4,7 +4,6 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { useParams } from 'common'
-import { DocsButton } from 'components/ui/DocsButton'
 import {
   OAuthAppCreateResponse,
   useOAuthAppCreateMutation,
@@ -348,10 +347,8 @@ export const PublishAppSidePanel = ({
                           to the user when adding an app to their organization and all of its
                           projects.
                         </span>
-                      </div>
-                      <DocsButton href="https://supabase.com/docs/guides/platform/oauth-apps/oauth-scopes" />
-                    </div>
-
+ </div>
+  </div>
                     <ScopesPanel scopes={scopes} setScopes={setScopes} />
                   </div>
                 </div>

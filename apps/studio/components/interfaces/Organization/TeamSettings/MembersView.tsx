@@ -298,7 +298,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                             <Admonition
                               type="note"
                               title="You are currently assigned with project scoped roles in this organization"
-                              description="All the members within the organization will not be visible to you"
+                              description="Not all the members within the organization will be visible to you"
                               className="m-0 bg-alternative border-0 rounded-none"
                             />
                           </TableCell>

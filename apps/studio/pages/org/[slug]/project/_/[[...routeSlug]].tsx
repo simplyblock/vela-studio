@@ -1,5 +1,5 @@
 import { partition } from 'lodash'
-import { AlertTriangleIcon, HousePlug } from 'lucide-react'
+import { AlertTriangleIcon, HouseHeart } from 'lucide-react'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -25,7 +25,7 @@ const Header = () => {
         <Link href={`/org/${slug}/projects`}>
           <img
             src={`${BASE_PATH}/img/vela-icon.svg`}
-            alt="Supabase"
+            alt="Vela"
             className="border-default rounded border p-1 hover:border-white"
             style={{ height: 24 }}
           />
@@ -110,7 +110,7 @@ const GenericProjectPage: NextPage = () => {
                 {!!lastVisitedOrganization && (
                   <>
                     <h2 className="flex items-center gap-2">
-                      <HousePlug size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+                      <HouseHeart size={14} strokeWidth={1.5} className="text-foreground-lighter" />
                       {lastVisitedOrganization.name}
                       <Badge variant="default">Recently visited</Badge>
                     </h2>
@@ -125,7 +125,7 @@ const GenericProjectPage: NextPage = () => {
                 {otherOrganizations.map((organization) => (
                   <Fragment key={organization.id}>
                     <h2 className="flex items-center gap-2">
-                      <HousePlug size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+                      <HouseHeart size={14} strokeWidth={1.5} className="text-foreground-lighter" />
                       {organization.name}
                     </h2>
                     <ProjectList

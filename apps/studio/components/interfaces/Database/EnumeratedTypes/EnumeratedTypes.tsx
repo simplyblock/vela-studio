@@ -2,7 +2,6 @@ import { Edit, MoreVertical, Search, Trash } from 'lucide-react'
 import { useState } from 'react'
 
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import SchemaSelector from 'components/ui/SchemaSelector'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import {
@@ -79,7 +78,6 @@ const EnumeratedTypes = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <DocsButton href="https://www.postgresql.org/docs/current/datatype-enum.html" />
           {!isSchemaLocked && (
             <Button
               className="ml-auto flex-1"

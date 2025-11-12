@@ -15,7 +15,6 @@ import {
 } from 'components/layouts/Scaffold'
 import Table from 'components/to-be-cleaned/Table'
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import NoPermission from 'components/ui/NoPermission'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useProjectStorageConfigQuery } from 'data/config/project-storage-config-query'
@@ -117,7 +116,6 @@ export const S3Connection = () => {
               Connect to your bucket using any S3-compatible service via the S3 protocol
             </ScaffoldSectionDescription>
           </div>
-          <DocsButton href="https://supabase.com/docs/guides/storage/s3/authentication" />
         </div>
         <Form_Shadcn_ {...form}>
           <form id="s3-connection-form" onSubmit={form.handleSubmit(onSubmit)}>

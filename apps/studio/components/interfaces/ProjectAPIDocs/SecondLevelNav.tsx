@@ -21,7 +21,6 @@ import { useAppStateSnapshot } from 'state/app-state'
 import { navigateToSection } from './Content/Content.utils'
 import { DOCS_RESOURCE_CONTENT } from './ProjectAPIDocs.constants'
 import { Code } from 'lucide-react'
-import { DocsButton } from 'components/ui/DocsButton'
 
 const SecondLevelNav = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
@@ -145,7 +144,6 @@ const SecondLevelNav = () => {
             <p className="text-xs !leading-normal">
               Head over to our docs site for the full API documentation.
             </p>
-            <DocsButton className="!mt-2" href={content[section].docsUrl} />
           </AlertDescription_Shadcn_>
         </Alert_Shadcn_>
       </div>

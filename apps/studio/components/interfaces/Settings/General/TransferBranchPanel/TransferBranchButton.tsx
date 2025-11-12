@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { DocsButton } from 'components/ui/DocsButton'
 import { useOrganizationsQuery } from 'data/organizations/organizations-query'
 import { useProjectTransferMutation } from 'data/projects/project-transfer-mutation'
 import { useProjectTransferPreviewQuery } from 'data/projects/project-transfer-preview-query'
@@ -154,11 +153,6 @@ const TransferBranchButton = () => {
             </li>
           </ul>
 
-          <DocsButton
-            abbrev={false}
-            className="mt-6"
-            href="https://supabase.com/docs/guides/platform/project-transfer"
-          />
         </Modal.Content>
 
         <Modal.Separator />

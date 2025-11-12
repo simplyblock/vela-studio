@@ -5,7 +5,6 @@ import { toast } from 'sonner'
 
 import { useParams } from 'common'
 import CodeSnippet from 'components/interfaces/Docs/CodeSnippet'
-import { DocsButton } from 'components/ui/DocsButton'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { generateTypes } from 'data/projects/project-type-generation-query'
 import { Button } from 'ui'
@@ -45,7 +44,6 @@ export default function GeneratingTypes({ selectedLang }: Props) {
     <>
       <h2 className="doc-heading flex items-center justify-between">
         <span>Generating types</span>
-        <DocsButton href="https://supabase.com/docs/guides/database/api/generating-types" />
       </h2>
       <div className="doc-section">
         <article className="code-column text-foreground">

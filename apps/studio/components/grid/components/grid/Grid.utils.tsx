@@ -5,7 +5,6 @@ import { toast } from 'sonner'
 
 import { SupaRow } from 'components/grid/types'
 import { convertByteaToHex } from 'components/interfaces/TableGridEditor/SidePanelEditor/RowEditor/RowEditor.utils'
-import { DocsButton } from 'components/ui/DocsButton'
 import { isTableLike } from 'data/table-editor/table-editor-types'
 import { tableRowKeys } from 'data/table-rows/keys'
 import { useTableRowUpdateMutation } from 'data/table-rows/table-row-update-mutation'
@@ -121,9 +120,6 @@ export function useOnRowsChange(rows: SupaRow[]) {
                 Add a primary key column to your table first to serve as a unique identifier for
                 each row before updating or deleting the row.
               </p>
-              <div className="mt-3">
-                <DocsButton href="https://supabase.com/docs/guides/database/tables#primary-keys" />
-              </div>
             </div>
           ),
         })

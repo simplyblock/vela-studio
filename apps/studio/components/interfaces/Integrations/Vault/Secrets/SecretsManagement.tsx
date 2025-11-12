@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { DocsButton } from 'components/ui/DocsButton'
 import { useVaultSecretsQuery } from 'data/vault/vault-secrets-query'
 import type { VaultSecret } from 'types'
 import {
@@ -121,7 +120,6 @@ export const SecretsManagement = () => {
               >
                 Refresh
               </Button>
-              <DocsButton href="https://supabase.com/docs/guides/database/vault" />
               <ButtonTooltip
                 type="primary"
                 disabled={!canManageSecrets}

@@ -1,7 +1,6 @@
 import * as yup from 'yup'
 
 import { useParams } from 'common'
-import { DocsButton } from 'components/ui/DocsButton'
 import { FormActions } from 'components/ui/Forms/FormActions'
 import { FormPanel } from 'components/ui/Forms/FormPanel'
 import { FormSection, FormSectionContent, FormSectionLabel } from 'components/ui/Forms/FormSection'
@@ -64,10 +63,8 @@ const CustomDomainsConfigureHostname = () => {
                     handleReset={handleReset}
                     disabled={!true}
                     helper={
-                      !canConfigureCustomDomain ? (
+                      !canConfigureCustomDomain && (
                         "You need additional permissions to update your project's custom domain settings"
-                      ) : (
-                        <DocsButton href="https://supabase.com/docs/guides/platform/custom-domains" />
                       )
                     }
                   />

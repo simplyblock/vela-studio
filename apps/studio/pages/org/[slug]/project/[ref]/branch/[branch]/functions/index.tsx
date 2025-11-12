@@ -9,7 +9,6 @@ import EdgeFunctionsLayout from 'components/layouts/EdgeFunctionsLayout/EdgeFunc
 import { PageLayout } from 'components/layouts/PageLayout/PageLayout'
 import { ScaffoldContainer, ScaffoldSection } from 'components/layouts/Scaffold'
 import AlertError from 'components/ui/AlertError'
-import { DocsButton } from 'components/ui/DocsButton'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import type { NextPageWithLayout } from 'types'
@@ -28,7 +27,6 @@ const EdgeFunctionsPage: NextPageWithLayout = () => {
   const hasFunctions = (functions ?? []).length > 0
 
   const secondaryActions = [
-    <DocsButton key="docs" href="https://supabase.com/docs/guides/functions" />,
     <Button asChild key="edge-function-examples" type="default" icon={<ExternalLink />}>
       <a
         target="_blank"

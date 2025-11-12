@@ -138,7 +138,7 @@ const BasicAuthSettingsForm = () => {
                         to ensure that access to your data is restricted where required.
                       </p>
                       <Button asChild type="default" className="w-min" icon={<ExternalLink />}>
-                        <Link href="https://supabase.com/docs/guides/auth/auth-anonymous#access-control">
+                        <Link href="https://vela.run/">
                           View access control docs
                         </Link>
                       </Button>
@@ -208,7 +208,7 @@ const BasicAuthSettingsForm = () => {
                           Enable{' '}
                           <InlineLink
                             className="text-foreground-light hover:text-foreground"
-                            href="https://supabase.com/docs/guides/auth/auth-identity-linking#manual-linking-beta"
+                            href="https://vela.run/"
                           >
                             manual linking APIs
                           </InlineLink>{' '}
@@ -240,7 +240,7 @@ const BasicAuthSettingsForm = () => {
                           Enable{' '}
                           <InlineLink
                             className="text-foreground-light hover:text-foreground"
-                            href="https://supabase.com/docs/guides/auth/auth-anonymous"
+                            href="https://vela.run/"
                           >
                             anonymous sign-ins
                           </InlineLink>{' '}
@@ -284,7 +284,7 @@ const BasicAuthSettingsForm = () => {
                           to ensure that access to your data is restricted where required.
                         </p>
                         <Button asChild type="default" className="w-min" icon={<ExternalLink />}>
-                          <Link href="https://supabase.com/docs/guides/auth/auth-anonymous#access-control">
+                          <Link href="https://vela.run/">
                             View access control docs
                           </Link>
                         </Button>

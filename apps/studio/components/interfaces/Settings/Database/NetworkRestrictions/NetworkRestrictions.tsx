@@ -3,7 +3,6 @@ import { useState } from 'react'
 
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import { DocsButton } from 'components/ui/DocsButton'
 import { FormHeader } from 'components/ui/Forms/FormHeader'
 import { FormPanel } from 'components/ui/Forms/FormPanel'
 import Panel from 'components/ui/Panel'
@@ -102,7 +101,6 @@ const NetworkRestrictions = () => {
             description="Allow specific IP ranges to have access to your database."
           />
           <div className="flex items-center gap-x-2">
-            <DocsButton href="https://supabase.com/docs/guides/platform/network-restrictions" />
             {!canUpdateNetworkRestrictions ? (
               <ButtonTooltip
                 disabled

@@ -8,7 +8,6 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { useParams } from 'common'
-import { DocsButton } from 'components/ui/DocsButton'
 import { FormActions } from 'components/ui/Forms/FormActions'
 import { useProjectPostgrestConfigQuery } from 'data/config/project-postgrest-config-query'
 import { useProjectPostgrestConfigUpdateMutation } from 'data/config/project-postgrest-config-update-mutation'
@@ -165,7 +164,6 @@ export const PostgrestConfig = () => {
       <CardHeader className="flex-row items-center justify-between">
         Data API Settings
         <div className="flex items-center gap-x-2">
-          <DocsButton href="https://supabase.com/docs/guides/database/connecting-to-postgres#data-apis" />
           <Button type="default" icon={<Lock />} onClick={() => setShowModal(true)}>
             Harden Data API
           </Button>

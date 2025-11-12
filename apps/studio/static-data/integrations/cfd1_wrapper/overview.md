@@ -6,5 +6,5 @@ The Cloudflare D1 Wrapper is a WebAssembly (Wasm) foreign data wrapper that allo
 
 - Query D1 databases directly from Postgres using SQL.
 - Read and write support for D1 tables.
-- Secure credential storage via Supabase Vault.
+- Secure credential storage via Vela Vault.
 - Supports query pushdown (where, order by, limit).

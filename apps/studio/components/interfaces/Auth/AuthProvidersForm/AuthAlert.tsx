@@ -31,7 +31,7 @@ export const AuthAlert = ({
             below. Developers using this provider should move over to the new provider. Please refer
             to our{' '}
             <a
-              href="https://supabase.com/docs/guides/auth/social-login/auth-slack"
+              href="https://vela.run/"
               className="underline"
               target="_blank"
             >

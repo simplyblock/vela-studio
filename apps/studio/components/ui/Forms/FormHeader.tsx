@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 import { cn } from 'ui'
-import { DocsButton } from '../DocsButton'
 
 const FormHeader = ({
   title,
@@ -26,7 +25,6 @@ const FormHeader = ({
         {description && <div className="prose text-sm max-w-2xl">{description}</div>}
       </div>
       <div className="flex flex-col sm:flex-row md:items-center gap-x-2">
-        {docsUrl !== undefined && <DocsButton href={docsUrl} />}
         {actions}
       </div>
     </div>

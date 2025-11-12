@@ -14,7 +14,6 @@ import {
   TooltipTrigger,
   copyToClipboard,
 } from 'ui'
-import { DocsButton } from '../DocsButton'
 
 export interface LogsExplorerHeaderProps {
   subtitle?: string
@@ -36,7 +35,6 @@ const LogsExplorerHeader = ({ subtitle }: LogsExplorerHeaderProps) => {
         {subtitle && <span className="text-2xl text-foreground-light">{subtitle}</span>}
       </div>
       <div className="flex flex-row gap-2">
-        <DocsButton href={LOGS_EXPLORER_DOCS_URL} />
 
         <SidePanel
           size="large"

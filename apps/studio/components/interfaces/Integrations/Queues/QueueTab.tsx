@@ -229,7 +229,6 @@ You may opt to manage your queues via any Supabase client libraries or PostgREST
             Add message
           </Button>
 
-          {/* <DocsButton href={docsUrl} />} */}
         </div>
       </div>
 
