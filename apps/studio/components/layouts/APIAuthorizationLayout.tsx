@@ -26,7 +26,7 @@ const APIAuthorizationLayout = ({ children }: PropsWithChildren<APIAuthorization
                       ? `${BASE_PATH}/img/vela-dark.svg`
                       : `${BASE_PATH}/img/vela-light.svg`
                   }
-                  alt="Supabase Logo"
+                  alt="Vela Logo"
                   height={20}
                   width={105}
                 />

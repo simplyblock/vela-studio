@@ -12,7 +12,7 @@ const CustomerStories = (props: Props) => {
   const { title, customer } = props
 
   const imageUrl = `https://supabase.com/images/customers/logos/light/${customer}.png`
-  const supabaseLogoUrl = `${STORAGE_URL}/customers/supabase-gradient-icon.svg?t=2024-06-01T16%3A09%3A05.507Z`
+  const velaLogoUrl = `${STORAGE_URL}/customers/supabase-gradient-icon.svg?t=2024-06-01T16%3A09%3A05.507Z`
 
   return (
     <div
@@ -28,7 +28,7 @@ const CustomerStories = (props: Props) => {
       }}
     >
       <div tw="flex flex-row items-center justify-center top-0 mb-6">
-        <img src={supabaseLogoUrl} width="90px" height="90px" tw="mr-6" />
+        <img src={velaLogoUrl} width="90px" height="90px" tw="mr-6" />
         <p tw="text-[#FAFAFA] text-[30px] font-light">+</p>
         {customer && (
           <img
