@@ -8,7 +8,8 @@ import {
   Blocks,
   CopyPlus,
   HardDrive,
-  Columns3Cog,
+  PanelLeftOpen,
+  PanelLeftClose,
   PanelsTopLeft,
   Settings,
   ShieldUser,
@@ -51,6 +52,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from 'ui'
 import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
 import { useSessionAccessTokenQuery } from '../../data/auth/session-access-token-query'
@@ -69,7 +73,7 @@ const SidebarMotion = motion(SidebarPrimitive) as FC<
 export interface SidebarProps extends ComponentPropsWithoutRef<typeof SidebarPrimitive> {}
 
 export const Sidebar = ({ className, ...props }: SidebarProps) => {
-  const { setOpen } = useSidebar()
+  const { setOpen, state } = useSidebar()
   const hideSideBar = useHideSidebar()
 
   const [sidebarBehaviour, setSidebarBehaviour] = useLocalStorageQuery(
@@ -102,13 +106,28 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
           <SidebarContent
             footer={
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="text"
-                    className={`w-min px-1.5 mx-0.5 ${sidebarBehaviour === 'open' ? '!px-2' : ''}[&>div]:!text-purple-900 hover:bg-blue-50`}
-                    icon={<Columns3Cog size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />}
-                  />
-                </DropdownMenuTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                      <SidebarMenuButton
+                        className={cn(
+                          'justify-center text-black-800 dark:text-black-300 hover:bg-blue-50 dark:hover:bg-blue-950/30',
+                          sidebarBehaviour === 'open' ? '!px-2' : ''
+                        )}
+                        size="default"
+                      >
+                        {state === 'collapsed' ? (
+                          <PanelLeftOpen size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+                        ) : (
+                          <PanelLeftClose size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
+                        )}
+                      </SidebarMenuButton>
+                    </DropdownMenuTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    {state === 'collapsed' ? 'Extend Sidebar' : 'Collapse Sidebar'}
+                  </TooltipContent>
+                </Tooltip>
                 <DropdownMenuContent side="top" align="start" className="w-40">
                   <DropdownMenuRadioGroup
                     value={sidebarBehaviour}
@@ -179,7 +198,7 @@ export const SidebarContent = ({ footer }: { footer?: ReactNode }) => {
           )}
         </SidebarContentPrimitive>
       </AnimatePresence>
-
+      <Separator className="w-[calc(100%-1rem)] mx-auto" />
       <SidebarFooter>
         <SidebarGroup className="p-0">{footer}</SidebarGroup>
       </SidebarFooter>
