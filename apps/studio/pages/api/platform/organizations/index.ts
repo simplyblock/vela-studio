@@ -15,7 +15,7 @@ const handleCreate = async (req: NextApiRequest, res: NextApiResponse) => {
     body: {
       name: req.body.name,
       max_backups: req.body.max_backups,
-      environments: req.body.env_types ? req.body.env_types?.join(';') : undefined,
+      environments: req.body.env_types ? req.body.env_types?.join(',') : undefined,
     }
   })
 
