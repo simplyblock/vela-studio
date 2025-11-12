@@ -1,6 +1,6 @@
-# Developing Supabase
+# Developing Vela
 
-- [Developing Supabase](#developing-supabase)
+- [Developing Vela](#developing-vela)
 
   - [Getting started](#getting-started)
     - [Install dependencies](#install-dependencies)
@@ -11,7 +11,7 @@
       - [Running sites individually](#running-sites-individually)
       - [Shared components](#shared-components)
       - [Installing packages](#installing-packages)
-  - [Running Docker for Supabase Studio](#running-docker-for-supabase-studio)
+  - [Running Docker for Vela Studio](#running-docker-for-vela-studio)
     - [Prerequisites](#prerequisites)
     - [Get Started](#get-started)
   - [Create a pull request](#create-a-pull-request)
@@ -26,13 +26,13 @@
 
 ## Getting started
 
-Thank you for your interest in [Supabase](https://supabase.com) and your willingness to contribute!
+Thank you for your interest in [Vela](https://vela.run) and your willingness to contribute!
 
-To ensure a positive and inclusive environment, please read our [code of conduct](https://github.com/supabase/.github/blob/main/CODE_OF_CONDUCT.md). We encourage you to explore the existing [issues](https://github.com/supabase/supabase/issues) to see how you can make a meaningful impact. This document will help you setup your development environment.
+To ensure a positive and inclusive environment, please read our [code of conduct](https://github.com/simplyblock/vela-studio/.github/blob/main/CODE_OF_CONDUCT.md). We encourage you to explore the existing [issues](https://github.com/simplyblock/vela-studio/issues) to see how you can make a meaningful impact. This document will help you setup your development environment.
 
 ### Install dependencies
 
-You will need to install and configure the following dependencies on your machine to build [Supabase](https://supabase.com):
+You will need to install and configure the following dependencies on your machine to build [Vela](https://vela.run):
 
 - [Git](https://git-scm.com/)
 - [Node.js v22.x or higher](https://nodejs.org)
@@ -48,7 +48,7 @@ All of our apps are in this [Turborepo](https://turborepo.org/docs), which make 
 
 ### Fork the repo
 
-To contribute code to [Supabase](https://supabase.com), you must fork the [Supabase repo](https://github.com/supabase/supabase).
+To contribute code to [Vela](https://vela.run), you must fork the [Vela repo](https://github.com//supabasesupabase).
 
 ### Clone the repo
 
@@ -58,7 +58,7 @@ To contribute code to [Supabase](https://supabase.com), you must fork the [Supab
    git clone https://github.com/<github_username>/supabase.git
    ```
 
-2. Go to the Supabase directory:
+2. Go to the Vela directory:
    ```sh
    cd supabase
    ```
@@ -86,9 +86,9 @@ Then visit, and edit, any of the following sites:
 
 | Site                                                     | Directory      | Scope name | Description                                   | Local development server   |
 | -------------------------------------------------------- | -------------- | ---------- | --------------------------------------------- | -------------------------- |
-| [supabase.com](https://supabase.com)                     | `/apps/www`    | www        | The main website                              | http://localhost:3000      |
-| [supabase.com/dashboard](https://supabase.com/dashboard) | `/apps/studio` | studio     | Studio dashboard (requires Docker, see below) | http://localhost:8082      |
-| [supabase.com/docs](https://supabase.com/docs)           | `/apps/docs`   | docs       | Guides and Reference (Next.js based)          | http://localhost:3001/docs |
+| [vela.run](https://vela.run)                     | `/apps/www`    | www        | The main website                              | http://localhost:3000      |
+| [vela.run/dashboard](https://vela.run/dashboard) | `/apps/studio` | studio     | Studio dashboard (requires Docker, see below) | http://localhost:8082      |
+| [vela.run/docs](https://vela.run/docs)           | `/apps/docs`   | docs       | Guides and Reference (Next.js based)          | http://localhost:3001/docs |
 
 #### Running sites individually
 
@@ -123,7 +123,7 @@ For example:
 
 ---
 
-## Running Docker for Supabase Studio
+## Running Docker for Vela Studio
 
 To run Studio locally, you'll need to setup Docker in addition to your NextJS frontend.
 
@@ -153,15 +153,15 @@ First, make sure you have the Docker installed on your device. You can download 
 
 This command initializes the containers specified in the `docker-compose.yml` file. It might take a few moments to complete, depending on your computer and internet connection.
 
-Once the `docker compose up` process completes, you should have your local version of Supabase up and running within Docker containers. You can access it at `http://localhost:8082`.
+Once the `docker compose up` process completes, you should have your local version of Vela up and running within Docker containers. You can access it at `http://localhost:8082`.
 
-Remember to keep the Docker application open as long as you're working with your local Supabase instance.
+Remember to keep the Docker application open as long as you're working with your local Vela instance.
 
 ## Create a pull request
 
-After making any changes, open a pull request. Once you submit your pull request, the Supabase team will review it with you.
+After making any changes, open a pull request. Once you submit your pull request, the Vela team will review it with you.
 
-Once your PR has been merged, you will be proudly listed as a contributor in the [contributor chart](https://github.com/supabase/supabase/graphs/contributors)!
+Once your PR has been merged, you will be proudly listed as a contributor in the [contributor chart](https://github.com/simplyblock/vela-studio/graphs/contributors)!
 
 ## Issue assignment
 
@@ -177,36 +177,36 @@ We review PRs in the order of their submission. We try to accept the earliest on
 
 ### Add a redirect
 
-Create a new entry in the [`redirects.js`](https://github.com/supabase/supabase/blob/master/apps/www/lib/redirects.js) file in our main site.
+Create a new entry in the [`redirects.js`](https://github.com/simplyblock/vela-studio/blob/master/apps/www/lib/redirects.js) file in our main site.
 
 ---
 
 ### Federated docs
 
-We support "federating" docs, meaning doc content can come directly from external repos other than [`supabase/supabase`](https://github.com/supabase/supabase).
+We support "federating" docs, meaning doc content can come directly from external repos other than [`simplyblock/vela-studio`](https://github.com/simplyblock/vela-studio).
 
-- It's great for things like client libs who have their own set of docs that we don't want to duplicate on the official Supabase docs (eg. [`supabase/vecs`](https://github.com/supabase/vecs)).
+- It's great for things like client libs who have their own set of docs that we don't want to duplicate on the official Vela docs (eg. [`supabase/vecs`](https://github.com/supabase/vecs)).
 - No duplication or manual steps required - fetches and generates automatically as part of the docs build pipeline.
-- It's flexible - you can "embed" external docs nearly anywhere at any level in Supabase docs, but they will feel native.
-- If you are maintaining a repo containing docs that you think could also live in Supabase docs, feel free to create an issue and we can work together to integrate.
+- It's flexible - you can "embed" external docs nearly anywhere at any level in Vela docs, but they will feel native.
+- If you are maintaining a repo containing docs that you think could also live in Vela docs, feel free to create an issue and we can work together to integrate.
 
 Federated docs work using Next.js's build pipeline. We use `getStaticProps()` to fetch remote documentation (ie. markdown) at build time which is processed and passed to the respective page within the docs.
 
-See the [Vecs Python source code](https://github.com/supabase/supabase/blob/master/apps/docs/pages/guides/ai/python/%5Bslug%5D.tsx) to see how we do this for [`supabase/vecs`](https://github.com/supabase/vecs). Use this as a starting point for federating other docs.
+See the [Vecs Python source code](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/pages/guides/ai/python/%5Bslug%5D.tsx) to see how we do this for [`supabase/vecs`](https://github.com/supabase/vecs). Use this as a starting point for federating other docs.
 
 Some things to consider:
 
-- Links will often need to be transformed. For example if you are bringing in external markdown content, they may contain relative links that may not translate 1-to-1 after rendering in the Supabase docs. Use the [Link Transform](https://github.com/supabase/supabase/blob/master/apps/docs/lib/mdx/plugins/rehypeLinkTransform.ts) rehype plugin to transform links.
-- External markdown may contain syntax extensions that Supabase docs don't understand by default (eg. [mkdocs-material extensions](https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown)). We've built a few remark plugins to support these extensions (eg. [MkDocs Admonition](https://github.com/supabase/supabase/blob/master/apps/docs/lib/mdx/plugins/remarkAdmonition.ts)). If there is a markdown extension that you need that isn't built yet, feel free to open an issue and we can work together to create it.
+- Links will often need to be transformed. For example if you are bringing in external markdown content, they may contain relative links that may not translate 1-to-1 after rendering in the Vela docs. Use the [Link Transform](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/lib/mdx/plugins/rehypeLinkTransform.ts) rehype plugin to transform links.
+- External markdown may contain syntax extensions that Vela docs don't understand by default (eg. [mkdocs-material extensions](https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown)). We've built a few remark plugins to support these extensions (eg. [MkDocs Admonition](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/lib/mdx/plugins/remarkAdmonition.ts)). If there is a markdown extension that you need that isn't built yet, feel free to open an issue and we can work together to create it.
 
 ---
 
 ## Community channels
 
-If you get stuck somewhere or have any questions, join our [Discord Community Server](https://discord.supabase.com/) or the [Github Discussions](https://github.com/supabase/supabase/discussions). We are here to help!
+If you get stuck somewhere or have any questions, join our [Discord Community Server](https://discord.vela.run/) or the [Github Discussions](https://github.com/simplyblock/vela-studio/discussions). We are here to help!
 
 ## Contributors
 
-<a href="https://github.com/supabase/supabase/graphs/contributors">
-   <img src="https://contributors.deno.dev/supabase/supabase?height=1200&width=1200&count=90" width="1200" height="1200" alt="contributors">
+<a href="https://github.com/simplyblock/vela-studio/graphs/contributors">
+   <img src="https://contributors.deno.dev/simplyblock/vela-studio?height=1200&width=1200&count=90" width="1200" height="1200" alt="contributors">
 </a>
