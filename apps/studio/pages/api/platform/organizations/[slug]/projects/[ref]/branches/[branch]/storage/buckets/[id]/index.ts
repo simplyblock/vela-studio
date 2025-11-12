@@ -6,7 +6,7 @@ import { newStorageClient } from 'lib/storage/storage-client'
 const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = getPlatformQueryParams(req, 'id')
   const storageClient = await newStorageClient(req, res)
-  if (!storageClient) return
+  if (!storageClient) return res.status(500).json({ error: 'Failed to created storage client' })
   return await storageClient.deleteBucket(id)
 }
 
@@ -14,7 +14,7 @@ const handlePatch = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = getPlatformQueryParams(req, 'id')
   const { public: isPublicBucket } = req.body
   const storageClient = await newStorageClient(req, res)
-  if (!storageClient)return
+  if (!storageClient) return res.status(500).json({ error: 'Failed to created storage client' })
   return await storageClient.updateBucket(id, isPublicBucket)
 }
 
