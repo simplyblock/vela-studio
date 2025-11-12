@@ -1,9 +1,10 @@
 name: Notify vela controller repo
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ['Build and publish image']
+    types:
+      - completed
 
 jobs:
   dispatch:
@@ -15,4 +16,4 @@ jobs:
           token: ${{ secrets.PRIVATE_REPO_PAT }}
           repository: simplyblock/vela
           event-type: update-vela-studio
-          client-payload: '{"tag": "${{ github.sha }}"}'
+          client-payload: '{"sha": "${{ github.event.workflow_run.head_sha }}"}'
