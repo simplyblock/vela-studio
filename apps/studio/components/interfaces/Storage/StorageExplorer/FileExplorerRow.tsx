@@ -110,7 +110,7 @@ const FileExplorerRow: ItemRenderer<StorageItem, FileExplorerRowProps> = ({
   columnIndex = 0,
   selectedItems = [],
 }) => {
-  const { ref: projectRef, bucketId } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, bucketId } = useParams()
 
   const {
     selectedBucket,
@@ -252,7 +252,9 @@ const FileExplorerRow: ItemRenderer<StorageItem, FileExplorerRowProps> = ({
                         icon: <Download size={14} strokeWidth={1} />,
                         onClick: async () => {
                           await downloadFile({
+                            orgRef,
                             projectRef,
+                            branchRef,
                             bucketId,
                             file: itemWithColumnIndex,
                           })

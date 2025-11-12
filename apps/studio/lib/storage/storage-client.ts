@@ -106,7 +106,7 @@ const createSignedUrl = async (
   path: string,
   expiresAt: string
 ) => {
-  const storageObjectUrl = `${storageEndpoint}/object/${bucket}/${path}`
+  const storageObjectUrl = `${storageEndpoint}/object/${bucket}${encodeURI(path)}`
   const hash = crypto.createHash('sha256').update(storageObjectUrl).digest('hex')
   const payload = { storageObjectUrl, organizationId, projectId, branchId, expiresAt }
   const jws = await signJws(payload)
@@ -300,7 +300,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       return res
         .status(200)
         .setHeader('Content-Type', 'application/octet-stream')
-        .send(await response.arrayBuffer())
+        .send(Buffer.from(await response.arrayBuffer()))
     },
 
     moveObject: async (source: string, from: string, to: string, destination?: string) => {
@@ -378,10 +378,11 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       if (response.status !== 200) {
         return res.status(response.status).json({ error: response.statusText })
       }
+
+      console.log(response.headers)
       return res
-        .status(200)
-        .setHeaders(response.headers)
-        .send(await response.arrayBuffer())
+        .writeHead(200, [...response.headers.entries()].reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}))
+        .send(Buffer.from(await response.arrayBuffer()))
     },
   }
 }

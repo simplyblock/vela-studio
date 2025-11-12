@@ -7,7 +7,7 @@ import { downloadFile } from './StorageExplorer.utils'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const FileExplorerHeaderSelection = () => {
-  const { ref: projectRef, bucketId } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, bucketId } = useParams()
 
   const canUpdateFiles = useCheckPermissions("branch:settings:admin")
 
@@ -36,7 +36,7 @@ const FileExplorerHeaderSelection = () => {
           type="primary"
           onClick={async () => {
             if (selectedItems.length === 1) {
-              await downloadFile({ projectRef, bucketId, file: selectedItems[0] })
+              await downloadFile({ orgRef, projectRef, branchRef, bucketId, file: selectedItems[0] })
             } else {
               await downloadSelectedFiles(selectedItems)
             }

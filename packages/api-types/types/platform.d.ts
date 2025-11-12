@@ -8740,7 +8740,7 @@ export interface components {
       owner: string
       updated_at: string
     }
-    StreamableFile: Record<string, never>
+    StreamableFile: ByteArray
     SupavisorConfigResponse: {
       connection_string: string
       /** @description Use connection_string instead */
@@ -22569,7 +22569,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': PlatformType<'StreamableFile'>
+          'application/octet-stream': PlatformType<'StreamableFile'>
         }
       }
       403: {

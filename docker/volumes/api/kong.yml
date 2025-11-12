@@ -148,7 +148,7 @@ services:
       - name: storage-v1-all
         strip_path: true
         paths:
-          - /storage/v1/
+          - /storage/
     plugins:
       - name: cors
 

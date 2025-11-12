@@ -821,14 +821,15 @@ function createStorageExplorerState({
               | boolean
             >(async (resolve) => {
               try {
-                const data = await downloadBucketObject({
+                const blob = await downloadBucketObject({
+                  orgRef: state.orgRef,
                   projectRef: state.projectRef,
+                  branchRef: state.branchRef,
                   bucketId: state.selectedBucket.id,
                   path: `${file.prefix}/${file.name}`,
                 })
                 progress = progress + 1 / files.length
 
-                const blob = await data.blob()
                 resolve({
                   name: file.name,
                   prefix: file.prefix,
@@ -1523,7 +1524,9 @@ function createStorageExplorerState({
         return () => {
           return new Promise<{ name: string; blob: Blob } | boolean>(async (resolve) => {
             const data = await downloadFile({
+              orgRef: state.orgRef,
               projectRef: state.projectRef,
+              branchRef: state.branchRef,
               bucketId: state.selectedBucket.id,
               file,
               returnBlob,

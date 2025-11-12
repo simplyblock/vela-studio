@@ -3,6 +3,7 @@ import { apiBuilder } from 'lib/api/apiBuilder'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { getVelaClient } from 'data/vela/vela'
 import { Branch } from 'data/branches/branch-query'
+import { mapBranch } from '../../../../../../../../../data/vela/api-mappers'
 
 const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
@@ -48,7 +49,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch>) => {
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
 
   const client = getVelaClient(req)
-  return await client.proxyGet(
+  const { data, success } = await client.getOrFail(
     res,
     '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/',
     {
@@ -61,6 +62,9 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<Branch>) => {
       },
     }
   )
+
+  if (!success) return
+  return res.status(200).json(mapBranch(data))
 }
 
 const apiHandler = apiBuilder((builder) =>

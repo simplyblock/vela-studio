@@ -34,6 +34,7 @@ export const downloadBucketObject = async (
         path,
         options,
       },
+      parseAs: "blob",
       abortSignal: signal,
     }
   )

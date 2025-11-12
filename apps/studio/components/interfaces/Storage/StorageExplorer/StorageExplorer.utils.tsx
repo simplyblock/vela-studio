@@ -39,19 +39,25 @@ export const formatTime = (seconds: number) => {
 }
 
 export const downloadFile = async ({
+  orgRef,
   projectRef,
+  branchRef,
   bucketId,
   file,
   showToast = true,
   returnBlob = false,
 }: {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
   bucketId?: string
   file: StorageItemWithColumn
   showToast?: boolean
   returnBlob?: boolean
 }) => {
+  if (!orgRef) return toast.error('Failed to download: Organization ref is required')
   if (!projectRef) return toast.error('Failed to download: Project ref is required')
+  if (!branchRef) return toast.error('Failed to download: Branch ref is required')
   if (!bucketId) return toast.error('Failed to download: Bucket ID is required')
   if (!file.path) return toast.error('Failed to download: Unable to find path to file')
 
@@ -61,13 +67,14 @@ export const downloadFile = async ({
   const toastId = showToast ? toast.loading(`Retrieving ${fileName}...`) : undefined
 
   try {
-    const data = await downloadBucketObject({
+    const blob = await downloadBucketObject({
+      orgRef,
       projectRef,
+      branchRef,
       bucketId,
       path: file.path,
     })
 
-    const blob = await data.blob()
     const newBlob = new Blob([blob], { type: fileMimeType })
     if (returnBlob) return { name: fileName, blob: newBlob }
 
@@ -88,6 +95,7 @@ export const downloadFile = async ({
     }
     return true
   } catch (err) {
+    console.error('Error downloading file:', err)
     if (toastId) {
       toast.error(`Failed to download ${fileName}`, {
         id: toastId,

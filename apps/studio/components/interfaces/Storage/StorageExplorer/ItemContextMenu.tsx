@@ -14,7 +14,7 @@ interface ItemContextMenuProps {
 }
 
 const ItemContextMenu = ({ id = '' }: ItemContextMenuProps) => {
-  const { ref: projectRef, bucketId } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, bucketId } = useParams()
   const snap = useStorageExplorerStateSnapshot()
   const { setSelectedFileCustomExpiry } = snap
 
@@ -40,7 +40,7 @@ const ItemContextMenu = ({ id = '' }: ItemContextMenuProps) => {
       case 'move':
         return setSelectedItemsToMove([item])
       case 'download':
-        return await downloadFile({ projectRef, bucketId, file: item })
+        return await downloadFile({ orgRef, projectRef, branchRef, bucketId, file: item })
       default:
         break
     }

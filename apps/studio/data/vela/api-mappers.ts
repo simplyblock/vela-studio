@@ -1,9 +1,14 @@
 import { components } from './vela-schema'
 import { Organization } from '../../types'
 import { OrganizationMember } from '../organizations/organization-members-query'
+import { Branch } from '../branches/branch-query'
+import { isDocker } from '../../lib/docker'
+
+const isInDocker = isDocker()
 
 export type VelaOrganization = components['schemas']['Organization']
 export type VelaMember = components['schemas']['UserPublic']
+export type VelaBranch = components['schemas']['BranchPublic']
 
 export function mapOrganization(organization: VelaOrganization): Organization {
   return {
@@ -29,4 +34,14 @@ export function mapOrganizationMember(member: VelaMember): OrganizationMember {
       last_name: member.last_name,
     },
   }
+}
+
+export function mapBranch(branch: VelaBranch): Branch {
+  if (isInDocker) {
+    branch.database.service_endpoint_uri = 'http://localhost:8000'
+    branch.api_keys.service_role=process.env.SUPABASE_SERVICE_KEY!
+    branch.api_keys.anon=process.env.SUPABASE_ANON_KEY!
+    console.log(branch.api_keys)
+  }
+  return branch
 }

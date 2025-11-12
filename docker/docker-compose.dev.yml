@@ -230,7 +230,7 @@ services:
     image: supabase/storage-api:v1.25.7
     restart: unless-stopped
     volumes:
-      - ./volumes/storage:/var/lib/storage:z
+      - storage-data:/var/lib/storage
     healthcheck:
       test:
         [
@@ -265,7 +265,7 @@ services:
       # TODO: https://github.com/supabase/storage-api/issues/55
       REGION: stub
       GLOBAL_S3_BUCKET: stub
-      ENABLE_IMAGE_TRANSFORMATION: "true"
+      ENABLE_IMAGE_TRANSFORMATION: "false"
       IMGPROXY_URL: http://imgproxy:5001
 
   imgproxy:
@@ -528,3 +528,4 @@ volumes:
   db-config:
   db-data:
   nextjs-compiler-cache:
+  storage-data:

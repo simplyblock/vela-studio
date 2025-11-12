@@ -117,7 +117,7 @@ const PreviewFile = ({ item }: { item: StorageItem }) => {
 }
 
 const PreviewPane = () => {
-  const { ref: projectRef, bucketId } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, bucketId } = useParams()
 
   const {
     selectedBucket,
@@ -206,7 +206,7 @@ const PreviewPane = () => {
                 type="default"
                 icon={<Download size={16} strokeWidth={2} />}
                 disabled={file.isCorrupted}
-                onClick={async () => await downloadFile({ projectRef, bucketId, file })}
+                onClick={async () => await downloadFile({ orgRef, projectRef, branchRef, bucketId, file })}
               >
                 Download
               </Button>
