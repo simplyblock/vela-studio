@@ -22,7 +22,7 @@ import type { components } from 'data/api'
 
 type OrgDetail = components['schemas']['OrganizationSlugResponse']
 
-const PRESETS = ['Production', 'AI', 'Staging', 'Test', 'Development'] as const
+const PRESETS = ['Production', 'Staging', 'Test', 'Development'] as const
 const PRESET_COLOR: Record<(typeof PRESETS)[number], string> = {
   Production: 'bg-emerald-500',
   Staging: 'bg-amber-500',
