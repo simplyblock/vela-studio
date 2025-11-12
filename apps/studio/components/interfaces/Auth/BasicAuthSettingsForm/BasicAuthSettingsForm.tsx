@@ -138,7 +138,7 @@ const BasicAuthSettingsForm = () => {
                         to ensure that access to your data is restricted where required.
                       </p>
                       <Button asChild type="default" className="w-min" icon={<ExternalLink />}>
-                        <Link href="https://vela.run/>
+                        <Link href="https://vela.run/">
                           View access control docs
                         </Link>
                       </Button>
