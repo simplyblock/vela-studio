@@ -12,6 +12,9 @@
         "NEXT_PUBLIC_GIT_COMMIT_HASH",
         "NEXT_PUBLIC_BUILD_TIME",
 
+        "VELA_PLATFORM_STORAGE_SIGNATURE_PRIVATE_KEY",
+        "VELA_PLATFORM_STORAGE_ENCRYPTION_PRIVATE_KEY",
+
         "ANALYZE",
         "NEXT_PUBLIC_SUPPORT_API_URL",
         "NEXT_PUBLIC_CONTENT_API_URL",
@@ -20,22 +23,12 @@
         "NEXT_PUBLIC_ENVIRONMENT",
         "NEXT_PUBLIC_SITE_URL",
         "NEXT_PUBLIC_API_URL",
-        "NEXT_PUBLIC_CONFIGCAT_SDK_KEY",
-        "NEXT_PUBLIC_CONFIGCAT_PROXY_URL",
         "NEXT_PUBLIC_HCAPTCHA_SITE_KEY",
         "NEXT_PUBLIC_SUPABASE_URL",
         "NEXT_PUBLIC_SUPABASE_ANON_KEY",
         "NEXT_PUBLIC_NODE_ENV",
-        "NEXT_PUBLIC_GOTRUE_URL",
-        "NEXT_PUBLIC_GOOGLE_MAPS_KEY",
         "NODE_ENV",
         "SUPABASE_URL",
-        // These envs are used in the packages
-        "NEXT_PUBLIC_STORAGE_KEY",
-        "NEXT_PUBLIC_AUTH_DEBUG_KEY",
-        "NEXT_PUBLIC_AUTH_PERSISTED_KEY",
-        "NEXT_PUBLIC_AUTH_NAVIGATOR_LOCK_KEY",
-        "NEXT_PUBLIC_AUTH_DETECT_SESSION_IN_URL",
         // These envs are technically passthrough env vars because they're only used on the server side of Nextjs
         "PLATFORM_PG_META_URL",
         "READ_ONLY_URL",
@@ -74,11 +67,6 @@
         "NEXT_PUBLIC_API_URL",
         "NODE_ENV",
         // These envs are used in the packages
-        "NEXT_PUBLIC_STORAGE_KEY",
-        "NEXT_PUBLIC_AUTH_DEBUG_KEY",
-        "NEXT_PUBLIC_AUTH_PERSISTED_KEY",
-        "NEXT_PUBLIC_AUTH_NAVIGATOR_LOCK_KEY",
-        "NEXT_PUBLIC_AUTH_DETECT_SESSION_IN_URL",
         "NEXT_PUBLIC_SUPABASE_ANON_KEY"
       ],
       "outputs": [".next/**", "!.next/cache/**", ".contentlayer/**"]

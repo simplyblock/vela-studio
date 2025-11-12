@@ -17,8 +17,17 @@ const isInDocker = isDocker()
 const ES_ALG = 'ES256' as const // JWS signature
 const ENC_ALG = 'ECDH-ES' as const // JWE key agreement (direct)
 const ENC_ENC = 'A256GCM' as const // JWE content encryption
+
 const publicBaseUrl = process.env.VELA_PLATFORM_EXT_API_SERVICE_URL
 if (!publicBaseUrl) throw new Error('VELA_PLATFORM_EXT_API_SERVICE_URL is not set')
+
+const storageSignaturePrivateKey = process.env.VELA_PLATFORM_STORAGE_SIGNATURE_PRIVATE_KEY
+if (!storageSignaturePrivateKey)
+  throw new Error('VELA_PLATFORM_STORAGE_SIGNATURE_PRIVATE_KEY is not set')
+
+const storageEncryptionPrivateKey = process.env.VELA_PLATFORM_STORAGE_ENCRYPTION_PRIVATE_KEY
+if (!storageEncryptionPrivateKey)
+  throw new Error('VELA_PLATFORM_STORAGE_ENCRYPTION_PRIVATE_KEY is not set')
 
 const DEFAULT_SEARCH_OPTIONS = {
   limit: 100,
@@ -49,14 +58,8 @@ const loadAsynchronousKeys = async (
   }
 }
 
-const storageSignaturePrivateKey = process.env.STORAGE_SIGNATURE_PRIVATE_KEY
-if (!storageSignaturePrivateKey) throw new Error('STORAGE_SIGNATURE_PRIVATE_KEY is not set')
-
-const storageSignaturePublicKey = process.env.STORAGE_SIGNATURE_PUBLIC_KEY
-if (!storageSignaturePublicKey) throw new Error('STORAGE_SIGNATURE_PUBLIC_KEY is not set')
-
 const signatureKeys = await loadAsynchronousKeys(storageSignaturePrivateKey)
-const encryptionKeys = await loadAsynchronousKeys(storageSignaturePublicKey)
+const encryptionKeys = await loadAsynchronousKeys(storageEncryptionPrivateKey)
 
 type SignedUrlPayload = {
   organizationId: string
