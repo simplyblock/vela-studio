@@ -217,7 +217,7 @@ export const DisplayApiSettings = ({
             description={`
   \`anon\` and \`service_role\` API keys can now be replaced with \`publishable\` and \`secret\` API keys.
   `}
-            href="https://github.com/orgs/supabase/discussions/29260"
+            href="https://github.com/simplyblock/vela-studio/discussions/29260"
             buttonText="Read the announcement"
           />
         ) : null}

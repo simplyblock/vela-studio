@@ -100,7 +100,7 @@ export const PublicationsTables = () => {
                   <TableHead>Description</TableHead>
                   {/* 
                       We've disabled All tables toggle for publications. 
-                      See https://github.com/supabase/supabase/pull/7233. 
+                      See https://github.com/simplyblock/vela-studio/pull/7233. 
                     */}
                   <TableHead />
                 </TableRow>

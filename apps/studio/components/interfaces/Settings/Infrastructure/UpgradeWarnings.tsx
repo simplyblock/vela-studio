@@ -134,7 +134,7 @@ export const UserDefinedObjectsInInternalSchemasWarning = ({ objects }: { object
         <div>
           <Button size="tiny" type="default" asChild>
             <a
-              href="https://github.com/orgs/supabase/discussions/34270"
+              href="https://github.com/simplyblock/vela-studio/discussions/34270"
               target="_blank"
               rel="noreferrer"
             >

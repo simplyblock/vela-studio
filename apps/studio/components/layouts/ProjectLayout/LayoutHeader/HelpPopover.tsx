@@ -43,42 +43,41 @@ export const HelpPopover = () => {
         <div className="mb-5 px-5">
           <h5 className="text-foreground mb-2">Need help with your project?</h5>
           <p className="text-sm text-foreground-lighter">
-            For issues with your project hosted on vela.run or other hosted service inquiries.
-            Response times are based on your billing plan, with paid plans prioritized.
+            Reach out to support@vela.run so our team can assist you directly.
           </p>
         </div>
         <div className="mb-4 space-y-2">
           <div className="mb-4 px-5">
-            <h5 className="mb-2">Reach out to the community</h5>
+            <h5 className="mb-2">Community</h5>
 
             <p className="text-sm text-foreground-lighter">
-              For other support, including questions on our client libraries, advice, or best
+              Engage with our community for questions related to the open-source project, client libraries, advice, or best
               practices.
             </p>
           </div>
           <div className="px-5">
             <div
               className="relative space-y-2 overflow-hidden rounded px-5 py-4 pb-12 shadow-md"
-              style={{ background: '#404EED' }}
+              style={{ background: '#e13d3dff' }}
             >
               <a
-                href="https://discord.vela.run"
+                href="https://www.reddit.com/r/simplyblock/"
                 target="_blank"
                 rel="noreferrer"
                 className="dark block cursor-pointer"
               >
                 <Image
-                  className="absolute left-0 top-0 opacity-50"
-                  src={`${router.basePath}/img/support/discord-bg-small.jpg`}
+                  className="absolute left-0 top-0 opacity-90"
+                  src={`${router.basePath}/img/support/reddit-bg-5.png`}
                   layout="fill"
                   objectFit="cover"
-                  alt="discord illustration header"
+                  alt="Reddit illustration header"
                 />
                 <Button
                   type="secondary"
-                  icon={<SVG src={`${router.basePath}/img/discord-icon.svg`} className="h-4 w-4" />}
+                  icon={<SVG src={`${router.basePath}/img/reddit-icon.svg`} className="h-4 w-4" />}
                 >
-                  <span style={{ color: '#404EED' }}>Join Discord server</span>
+                  <span style={{ color: '#ed4040ff' }}>Join Our Reddit</span>
                 </Button>
               </a>
             </div>
@@ -86,17 +85,17 @@ export const HelpPopover = () => {
           <div className="px-5">
             <div className="relative space-y-2 overflow-hidden rounded px-5 py-4 pb-12 shadow-md">
               <a
-                href="https://github.com/supabase/supabase/discussions"
+                href="https://github.com/simplyblock/vela-studio/discussions"
                 target="_blank"
                 rel="noreferrer"
                 className="block cursor-pointer"
               >
                 <Image
-                  className="absolute left-0 top-0 opacity-50"
-                  src={`${router.basePath}/img/support/github-bg.jpg?v-1`}
+                  className="absolute left-0 top-0 opacity-90"
+                  src={`${router.basePath}/img/support/github-bg-n.png`}
                   layout="fill"
                   objectFit="cover"
-                  alt="discord illustration header"
+                  alt="github illustration header"
                 />
                 <Button type="secondary" icon={<MessageCircle />}>
                   GitHub Discussions

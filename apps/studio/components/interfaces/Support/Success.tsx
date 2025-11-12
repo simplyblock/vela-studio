@@ -75,7 +75,7 @@ const Success = ({
                   icon={<ExternalLink />}
                 >
                   <Link
-                    href={`https://github.com/supabase/supabase/discussions?discussions_q=${searchValue}`}
+                    href={`https://github.com/simplyblock/vela-studio/discussions?discussions_q=${searchValue}`}
                     target="_blank"
                     rel="noreferrer"
                   >

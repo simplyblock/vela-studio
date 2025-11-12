@@ -299,7 +299,7 @@ export const Connect = () => {
                   description={`
 \`anon\` and \`service_role\` API keys will be changing to \`publishable\` and \`secret\` API keys.   
 `}
-                  href="https://github.com/orgs/supabase/discussions/29260"
+                  href="https://github.com/simplyblock/vela-studio/discussions/29260"
                   buttonText="Read the announcement"
                 />
               </TabsContent_Shadcn_>

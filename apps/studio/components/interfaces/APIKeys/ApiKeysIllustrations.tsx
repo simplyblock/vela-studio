@@ -120,7 +120,7 @@ export const ApiKeysComingSoonBanner = () => {
         <div className="mt-4">
           <Button type="default" icon={<Github />}>
             <a
-              href="https://github.com/orgs/supabase/discussions/29260"
+              href="https://github.com/simplyblock/vela-studio/discussions/29260"
               target="_blank"
               rel="noreferrer"
             >
@@ -176,7 +176,7 @@ export const ApiKeysFeedbackBanner = () => {
         <p className="text-sm text-foreground-lighter">
           We've updated our API keys to better support your application needs.{' '}
           <a
-            href="https://github.com/orgs/supabase/discussions/29260"
+            href="https://github.com/simplyblock/vela-studio/discussions/29260"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1 text-foreground"
