@@ -27,8 +27,8 @@ const LinkAwsMarketplaceLayout = ({
                   <Image
                     src={
                       resolvedTheme?.includes('dark')
-                        ? `${BASE_PATH}/img/supabase-dark.svg`
-                        : `${BASE_PATH}/img/supabase-light.svg`
+                        ? `${BASE_PATH}/img/vela-dark.svg`
+                        : `${BASE_PATH}/img/vela-light.svg`
                     }
                     alt="Supabase Logo"
                     height={20}
