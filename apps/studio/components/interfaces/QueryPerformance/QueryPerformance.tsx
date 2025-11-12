@@ -236,7 +236,7 @@ export const QueryPerformance = ({
           <p>How is this report generated?</p>
           <Markdown
             className="text-xs"
-            content="This report uses the pg_stat_statements table, and pg_stat_statements extension. [Learn more here](https://supabase.com/docs/guides/platform/performance#examining-query-performance)."
+            content="This report uses the pg_stat_statements table, and pg_stat_statements extension. [Learn more here](https://vela.run/docs/guides/platform/performance#examining-query-performance)."
           />
         </div>
 
@@ -245,7 +245,7 @@ export const QueryPerformance = ({
           <Markdown
             className="text-xs"
             content="The Supabase CLI comes with a range of tools to help inspect your Postgres instances for
-            potential issues. [Learn more here](https://supabase.com/docs/guides/database/inspect)."
+            potential issues. [Learn more here](https://vela.run/docs/guides/database/inspect)."
           />
         </div>
       </div>

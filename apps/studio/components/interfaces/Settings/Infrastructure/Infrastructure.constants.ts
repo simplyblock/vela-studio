@@ -42,15 +42,15 @@ export const INFRA_ACTIVITY_METRICS: CategoryMeta[] = [
         links: [
           {
             name: 'Compute Add-Ons',
-            url: 'https://supabase.com/docs/guides/platform/compute-add-ons',
+            url: 'https://vela.run/docs/guides/platform/compute-add-ons',
           },
           {
             name: 'High CPU Usage',
-            url: 'https://supabase.com/docs/guides/troubleshooting/high-cpu-usage',
+            url: 'https://vela.run/docs/guides/troubleshooting/high-cpu-usage',
           },
           {
             name: 'Metrics',
-            url: 'https://supabase.com/docs/guides/platform/metrics',
+            url: 'https://vela.run/docs/guides/platform/metrics',
           },
         ],
       },
@@ -66,15 +66,15 @@ export const INFRA_ACTIVITY_METRICS: CategoryMeta[] = [
         links: [
           {
             name: 'Compute Add-Ons',
-            url: 'https://supabase.com/docs/guides/platform/compute-add-ons',
+            url: 'https://vela.run/docs/guides/platform/compute-add-ons',
           },
           {
             name: 'High RAM Usage',
-            url: 'https://supabase.com/docs/guides/troubleshooting/exhaust-ram',
+            url: 'https://vela.run/docs/guides/troubleshooting/exhaust-ram',
           },
           {
             name: 'Metrics',
-            url: 'https://supabase.com/docs/guides/platform/metrics',
+            url: 'https://vela.run/docs/guides/platform/metrics',
           },
         ],
       },
@@ -87,15 +87,15 @@ export const INFRA_ACTIVITY_METRICS: CategoryMeta[] = [
         links: [
           {
             name: 'Disk Throughput and IOPS',
-            url: 'https://supabase.com/docs/guides/platform/compute-add-ons#disk-throughput-and-iops',
+            url: 'https://vela.run/docs/guides/platform/compute-add-ons#disk-throughput-and-iops',
           },
           {
             name: 'High Disk I/O',
-            url: 'https://supabase.com/docs/guides/troubleshooting/exhaust-disk-io',
+            url: 'https://vela.run/docs/guides/troubleshooting/exhaust-disk-io',
           },
           {
             name: 'Metrics',
-            url: 'https://supabase.com/docs/guides/platform/metrics',
+            url: 'https://vela.run/docs/guides/platform/metrics',
           },
         ],
         description:

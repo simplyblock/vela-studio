@@ -344,7 +344,7 @@ const DatabaseUsage = () => {
 
                     <Button asChild type="default" icon={<ExternalLink />}>
                       <Link
-                        href="https://supabase.com/docs/guides/platform/database-size#disk-space-usage"
+                        href="https://vela.run/docs/guides/platform/database-size#disk-space-usage"
                         target="_blank"
                         rel="noreferrer"
                       >

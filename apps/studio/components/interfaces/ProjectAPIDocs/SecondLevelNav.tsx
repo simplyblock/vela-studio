@@ -40,22 +40,22 @@ const SecondLevelNav = () => {
     entities: {
       title: 'Tables & Views',
       options: tables,
-      docsUrl: 'https://supabase.com/docs/reference/javascript/select',
+      docsUrl: 'https://vela.run/docs/reference/javascript/select',
     },
     'stored-procedures': {
       title: 'Stored Procedures',
       options: functions,
-      docsUrl: 'https://supabase.com/docs/reference/javascript/rpc',
+      docsUrl: 'https://vela.run/docs/reference/javascript/rpc',
     },
     storage: {
       title: 'Storage',
       options: buckets ?? [],
-      docsUrl: 'https://supabase.com/docs/reference/javascript/storage-createbucket',
+      docsUrl: 'https://vela.run/docs/reference/javascript/storage-createbucket',
     },
     'edge-functions': {
       title: 'Edge Functions',
       options: edgeFunctions ?? [],
-      docsUrl: 'https://supabase.com/docs/reference/javascript/functions-invoke',
+      docsUrl: 'https://vela.run/docs/reference/javascript/functions-invoke',
     },
   }
 

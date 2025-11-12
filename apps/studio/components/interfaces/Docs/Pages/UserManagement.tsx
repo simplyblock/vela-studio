@@ -173,7 +173,7 @@ export default function UserManagement({ selectedLang, showApiKey }: UserManagem
           <p>
             View all the available{' '}
             <a
-              href="https://supabase.com/docs/guides/auth#providers"
+              href="https://vela.run/docs/guides/auth#providers"
               target="_blank"
               rel="noreferrer"
             >

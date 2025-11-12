@@ -221,7 +221,7 @@ const StorageSettings = () => {
                       description={
                         <>
                           Optimize and resize images on the fly.{' '}
-                          <InlineLink href="https://supabase.com/docs/guides/storage/serving/image-transformations">
+                          <InlineLink href="https://vela.run/docs/guides/storage/serving/image-transformations">
                             Learn more
                           </InlineLink>
                           .

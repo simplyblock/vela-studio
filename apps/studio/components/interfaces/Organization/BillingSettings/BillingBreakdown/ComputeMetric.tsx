@@ -67,7 +67,7 @@ const ComputeMetric = ({ slug, metric, usage, relativeToSubscription }: ComputeM
                 Each Preview branch is a separate environment with all Supabase services (Database,
                 Auth, Storage, etc.).{' '}
                 <Link
-                  href="https://supabase.com/docs/guides/platform/manage-your-usage/branching"
+                  href="https://vela.run/docs/guides/platform/manage-your-usage/branching"
                   target="_blank"
                   className="transition text-brand hover:text-brand-600 underline"
                 >
@@ -80,7 +80,7 @@ const ComputeMetric = ({ slug, metric, usage, relativeToSubscription }: ComputeM
                 active, it incurs compute costs based on the compute size of your project. Paused
                 projects do not incur compute costs.{' '}
                 <Link
-                  href="https://supabase.com/docs/guides/platform/manage-your-usage/compute"
+                  href="https://vela.run/docs/guides/platform/manage-your-usage/compute"
                   target="_blank"
                   className="transition text-brand hover:text-brand-600 underline"
                 >

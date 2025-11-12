@@ -43,7 +43,7 @@ export const HelpPopover = () => {
         <div className="mb-5 px-5">
           <h5 className="text-foreground mb-2">Need help with your project?</h5>
           <p className="text-sm text-foreground-lighter">
-            For issues with your project hosted on supabase.com or other hosted service inquiries.
+            For issues with your project hosted on vela.run or other hosted service inquiries.
             Response times are based on your billing plan, with paid plans prioritized.
           </p>
         </div>
@@ -62,7 +62,7 @@ export const HelpPopover = () => {
               style={{ background: '#404EED' }}
             >
               <a
-                href="https://discord.supabase.com"
+                href="https://discord.vela.run"
                 target="_blank"
                 rel="noreferrer"
                 className="dark block cursor-pointer"

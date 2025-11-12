@@ -133,7 +133,7 @@ export const LocalVersionPopover = () => {
                   <p className="text-sm">
                     Supabase CLI releases follows a two-week schedule, with stable updates available
                     through the{' '}
-                    <InlineLink href="https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux#updating-the-supabase-cli">
+                    <InlineLink href="https://vela.run/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux#updating-the-supabase-cli">
                       CLI
                     </InlineLink>
                     .
@@ -163,7 +163,7 @@ export const LocalVersionPopover = () => {
             <a
               target="_blank"
               rel="noreferrer noopener"
-              href="https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux"
+              href="https://vela.run/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=linux"
             >
               CLI Docs
             </a>

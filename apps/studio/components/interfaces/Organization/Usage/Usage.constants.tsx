@@ -97,7 +97,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
       links: [
         {
           name: 'Documentation',
-          url: 'https://supabase.com/docs/guides/platform/manage-your-usage/egress',
+          url: 'https://vela.run/docs/guides/platform/manage-your-usage/egress',
         },
       ],
     },
@@ -116,7 +116,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
       links: [
         {
           name: 'Documentation',
-          url: 'https://supabase.com/docs/guides/platform/manage-your-usage/egress',
+          url: 'https://vela.run/docs/guides/platform/manage-your-usage/egress',
         },
       ],
     })
@@ -147,7 +147,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
               links: [
                 {
                   name: 'Documentation',
-                  url: 'https://supabase.com/docs/guides/platform/database-size',
+                  url: 'https://vela.run/docs/guides/platform/database-size',
                 },
               ],
               chartDescription: 'The data refreshes every 24 hours.',
@@ -205,11 +205,11 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
               links: [
                 {
                   name: 'Documentation',
-                  url: 'https://supabase.com/docs/guides/platform/manage-your-usage/disk-size',
+                  url: 'https://vela.run/docs/guides/platform/manage-your-usage/disk-size',
                 },
                 {
                   name: 'Disk Management',
-                  url: 'https://supabase.com/docs/guides/platform/database-size#disk-management',
+                  url: 'https://vela.run/docs/guides/platform/database-size#disk-management',
                 },
               ],
               chartDescription: '',
@@ -227,7 +227,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
           links: [
             {
               name: 'Storage',
-              url: 'https://supabase.com/docs/guides/storage',
+              url: 'https://vela.run/docs/guides/storage',
             },
           ],
         },
@@ -253,7 +253,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
           links: [
             {
               name: 'Auth',
-              url: 'https://supabase.com/docs/guides/auth',
+              url: 'https://vela.run/docs/guides/auth',
             },
           ],
         },
@@ -274,7 +274,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
           links: [
             {
               name: 'SSO with SAML 2.0',
-              url: 'https://supabase.com/docs/guides/auth/sso/auth-sso-saml',
+              url: 'https://vela.run/docs/guides/auth/sso/auth-sso-saml',
             },
           ],
         },
@@ -295,7 +295,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
           links: [
             {
               name: 'Documentation',
-              url: 'https://supabase.com/docs/guides/storage/image-transformations',
+              url: 'https://vela.run/docs/guides/storage/image-transformations',
             },
           ],
         },
@@ -311,7 +311,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
           links: [
             {
               name: 'Edge Functions',
-              url: 'https://supabase.com/docs/guides/functions',
+              url: 'https://vela.run/docs/guides/functions',
             },
           ],
         },
@@ -327,7 +327,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
           links: [
             {
               name: 'Realtime Quotas',
-              url: 'https://supabase.com/docs/guides/realtime/quotas',
+              url: 'https://vela.run/docs/guides/realtime/quotas',
             },
           ],
         },
@@ -346,7 +346,7 @@ export const USAGE_CATEGORIES: (subscription?: OrgSubscription) => CategoryMeta[
           links: [
             {
               name: 'Realtime Quotas',
-              url: 'https://supabase.com/docs/guides/realtime/quotas',
+              url: 'https://vela.run/docs/guides/realtime/quotas',
             },
           ],
         },

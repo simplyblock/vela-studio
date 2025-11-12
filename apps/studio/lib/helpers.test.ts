@@ -275,7 +275,7 @@ describe('pluralize', () => {
 
 describe('isValidHttpUrl', () => {
   it('should return true if the URL is valid', () => {
-    const result = isValidHttpUrl('https://supabase.com')
+    const result = isValidHttpUrl('https://vela.run')
 
     expect(result).toBe(true)
   })

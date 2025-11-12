@@ -47,7 +47,7 @@ export const ClockSkewBanner = () => {
         Your computer's clock appears to be inaccurate. This can cause issues with certain features.
       </p>
       <Button asChild type="text">
-        <a href="https://supabase.com/docs" target="_blank">
+        <a href="https://vela.run/docs" target="_blank">
           More information
         </a>
       </Button>

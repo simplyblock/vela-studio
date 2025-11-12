@@ -220,7 +220,7 @@ export const EditBucketModal = ({ visible, bucket, onClose }: EditBucketModalPro
                           {
                             'Assets cached in the CDN may still be publicly accessible. You can consider '
                           }
-                          <InlineLink href="https://supabase.com/docs/guides/storage/cdn/smart-cdn#cache-eviction">
+                          <InlineLink href="https://vela.run/docs/guides/storage/cdn/smart-cdn#cache-eviction">
                             purging the cache
                           </InlineLink>
                           {' or moving your assets to a new bucket.'}

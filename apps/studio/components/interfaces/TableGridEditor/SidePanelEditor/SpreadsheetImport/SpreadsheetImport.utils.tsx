@@ -182,7 +182,7 @@ export function flagInvalidFileImport(file: File): boolean {
         <p>For bulk data loading, we recommend doing so directly through the database.</p>
         <Button asChild type="default" icon={<ExternalLink />} className="!mt-2">
           <Link
-            href="https://supabase.com/docs/guides/database/tables#bulk-data-loading"
+            href="https://vela.run/docs/guides/database/tables#bulk-data-loading"
             target="_blank"
             rel="noreferrer"
           >

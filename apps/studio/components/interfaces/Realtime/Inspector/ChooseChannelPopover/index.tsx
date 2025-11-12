@@ -134,7 +134,7 @@ export const ChooseChannelPopover = ({ config, onChangeConfig }: ChooseChannelPo
                             target="_blank"
                             rel="noreferrer"
                             className="underline hover:text-foreground transition"
-                            href="https://supabase.com/docs/guides/realtime/concepts#channels"
+                            href="https://vela.run/docs/guides/realtime/concepts#channels"
                           >
                             our docs
                           </a>

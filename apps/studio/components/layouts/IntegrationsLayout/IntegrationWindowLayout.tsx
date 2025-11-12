@@ -39,7 +39,7 @@ const IntegrationWindowLayout = ({
           </Link>
         )}
         <Link
-          href={'https://supabase.com/support'}
+          href={'https://vela.run/support'}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 text-xs text-light hover:text"

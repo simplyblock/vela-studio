@@ -119,11 +119,11 @@ const TotalUsage = ({
           links: [
             {
               name: 'How billing works',
-              url: 'https://supabase.com/docs/guides/platform/billing-on-supabase',
+              url: 'https://vela.run/docs/guides/platform/billing-on-supabase',
             },
             {
               name: 'Supabase Plans',
-              url: 'https://supabase.com/pricing',
+              url: 'https://vela.run/pricing',
             },
           ],
         }}

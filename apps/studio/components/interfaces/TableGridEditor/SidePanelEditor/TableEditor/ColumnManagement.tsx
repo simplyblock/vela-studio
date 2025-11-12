@@ -144,7 +144,7 @@ const ColumnManagement = ({
           <div className="flex items-center gap-x-2">
             <Button asChild type="default" icon={<ExternalLink size={12} strokeWidth={2} />}>
               <a
-                href="https://supabase.com/docs/guides/database/tables#data-types"
+                href="https://vela.run/docs/guides/database/tables#data-types"
                 target="_blank"
                 rel="noreferrer"
               >

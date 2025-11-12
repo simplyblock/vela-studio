@@ -422,7 +422,7 @@ const GridHeaderActions = ({ table }: GridHeaderActionsProps) => {
                     <Button type="default" asChild>
                       <Link
                         target="_blank"
-                        href="https://supabase.com/docs/guides/database/extensions/wrappers/overview#security"
+                        href="https://vela.run/docs/guides/database/extensions/wrappers/overview#security"
                       >
                         Learn more
                       </Link>

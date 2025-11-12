@@ -128,7 +128,7 @@ import express from "npm:express@4.18.2";
 const app = express();
 
 // TODO: replace slug with Function's slug
-// https://supabase.com/docs/guides/functions/routing?queryGroups=framework&framework=expressjs
+// https://vela.run/docs/guides/functions/routing?queryGroups=framework&framework=expressjs
 app.get(/slug/(.*)/, (req, res) => {
   res.send("Welcome to Supabase");
 });

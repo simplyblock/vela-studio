@@ -371,7 +371,7 @@ export const InviteMemberButton = () => {
                     <div className="flex items-center space-x-2">
                       <Button asChild type="default">
                         <Link
-                          href="https://supabase.com/docs/guides/platform/sso"
+                          href="https://vela.run/docs/guides/platform/sso"
                           target="_blank"
                           rel="noreferrer"
                         >

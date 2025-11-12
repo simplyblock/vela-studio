@@ -53,7 +53,7 @@ export default function GeneratingTypes({ selectedLang }: Props) {
           </p>
           <p>
             You can generate types from your database either through the{' '}
-            <Link href="https://supabase.com/docs/guides/database/api/generating-types">
+            <Link href="https://vela.run/docs/guides/database/api/generating-types">
               Supabase CLI
             </Link>
             , or by downloading the types file via the button on the right and importing it in your

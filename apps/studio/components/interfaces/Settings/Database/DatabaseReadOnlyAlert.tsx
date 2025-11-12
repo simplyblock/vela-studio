@@ -40,7 +40,7 @@ export const DatabaseReadOnlyAlert = () => {
             </Button>
             <Button asChild type="default" icon={<ExternalLink />}>
               <a
-                href="https://supabase.com/docs/guides/platform/database-size#disabling-read-only-mode"
+                href="https://vela.run/docs/guides/platform/database-size#disabling-read-only-mode"
                 target="_blank"
                 rel="noreferrer"
               >

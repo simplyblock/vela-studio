@@ -120,7 +120,7 @@ const ResourceContent = ({
               </p>
               <p>
                 <a
-                  href="https://supabase.com/docs/reference/javascript/select"
+                  href="https://vela.run/docs/reference/javascript/select"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -157,7 +157,7 @@ const ResourceContent = ({
               <p>Supabase provides a wide range of filters.</p>
               <p>
                 <a
-                  href="https://supabase.com/docs/reference/javascript/using-filters"
+                  href="https://vela.run/docs/reference/javascript/using-filters"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -188,7 +188,7 @@ const ResourceContent = ({
               </p>
               <p>
                 <a
-                  href="https://supabase.com/docs/reference/javascript/insert"
+                  href="https://vela.run/docs/reference/javascript/insert"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -228,7 +228,7 @@ const ResourceContent = ({
               </p>
               <p>
                 <a
-                  href="https://supabase.com/docs/reference/javascript/update"
+                  href="https://vela.run/docs/reference/javascript/update"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -256,7 +256,7 @@ const ResourceContent = ({
               </p>
               <p>
                 <a
-                  href="https://supabase.com/docs/reference/javascript/delete"
+                  href="https://vela.run/docs/reference/javascript/delete"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -285,7 +285,7 @@ const ResourceContent = ({
                 </p>
                 <p>
                   <a
-                    href="https://supabase.com/docs/reference/javascript/subscribe"
+                    href="https://vela.run/docs/reference/javascript/subscribe"
                     target="_blank"
                     rel="noreferrer"
                   >

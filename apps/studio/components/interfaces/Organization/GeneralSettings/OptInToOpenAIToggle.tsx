@@ -53,7 +53,7 @@ export const OptInToOpenAIToggle = () => {
 
           <p>
             For more detailed information about how we collect and use your data, see our{' '}
-            <InlineLink href="https://supabase.com/privacy">Privacy Policy</InlineLink>. You can
+            <InlineLink href="https://vela.run/privacy">Privacy Policy</InlineLink>. You can
             choose which types of information you consent to share by selecting from the options in
             the AI settings.
           </p>

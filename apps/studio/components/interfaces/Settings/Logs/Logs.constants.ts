@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import type { DatetimeHelper, FilterTableSet, LogTemplate } from './Logs.types'
 
 export const LOGS_EXPLORER_DOCS_URL =
-  'https://supabase.com/docs/guides/platform/logs#querying-with-the-logs-explorer'
+  'https://vela.run/docs/guides/platform/logs#querying-with-the-logs-explorer'
 
 export const LOGS_LARGE_DATE_RANGE_DAYS_THRESHOLD = 2 // IN DAYS
 

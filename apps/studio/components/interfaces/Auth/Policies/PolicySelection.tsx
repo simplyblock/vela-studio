@@ -69,7 +69,7 @@ const PolicySelection = ({
       {showAssistantPreview && onToggleFeaturePreviewModal !== undefined && (
         <Alert_Shadcn_>
           <FlaskConical />
-          <AlertTitle_Shadcn_>Try the new Supabase Assistant for RLS policies</AlertTitle_Shadcn_>
+          <AlertTitle_Shadcn_>Try the new Vela Assistant for RLS policies</AlertTitle_Shadcn_>
           <AlertDescription_Shadcn_>
             Create RLS policies for your tables with the help of AI
           </AlertDescription_Shadcn_>
@@ -79,7 +79,7 @@ const PolicySelection = ({
             </Button>
             <Button asChild type="default" icon={<ExternalLink strokeWidth={1.5} />}>
               <a
-                href="https://supabase.com/blog/studio-introducing-assistant#introducing-the-supabase-assistant"
+                href="https://vela.run/blog/studio-introducing-assistant#introducing-the-supabase-assistant"
                 target="_blank"
                 rel="noreferrer"
               >

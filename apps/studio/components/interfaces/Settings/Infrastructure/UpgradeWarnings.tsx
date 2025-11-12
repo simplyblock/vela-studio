@@ -43,7 +43,7 @@ export const ObjectsToBeDroppedWarning = ({
         <div>
           <Button size="tiny" type="default" asChild>
             <a
-              href="https://supabase.com/docs/guides/platform/upgrading#extensions"
+              href="https://vela.run/docs/guides/platform/upgrading#extensions"
               target="_blank"
               rel="noreferrer"
             >
@@ -93,7 +93,7 @@ export const UnsupportedExtensionsWarning = ({
         <div>
           <Button size="tiny" type="default" asChild>
             <a
-              href="https://supabase.com/docs/guides/platform/upgrading#extensions"
+              href="https://vela.run/docs/guides/platform/upgrading#extensions"
               target="_blank"
               rel="noreferrer"
             >

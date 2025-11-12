@@ -48,7 +48,7 @@ export type IntegrationDefinition = {
 
 const authorSupabase = {
   name: 'Supabase',
-  websiteUrl: 'https://supabase.com',
+  websiteUrl: 'https://vela.run',
 }
 
 const supabaseIntegrations: IntegrationDefinition[] = [
@@ -180,7 +180,7 @@ const supabaseIntegrations: IntegrationDefinition[] = [
       <Vault className={cn('inset-0 p-2 text-black w-full h-full', className)} {...props} />
     ),
     description: 'Application level encryption for your project',
-    docsUrl: 'https://supabase.com/docs',
+    docsUrl: 'https://vela.run/docs',
     author: authorSupabase,
     navigation: [
       {
@@ -224,7 +224,7 @@ const supabaseIntegrations: IntegrationDefinition[] = [
     ),
     description:
       'Send real-time data from your database to another system when a table event occurs',
-    docsUrl: 'https://supabase.com/docs',
+    docsUrl: 'https://vela.run/docs',
     author: authorSupabase,
     requiredExtensions: [],
     navigation: [
@@ -278,7 +278,7 @@ const supabaseIntegrations: IntegrationDefinition[] = [
       />
     ),
     description: 'Run GraphQL queries through our interactive in-browser IDE',
-    docsUrl: 'https://supabase.com/docs',
+    docsUrl: 'https://vela.run/docs',
     author: authorSupabase,
     navigation: [
       {

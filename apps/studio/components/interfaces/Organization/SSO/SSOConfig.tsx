@@ -179,7 +179,7 @@ export const SSOConfig = () => {
                             Enable and configure SSO for your organization. Learn more about SSO{' '}
                             <InlineLink
                               className="text-foreground-lighter hover:text-foreground"
-                              href="https://supabase.com/docs/guides/platform/sso"
+                              href="https://vela.run/docs/guides/platform/sso"
                             >
                               here
                             </InlineLink>

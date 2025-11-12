@@ -23,9 +23,9 @@ export function generateLink(pageType: PageType, link: string): string {
   switch (pageType) {
     case PageType.Markdown:
     case PageType.Reference:
-      return `https://supabase.com/docs${link}`
+      return `https://vela.run/docs${link}`
     case PageType.Integration:
-      return `https://supabase.com${link}`
+      return `https://vela.run${link}`
     case PageType.GithubDiscussion:
       return link
     default:

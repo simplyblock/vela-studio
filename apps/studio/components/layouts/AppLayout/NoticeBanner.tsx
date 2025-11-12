@@ -30,7 +30,7 @@ export const NoticeBanner = () => {
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://status.supabase.com/incidents/8k0ysqkhscfj"
+            href="https://status.vela.run/incidents/8k0ysqkhscfj"
           >
             Learn more
           </a>
