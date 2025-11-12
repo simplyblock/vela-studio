@@ -8,7 +8,7 @@ import {
   Blocks,
   CopyPlus,
   HardDrive,
-  PanelLeftDashed,
+  Columns3Cog,
   PanelsTopLeft,
   Settings,
   ShieldUser,
@@ -105,8 +105,8 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     type="text"
-                    className={`w-min px-1.5 mx-0.5 ${sidebarBehaviour === 'open' ? '!px-2' : ''}`}
-                    icon={<PanelLeftDashed size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />}
+                    className={`w-min px-1.5 mx-0.5 ${sidebarBehaviour === 'open' ? '!px-2' : ''}[&>div]:!text-blue-600 hover:bg-blue-50`}
+                    icon={<Columns3Cog size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />}
                   />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start" className="w-40">
@@ -114,7 +114,7 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
                     value={sidebarBehaviour}
                     onValueChange={(value) => setSidebarBehaviour(value as SidebarBehaviourType)}
                   >
-                    <DropdownMenuLabel>Sidebar control</DropdownMenuLabel>
+                    <DropdownMenuLabel>Sidebar Control</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuRadioItem value="open">Expanded</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="closed">Collapsed</DropdownMenuRadioItem>
