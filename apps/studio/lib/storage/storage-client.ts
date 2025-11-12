@@ -39,18 +39,19 @@ const DEFAULT_SEARCH_OPTIONS = {
 }
 
 const loadAsynchronousKeys = async (
-  pemPrivateKey: string
+  pemPrivateKey: string,
+  algorithm: string
 ): Promise<{
   privateKey: CryptoKey
   publicKey: CryptoKey
 }> => {
-  const privateKey = await importPKCS8(pemPrivateKey, ES_ALG)
+  const privateKey = await importPKCS8(pemPrivateKey, algorithm)
   const publicKey = await importSPKI(
     crypto
       .createPublicKey({ key: pemPrivateKey, format: 'pem' })
       .export({ format: 'pem', type: 'spki' })
       .toString(),
-    ES_ALG
+    algorithm
   )
   return {
     privateKey,
@@ -58,8 +59,8 @@ const loadAsynchronousKeys = async (
   }
 }
 
-const signatureKeys = await loadAsynchronousKeys(storageSignaturePrivateKey)
-const encryptionKeys = await loadAsynchronousKeys(storageEncryptionPrivateKey)
+const signatureKeys = await loadAsynchronousKeys(storageSignaturePrivateKey, ES_ALG)
+const encryptionKeys = await loadAsynchronousKeys(storageEncryptionPrivateKey, ES_ALG)
 
 type SignedUrlPayload = {
   organizationId: string
