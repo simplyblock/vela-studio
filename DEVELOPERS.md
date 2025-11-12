@@ -48,19 +48,19 @@ All of our apps are in this [Turborepo](https://turborepo.org/docs), which make 
 
 ### Fork the repo
 
-To contribute code to [Vela](https://vela.run), you must fork the [Vela repo](https://github.com//supabasesupabase).
+To contribute code to [Vela](https://vela.run), you must fork the [Vela repo](https://github.com//simplyblock/vela-studio).
 
 ### Clone the repo
 
 1. Clone your GitHub forked repo:
 
    ```sh
-   git clone https://github.com/<github_username>/supabase.git
+   git clone https://github.com/<github_username>/vela-studio.git
    ```
 
 2. Go to the Vela directory:
    ```sh
-   cd supabase
+   cd vela-studio
    ```
 
 ### Install dependencies
@@ -185,14 +185,14 @@ Create a new entry in the [`redirects.js`](https://github.com/simplyblock/vela-s
 
 We support "federating" docs, meaning doc content can come directly from external repos other than [`simplyblock/vela-studio`](https://github.com/simplyblock/vela-studio).
 
-- It's great for things like client libs who have their own set of docs that we don't want to duplicate on the official Vela docs (eg. [`supabase/vecs`](https://github.com/supabase/vecs)).
+- It's great for things like client libs who have their own set of docs that we don't want to duplicate on the official Vela docs (eg. [`vela-studio/vecs`](https://github.com/simplyblock/vela-studio/vecs)).
 - No duplication or manual steps required - fetches and generates automatically as part of the docs build pipeline.
 - It's flexible - you can "embed" external docs nearly anywhere at any level in Vela docs, but they will feel native.
 - If you are maintaining a repo containing docs that you think could also live in Vela docs, feel free to create an issue and we can work together to integrate.
 
 Federated docs work using Next.js's build pipeline. We use `getStaticProps()` to fetch remote documentation (ie. markdown) at build time which is processed and passed to the respective page within the docs.
 
-See the [Vecs Python source code](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/pages/guides/ai/python/%5Bslug%5D.tsx) to see how we do this for [`supabase/vecs`](https://github.com/supabase/vecs). Use this as a starting point for federating other docs.
+See the [Vecs Python source code](https://github.com/simplyblock/vela-studio/blob/master/apps/docs/pages/guides/ai/python/%5Bslug%5D.tsx) to see how we do this for [`vela-studio/vecs`](https://github.com/vela-studio/vecs). Use this as a starting point for federating other docs.
 
 Some things to consider:
 
