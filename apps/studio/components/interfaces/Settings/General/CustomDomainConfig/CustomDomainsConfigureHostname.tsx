@@ -63,10 +63,8 @@ const CustomDomainsConfigureHostname = () => {
                     handleReset={handleReset}
                     disabled={!true}
                     helper={
-                      !canConfigureCustomDomain ? (
+                      !canConfigureCustomDomain && (
                         "You need additional permissions to update your project's custom domain settings"
-                      ) : (
-                        null
                       )
                     }
                   />

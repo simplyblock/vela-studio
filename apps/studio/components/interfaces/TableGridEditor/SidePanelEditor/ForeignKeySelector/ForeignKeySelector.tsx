@@ -494,9 +494,6 @@ export const ForeignKeySelector = ({
                 value={fk.deletionAction}
                 className="[&>div>label]:flex [&>div>label]:items-center"
                 label="Action if referenced row is removed"
-                // @ts-ignore
-                labelOptional={
-                }
                 descriptionText={
                   <>
                     <p>
