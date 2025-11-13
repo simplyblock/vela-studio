@@ -37,7 +37,8 @@ export async function updateBranchBackupSchedule(
         },
         body: {
           env_type: schedule.env_type,
-          rows: schedule.rows
+          rows: schedule.rows,
+          schedule_id: schedule.id
         },
         signal,
       }
