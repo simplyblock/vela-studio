@@ -5867,7 +5867,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RolePayload"
+                "$ref": "#/components/schemas/RoleCreate"
               }
             }
           }
@@ -6010,7 +6010,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RolePayloadUpdate"
+                "$ref": "#/components/schemas/RoleUpdate"
               }
             }
           }
@@ -38424,34 +38424,8 @@
         ],
         "title": "RoleAssignmentsPublic"
       },
-      "RoleDeletePublic": {
+      "RoleCreate": {
         "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status"
-          }
-        },
-        "type": "object",
-        "required": [
-          "status"
-        ],
-        "title": "RoleDeletePublic"
-      },
-      "RolePayload": {
-        "properties": {
-          "role_id": {
-            "type": "string",
-            "maxLength": 26,
-            "minLength": 26,
-            "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-            "format": "ulid",
-            "title": "ULID",
-            "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-            "examples": [
-              "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-              "01H945P9C3K2QJ8F7N6M4R2E8V"
-            ]
-          },
           "name": {
             "type": "string",
             "title": "Name"
@@ -38476,21 +38450,6 @@
             "title": "Is Deletable",
             "default": true
           },
-          "access_rights": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Access Rights",
-            "default": []
-          },
           "description": {
             "anyOf": [
               {
@@ -38501,70 +38460,109 @@
               }
             ],
             "title": "Description"
+          },
+          "access_rights": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "org:owner:admin",
+                    "org:settings:read",
+                    "org:settings:admin",
+                    "org:auth:read",
+                    "org:auth:admin",
+                    "org:backup:read",
+                    "org:backup:update",
+                    "org:backup:create",
+                    "org:backup:delete",
+                    "org:metering:read",
+                    "org:role:read",
+                    "org:role:admin",
+                    "org:user:read",
+                    "org:user:admin",
+                    "org:role-assign:read",
+                    "org:role-assign:admin",
+                    "org:projects:read",
+                    "org:projects:write",
+                    "org:projects:create",
+                    "org:projects:stop",
+                    "org:projects:pause",
+                    "org:projects:delete",
+                    "org:projects:apikeys",
+                    "org:limits:read",
+                    "env:db:admin",
+                    "env:projects:read",
+                    "env:projects:admin",
+                    "org:limits:admin",
+                    "env:backup:read",
+                    "env:backup:admin",
+                    "env:projects:write",
+                    "env:projects:create",
+                    "env:role-assign:read",
+                    "env:role-assign:admin",
+                    "env:projects:stop",
+                    "env:projects:pause",
+                    "env:projects:delete",
+                    "env:projects:getkeys",
+                    "project:settings:read",
+                    "project:settings:write",
+                    "project:role-assign:read",
+                    "project:role-assign:admin",
+                    "project:branches:create",
+                    "project:branches:delete",
+                    "project:branches:stop",
+                    "branch:settings:read",
+                    "branch:settings:admin",
+                    "branch:role-assign:read",
+                    "branch:role-assign:admin",
+                    "branch:auth:read",
+                    "branch:auth:admin",
+                    "branch:api:getkeys",
+                    "branch:replicate:read",
+                    "branch:replicate:admin",
+                    "branch:import:read",
+                    "branch:import:admin",
+                    "branch:logging:read",
+                    "branch:monitoring:read",
+                    "branch:db:admin",
+                    "branch:rls:read",
+                    "branch:rls:admin",
+                    "branch:edge:read",
+                    "branch:edge:admin",
+                    "branch:rt:read",
+                    "branch:rt:admin"
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Rights",
+            "default": []
           }
         },
         "type": "object",
         "required": [
-          "role_id",
           "name",
           "role_type"
         ],
-        "title": "RolePayload"
+        "title": "RoleCreate"
       },
-      "RolePayloadUpdate": {
+      "RoleDeletePublic": {
         "properties": {
-          "name": {
+          "status": {
             "type": "string",
-            "title": "Name"
-          },
-          "role_type": {
-            "type": "string",
-            "enum": [
-              "organization",
-              "environment",
-              "project",
-              "branch"
-            ],
-            "title": "Role Type"
-          },
-          "is_active": {
-            "type": "boolean",
-            "title": "Is Active",
-            "default": true
-          },
-          "access_rights": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Access Rights",
-            "default": []
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Description"
+            "title": "Status"
           }
         },
         "type": "object",
         "required": [
-          "name",
-          "role_type"
+          "status"
         ],
-        "title": "RolePayloadUpdate"
+        "title": "RoleDeletePublic"
       },
       "RolePublic": {
         "properties": {
@@ -38662,6 +38660,128 @@
           "count"
         ],
         "title": "RoleUnassignmentPublic"
+      },
+      "RoleUpdate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role_type": {
+            "type": "string",
+            "enum": [
+              "organization",
+              "environment",
+              "project",
+              "branch"
+            ],
+            "title": "Role Type"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "access_rights": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "org:owner:admin",
+                    "org:settings:read",
+                    "org:settings:admin",
+                    "org:auth:read",
+                    "org:auth:admin",
+                    "org:backup:read",
+                    "org:backup:update",
+                    "org:backup:create",
+                    "org:backup:delete",
+                    "org:metering:read",
+                    "org:role:read",
+                    "org:role:admin",
+                    "org:user:read",
+                    "org:user:admin",
+                    "org:role-assign:read",
+                    "org:role-assign:admin",
+                    "org:projects:read",
+                    "org:projects:write",
+                    "org:projects:create",
+                    "org:projects:stop",
+                    "org:projects:pause",
+                    "org:projects:delete",
+                    "org:projects:apikeys",
+                    "org:limits:read",
+                    "env:db:admin",
+                    "env:projects:read",
+                    "env:projects:admin",
+                    "org:limits:admin",
+                    "env:backup:read",
+                    "env:backup:admin",
+                    "env:projects:write",
+                    "env:projects:create",
+                    "env:role-assign:read",
+                    "env:role-assign:admin",
+                    "env:projects:stop",
+                    "env:projects:pause",
+                    "env:projects:delete",
+                    "env:projects:getkeys",
+                    "project:settings:read",
+                    "project:settings:write",
+                    "project:role-assign:read",
+                    "project:role-assign:admin",
+                    "project:branches:create",
+                    "project:branches:delete",
+                    "project:branches:stop",
+                    "branch:settings:read",
+                    "branch:settings:admin",
+                    "branch:role-assign:read",
+                    "branch:role-assign:admin",
+                    "branch:auth:read",
+                    "branch:auth:admin",
+                    "branch:api:getkeys",
+                    "branch:replicate:read",
+                    "branch:replicate:admin",
+                    "branch:import:read",
+                    "branch:import:admin",
+                    "branch:logging:read",
+                    "branch:monitoring:read",
+                    "branch:db:admin",
+                    "branch:rls:read",
+                    "branch:rls:admin",
+                    "branch:edge:read",
+                    "branch:edge:admin",
+                    "branch:rt:read",
+                    "branch:rt:admin"
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Access Rights",
+            "default": []
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "role_type"
+        ],
+        "title": "RoleUpdate"
       },
       "RoleUserLinkPublic": {
         "properties": {

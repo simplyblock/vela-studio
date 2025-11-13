@@ -2000,8 +2000,25 @@ export interface paths {
     /** Gets the given organization's roles */
     get: operations['OrganizationRolesController_getAllRoles']
     put?: never
-    post?: never
+    post: operations['OrganizationRolesController_createRole']
     delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/platform/organizations/{slug}/roles/{id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Gets the given organization's roles */
+    get?: never
+    put: operations['OrganizationRolesController_updateRole']
+    post?: never
+    delete: operations['OrganizationRolesController_deleteRole']
     options?: never
     head?: never
     patch?: never
@@ -15156,6 +15173,116 @@ export interface operations {
         content: {
           'application/json': VelaType<'RoleWithPermissionsPublic'>[]
         }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to retrieve the organization's roles */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  OrganizationRolesController_createRole: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'RoleCreate'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'RolePublic'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to retrieve the organization's roles */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  OrganizationRolesController_updateRole: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': VelaType<'RoleUpdate'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'RolePublic'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to retrieve the organization's roles */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  OrganizationRolesController_deleteRole: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       403: {
         headers: {

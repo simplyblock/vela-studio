@@ -19387,19 +19387,8 @@ export interface components {
             /** Links */
             links: components["schemas"]["RoleUserLinkPublic"][];
         };
-        /** RoleDeletePublic */
-        RoleDeletePublic: {
-            /** Status */
-            status: string;
-        };
-        /** RolePayload */
-        RolePayload: {
-            /**
-             * ULID
-             * Format: ulid
-             * @description A ULID (Universally Unique Lexicographically Sortable Identifier)
-             */
-            role_id: string;
+        /** RoleCreate */
+        RoleCreate: {
             /** Name */
             name: string;
             /**
@@ -19417,35 +19406,18 @@ export interface components {
              * @default true
              */
             is_deletable?: boolean;
+            /** Description */
+            description?: string | null;
             /**
              * Access Rights
              * @default []
              */
-            access_rights?: string[] | null;
-            /** Description */
-            description?: string | null;
+            access_rights?: ("org:owner:admin" | "org:settings:read" | "org:settings:admin" | "org:auth:read" | "org:auth:admin" | "org:backup:read" | "org:backup:update" | "org:backup:create" | "org:backup:delete" | "org:metering:read" | "org:role:read" | "org:role:admin" | "org:user:read" | "org:user:admin" | "org:role-assign:read" | "org:role-assign:admin" | "org:projects:read" | "org:projects:write" | "org:projects:create" | "org:projects:stop" | "org:projects:pause" | "org:projects:delete" | "org:projects:apikeys" | "org:limits:read" | "env:db:admin" | "env:projects:read" | "env:projects:admin" | "org:limits:admin" | "env:backup:read" | "env:backup:admin" | "env:projects:write" | "env:projects:create" | "env:role-assign:read" | "env:role-assign:admin" | "env:projects:stop" | "env:projects:pause" | "env:projects:delete" | "env:projects:getkeys" | "project:settings:read" | "project:settings:write" | "project:role-assign:read" | "project:role-assign:admin" | "project:branches:create" | "project:branches:delete" | "project:branches:stop" | "branch:settings:read" | "branch:settings:admin" | "branch:role-assign:read" | "branch:role-assign:admin" | "branch:auth:read" | "branch:auth:admin" | "branch:api:getkeys" | "branch:replicate:read" | "branch:replicate:admin" | "branch:import:read" | "branch:import:admin" | "branch:logging:read" | "branch:monitoring:read" | "branch:db:admin" | "branch:rls:read" | "branch:rls:admin" | "branch:edge:read" | "branch:edge:admin" | "branch:rt:read" | "branch:rt:admin")[] | null;
         };
-        /** RolePayloadUpdate */
-        RolePayloadUpdate: {
-            /** Name */
-            name: string;
-            /**
-             * Role Type
-             * @enum {string}
-             */
-            role_type: "organization" | "environment" | "project" | "branch";
-            /**
-             * Is Active
-             * @default true
-             */
-            is_active?: boolean;
-            /**
-             * Access Rights
-             * @default []
-             */
-            access_rights?: string[] | null;
-            /** Description */
-            description?: string | null;
+        /** RoleDeletePublic */
+        RoleDeletePublic: {
+            /** Status */
+            status: string;
         };
         /** RolePublic */
         RolePublic: {
@@ -19483,6 +19455,28 @@ export interface components {
             status: string;
             /** Count */
             count: number;
+        };
+        /** RoleUpdate */
+        RoleUpdate: {
+            /** Name */
+            name: string;
+            /**
+             * Role Type
+             * @enum {string}
+             */
+            role_type: "organization" | "environment" | "project" | "branch";
+            /**
+             * Is Active
+             * @default true
+             */
+            is_active?: boolean;
+            /**
+             * Access Rights
+             * @default []
+             */
+            access_rights?: ("org:owner:admin" | "org:settings:read" | "org:settings:admin" | "org:auth:read" | "org:auth:admin" | "org:backup:read" | "org:backup:update" | "org:backup:create" | "org:backup:delete" | "org:metering:read" | "org:role:read" | "org:role:admin" | "org:user:read" | "org:user:admin" | "org:role-assign:read" | "org:role-assign:admin" | "org:projects:read" | "org:projects:write" | "org:projects:create" | "org:projects:stop" | "org:projects:pause" | "org:projects:delete" | "org:projects:apikeys" | "org:limits:read" | "env:db:admin" | "env:projects:read" | "env:projects:admin" | "org:limits:admin" | "env:backup:read" | "env:backup:admin" | "env:projects:write" | "env:projects:create" | "env:role-assign:read" | "env:role-assign:admin" | "env:projects:stop" | "env:projects:pause" | "env:projects:delete" | "env:projects:getkeys" | "project:settings:read" | "project:settings:write" | "project:role-assign:read" | "project:role-assign:admin" | "project:branches:create" | "project:branches:delete" | "project:branches:stop" | "branch:settings:read" | "branch:settings:admin" | "branch:role-assign:read" | "branch:role-assign:admin" | "branch:auth:read" | "branch:auth:admin" | "branch:api:getkeys" | "branch:replicate:read" | "branch:replicate:admin" | "branch:import:read" | "branch:import:admin" | "branch:logging:read" | "branch:monitoring:read" | "branch:db:admin" | "branch:rls:read" | "branch:rls:admin" | "branch:edge:read" | "branch:edge:admin" | "branch:rt:read" | "branch:rt:admin")[] | null;
+            /** Description */
+            description?: string | null;
         };
         /** RoleUserLinkPublic */
         RoleUserLinkPublic: {
@@ -24307,7 +24301,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RolePayload"];
+                "application/json": components["schemas"]["RoleCreate"];
             };
         };
         responses: {
@@ -24343,7 +24337,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RolePayloadUpdate"];
+                "application/json": components["schemas"]["RoleUpdate"];
             };
         };
         responses: {

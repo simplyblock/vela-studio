@@ -9,12 +9,25 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   return client.proxyGet(res, '/organizations/{organization_id}/roles/', {
     params: {
       path: {
-        organization_id: slug
-      }
-    }
+        organization_id: slug,
+      },
+    },
   })
 }
 
-const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet))
+const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { slug } = getPlatformQueryParams(req, 'slug')
+  const client = getVelaClient(req)
+  return client.proxyPost(res, '/organizations/{organization_id}/roles/', {
+    params: {
+      path: {
+        organization_id: slug,
+      },
+    },
+    body: req.body
+  })
+}
+
+const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet).post(handlePost))
 
 export default apiHandler
