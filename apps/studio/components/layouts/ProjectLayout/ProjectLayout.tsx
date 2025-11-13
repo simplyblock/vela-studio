@@ -107,14 +107,14 @@ const ProjectLayout = forwardRef<HTMLDivElement, PropsWithChildren<ProjectLayout
         <Head>
           <title>
             {title
-              ? `${title} | Supabase`
+              ? `${title} | Vela`
               : selectedTable
-                ? `${selectedTable} | ${projectName} | ${organizationName} | Supabase`
+                ? `${selectedTable} | ${projectName} | ${organizationName} | Vela`
                 : projectName
-                  ? `${projectName} | ${organizationName} | Supabase`
+                  ? `${projectName} | ${organizationName} | Vela`
                   : organizationName
-                    ? `${organizationName} | Supabase`
-                    : 'Supabase'}
+                    ? `${organizationName} | Vela`
+                    : 'Vela'}
           </title>
           <meta name="description" content="Vela Studio" />
         </Head>
@@ -241,7 +241,6 @@ interface ContentWrapperProps {
   isBlocking?: boolean
   children: ReactNode
 }
-
 
 const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapperProps) => {
   const router = useRouter()
