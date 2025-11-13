@@ -164,17 +164,17 @@ export const ProjectResourcesBadge = ({
   const resourceColor = (key?: string) => {
     switch (key) {
       case 'milli_vcpu':
-        return 'text-brand-600'
+        return 'bg-brand-600'
       case 'ram':
-        return 'text-amber-600'
+        return 'bg-amber-600'
       case 'database_size':
-        return 'text-violet-600'
+        return 'bg-violet-600'
       case 'iops':
-        return 'text-emerald-600'
+        return 'bg-emerald-600'
       case 'storage_size':
-        return 'text-sky-600'
+        return 'bg-sky-600'
       default:
-        return 'text-foreground'
+        return 'bg-foreground'
     }
   }
 

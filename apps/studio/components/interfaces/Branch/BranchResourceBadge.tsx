@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import { Tooltip, TooltipTrigger, TooltipContent, cn } from 'ui'
 import { formatForUnit, getDivider } from './utils'
 
-
 type ResourceNumbers = {
   milli_vcpu?: number | null
   ram_bytes?: number | null
@@ -34,6 +33,10 @@ export const BranchResourceBadge = ({
   used_resources?: ResourceNumbers | null
   size?: number
 }) => {
+
+  const maxData = max_resources 
+  const usedData = used_resources 
+
   const rows = useMemo(() => {
     const out: {
       key: keyof ResourceNumbers
@@ -42,30 +45,28 @@ export const BranchResourceBadge = ({
       usedDisplay: string
       maxDisplay: string
       unitKey: string
+      hasMax: boolean
     }[] = []
 
-    if (!max_resources && !used_resources) return out
+    if (!maxData && !usedData) return out
 
     for (const r of RESOURCE_ORDER) {
       const k = r.key
       const unitKey = r.unitKey
-      const maxRaw = (max_resources as any)?.[k] ?? null
-      const usedRaw = (used_resources as any)?.[k] ?? null
+      const maxRaw = (maxData as any)?.[k] ?? null
+      const usedRaw = (usedData as any)?.[k] ?? null
+
 
       if (maxRaw == null && usedRaw == null) continue
 
-      const max = typeof maxRaw === 'number' ? maxRaw : null
-      const used = typeof usedRaw === 'number' ? usedRaw : 0
+      const hasMax = typeof maxRaw === 'number' && isFinite(maxRaw) && maxRaw > 0
+      const used = typeof usedRaw === 'number' && isFinite(usedRaw) ? (usedRaw as number) : 0
 
-      // convert using shared divider logic and format using helper
-      const maxDisplay = formatForUnit(max, unitKey)
+      // human-readable labels
+      const maxDisplay = hasMax ? formatForUnit(maxRaw as number, unitKey) : 'Unlimited'
       const usedDisplay = formatForUnit(used, unitKey)
 
-      // compute percent on raw numbers but with divider to match units
-      const divider = getDivider(unitKey)
-      const maxNum = max != null ? max / divider : null
-      const usedNum = used / divider
-      const percent = maxNum ? clamp((usedNum / maxNum) * 100) : 0
+      const percent = hasMax ? clamp((used / (maxRaw as number)) * 100) : 0
 
       out.push({
         key: k,
@@ -74,11 +75,12 @@ export const BranchResourceBadge = ({
         usedDisplay,
         maxDisplay,
         unitKey,
+        hasMax,
       })
     }
 
     return out
-  }, [max_resources, used_resources])
+  }, [maxData, usedData])
 
   const mostUsed = useMemo(() => {
     if (!rows || rows.length === 0) return null
@@ -86,8 +88,7 @@ export const BranchResourceBadge = ({
     return sorted[0]
   }, [rows])
 
-  // SVG geometry: wider stroke and slightly smaller center label
-  const stroke = 8 // increased from 6
+  const stroke = 8
   const radius = Math.max(3, (size - stroke) / 2)
   const circumference = 2 * Math.PI * radius
   const pct = mostUsed ? clamp(mostUsed.percent) : 0
@@ -97,17 +98,17 @@ export const BranchResourceBadge = ({
   const resourceColor = (key?: string) => {
     switch (key) {
       case 'milli_vcpu':
-        return 'text-brand-600'
+        return 'bg-brand-600'
       case 'ram_bytes':
-        return 'text-amber-600'
+        return 'bg-amber-600'
       case 'nvme_bytes':
-        return 'text-violet-600'
+        return 'bg-violet-600'
       case 'iops':
-        return 'text-emerald-600'
+        return 'bg-emerald-600'
       case 'storage_bytes':
-        return 'text-sky-600'
+        return 'bg-sky-600'
       default:
-        return 'text-foreground'
+        return 'bg-foreground'
     }
   }
 
@@ -123,7 +124,7 @@ export const BranchResourceBadge = ({
           className="inline-flex items-center gap-2 p-0 bg-transparent border-0"
         >
           <div className="relative" style={{ width: size, height: size }}>
-            <svg width={size} height={size} className="block">
+            <svg width={size} height={size} className="block" aria-hidden>
               <g transform={`translate(${size / 2}, ${size / 2})`}>
                 <circle r={radius} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth={stroke} />
                 <circle
@@ -140,12 +141,11 @@ export const BranchResourceBadge = ({
               </g>
             </svg>
 
-            {/* center label smaller to avoid overlap at 100% */}
             <div
               className="absolute inset-0 flex items-center justify-center font-medium"
               style={{ pointerEvents: 'none', fontSize: 10 }}
             >
-              {mostUsed ? `${Math.round(mostUsed.percent)}%` : '—'}
+              {rows.length === 0 ? '—' : `${Math.round(pct)}%`}
             </div>
           </div>
         </button>
@@ -173,9 +173,17 @@ export const BranchResourceBadge = ({
                   <div className="w-full h-2 rounded bg-surface-200 overflow-hidden">
                     <div
                       style={{ width: `${percent}%` }}
-                      className={cn('h-full', resourceColor(r.key as string), 'transition-all duration-200')}
+                      className={cn(
+                        'h-full',
+                        resourceColor(r.key as string),
+                        'transition-all duration-200'
+                      )}
                     />
                   </div>
+
+                  {!r.hasMax && (
+                    <div className="text-[11px] text-foreground-muted">Unlimited / not bounded</div>
+                  )}
                 </div>
               )
             })
