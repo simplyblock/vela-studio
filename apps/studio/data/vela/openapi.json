@@ -3785,6 +3785,654 @@
         }
       }
     },
+    "/organizations/{organization_id}/roles/": {
+      "post": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "Create Role",
+        "operationId": "create_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolePublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "List Roles",
+        "description": "List all roles and their access rights within an organization",
+        "operationId": "list_roles",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleWithPermissionsPublic"
+                  },
+                  "title": "Response List Roles Organizations  Organization Id  Roles  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/roles/check_access/{user_id}/": {
+      "post": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "Api Check Access",
+        "description": "Example POST JSON:\n{\n    \"access\": \"project:settings:update\",\n    \"project_id\": \"01ABCDEF2345XYZ\"\n}",
+        "operationId": "api_check_access",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccessCheckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionAccessCheckPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/roles/role-assignments/": {
+      "get": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "List Role Assignments",
+        "description": "List role-user assignments within an organization.\nOptionally filter by user_id.",
+        "operationId": "list_role_assignments",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAssignmentsPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/roles/{role_id}/": {
+      "put": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "Modify Role",
+        "operationId": "modify_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Role Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RolePublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "Delete Role",
+        "operationId": "delete_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Role Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleDeletePublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/roles/{role_id}/assign/{user_id}/": {
+      "post": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "Assign Role",
+        "description": "Assign a role to a user in one or more contexts. The context is passed as JSON.",
+        "operationId": "assign_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Role Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleAssignmentPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleAssignmentPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/roles/{role_id}/unassign/{user_id}/": {
+      "post": {
+        "tags": [
+          "organization",
+          "organization",
+          "role"
+        ],
+        "summary": "Unassign Role",
+        "operationId": "unassign_role",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": [
+                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+                "01H945P9C3K2QJ8F7N6M4R2E8V"
+              ],
+              "title": "Role Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Context"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleUnassignmentPublic"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/": {
       "post": {
         "tags": [
@@ -5813,638 +6461,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BackupInfoPublic"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/roles/": {
-      "post": {
-        "tags": [
-          "role"
-        ],
-        "summary": "Create Role",
-        "operationId": "create_role",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RoleCreate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RolePublic"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "role"
-        ],
-        "summary": "List Roles",
-        "description": "List all roles and their access rights within an organization",
-        "operationId": "list_roles",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RoleWithPermissionsPublic"
-                  },
-                  "title": "Response List Roles Organizations  Organization Id  Roles  Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/roles/{role_id}/": {
-      "put": {
-        "tags": [
-          "role"
-        ],
-        "summary": "Modify Role",
-        "operationId": "modify_role",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "role_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Role Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RoleUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RolePublic"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "role"
-        ],
-        "summary": "Delete Role",
-        "operationId": "delete_role",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "role_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Role Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleDeletePublic"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/roles/{role_id}/assign/{user_id}/": {
-      "post": {
-        "tags": [
-          "role"
-        ],
-        "summary": "Assign Role",
-        "description": "Assign a role to a user in one or more contexts. The context is passed as JSON.",
-        "operationId": "assign_role",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "User Id"
-            }
-          },
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "role_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Role Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RoleAssignmentPayload"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleAssignmentPublic"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/roles/{role_id}/unassign/{user_id}/": {
-      "post": {
-        "tags": [
-          "role"
-        ],
-        "summary": "Unassign Role",
-        "operationId": "unassign_role",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "User Id"
-            }
-          },
-          {
-            "name": "role_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Role Id"
-            }
-          },
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "anyOf": [
-                  {
-                    "type": "object",
-                    "additionalProperties": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  },
-                  {
-                    "type": "null"
-                  }
-                ],
-                "title": "Context"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleUnassignmentPublic"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/roles/check_access/{user_id}/": {
-      "post": {
-        "tags": [
-          "role"
-        ],
-        "summary": "Api Check Access",
-        "description": "Example POST JSON:\n{\n    \"access\": \"project:settings:update\",\n    \"project_id\": \"01ABCDEF2345XYZ\"\n}",
-        "operationId": "api_check_access",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "title": "User Id"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AccessCheckRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PermissionAccessCheckPublic"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/organizations/{organization_id}/roles/role-assignments/": {
-      "get": {
-        "tags": [
-          "role"
-        ],
-        "summary": "List Role Assignments",
-        "description": "List role-user assignments within an organization.\nOptionally filter by user_id.",
-        "operationId": "list_role_assignments",
-        "security": [
-          {
-            "HTTPBearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "organization_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "ulid",
-              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-              "minLength": 26,
-              "maxLength": 26,
-              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-              "examples": [
-                "01ARZ3NDEKTSV4RRFFQ69G5FAV",
-                "01H945P9C3K2QJ8F7N6M4R2E8V"
-              ],
-              "title": "Organization Id"
-            }
-          },
-          {
-            "name": "user_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "format": "uuid"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "User Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleAssignmentsPublic"
                 }
               }
             }
@@ -37101,7 +37117,7 @@
                 "type": "integer",
                 "multipleOf": 1000000000.0,
                 "maximum": 1000000000000.0,
-                "minimum": 500000000.0
+                "minimum": 1000000000.0
               },
               {
                 "type": "null"
@@ -37141,7 +37157,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "maximum": 2147483647.0,
+                "maximum": 100000.0,
                 "minimum": 100.0
               },
               {
@@ -37419,7 +37435,7 @@
                 "type": "integer",
                 "multipleOf": 1000000000.0,
                 "maximum": 1000000000000.0,
-                "minimum": 500000000.0
+                "minimum": 1000000000.0
               },
               {
                 "type": "null"
@@ -37443,7 +37459,7 @@
           },
           "iops": {
             "type": "integer",
-            "maximum": 2147483647.0,
+            "maximum": 100000.0,
             "minimum": 100.0,
             "title": "Iops"
           },
@@ -38016,7 +38032,7 @@
                 "type": "integer",
                 "multipleOf": 1000000000.0,
                 "maximum": 1000000000000.0,
-                "minimum": 500000000.0
+                "minimum": 1000000000.0
               },
               {
                 "type": "null"
@@ -38056,7 +38072,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "maximum": 2147483647.0,
+                "maximum": 100000.0,
                 "minimum": 100.0
               },
               {
@@ -38260,7 +38276,7 @@
           },
           "iops": {
             "type": "integer",
-            "maximum": 2147483647.0,
+            "maximum": 100000.0,
             "minimum": 100.0,
             "title": "Iops",
             "description": "Configured storage IOPS budget (matches Branch.iops constraints)."
@@ -38271,7 +38287,7 @@
                 "type": "integer",
                 "multipleOf": 1000000000.0,
                 "maximum": 1000000000000.0,
-                "minimum": 500000000.0
+                "minimum": 1000000000.0
               },
               {
                 "type": "null"
@@ -39292,6 +39308,26 @@
           "last_name": {
             "type": "string",
             "title": "Last Name"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "mfa_enabled": {
+            "type": "boolean",
+            "title": "Mfa Enabled"
+          },
+          "last_activity_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Activity At"
           }
         },
         "type": "object",
@@ -39300,7 +39336,9 @@
           "email",
           "email_verified",
           "first_name",
-          "last_name"
+          "last_name",
+          "active",
+          "mfa_enabled"
         ],
         "title": "UserPublic"
       },
