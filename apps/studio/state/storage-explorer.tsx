@@ -5,7 +5,6 @@ import { toast } from 'sonner'
 import * as tus from 'tus-js-client'
 import { proxy, useSnapshot } from 'valtio'
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { BlobReader, BlobWriter, ZipWriter } from '@zip.js/zip.js'
 import { LOCAL_STORAGE_KEYS, useParams } from 'common'
 import {
@@ -37,7 +36,6 @@ import {
 import { convertFromBytes } from 'components/interfaces/Storage/StorageSettings/StorageSettings.utils'
 import { getTemporaryAPIKey } from 'data/api-keys/temp-api-keys-query'
 import { configKeys } from 'data/config/keys'
-import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { ProjectStorageConfigResponse } from 'data/config/project-storage-config-query'
 import { getQueryClient } from 'data/query-client'
 import { deleteBucketObject } from 'data/storage/bucket-object-delete-mutation'
@@ -51,6 +49,7 @@ import { tryParseJson } from 'lib/helpers'
 import { lookupMime } from 'lib/mime'
 import { Button, SONNER_DEFAULT_DURATION, SonnerProgress } from 'ui'
 import { useSelectedBranchQuery } from '../data/branches/selected-branch-query'
+import { newFolderObject } from '../data/storage/new-folder-mutation'
 
 type UploadProgress = {
   percentage: number
@@ -82,13 +81,11 @@ function createStorageExplorerState({
   orgRef,
   branchRef,
   resumableUploadUrl,
-  supabaseClient,
 }: {
   orgRef: string
   projectRef: string
   branchRef: string
   resumableUploadUrl: string
-  supabaseClient?: () => Promise<SupabaseClient<any, 'public', any>>
 }) {
   const localStorageKey = LOCAL_STORAGE_KEYS.STORAGE_PREFERENCE(projectRef)
   const { view, sortBy, sortByOrder, sortBucket } =
@@ -99,7 +96,6 @@ function createStorageExplorerState({
     orgRef,
     projectRef,
     branchRef,
-    supabaseClient,
     resumableUploadUrl,
     uploadProgresses: [] as UploadProgress[],
 
@@ -302,8 +298,6 @@ function createStorageExplorerState({
       columnIndex: number
       onError?: () => void
     }) => {
-      if (!state.supabaseClient) return console.error('Vela Client is missing')
-
       const autofix = false
       const formattedName = state.sanitizeNameForDuplicateInColumn({
         name: folderName,
@@ -328,20 +322,20 @@ function createStorageExplorerState({
 
       state.updateFolderAfterEdit({ folderName: formattedName, columnIndex })
 
-      const emptyPlaceholderFile = `${formattedName}/${EMPTY_FOLDER_PLACEHOLDER_FILE_NAME}`
       const pathToFolder = state.openedFolders
         .slice(0, columnIndex)
         .map((folder) => folder.name)
         .join('/')
-      const formattedPathToEmptyPlaceholderFile =
-        pathToFolder.length > 0 ? `${pathToFolder}/${emptyPlaceholderFile}` : emptyPlaceholderFile
+      const formattedPath =
+        pathToFolder.length > 0 ? `${pathToFolder}/${formattedName}` : formattedName
 
-      await (await state.supabaseClient()).storage
-        .from(state.selectedBucket.name)
-        .upload(
-          formattedPathToEmptyPlaceholderFile,
-          new File([], EMPTY_FOLDER_PLACEHOLDER_FILE_NAME)
-        )
+      await newFolderObject({
+        orgRef,
+        projectRef,
+        branchRef,
+        bucketId: state.selectedBucket.id,
+        path: formattedPath,
+      })
 
       if (pathToFolder.length > 0) {
         await deleteBucketObject({
@@ -595,10 +589,13 @@ function createStorageExplorerState({
         })
 
         if (data.length === 0) {
-          const prefixToPlaceholder = `${parentFolderPrefix}/${EMPTY_FOLDER_PLACEHOLDER_FILE_NAME}`
-          await (await state.supabaseClient!())?.storage
-            .from(state.selectedBucket.name)
-            .upload(prefixToPlaceholder, new File([], EMPTY_FOLDER_PLACEHOLDER_FILE_NAME))
+          await newFolderObject({
+            orgRef,
+            projectRef,
+            branchRef,
+            bucketId: state.selectedBucket.id,
+            path: parentFolderPrefix,
+          })
         }
       } catch (error) {}
     },
@@ -730,7 +727,10 @@ function createStorageExplorerState({
           })
         }
 
-        if (state.openedFolders[columnIndex].name === folder.name) {
+        if (
+          state.openedFolders[columnIndex] &&
+          state.openedFolders[columnIndex].name === folder.name
+        ) {
           state.setSelectedFilePreview(undefined)
           state.popOpenedFoldersAtIndex(columnIndex - 1)
         }
@@ -1187,7 +1187,7 @@ function createStorageExplorerState({
               retryDelays: [0, 200, 500, 1500, 3000, 5000],
               headers: {
                 'x-source': 'supabase-dashboard',
-                'Authorization': `Bearer ${api_key}`
+                Authorization: `Bearer ${api_key}`,
               },
               uploadDataDuringCreation: uploadDataDuringCreation,
               removeFingerprintOnSuccess: true,
@@ -1576,6 +1576,22 @@ function createStorageExplorerState({
     },
 
     renameFile: async (file: StorageItem, newName: string, columnIndex: number) => {
+      const sanitizedNewName = state.sanitizeNameForDuplicateInColumn({
+        name: newName,
+        columnIndex,
+        autofix: false
+      })
+
+      if (!sanitizedNewName) {
+        toast.error(`Failed to rename file: an object with the same name already exists.`)
+        state.updateRowStatus({
+          name: file.name,
+          status: STORAGE_ROW_STATUS.READY,
+          columnIndex,
+        })
+        return
+      }
+
       const originalName = file.name
       if (originalName === newName || newName.length === 0) {
         state.updateRowStatus({ name: originalName, status: STORAGE_ROW_STATUS.READY, columnIndex })
@@ -1824,13 +1840,7 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
   const stateRef = useLatest(state)
   const { slug: orgRef, branch: branchRef } = useParams()
 
-  const { data: settings } = useProjectSettingsV2Query({
-    orgRef: orgRef,
-    projectRef: project?.id,
-  })
-
-  const protocol = settings?.app_config?.protocol ?? 'https'
-  const endpoint = settings?.app_config?.endpoint
+  const endpoint = useMemo(() => `${branch?.database.service_endpoint_uri}/storage`, [branch])
   const resumableUploadUrl = useMemo(
     () => `${branch?.database.service_endpoint_uri}/storage/upload/resumable`,
     [branch]
@@ -1850,43 +1860,11 @@ export const StorageExplorerStateContextProvider = ({ children }: PropsWithChild
           projectRef: project?.id ?? '',
           orgRef: orgRef ?? '',
           branchRef: branchRef ?? '',
-          supabaseClient: async () => {
-            try {
-              const data = await getTemporaryAPIKey({ orgRef, projectRef: project.id, branchRef })
-              const clientEndpoint = `https://${endpoint}`
-
-              return createClient(clientEndpoint, data.api_key, {
-                auth: {
-                  persistSession: false,
-                  autoRefreshToken: false,
-                  detectSessionInUrl: false,
-                  storage: {
-                    getItem: (key) => {
-                      return null
-                    },
-                    setItem: (key, value) => {},
-                    removeItem: (key) => {},
-                  },
-                },
-              })
-            } catch (error) {
-              throw error
-            }
-          },
           resumableUploadUrl,
         })
       )
     }
-  }, [
-    project?.id,
-    stateRef,
-    isPaused,
-    resumableUploadUrl,
-    protocol,
-    endpoint,
-    orgRef,
-    isBranchLoading,
-  ])
+  }, [project?.id, stateRef, isPaused, resumableUploadUrl, endpoint, orgRef, isBranchLoading])
 
   return (
     <StorageExplorerStateContext.Provider value={state}>
