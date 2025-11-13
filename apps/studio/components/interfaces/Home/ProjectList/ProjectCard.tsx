@@ -68,7 +68,7 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="truncate text-sm">{name}</p>
-                  <span className="text-xs lowercase text-foreground-light block mt-1">
+                  <span className="text-xs text-foreground-light block mt-1">
                     reference: {project.id}
                   </span>
                 </div>

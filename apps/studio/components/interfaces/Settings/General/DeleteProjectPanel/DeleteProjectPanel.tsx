@@ -8,7 +8,7 @@ export const DeleteProjectPanel = () => {
 
   if (project === undefined) return null
 
-  const title = 'Deleting this project will also remove your database.'
+  const title = 'Deleting this project will also remove all project branches.'
   const description = 'Make sure you have made a backup if you want to keep your data.'
 
   return (

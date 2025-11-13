@@ -1,7 +1,7 @@
 import {
   General,
 } from 'components/interfaces/Settings/General'
-import { DeleteProjectPanel } from 'components/interfaces/Settings/General/DeleteProjectPanel/DeleteProjectPanel'
+import DeleteBranchPanel from 'components/interfaces/Settings/General/DeleteBranchPanel/DeleteBranchPanel'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import SettingsLayout from 'components/layouts/ProjectSettingsLayout/SettingsLayout'
 import { ScaffoldContainer, ScaffoldHeader, ScaffoldTitle } from 'components/layouts/Scaffold'
@@ -20,7 +20,7 @@ const ProjectSettings: NextPageWithLayout = () => {
 
         {/* FIXME: Disabled since don't have branch transfer right now */ }
         {/* branchTransferEnabled && <TransferBranchPanel /> */}
-        <DeleteProjectPanel />
+        <DeleteBranchPanel />
       </ScaffoldContainer>
     </>
   )

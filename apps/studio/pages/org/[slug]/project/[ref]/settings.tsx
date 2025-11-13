@@ -10,6 +10,7 @@ import { Button, Card, Input_Shadcn_, cn } from 'ui'
 import { getPathReferences } from 'data/vela/path-references'
 import { useProjectUpdateMutation } from 'data/projects/project-update-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
+import { DeleteProjectPanel } from 'components/interfaces/Settings/General/DeleteProjectPanel/DeleteProjectPanel'
 
 /**
  * Page: Edit project's max_backups
@@ -123,6 +124,7 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
           </div>
         </Card>
       </div>
+      <DeleteProjectPanel />
     </ScaffoldContainer>
   )
 }
