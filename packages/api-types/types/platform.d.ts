@@ -7271,12 +7271,14 @@ export interface components {
     }
     Member: {
       user_id: string
-      is_sso_user: boolean | null
+      is_sso_user?: boolean
       metadata: {
         [key: string]: unknown
       }
       mfa_enabled: boolean
-      primary_email: string | null
+      active: boolean
+      last_activity_at?: string
+      primary_email?: string
       role_ids: string[]
       username: string
     }
