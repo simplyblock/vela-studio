@@ -369,7 +369,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
       return res
         .status(200)
-        .json({ publicUrl: joinPath(params.storageEndpoint, '/object', name, path) })
+        .json({ publicUrl: joinPath(params.storageEndpoint, '/object/public', name, path) })
     },
 
     createSignedObjectUrl: async (bucket: string, path: string, expiredIn: number) => {
