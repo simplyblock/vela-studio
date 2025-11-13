@@ -74,12 +74,12 @@ export const ThemeSettings = () => {
               Theme mode
             </Label_Shadcn_>
             <p className="text-sm text-foreground-light max-w-[220px]">
-              Choose how Supabase looks to you. Select a single theme, or sync with your system.
+              Choose how Vela looks to you. Select a single theme, or sync with your system.
             </p>
           </div>
 
           <div className="col-span-full md:col-span-8 flex flex-col gap-4">
-            <p className="text-sm text-light">Supabase will use your selected theme</p>
+            <p className="text-sm text-light">Vela will use your selected theme</p>
             <SingleThemeSelection />
           </div>
         </div>

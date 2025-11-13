@@ -32,7 +32,7 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
 
   const extensionMeta = extensions.find((item) => item.name === extension.name)
   const docsUrl = extensionMeta?.link.startsWith('/guides')
-    ? `https://supabase.com/docs${extensionMeta?.link}`
+    ? `https://vela.run/docs${extensionMeta?.link}`
     : extensionMeta?.link ?? undefined
 
   const { mutate: disableExtension, isLoading: isDisabling } = useDatabaseExtensionDisableMutation({

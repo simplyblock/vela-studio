@@ -32,7 +32,7 @@ export const MigrateToPostgres = () => (
           <div className="flex flex-col gap-1">
             <h2 className="text-base text-foreground">Migrate your Database to Postgres</h2>
             <p className="text-xs text-foreground-light max-w-md">
-              Already have a database? Migrate any database to Supabase to access backups, RESTful
+              Already have a database? Migrate any database to Vela to access backups, RESTful
               auto APIs, Authentication and more.
             </p>
           </div>

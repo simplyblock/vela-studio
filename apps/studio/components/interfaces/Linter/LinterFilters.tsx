@@ -73,7 +73,7 @@ const LinterFilters = ({
         <DownloadResultsButton
           align="end"
           results={filteredLints}
-          fileName={`Supabase Performance Security Lints (${ref})`}
+          fileName={`Vela Performance Security Lints (${ref})`}
         />
       </div>
     </div>

@@ -52,7 +52,7 @@ export const NewProjectPanel = () => {
                 </Button>
                 <Button asChild type="default" icon={<ExternalLink />}>
                   <Link
-                    href="https://supabase.com/docs/guides/database"
+                    href="https://vela.run/docs/guides/database"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -71,7 +71,7 @@ export const NewProjectPanel = () => {
               <div className="max-w-2xl space-y-2">
                 <h2>Explore our other products</h2>
                 <p className="text-base text-foreground-light">
-                  Supabase provides all the backend features you need to build a product. You can
+                  Vela provides all the backend features you need to build a product. You can
                   use it completely, or just the features you need.
                 </p>
               </div>
@@ -101,7 +101,7 @@ export const NewProjectPanel = () => {
                         asChild
                       >
                         <Link
-                          href="https://supabase.com/docs/guides/auth"
+                          href="https://vela.run/docs/guides/auth"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -137,7 +137,7 @@ export const NewProjectPanel = () => {
                         asChild
                       >
                         <Link
-                          href="https://supabase.com/docs/guides/storage"
+                          href="https://vela.run/docs/guides/storage"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -173,7 +173,7 @@ export const NewProjectPanel = () => {
                         asChild
                       >
                         <Link
-                          href="https://supabase.com/docs/guides/functions"
+                          href="https://vela.run/docs/guides/functions"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -207,7 +207,7 @@ export const NewProjectPanel = () => {
                         asChild
                       >
                         <Link
-                          href="https://supabase.com/docs/guides/realtime"
+                          href="https://vela.run/docs/guides/realtime"
                           target="_blank"
                           rel="noreferrer"
                         >
@@ -229,8 +229,8 @@ export const NewProjectPanel = () => {
             <h2>Connecting to your new project</h2>
             <p className="text-base text-foreground-light lg:max-w-sm">
               Interact with your database through the{' '}
-              <Link href="https://supabase.com/docs/reference" className="text-brand">
-                Supabase client libraries
+              <Link href="https://vela.run/docs/reference" className="text-brand">
+                Vela client libraries
               </Link>{' '}
               with your API keys.
             </p>
@@ -245,7 +245,7 @@ export const NewProjectPanel = () => {
             </Button>
             <Button asChild className="translate-y-[1px]" type="default" icon={<ExternalLink />}>
               <Link
-                href="https://supabase.com/docs/guides/database/api"
+                href="https://vela.run/docs/guides/database/api"
                 target="_blank"
                 rel="noreferrer"
               >

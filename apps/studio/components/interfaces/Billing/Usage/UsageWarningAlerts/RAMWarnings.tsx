@@ -22,7 +22,7 @@ const RAMWarnings = ({ isFreePlan, upgradeUrl, severity }: RAMWarningsProps) => 
         </AlertDescription_Shadcn_>
         <div className="mt-3 flex items-center space-x-2">
           <Button asChild type="default">
-            <Link href="https://supabase.com/docs/guides/troubleshooting/exhaust-ram">
+            <Link href="https://vela.run/docs/guides/troubleshooting/exhaust-ram">
               Learn more
             </Link>
           </Button>
@@ -48,7 +48,7 @@ const RAMWarnings = ({ isFreePlan, upgradeUrl, severity }: RAMWarningsProps) => 
         </AlertDescription_Shadcn_>
         <div className="mt-3 flex items-center space-x-2">
           <Button asChild type="default">
-            <Link href="https://supabase.com/docs/guides/troubleshooting/high-cpu-usage">
+            <Link href="https://vela.run/docs/guides/troubleshooting/high-cpu-usage">
               Learn more
             </Link>
           </Button>

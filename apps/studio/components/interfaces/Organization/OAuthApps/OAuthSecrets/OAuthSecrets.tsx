@@ -41,7 +41,7 @@ export const OAuthSecrets = ({ selectedApp }: Props) => {
           <span className="text-sm text-foreground">Client secrets</span>
           <span className="text-sm text-foreground-light">
             For handling callbacks in the OAuth 2.0 flow. Learn more{' '}
-            <InlineLink href="https://supabase.com/docs/guides/integrations/build-a-supabase-integration#handling-the-callback">
+            <InlineLink href="https://vela.run/docs/guides/integrations/build-a-supabase-integration#handling-the-callback">
               here
             </InlineLink>
             .

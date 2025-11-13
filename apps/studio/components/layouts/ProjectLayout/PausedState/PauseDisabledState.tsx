@@ -111,16 +111,16 @@ export const PauseDisabledState = () => {
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://supabase.com/docs/guides/platform/migrating-within-supabase/dashboard-restore"
+            href="https://vela.run/docs/guides/platform/migrating-within-supabase/dashboard-restore"
           >
-            Restore backup to a new Supabase project guide
+            Restore backup to a new Vela project guide
           </a>
         </Button>
         <Button asChild type="default" icon={<ExternalLink />} className="mb-3">
           <a
             target="_blank"
             rel="noreferrer"
-            href="https://supabase.com/docs/guides/local-development/restoring-downloaded-backup"
+            href="https://vela.run/docs/guides/local-development/restoring-downloaded-backup"
           >
             Restore backup on your local machine guide
           </a>

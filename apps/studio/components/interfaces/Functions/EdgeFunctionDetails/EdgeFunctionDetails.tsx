@@ -376,7 +376,7 @@ export const EdgeFunctionDetails = () => {
                         icon={<ExternalLink strokeWidth={1.5} />}
                       >
                         <Link
-                          href="https://supabase.com/docs/guides/functions/dependencies"
+                          href="https://vela.run/docs/guides/functions/dependencies"
                           target="_blank"
                           rel="noreferrer"
                         >

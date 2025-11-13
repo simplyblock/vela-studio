@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 async function getCommitTime(commitSha: string) {
   try {
-    const response = await fetch(`https://github.com/supabase/supabase/commit/${commitSha}.json`, {
+    const response = await fetch(`https://github.com/simplyblock/vela-studio/commit/${commitSha}.json`, {
       headers: {
         Accept: 'application/json',
       },

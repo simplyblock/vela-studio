@@ -494,7 +494,7 @@ insert into public.colors (name, hex, red, green, blue, hue, sat_hsl, light_hsl,
     description: 'Build a basic slack clone with Row Level Security.',
     sql: `
 --
--- For use with https://github.com/supabase/supabase/tree/master/examples/slack-clone/nextjs-slack-clone
+-- For use with https://github.com/simplyblock/vela-studio/tree/master/examples/slack-clone/nextjs-slack-clone
 
 -- Custom types
 create type public.app_permission as enum ('channels.delete', 'messages.delete');
@@ -508,7 +508,7 @@ create table public.users (
   status      user_status default 'OFFLINE'::public.user_status
 );
 comment on table public.users is 'Profile data for each user.';
-comment on column public.users.id is 'References the internal Supabase Auth user.';
+comment on column public.users.id is 'References the internal Vela Auth user.';
 
 -- CHANNELS
 create table public.channels (
@@ -693,7 +693,7 @@ values
     sql: `
 --
 -- For use with:
--- https://github.com/supabase/supabase/tree/master/examples/todo-list/sveltejs-todo-list or
+-- https://github.com/simplyblock/vela-studio/tree/master/examples/todo-list/sveltejs-todo-list or
 -- https://github.com/supabase/examples-archive/tree/main/supabase-js-v1/todo-list
 --
 
@@ -743,7 +743,7 @@ create policy "Can update own user data." on users
   for update using ((select auth.uid()) = id);
 
 /**
-* This trigger automatically creates a user entry when a new user signs up via Supabase Auth.
+* This trigger automatically creates a user entry when a new user signs up via Vela Auth.
 */
 create function public.handle_new_user()
 returns trigger
@@ -901,7 +901,7 @@ create table profiles (
   constraint username_length check (char_length(username) >= 3)
 );
 -- Set up Row Level Security (RLS)
--- See https://supabase.com/docs/guides/auth/row-level-security for more details.
+-- See https://vela.run/docs/guides/auth/row-level-security for more details.
 alter table profiles
   enable row level security;
 
@@ -914,8 +914,8 @@ create policy "Users can insert their own profile." on profiles
 create policy "Users can update own profile." on profiles
   for update using ((select auth.uid()) = id);
 
--- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.
--- See https://supabase.com/docs/guides/auth/managing-user-data#using-triggers for more details.
+-- This trigger automatically creates a profile entry when a new user signs up via Vela Auth.
+-- See https://vela.run/docs/guides/auth/managing-user-data#using-triggers for more details.
 create function public.handle_new_user()
 returns trigger
 set search_path = ''
@@ -935,7 +935,7 @@ insert into storage.buckets (id, name)
   values ('avatars', 'avatars');
 
 -- Set up access controls for storage.
--- See https://supabase.com/docs/guides/storage#policy-examples for more details.
+-- See https://vela.run/docs/guides/storage#policy-examples for more details.
 create policy "Avatar images are publicly accessible." on storage.objects
   for select using (bucket_id = 'avatars');
 
@@ -947,7 +947,7 @@ create policy "Anyone can upload an avatar." on storage.objects
     id: 16,
     type: 'quickstart',
     title: 'NextAuth Schema Setup',
-    description: 'Sets up a the Schema and Tables for the NextAuth Supabase Adapter.',
+    description: 'Sets up a the Schema and Tables for the NextAuth Vela Adapter.',
     sql: `
 --
 -- Name: next_auth; Type: SCHEMA;
@@ -1430,7 +1430,7 @@ as $$
       on conflict do update
         set last_refreshed_at = now();
 
-    -- finally let Supabase Auth do the default behavior for a failed attempt
+    -- finally let Vela Auth do the default behavior for a failed attempt
     return jsonb_build_object('decision', 'continue');
   end;
 $$;
@@ -1502,7 +1502,7 @@ as $$
       on conflict do update
         set last_failed_at = now();
 
-    -- finally let Supabase Auth do the default behavior for a failed attempt
+    -- finally let Vela Auth do the default behavior for a failed attempt
     return jsonb_build_object('decision', 'continue');
   end;
 $$;

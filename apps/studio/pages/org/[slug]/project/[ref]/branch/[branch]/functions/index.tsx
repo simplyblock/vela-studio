@@ -31,7 +31,7 @@ const EdgeFunctionsPage: NextPageWithLayout = () => {
       <a
         target="_blank"
         rel="noreferrer"
-        href="https://github.com/supabase/supabase/tree/master/examples/edge-functions/supabase/functions"
+        href="https://github.com/simplyblock/vela-studio/tree/master/examples/edge-functions/supabase/functions"
       >
         Examples
       </a>

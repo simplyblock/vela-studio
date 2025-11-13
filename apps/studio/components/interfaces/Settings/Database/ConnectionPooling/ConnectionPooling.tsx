@@ -234,7 +234,7 @@ export const ConnectionPooling = () => {
                           </p>
                           <p className="mt-2">
                             Please refer to our{' '}
-                            <InlineLink href="https://supabase.com/docs/guides/database/connection-management#configuring-supavisors-pool-size">
+                            <InlineLink href="https://vela.run/docs/guides/database/connection-management#configuring-supavisors-pool-size">
                               documentation
                             </InlineLink>{' '}
                             to find out more.

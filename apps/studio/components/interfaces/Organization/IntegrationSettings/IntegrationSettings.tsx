@@ -85,12 +85,12 @@ Connect any of your GitHub repositories to a project.
 
 ### How will GitHub connections work?
 
-You will be able to connect a GitHub repository to a Supabase project.
+You will be able to connect a GitHub repository to a Vela project.
 The GitHub app will watch for changes in your repository such as file changes, branch changes as well as pull request activity.
 `
 
   const GitHubContentSectionBottom = gitHubAuthorization
-    ? `You are authorized with Supabase GitHub App. You can configure your GitHub App installations and repository access [here](${GITHUB_INTEGRATION_INSTALLATION_URL}). You can revoke your authorization [here](${GITHUB_INTEGRATION_REVOKE_AUTHORIZATION_URL}).`
+    ? `You are authorized with Vela GitHub App. You can configure your GitHub App installations and repository access [here](${GITHUB_INTEGRATION_INSTALLATION_URL}). You can revoke your authorization [here](${GITHUB_INTEGRATION_REVOKE_AUTHORIZATION_URL}).`
     : ''
 
   const GitHubSection = () => (

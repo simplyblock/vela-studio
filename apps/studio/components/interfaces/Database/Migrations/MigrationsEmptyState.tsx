@@ -53,7 +53,7 @@ const MigrationsEmptyState = () => {
           <p className="text-sm text-foreground-light">
             Database changes are managed through "migrations" and they are a common way of tracking
             changes to your database over time. You can run migrations against your project's
-            database via the Supabase CLI.
+            database via the Vela CLI.
           </p>
         </div>
 

@@ -394,7 +394,7 @@ const UserImpersonationSelector = () => {
                       AAL1 verifies users via standard login methods, while AAL2 adds a second
                       authentication factor. If you're not using MFA, you can leave this on AAL1.
                       Learn more about MFA{' '}
-                      <InlineLink href="https://supabase.com/docs/guides/auth/auth-mfa">
+                      <InlineLink href="https://vela.run/docs/guides/auth/auth-mfa">
                         here
                       </InlineLink>
                       .

@@ -37,7 +37,7 @@ export const HIPAA = () => {
           <div className="flex items-center justify-center h-full">
             <Button asChild type="default" iconRight={<ExternalLink />}>
               <a
-                href="https://forms.supabase.com/hipaa2"
+                href="https://forms.vela.run/hipaa2"
                 target="_blank"
                 rel="noreferrer noopener"
                 onClick={() =>

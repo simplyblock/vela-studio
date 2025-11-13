@@ -184,7 +184,7 @@ const DeployNewReplicaPanel = ({ visible, onSuccess, onClose }: DeployNewReplica
             <p className="text-foreground-light text-sm">
               Read more about{' '}
               <Link
-                href="https://supabase.com/docs/guides/platform/manage-your-usage/read-replicas"
+                href="https://vela.run/docs/guides/platform/manage-your-usage/read-replicas"
                 target="_blank"
                 rel="noreferrer"
                 className="underline hover:text-foreground transition"

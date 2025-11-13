@@ -90,7 +90,7 @@ const BuildingState = () => {
                     <p className="text-sm text-foreground-light">
                       Browse the Supabase{' '}
                       <Link
-                        href="https://supabase.com/docs"
+                        href="https://vela.run/docs"
                         className="mb-0 text-brand transition-colors hover:text-brand-600"
                         target="_blank"
                         rel="noreferrer"

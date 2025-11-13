@@ -59,7 +59,7 @@ const AccountLayout = ({ children, title }: PropsWithChildren<AccountLayoutProps
     <>
       <Head>
         <title>{title ? `${title} | Supabase` : 'Supabase'}</title>
-        <meta name="description" content="Supabase Studio" />
+        <meta name="description" content="Vela Studio" />
       </Head>
       <div className={cn('flex flex-col h-screen w-screen')}>
         <ScaffoldContainerLegacy>

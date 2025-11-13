@@ -180,7 +180,7 @@ export const RealtimeFilterPopover = ({ config, onChangeConfig }: RealtimeFilter
                     className="underline"
                     target="_blank"
                     rel="noreferrer"
-                    href="https://supabase.com/docs/guides/realtime/postgres-changes#available-filters"
+                    href="https://vela.run/docs/guides/realtime/postgres-changes#available-filters"
                   >
                     our docs
                   </Link>

@@ -171,7 +171,7 @@ const FirstLevelNav = () => {
         </Button>
         <Button block asChild type="text" size="small" icon={<BookOpen />}>
           <Link
-            href="https://supabase.com/docs/guides/graphql"
+            href="https://vela.run/docs/guides/graphql"
             target="_blank"
             rel="noreferrer"
             className="!justify-start"
@@ -184,7 +184,7 @@ const FirstLevelNav = () => {
       <div className="px-2 py-4">
         <Button block asChild type="text" size="small" icon={<Book />}>
           <Link
-            href="https://supabase.com/docs"
+            href="https://vela.run/docs"
             target="_blank"
             rel="noreferrer"
             className="!justify-start"
@@ -194,7 +194,7 @@ const FirstLevelNav = () => {
         </Button>
         <Button block asChild type="text" size="small" icon={<BookOpen />}>
           <Link
-            href="https://supabase.com/docs/guides/api"
+            href="https://vela.run/docs/guides/api"
             target="_blank"
             rel="noreferrer"
             className="!justify-start"

@@ -3,7 +3,7 @@ schema {
 }
 
 """
-A document containing content from the Supabase docs. This is a guide, which might describe a concept, or explain the steps for using or implementing a feature.
+A document containing content from the Vela docs. This is a guide, which might describe a concept, or explain the steps for using or implementing a feature.
 """
 type Guide implements SearchResult {
   """The title of the document"""
@@ -36,7 +36,7 @@ interface SearchResult {
 }
 
 """
-A collection of content chunks from a larger document in the Supabase docs.
+A collection of content chunks from a larger document in the Vela docs.
 """
 type SubsectionCollection {
   """A list of edges containing nodes in this collection"""
@@ -55,7 +55,7 @@ type SubsectionEdge {
   node: Subsection!
 }
 
-"""A content chunk taken from a larger document in the Supabase docs"""
+"""A content chunk taken from a larger document in the Vela docs"""
 type Subsection {
   """The title of the subsection"""
   title: String
@@ -68,7 +68,7 @@ type Subsection {
 }
 
 """
-A reference document containing a description of a Supabase CLI command
+A reference document containing a description of a Vela CLI command
 """
 type CLICommandReference implements SearchResult {
   """The title of the document"""
@@ -82,7 +82,7 @@ type CLICommandReference implements SearchResult {
 }
 
 """
-A reference document containing a description of a function from a Supabase client library
+A reference document containing a description of a function from a Vela client library
 """
 type ClientLibraryFunctionReference implements SearchResult {
   """The title of the document"""
@@ -126,13 +126,13 @@ type RootQueryType {
   """Get the GraphQL schema for this endpoint"""
   schema: String!
 
-  """Search the Supabase docs for content matching a query string"""
+  """Search the Vela docs for content matching a query string"""
   searchDocs(query: String!, limit: Int): SearchResultCollection
 
-  """Get the details of an error code returned from a Supabase service"""
+  """Get the details of an error code returned from a Vela service"""
   error(code: String!, service: Service!): Error
 
-  """Get error codes that can potentially be returned by Supabase services"""
+  """Get error codes that can potentially be returned by Vela services"""
   errors(
     """Returns the first n elements from the list"""
     first: Int
@@ -146,7 +146,7 @@ type RootQueryType {
     """Returns elements that come before the specified cursor"""
     before: String
 
-    """Filter errors by a specific Supabase service"""
+    """Filter errors by a specific Vela service"""
     service: Service
 
     """Filter errors by a specific error code"""
@@ -154,7 +154,7 @@ type RootQueryType {
   ): ErrorCollection
 }
 
-"""A collection of search results containing content from Supabase docs"""
+"""A collection of search results containing content from Vela docs"""
 type SearchResultCollection {
   """A list of edges containing nodes in this collection"""
   edges: [SearchResultEdge!]!
@@ -172,14 +172,14 @@ type SearchResultEdge {
   node: SearchResult!
 }
 
-"""An error returned by a Supabase service"""
+"""An error returned by a Vela service"""
 type Error {
   """
   The unique code identifying the error. The code is stable, and can be used for string matching during error handling.
   """
   code: String!
 
-  """The Supabase service that returns this error."""
+  """The Vela service that returns this error."""
   service: Service!
 
   """The HTTP status code returned with this error."""

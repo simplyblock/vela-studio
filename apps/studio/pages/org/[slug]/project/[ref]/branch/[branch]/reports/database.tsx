@@ -336,7 +336,7 @@ const DatabaseUsage = () => {
                 <AlertDescription_Shadcn_>
                   <div className="space-y-2">
                     <p>
-                      New Supabase projects have a database size of ~40-60mb. This space includes
+                      New Vela projects have a database size of ~40-60mb. This space includes
                       pre-installed extensions, schemas, and default Postgres data. Additional
                       database size is used when installing extensions, even if those extensions are
                       inactive.
@@ -344,7 +344,7 @@ const DatabaseUsage = () => {
 
                     <Button asChild type="default" icon={<ExternalLink />}>
                       <Link
-                        href="https://supabase.com/docs/guides/platform/database-size#disk-space-usage"
+                        href="https://vela.run/docs/guides/platform/database-size#disk-space-usage"
                         target="_blank"
                         rel="noreferrer"
                       >

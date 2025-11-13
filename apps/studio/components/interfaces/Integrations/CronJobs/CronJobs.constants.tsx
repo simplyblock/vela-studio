@@ -31,8 +31,8 @@ export const CRONJOB_DEFINITIONS = [
   {
     value: 'edge_function',
     icon: <EdgeFunctions strokeWidth={1} />,
-    label: 'Supabase Edge Function',
-    description: 'Choose a Supabase edge function to run.',
+    label: 'Vela Edge Function',
+    description: 'Choose a Vela edge function to run.',
   },
 ]
 

@@ -1,4 +1,4 @@
-import SupabaseLogo from '@/components/SupabaseLogo'
+import VelaLogo from '@/components/VelaLogo'
 import AuthButton from '../components/AuthButton'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/server'
@@ -13,7 +13,7 @@ export default async function Index() {
   return (
     <main className="flex flex-col gap-6 items-center h-full mt-40">
       <h2 className="flex items-center gap-6">
-        <SupabaseLogo />
+        <VelaLogo />
       </h2>
       {user ? (
         <Link

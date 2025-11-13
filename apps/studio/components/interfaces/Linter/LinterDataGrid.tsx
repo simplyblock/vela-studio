@@ -250,7 +250,7 @@ const LinterDataGrid = ({
                               href={
                                 lintInfoMap.find((item) => item.name === selectedLint.name)
                                   ?.docsLink ||
-                                'https://supabase.com/docs/guides/database/database-linter'
+                                'https://vela.run/docs/guides/database/database-linter'
                               }
                               target="_blank"
                               rel="noreferrer"

@@ -20,7 +20,7 @@ export const QueuesOverviewTab = () => {
         !isExposed ? (
           <Admonition
             type="default"
-            title="Queues can be managed via any Supabase client library or PostgREST endpoints"
+            title="Queues can be managed via any Vela client library or PostgREST endpoints"
           >
             <p>
               You may choose to toggle the exposure of Queues through Data APIs via the queues

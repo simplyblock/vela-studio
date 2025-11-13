@@ -59,7 +59,7 @@ const DownloadSnippetModal = ({ id, ...props }: DownloadSnippetModalProps) => {
       hideFooter
       showCloseButton
       size="xlarge"
-      header={<p>Download snippet as local migration file via the Supabase CLI.</p>}
+      header={<p>Download snippet as local migration file via the Vela CLI.</p>}
       {...props}
     >
       <div className="flex flex-col items-start justify-between gap-4 relative pt-2">
@@ -104,7 +104,7 @@ const DownloadSnippetModal = ({ id, ...props }: DownloadSnippetModalProps) => {
           <div className="flex justify-between items-center gap-x-2">
             <Button asChild type="default" icon={<ExternalLink strokeWidth={1.5} />}>
               <Link
-                href="https://supabase.com/docs/guides/deployment/database-migrations"
+                href="https://vela.run/docs/guides/deployment/database-migrations"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -114,7 +114,7 @@ const DownloadSnippetModal = ({ id, ...props }: DownloadSnippetModalProps) => {
 
             <Button asChild type="default" icon={<ExternalLink strokeWidth={1.5} />}>
               <Link
-                href="https://supabase.com/docs/guides/cli/local-development"
+                href="https://vela.run/docs/guides/cli/local-development"
                 target="_blank"
                 rel="noreferrer"
               >

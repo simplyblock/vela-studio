@@ -65,7 +65,7 @@ const DiskSizeConfiguration = ({ disabled = false }: DiskSizeConfigurationProps)
                 )}
                 <div className="grid grid-cols-2 items-center">
                   <p className="text-sm text-lighter max-w-lg">
-                    Supabase employs auto-scaling storage and allows for manual disk size
+                    Vela employs auto-scaling storage and allows for manual disk size
                     adjustments when necessary
                   </p>
                   <div className="flex items-end justify-end">
@@ -124,7 +124,7 @@ If you upload more than 1.5x the current size of your storage, your database wil
 into read-only mode. If you know how big your database is going to be, you can
 manually increase the size here.
 
-Read more about [disk management](https://supabase.com/docs/guides/platform/database-size#disk-management) and how to [free up storage space](https://supabase.com/docs/guides/platform/database-size#vacuum-operations).
+Read more about [disk management](https://vela.run/docs/guides/platform/database-size#disk-management) and how to [free up storage space](https://vela.run/docs/guides/platform/database-size#vacuum-operations).
 `}
                         />
                       </AlertDescription_Shadcn_>

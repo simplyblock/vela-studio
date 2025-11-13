@@ -128,13 +128,13 @@ export const ChooseChannelPopover = ({ config, onChangeConfig }: ChooseChannelPo
                           </div>
                         </div>
                         <FormDescription_Shadcn_ className="text-xs text-foreground-lighter">
-                          The channel you initialize with the Supabase Realtime client. Learn more
+                          The channel you initialize with the Vela Realtime client. Learn more
                           in{' '}
                           <a
                             target="_blank"
                             rel="noreferrer"
                             className="underline hover:text-foreground transition"
-                            href="https://supabase.com/docs/guides/realtime/concepts#channels"
+                            href="https://vela.run/docs/guides/realtime/concepts#channels"
                           >
                             our docs
                           </a>

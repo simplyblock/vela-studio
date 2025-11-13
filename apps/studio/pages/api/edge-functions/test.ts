@@ -27,7 +27,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     if (!validEdgeFnUrl) {
       return res.status(400).json({
         status: 400,
-        error: { message: 'Provided URL is not a valid Supabase edge function URL' },
+        error: { message: 'Provided URL is not a valid Vela edge function URL' },
       })
     }
 

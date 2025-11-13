@@ -26,8 +26,8 @@ const Error404: NextPage = ({}) => {
                 <Image
                   src={
                     resolvedTheme?.includes('dark')
-                      ? `${BASE_PATH}/img/supabase-dark.svg`
-                      : `${BASE_PATH}/img/supabase-light.svg`
+                      ? `${BASE_PATH}/img/vela-dark.svg`
+                      : `${BASE_PATH}/img/vela-light.svg`
                   }
                   alt="vela"
                   height={24}

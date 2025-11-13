@@ -1,5 +1,5 @@
 import NextLogo from "./NextLogo";
-import SupabaseLogo from "./SupabaseLogo";
+import VelaLogo from "./VelaLogo";
 
 export default function Header() {
   return (
@@ -10,7 +10,7 @@ export default function Header() {
           target="_blank"
           rel="noreferrer"
         >
-          <SupabaseLogo />
+          <VelaLogo />
         </a>
         <span className="border-l rotate-45 h-6" />
         <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
@@ -26,7 +26,7 @@ export default function Header() {
           className="font-bold hover:underline"
           rel="noreferrer"
         >
-          Supabase
+          Vela
         </a>{" "}
         and{" "}
         <a

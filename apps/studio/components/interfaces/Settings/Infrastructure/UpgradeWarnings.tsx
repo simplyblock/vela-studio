@@ -43,7 +43,7 @@ export const ObjectsToBeDroppedWarning = ({
         <div>
           <Button size="tiny" type="default" asChild>
             <a
-              href="https://supabase.com/docs/guides/platform/upgrading#extensions"
+              href="https://vela.run/docs/guides/platform/upgrading#extensions"
               target="_blank"
               rel="noreferrer"
             >
@@ -87,13 +87,13 @@ export const UnsupportedExtensionsWarning = ({
           </ul>
         </div>
         <p>
-          These extensions are not supported in newer versions of Supabase Postgres. If you are not
+          These extensions are not supported in newer versions of Vela Postgres. If you are not
           using them, it is safe to remove them.
         </p>
         <div>
           <Button size="tiny" type="default" asChild>
             <a
-              href="https://supabase.com/docs/guides/platform/upgrading#extensions"
+              href="https://vela.run/docs/guides/platform/upgrading#extensions"
               target="_blank"
               rel="noreferrer"
             >
@@ -134,7 +134,7 @@ export const UserDefinedObjectsInInternalSchemasWarning = ({ objects }: { object
         <div>
           <Button size="tiny" type="default" asChild>
             <a
-              href="https://github.com/orgs/supabase/discussions/34270"
+              href="https://github.com/simplyblock/vela-studio/discussions/34270"
               target="_blank"
               rel="noreferrer"
             >

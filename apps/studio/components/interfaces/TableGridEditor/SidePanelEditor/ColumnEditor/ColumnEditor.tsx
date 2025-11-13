@@ -246,7 +246,7 @@ const ColumnEditor = ({
                   icon={<ExternalLink size={14} strokeWidth={2} />}
                 >
                   <Link
-                    href="https://supabase.com/docs/guides/database/tables#data-types"
+                    href="https://vela.run/docs/guides/database/tables#data-types"
                     target="_blank"
                     rel="noreferrer"
                   >

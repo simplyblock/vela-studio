@@ -363,7 +363,7 @@ export const InviteMemberButton = () => {
                 description={
                   <div className="space-y-4 mb-1">
                     <p>
-                      Supabase offers single sign-on (SSO) as a login option to provide additional
+                      Vela offers single sign-on (SSO) as a login option to provide additional
                       account security for your team. This allows company administrators to enforce
                       the use of an identity provider when logging into Supabase.
                     </p>
@@ -371,7 +371,7 @@ export const InviteMemberButton = () => {
                     <div className="flex items-center space-x-2">
                       <Button asChild type="default">
                         <Link
-                          href="https://supabase.com/docs/guides/platform/sso"
+                          href="https://vela.run/docs/guides/platform/sso"
                           target="_blank"
                           rel="noreferrer"
                         >

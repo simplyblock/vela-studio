@@ -105,7 +105,7 @@ export const PolicyTableRow = ({
           <span className="text-foreground-light">
             {isPubliclyReadableWritable
               ? 'Row Level Security is disabled. Your table is publicly readable and writable.'
-              : 'Row Level Security is enabled, but no policies exist. No data will be selectable via Supabase APIs.'}
+              : 'Row Level Security is enabled, but no policies exist. No data will be selectable via Vela APIs.'}
           </span>
           {isPubliclyReadableWritable && (
             <Tooltip>

@@ -16,8 +16,8 @@ const DisabledWarningDueToIncident = ({ title }: DisabledWarningDueToIncidentPro
         <div className="space-y-3">
           <p className="text-sm leading-normal">
             Our engineers are currently working on a fix. You can follow updates on{' '}
-            <a className="text-brand" href="https://status.supabase.com/">
-              https://status.supabase.com/
+            <a className="text-brand" href="https://status.vela.run/">
+              https://status.vela.run/
             </a>
           </p>
         </div>

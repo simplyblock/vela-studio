@@ -25,7 +25,7 @@ export const ProtectedSchemaDialog = ({ onClose }: { onClose: () => void }) => {
       <DialogSectionSeparator />
       <DialogSection className="space-y-2 prose">
         <p className="text-sm">
-          The following schemas are managed by Supabase and are currently protected from write
+          The following schemas are managed by Vela and are currently protected from write
           access through the dashboard.
         </p>
         <div className="flex flex-wrap gap-1">
@@ -36,7 +36,7 @@ export const ProtectedSchemaDialog = ({ onClose }: { onClose: () => void }) => {
           ))}
         </div>
         <p className="text-sm !mt-4">
-          These schemas are critical to the functionality of your Supabase project and hence we
+          These schemas are critical to the functionality of your Vela project and hence we
           highly recommend not altering them.
         </p>
         <p className="text-sm">
@@ -83,13 +83,13 @@ export const ProtectedSchemaWarning = ({
     >
       {reason === 'fdw' ? (
         <p>
-          The <code className="text-xs">{schema}</code> schema is used by Supabase to connect to
+          The <code className="text-xs">{schema}</code> schema is used by Vela to connect to
           analytics buckets and is read-only through the dashboard.
         </p>
       ) : (
         <>
           <p className="mb-2">
-            The <code className="text-xs">{schema}</code> schema is managed by Supabase and is
+            The <code className="text-xs">{schema}</code> schema is managed by Vela and is
             read-only through the dashboard.
           </p>
           <Dialog open={showModal} onOpenChange={setShowModal}>

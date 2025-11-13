@@ -9,12 +9,12 @@ export const CANCELLATION_REASONS = [
     label: 'Could you tell us more about your experience with our support team?',
   },
   {
-    value: 'Supabase is missing a specific feature I need.',
+    value: 'Vela is missing a specific feature I need.',
     label: 'What specific feature(s) are we missing?',
   },
   {
     value: 'I found it difficult to use or build with.',
-    label: 'What specific parts of Supabase did you find difficult or frustrating?',
+    label: 'What specific parts of Vela did you find difficult or frustrating?',
   },
   {
     value: 'Performance or reliability insufficient.',

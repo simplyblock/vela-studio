@@ -82,11 +82,11 @@ const Compute = ({ orgSlug, projectRef, startDate, endDate }: ComputeProps) => {
           links: [
             {
               name: 'Compute Add-ons',
-              url: 'https://supabase.com/docs/guides/platform/compute-add-ons',
+              url: 'https://vela.run/docs/guides/platform/compute-add-ons',
             },
             {
               name: 'Usage-billing for Compute',
-              url: 'https://supabase.com/docs/guides/platform/manage-your-usage/compute',
+              url: 'https://vela.run/docs/guides/platform/manage-your-usage/compute',
             },
           ],
         }}

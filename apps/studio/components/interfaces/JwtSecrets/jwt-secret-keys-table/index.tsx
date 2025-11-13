@@ -150,7 +150,7 @@ export default function JWTSecretKeysTable() {
             {standbyKey && (
               <ActionPanel
                 title="Rotate Signing Key"
-                description="Switch the standby key to in use. All new JSON Web Tokens issued by Supabase Auth will be signed with this key."
+                description="Switch the standby key to in use. All new JSON Web Tokens issued by Vela Auth will be signed with this key."
                 buttonLabel="Rotate keys"
                 onClick={() => setShownDialog('rotate')}
                 loading={isUpdatingJWTSigningKey}
