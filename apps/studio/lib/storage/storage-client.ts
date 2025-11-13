@@ -14,6 +14,8 @@ import {
 
 const isInDocker = isDocker()
 
+const EMPTY_FOLDER_PLACEHOLDER = '.emptyFolderPlaceholder'
+
 const ES_ALG = 'ES256' as const // JWS signature
 const ENC_ALG = 'ECDH-ES' as const // JWE key agreement (direct)
 const ENC_ENC = 'A256GCM' as const // JWE content encryption
@@ -36,6 +38,12 @@ const DEFAULT_SEARCH_OPTIONS = {
     column: 'name',
     order: 'asc',
   },
+}
+
+const joinPath = (a: string, ...paths: string[]) => {
+  if (a.endsWith('/')) a = a.substring(0, a.length - 1)
+  paths = paths.map((p) => (p.startsWith('/') ? p.substring(1) : p))
+  return [a, ...paths].join('/')
 }
 
 const loadAsynchronousKeys = async (
@@ -106,12 +114,12 @@ const createSignedUrl = async (
   path: string,
   expiresAt: string
 ) => {
-  const storageObjectUrl = `${storageEndpoint}/object/${bucket}${encodeURI(path)}`
+  const storageObjectUrl = joinPath(storageEndpoint, '/object', bucket, encodeURI(path))
   const hash = crypto.createHash('sha256').update(storageObjectUrl).digest('hex')
   const payload = { storageObjectUrl, organizationId, projectId, branchId, expiresAt }
   const jws = await signJws(payload)
   const jwe = await encryptJwe(jws)
-  return `${publicBaseUrl}/platform/storage/objects/${hash}?token=${jwe}`
+  return `${joinPath(publicBaseUrl, '/platform/storage/objects', hash)}?token=${jwe}`
 }
 
 const verifySignedUrl = async (hash: string, jwe: string) => {
@@ -134,7 +142,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       ? branchEntity.api_keys.service_role!
       : process.env.SUPABASE_SERVICE_KEY!
     const storageEndpoint = !isInDocker
-      ? `${branchEntity.database.service_endpoint_uri}/storage`
+      ? joinPath(branchEntity.database.service_endpoint_uri, '/storage')
       : 'http://storage:5000'
     return {
       token,
@@ -148,7 +156,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
 
-      const response = await fetch(`${params.storageEndpoint}/bucket`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/bucket'), {
         headers: {
           Authorization: `Bearer ${params.token}`,
         },
@@ -168,7 +176,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
 
-      const response = await fetch(`${params.storageEndpoint}/bucket`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/bucket'), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -190,7 +198,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
 
-      const response = await fetch(`${params.storageEndpoint}/bucket/${name}`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/bucket', name), {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -207,7 +215,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
 
-      const response = await fetch(`${params.storageEndpoint}/bucket/${name}`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/bucket', name), {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -228,7 +236,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
 
-      const response = await fetch(`${params.storageEndpoint}/bucket/${name}/empty`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/bucket', name, '/empty'), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -247,7 +255,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
 
       const { path, options } = req.body
       const body = { ...DEFAULT_SEARCH_OPTIONS, ...options, prefix: path || '' }
-      const response = await fetch(`${params.storageEndpoint}/object/list/${name}`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/object/list', name), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -266,7 +274,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
 
-      const response = await fetch(`${params.storageEndpoint}/object/${name}`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/object', name), {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -285,7 +293,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
 
-      const response = await fetch(`${params.storageEndpoint}/object/${name}/${path}`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/object', name, path), {
         headers: {
           Authorization: `Bearer ${params.token}`,
         },
@@ -315,7 +323,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
         destinationBucket: destination,
       }
 
-      const response = await fetch(`${params.storageEndpoint}/object/move`, {
+      const response = await fetch(joinPath(params.storageEndpoint, '/object/move'), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -329,11 +337,39 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
       return res.status(200).json(await response.json())
     },
 
+    newFolderObject: async (name: string, path: string) => {
+      const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
+      const params = await getStorageParameters(slug, ref, branch)
+      if (!params) return res.status(401).json({ error: 'Unauthorized' })
+
+      const emptyFolderPlaceholderPath = joinPath(
+        params.storageEndpoint,
+        '/object',
+        name,
+        path,
+        EMPTY_FOLDER_PLACEHOLDER
+      )
+      const response = await fetch(emptyFolderPlaceholderPath, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+          'Content-Type': 'text/plain',
+        },
+        body: '',
+      })
+      if (response.status < 200 || response.status > 299) {
+        return res.status(response.status).json({ error: response.statusText })
+      }
+      return res.status(200).json(await response.json())
+    },
+
     publicObjectUrl: async (name: string, path: string) => {
       const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
       const params = await getStorageParameters(slug, ref, branch)
       if (!params) return res.status(401).json({ error: 'Unauthorized' })
-      return res.status(200).json({ publicUrl: `${params.storageEndpoint}/object/${name}/${path}` })
+      return res
+        .status(200)
+        .json({ publicUrl: joinPath(params.storageEndpoint, '/object', name, path) })
     },
 
     createSignedObjectUrl: async (bucket: string, path: string, expiredIn: number) => {
@@ -357,7 +393,7 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
 
     retrieveSignedObjectUrl: async (hash: string, token: string) => {
       const payload = await verifySignedUrl(hash, token)
-
+      console.log(payload)
       const params = await getStorageParameters(
         payload.organizationId,
         payload.projectId,
@@ -381,7 +417,13 @@ export async function newStorageClient(req: NextApiRequest, res: NextApiResponse
 
       console.log(response.headers)
       return res
-        .writeHead(200, [...response.headers.entries()].reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}))
+        .writeHead(
+          200,
+          [...response.headers.entries()].reduce(
+            (acc, [key, value]) => ({ ...acc, [key]: value }),
+            {}
+          )
+        )
         .send(Buffer.from(await response.arrayBuffer()))
     },
   }

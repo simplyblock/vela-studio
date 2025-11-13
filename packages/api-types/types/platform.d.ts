@@ -4300,6 +4300,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/new-folder': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations['StorageObjectsController_newFolderObject']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/storage/buckets/{id}/objects/copy': {
     parameters: {
       query?: never
@@ -5264,6 +5280,9 @@ export interface components {
     }
     ConfirmSubscriptionChangeBody: {
       payment_intent_id: string
+    }
+    NewFolderObjectBody: {
+      path: string
     }
     CopyObjectBody: {
       from: string
@@ -22622,6 +22641,46 @@ export interface operations {
         content?: never
       }
       /** @description Failed to delete objects */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  StorageObjectsController_newFolderObject: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description Storage bucket id */
+        id: string
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': PlatformType<'NewFolderObjectBody'>
+      }
+    }
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to copy object */
       500: {
         headers: {
           [name: string]: unknown

@@ -115,7 +115,7 @@ const HeaderBreadcrumbs = ({
   ) : (
     <div className={`ml-3 flex items-center ${isSearching && 'max-w-[140px] overflow-x-auto'}`}>
       {formattedBreadcrumbs.map((crumb, idx: number) => (
-        <div className="flex items-center" key={crumb.name}>
+        <div className="flex items-center" key={`${idx}-crumb.name`}>
           {idx !== 0 && <ChevronRight size={10} strokeWidth={2} className="mx-3" />}
           <p
             key={crumb.name}

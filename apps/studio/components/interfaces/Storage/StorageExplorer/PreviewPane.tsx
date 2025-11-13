@@ -34,7 +34,7 @@ const PreviewFile = ({ item }: { item: StorageItem }) => {
     file: item,
     bucket: selectedBucket,
   })
-  console.log("PreviewUrl: " + previewUrl)
+
   // if the size is not available, we set it to be greater than the max size
   const size = +(item.metadata?.size ?? PREVIEW_SIZE_LIMIT + 1)
   const mimeType = item.metadata?.mimetype
