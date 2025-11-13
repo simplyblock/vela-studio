@@ -29,11 +29,11 @@ export const HomeIcon = () => {
   return (
     <Link href={href} className="items-center justify-center flex-shrink-0 hidden md:flex">
       <Image
-        alt="Supabase"
+        alt="Vela"
         src={`${router.basePath}/img/vela-icon.svg`}
-        width={18}
-        height={18}
-        className="w-[18px] h-[18px]"
+        width={24}
+        height={24}
+        className="w-[24px] h-[24px]"
       />
     </Link>
   )

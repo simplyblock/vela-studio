@@ -1,5 +1,5 @@
 import { useParams } from 'common'
-import { ExternalLink, Plug } from 'lucide-react'
+import { Cable, ExternalLink, Plug } from 'lucide-react'
 import { parseAsBoolean, useQueryState } from 'nuqs'
 import { useMemo, useState } from 'react'
 
@@ -174,8 +174,8 @@ export const Connect = () => {
       <ButtonTooltip
         disabled
         type="default"
-        className="rounded-full"
-        icon={<Plug className="rotate-90" />}
+        className="rounded-md bg-transparent border-2 border-[hsl(var(--brand-default))] text-black dark:text-white hover:bg-[#2a2a2a] hover:text-white hover:border-purple-500 dark:hover:bg-purple-900 dark:hover:border-purple-500"
+        icon={<Cable size={16} className="text-black dark:text-white" />}
         tooltip={{
           content: {
             side: 'bottom',
@@ -191,7 +191,11 @@ export const Connect = () => {
   return (
     <Dialog open={showConnect} onOpenChange={(open) => setShowConnect(!open ? null : open)}>
       <DialogTrigger asChild>
-        <Button type="default" className="rounded-full" icon={<Plug className="rotate-90" />}>
+        <Button
+          type="default"
+          className="rounded-md bg-transparent border-2 border-[hsl(var(--brand-default))] text-black dark:text-white hover:bg-[#2a2a2a] hover:text-white hover:border-purple-500 dark:hover:bg-purple-900 dark:hover:border-purple-500"
+          icon={<Cable size={16} className="text-black dark:text-white" />}
+        >
           <span>Connect</span>
         </Button>
       </DialogTrigger>

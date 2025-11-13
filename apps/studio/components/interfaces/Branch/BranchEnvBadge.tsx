@@ -24,17 +24,35 @@ export default function BranchEnvBadge({
   title,
 }: BranchEnvBadgeProps) {
 
-  const key = env
+  // Normalize env to be case-insensitive and support common aliases
+  const key = (env ?? '').toString().trim().toLowerCase()
 
   const colorMap: Record<string, string> = {
-    Production: 'bg-emerald-500 text-white',
-    Staging: 'bg-amber-500 text-black',
-    Test: 'bg-violet-500 text-white',
-    Development: 'bg-sky-500 text-white',
-    default: 'bg-surface-300 text-foreground'
-  } 
+    production: 'bg-red-500 text-black', // light red for production
+    prod: 'bg-red-500 text-black',
+    staging: 'bg-amber-500 text-black',
+    test: 'bg-violet-500 text-white',
+    testing: 'bg-violet-500 text-white',
+    qa: 'bg-violet-500 text-white',
+    development: 'bg-sky-500 text-white',
+    dev: 'bg-sky-500 text-white',
+    default: 'bg-surface-300 text-foreground',
+  }
 
-  const colorClass = key ? colorMap[key] : colorMap["default"]
+  const colorClass = colorMap[key] ?? colorMap['default']
+
+  const labelMap: Record<string, string> = {
+    production: 'Production',
+    prod: 'Production',
+    staging: 'Staging',
+    test: 'Test',
+    testing: 'Test',
+    qa: 'Test',
+    development: 'Development',
+    dev: 'Development',
+  }
+
+  const displayLabel = labelMap[key] ?? (env ?? 'Unknown')
 
   const sizeClass =
     size === 'sm'
@@ -54,7 +72,7 @@ export default function BranchEnvBadge({
         className
       )}
     >
-      {env}
+      {displayLabel}
     </span>
   )
 }
