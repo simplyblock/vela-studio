@@ -80,8 +80,8 @@ const DefaultLayout = ({ children, headerTitle }: PropsWithChildren<DefaultLayou
               {versionVisible && (
                 <div className="flex-grow w-full max-h-6 h-6 text-center bg-purple-500 text-sm">
                   <span>
-                    Vela -Studio: {versionOrUnknown(VERSION_BUILD_HASH)} (
-                    {versionOrUnknown(VERSION_BUILD_TIME)}) // Vela -Controller:{' '}
+                    Vela-Studio: {versionOrUnknown(VERSION_BUILD_HASH)} (
+                    {versionOrUnknown(VERSION_BUILD_TIME)}) // Vela-Controller:{' '}
                     {versionOrUnknown(controllerVersion?.commit_hash)} (
                     {versionOrUnknown(controllerVersion?.timestamp)})
                   </span>

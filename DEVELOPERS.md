@@ -86,9 +86,7 @@ Then visit, and edit, any of the following sites:
 
 | Site                                                     | Directory      | Scope name | Description                                   | Local development server   |
 | -------------------------------------------------------- | -------------- | ---------- | --------------------------------------------- | -------------------------- |
-| [vela.run](https://vela.run)                     | `/apps/www`    | www        | The main website                              | http://localhost:3000      |
-| [vela.run/dashboard](https://vela.run/dashboard) | `/apps/studio` | studio     | Studio dashboard (requires Docker, see below) | http://localhost:8082      |
-| [vela.run/docs](https://vela.run/docs)           | `/apps/docs`   | docs       | Guides and Reference (Next.js based)          | http://localhost:3001/docs |
+| [vela.run/dashboard](https://vela.run) | `/apps/studio` | studio     | Studio dashboard (requires Docker, see below) | http://localhost:8000      |
 
 #### Running sites individually
 

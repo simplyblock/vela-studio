@@ -117,17 +117,6 @@ export const ApiKeysComingSoonBanner = () => {
         <p className="text-sm text-foreground-lighter lg:max-w-sm 2xl:max-w-none">
           We're rolling out new API keys to better support your application needs.
         </p>
-        <div className="mt-4">
-          <Button type="default" icon={<Github />}>
-            <a
-              href="https://github.com/simplyblock/vela-studio/discussions/29260"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Learn more
-            </a>
-          </Button>
-        </div>
       </div>
     </FeatureBanner>
   )
@@ -173,17 +162,6 @@ export const ApiKeysFeedbackBanner = () => {
     >
       <div className="p-5">
         <p className="text-sm text-foreground">Your new API keys are here</p>
-        <p className="text-sm text-foreground-lighter">
-          We've updated our API keys to better support your application needs.{' '}
-          <a
-            href="https://github.com/simplyblock/vela-studio/discussions/29260"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-foreground"
-          >
-            Join the discussion on GitHub <ExternalLink size={14} strokeWidth={1.5} />
-          </a>
-        </p>
       </div>
 
       <Separator className="w-full" />
