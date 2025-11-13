@@ -33,8 +33,8 @@ export const generateAuthMenu = (
           : []),
         {
           name: 'Sign Up / Providers',
-          key: 'sign-in-up',
-          pages: ['providers', 'third-party'],
+          key: 'signup',
+          pages: ['signup', 'providers', 'third-party'],
           url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/signup`,
           items: [],
         },

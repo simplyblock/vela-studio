@@ -1,47 +1,10 @@
-import { Source_Code_Pro } from 'next/font/google'
-import localFont from 'next/font/local'
+import { Inter, Source_Code_Pro } from 'next/font/google'
 
-export const customFont = localFont({
+export const customFont = Inter({
+  subsets: ['latin'],
   variable: '--font-custom',
   display: 'swap',
-  fallback: ['Circular', 'custom-font', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
-  src: [
-    {
-      path: './CustomFont-Book.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: './CustomFont-BookItalic.woff2',
-      weight: '400',
-      style: 'italic',
-    },
-    {
-      path: './CustomFont-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: './CustomFont-Bold.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-    {
-      path: './CustomFont-BoldItalic.woff2',
-      weight: '700',
-      style: 'italic',
-    },
-    {
-      path: './CustomFont-Black.woff2',
-      weight: '800',
-      style: 'normal',
-    },
-    {
-      path: './CustomFont-BlackItalic.woff2',
-      weight: '800',
-      style: 'italic',
-    },
-  ],
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export const sourceCodePro = Source_Code_Pro({

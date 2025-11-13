@@ -15,6 +15,7 @@ import { Menu, Separator } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import { IntegrationTabs } from './tabs'
 import { getPathReferences } from 'data/vela/path-references'
+import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
 
 /**
  * Layout component for the Integrations section
@@ -31,6 +32,7 @@ const IntegrationTopHeaderLayout = ({ ...props }: PropsWithChildren) => {
   const { data: project } = useSelectedProjectQuery()
   const router = useRouter()
   const { slug: orgRef, branch: branchRef } = getPathReferences()
+  const { page } = useBranchProductPage()
   // Refs for the main scrollable area and header
   const mainElementRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
@@ -73,10 +75,6 @@ const IntegrationTopHeaderLayout = ({ ...props }: PropsWithChildren) => {
       unsubscribe()
     }
   }, [scroll.scrollY])
-
-  const segments = router.asPath.split('/')
-  // construct the page url to be used to determine the active state for the sidebar
-  const page = `${segments[3]}${segments[4] ? `/${segments[4]}` : ''}`
 
   const {
     installedIntegrations: integrations,
@@ -151,7 +149,7 @@ const IntegrationTopHeaderLayout = ({ ...props }: PropsWithChildren) => {
 
 const IntegrationsLayoutSide = ({ ...props }: PropsWithChildren) => {
   const router = useRouter()
-  const page = router.pathname.split('/')[6]
+  const { page } = useBranchProductPage()
   const { data: project } = useSelectedProjectQuery()
   const { slug: orgRef, branch: branchRef } = getPathReferences()
 

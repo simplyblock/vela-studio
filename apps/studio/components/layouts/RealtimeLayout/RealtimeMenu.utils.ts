@@ -24,7 +24,7 @@ export const generateRealtimeMenu = (
       title: 'Configuration',
       items: [
         {
-          name: 'Policies',
+          name: 'RLS Policies',
           key: 'policies',
           url: `/org/${slug}/project/${ref}/branch/${branchRef}/realtime/policies`,
           items: [],

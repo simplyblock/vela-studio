@@ -16,12 +16,14 @@ import { Menu, cn } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { ReportMenuItem } from './ReportMenuItem'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
 
 const ReportsMenu = () => {
   const router = useRouter()
   const { profile } = useProfile()
   const { slug, ref, id, branch: branchRef } = useParams()
-  const pageKey = (id || router.pathname.split('/')[6]) as string
+  const { page } = useBranchProductPage()
+  const pageKey = (id || page) as string
 
   // b/c fly doesn't support storage
   const storageSupported = useIsFeatureEnabled('project_storage:all')

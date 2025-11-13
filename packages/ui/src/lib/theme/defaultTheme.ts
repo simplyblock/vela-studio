@@ -1188,14 +1188,17 @@ export default {
           normal: `
             font-normal
             border-default
-            group-hover:border-foreground-muted`,
+            group-hover:border-foreground-muted
+            group-hover:bg-[hsl(var(--brand-default)/0.08)]`,
           active: `
             font-semibold
-            bg-surface-200
-            text-foreground-lighter
+            /* Light blue brand-tint highlight for active submenu (ProductMenu) */
+            bg-[hsl(var(--brand-default)/0.18)]
+            text-foreground
             z-10
 
             rounded-md
+            ring-1 ring-[hsl(var(--brand-default)/0.35)]
           `,
         },
       },
