@@ -8,20 +8,21 @@ import {
   ScaffoldSectionContent,
   ScaffoldTitle,
 } from 'components/layouts/Scaffold'
-import { Button } from 'ui'
 import { Input } from 'ui-patterns/DataInputs/Input'
-
 import { RoleDetailsPanel } from './RoleDetailsPanel'
 import { RolesTable } from './RolesTable'
 import { useOrganizationRolesQuery } from 'data/organizations/organization-roles-query'
-import { getPathReferences } from 'data/vela/path-references'
+import RoleCreateButton from './RoleCreateButton'
+import { useParams } from 'common'
 
 export const Roles = () => {
   const [searchString, setSearchString] = useState('')
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
 
-  const { slug } = getPathReferences()
-  const { data: roles, isLoading: isRolesLoading} = useOrganizationRolesQuery({ slug })
+  const { slug } = useParams()
+  
+  const { data: roles, isLoading:isRolesLoading} = useOrganizationRolesQuery({ slug })
+
 
   const filteredRoles = useMemo(() => {
     const normalized = searchString.trim().toLowerCase()
@@ -31,7 +32,7 @@ export const Roles = () => {
       const haystack = `${role.name} ${role.role_type} ${role.is_active ? 'active' : 'inactive'}`.toLowerCase()
       return haystack.includes(normalized)
     })
-  }, [searchString])
+  }, [searchString,roles])
 
   useEffect(() => {
     if (selectedRoleId && !filteredRoles.some((role) => role.id === selectedRoleId)) {
@@ -60,13 +61,14 @@ export const Roles = () => {
             placeholder="Filter roles"
           />
           <ScaffoldActionsGroup className="w-full md:w-auto">
-            <Button size="small">Create role</Button>
+            <RoleCreateButton />
           </ScaffoldActionsGroup>
         </ScaffoldActionsContainer>
         <ScaffoldSectionContent className="w-full">
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
             <RolesTable
               roles={filteredRoles}
+              isRolesLoading={isRolesLoading}
               selectedRoleId={selectedRoleId}
               onSelectRole={setSelectedRoleId}
             />

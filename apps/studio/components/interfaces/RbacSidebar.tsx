@@ -60,5 +60,5 @@ export const RbacSubSideBar = () => {
     // },
   ]
 
-  return <SubSideBar title="Access control" sections={sections} />
+  return <SubSideBar title="User Management" sections={sections} />
 }

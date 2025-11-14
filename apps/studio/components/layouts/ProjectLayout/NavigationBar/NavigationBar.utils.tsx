@@ -1,4 +1,4 @@
-import { Activity, Blocks, FileText, Lightbulb, List, SearchCheck, Settings } from 'lucide-react'
+import { Activity, Blocks, FileText, Lightbulb, List, SearchCheck, Settings, Shield } from 'lucide-react'
 
 import { ICON_SIZE, ICON_STROKE_WIDTH } from 'components/interfaces/Sidebar'
 import { generateAuthMenu } from 'components/layouts/AuthLayout/AuthLayout.utils'
@@ -37,6 +37,12 @@ export const generateProjectRoutes = (orgRef: string, projectRef?: string): Rout
       label: 'Resource Limits',
       icon: <Activity size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}/resource-limits`,
+    },
+    {
+      key: 'projectRoleAssignment',
+      label: 'Role Management',
+      icon: <Shield size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      link: projectRef && `/org/${orgRef}/project/${projectRef}/projectRoleAssignment`,
     },
     {
       key: 'settings',
