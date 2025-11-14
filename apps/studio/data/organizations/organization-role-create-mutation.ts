@@ -5,6 +5,7 @@ import { handleError, post } from 'data/fetchers'
 import { permissionKeys } from 'data/permissions/keys'
 import type { ArrayElement, ResponseError } from 'types'
 import { components } from '../vela/vela-schema'
+import { organizationKeys } from './keys'
 
 export type RoleType = components['schemas']['RoleCreate']['role_type']
 
@@ -61,6 +62,7 @@ export const useOrganizationRoleCreateMutation = ({
       async onSuccess(data, variables, context) {
         await queryClient.invalidateQueries(permissionKeys.list_permissions())
         await queryClient.invalidateQueries(permissionKeys.list_roles())
+        await queryClient.invalidateQueries(organizationKeys.roles(variables.slug))
 
         await onSuccess?.(data, variables, context)
       },

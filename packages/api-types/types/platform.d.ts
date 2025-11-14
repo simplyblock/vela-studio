@@ -7009,12 +7009,7 @@ export interface components {
       token_does_not_exist: boolean
     }
     InvitationResponse: {
-      invitations: {
-        id: number
-        invited_at: string
-        invited_email: string
-        role_id: number
-      }[]
+      invitations: Member[]
     }
     Invoice: {
       amount_due: number
@@ -7271,6 +7266,7 @@ export interface components {
     }
     Member: {
       user_id: string
+      email: string
       is_sso_user?: boolean
       metadata: {
         [key: string]: unknown

@@ -10,10 +10,6 @@ export type OrganizationMembersVariables = {
 }
 
 export type Member = components['schemas']['Member']
-export interface OrganizationMember extends Member {
-  invited_at?: string
-  invited_id?: number
-}
 
 export async function getOrganizationMembers(
   { slug }: OrganizationMembersVariables,
@@ -41,13 +37,13 @@ export async function getOrganizationMembers(
       invited_at: invite.invited_at,
       invited_id: invite.id,
       mfa_enabled: false,
-      username: invite.invited_email.slice(0, 1),
-      primary_email: invite.invited_email,
+      username: invite.email.slice(0, 1),
+      primary_email: invite.email,
     }
     return { ...member, role_ids: [invite.role_id] }
   })
 
-  return [...orgMembers, ...invitedMembers] as OrganizationMember[]
+  return [...orgMembers, ...invitedMembers] as Member[]
 }
 
 export type OrganizationMembersData = Awaited<ReturnType<typeof getOrganizationMembers>>

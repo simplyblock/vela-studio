@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { handleError, del } from 'data/fetchers'
 import { permissionKeys } from 'data/permissions/keys'
 import type { ResponseError } from 'types'
+import { organizationKeys } from './keys'
 
 export type OrganizationRoleDeleteVariables = {
   slug: string
@@ -42,6 +43,7 @@ export const useOrganizationRoleDeleteMutation = ({
       async onSuccess(data, variables, context) {
         await queryClient.invalidateQueries(permissionKeys.list_permissions())
         await queryClient.invalidateQueries(permissionKeys.list_roles())
+        await queryClient.invalidateQueries(organizationKeys.roles(variables.slug))
 
         await onSuccess?.(data, variables, context)
       },
