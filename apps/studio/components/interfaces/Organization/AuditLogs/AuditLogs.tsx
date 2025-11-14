@@ -69,7 +69,7 @@ const AuditLogs = () => {
       }
     )
 
-  const activeMembers = (members ?? []).filter((x) => !x.invited_at)
+  const activeMembers = (members ?? []).filter((x) => !x.active)
   const roles = [
     ...(rolesData?.org_scoped_roles ?? []),
     ...(rolesData?.env_scoped_roles ?? []),
@@ -322,7 +322,7 @@ const AuditLogs = () => {
                           <div className="flex h-[30px] w-[30px] items-center justify-center border-2 rounded-full border-strong">
                             <p>?</p>
                           </div>
-                        ) : user?.invited_id || user?.username === user?.primary_email ? (
+                        ) : user?.email_verified || user?.email === user?.primary_email ? (
                           <div className="flex h-[30px] w-[30px] items-center justify-center border-2 rounded-full border-strong">
                             <User size={18} strokeWidth={2} />
                           </div>

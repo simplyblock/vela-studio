@@ -7275,6 +7275,7 @@ export interface components {
       active: boolean
       last_activity_at?: string
       primary_email?: string
+      email_verified: boolean
       role_ids: string[]
       username: string
     }

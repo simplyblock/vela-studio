@@ -14,10 +14,7 @@ import {
   useOrganizationRoleAssignmentsQuery,
   type RoleAssignmentsData,
 } from 'data/organization-members/organization-role-assignments-query'
-import {
-  OrganizationMember,
-  useOrganizationMembersQuery,
-} from 'data/organizations/organization-members-query'
+import { Member, useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useOrganizationMemberAssignRoleMutation } from 'data/organization-members/organization-member-role-assign-mutation'
 import { useOrganizationMemberUnassignRoleMutation } from 'data/organization-members/organization-member-role-unassign-mutation'
 import { useProjectsQuery } from 'data/projects/projects-query'
@@ -89,14 +86,16 @@ const MOCK_ROLES = [
   },
 ]
 
-const MOCK_MEMBERS: OrganizationMember[] = [
+const MOCK_MEMBERS: Member[] = [
   {
     user_id: 'user-1',
     username: 'alice',
+    email: 'alice@example.com',
     primary_email: 'alice@example.com',
     is_sso_user: false,
     metadata: {},
     mfa_enabled: true,
+    email_verified: true,
     active: true,
     last_activity_at: new Date().toISOString(),
     role_ids: [],
@@ -104,10 +103,12 @@ const MOCK_MEMBERS: OrganizationMember[] = [
   {
     user_id: 'user-2',
     username: 'bob',
+    email: 'bob@example.com',
     primary_email: 'bob@example.com',
     is_sso_user: false,
     metadata: {},
     mfa_enabled: false,
+    email_verified: true,
     active: true,
     last_activity_at: new Date().toISOString(),
     role_ids: [],
@@ -115,10 +116,12 @@ const MOCK_MEMBERS: OrganizationMember[] = [
   {
     user_id: 'user-3',
     username: 'carol',
+    email: 'carol@example.com',
     primary_email: 'carol@example.com',
     is_sso_user: false,
     metadata: {},
     mfa_enabled: false,
+    email_verified: false,
     active: true,
     last_activity_at: new Date().toISOString(),
     role_ids: [],
@@ -282,7 +285,7 @@ export const ProjectRoleAssignment = () => {
   }, [roleAssignmentsData])
 
   const membersById = useMemo(() => {
-    const map: Record<string, OrganizationMember> = {}
+    const map: Record<string, Member> = {}
     ;(membersData || []).forEach((member) => {
       if (member.user_id) {
         map[member.user_id] = member
@@ -296,14 +299,14 @@ export const ProjectRoleAssignment = () => {
     [scopedRoles, selectedRoleId]
   )
 
-  const assignedMembers: OrganizationMember[] = useMemo(() => {
+  const assignedMembers: Member[] = useMemo(() => {
     if (!selectedRoleId) return []
 
     const userIds = roleAssignmentsMap[selectedRoleId] ?? []
 
     return userIds
       .map((id) => membersById[id])
-      .filter((m): m is OrganizationMember => Boolean(m))
+      .filter((m): m is Member => Boolean(m))
   }, [selectedRoleId, roleAssignmentsMap, membersById])
 
   const allMembers = membersData || []

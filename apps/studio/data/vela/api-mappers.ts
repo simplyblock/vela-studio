@@ -1,6 +1,6 @@
 import { components } from './vela-schema'
 import { Organization } from '../../types'
-import { OrganizationMember } from '../organizations/organization-members-query'
+import { Member } from '../organizations/organization-members-query'
 import { Branch } from '../branches/branch-query'
 import { isDocker } from '../../lib/docker'
 
@@ -20,14 +20,16 @@ export function mapOrganization(organization: VelaOrganization): Organization {
   }
 }
 
-export function mapOrganizationMember(member: VelaMember): OrganizationMember {
+export function mapOrganizationMember(member: VelaMember): Member {
   return {
     user_id: member.id,
     username: member.email,
+    email: member.email,
     primary_email: member.email,
     mfa_enabled: member.mfa_enabled,
     is_sso_user: true,
     active: member.active,
+    email_verified: member.email_verified,
     last_activity_at: member.last_activity_at ?? undefined,
     role_ids: [],
     metadata: {

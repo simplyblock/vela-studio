@@ -25,7 +25,7 @@ import {
 import { useOrganizationRoleAssignmentsQuery } from 'data/organization-members/organization-role-assignments-query'
 import { useOrganizationMemberAssignRoleMutation } from 'data/organization-members/organization-member-role-assign-mutation'
 import { useOrganizationMemberUnassignRoleMutation } from 'data/organization-members/organization-member-role-unassign-mutation'
-import { OrganizationMember, useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
+import { Member, useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
@@ -68,7 +68,7 @@ export const RoleAssignment = () => {
   }, [roleAssignments])
 
   const membersById = useMemo(() => {
-    const map: Record<string, OrganizationMember> = {}
+    const map: Record<string, Member> = {}
     ;(members || []).forEach((member) => {
       if (member.user_id) {
         map[member.user_id] = member
@@ -87,7 +87,7 @@ export const RoleAssignment = () => {
     const userIds = roleAssignmentsMap[selectedRoleId] ?? []
     return userIds
       .map((id) => membersById[id])
-      .filter((m): m is OrganizationMember => Boolean(m))
+      .filter((m): m is Member => Boolean(m))
   }, [selectedRoleId, roleAssignmentsMap, membersById])
 
   const allMembers = members || []
