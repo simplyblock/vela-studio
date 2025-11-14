@@ -16,7 +16,7 @@ export interface DatabaseLayoutProps {
   title?: string
 }
 
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 const DatabaseProductMenu = () => {
   const { data: project } = useSelectedProjectQuery()

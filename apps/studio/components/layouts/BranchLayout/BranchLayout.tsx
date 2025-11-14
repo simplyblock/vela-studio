@@ -6,7 +6,7 @@ import { ProductMenu } from 'components/ui/ProductMenu'
 import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateBranchMenu } from './BranchLayout.utils'
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 const BranchProductMenu = () => {
   const router = useRouter()

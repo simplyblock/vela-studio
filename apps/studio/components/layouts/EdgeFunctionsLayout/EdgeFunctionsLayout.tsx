@@ -5,7 +5,7 @@ import { useParams } from 'common'
 import { ProductMenu } from 'components/ui/ProductMenu'
 import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 const EdgeFunctionsProductMenu = () => {
   const { slug: orgRef, ref: projectRef = 'default', branch: branchRef } = useParams()

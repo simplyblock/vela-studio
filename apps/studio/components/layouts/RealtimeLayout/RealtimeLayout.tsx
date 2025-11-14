@@ -7,7 +7,7 @@ import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateRealtimeMenu } from './RealtimeMenu.utils'
 import { useParams } from 'common'
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 export interface RealtimeLayoutProps {
   title: string

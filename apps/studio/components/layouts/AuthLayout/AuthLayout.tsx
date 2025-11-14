@@ -9,7 +9,7 @@ import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateAuthMenu } from './AuthLayout.utils'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 const AuthProductMenu = () => {
   const router = useRouter()

@@ -16,7 +16,7 @@ import { Menu, cn } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
 import { ReportMenuItem } from './ReportMenuItem'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 const ReportsMenu = () => {
   const router = useRouter()

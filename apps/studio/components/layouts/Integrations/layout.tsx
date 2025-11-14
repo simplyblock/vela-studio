@@ -15,7 +15,7 @@ import { Menu, Separator } from 'ui'
 import { GenericSkeletonLoader } from 'ui-patterns'
 import { IntegrationTabs } from './tabs'
 import { getPathReferences } from 'data/vela/path-references'
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 /**
  * Layout component for the Integrations section
