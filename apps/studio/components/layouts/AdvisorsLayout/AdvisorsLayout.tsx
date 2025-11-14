@@ -7,7 +7,7 @@ import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateAdvisorsMenu } from './AdvisorsMenu.utils'
 import { useParams } from 'common'
-import { useBranchProductPage } from '../../../hooks/misc/useBranchProductPage'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 export interface AdvisorsLayoutProps {
   title?: string
