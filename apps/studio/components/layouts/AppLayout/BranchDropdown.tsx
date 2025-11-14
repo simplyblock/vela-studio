@@ -1,4 +1,4 @@
-import { AlertCircle, Check, ChevronsUpDown, Copy, ListTree, Plus, Shield } from 'lucide-react'
+import { AlertCircle, Check, ChevronsUpDown, Copy, GitBranch, ListTree, Plus, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -9,7 +9,6 @@ import { useBranchesQuery } from 'data/branches/branches-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useAppStateSnapshot } from 'state/app-state'
 import {
-  Badge,
   Button,
   cn,
   Command_Shadcn_,
@@ -24,6 +23,7 @@ import {
   PopoverTrigger_Shadcn_,
   ScrollArea,
 } from 'ui'
+import BranchEnvBadge from 'components/interfaces/Branch/BranchEnvBadge'
 import { Branch } from 'data/branches/branch-query'
 
 const BranchLink = ({
@@ -106,14 +106,11 @@ export const BranchDropdown = () => {
             href={`/org/${orgRef}/project/${ref}/branch/${branchRef}`}
             className="flex items-center gap-2 flex-shrink-0 text-sm"
           >
+            <GitBranch size={16} strokeWidth={1.5} className="text-foreground-light" />
             <span className="text-foreground max-w-32 lg:max-w-none truncate">
               {selectedBranch?.name ?? 'main'}
             </span>
-            {selectedBranch?.name === 'main' ? (
-              <Badge variant="warning">Production</Badge>
-            ) : (
-              <Badge variant="brand">Persistent</Badge>
-            )}
+            <BranchEnvBadge env={selectedBranch?.env_type ?? null} size="sm" className="rounded-full border-0" />
           </Link>
           <Popover_Shadcn_ open={open} onOpenChange={setOpen} modal={false}>
             <PopoverTrigger_Shadcn_ asChild>

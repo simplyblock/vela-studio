@@ -111,7 +111,7 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
                     <DropdownMenuTrigger asChild>
                       <SidebarMenuButton
                         className={cn(
-                          'justify-center text-black-800 dark:text-black-300 hover:bg-blue-50 dark:hover:bg-blue-950/30',
+                          'justify-center hover:bg-brand-400 hover:text-white dark:hover:bg-brand-400 dark:hover:text-white',
                           sidebarBehaviour === 'open' ? '!px-2' : ''
                         )}
                         size="default"

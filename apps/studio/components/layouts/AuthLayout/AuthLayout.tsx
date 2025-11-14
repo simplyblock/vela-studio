@@ -9,12 +9,14 @@ import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateAuthMenu } from './AuthLayout.utils'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
+
 const AuthProductMenu = () => {
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { page } = useBranchProductPage()
 
   useAuthConfigPrefetch({ projectRef })
-  const page = router.pathname.split('/')[6]
 
   const { can: canViewPolicies } = useCheckPermissions("branch:rls:read")
   const { can: canAdminPolicies } = useCheckPermissions("branch:rls:admin")

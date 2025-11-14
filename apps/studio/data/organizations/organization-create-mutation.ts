@@ -15,7 +15,7 @@ export async function createOrganization({ name }: OrganizationCreateVariables) 
     body: {
       name,
       max_backups: 100, // FIXME: Should this be a configurable value?
-      env_types: ['Production', 'Staging', 'Development'],
+      env_types: ['Production', 'Staging', 'Test', 'Development'],
     },
   })
 

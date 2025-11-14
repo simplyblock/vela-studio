@@ -7,6 +7,7 @@ import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateAdvisorsMenu } from './AdvisorsMenu.utils'
 import { useParams } from 'common'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 export interface AdvisorsLayoutProps {
   title?: string
@@ -17,7 +18,7 @@ const AdvisorsLayout = ({ children }: PropsWithChildren<AdvisorsLayoutProps>) =>
 
   const router = useRouter()
   const { slug: orgRef, branch: branchRef } = useParams() as { slug: string, branch?: string }
-  const page = router.pathname.split('/')[6]
+  const { page } = useBranchProductPage()
 
   return (
     <ProjectLayout

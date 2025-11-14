@@ -18,11 +18,11 @@
   --sidebar-background: var(--background-dash-sidebar);
   --sidebar-foreground: var(--foreground-default);
   --sidebar-primary: var(--foreground-default);
-  --sidebar-primary-foreground: var(--warning-default);
-  --sidebar-accent: var(--background-selection);
-  --sidebar-accent-foreground: var(--foreground-default);
+  --sidebar-primary-foreground: var(--brand-default);
+  --sidebar-accent: var(--brand-default);
+  --sidebar-accent-foreground: 0 0% 100%;
   --sidebar-border: var(--border-default);
-  --sidebar-ring: 217.2 91.2% 59.8%;
+  --sidebar-ring: var(--brand-default);
 }
 
 [data-theme='deep-dark'],
@@ -39,11 +39,11 @@
   --sidebar-background: var(--background-dash-sidebar);
   --sidebar-foreground: var(--foreground-default);
   --sidebar-primary: var(--foreground-default);
-  --sidebar-primary-foreground: var(--warning-default);
-  --sidebar-accent: var(--background-selection);
-  --sidebar-accent-foreground: var(--foreground-default);
+  --sidebar-primary-foreground: var(--brand-default);
+  --sidebar-accent: var(--brand-default);
+  --sidebar-accent-foreground: 0 0% 100%;
   --sidebar-border: var(--border-default);
-  --sidebar-ring: 217.2 91.2% 59.8%;
+  --sidebar-ring: var(--brand-default);
 }
 
 @layer utilities {

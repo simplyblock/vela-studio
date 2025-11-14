@@ -16,6 +16,8 @@ export interface DatabaseLayoutProps {
   title?: string
 }
 
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
+
 const DatabaseProductMenu = () => {
   const { data: project } = useSelectedProjectQuery()
   const { data: branch } = useSelectedBranchQuery()
@@ -24,7 +26,7 @@ const DatabaseProductMenu = () => {
   const router = useRouter()
   const slug = getOrganizationSlug() || 'unknown'
 
-  const page = router.pathname.split('/')[6]
+  const { page } = useBranchProductPage()
 
   const { data } = useDatabaseExtensionsQuery({
     branch

@@ -7,6 +7,7 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { withAuth } from 'hooks/misc/withAuth'
 import ProjectLayout from '../ProjectLayout/ProjectLayout'
 import { generateSettingsMenu } from './SettingsMenu.utils'
+import { useBranchProductPage } from 'hooks/misc/useBranchProductPage'
 
 interface SettingsLayoutProps {
   title?: string
@@ -16,12 +17,7 @@ const SettingsLayout = ({ title, children }: PropsWithChildren<SettingsLayoutPro
   const router = useRouter()
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: project } = useSelectedProjectQuery()
-
-  // billing pages live under /billing/invoices and /billing/subscription, etc
-  // so we need to pass the [5]th part of the url to the menu
-  const page = router.pathname.includes('billing')
-    ? router.pathname.split('/')[7]
-    : router.pathname.split('/')[6]
+  const { page } = useBranchProductPage()
 
   const menuRoutes = generateSettingsMenu(orgRef!, projectRef, branchRef, project)
 
