@@ -1,23 +1,24 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, cn } from 'ui'
-
+import { Loader2 } from 'lucide-react'
 import { RoleLevelBadge } from './RoleLevelBadge'
 import { OrganizationRole } from 'types'
+import UpdateRoleButton from './RoleUpdateButton'
+import DeleteRoleButton from './RoleDeleteButton'
+
 
 interface RolesTableProps {
   roles: OrganizationRole[]
   selectedRoleId: string | null
+  isRolesLoading: boolean
   onSelectRole: (roleId: string) => void
 }
 
-export const RolesTable = ({ roles, selectedRoleId, onSelectRole }: RolesTableProps) => {
-  if (roles.length === 0) {
-    return (
-      <div className="flex h-full min-h-[320px] items-center justify-center rounded-md border border-default bg-surface-100 text-sm text-foreground-lighter">
-        No roles match your filters yet.
-      </div>
-    )
-  }
-
+export const RolesTable = ({
+  roles,
+  isRolesLoading,
+  selectedRoleId,
+  onSelectRole,
+}: RolesTableProps) => {
   return (
     <div className="overflow-hidden rounded-md border border-default">
       <Table>
@@ -27,38 +28,76 @@ export const RolesTable = ({ roles, selectedRoleId, onSelectRole }: RolesTablePr
             <TableHead>Type</TableHead>
             <TableHead className="text-right">Users</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead className="w-[80px] text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {roles.map((role) => {
-            const isSelected = role.id === selectedRoleId
 
-            return (
-              <TableRow
-                key={role.id}
-                onClick={() => onSelectRole(role.id)}
-                className={cn(
-                  'cursor-pointer transition-colors hover:bg-surface-200',
-                  isSelected ? 'bg-surface-300/60 hover:bg-surface-300/60' : ''
-                )}
+        <TableBody>
+          {isRolesLoading ? (
+            <TableRow>
+              <TableCell colSpan={5} className="py-10 text-center">
+                <Loader2 className="mx-auto h-5 w-5 animate-spin text-foreground-lighter" />
+              </TableCell>
+            </TableRow>
+          ) : roles.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={5}
+                className="py-10 text-center text-sm text-foreground-lighter"
               >
-                <TableCell className="align-top">
-                  <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{role.name}</p>
-                        <p className="text-xs text-foreground-lighter">{role.description}</p>
+                No roles match your filters yet.
+              </TableCell>
+            </TableRow>
+          ) : (
+            roles.map((role) => {
+              const isSelected = role.id === selectedRoleId
+
+              return (
+                <TableRow
+                  key={role.id}
+                  onClick={() => onSelectRole(role.id)}
+                  className={cn(
+                    'cursor-pointer transition-colors hover:bg-surface-200',
+                    isSelected ? 'bg-surface-300/60 hover:bg-surface-300/60' : ''
+                  )}
+                >
+                  <TableCell className="align-top">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{role.name}</p>
+                          <p className="text-xs text-foreground-lighter">{role.description}</p>
+                        </div>
+                        <RoleLevelBadge level={role.role_type} />
                       </div>
-                      <RoleLevelBadge level={role.role_type} />
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell className="align-top text-sm text-foreground-lighter">{role.is_deletable ? 'Custom' : 'System'}</TableCell>
-                <TableCell className="align-top text-right text-sm font-medium">{role.user_count}</TableCell>
-                <TableCell className="align-top text-sm text-foreground-lighter capitalize">{role.is_active ? 'active' : 'inactive'}</TableCell>
-              </TableRow>
-            )
-          })}
+                  </TableCell>
+
+                  <TableCell className="align-top text-sm text-foreground-lighter">
+                    {role.is_deletable ? 'Custom' : 'System'}
+                  </TableCell>
+
+                  <TableCell className="align-top text-right text-sm font-medium">
+                    {role.user_count}
+                  </TableCell>
+
+                  <TableCell className="align-top text-sm text-foreground-lighter capitalize">
+                    {role.is_active ? 'active' : 'inactive'}
+                  </TableCell>
+
+                  <TableCell className="align-top">
+                    <div
+                      className="flex justify-end gap-1"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <UpdateRoleButton role={role} />
+                      <DeleteRoleButton role={role} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )
+            })
+          )}
         </TableBody>
       </Table>
     </div>

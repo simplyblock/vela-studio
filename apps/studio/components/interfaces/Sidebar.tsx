@@ -518,7 +518,7 @@ const OrganizationLinks = () => {
       icon: <CopyPlus size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
       {
-        label: 'RBAC',
+        label: 'User Management',
         href: `/org/${slug}/rbac`,
         key: 'rbac',
         icon: <ShieldUser size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,

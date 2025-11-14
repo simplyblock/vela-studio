@@ -1,29 +1,16 @@
-//TODO:
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, ChevronsUpDown } from 'lucide-react'
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import * as z from 'zod'
 import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import InformationBox from 'components/ui/InformationBox'
 import { useOrganizationCreateInvitationMutation } from 'data/organization-members/organization-invitation-create-mutation'
-import { useOrganizationRolesQuery } from 'data/organization-members/organization-roles-query'
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
-import { useProjectsQuery } from 'data/projects/projects-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useProfile } from 'lib/profile'
 import {
   Button,
-  CommandEmpty_Shadcn_,
-  CommandGroup_Shadcn_,
-  CommandInput_Shadcn_,
-  CommandItem_Shadcn_,
-  CommandList_Shadcn_,
-  Command_Shadcn_,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -35,128 +22,70 @@ import {
   FormField_Shadcn_,
   Form_Shadcn_,
   Input_Shadcn_,
-  PopoverContent_Shadcn_,
-  PopoverTrigger_Shadcn_,
-  Popover_Shadcn_,
-  ScrollArea,
-  SelectContent_Shadcn_,
-  SelectGroup_Shadcn_,
-  SelectItem_Shadcn_,
-  SelectTrigger_Shadcn_,
-  Select_Shadcn_,
-  Switch,
-  cn,
 } from 'ui'
 import { FormItemLayout } from 'ui-patterns/form/FormItemLayout/FormItemLayout'
-import { useGetRolesManagementPermissions } from './UserSettings.utils'
-import { useCheckPermissions, useOrganizationPermissionQuery } from 'hooks/misc/useCheckPermissions'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const InviteMemberButton = () => {
   const { slug } = useParams()
   const { profile } = useProfile()
-  const { data: organization } = useSelectedOrganizationQuery()
-  const { permissions } = useOrganizationPermissionQuery()
+
   const { organizationMembersCreate: organizationMembersCreationEnabled } = useIsFeatureEnabled([
     'organization_members:create',
   ])
 
   const [isOpen, setIsOpen] = useState(false)
-  const [projectDropdownOpen, setProjectDropdownOpen] = useState(false)
 
-  const { data: projects } = useProjectsQuery()
   const { data: members } = useOrganizationMembersQuery({ slug })
-  const { data: allRoles, isSuccess } = useOrganizationRolesQuery({ slug })
-  const orgScopedRoles = allRoles?.org_scoped_roles ?? []
 
-  const orgProjects = (projects ?? [])
-    .filter((project) => project.organization_id === organization?.id)
-    .sort((a, b) => a.name.localeCompare(b.name))
-
-  const userMemberData = members?.find((m) => m.user_id === profile?.user_id)
-  const hasOrgRole =
-    (userMemberData?.role_ids ?? []).length === 1 &&
-    orgScopedRoles.some((r) => r.id === userMemberData?.role_ids[0])
-
-  const { rolesAddable } = useGetRolesManagementPermissions(
-    organization?.id,
-    orgScopedRoles,
-    permissions ?? []
-  )
-
-  const canInviteMembers = useCheckPermissions("org:user:admin")
+  const canInviteMembers = useCheckPermissions('org:user:admin')
 
   const { mutate: inviteMember, isLoading: isInviting } = useOrganizationCreateInvitationMutation()
 
   const FormSchema = z.object({
     email: z.string().email('Must be a valid email address').min(1, 'Email is required'),
-    role: z.string().min(1, 'Role is required'),
-    applyToOrg: z.boolean(),
-    projectRef: z.string(),
   })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     mode: 'onBlur',
     reValidateMode: 'onBlur',
     resolver: zodResolver(FormSchema),
-    defaultValues: { email: '', role: '', applyToOrg: true, projectRef: '' },
+    defaultValues: { email: '' },
   })
-
-  const { applyToOrg } = form.watch()
 
   const onInviteMember = async (values: z.infer<typeof FormSchema>) => {
     if (!slug) return console.error('Slug is required')
     if (profile?.id === undefined) return console.error('Profile ID required')
 
-    const developerRole = orgScopedRoles.find((role) => role.name === 'Developer')
     const existingMember = (members ?? []).find(
       (member) => member.primary_email === values.email.toLowerCase()
     )
     if (existingMember !== undefined) {
-      if (existingMember.invited_id) {
+      if ((existingMember as any).invited_id) {
         return toast('User has already been invited to this organization')
       } else {
         return toast('User is already in this organization')
       }
     }
-
+    // TODO: need to either remove the roleId from this invitation OR add back the roleId select to this form
     inviteMember(
       {
         slug,
         email: values.email.toLowerCase(),
-        roleId: values.role,
-        ...(!values.applyToOrg && values.projectRef ? { projects: [values.projectRef] } : {}),
+        roleId: '', // no role selection for now
       },
       {
         onSuccess: () => {
           toast.success('Successfully sent invitation to new member')
-          setIsOpen(!isOpen)
+          setIsOpen(false)
 
           form.reset({
             email: '',
-            role: developerRole?.id.toString() ?? '',
-            applyToOrg: true,
-            projectRef: '',
           })
         },
       }
     )
   }
-
-  useEffect(() => {
-    if (isSuccess && isOpen) {
-      const developerRole = orgScopedRoles.find((role) => role.name === 'Developer')
-      if (developerRole !== undefined) form.setValue('role', developerRole.id.toString())
-    }
-  }, [isSuccess, isOpen])
-
-  useEffect(() => {
-    if (!applyToOrg) {
-      const firstProject = orgProjects?.[0]
-      if (firstProject !== undefined) form.setValue('projectRef', firstProject.id)
-    } else {
-      form.setValue('projectRef', '')
-    }
-  }, [applyToOrg])
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -193,153 +122,6 @@ export const InviteMemberButton = () => {
           >
             <DialogSection className="flex flex-col gap-y-4 pb-2">
               <FormField_Shadcn_
-                name="applyToOrg"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItemLayout
-                    layout="flex"
-                    label="Apply role to all projects in the organization"
-                  >
-                    <FormControl_Shadcn_>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={(value) => form.setValue('applyToOrg', value)}
-                      />
-                    </FormControl_Shadcn_>
-                  </FormItemLayout>
-                )}
-              />
-              <FormField_Shadcn_
-                name="role"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItemLayout label="Member role">
-                    <FormControl_Shadcn_>
-                      <Select_Shadcn_
-                        value={field.value}
-                        onValueChange={(value) => form.setValue('role', value)}
-                      >
-                        <SelectTrigger_Shadcn_ className="text-sm capitalize">
-                          {orgScopedRoles.find((role) => role.id === field.value)?.name ??
-                            'Unknown'}
-                        </SelectTrigger_Shadcn_>
-                        <SelectContent_Shadcn_>
-                          <SelectGroup_Shadcn_>
-                            {orgScopedRoles.map((role) => {
-                              const canAssignRole = rolesAddable.includes(role.id)
-
-                              return (
-                                <SelectItem_Shadcn_
-                                  key={role.id}
-                                  value={role.id.toString()}
-                                  className="text-sm [&>span:nth-child(2)]:w-full [&>span:nth-child(2)]:flex [&>span:nth-child(2)]:items-center [&>span:nth-child(2)]:justify-between"
-                                  disabled={!canAssignRole}
-                                >
-                                  <span>{role.name}</span>
-                                  {!canAssignRole && (
-                                    <span>Additional permissions required to assign role</span>
-                                  )}
-                                </SelectItem_Shadcn_>
-                              )
-                            })}
-                          </SelectGroup_Shadcn_>
-                        </SelectContent_Shadcn_>
-                      </Select_Shadcn_>
-                    </FormControl_Shadcn_>
-                  </FormItemLayout>
-                )}
-              />
-              {!applyToOrg && (
-                <FormField_Shadcn_
-                  name="projectRef"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItemLayout
-                      label="Select a project"
-                      description="You can assign roles to multiple projects once the invite is accepted"
-                    >
-                      <FormControl_Shadcn_>
-                        <Popover_Shadcn_
-                          open={projectDropdownOpen}
-                          onOpenChange={setProjectDropdownOpen}
-                        >
-                          <PopoverTrigger_Shadcn_ asChild>
-                            <Button
-                              block
-                              type="default"
-                              role="combobox"
-                              size="small"
-                              className="justify-between max-w-[470px]"
-                              iconRight={
-                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                              }
-                            >
-                              {orgProjects.find((project) => project.id === field.value)?.name ??
-                                'Unknown'}
-                            </Button>
-                          </PopoverTrigger_Shadcn_>
-                          <PopoverContent_Shadcn_ sameWidthAsTrigger className="p-0">
-                            <Command_Shadcn_
-                              // [Joshen] Let's update this to use keywords in CommandItem once cmdk is updated
-                              filter={(value, search) => {
-                                const project = orgProjects.find((project) => project.id === value)
-                                const projectName = project?.name.toLowerCase()
-                                if (
-                                  projectName !== undefined &&
-                                  projectName.includes(search.toLowerCase())
-                                ) {
-                                  return 1
-                                } else if (value.includes(search)) {
-                                  return 1
-                                } else {
-                                  return 0
-                                }
-                              }}
-                            >
-                              <CommandInput_Shadcn_ placeholder="Search project..." />
-                              <CommandList_Shadcn_>
-                                <CommandEmpty_Shadcn_>No projects found...</CommandEmpty_Shadcn_>
-                                <CommandGroup_Shadcn_>
-                                  <ScrollArea
-                                    className={cn(
-                                      (orgProjects || []).length > 7 &&
-                                      'max-h-[210px] overflow-y-auto'
-                                    )}
-                                  >
-                                    {orgProjects.map((project) => {
-                                      return (
-                                        <CommandItem_Shadcn_
-                                          key={project.id}
-                                          value={project.id}
-                                          onSelect={(value) => {
-                                            form.setValue('projectRef', value)
-                                            setProjectDropdownOpen(false)
-                                          }}
-                                        >
-                                          <Check
-                                            className={cn(
-                                              'mr-2 h-4 w-4',
-                                              field.value === project.id
-                                                ? 'opacity-100'
-                                                : 'opacity-0'
-                                            )}
-                                          />
-                                          {project.name}
-                                        </CommandItem_Shadcn_>
-                                      )
-                                    })}
-                                  </ScrollArea>
-                                </CommandGroup_Shadcn_>
-                              </CommandList_Shadcn_>
-                            </Command_Shadcn_>
-                          </PopoverContent_Shadcn_>
-                        </Popover_Shadcn_>
-                      </FormControl_Shadcn_>
-                    </FormItemLayout>
-                  )}
-                />
-              )}
-              <FormField_Shadcn_
                 name="email"
                 control={form.control}
                 render={({ field }) => (
@@ -355,32 +137,6 @@ export const InviteMemberButton = () => {
                     </FormControl_Shadcn_>
                   </FormItemLayout>
                 )}
-              />
-              <InformationBox
-                defaultVisibility={false}
-                title="Single Sign-on (SSO) login option available"
-                hideCollapse={false}
-                description={
-                  <div className="space-y-4 mb-1">
-                    <p>
-                      Vela offers single sign-on (SSO) as a login option to provide additional
-                      account security for your team. This allows company administrators to enforce
-                      the use of an identity provider when logging into Supabase.
-                    </p>
-                    <p>This is only available for organizations on Team Plan or above.</p>
-                    <div className="flex items-center space-x-2">
-                      <Button asChild type="default">
-                        <Link
-                          href="https://vela.run/docs/guides/platform/sso"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Learn more
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                }
               />
             </DialogSection>
             <DialogSectionSeparator />

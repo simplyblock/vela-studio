@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import DefaultLayout from 'components/layouts/DefaultLayout'

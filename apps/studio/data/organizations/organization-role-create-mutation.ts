@@ -6,9 +6,9 @@ import { permissionKeys } from 'data/permissions/keys'
 import type { ArrayElement, ResponseError } from 'types'
 import { components } from '../vela/vela-schema'
 
-type RoleType = components['schemas']['RoleCreate']['role_type']
+export type RoleType = components['schemas']['RoleCreate']['role_type']
 
-type RolePermission = ArrayElement<components['schemas']['RoleCreate']['access_rights']>
+export type RolePermission = ArrayElement<components['schemas']['RoleCreate']['access_rights']>
 
 export type OrganizationRoleCreateVariables = {
   slug: string
