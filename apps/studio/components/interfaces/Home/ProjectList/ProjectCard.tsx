@@ -8,7 +8,6 @@ import { ProjectIndexPageLink } from 'data/prefetchers/project.$ref'
 import type { ProjectInfo } from 'data/projects/projects-query'
 import type { ResourceWarning } from 'data/usage/resource-warnings-query'
 import { inferProjectStatus } from './ProjectCard.utils'
-import { ProjectCardStatus } from './ProjectCardStatus'
 import { useParams } from 'common'
 import { useBranchesQuery } from 'data/branches/branches-query'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
@@ -22,7 +21,7 @@ export interface ProjectCardProps {
   resourceWarnings?: ResourceWarning
 }
 
-const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCardProps) => {
+const ProjectCard = ({ project, githubIntegration }: ProjectCardProps) => {
   const { slug: orgRef } = useParams() as { slug: string }
   const { name, id: projectRef, default_branch_id } = project
 
@@ -32,8 +31,7 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
   const branchesCount = branches?.length ?? 0
 
   const hasBranches = branchesCount > 0
-  const selectedBranchId = mainBranch?.id ?? onlyBranch?.id ?? undefined
-  const selectedBranchName = mainBranch?.name ?? onlyBranch?.name ?? undefined
+  const selectedBranch = mainBranch ?? onlyBranch ?? undefined
 
   const isBranchingEnabled = true
   const isGithubIntegrated = githubIntegration !== undefined
@@ -42,11 +40,11 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
 
   // Where the card click goes
   const branchLink = useMemo(() => {
-    if (selectedBranchId) {
-      return `/org/${orgRef}/project/${projectRef}/branch/${selectedBranchId}`
+    if (selectedBranch && selectedBranch.status === 'ACTIVE_HEALTHY') {
+      return `/org/${orgRef}/project/${projectRef}/branch/${selectedBranch.id}`
     }
     return `/new/${orgRef}/${projectRef}`
-  }, [selectedBranchId, orgRef, projectRef])
+  }, [selectedBranch, orgRef, projectRef])
 
   // Where the "View branches" button goes (project overview)
   const allBranchesHref = `/org/${orgRef}/project/${projectRef}`
@@ -109,7 +107,7 @@ const ProjectCard = ({ project, githubIntegration, resourceWarnings }: ProjectCa
                     <>
                       Opens{' '}
                       <span className="font-medium">
-                        {selectedBranchName ?? 'default branch'}
+                        {selectedBranch?.name ?? 'default branch'}
                       </span>{' '}
                       on click &middot; {branchesCount} branch
                       {branchesCount === 1 ? '' : 'es'} total
