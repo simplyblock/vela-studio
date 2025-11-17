@@ -1,3 +1,7 @@
 export const logDrainsKeys = {
-  list: (projectRef: string | undefined) => ['projects', projectRef, 'log-drains'] as const,
+  list: (
+    orgRef: string | undefined,
+    projectRef: string | undefined,
+    branchRef: string | undefined
+  ) => ['branches', orgRef, projectRef, branchRef, 'log-drains'] as const,
 }

@@ -24,7 +24,7 @@ import type { NextPageWithLayout } from 'types'
 
 const QueryPerformanceReport: NextPageWithLayout = () => {
   const router = useRouter()
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { isIndexAdvisorEnabled } = useIndexAdvisorStatus()
 
   const [{ preset: urlPreset, search: searchQuery, order, sort }] = useQueryStates({
@@ -35,7 +35,7 @@ const QueryPerformanceReport: NextPageWithLayout = () => {
   })
 
   const config = PRESET_CONFIG[Presets.QUERY_PERFORMANCE]
-  const hooks = queriesFactory(config.queries, ref ?? 'default')
+  const hooks = queriesFactory(config.queries, orgRef!, projectRef!, branchRef!)
   const queryHitRate = hooks.queryHitRate()
 
   const preset = QUERY_PERFORMANCE_PRESET_MAP[urlPreset as QUERY_PERFORMANCE_REPORT_TYPES]

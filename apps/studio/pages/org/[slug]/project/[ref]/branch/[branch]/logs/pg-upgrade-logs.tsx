@@ -5,8 +5,16 @@ import LogsLayout from 'components/layouts/LogsLayout/LogsLayout'
 import type { NextPageWithLayout } from 'types'
 
 export const LogPage: NextPageWithLayout = () => {
-  const { ref } = useParams()
-  return <LogsPreviewer condensedLayout queryType="pg_upgrade" projectRef={ref as string} />
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  return (
+    <LogsPreviewer
+      condensedLayout
+      queryType="pg_upgrade"
+      orgRef={orgRef!}
+      projectRef={projectRef!}
+      branchRef={branchRef!}
+    />
+  )
 }
 
 LogPage.getLayout = (page) => (

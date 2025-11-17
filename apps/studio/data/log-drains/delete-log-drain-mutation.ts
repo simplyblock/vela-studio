@@ -6,15 +6,32 @@ import type { ResponseError } from 'types'
 import { logDrainsKeys } from './keys'
 
 export type LogDrainDeleteVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   token: string
 }
 
-export async function deleteLogDrain({ projectRef, token }: LogDrainDeleteVariables) {
+export async function deleteLogDrain({
+  orgRef,
+  projectRef,
+  branchRef,
+  token,
+}: LogDrainDeleteVariables) {
   // @ts-ignore Just sample, TS lint will validate if the endpoint is valid
-  const { data, error } = await del('/platform/projects/{ref}/analytics/log-drains/{token}', {
-    params: { path: { ref: projectRef, token } },
-  })
+  const { data, error } = await del(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/log-drains/{token}',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+          token,
+        },
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -36,9 +53,9 @@ export const useDeleteLogDrainMutation = ({
     (vars) => deleteLogDrain(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { orgRef, projectRef, branchRef } = variables
 
-        await queryClient.invalidateQueries(logDrainsKeys.list(projectRef))
+        await queryClient.invalidateQueries(logDrainsKeys.list(orgRef, projectRef, branchRef))
 
         await onSuccess?.(data, variables, context)
       },

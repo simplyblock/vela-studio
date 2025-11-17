@@ -4,11 +4,13 @@ import { queriesFactory } from 'components/interfaces/Reports/Reports.utils'
 import { DbQueryHook } from 'hooks/analytics/useDbQuery'
 
 export const useDatabaseReport = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const queryHooks = queriesFactory<keyof typeof PRESET_CONFIG.database.queries>(
     PRESET_CONFIG.database.queries,
-    projectRef ?? 'default'
+    orgRef!,
+    projectRef!,
+    branchRef!
   )
   const largeObjects = queryHooks.largeObjects() as DbQueryHook
   const activeHooks = [largeObjects]

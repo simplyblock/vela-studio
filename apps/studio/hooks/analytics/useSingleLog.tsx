@@ -18,12 +18,16 @@ interface SingleLogHook {
 
 type SingleLogParams = {
   id?: string
+  orgRef: string
   projectRef: string
+  branchRef: string
   queryType?: QueryType
   paramsToMerge?: Partial<LogsEndpointParams>
 }
 function useSingleLog({
+  orgRef,
   projectRef,
+  branchRef,
   id,
   queryType,
   paramsToMerge,
@@ -42,16 +46,23 @@ function useSingleLog({
     isRefetching,
     refetch,
   } = useQuery(
-    ['projects', projectRef, 'single-log', id, queryType],
+    ['branches', orgRef, projectRef, branchRef, 'single-log', id, queryType],
     async ({ signal }) => {
       console.log(params.sql)
-      const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-        params: {
-          path: { ref: projectRef },
-          query: params,
-        },
-        signal,
-      })
+      const { data, error } = await get(
+        `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+        {
+          params: {
+            path: {
+              slug: orgRef,
+              ref: projectRef,
+              branch: branchRef,
+            },
+            query: params,
+          },
+          signal,
+        }
+      )
       if (error) {
         throw error
       }

@@ -4,7 +4,9 @@ import { get, handleError } from 'data/fetchers'
 import { analyticsKeys } from './keys'
 
 export type FunctionsReqStatsVariables = {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
   functionId?: string
   interval?: operations['FunctionRequestLogsController_getStatus']['parameters']['query']['interval']
 }
@@ -12,11 +14,17 @@ export type FunctionsReqStatsVariables = {
 export type FunctionsReqStatsResponse = any
 
 export async function getFunctionsReqStats(
-  { projectRef, functionId, interval }: FunctionsReqStatsVariables,
+  { orgRef, projectRef, branchRef, functionId, interval }: FunctionsReqStatsVariables,
   signal?: AbortSignal
 ) {
+  if (!orgRef) {
+    throw new Error('orgRef is required')
+  }
   if (!projectRef) {
     throw new Error('projectRef is required')
+  }
+  if (!branchRef) {
+    throw new Error('branchRef is required')
   }
   if (!functionId) {
     throw new Error('functionId is required')
@@ -26,11 +34,13 @@ export async function getFunctionsReqStats(
   }
 
   const { data, error } = await get(
-    '/platform/projects/{ref}/analytics/endpoints/functions.req-stats',
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/functions.req-stats',
     {
       params: {
         path: {
+          slug: orgRef,
           ref: projectRef,
+          branch: branchRef,
         },
         query: {
           function_id: functionId,
@@ -50,19 +60,21 @@ export type FunctionsReqStatsData = Awaited<ReturnType<typeof getFunctionsReqSta
 export type FunctionsReqStatsError = unknown
 
 export const useFunctionsReqStatsQuery = <TData = FunctionsReqStatsData>(
-  { projectRef, functionId, interval }: FunctionsReqStatsVariables,
+  { orgRef, projectRef, branchRef, functionId, interval }: FunctionsReqStatsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<FunctionsReqStatsData, FunctionsReqStatsError, TData> = {}
 ) =>
   useQuery<FunctionsReqStatsData, FunctionsReqStatsError, TData>(
-    analyticsKeys.functionsReqStats(projectRef, { functionId, interval }),
-    ({ signal }) => getFunctionsReqStats({ projectRef, functionId, interval }, signal),
+    analyticsKeys.functionsReqStats(orgRef, projectRef, branchRef, { functionId, interval }),
+    ({ signal }) => getFunctionsReqStats({ orgRef, projectRef, branchRef, functionId, interval }, signal),
     {
       enabled:
         enabled &&
+        typeof orgRef !== 'undefined' &&
         typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined' &&
         typeof functionId !== 'undefined' &&
         typeof interval !== 'undefined',
       ...options,

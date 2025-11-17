@@ -3,8 +3,7 @@ import { get } from 'data/fetchers'
 import { AnalyticsInterval } from 'data/analytics/constants'
 import type { MultiAttribute } from 'components/ui/Charts/ComposedChart.utils'
 import { getHttpStatusCodeInfo } from 'lib/http-status-codes'
-import { analyticsIntervalToGranularity, useEdgeFnIdToName } from './report.utils'
-import { REPORT_STATUS_CODE_COLORS } from './report.utils'
+import { analyticsIntervalToGranularity, REPORT_STATUS_CODE_COLORS, useEdgeFnIdToName, } from './report.utils'
 
 /**
  * METRICS
@@ -338,7 +337,9 @@ const METRIC_FORMATTER: Record<
  */
 
 export function useEdgeFunctionReport({
+  orgRef,
   projectRef,
+  branchRef,
   attributes,
   startDate,
   endDate,
@@ -346,7 +347,9 @@ export function useEdgeFunctionReport({
   enabled = true,
   functionIds,
 }: {
+  orgRef: string
   projectRef: string
+  branchRef: string
   attributes: MultiAttribute[]
   startDate: string
   endDate: string
@@ -376,21 +379,28 @@ export function useEdgeFunctionReport({
       functionIds,
     ],
     async () => {
-      const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-        params: {
-          path: { ref: projectRef },
-          query: {
-            sql,
-            iso_timestamp_start: startDate,
-            iso_timestamp_end: endDate,
+      const { data, error } = await get(
+        `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+        {
+          params: {
+            path: {
+              slug: orgRef,
+              ref: projectRef,
+              branch: branchRef,
+            },
+            query: {
+              sql,
+              iso_timestamp_start: startDate,
+              iso_timestamp_end: endDate,
+            },
           },
-        },
-      })
+        }
+      )
       if (error) throw error
       return data
     },
     {
-      enabled: Boolean(projectRef && sql && enabled && isEdgeFnMetric),
+      enabled: Boolean(orgRef && projectRef && branchRef && sql && enabled && isEdgeFnMetric),
       refetchOnWindowFocus: false,
     }
   )

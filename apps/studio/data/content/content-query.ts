@@ -26,22 +26,34 @@ export type Content = Omit<ContentBase, 'content' | 'type'> &
 export type ContentType = Content['type']
 
 interface GetContentVariables {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
   type: ContentType
   name?: string
   limit?: number
 }
 
 export async function getContent(
-  { projectRef, type, name, limit = 10 }: GetContentVariables,
+  { orgRef, projectRef, branchRef, type, name, limit = 10 }: GetContentVariables,
   signal?: AbortSignal
 ) {
   if (typeof projectRef === 'undefined') {
     throw new Error('projectRef is required for getContent')
   }
 
+  // FIXME: @Chris add edge function content retrieval
   const { data, error } = await get('/platform/projects/{ref}/content', {
-    params: { path: { ref: projectRef }, query: { type, name, limit: limit.toString() } },
+    params: {
+      path: {
+        ref: projectRef,
+      },
+      query: {
+        type,
+        name,
+        limit: limit.toString(),
+      },
+    },
     signal,
   })
 
@@ -58,11 +70,18 @@ export type ContentError = unknown
 
 /** @deprecated Use useContentInfiniteQuery from content-infinite-query instead */
 export const useContentQuery = <TData = ContentData>(
-  { projectRef, type, name, limit }: GetContentVariables,
+  { orgRef, projectRef, branchRef, type, name, limit }: GetContentVariables,
   { enabled = true, ...options }: UseQueryOptions<ContentData, ContentError, TData> = {}
 ) =>
   useQuery<ContentData, ContentError, TData>(
-    contentKeys.list(projectRef, { type, name, limit }),
-    ({ signal }) => getContent({ projectRef, type, name, limit }, signal),
-    { enabled: enabled && typeof projectRef !== 'undefined', ...options }
+    contentKeys.list(orgRef, projectRef, branchRef, { type, name, limit }),
+    ({ signal }) => getContent({ orgRef, projectRef, branchRef, type, name, limit }, signal),
+    {
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
+      ...options,
+    }
   )

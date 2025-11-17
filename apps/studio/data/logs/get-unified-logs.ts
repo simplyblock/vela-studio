@@ -8,7 +8,9 @@ import type { ResponseError } from 'types'
 import { getUnifiedLogsISOStartEnd } from './unified-logs-infinite-query'
 
 export type getUnifiedLogsVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   search: QuerySearchParamsType
   limit: number
   hoursAgo?: number
@@ -16,21 +18,36 @@ export type getUnifiedLogsVariables = {
 
 // [Joshen] Mainly for retrieving logs on demand for downloading
 export async function retrieveUnifiedLogs({
+  orgRef,
   projectRef,
+  branchRef,
   search,
   limit,
   hoursAgo,
 }: getUnifiedLogsVariables) {
+  if (typeof orgRef === 'undefined')
+    throw new Error('orgRef is required for retrieveUnifiedLogs')
   if (typeof projectRef === 'undefined')
     throw new Error('projectRef is required for retrieveUnifiedLogs')
+  if (typeof branchRef === 'undefined')
+    throw new Error('branchRef is required for retrieveUnifiedLogs')
 
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search, hoursAgo)
   const sql = `${getUnifiedLogsQuery(search)} ORDER BY timestamp DESC, id DESC LIMIT ${limit}`
 
-  const { data, error } = await post(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-    params: { path: { ref: projectRef } },
-    body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
-  })
+  const { data, error } = await post(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
+    }
+  )
 
   if (error) handleError(error)
 

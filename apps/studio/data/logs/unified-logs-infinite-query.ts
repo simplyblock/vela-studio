@@ -22,7 +22,12 @@ export const UNIFIED_LOGS_QUERY_OPTIONS = {
 
 export type UnifiedLogsData = any
 export type UnifiedLogsError = ResponseError
-export type UnifiedLogsVariables = { projectRef?: string; search: QuerySearchParamsType }
+export type UnifiedLogsVariables = {
+  orgRef?: string
+  projectRef?: string
+  branchRef?: string
+  search: QuerySearchParamsType
+}
 
 export const getUnifiedLogsISOStartEnd = (
   search: QuerySearchParamsType,
@@ -47,12 +52,20 @@ export const getUnifiedLogsISOStartEnd = (
 }
 
 export async function getUnifiedLogs(
-  { projectRef, search, pageParam }: UnifiedLogsVariables & { pageParam?: PageParam },
+  {
+    orgRef,
+    projectRef,
+    branchRef,
+    search,
+    pageParam,
+  }: UnifiedLogsVariables & { pageParam?: PageParam },
   signal?: AbortSignal,
   headersInit?: HeadersInit
 ) {
+  if (typeof orgRef === 'undefined') throw new Error('orgRef is required for getUnifiedLogs')
   if (typeof projectRef === 'undefined')
     throw new Error('projectRef is required for getUnifiedLogs')
+  if (typeof branchRef === 'undefined') throw new Error('branchRef is required for getUnifiedLogs')
 
   /**
    * [Joshen] RE infinite loading pagination logic for unified logs, these all really should live in the API
@@ -101,12 +114,21 @@ export async function getUnifiedLogs(
 
   let headers = new Headers(headersInit)
 
-  const { data, error } = await post(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-    params: { path: { ref: projectRef } },
-    body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: timestampEnd, sql },
-    signal,
-    headers,
-  })
+  const { data, error } = await post(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: timestampEnd, sql },
+      signal,
+      headers,
+    }
+  )
 
   if (error) handleError(error)
 
@@ -155,19 +177,23 @@ export async function getUnifiedLogs(
 }
 
 export const useUnifiedLogsInfiniteQuery = <TData = UnifiedLogsData>(
-  { projectRef, search }: UnifiedLogsVariables,
+  { orgRef, projectRef, branchRef, search }: UnifiedLogsVariables,
   {
     enabled = true,
     ...options
   }: UseInfiniteQueryOptions<UnifiedLogsData, UnifiedLogsError, TData> = {}
 ) => {
   return useInfiniteQuery<UnifiedLogsData, UnifiedLogsError, TData>(
-    logsKeys.unifiedLogsInfinite(projectRef, search),
+    logsKeys.unifiedLogsInfinite(orgRef, projectRef, branchRef, search),
     ({ signal, pageParam }) => {
-      return getUnifiedLogs({ projectRef, search, pageParam }, signal)
+      return getUnifiedLogs({ orgRef, projectRef, branchRef, search, pageParam }, signal)
     },
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       keepPreviousData: true,
       getPreviousPageParam: (firstPage) => {
         if (!firstPage.prevCursor) return null

@@ -37,7 +37,9 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
  * - `te` for timestamp start value.
  */
 interface LogsPreviewerProps {
+  orgRef: string
   projectRef: string
+  branchRef: string
   queryType: QueryType
   filterOverride?: Filters
   condensedLayout?: boolean
@@ -46,7 +48,9 @@ interface LogsPreviewerProps {
   filterPanelClassName?: string
 }
 export const LogsPreviewer = ({
+  orgRef,
   projectRef,
+  branchRef,
   queryType,
   filterOverride,
   condensedLayout = false,
@@ -57,7 +61,7 @@ export const LogsPreviewer = ({
 }: PropsWithChildren<LogsPreviewerProps>) => {
 
   const router = useRouter()
-  const { slug, db, branch: branchRef } = useParams()
+  const { db } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
@@ -118,14 +122,16 @@ export const LogsPreviewer = ({
     isLoadingOlder,
     loadOlder,
     refresh,
-  } = useLogsPreview({ projectRef, table, filterOverride })
+  } = useLogsPreview({ orgRef, projectRef, branchRef, table, filterOverride })
 
   const {
     data: selectedLog,
     isLoading: isSelectedLogLoading,
     error: selectedLogError,
   } = useSingleLog({
+    orgRef,
     projectRef,
+    branchRef,
     id: selectedLogId ?? undefined,
     queryType,
     paramsToMerge: params,
@@ -189,7 +195,7 @@ export const LogsPreviewer = ({
     defaultSearchValue: search,
     defaultToValue: timestampEnd,
     defaultFromValue: timestampStart,
-    queryUrl: `/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/explorer?q=${encodeURIComponent(
+    queryUrl: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/explorer?q=${encodeURIComponent(
       params.sql || ''
     )}&its=${encodeURIComponent(timestampStart)}&ite=${encodeURIComponent(timestampEnd)}`,
     onSelectTemplate,
@@ -255,7 +261,9 @@ export const LogsPreviewer = ({
         <ShimmerLine active={isLoading} />
         <LoadingOpacity active={isLoading}>
           <LogTable
-            projectRef={projectRef}
+            orgRef={orgRef!}
+            projectRef={projectRef!}
+            branchRef={branchRef!}
             isLoading={isLoading}
             data={logData}
             queryType={queryType}

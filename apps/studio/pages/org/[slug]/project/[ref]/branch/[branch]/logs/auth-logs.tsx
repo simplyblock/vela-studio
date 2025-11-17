@@ -5,16 +5,24 @@ import NoPermission from 'components/ui/NoPermission'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import type { NextPageWithLayout } from 'types'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const LogsPage: NextPageWithLayout = () => {
   const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
 
-  const canReadAuthLogs = useCheckPermissions("branch:logging:read")
+  const canReadAuthLogs = useCheckPermissions('branch:logging:read')
 
   return !canReadAuthLogs ? (
     <NoPermission isFullPage resourceText="access your project's authentication logs" />
-  ) : !!project ? (
-    <LogsPreviewer condensedLayout projectRef={project!.id} queryType="auth" />
+  ) : !!project && !!branch ? (
+    <LogsPreviewer
+      condensedLayout
+      orgRef={project.organization_id}
+      projectRef={project.id}
+      branchRef={branch.id}
+      queryType="auth"
+    />
   ) : null
 }
 

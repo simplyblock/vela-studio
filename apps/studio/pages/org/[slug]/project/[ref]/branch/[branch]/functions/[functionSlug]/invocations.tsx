@@ -6,9 +6,9 @@ import { useEdgeFunctionQuery } from 'data/edge-functions/edge-function-query'
 import type { NextPageWithLayout } from 'types'
 
 export const LogPage: NextPageWithLayout = () => {
-  const { ref, functionSlug } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, functionSlug } = useParams()
   const { data: selectedFunction, isLoading } = useEdgeFunctionQuery({
-    projectRef: ref,
+    projectRef,
     slug: functionSlug,
   })
 
@@ -18,7 +18,9 @@ export const LogPage: NextPageWithLayout = () => {
     <div className="flex-1">
       <LogsPreviewer
         condensedLayout
-        projectRef={ref as string}
+        orgRef={orgRef!}
+        projectRef={projectRef!}
+        branchRef={branchRef!}
         queryType="fn_edge"
         filterOverride={{ function_id: selectedFunction.id }}
       />

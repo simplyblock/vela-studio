@@ -283,14 +283,18 @@ const METRIC_FORMATTER: Record<
  */
 
 export function useAuthLogsReport({
+  orgRef,
   projectRef,
+  branchRef,
   attributes,
   startDate,
   endDate,
   interval,
   enabled = true,
 }: {
+  orgRef: string
   projectRef: string
+  branchRef: string
   attributes: MultiAttribute[]
   startDate: string
   endDate: string
@@ -309,23 +313,40 @@ export function useAuthLogsReport({
     isLoading,
     isFetching,
   } = useQuery(
-    ['auth-logs-report', projectRef, logsMetric, startDate, endDate, interval, sql],
+    [
+      'auth-logs-report',
+      orgRef,
+      projectRef,
+      branchRef,
+      logsMetric,
+      startDate,
+      endDate,
+      interval,
+      sql,
+    ],
     async () => {
-      const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-        params: {
-          path: { ref: projectRef },
-          query: {
-            sql,
-            iso_timestamp_start: startDate,
-            iso_timestamp_end: endDate,
+      const { data, error } = await get(
+        `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+        {
+          params: {
+            path: {
+              slug: orgRef,
+              ref: projectRef,
+              branch: branchRef,
+            },
+            query: {
+              sql,
+              iso_timestamp_start: startDate,
+              iso_timestamp_end: endDate,
+            },
           },
-        },
-      })
+        }
+      )
       if (error) throw error
       return data
     },
     {
-      enabled: Boolean(projectRef && sql && enabled && isAuthMetric),
+      enabled: Boolean(orgRef && projectRef && branchRef && sql && enabled && isAuthMetric),
       refetchOnWindowFocus: false,
     }
   )

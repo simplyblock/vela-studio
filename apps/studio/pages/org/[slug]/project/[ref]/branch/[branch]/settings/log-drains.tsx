@@ -23,11 +23,11 @@ import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 const LogDrainsSettings: NextPageWithLayout = () => {
   const { can: canManageLogDrains, isLoading: isLoadingPermissions } = useCheckPermissions("branch:settings:admin")
   const [open, setOpen] = useState(false)
-  const { ref } = useParams() as { ref: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams() as { slug:string, ref: string, branch: string }
   const [selectedLogDrain, setSelectedLogDrain] = useState<Partial<LogDrainData> | null>(null)
   const [mode, setMode] = useState<'create' | 'update'>('create')
 
-  const { data: logDrains } = useLogDrainsQuery({ ref })
+  const { data: logDrains } = useLogDrainsQuery({ orgRef, projectRef, branchRef })
 
   const { mutate: createLogDrain, isLoading: createLoading } = useCreateLogDrainMutation({
     onSuccess: () => {
@@ -114,7 +114,9 @@ const LogDrainsSettings: NextPageWithLayout = () => {
               type,
               config: values as any, // TODO: fix generated API types from backend
               id: selectedLogDrain?.id,
-              projectRef: ref,
+              orgRef,
+              projectRef,
+              branchRef,
               token: selectedLogDrain?.token,
             }
 

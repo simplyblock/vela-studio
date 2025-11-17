@@ -4,18 +4,38 @@ import { logDrainsKeys } from './keys'
 import { ResponseError } from 'types'
 
 export type LogDrainsVariables = {
-  ref?: string
+  orgRef?: string
+  projectRef?: string
+  branchRef?: string
 }
 
-export async function getLogDrains({ ref }: LogDrainsVariables, signal?: AbortSignal) {
-  if (!ref) {
-    throw new Error('ref is required')
+export async function getLogDrains(
+  { orgRef, projectRef, branchRef }: LogDrainsVariables,
+  signal?: AbortSignal
+) {
+  if (!orgRef) {
+    throw new Error('Organization ref is required')
+  }
+  if (!projectRef) {
+    throw new Error('Project ref is required')
+  }
+  if (!branchRef) {
+    throw new Error('Branch ref is required')
   }
 
-  const { data, error } = await get(`/platform/projects/{ref}/analytics/log-drains`, {
-    params: { path: { ref: ref } },
-    signal,
-  })
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/log-drains`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      signal,
+    }
+  )
 
   if (error) {
     handleError(error)
@@ -29,14 +49,14 @@ export type LogDrainData = LogDrainsData[number]
 export type LogDrainsyError = ResponseError
 
 export const useLogDrainsQuery = <TData = LogDrainsData>(
-  { ref }: LogDrainsVariables,
+  { orgRef, projectRef, branchRef }: LogDrainsVariables,
   { enabled = true, ...options }: UseQueryOptions<LogDrainsData, LogDrainsyError, TData> = {}
 ) =>
   useQuery<LogDrainsData, LogDrainsyError, TData>(
-    logDrainsKeys.list(ref),
-    ({ signal }) => getLogDrains({ ref }, signal),
+    logDrainsKeys.list(orgRef, projectRef, branchRef),
+    ({ signal }) => getLogDrains({ orgRef, projectRef, branchRef }, signal),
     {
-      enabled: enabled && !!ref,
+      enabled: enabled && !!orgRef && !!projectRef && !!branchRef,
       refetchOnMount: false,
       ...options,
     }

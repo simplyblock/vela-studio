@@ -20,11 +20,17 @@ type UnifiedLogsFacetCountVariables = UnifiedLogsVariables & {
 }
 
 export async function getUnifiedLogsFacetCount(
-  { projectRef, search, facet, facetSearch }: UnifiedLogsFacetCountVariables,
+  { orgRef, projectRef, branchRef, search, facet, facetSearch }: UnifiedLogsFacetCountVariables,
   signal?: AbortSignal
 ) {
+  if (typeof orgRef === 'undefined') {
+    throw new Error('orgRef is required for getUnifiedLogsFacetCount')
+  }
   if (typeof projectRef === 'undefined') {
     throw new Error('projectRef is required for getUnifiedLogsFacetCount')
+  }
+  if (typeof branchRef === 'undefined') {
+    throw new Error('branchRef is required for getUnifiedLogsFacetCount')
   }
 
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
@@ -33,11 +39,20 @@ ${getUnifiedLogsCTE()},
 ${getFacetCountCTE({ search, facet, facetSearch })}
 SELECT dimension, value, count from ${facet}_count;
 `.trim()
-  const { data, error } = await post(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-    params: { path: { ref: projectRef } },
-    body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
-    signal,
-  })
+  const { data, error } = await post(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return (data.result ?? []) as Option[]
@@ -47,17 +62,25 @@ export type UnifiedLogsFacetCountData = Awaited<ReturnType<typeof getUnifiedLogs
 export type UnifiedLogsFacetCountError = ExecuteSqlError
 
 export const useUnifiedLogsFacetCountQuery = <TData = UnifiedLogsFacetCountData>(
-  { projectRef, search, facet, facetSearch }: UnifiedLogsFacetCountVariables,
+  { orgRef, projectRef, branchRef, search, facet, facetSearch }: UnifiedLogsFacetCountVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<UnifiedLogsFacetCountData, UnifiedLogsFacetCountError, TData> = {}
 ) =>
   useQuery<UnifiedLogsFacetCountData, UnifiedLogsFacetCountError, TData>(
-    logsKeys.unifiedLogsFacetCount(projectRef, facet, facetSearch, search),
-    ({ signal }) => getUnifiedLogsFacetCount({ projectRef, search, facet, facetSearch }, signal),
+    logsKeys.unifiedLogsFacetCount(orgRef, projectRef, branchRef, facet, facetSearch, search),
+    ({ signal }) =>
+      getUnifiedLogsFacetCount(
+        { orgRef, projectRef, branchRef, search, facet, facetSearch },
+        signal
+      ),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       ...UNIFIED_LOGS_QUERY_OPTIONS,
       ...options,
     }

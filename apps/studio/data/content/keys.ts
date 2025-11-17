@@ -13,9 +13,11 @@ export const contentKeys = {
     }
   ) => ['projects', projectRef, 'content-infinite', options].filter(Boolean),
   list: (
+    orgRef: string | undefined,
     projectRef: string | undefined,
+    branchRef: string | undefined,
     options: { type?: ContentType; name?: string; limit?: number }
-  ) => ['projects', projectRef, 'content', options] as const,
+  ) => ['projects', orgRef, projectRef, branchRef, 'content', options] as const,
   sqlSnippets: (
     projectRef: string | undefined,
     options?: {

@@ -10,7 +10,7 @@ import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 import type { LogsEndpointParams } from 'components/interfaces/Settings/Logs/Logs.types'
 
 export const useStorageReport = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [filters, setFilters] = useState<ReportFilterItem[]>([])
   const state = useDatabaseSelectorStateSnapshot()
 
@@ -18,11 +18,15 @@ export const useStorageReport = () => {
 
   const queryHooks = queriesFactory<keyof typeof PRESET_CONFIG.api.queries>(
     PRESET_CONFIG.api.queries,
-    projectRef ?? 'default'
+    orgRef!,
+    projectRef!,
+    branchRef!
   )
   const storageQueryHooks = queriesFactory<keyof typeof PRESET_CONFIG.storage.queries>(
     PRESET_CONFIG.storage.queries,
-    projectRef ?? 'default'
+    orgRef!,
+    projectRef!,
+    branchRef!
   )
   const totalRequests = queryHooks.totalRequests()
   const topRoutes = queryHooks.topRoutes()

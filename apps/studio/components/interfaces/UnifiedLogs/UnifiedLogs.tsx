@@ -1,11 +1,11 @@
 import {
   ColumnFiltersState,
   getCoreRowModel,
+  getFacetedMinMaxValues as getTTableFacetedMinMaxValues,
   getFacetedRowModel,
+  getFacetedUniqueValues as getTTableFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  getFacetedMinMaxValues as getTTableFacetedMinMaxValues,
-  getFacetedUniqueValues as getTTableFacetedUniqueValues,
   Row,
   RowSelectionState,
   SortingState,
@@ -54,7 +54,7 @@ import { getFacetedUniqueValues, getLevelRowClassName } from './UnifiedLogs.util
 export const UnifiedLogs = () => {
   useResetFocus()
 
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [search, setSearch] = useQueryStates(SEARCH_PARAMS_PARSER)
 
   const { sort, start, size, id, cursor, direction, live, ...filter } = search
@@ -106,14 +106,21 @@ export const UnifiedLogs = () => {
     refetch: refetchLogs,
     fetchNextPage,
     fetchPreviousPage,
-  } = useUnifiedLogsInfiniteQuery({ projectRef, search: searchParameters })
+  } = useUnifiedLogsInfiniteQuery({
+    orgRef,
+    projectRef,
+    branchRef,
+    search: searchParameters,
+  })
   const {
     data: counts,
     isLoading: isLoadingCounts,
     isFetching: isFetchingCounts,
     refetch: refetchCounts,
   } = useUnifiedLogsCountQuery({
+    orgRef,
     projectRef,
+    branchRef,
     search: searchParameters,
   })
   const {
@@ -121,7 +128,9 @@ export const UnifiedLogs = () => {
     isFetching: isFetchingCharts,
     refetch: refetchCharts,
   } = useUnifiedLogsChartQuery({
+    orgRef,
     projectRef,
+    branchRef,
     search: searchParameters,
   })
 
