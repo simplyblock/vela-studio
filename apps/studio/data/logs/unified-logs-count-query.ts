@@ -12,21 +12,36 @@ import {
 } from './unified-logs-infinite-query'
 
 export async function getUnifiedLogsCount(
-  { projectRef, search }: UnifiedLogsVariables,
+  { orgRef, projectRef, branchRef, search }: UnifiedLogsVariables,
   signal?: AbortSignal
 ) {
+  if (typeof orgRef === 'undefined') {
+    throw new Error('orgRef is required for getUnifiedLogsCount')
+  }
   if (typeof projectRef === 'undefined') {
     throw new Error('projectRef is required for getUnifiedLogsCount')
+  }
+  if (typeof branchRef === 'undefined') {
+    throw new Error('branchRef is required for getUnifiedLogsCount')
   }
 
   const sql = getLogsCountQuery(search)
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
 
-  const { data, error } = await post(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-    params: { path: { ref: projectRef } },
-    body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
-    signal,
-  })
+  const { data, error } = await post(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
+      signal,
+    }
+  )
 
   if (error) handleError(error)
 
@@ -77,17 +92,21 @@ export type UnifiedLogsCountData = Awaited<ReturnType<typeof getUnifiedLogsCount
 export type UnifiedLogsCountError = ExecuteSqlError
 
 export const useUnifiedLogsCountQuery = <TData = UnifiedLogsCountData>(
-  { projectRef, search }: UnifiedLogsVariables,
+  { orgRef, projectRef, branchRef, search }: UnifiedLogsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<UnifiedLogsCountData, UnifiedLogsCountError, TData> = {}
 ) =>
   useQuery<UnifiedLogsCountData, UnifiedLogsCountError, TData>(
-    logsKeys.unifiedLogsCount(projectRef, search),
-    ({ signal }) => getUnifiedLogsCount({ projectRef, search }, signal),
+    logsKeys.unifiedLogsCount(orgRef, projectRef, branchRef, search),
+    ({ signal }) => getUnifiedLogsCount({ orgRef, projectRef, branchRef, search }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       ...UNIFIED_LOGS_QUERY_OPTIONS,
       ...options,
     }

@@ -6,11 +6,13 @@ import LogsLayout from 'components/layouts/LogsLayout/LogsLayout'
 import type { NextPageWithLayout } from 'types'
 
 export const LogPage: NextPageWithLayout = () => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   return (
     <LogsPreviewer
-      projectRef={ref as string}
+      orgRef={orgRef!}
+      projectRef={projectRef!}
+      branchRef={branchRef!}
       condensedLayout={true}
       tableName={LogsTableName.SUPAVISOR}
       queryType={'supavisor'}

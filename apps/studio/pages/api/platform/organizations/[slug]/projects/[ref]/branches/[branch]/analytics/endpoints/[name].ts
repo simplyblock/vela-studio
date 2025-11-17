@@ -34,23 +34,24 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 }
 
 const proxyRequest = async (req: NextApiRequest) => {
-  const { name, ref: project, ...toForward } = req.query
+  const { name, ref: project, branch: branchRef, ...toForward } = req.query
 
   if (req.method === 'GET') {
     const payload = { ...toForward, project }
-    return retrieveAnalyticsData(name as string, payload)
+    return retrieveAnalyticsData(branchRef as string, name as string, payload)
   } else if (req.method === 'POST') {
     const payload = { ...req.body, project }
-    return retrieveAnalyticsData(name as string, payload)
+    return retrieveAnalyticsData(branchRef as string, name as string, payload)
   }
 }
 
-const retrieveAnalyticsData = async (name: string, payload: any) => {
+const retrieveAnalyticsData = async (branch: string, name: string, payload: any) => {
   console.log(payload)
   const search = '?' + new URLSearchParams(payload).toString()
   const apiKey = process.env.LOGFLARE_PRIVATE_ACCESS_TOKEN
-  const url = `${PROJECT_ANALYTICS_URL}endpoints/query/${name}${search}`
-  const result = await fetch(url, {
+  const url = `${PROJECT_ANALYTICS_URL}endpoints/query/${branch}.${name}${search}`
+  console.log(`Retrieve analytics data from ${url}`)
+  return await fetch(url, {
     method: 'GET',
     headers: {
       'x-api-key': apiKey as string,
@@ -58,6 +59,4 @@ const retrieveAnalyticsData = async (name: string, payload: any) => {
       Accept: 'application/json',
     },
   }).then(async (res) => res.json())
-
-  return result
 }

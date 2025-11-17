@@ -7,7 +7,9 @@ import type { ResponseError } from 'types'
 import { logDrainsKeys } from './keys'
 
 export type LogDrainUpdateVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   token?: string
   name: string
   description?: string
@@ -20,15 +22,25 @@ export async function updateLogDrain(payload: LogDrainUpdateVariables) {
     throw new Error('Token is required')
   }
 
-  const { data, error } = await put('/platform/projects/{ref}/analytics/log-drains/{token}', {
-    params: { path: { ref: payload.projectRef, token: payload.token } },
-    body: {
-      name: payload.name,
-      description: payload.description,
-      type: payload.type,
-      config: payload.config as any,
-    },
-  })
+  const { data, error } = await put(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/log-drains/{token}',
+    {
+      params: {
+        path: {
+          slug: payload.orgRef,
+          ref: payload.projectRef,
+          branch: payload.branchRef,
+          token: payload.token,
+        },
+      },
+      body: {
+        name: payload.name,
+        description: payload.description,
+        type: payload.type,
+        config: payload.config as any,
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -50,9 +62,9 @@ export const useUpdateLogDrainMutation = ({
     (vars) => updateLogDrain(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { orgRef, projectRef, branchRef } = variables
 
-        await queryClient.invalidateQueries(logDrainsKeys.list(projectRef))
+        await queryClient.invalidateQueries(logDrainsKeys.list(orgRef, projectRef, branchRef))
 
         await onSuccess?.(data, variables, context)
       },

@@ -42,6 +42,7 @@ export async function getProjectSettings(
 type ProjectSettingsData = Awaited<ReturnType<typeof getProjectSettings>>
 type ProjectSettingsError = ResponseError
 
+// FIXME: @Chris is this still required as settins are in the branch now
 export const useProjectSettingsV2Query = <TData = ProjectSettingsData>(
   { orgRef, projectRef }: ProjectSettingsVariables,
   {

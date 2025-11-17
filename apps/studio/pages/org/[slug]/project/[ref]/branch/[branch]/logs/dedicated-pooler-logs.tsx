@@ -6,10 +6,12 @@ import type { NextPageWithLayout } from 'types'
 import { useParams } from 'common'
 
 export const LogPage: NextPageWithLayout = () => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   return (
     <LogsPreviewer
-      projectRef={ref as string}
+      orgRef={orgRef!}
+      projectRef={projectRef!}
+      branchRef={branchRef!}
       condensedLayout={true}
       tableName={LogsTableName.PGBOUNCER}
       queryType={'pgbouncer'}

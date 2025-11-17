@@ -145,10 +145,8 @@ export function LogDrainDestinationSheetForm({
   }
   const DEFAULT_HEADERS = mode === 'create' ? CREATE_DEFAULT_HEADERS : defaultConfig?.headers || {}
 
-  const { ref } = useParams()
-  const { data: logDrains } = useLogDrainsQuery({
-    ref,
-  })
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
+  const { data: logDrains } = useLogDrainsQuery({ orgRef, projectRef, branchRef })
 
   const defaultType = defaultValues?.type || 'webhook'
   const [newCustomHeader, setNewCustomHeader] = useState({ name: '', value: '' })

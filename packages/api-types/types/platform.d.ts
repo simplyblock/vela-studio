@@ -2663,7 +2663,7 @@ export interface paths {
     patch: operations['ProjectsRefController_updateProject']
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/endpoints/functions.inv-stats': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/functions.inv-stats': {
     parameters: {
       query?: never
       header?: never
@@ -2680,7 +2680,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/endpoints/functions.req-stats': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/functions.req-stats': {
     parameters: {
       query?: never
       header?: never
@@ -2697,7 +2697,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/endpoints/functions.resource-usage': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/functions.resource-usage': {
     parameters: {
       query?: never
       header?: never
@@ -2714,7 +2714,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/endpoints/logs.all': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all': {
     parameters: {
       query?: never
       header?: never
@@ -2732,7 +2732,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/endpoints/usage.api-counts': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/usage.api-counts': {
     parameters: {
       query?: never
       header?: never
@@ -2749,7 +2749,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/endpoints/usage.api-requests-count': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/usage.api-requests-count': {
     parameters: {
       query?: never
       header?: never
@@ -2766,7 +2766,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/log-drains': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/log-drains': {
     parameters: {
       query?: never
       header?: never
@@ -2784,7 +2784,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/projects/{ref}/analytics/log-drains/{token}': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/log-drains/{token}': {
     parameters: {
       query?: never
       header?: never
@@ -17892,8 +17892,9 @@ export interface operations {
       }
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -17930,8 +17931,9 @@ export interface operations {
       }
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -17968,8 +17970,9 @@ export interface operations {
       }
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18007,8 +18010,9 @@ export interface operations {
       }
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18042,8 +18046,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18083,8 +18088,9 @@ export interface operations {
       }
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18118,8 +18124,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18147,8 +18154,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18182,8 +18190,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
+        branch: string
       }
       cookie?: never
     }
@@ -18221,9 +18230,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
-        /** @description Log drains token */
+        branch: string
         token: string
       }
       cookie?: never
@@ -18262,9 +18271,9 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        /** @description Project ref */
+        slug: string
         ref: string
-        /** @description Log drains token */
+        branch: string
         token: string
       }
       cookie?: never

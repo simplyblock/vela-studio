@@ -7,12 +7,18 @@ import { logsKeys } from './keys'
 import { UNIFIED_LOGS_QUERY_OPTIONS, UnifiedLogsVariables } from './unified-logs-infinite-query'
 
 export async function getUnifiedLogsChart(
-  { projectRef, search }: UnifiedLogsVariables,
+  { orgRef, projectRef, branchRef, search }: UnifiedLogsVariables,
   signal?: AbortSignal,
   headersInit?: HeadersInit
 ) {
+  if (typeof orgRef === 'undefined') {
+    throw new Error('orgRef is required for getUnifiedLogsChart')
+  }
   if (typeof projectRef === 'undefined') {
     throw new Error('projectRef is required for getUnifiedLogsChart')
+  }
+  if (typeof branchRef === 'undefined') {
+    throw new Error('branchRef is required for getUnifiedLogsChart')
   }
 
   // Use a default date range (last hour) if no date range is selected
@@ -40,12 +46,21 @@ export async function getUnifiedLogsChart(
 
   let headers = new Headers(headersInit)
 
-  const { data, error } = await post(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-    params: { path: { ref: projectRef } },
-    body: { sql, iso_timestamp_start: dateStart, iso_timestamp_end: dateEnd },
-    signal,
-    headers,
-  })
+  const { data, error } = await post(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: { sql, iso_timestamp_start: dateStart, iso_timestamp_end: dateEnd },
+      signal,
+      headers,
+    }
+  )
 
   if (error) handleError(error)
 
@@ -144,17 +159,21 @@ export type UnifiedLogsChartData = Awaited<ReturnType<typeof getUnifiedLogsChart
 export type UnifiedLogsChartError = ExecuteSqlError
 
 export const useUnifiedLogsChartQuery = <TData = UnifiedLogsChartData>(
-  { projectRef, search }: UnifiedLogsVariables,
+  { orgRef, projectRef, branchRef, search }: UnifiedLogsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<UnifiedLogsChartData, UnifiedLogsChartError, TData> = {}
 ) =>
   useQuery<UnifiedLogsChartData, UnifiedLogsChartError, TData>(
-    logsKeys.unifiedLogsChart(projectRef, search),
-    ({ signal }) => getUnifiedLogsChart({ projectRef, search }, signal),
+    logsKeys.unifiedLogsChart(orgRef, projectRef, branchRef, search),
+    ({ signal }) => getUnifiedLogsChart({ orgRef, projectRef, branchRef, search }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       keepPreviousData: true,
       ...UNIFIED_LOGS_QUERY_OPTIONS,
       ...options,

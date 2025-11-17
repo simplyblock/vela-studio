@@ -3,9 +3,9 @@ import dayjs from 'dayjs'
 import { useCallback, useMemo, useState } from 'react'
 
 import {
+  getDefaultHelper,
   LogsTableName,
   PREVIEWER_DATEPICKER_HELPERS,
-  getDefaultHelper,
 } from 'components/interfaces/Settings/Logs/Logs.constants'
 import type {
   Count,
@@ -42,12 +42,16 @@ interface LogsPreviewHook {
 }
 
 function useLogsPreview({
+  orgRef,
   projectRef,
+  branchRef,
   table,
   filterOverride,
   limit,
 }: {
+  orgRef: string
   projectRef: string
+  branchRef: string
   table: LogsTableName
   filterOverride?: Filters
   limit?: number
@@ -103,16 +107,23 @@ function useLogsPreview({
   } = useInfiniteQuery(
     queryKey,
     async ({ signal, pageParam }) => {
-      const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-        params: {
-          path: { ref: projectRef },
-          query: {
-            ...params,
-            iso_timestamp_end: pageParam || params.iso_timestamp_end,
+      const { data, error } = await get(
+        `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+        {
+          params: {
+            path: {
+              slug: orgRef,
+              ref: projectRef,
+              branch: branchRef,
+            },
+            query: {
+              ...params,
+              iso_timestamp_end: pageParam || params.iso_timestamp_end,
+            },
           },
-        },
-        signal,
-      })
+          signal,
+        }
+      )
       if (error) {
         throw error
       }
@@ -154,8 +165,10 @@ function useLogsPreview({
   const countQuerySql = useMemo(() => genCountQuery(table, mergedFilters), [table, mergedFilters])
   const countQueryKey = useMemo(
     () => [
-      'projects',
+      'branches',
+      orgRef,
       projectRef,
+      branchRef,
       'logs-count',
       {
         projectRef,
@@ -166,23 +179,39 @@ function useLogsPreview({
         mergedFilters,
       },
     ],
-    [projectRef, countQuerySql, latestRefresh, timestampEnd, table, mergedFilters]
+    [
+      orgRef,
+      projectRef,
+      branchRef,
+      countQuerySql,
+      latestRefresh,
+      timestampEnd,
+      table,
+      mergedFilters,
+    ]
   )
 
   const { data: countData } = useQuery(
     countQueryKey,
     async ({ signal }) => {
-      const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-        params: {
-          path: { ref: projectRef },
-          query: {
-            sql: countQuerySql,
-            iso_timestamp_start: latestRefresh,
-            iso_timestamp_end: timestampEnd,
+      const { data, error } = await get(
+        `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+        {
+          params: {
+            path: {
+              slug: orgRef,
+              ref: projectRef,
+              branch: branchRef,
+            },
+            query: {
+              sql: countQuerySql,
+              iso_timestamp_start: latestRefresh,
+              iso_timestamp_end: timestampEnd,
+            },
           },
-        },
-        signal,
-      })
+          signal,
+        }
+      )
       if (error) {
         throw error
       }
@@ -204,8 +233,10 @@ function useLogsPreview({
   )
   const chartQueryKey = useMemo(
     () => [
-      'projects',
+      'branches',
+      orgRef,
       projectRef,
+      branchRef,
       'logs-chart',
       {
         projectRef,
@@ -214,23 +245,30 @@ function useLogsPreview({
         iso_timestamp_end: timestampEnd,
       },
     ],
-    [projectRef, chartQuery, timestampStart, timestampEnd]
+    [orgRef, projectRef, branchRef, chartQuery, timestampStart, timestampEnd]
   )
 
   const { data: eventChartResponse, refetch: refreshEventChart } = useQuery(
     chartQueryKey,
     async ({ signal }) => {
-      const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-        params: {
-          path: { ref: projectRef },
-          query: {
-            iso_timestamp_start: timestampStart,
-            iso_timestamp_end: timestampEnd,
-            sql: chartQuery,
+      const { data, error } = await get(
+        `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+        {
+          params: {
+            path: {
+              slug: orgRef,
+              ref: projectRef,
+              branch: branchRef,
+            },
+            query: {
+              iso_timestamp_start: timestampStart,
+              iso_timestamp_end: timestampEnd,
+              sql: chartQuery,
+            },
           },
-        },
-        signal,
-      })
+          signal,
+        }
+      )
       if (error) {
         throw error
       }

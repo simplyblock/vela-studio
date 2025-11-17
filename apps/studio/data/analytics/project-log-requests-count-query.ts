@@ -5,21 +5,35 @@ import type { ResponseError } from 'types'
 import { analyticsKeys } from './keys'
 
 export type ProjectLogRequestsCountVariables = {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
 }
 
 export async function getProjectLogRequestsCountStats(
-  { projectRef }: ProjectLogRequestsCountVariables,
+  { orgRef, projectRef, branchRef }: ProjectLogRequestsCountVariables,
   signal?: AbortSignal
 ) {
+  if (!orgRef) {
+    throw new Error('orgRef is required')
+  }
   if (!projectRef) {
     throw new Error('projectRef is required')
   }
+  if (!branchRef) {
+    throw new Error('branchRef is required')
+  }
 
   const { data, error } = await get(
-    '/platform/projects/{ref}/analytics/endpoints/usage.api-requests-count',
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/usage.api-requests-count',
     {
-      params: { path: { ref: projectRef } },
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
       signal,
     }
   )
@@ -34,26 +48,30 @@ export type ProjectLogRequestsCountData = Awaited<
 export type ProjectLogRequestsCountError = ResponseError
 
 export const useProjectLogRequestsCountQuery = <TData = ProjectLogRequestsCountData>(
-  { projectRef }: ProjectLogRequestsCountVariables,
+  { orgRef, projectRef, branchRef }: ProjectLogRequestsCountVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ProjectLogRequestsCountData, ProjectLogRequestsCountError, TData> = {}
 ) =>
   useQuery<ProjectLogRequestsCountData, ProjectLogRequestsCountError, TData>(
-    analyticsKeys.usageApiRequestsCount(projectRef),
-    ({ signal }) => getProjectLogRequestsCountStats({ projectRef }, signal),
+    analyticsKeys.usageApiRequestsCount(orgRef, projectRef, branchRef),
+    ({ signal }) => getProjectLogRequestsCountStats({ orgRef, projectRef, branchRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       ...options,
     }
   )
 
 export function prefetchProjectLogRequestsCount(
   client: QueryClient,
-  { projectRef }: ProjectLogRequestsCountVariables
+  { orgRef, projectRef, branchRef }: ProjectLogRequestsCountVariables
 ) {
-  return client.fetchQuery(analyticsKeys.usageApiRequestsCount(projectRef), ({ signal }) =>
-    getProjectLogRequestsCountStats({ projectRef }, signal)
+  return client.fetchQuery(analyticsKeys.usageApiRequestsCount(orgRef, projectRef, branchRef), ({ signal }) =>
+    getProjectLogRequestsCountStats({ orgRef, projectRef, branchRef }, signal)
   )
 }

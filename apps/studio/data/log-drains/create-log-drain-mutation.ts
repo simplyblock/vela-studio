@@ -7,7 +7,9 @@ import type { ResponseError } from 'types'
 import { logDrainsKeys } from './keys'
 
 export type LogDrainCreateVariables = {
+  orgRef: string
   projectRef: string
+  branchRef: string
   name: string
   description: string
   config: Record<string, never>
@@ -15,15 +17,24 @@ export type LogDrainCreateVariables = {
 }
 
 export async function createLogDrain(payload: LogDrainCreateVariables) {
-  const { data, error } = await post('/platform/projects/{ref}/analytics/log-drains', {
-    params: { path: { ref: payload.projectRef } },
-    body: {
-      name: payload.name,
-      description: payload.description,
-      type: payload.type,
-      config: payload.config as any,
-    },
-  })
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/log-drains',
+    {
+      params: {
+        path: {
+          slug: payload.orgRef,
+          ref: payload.projectRef,
+          branch: payload.branchRef,
+        },
+      },
+      body: {
+        name: payload.name,
+        description: payload.description,
+        type: payload.type,
+        config: payload.config as any,
+      },
+    }
+  )
 
   if (error) handleError(error)
   return data
@@ -45,9 +56,9 @@ export const useCreateLogDrainMutation = ({
     (vars) => createLogDrain(vars),
     {
       async onSuccess(data, variables, context) {
-        const { projectRef } = variables
+        const { orgRef, projectRef, branchRef } = variables
 
-        await queryClient.invalidateQueries(logDrainsKeys.list(projectRef))
+        await queryClient.invalidateQueries(logDrainsKeys.list(orgRef, projectRef, branchRef))
 
         await onSuccess?.(data, variables, context)
       },

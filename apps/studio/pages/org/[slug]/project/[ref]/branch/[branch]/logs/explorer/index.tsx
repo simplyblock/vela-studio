@@ -14,12 +14,10 @@ import {
 } from 'components/interfaces/Settings/Logs/Logs.constants'
 import {
   DatePickerToFrom,
-  LogTemplate,
   LogsWarning,
+  LogTemplate,
 } from 'components/interfaces/Settings/Logs/Logs.types'
-import {
-  useEditorHints,
-} from 'components/interfaces/Settings/Logs/Logs.utils'
+import { useEditorHints } from 'components/interfaces/Settings/Logs/Logs.utils'
 import LogsQueryPanel from 'components/interfaces/Settings/Logs/LogsQueryPanel'
 import LogTable from 'components/interfaces/Settings/Logs/LogTable'
 import DefaultLayout from 'components/layouts/DefaultLayout'
@@ -34,7 +32,6 @@ import {
 } from 'data/content/content-upsert-mutation'
 import useLogsQuery from 'hooks/analytics/useLogsQuery'
 import { useLogsUrlState } from 'hooks/analytics/useLogsUrlState'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { uuidv4 } from 'lib/helpers'
 import { useProfile } from 'lib/profile'
 import type { LogSqlSnippets, NextPageWithLayout } from 'types'
@@ -58,9 +55,7 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
   const monaco = useMonaco()
   const router = useRouter()
   const { profile } = useProfile()
-  const { slug, ref, q, queryId, branch: branchRef } = useParams()
-  const projectRef = ref as string
-  const { data: organization } = useSelectedOrganizationQuery()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, q, queryId } = useParams()
 
   const editorRef = useRef<editor.IStandaloneCodeEditor>()
   const [editorId] = useState<string>(uuidv4())
@@ -77,7 +72,9 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
   )
 
   const { data: content } = useContentQuery({
-    projectRef: ref,
+    orgRef,
+    projectRef,
+    branchRef,
     type: 'log_sql',
   })
   const query = content?.content.find((x) => x.id === queryId)
@@ -89,7 +86,9 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
     changeQuery,
     runQuery,
   } = useLogsQuery(
-    projectRef,
+    orgRef!,
+    projectRef!,
+    branchRef!,
     {
       iso_timestamp_start: timestampStart,
       iso_timestamp_end: timestampEnd,
@@ -208,7 +207,10 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
     upsertContent(
       { projectRef, payload },
       {
-        onSuccess: () => router.push(`/org/${slug}/project/${projectRef}/branch/${branchRef}/logs/explorer?queryId=${id}`),
+        onSuccess: () =>
+          router.push(
+            `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/logs/explorer?queryId=${id}`
+          ),
       }
     )
   }
@@ -297,7 +299,9 @@ export const LogsExplorerPage: NextPageWithLayout = () => {
               hasEditorValue={Boolean(editorValue)}
               data={results}
               error={error}
-              projectRef={projectRef}
+              orgRef={orgRef!}
+              projectRef={projectRef!}
+              branchRef={branchRef!}
               onSelectedLogChange={setSelectedLog}
               selectedLog={selectedLog}
             />

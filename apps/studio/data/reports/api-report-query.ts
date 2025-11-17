@@ -9,7 +9,7 @@ import type { LogsEndpointParams } from 'components/interfaces/Settings/Logs/Log
 import { useDatabaseSelectorStateSnapshot } from 'state/database-selector'
 
 export const useApiReport = () => {
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const state = useDatabaseSelectorStateSnapshot()
 
   const identifier = state.selectedDatabaseId
@@ -17,7 +17,9 @@ export const useApiReport = () => {
 
   const queryHooks = queriesFactory<keyof typeof PRESET_CONFIG.api.queries>(
     PRESET_CONFIG.api.queries,
-    projectRef ?? 'default'
+    orgRef!,
+    projectRef!,
+    branchRef!
   )
   const totalRequests = queryHooks.totalRequests()
   const topRoutes = queryHooks.topRoutes()

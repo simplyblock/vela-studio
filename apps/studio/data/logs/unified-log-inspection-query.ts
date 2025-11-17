@@ -28,7 +28,9 @@ export const SERVICE_FLOW_TYPES = [
 export type ServiceFlowType = (typeof SERVICE_FLOW_TYPES)[number]
 
 export type UnifiedLogInspectionVariables = {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
   logId?: string
   type?: ServiceFlowType
   search: QuerySearchParamsType
@@ -116,11 +118,17 @@ export interface UnifiedLogInspectionEntry {
 }
 
 export async function getUnifiedLogInspection(
-  { projectRef, logId, type, search }: UnifiedLogInspectionVariables,
+  { orgRef, projectRef, branchRef, logId, type, search }: UnifiedLogInspectionVariables,
   signal?: AbortSignal
 ) {
+  if (!orgRef) {
+    throw new Error('orgRef is required')
+  }
   if (!projectRef) {
     throw new Error('projectRef is required')
+  }
+  if (!branchRef) {
+    throw new Error('branchRef is required')
   }
   if (!logId) {
     throw new Error('logId is required')
@@ -153,15 +161,24 @@ export async function getUnifiedLogInspection(
   // Use the same timestamp logic as the main unified logs query
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
 
-  const { data, error } = await post('/platform/projects/{ref}/analytics/endpoints/logs.all', {
-    params: { path: { ref: projectRef } },
-    body: {
-      iso_timestamp_start: isoTimestampStart,
-      iso_timestamp_end: isoTimestampEnd,
-      sql: sql,
-    },
-    signal,
-  })
+  const { data, error } = await post(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+      },
+      body: {
+        iso_timestamp_start: isoTimestampStart,
+        iso_timestamp_end: isoTimestampEnd,
+        sql: sql,
+      },
+      signal,
+    }
+  )
 
   if (error) {
     handleError(error)
@@ -174,17 +191,22 @@ export type UnifiedLogInspectionData = Awaited<ReturnType<typeof getUnifiedLogIn
 export type UnifiedLogInspectionError = ResponseError
 
 export const useUnifiedLogInspectionQuery = <TData = UnifiedLogInspectionData>(
-  { projectRef, logId, type, search }: UnifiedLogInspectionVariables,
+  { orgRef, projectRef, branchRef, logId, type, search }: UnifiedLogInspectionVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<UnifiedLogInspectionData, UnifiedLogInspectionError, TData> = {}
 ) =>
   useQuery<UnifiedLogInspectionData, UnifiedLogInspectionError, TData>(
-    logsKeys.serviceFlow(projectRef, search, logId),
-    ({ signal }) => getUnifiedLogInspection({ projectRef, logId, type, search }, signal),
+    logsKeys.serviceFlow(orgRef, projectRef, branchRef, search, logId),
+    ({ signal }) =>
+      getUnifiedLogInspection({ orgRef, projectRef, branchRef, logId, type, search }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       ...UNIFIED_LOGS_QUERY_OPTIONS,
       ...options,
     }

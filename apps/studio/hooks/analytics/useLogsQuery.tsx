@@ -29,7 +29,9 @@ export interface LogsQueryHook {
 }
 
 const useLogsQuery = (
+  orgRef: string,
   projectRef: string,
+  branchRef: string,
   initialParams: Partial<LogsEndpointParams> = {},
   enabled = true
 ): LogsQueryHook => {
@@ -66,15 +68,22 @@ const useLogsQuery = (
     isRefetching,
     refetch,
   } = useQuery(
-    ['projects', projectRef, 'logs', params],
+    ['branches', orgRef, projectRef, branchRef, 'logs', params],
     async ({ signal }) => {
-      const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-        params: {
-          path: { ref: projectRef },
-          query: params,
-        },
-        signal,
-      })
+      const { data, error } = await get(
+        `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+        {
+          params: {
+            path: {
+              slug: orgRef,
+              ref: projectRef,
+              branch: branchRef,
+            },
+            query: params,
+          },
+          signal,
+        }
+      )
       if (error) {
         throw error
       }

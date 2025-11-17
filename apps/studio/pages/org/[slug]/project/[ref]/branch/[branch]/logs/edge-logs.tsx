@@ -1,20 +1,20 @@
-import { useRouter } from 'next/router'
-
 import { LogsTableName } from 'components/interfaces/Settings/Logs/Logs.constants'
 import LogsPreviewer from 'components/interfaces/Settings/Logs/LogsPreviewer'
 import LogsLayout from 'components/layouts/LogsLayout/LogsLayout'
 import type { NextPageWithLayout } from 'types'
 import DefaultLayout from 'components/layouts/DefaultLayout'
+import { useParams } from 'common'
 
 export const LogPage: NextPageWithLayout = () => {
-  const router = useRouter()
-  const { ref } = router.query
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   return (
     <LogsPreviewer
       condensedLayout
       queryType="api"
-      projectRef={ref as string}
+      orgRef={orgRef!}
+      projectRef={projectRef!}
+      branchRef={branchRef!}
       tableName={LogsTableName.EDGE}
     />
   )

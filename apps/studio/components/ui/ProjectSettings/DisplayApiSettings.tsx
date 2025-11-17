@@ -21,14 +21,14 @@ export const DisplayApiSettings = ({
   showNotice?: boolean
   showLegacyText?: boolean
 }) => {
-  const { slug: orgSlug, ref: projectRef, branch: branchRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
 
   const {
     data: settings,
     isError: isProjectSettingsError,
     isLoading: isProjectSettingsLoading,
-  } = useProjectSettingsV2Query({ orgRef: orgSlug, projectRef })
+  } = useProjectSettingsV2Query({ orgRef, projectRef })
   const {
     data,
     isError: isJwtSecretUpdateStatusError,
@@ -48,7 +48,9 @@ export const DisplayApiSettings = ({
   const isApiKeysEmpty = apiKeys.length === 0
 
   const { isLoading: isLoadingLastUsed, logData: lastUsedLogData } = useLastUsedAPIKeysLogQuery(
-    projectRef!
+    orgRef!,
+    projectRef!,
+    branchRef!,
   )
 
   const lastUsedAPIKeys = useMemo(() => {
@@ -168,7 +170,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
+                            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Secret API keys
@@ -185,7 +187,7 @@ export const DisplayApiSettings = ({
                         <span>
                           Prefer using{' '}
                           <Link
-                            href={`/org/${orgSlug}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
+                            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api-keys/new`}
                             className="text-link underline"
                           >
                             Publishable API keys

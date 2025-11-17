@@ -36,7 +36,7 @@ interface DownloadLogsButtonProps {
 }
 
 export const DownloadLogsButton = ({ searchParameters }: DownloadLogsButtonProps) => {
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [numRows, setNumRows] = useState(DEFAULT_NUM_ROWS)
   const [numHours, setNumHours] = useState(DEFAULT_NUM_ROWS)
   const [selectedFormat, setSelectedFormat] = useState<'csv' | 'json'>()
@@ -68,11 +68,15 @@ export const DownloadLogsButton = ({ searchParameters }: DownloadLogsButtonProps
   })
 
   const onExportData = () => {
-    if (!ref) return console.error('Project ref is required')
+    if (!orgRef) return console.error('Organization ref is required')
+    if (!projectRef) return console.error('Project ref is required')
+    if (!branchRef) return console.error('Branch ref is required')
 
     const hasSpecificTimeRange = 'date' in searchParameters
     retrieveLogs({
-      projectRef: ref,
+      orgRef,
+      projectRef,
+      branchRef,
       search: searchParameters,
       limit: Number(numRows),
       hoursAgo: !hasSpecificTimeRange ? Number(numHours) : undefined,

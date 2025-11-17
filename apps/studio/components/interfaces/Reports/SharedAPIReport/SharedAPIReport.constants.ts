@@ -181,26 +181,37 @@ export const SHARED_API_REPORT_SQL = {
 export type SharedAPIReportKey = keyof typeof SHARED_API_REPORT_SQL
 
 const fetchLogs = async ({
+  orgRef,
   projectRef,
+  branchRef,
   sql,
   start,
   end,
 }: {
+  orgRef: string
   projectRef: string
+  branchRef: string
   sql: string
   start: string
   end: string
 }) => {
-  const { data, error } = await get(`/platform/projects/{ref}/analytics/endpoints/logs.all`, {
-    params: {
-      path: { ref: projectRef },
-      query: {
-        sql,
-        iso_timestamp_start: start,
-        iso_timestamp_end: end,
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
+        query: {
+          sql,
+          iso_timestamp_start: start,
+          iso_timestamp_end: end,
+        },
       },
-    },
-  })
+    }
+  )
 
   if (error || data?.error) {
     throw error || data?.error
@@ -224,7 +235,7 @@ export const useSharedAPIReport = ({
   end,
   enabled = true,
 }: Omit<SharedAPIReportParams, 'projectRef'>) => {
-  const { ref } = useParams() as { ref: string }
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const [filters, setFilters] = useState<ReportFilterItem[]>([])
   const queryClient = useQueryClient()
   const filterByMapSource = {
@@ -255,11 +266,13 @@ export const useSharedAPIReport = ({
 
   const queries = useQueries({
     queries: Object.entries(SHARED_API_REPORT_SQL).map(([key, value]) => ({
-      queryKey: [...DEFAULT_KEYS, key, filterByMapSource[filterBy], filters, start, end, ref],
-      enabled: enabled && !!ref && !!filterBy,
+      queryKey: [...DEFAULT_KEYS, key, filterByMapSource[filterBy], filters, start, end, orgRef, projectRef, branchRef],
+      enabled: enabled && !!orgRef && !!projectRef && !!branchRef && !!filterBy,
       queryFn: () =>
         fetchLogs({
-          projectRef: ref,
+          orgRef: orgRef!,
+          projectRef: projectRef!,
+          branchRef: branchRef!,
           sql: value.sql(allFilters, filterByMapSource[filterBy]),
           start,
           end,

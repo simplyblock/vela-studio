@@ -4,21 +4,18 @@ import { Key, ReactNode, useCallback, useEffect, useMemo, useState } from 'react
 import { Item, Menu, useContextMenu } from 'react-contexify'
 import DataGrid, { Column, RenderRowProps, Row } from 'react-data-grid'
 import { createPortal } from 'react-dom'
-
-import { useParams } from 'common'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
 import { DownloadResultsButton } from 'components/ui/DownloadResultsButton'
 import { useSelectedLog } from 'hooks/analytics/useSelectedLog'
-import { useProfile } from 'lib/profile'
 import { toast } from 'sonner'
 import { ResponseError } from 'types'
 import {
   Button,
+  cn,
+  copyToClipboard,
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-  cn,
-  copyToClipboard,
 } from 'ui'
 import AuthColumnRenderer from './LogColumnRenderers/AuthColumnRenderer'
 import DatabaseApiColumnRender from './LogColumnRenderers/DatabaseApiColumnRender'
@@ -43,7 +40,9 @@ interface Props {
   error?: LogQueryError | null
   showDownload?: boolean
   queryType?: QueryType
+  orgRef: string
   projectRef: string
+  branchRef: string
   onRun?: () => void
   onSave?: () => void
   hasEditorValue?: boolean
@@ -71,7 +70,9 @@ const LogTable = ({
   isLoading,
   isSaving,
   error,
+  orgRef,
   projectRef,
+  branchRef,
   onRun,
   onSave,
   hasEditorValue,
@@ -84,8 +85,6 @@ const LogTable = ({
   selectedLogError,
   onSelectedLogChange,
 }: Props) => {
-  const { ref } = useParams()
-  const { profile } = useProfile()
   const [selectedLogId] = useSelectedLog()
   const { show: showContextMenu } = useContextMenu()
 
@@ -93,7 +92,7 @@ const LogTable = ({
   const [selectionOpen, setSelectionOpen] = useState(false)
   const [selectedRow, setSelectedRow] = useState<LogData | null>(null)
 
-  const { can: canCreateLogQuery } = useCheckPermissions("branch:settings:admin")
+  const { can: canCreateLogQuery } = useCheckPermissions('branch:settings:admin')
 
   const firstRow = data[0]
 
@@ -252,7 +251,7 @@ const LogTable = ({
           type="text"
           text={`Results ${data && data.length ? `(${data.length})` : ''}`}
           results={data}
-          fileName={`supabase-logs-${ref}.csv`}
+          fileName={`supabase-logs-${projectRef}.csv`}
         />
       </div>
 

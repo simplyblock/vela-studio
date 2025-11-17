@@ -8,7 +8,6 @@ import CardButton from 'components/ui/CardButton'
 import Panel from 'components/ui/Panel'
 import { useDeleteLogDrainMutation } from 'data/log-drains/delete-log-drain-mutation'
 import { LogDrainData, useLogDrainsQuery } from 'data/log-drains/log-drains-query'
-import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import {
   Button,
   DropdownMenu,
@@ -23,7 +22,6 @@ import {
   TableRow,
 } from 'ui'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
-import { GenericSkeletonLoader } from 'ui-patterns/ShimmeringLoader'
 import { LOG_DRAIN_TYPES, LogDrainType } from './LogDrains.constants'
 
 export function LogDrains({
@@ -33,11 +31,9 @@ export function LogDrains({
   onNewDrainClick: (src: LogDrainType) => void
   onUpdateDrainClick: (drain: LogDrainData) => void
 }) {
-  const { data: org } = useSelectedOrganizationQuery()
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedLogDrain, setSelectedLogDrain] = useState<LogDrainData | null>(null)
-  const { ref } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const {
     data: logDrains,
     isLoading,
@@ -45,7 +41,7 @@ export function LogDrains({
     error,
     isError,
   } = useLogDrainsQuery(
-    { ref },
+    { orgRef, projectRef, branchRef },
     {
       enabled: true,
     }
@@ -151,8 +147,13 @@ export function LogDrains({
             title="Delete Log Drain"
             visible={isDeleteModalOpen}
             onConfirm={() => {
-              if (selectedLogDrain && ref) {
-                deleteLogDrain({ token: selectedLogDrain.token, projectRef: ref })
+              if (selectedLogDrain && orgRef && projectRef && branchRef) {
+                deleteLogDrain({
+                  token: selectedLogDrain.token,
+                  orgRef,
+                  projectRef,
+                  branchRef,
+                })
               }
             }}
             onCancel={() => setIsDeleteModalOpen(false)}

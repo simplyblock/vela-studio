@@ -20,7 +20,9 @@ export const analyticsKeys = {
       },
     ] as const,
   functionsReqStats: (
+    orgRef: string | undefined,
     projectRef: string | undefined,
+    branchRef: string | undefined,
     {
       interval,
       functionId,
@@ -31,7 +33,9 @@ export const analyticsKeys = {
   ) =>
     [
       'projects',
+      orgRef,
       projectRef,
+      branchRef,
       'functions-req-stats',
       {
         interval,
@@ -39,7 +43,9 @@ export const analyticsKeys = {
       },
     ] as const,
   functionsResourceUsage: (
+    orgRef: string | undefined,
     projectRef: string | undefined,
+    branchRef: string | undefined,
     {
       interval,
       functionId,
@@ -50,7 +56,9 @@ export const analyticsKeys = {
   ) =>
     [
       'projects',
+      orgRef,
       projectRef,
+      branchRef,
       'functions-resource-usage',
       {
         interval,
@@ -131,11 +139,18 @@ export const analyticsKeys = {
       'infra-monitoring',
       { attribute, startDate, endDate, interval, databaseIdentifier },
     ] as const,
-  usageApiCounts: (projectRef: string | undefined, interval: string | undefined) =>
-    ['projects', projectRef, 'usage.api-counts', interval] as const,
+  usageApiCounts: (
+    orgRef: string | undefined,
+    projectRef: string | undefined,
+    branchRef: string | undefined,
+    interval: string | undefined
+  ) => ['projects', orgRef, projectRef, branchRef, 'usage.api-counts', interval] as const,
 
-  usageApiRequestsCount: (projectRef: string | undefined) =>
-    ['projects', projectRef, 'usage.api-requests-count'] as const,
+  usageApiRequestsCount: (
+    orgRef: string | undefined,
+    projectRef: string | undefined,
+    branchRef: string | undefined
+  ) => ['projects', orgRef, projectRef, branchRef, 'usage.api-requests-count'] as const,
 }
 
 function isoDateStringToDate(isoDateString: string | undefined): string | undefined {

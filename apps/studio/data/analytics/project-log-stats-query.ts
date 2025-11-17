@@ -4,7 +4,9 @@ import { get, handleError } from 'data/fetchers'
 import { analyticsKeys } from './keys'
 
 export type ProjectLogStatsVariables = {
+  orgRef?: string
   projectRef?: string
+  branchRef?: string
   interval?: NonNullable<
     operations['UsageApiController_getApiCounts']['parameters']['query']
   >['interval']
@@ -22,21 +24,31 @@ export interface UsageApiCounts {
 }
 
 export async function getProjectLogStats(
-  { projectRef, interval }: ProjectLogStatsVariables,
+  { orgRef, projectRef, branchRef, interval }: ProjectLogStatsVariables,
   signal?: AbortSignal
 ) {
+  if (!orgRef) {
+    throw new Error('orgRef is required')
+  }
   if (!projectRef) {
     throw new Error('projectRef is required')
+  }
+  if (!branchRef) {
+    throw new Error('branchRef is required')
   }
   if (!interval) {
     throw new Error('interval is required')
   }
 
   const { data, error } = await get(
-    '/platform/projects/{ref}/analytics/endpoints/usage.api-counts',
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/usage.api-counts',
     {
       params: {
-        path: { ref: projectRef },
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
         query: {
           interval,
         },
@@ -54,26 +66,32 @@ export type ProjectLogStatsData = Awaited<ReturnType<typeof getProjectLogStats>>
 export type ProjectLogStatsError = unknown
 
 export const useProjectLogStatsQuery = <TData = ProjectLogStatsData>(
-  { projectRef, interval }: ProjectLogStatsVariables,
+  { orgRef, projectRef, branchRef, interval }: ProjectLogStatsVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ProjectLogStatsData, ProjectLogStatsError, TData> = {}
 ) =>
   useQuery<ProjectLogStatsData, ProjectLogStatsError, TData>(
-    analyticsKeys.usageApiCounts(projectRef, interval),
-    ({ signal }) => getProjectLogStats({ projectRef, interval }, signal),
+    analyticsKeys.usageApiCounts(orgRef, projectRef, branchRef, interval),
+    ({ signal }) => getProjectLogStats({ orgRef, projectRef, branchRef, interval }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof interval !== 'undefined',
+      enabled:
+        enabled &&
+        typeof orgRef !== 'undefined' &&
+        typeof projectRef !== 'undefined' &&
+        typeof branchRef !== 'undefined' &&
+        typeof interval !== 'undefined',
       ...options,
     }
   )
 
 export function prefetchProjectLogStats(
   client: QueryClient,
-  { projectRef, interval }: ProjectLogStatsVariables
+  { orgRef, projectRef, branchRef, interval }: ProjectLogStatsVariables
 ) {
-  return client.fetchQuery(analyticsKeys.usageApiCounts(projectRef, interval), ({ signal }) =>
-    getProjectLogStats({ projectRef, interval }, signal)
+  return client.fetchQuery(
+    analyticsKeys.usageApiCounts(orgRef, projectRef, branchRef, interval),
+    ({ signal }) => getProjectLogStats({ orgRef, projectRef, branchRef, interval }, signal)
   )
 }

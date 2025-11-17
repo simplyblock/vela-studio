@@ -16,6 +16,7 @@ import { useAuthLogsReport } from 'data/reports/auth-report-query'
 import type { ChartData } from 'components/ui/Charts/Charts.types'
 import type { MultiAttribute } from 'components/ui/Charts/ComposedChart.utils'
 import { useEdgeFunctionReport } from 'data/reports/edgefn-query'
+import { useParams } from 'common'
 
 export const useChartData = ({
   attributes,
@@ -37,7 +38,7 @@ export const useChartData = ({
   enabled?: boolean
 }) => {
   const router = useRouter()
-  const { ref } = router.query
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
 
   const logsAttributes = attributes.filter((attr) => attr.provider === 'logs')
 
@@ -48,7 +49,9 @@ export const useChartData = ({
     attributes: authChartAttributes,
     isLoading: isAuthLoading,
   } = useAuthLogsReport({
-    projectRef: ref as string,
+    orgRef: orgRef!,
+    projectRef: projectRef!,
+    branchRef: branchRef!,
     attributes: logsAttributes,
     startDate,
     endDate,
@@ -61,7 +64,9 @@ export const useChartData = ({
     attributes: edgeFunctionChartAttributes,
     isLoading: isEdgeFunctionLoading,
   } = useEdgeFunctionReport({
-    projectRef: ref as string,
+    orgRef: orgRef!,
+    projectRef: projectRef!,
+    branchRef: branchRef!,
     attributes: logsAttributes,
     startDate,
     endDate,
