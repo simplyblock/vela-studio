@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { getVelaClient } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
+import { mapOrganizationMember } from '../../../../../../../data/vela/api-mappers'
 
 const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug, user_id } = getPlatformQueryParams(req, 'slug', 'user_id')
@@ -41,7 +42,7 @@ const handlePatch = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(response.response.status).json(response.error)
   }
 
-  return res.status(200).json(response.data)
+  return res.status(200).json(mapOrganizationMember(response.data))
 }
 
 const apiHandler = apiBuilder((builder) => {
