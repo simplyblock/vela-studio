@@ -20,19 +20,19 @@ export const Roles = () => {
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
 
   const { slug } = useParams()
-  
-  const { data: roles, isLoading:isRolesLoading} = useOrganizationRolesQuery({ slug })
-
+  const { data: roles, isLoading: isRolesLoading } = useOrganizationRolesQuery({ slug })
 
   const filteredRoles = useMemo(() => {
     const normalized = searchString.trim().toLowerCase()
     if (normalized.length === 0) return roles || []
 
     return (roles || []).filter((role) => {
-      const haystack = `${role.name} ${role.role_type} ${role.is_active ? 'active' : 'inactive'}`.toLowerCase()
+      const haystack = `${role.name} ${role.role_type} ${
+        role.is_active ? 'active' : 'inactive'
+      }`.toLowerCase()
       return haystack.includes(normalized)
     })
-  }, [searchString,roles])
+  }, [searchString, roles])
 
   useEffect(() => {
     if (selectedRoleId && !filteredRoles.some((role) => role.id === selectedRoleId)) {
@@ -42,7 +42,7 @@ export const Roles = () => {
 
   const selectedRole = useMemo(
     () => (roles || []).find((role) => role.id === selectedRoleId),
-    [selectedRoleId]
+    [roles, selectedRoleId]
   )
 
   return (
@@ -64,6 +64,7 @@ export const Roles = () => {
             <RoleCreateButton />
           </ScaffoldActionsGroup>
         </ScaffoldActionsContainer>
+
         <ScaffoldSectionContent className="w-full">
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
             <RolesTable

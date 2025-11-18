@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { UserPlus, X } from 'lucide-react'
 import { useParams } from 'common'
 
@@ -18,6 +18,7 @@ import {
 import { useOrganizationMemberAssignRoleMutation } from 'data/organization-members/organization-member-role-assign-mutation'
 import { useOrganizationMemberUnassignRoleMutation } from 'data/organization-members/organization-member-role-unassign-mutation'
 
+import { useProjectsQuery } from 'data/projects/projects-query'
 import { useBranchesQuery } from 'data/branches/branches-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 
@@ -32,19 +33,23 @@ import {
   DialogSection,
   DialogTitle,
   ScrollArea,
+  Select_Shadcn_,
+  SelectTrigger_Shadcn_,
+  SelectContent_Shadcn_,
+  SelectGroup_Shadcn_,
+  SelectItem_Shadcn_,
 } from 'ui'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
-export const ProjectRoleAssignment = () => {
-  const { slug, ref } = useParams()
+export const BranchRoleAssignment = () => {
+  const { slug } = useParams()
 
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
   const [pendingSelection, setPendingSelection] = useState<string[]>([])
 
-  // scope
-  const [selectedEnvTypes, setSelectedEnvTypes] = useState<string[]>([])
+  const [selectedProjectId, setSelectedProjectId] = useState<string | ''>('')
   const [selectedBranchIds, setSelectedBranchIds] = useState<string[]>([])
 
   const { data: roles, isLoading: isLoadingRoles } = useOrganizationRolesQuery({ slug })
@@ -52,10 +57,11 @@ export const ProjectRoleAssignment = () => {
     useOrganizationRoleAssignmentsQuery({ slug })
   const { data: members, isLoading: isLoadingMembers } = useOrganizationMembersQuery({ slug })
   const { data: organization } = useSelectedOrganizationQuery()
+  const { data: projects } = useProjectsQuery()
 
   const { data: branches } = useBranchesQuery(
-    { orgRef: slug, projectRef: ref! },
-    { enabled: Boolean(ref) }
+    { orgRef: slug, projectRef: selectedProjectId },
+    { enabled: Boolean(selectedProjectId) }
   )
 
   const { mutate: assignRole } = useOrganizationMemberAssignRoleMutation()
@@ -63,11 +69,24 @@ export const ProjectRoleAssignment = () => {
 
   const isLoading = isLoadingRoles || isLoadingRoleAssignments || isLoadingMembers
 
-  // Only project / env / branch roles
-  const scopedRoles = useMemo(
-    () => (roles || []).filter((r) => ['project', 'environment', 'branch'].includes(r.role_type)),
+  // Only branch roles (no org / project / env)
+  const branchRoles = useMemo(
+    () => (roles || []).filter((r) => r.role_type === 'branch'),
     [roles]
   )
+
+  // Filter projects to current org
+  const orgProjects = useMemo(
+    () => (projects || []).filter((p) => p.organization_id === organization?.id),
+    [projects, organization?.id]
+  )
+
+  // Default selected project to first org project when available
+  useEffect(() => {
+    if (!selectedProjectId && orgProjects.length > 0) {
+      setSelectedProjectId(orgProjects[0].id)
+    }
+  }, [orgProjects, selectedProjectId])
 
   const roleAssignmentsMap: RoleAssignmentsMap = useMemo(() => {
     const map: RoleAssignmentsMap = {}
@@ -89,8 +108,8 @@ export const ProjectRoleAssignment = () => {
   }, [members])
 
   const selectedRole = useMemo(
-    () => scopedRoles.find((r) => r.id === selectedRoleId) ?? null,
-    [scopedRoles, selectedRoleId]
+    () => branchRoles.find((r) => r.id === selectedRoleId) ?? null,
+    [branchRoles, selectedRoleId]
   )
 
   const assignedMembers = useMemo(() => {
@@ -100,7 +119,6 @@ export const ProjectRoleAssignment = () => {
   }, [selectedRoleId, roleAssignmentsMap, membersById])
 
   const allMembers = members || []
-  const orgEnvTypes = organization?.env_types ?? []
 
   const handleRemoveMember = (userId: string) => {
     if (!selectedRoleId || !slug) return
@@ -113,12 +131,6 @@ export const ProjectRoleAssignment = () => {
     )
   }
 
-  const handleToggleEnvType = (envType: string) => {
-    setSelectedEnvTypes((p) =>
-      p.includes(envType) ? p.filter((v) => v !== envType) : p.concat(envType)
-    )
-  }
-
   const handleToggleBranch = (branchId: string) => {
     setSelectedBranchIds((p) =>
       p.includes(branchId) ? p.filter((id) => id !== branchId) : p.concat(branchId)
@@ -126,12 +138,12 @@ export const ProjectRoleAssignment = () => {
   }
 
   const resetScope = () => {
-    setSelectedEnvTypes([])
     setSelectedBranchIds([])
   }
 
   const handleSaveAssignments = () => {
     if (!selectedRoleId || !slug || !selectedRole) return
+    if (!selectedProjectId || selectedBranchIds.length === 0) return
 
     const current = roleAssignmentsMap[selectedRoleId] ?? []
     const next = pendingSelection
@@ -144,9 +156,8 @@ export const ProjectRoleAssignment = () => {
         slug,
         userId,
         roleId: selectedRoleId,
-        projects: selectedRole.role_type === 'project' && ref ? [ref] : undefined,
-        env_types: selectedRole.role_type === 'environment' ? selectedEnvTypes : undefined,
-        branches: selectedRole.role_type === 'branch' ? selectedBranchIds : undefined,
+        projects: [selectedProjectId],
+        branches: selectedBranchIds,
       })
     })
 
@@ -159,36 +170,45 @@ export const ProjectRoleAssignment = () => {
 
   const handleOpenAssignModal = () => {
     if (!selectedRoleId || !selectedRole) return
+
     const assigned = roleAssignmentsMap[selectedRoleId] ?? []
     setPendingSelection([...assigned])
     resetScope()
     setIsAssignModalOpen(true)
   }
 
+  const canSave =
+    !!selectedRole &&
+    !!selectedProjectId &&
+    selectedBranchIds.length > 0 &&
+    pendingSelection.length > 0
+
   return (
     <>
       <ScaffoldFilterAndContent>
         <ScaffoldSectionContent className="w-full">
-          {/* fixed height grid so the view doesn't grow indefinitely */}
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] h-[520px]">
-            {/* Left: roles table, scrollable if many roles */}
+            {/* Left: branch roles list */}
             <div className="h-full rounded-md border border-default bg-surface-100">
               <ScrollArea className="h-full">
                 <RolesTable
                   isRolesLoading={isLoading}
-                  roles={scopedRoles}
+                  roles={branchRoles}
                   selectedRoleId={selectedRoleId}
                   onSelectRole={setSelectedRoleId}
                 />
               </ScrollArea>
             </div>
 
-            {/* Right: assigned users, header fixed, list scrolls */}
+            {/* Right: assigned members */}
             <div className="flex h-full flex-col rounded-md border border-default bg-surface-100 p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-medium text-foreground">
-                    {selectedRole ? `Members with ${selectedRole.name}` : 'Select a role'}
+                    {selectedRole ? `Members with ${selectedRole.name}` : 'Select a branch role'}
+                  </p>
+                  <p className="text-xs text-foreground-light">
+                    Assign branch-scoped roles to team members across projects and branches.
                   </p>
                 </div>
 
@@ -240,7 +260,7 @@ export const ProjectRoleAssignment = () => {
                   )
                 ) : (
                   <div className="flex h-full items-center justify-center border border-dashed border-default rounded py-10 text-sm text-foreground-light">
-                    Select a role to view assignments.
+                    Select a branch role to view assignments.
                   </div>
                 )}
               </ScrollArea>
@@ -254,7 +274,7 @@ export const ProjectRoleAssignment = () => {
         <DialogContent size="medium">
           <DialogHeader className="border-b">
             <DialogTitle>
-              {selectedRole ? `Assign ${selectedRole.name}` : 'Assign role'}
+              {selectedRole ? `Assign ${selectedRole.name}` : 'Assign branch role'}
             </DialogTitle>
           </DialogHeader>
 
@@ -289,39 +309,47 @@ export const ProjectRoleAssignment = () => {
               </ScrollArea>
             </div>
 
-            {/* Scope – only for environment/branch, NOT for project */}
-            {selectedRole && selectedRole.role_type !== 'project' && (
-              <div>
-                <p className="mb-2 text-xs uppercase font-medium text-foreground-muted">Scope</p>
+            {/* Scope: project + branches */}
+            {selectedRole && (
+              <div className="flex flex-col gap-4">
+                {/* Project selector */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-[11px] uppercase text-foreground-muted">Project</span>
+                  <Select_Shadcn_
+                    value={selectedProjectId}
+                    onValueChange={(value) => {
+                      setSelectedProjectId(value)
+                      setSelectedBranchIds([])
+                    }}
+                  >
+                    <SelectTrigger_Shadcn_ className="text-sm">
+                      {orgProjects.find((p) => p.id === selectedProjectId)?.name ||
+                        'Select a project'}
+                    </SelectTrigger_Shadcn_>
+                    <SelectContent_Shadcn_>
+                      <SelectGroup_Shadcn_>
+                        {orgProjects.map((project) => (
+                          <SelectItem_Shadcn_ key={project.id} value={project.id}>
+                            {project.name}
+                          </SelectItem_Shadcn_>
+                        ))}
+                      </SelectGroup_Shadcn_>
+                    </SelectContent_Shadcn_>
+                  </Select_Shadcn_>
+                </div>
 
-                {/* environment */}
-                {selectedRole.role_type === 'environment' && (
-                  <ScrollArea className="max-h-[160px] pr-1">
-                    <div className="flex flex-col gap-1">
-                      {orgEnvTypes.map((env) => {
-                        const isChecked = selectedEnvTypes.includes(env)
-                        return (
-                          <div key={env} className="flex items-center gap-3 px-3 py-2">
-                            <Checkbox_Shadcn_
-                              checked={isChecked}
-                              onCheckedChange={() => handleToggleEnvType(env)}
-                            />
-                            <span className="text-sm">{env}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </ScrollArea>
-                )}
-
-                {/* branches */}
-                {selectedRole.role_type === 'branch' && (
+                {/* Branches list */}
+                <div className="flex flex-col gap-1">
+                  <span className="text-[11px] uppercase text-foreground-muted">Branches</span>
                   <ScrollArea className="max-h-[160px] pr-1">
                     <div className="flex flex-col gap-1">
                       {(branches || []).map((branch) => {
                         const isChecked = selectedBranchIds.includes(branch.id)
                         return (
-                          <div key={branch.id} className="flex items-center gap-3 px-3 py-2">
+                          <div
+                            key={branch.id}
+                            className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-surface-200"
+                          >
                             <Checkbox_Shadcn_
                               checked={isChecked}
                               onCheckedChange={() => handleToggleBranch(branch.id)}
@@ -332,7 +360,7 @@ export const ProjectRoleAssignment = () => {
                       })}
                     </div>
                   </ScrollArea>
-                )}
+                </div>
               </div>
             )}
           </DialogSection>
@@ -342,7 +370,7 @@ export const ProjectRoleAssignment = () => {
               <Button type="default">Cancel</Button>
             </DialogClose>
 
-            <Button type="primary" disabled={!selectedRole} onClick={handleSaveAssignments}>
+            <Button type="primary" disabled={!canSave} onClick={handleSaveAssignments}>
               Save changes
             </Button>
           </DialogFooter>

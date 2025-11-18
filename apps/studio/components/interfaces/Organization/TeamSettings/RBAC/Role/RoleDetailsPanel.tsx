@@ -1,19 +1,16 @@
 import { Shield, Check } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useParams } from 'common'
 import { Button, Card, CardContent, CardDescription, CardHeader, cn } from 'ui'
+import { toast } from 'sonner'
 
 import { RoleLevelBadge } from './RoleLevelBadge'
-import { OrganizationRole } from 'types'
 import {
   useOrganizationRoleUpdateMutation,
   type RolePermission,
+  type RoleType,
 } from 'data/organizations/organization-role-update-mutation'
 import { useAvailablePermissionsQuery } from 'data/permissions/available-permissions-query'
-
-interface RoleDetailsPanelProps {
-  role?: OrganizationRole
-}
 
 const formatPermissionLabel = (permission: string) => {
   const [scope, ...rest] = permission.split(':')
@@ -34,14 +31,28 @@ const formatPermissionLabel = (permission: string) => {
   return [prettyScope, ...prettyRest].join(' ')
 }
 
-const formatRoleTypeLabel = (roleType: OrganizationRole['role_type']) => {
-  const map: Record<OrganizationRole['role_type'], string> = {
+const formatRoleTypeLabel = (roleType: RoleType) => {
+  const map: Record<RoleType, string> = {
     organization: 'Organization',
     environment: 'Environment',
     project: 'Project',
     branch: 'Branch',
   }
   return map[roleType] ?? roleType
+}
+
+interface RoleDetailsPanelProps {
+  role?: {
+    id: string
+    organization_id: string
+    name: string
+    description: string | null
+    role_type: RoleType
+    is_active: boolean
+    is_deletable: boolean
+    user_count: number
+    access_rights: string[] | null
+  }
 }
 
 export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
@@ -62,13 +73,10 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
   const [selectedPermissions, setSelectedPermissions] = useState<RolePermission[]>(
     (role.access_rights ?? []) as RolePermission[]
   )
-
-  useEffect(() => {
-    setSelectedPermissions((role.access_rights ?? []) as RolePermission[])
-  }, [role.id])
+  const [sortedPermissions, setSortedPermissions] = useState<RolePermission[]>([])
 
   // Map role_type -> permission prefix
-  const prefixForRoleType: Record<OrganizationRole['role_type'], string> = {
+  const prefixForRoleType: Record<RoleType, string> = {
     organization: 'org:',
     environment: 'env:',
     project: 'project:',
@@ -77,7 +85,7 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
 
   const currentPrefix = prefixForRoleType[role.role_type]
 
-  // Permissions scoped to this role type
+  // All permissions for this role type
   const roleScopedPermissions = useMemo(
     () =>
       ((availablePermissions ?? []) as RolePermission[]).filter((permission) =>
@@ -86,27 +94,61 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
     [availablePermissions, currentPrefix]
   )
 
+  // Helper: compute "selected first" order from a snapshot of selected permissions
+  const recomputeSortedPermissions = useCallback(
+    (selectedSnapshot: RolePermission[]) => {
+      const selectedSet = new Set(selectedSnapshot)
+      const ordered: RolePermission[] = [
+        // keep original order within each group
+        ...roleScopedPermissions.filter((p) => selectedSet.has(p)),
+        ...roleScopedPermissions.filter((p) => !selectedSet.has(p)),
+      ]
+      setSortedPermissions(ordered)
+    },
+    [roleScopedPermissions]
+  )
+
+  // When role changes or available permissions load, reset selection + sorted order
+  useEffect(() => {
+    const initialSelected = (role.access_rights ?? []) as RolePermission[]
+    setSelectedPermissions(initialSelected)
+    recomputeSortedPermissions(initialSelected)
+  }, [role.id, recomputeSortedPermissions])
+
   const handleTogglePermission = (permission: RolePermission, enabled: boolean) => {
     setSelectedPermissions((prev) => {
       if (enabled) return prev.includes(permission) ? prev : [...prev, permission]
       return prev.filter((p) => p !== permission)
     })
+    // NOTE: no call to recomputeSortedPermissions here
+    // so the ordering stays stable while the user is interacting
   }
 
   const handleSave = () => {
     if (!slug) return console.error('Slug is required')
 
-    updateRole({
-      slug,
-      roleId: role.id,
-      name: role.name,
-      roleType: role.role_type,
-      description: role.description ?? undefined,
-      permissions: selectedPermissions,
-    })
+    updateRole(
+      {
+        slug,
+        roleId: role.id,
+        name: role.name,
+        roleType: role.role_type,
+        description: role.description ?? undefined,
+        permissions: selectedPermissions,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Role updated successfully')
+          // after save, re-sort so checked ones go back to the top
+          recomputeSortedPermissions(selectedPermissions)
+        },
+      }
+    )
   }
 
   const permissionsTitle = `${formatRoleTypeLabel(role.role_type)} permissions`
+  const permissionsToRender =
+    sortedPermissions.length > 0 ? sortedPermissions : roleScopedPermissions
 
   return (
     <Card className="flex h-full min-h-[320px] flex-col">
@@ -138,7 +180,7 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
             </span>
           ) : (
             <div className="max-h-64 space-y-2 overflow-y-auto text-sm p-1">
-              {roleScopedPermissions.map((permission) => {
+              {permissionsToRender.map((permission) => {
                 const checked = selectedPermissions.includes(permission)
                 const label = formatPermissionLabel(permission)
 

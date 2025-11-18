@@ -45,7 +45,7 @@ export const RoleAssignment = () => {
   const { mutate: unassignRole } = useOrganizationMemberUnassignRoleMutation()
 
   const isLoading = isLoadingRoles || isLoadingRoleAssignments || isLoadingMembers
-
+  console.log({members})
   // Only org-level roles
   const orgRoles = useMemo(
     () => (roles || []).filter((role) => role.role_type === 'organization'),
@@ -75,8 +75,9 @@ export const RoleAssignment = () => {
       }
     })
     return map
-  }, [members])
-
+  }, [members,slug])
+  console.log({members})
+  console.log('membersById',membersById)
   const selectedRole = useMemo(
     () => orgRoles.find((role) => role.id === selectedRoleId) ?? null,
     [orgRoles, selectedRoleId]
