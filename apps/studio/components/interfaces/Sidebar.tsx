@@ -13,6 +13,7 @@ import {
   PanelsTopLeft,
   Settings,
   ShieldUser,
+  Shield,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -422,6 +423,20 @@ const BranchSidebarLinks = () => {
             ),
           }}
         />
+        <SideBarNavLink
+          key="role-assignment"
+          active={activeRoute === 'role-assignment'}
+          route={{
+            key: 'role-assignment',
+            label: 'Role Management',
+            icon: <Shield size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+            link:
+              projectRef &&
+              branchRef &&
+              `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/role-assignment`,
+          }}
+        />
+
 
         {toolRoutes.map((route, i) => (
           <SideBarNavLink
