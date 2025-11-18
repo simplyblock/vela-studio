@@ -1,17 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
-import {
-  getVelaClient,
-  maybeHandleError,
-  validStatusCodes,
-} from 'data/vela/vela'
+import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
+import { mapOrganizationMember } from 'data/vela/api-mappers'
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
   const client = getVelaClient(req)
 
-  const result = await client.getOrFail(res, '/organizations/{organization_id}/members/', {
+  const response = await client.get('/organizations/{organization_id}/members/', {
     params: {
       path: {
         organization_id: slug,
@@ -19,31 +16,16 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   })
 
-  // Request failed, error already handled by getOrFail
-  if (!result.success) return
+  if (response.response.status !== 200 || !response.data) {
+    return res.status(response.response.status).send(response.error)
+  }
 
-  const userIds = result.data.map((member) => (typeof member === 'string' ? member : member.id))
-
-  const responses = await Promise.all(
-    userIds.map((userId) =>
-      client.getOrFail(res, '/users/{user_ref}/', {
-        params: {
-          path: {
-            user_ref: userId,
-          },
-        },
-      })
-    )
+  return res.status(200).json(
+    response.data
+      .filter((item) => typeof item !== 'string')
+      .filter((item) => !item.email_verified)
+      .map(mapOrganizationMember)
   )
-
-  // Is at least one request failed?
-  if (responses.some((response) => !response.success)) return
-
-  const invitations = responses
-    .map((response) => response.data)
-    .filter((user) => !user?.email_verified)
-
-  return res.status(200).json({ invitations: invitations })
 }
 
 const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
