@@ -54,7 +54,7 @@ export const useBranchDeleteMutation = ({
           branchKeys.list(orgRef, projectRef)
         )
         if (branches) {
-          const updatedBranches = branches.filter((branch) => branch.name !== variables.branch)
+          const updatedBranches = branches.filter((branch) => branch.name !== variables.branchRef)
           queryClient.setQueryData(branchKeys.list(orgRef, projectRef), updatedBranches)
         }
 
