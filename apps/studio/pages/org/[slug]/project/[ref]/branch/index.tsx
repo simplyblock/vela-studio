@@ -59,13 +59,13 @@ const BranchesPage: NextPageWithLayout = () => {
 
   const onConfirmDeleteBranch = () => {
     if (selectedBranchToDelete == undefined) return console.error('No branch selected')
-    const { id: branch, project_id: projectRef, organization_id: orgSlug } = selectedBranchToDelete
+    const { id: branchRef, project_id: projectRef, organization_id: orgRef } = selectedBranchToDelete
     deleteBranch(
-      { orgSlug, projectRef, branch },
+      { orgRef, projectRef, branchRef },
       {
         onSuccess: () => {
-          if (branch === ref) {
-            router.push(`/org/${orgSlug}/project/${projectRef}/branch`)
+          if (branchRef === ref) {
+            router.push(`/org/${orgRef}/project/${projectRef}/branch`)
           }
           // Track delete button click
           sendEvent({

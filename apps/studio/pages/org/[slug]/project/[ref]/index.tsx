@@ -166,9 +166,9 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     if (!deleteTarget) return
     setDeletingId(deleteTarget.id)
     deleteBranch.mutate({
-      orgSlug: slug!,
+      orgRef: slug!,
       projectRef: projectRef!,
-      branch: deleteTarget.id, // keep in sync with cache update (filters by name)
+      branchRef: deleteTarget.id, // keep in sync with cache update (filters by name)
     })
   }
 

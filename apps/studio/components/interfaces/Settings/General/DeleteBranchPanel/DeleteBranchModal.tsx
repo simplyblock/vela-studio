@@ -51,7 +51,7 @@ export const DeleteBranchModal = ({
       orgRef: slug,
       projectRef: ref,
       branchRef: branch,
-    } as any)
+    })
   }
 
   const branchName = branchData?.name ?? branch ?? ''
