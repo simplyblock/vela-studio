@@ -6682,7 +6682,7 @@ export interface components {
       inserted_at: string
       last_updated_by?: number
       name: string
-      owner_id: number
+      owner_id: string
       project_id: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'
@@ -6701,7 +6701,7 @@ export interface components {
           inserted_at: string
           last_updated_by?: number
           name: string
-          owner_id: number
+          owner_id: string
           project_id: string
           /** @enum {string} */
           type: 'sql' | 'report' | 'log_sql'
@@ -6735,7 +6735,7 @@ export interface components {
           id: number
           username: string
         }
-        owner_id: number
+        owner_id: string
         project_id: string
         /** @enum {string} */
         type: 'sql' | 'report' | 'log_sql'
@@ -7976,7 +7976,6 @@ export interface components {
       username: string
     }
     ProfileResponse: {
-      auth0_id: string
       disabled_features: (
         | 'organizations:create'
         | 'organizations:delete'
@@ -7995,14 +7994,10 @@ export interface components {
         | 'realtime:all'
       )[]
       first_name: string
-      free_project_limit: number
-      user_id: string
-      id: number
-      is_alpha_user: boolean
+      id: string
       last_name: string
       mobile: string
       primary_email: string
-      username: string
     }
     ProjectAddonsResponse: {
       available_addons: {
@@ -9794,7 +9789,7 @@ export interface components {
       folder_id?: (null | (string | null)) | null
       id: string
       name: string
-      owner_id: number
+      owner_id: string
       project_id?: string
       /** @enum {string} */
       type: 'sql' | 'report' | 'log_sql'

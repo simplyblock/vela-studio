@@ -46,8 +46,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
   // Use profile if available, otherwise fall back to a minimal placeholder
   const effectiveProfile =
     profile || {
-      user_id: '',
-      username: '',
+      id: '',
       primary_email: '',
     }
 
@@ -72,7 +71,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
 
   const [[user], otherMembers] = partition(
     filteredMembers,
-    (m) => m.user_id === effectiveProfile?.user_id
+    (m) => m.user_id === effectiveProfile?.id
   )
   const sortedMembers = otherMembers.sort((a, b) =>
     (a.primary_email ?? '').localeCompare(b.primary_email ?? '')
@@ -88,7 +87,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
 
   const renderMemberRow = (member: (typeof membersData)[number]) => {
     const memberKey = String(member.user_id)
-    const isCurrentUser = member.user_id === effectiveProfile?.user_id
+    const isCurrentUser = member.user_id === effectiveProfile?.id
     const invitedAt = (member as any).invited_at as string | undefined
     const isActive = Boolean(member.active ?? !invitedAt)
 

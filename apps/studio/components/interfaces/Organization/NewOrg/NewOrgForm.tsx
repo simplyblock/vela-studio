@@ -61,7 +61,7 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
 
   useEffect(() => {
     if (!formState.name && organizations?.length === 0 && !user.isLoading) {
-      const prefilledOrgName = user.profile?.username ? user.profile.username + `'s Org` : 'My Org'
+      const prefilledOrgName = user.profile?.first_name ? user.profile.first_name + `'s Org` : 'My Org'
       updateForm('name', prefilledOrgName)
     }
   }, [isSuccess])
@@ -79,8 +79,8 @@ const NewOrgForm = ({}: NewOrgFormProps) => {
   })
 
   const onOrganizationCreated = (org: { slug: string }) => {
-    const prefilledProjectName = user.profile?.username
-      ? user.profile.username + `'s Project`
+    const prefilledProjectName = user.profile?.first_name
+      ? user.profile.first_name + `'s Project`
       : 'My Project'
 
     if (searchParams.returnTo && searchParams.auth_id) {

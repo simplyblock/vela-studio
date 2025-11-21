@@ -1,66 +1,24 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { apiBuilder } from 'lib/api/apiBuilder'
 import { DEFAULT_PROJECT, DEFAULT_PROJECT_2 } from '../../constants'
+import { components } from 'api-types/types/platform'
+import { getKeycloakManager } from 'common/keycloak'
 
-interface ProfileResponse {
-  disabled_features: (
-  | 'organizations:create'
-  | 'organizations:delete'
-  | 'organization_members:create'
-  | 'organization_members:delete'
-  | 'projects:create'
-  | 'projects:transfer'
-  | 'project_auth:all'
-  | 'project_storage:all'
-  | 'project_edge_function:all'
-  | 'profile:update'
-  | 'billing:account_data'
-  | 'billing:credits'
-  | 'billing:invoices'
-  | 'billing:payment_methods'
-  | 'realtime:all'
-  | 'database:replication'
-  | 'database:roles'
-)[]
-  first_name: string
-  free_project_limit: number
-  user_id: string
-  id: number
-  is_alpha_user: boolean
-  last_name: string
-  mobile: string
-  primary_email: string
-  username: string
-  organizations: any[]
-}
+type ProfileResponse = components['schemas']['ProfileResponse']
 
+const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getKeycloakManager().getSession(req, res)
 
-const handleGet = async (req: NextApiRequest, res: NextApiResponse<ProfileResponse>) => {
+  if (!session) return res.status(401).json({ message: 'Unauthorized' } )
+
   // Platform specific endpoint
   const response: ProfileResponse = {
-    id: 1,
-    primary_email: 'johndoe@vela.run',
-    username: 'johndoe',
-    first_name: 'John',
-    last_name: 'Doe',
-    organizations: [
-      {
-        id: 1,
-        name: 'Default Organization',
-        slug: 'default-org-slug',
-        projects: [
-          { ...DEFAULT_PROJECT },
-          { ...DEFAULT_PROJECT_2 },
-        ],
-      },
-    ],
-    disabled_features: [
-      'database:replication',
-    ],
-    free_project_limit: 0,
+    id: session.user.id,
+    primary_email: session.user.email!,
+    first_name: session.user.user_metadata?.given_name!,
+    last_name: session.user.user_metadata?.family_name!,
+    disabled_features: [],
     mobile: '',
-    is_alpha_user: true,
-    user_id: '1234567890',
   }
   return res.status(200).json(response)
 }

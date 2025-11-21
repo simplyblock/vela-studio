@@ -17,7 +17,7 @@ interface SavedQueriesItemProps {
     id: string
     name: string
     description?: string
-    owner_id: number
+    owner_id: string
     content: {
       sql: string
     }

@@ -30,7 +30,7 @@ const handleGetAll = async (req: NextApiRequest, res: NextApiResponse<ResponseDa
   // Platform specific endpoint
   const snippet = {
     id: '1',
-    owner_id: 1,
+    owner_id: '1',
     name: 'SQL Query',
     description: '',
     type: 'sql' as const,

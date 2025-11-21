@@ -41,7 +41,7 @@ export function UserDropdown() {
           className="[&>span]:flex px-0 py-0 rounded-full overflow-hidden h-8 w-8"
         >
           <ProfileImage
-            alt={profile?.username}
+            alt={profile?.primary_email}
             src={profile?.profileImageUrl}
             className="w-8 h-8 rounded-md"
           />
@@ -53,19 +53,11 @@ export function UserDropdown() {
           {profile && (
             <>
               <span
-                title={profile.username}
+                title={profile.primary_email}
                 className="w-full text-left text-foreground truncate"
               >
-                {profile.username}
+                {profile.primary_email}
               </span>
-              {profile.primary_email !== profile.username && profileShowEmailEnabled && (
-                <span
-                  title={profile.primary_email}
-                  className="w-full text-left text-foreground-light text-xs truncate"
-                >
-                  {profile.primary_email}
-                </span>
-              )}
             </>
           )}
         </div>
