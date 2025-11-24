@@ -1,12 +1,13 @@
-import { AlertCircle, CheckCircle, MessageCircleWarning, Users } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { AlertCircle, CheckCircle, MessageCircleWarning, Users, Trash2 } from 'lucide-react'
 import { useParams } from 'common'
 import AlertError from 'components/ui/AlertError'
 import { GenericSkeletonLoader } from 'components/ui/ShimmeringLoader'
 import { useProfile } from 'lib/profile'
 import { partition } from 'lodash'
-import { useMemo } from 'react'
 import {
   Badge,
+  Button,
   Loading,
   Table,
   TableHeader,
@@ -20,6 +21,10 @@ import {
 import { StatsCard } from 'components/ui/StatsCard'
 import { useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { useOrganizationRolesQuery } from 'data/organizations/organization-roles-query'
+import { useOrganizationMemberDeleteMutation } from 'data/organizations/organization-member-delete-mutation'
+import { toast } from 'sonner'
+import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+
 
 export interface MembersViewProps {
   searchString: string
@@ -42,6 +47,14 @@ const MembersView = ({ searchString }: MembersViewProps) => {
     error: rolesError,
     isError: isErrorRoles,
   } = useOrganizationRolesQuery({ slug })
+
+  const [memberToDelete, setMemberToDelete] = useState<(typeof members)[number] | null>(null)
+
+  const deleteMemberMutation = useOrganizationMemberDeleteMutation({
+    onSuccess: () => {
+      toast.success('Member removed successfully')
+    },
+  })
 
   // Use profile if available, otherwise fall back to a minimal placeholder
   const effectiveProfile =
@@ -85,6 +98,41 @@ const MembersView = ({ searchString }: MembersViewProps) => {
     return lookup
   }, [rolesData])
 
+  const openDeleteModal = (member: (typeof membersData)[number]) => {
+    if (!member.user_id) return
+
+    if (member.user_id === effectiveProfile.id) {
+      toast.error("You can't remove yourself from the organization")
+      return
+    }
+
+    setMemberToDelete(member)
+  }
+
+  const handleConfirmDelete = () => {
+    if (!slug || !memberToDelete?.user_id) {
+      setMemberToDelete(null)
+      return
+    }
+
+    deleteMemberMutation.mutate(
+      {
+        slug,
+        userId: memberToDelete.user_id,
+      },
+      {
+        onSettled: () => {
+          setMemberToDelete(null)
+        },
+      }
+    )
+  }
+
+  const handleCancelDelete = () => {
+    if (deleteMemberMutation.isLoading) return
+    setMemberToDelete(null)
+  }
+
   const renderMemberRow = (member: (typeof membersData)[number]) => {
     const memberKey = String(member.user_id)
     const isCurrentUser = member.user_id === effectiveProfile?.id
@@ -115,6 +163,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
             {isCurrentUser && <Badge color="scale">You</Badge>}
           </div>
         </TableCell>
+
         <TableCell className="w-36">
           <div className="flex items-center gap-x-2">
             {/* Read-only status: no onCheckedChange */}
@@ -122,6 +171,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
             <span className="text-sm text-foreground-light">{isActive ? 'Active' : 'Inactive'}</span>
           </div>
         </TableCell>
+
         <TableCell>
           <div className="flex flex-wrap gap-2">
             {rolesForMember.length > 0 ? (
@@ -135,7 +185,25 @@ const MembersView = ({ searchString }: MembersViewProps) => {
             )}
           </div>
         </TableCell>
-        <TableCell className="text-right text-sm text-foreground-light">{lastActiveDisplay}</TableCell>
+
+        <TableCell className="text-right text-sm text-foreground-light">
+          {lastActiveDisplay}
+        </TableCell>
+
+        <TableCell className="w-24 text-right">
+          {!isCurrentUser && (
+            <Button
+              type="outline"
+              size="tiny"
+              icon={<Trash2 size={14} />}
+              onClick={() => openDeleteModal(member)}
+              loading={
+                deleteMemberMutation.isLoading &&
+                deleteMemberMutation.variables?.userId === member.user_id
+              }
+            />
+          )}
+        </TableCell>
       </TableRow>
     )
   }
@@ -199,6 +267,9 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                     <TableHead key="header-last-active" className="text-right w-40">
                       Last active
                     </TableHead>
+                    <TableHead key="header-actions" className="w-24 text-right">
+                      Actions
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -211,7 +282,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                     ...(searchString.length > 0 && filteredMembers.length === 0
                       ? [
                           <TableRow key="no-results" className="bg-panel-secondary-light">
-                            <TableCell colSpan={4}>
+                            <TableCell colSpan={5}>
                               <div className="flex items-center space-x-3 opacity-75">
                                 <AlertCircle size={16} strokeWidth={2} />
                                 <p className="text-foreground-light">
@@ -224,7 +295,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
                       : []),
 
                     <TableRow key="footer" className="bg-panel-secondary-light">
-                      <TableCell colSpan={4}>
+                      <TableCell colSpan={5}>
                         <p className="text-foreground-light">
                           {searchString ? `${filteredMembers.length} of ` : ''}
                           {membersData.length || '0'} {membersData.length == 1 ? 'user' : 'users'}
@@ -238,6 +309,27 @@ const MembersView = ({ searchString }: MembersViewProps) => {
           </Card>
         </div>
       )}
+
+
+      <ConfirmationModal
+        visible={!!memberToDelete}
+        loading={deleteMemberMutation.isLoading}
+        title="Remove member"
+        description={
+          memberToDelete ? (
+            <>
+              Are you sure you want to remove{' '}
+              <strong>{memberToDelete.username || memberToDelete.primary_email}</strong> from this
+              organization?
+            </>
+          ) : null
+        }
+        confirmLabel="Remove member"
+        cancelLabel="Cancel"
+        variant="destructive"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </>
   )
 }

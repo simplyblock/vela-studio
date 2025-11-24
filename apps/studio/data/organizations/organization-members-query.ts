@@ -32,16 +32,17 @@ export async function getOrganizationMembers(
   if (orgInvitesError) handleError(orgInvitesError)
 
   // Remap invite data to look like existing members data
-  const invitedMembers = orgInvites.invitations.map((invite) => {
-    const member = {
-      invited_at: invite.invited_at,
-      invited_id: invite.id,
-      mfa_enabled: false,
-      username: invite.email.slice(0, 1),
-      primary_email: invite.email,
-    }
-    return { ...member, role_ids: [invite.role_id] }
-  })
+  const invitedMembers = (orgInvites.invitations ?? []).map((invite) => {
+  const member = {
+    invited_at: invite.invited_at,
+    invited_id: invite.id,
+    mfa_enabled: false,
+    username: invite.email.slice(0, 1),
+    primary_email: invite.email,
+  }
+  return { ...member, role_ids: [invite.role_id] }
+})
+
 
   return [...orgMembers, ...invitedMembers] as Member[]
 }
