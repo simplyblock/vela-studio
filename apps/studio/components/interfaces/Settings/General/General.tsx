@@ -79,7 +79,7 @@ const General = () => {
                       id="name"
                       size="small"
                       label="Branch name"
-                      disabled={isBranch || !canUpdateBranch}
+                      disabled={!isBranch || !canUpdateBranch}
                     />
                     <Input copy disabled id="ref" size="small" label="Branch Id" />
                   </FormSectionContent>

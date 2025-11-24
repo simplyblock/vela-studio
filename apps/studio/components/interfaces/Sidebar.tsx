@@ -369,28 +369,28 @@ const BranchSidebarLinks = () => {
 
   // Static branch-specific links (minus Resource Limits,
   // which moved to project scope)
-  const branchLinks = [
-    {
-      key: 'database-backup-schedules',
-      label: 'Backup Schedules',
-      icon: <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link:
-        projectRef &&
-        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
-      isActive: router.asPath.includes('/database/backups/scheduled'),
-    },
-    {
-      key: 'database-backups',
-      label: 'Backups',
-      icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-      link:
-        projectRef &&
-        `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
-      isActive:
-        router.asPath.includes('/database/backups/pitr') ||
-        router.asPath.includes('/database/backups/restore-to-new-project'),
-    },
-  ]
+  // const branchLinks = [
+  //   {
+  //     key: 'database-backup-schedules',
+  //     label: 'Backup Schedules',
+  //     icon: <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+  //     link:
+  //       projectRef &&
+  //       `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
+  //     isActive: router.asPath.includes('/database/backups/scheduled'),
+  //   },
+  //   {
+  //     key: 'database-backups',
+  //     label: 'Backups',
+  //     icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+  //     link:
+  //       projectRef &&
+  //       `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
+  //     isActive:
+  //       router.asPath.includes('/database/backups/pitr') ||
+  //       router.asPath.includes('/database/backups/restore-to-new-project'),
+  //   },
+  // ]
 
   const monitoringEndpoint = branch?.database?.monitoring_endpoint_uri ?? undefined
   const otherRoutes = generateOtherRoutes(
@@ -458,9 +458,9 @@ const BranchSidebarLinks = () => {
           />
         ))}
 
-        {branchLinks.map(({ isActive, ...route }) => (
+        {/* {branchLinks.map(({ isActive, ...route }) => (
           <SideBarNavLink key={route.key} route={route} active={isActive} />
-        ))}
+        ))} */}
       </SidebarGroup>
 
       <Separator className="w-[calc(100%-1rem)] mx-auto" />
@@ -490,13 +490,12 @@ const BranchSidebarLinks = () => {
         })}
       </SidebarGroup>
 
-      {/* Branch settings (was Project Settings) */}
       <SidebarGroup className="gap-0.5">
         {settingsRoutes.map((route, i) => (
           <SideBarNavLink
             key={`settings-routes-${i}`}
             route={route}
-            active={activeRoute === route.key}
+            active={activeRoute.includes("settings")}
           />
         ))}
       </SidebarGroup>

@@ -350,7 +350,7 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                       <Button
                         size="tiny"
                         type="default"
-                        className="text-red-600"
+                        className="text-redA-1100 hover:bg-redA-400"
                         onClick={() =>
                           setDeleteTarget({
                             id: branch.id,

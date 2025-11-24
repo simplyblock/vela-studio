@@ -23,7 +23,7 @@ import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const Home: NextPageWithLayout = () => {
-  const { data: project } = useSelectedProjectQuery()
+  const { data: project } = useSelectedBranchQuery()
   const { data: branch } = useSelectedBranchQuery()
   const { ref, slug, branch: branchRef } = useParams()
 
@@ -44,7 +44,7 @@ const Home: NextPageWithLayout = () => {
     return CLIENT_LIBRARIES.filter((library) => library.language === 'JavaScript')
   }, [showAllClientLibraries])
 
-  const isPaused = project?.status === PROJECT_STATUS.PAUSED
+  const isPaused = branch?.status === "PAUSED"
 
   const { data: tablesData, isLoading: isLoadingTables } = useTablesQuery({
     branch,
@@ -58,9 +58,9 @@ const Home: NextPageWithLayout = () => {
     branch,
   })
 
-  let projectName = 'Welcome to your project'
-  if (project?.name) {
-    projectName = project?.name
+  let branchName = 'Welcome to your branch'
+  if (branch?.name) {
+    branchName = branch?.name
   }
 
   const tablesCount = Math.max(0, tablesData?.length ?? 0)
@@ -75,7 +75,7 @@ const Home: NextPageWithLayout = () => {
           <div className="flex flex-col md:flex-row md:items-center gap-6 justify-between w-full">
             <div className="flex flex-col md:flex-row md:items-end gap-3 w-full">
               <div>
-                <h1 className="text-3xl">{projectName}</h1>
+                <h1 className="text-3xl">{branchName}</h1>
               </div>
             </div>
             <div className="flex items-center">
