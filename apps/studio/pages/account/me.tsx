@@ -73,10 +73,6 @@ const ProfileCard = () => {
           )}
 
           <section>
-            <AccountConnections />
-          </section>
-
-          <section>
             <ThemeSettings />
           </section>
 
