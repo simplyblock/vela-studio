@@ -4,7 +4,7 @@ import { paths } from 'api-types'
 import { fetchPost } from 'data/fetchers'
 import { constructHeaders } from 'lib/api/apiHelpers'
 import apiWrapper from 'lib/api/apiWrapper'
-import { getPgMetaRedirectUrl } from '../meta/tables'
+import { getPgMetaRedirectUrl } from 'lib/api/getPgMetaUrl'
 
 export default (req: NextApiRequest, res: NextApiResponse) => apiWrapper(req, res, handler)
 
