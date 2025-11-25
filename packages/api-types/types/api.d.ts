@@ -1058,7 +1058,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/health': {
+  '/platform/organizations/{slug}/projects/{ref}/branch/{branch}/health': {
     parameters: {
       query?: never
       header?: never
@@ -6739,6 +6739,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }

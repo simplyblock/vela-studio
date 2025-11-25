@@ -7,45 +7,58 @@ import { serviceStatusKeys } from './keys'
 export type ProjectServiceStatusVariables = {
   orgRef?: string
   projectRef?: string
+  branchRef?: string
 }
 
-export async function getProjectServiceStatus(
-  { orgRef, projectRef }: ProjectServiceStatusVariables,
+export async function getBranchServiceStatus(
+  { orgRef, projectRef, branchRef }: ProjectServiceStatusVariables,
   signal?: AbortSignal
 ) {
   if (!orgRef) throw new Error('orgSlug is required')
   if (!projectRef) throw new Error('projectRef is required')
+  if (!branchRef) throw new Error('branchRef is required')
 
-  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/health`, {
-    params: {
-      path: { slug: orgRef, ref: projectRef },
-      query: {
-        services: ['auth', 'realtime', 'rest', 'storage', 'db'],
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/branch/{branch}/health`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef
+        },
+        query: {
+          services: [/*'auth', 'realtime',*/ 'rest', 'storage', 'db'],
+        },
       },
-    },
-    signal,
-  })
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data
 }
 
-export type ProjectServiceStatusData = Awaited<ReturnType<typeof getProjectServiceStatus>>
-export type ProjectServiceStatus = ProjectServiceStatusData[0]['status']
-export type ProjectServiceStatusError = ResponseError
+export type BranchServiceStatusData = Awaited<ReturnType<typeof getBranchServiceStatus>>
+export type BranchServiceStatus = BranchServiceStatusData[0]['status']
+export type BranchServiceStatusError = ResponseError
 
-export const useProjectServiceStatusQuery = <TData = ProjectServiceStatusData>(
-  { orgRef, projectRef }: ProjectServiceStatusVariables,
+export const useBranchServiceStatusQuery = <TData = BranchServiceStatusData>(
+  { orgRef, projectRef, branchRef }: ProjectServiceStatusVariables,
   {
     enabled = true,
     ...options
-  }: UseQueryOptions<ProjectServiceStatusData, ProjectServiceStatusError, TData> = {}
+  }: UseQueryOptions<BranchServiceStatusData, BranchServiceStatusError, TData> = {}
 ) =>
-  useQuery<ProjectServiceStatusData, ProjectServiceStatusError, TData>(
-    serviceStatusKeys.serviceStatus(orgRef, projectRef),
-    ({ signal }) => getProjectServiceStatus({ orgRef, projectRef }, signal),
+  useQuery<BranchServiceStatusData, BranchServiceStatusError, TData>(
+    serviceStatusKeys.serviceStatus(orgRef, projectRef, branchRef),
+    ({ signal }) => getBranchServiceStatus({ orgRef, projectRef, branchRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof projectRef !== 'undefined' &&
+        typeof orgRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       ...options,
     }
   )

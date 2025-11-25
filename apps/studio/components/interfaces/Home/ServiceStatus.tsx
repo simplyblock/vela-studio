@@ -4,20 +4,18 @@ import { useEffect, useState } from 'react'
 
 import { PopoverSeparator } from '@ui/components/shadcn/ui/popover'
 import { useParams } from 'common'
-import { useEdgeFunctionServiceStatusQuery } from 'data/service-status/edge-functions-status-query'
 import {
-  ProjectServiceStatus,
-  useProjectServiceStatusQuery,
+  BranchServiceStatus,
+  useBranchServiceStatusQuery,
 } from 'data/service-status/service-status-query'
-import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import {
   Button,
   InfoIcon,
+  Popover_Shadcn_,
   PopoverContent_Shadcn_,
   PopoverTrigger_Shadcn_,
-  Popover_Shadcn_,
 } from 'ui'
+import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 const SERVICE_STATUS_THRESHOLD = 5 // minutes
 
@@ -25,19 +23,19 @@ const StatusMessage = ({
   status,
   isLoading,
   isHealthy,
-  isProjectNew,
+  isBranchNew,
 }: {
   isLoading: boolean
   isHealthy: boolean
-  isProjectNew: boolean
-  status?: ProjectServiceStatus
+  isBranchNew: boolean
+  status?: BranchServiceStatus
 }) => {
   if (isHealthy) return 'Healthy'
   if (isLoading) return 'Checking status'
   if (status === 'UNHEALTHY') return 'Unhealthy'
   if (status === 'COMING_UP') return 'Coming up...'
   if (status === 'ACTIVE_HEALTHY') return 'Healthy'
-  if (isProjectNew) return 'Coming up...'
+  if (isBranchNew) return 'Coming up...'
   if (status) return status
   return 'Unable to connect'
 }
@@ -53,67 +51,49 @@ const CheckIcon = () => <CheckCircle2 {...iconProps} className="text-brand" />
 const StatusIcon = ({
   isLoading,
   isHealthy,
-  isProjectNew,
-  projectStatus,
+  isBranchNew,
+  branchStatus,
 }: {
   isLoading: boolean
   isHealthy: boolean
-  isProjectNew: boolean
-  projectStatus?: ProjectServiceStatus
+  isBranchNew: boolean
+  branchStatus?: BranchServiceStatus
 }) => {
   if (isHealthy) return <CheckIcon />
   if (isLoading) return <LoaderIcon />
-  if (projectStatus === 'UNHEALTHY') return <AlertIcon />
-  if (projectStatus === 'COMING_UP') return <LoaderIcon />
-  if (projectStatus === 'ACTIVE_HEALTHY') return <CheckIcon />
-  if (isProjectNew) return <LoaderIcon />
+  if (branchStatus === 'UNHEALTHY') return <AlertIcon />
+  if (branchStatus === 'COMING_UP') return <LoaderIcon />
+  if (branchStatus === 'ACTIVE_HEALTHY') return <CheckIcon />
+  if (isBranchNew) return <LoaderIcon />
   return <AlertIcon />
 }
 
 export const ServiceStatus = () => {
   const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
-  const { data: project } = useSelectedProjectQuery()
+  const { data: branch } = useSelectedBranchQuery()
   const [open, setOpen] = useState(false)
 
-  const {
-    projectAuthAll: authEnabled,
-    projectEdgeFunctionAll: edgeFunctionsEnabled,
-    realtimeAll: realtimeEnabled,
-    projectStorageAll: storageEnabled,
-  } = useIsFeatureEnabled([
-    'project_auth:all',
-    'project_edge_function:all',
-    'realtime:all',
-    'project_storage:all',
-  ])
+  const storageEnabled = !!(branch?.max_resources.storage_bytes)
 
   // [Joshen] Need pooler service check eventually
   const {
     data: status,
     isLoading,
     refetch: refetchServiceStatus,
-  } = useProjectServiceStatusQuery(
+  } = useBranchServiceStatusQuery(
     {
-      orgRef: orgRef,
+      orgRef,
       projectRef,
+      branchRef,
     },
     {
       refetchInterval: (data) => (data?.some((service) => !service.healthy) ? 5000 : false),
     }
   )
-  const { data: edgeFunctionsStatus, refetch: refetchEdgeFunctionServiceStatus } =
-    useEdgeFunctionServiceStatusQuery(
-      {
-        projectRef,
-      },
-      {
-        refetchInterval: (data) => (!data?.healthy ? 5000 : false),
-      }
-    )
 
-  const authStatus = status?.find((service) => service.name === 'auth')
+  //const authStatus = status?.find((service) => service.name === 'auth')
   const restStatus = status?.find((service) => service.name === 'rest')
-  const realtimeStatus = status?.find((service) => service.name === 'realtime')
+  //const realtimeStatus = status?.find((service) => service.name === 'realtime')
   const storageStatus = status?.find((service) => service.name === 'storage')
   const dbStatus = status?.find((service) => service.name === 'db')
 
@@ -124,7 +104,7 @@ export const ServiceStatus = () => {
     docsUrl?: string
     isLoading: boolean
     isHealthy: boolean
-    status: ProjectServiceStatus
+    status: BranchServiceStatus
     logsUrl: string
   }[] = [
     {
@@ -145,7 +125,7 @@ export const ServiceStatus = () => {
       status: restStatus?.status ?? 'UNHEALTHY',
       logsUrl: '/logs/postgrest-logs',
     },
-    ...(authEnabled
+    /*...(authEnabled
       ? [
           {
             name: 'Auth',
@@ -157,8 +137,8 @@ export const ServiceStatus = () => {
             logsUrl: '/logs/auth-logs',
           },
         ]
-      : []),
-    ...(realtimeEnabled
+      : []),*/
+    /*...(realtimeEnabled
       ? [
           {
             name: 'Realtime',
@@ -170,7 +150,7 @@ export const ServiceStatus = () => {
             logsUrl: '/logs/realtime-logs',
           },
         ]
-      : []),
+      : []),*/
     ...(storageEnabled
       ? [
           {
@@ -184,7 +164,7 @@ export const ServiceStatus = () => {
           },
         ]
       : []),
-    ...(edgeFunctionsEnabled
+    /*...(edgeFunctionsEnabled
       ? [
           {
             name: 'Edge Functions',
@@ -200,31 +180,31 @@ export const ServiceStatus = () => {
             logsUrl: '/logs/edge-functions-logs',
           },
         ]
-      : []),
+      : []),*/
   ]
 
   const isLoadingChecks = services.some((service) => service.isLoading)
   const allServicesOperational = services.every((service) => service.isHealthy)
 
   // If the project is less than 5 minutes old, and status is not operational, then it's likely the service is still starting up
-  const isProjectNew = project?.status === 'STARTING'
+  const isBranchNew = branch?.status === 'CREATING'
 
   useEffect(() => {
     let timer: any
 
-    if (isProjectNew) {
+    if (isBranchNew) {
       const remainingTimeTillNextCheck = SERVICE_STATUS_THRESHOLD * 60
 
       timer = setTimeout(() => {
         refetchServiceStatus()
-        refetchEdgeFunctionServiceStatus()
+        //refetchEdgeFunctionServiceStatus()
       }, remainingTimeTillNextCheck * 1000)
     }
 
     return () => {
       clearTimeout(timer)
     }
-  }, [isProjectNew])
+  }, [isBranchNew])
 
   return (
     <Popover_Shadcn_ modal={false} open={open} onOpenChange={setOpen}>
@@ -232,7 +212,7 @@ export const ServiceStatus = () => {
         <Button
           type="default"
           icon={
-            isLoadingChecks || (!allServicesOperational && isProjectNew) ? (
+            isLoadingChecks || (!allServicesOperational && isBranchNew) ? (
               <LoaderIcon />
             ) : (
               <div
@@ -243,7 +223,7 @@ export const ServiceStatus = () => {
             )
           }
         >
-          Project Status
+          Branch Status
         </Button>
       </PopoverTrigger_Shadcn_>
       <PopoverContent_Shadcn_ portal className="p-0 w-56" side="bottom" align="center">
@@ -256,17 +236,17 @@ export const ServiceStatus = () => {
             <div className="flex gap-x-2">
               <StatusIcon
                 isLoading={service.isLoading}
-                isHealthy={!!service.isHealthy}
-                isProjectNew={isProjectNew}
-                projectStatus={service.status}
+                isHealthy={service.isHealthy}
+                isBranchNew={isBranchNew}
+                branchStatus={service.status}
               />
               <div className="flex-1">
                 <p>{service.name}</p>
                 <p className="text-foreground-light flex items-center gap-1">
                   <StatusMessage
                     isLoading={service.isLoading}
-                    isHealthy={!!service.isHealthy}
-                    isProjectNew={isProjectNew}
+                    isHealthy={service.isHealthy}
+                    isBranchNew={isBranchNew}
                     status={service.status}
                   />
                 </p>
