@@ -8,7 +8,7 @@ import { CLIENT_LIBRARIES, EXAMPLE_PROJECTS } from 'components/interfaces/Home/H
 import { ProjectUsageSection } from 'components/interfaces/Home/ProjectUsageSection'
 import { ServiceStatus } from 'components/interfaces/Home/ServiceStatus'
 import DefaultLayout from 'components/layouts/DefaultLayout'
-import { ProjectPausedState } from 'components/layouts/ProjectLayout/PausedState/ProjectPausedState'
+import { BranchPausedState } from 'components/layouts/BranchLayout/PausedState/BranchPausedState'
 import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectLayout'
 import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBanner'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
@@ -134,8 +134,7 @@ const Home: NextPageWithLayout = () => {
               )}
             </div>
           </div>
-          <ProjectUpgradeFailedBanner />
-          {isBranchPaused(branch) && <ProjectPausedState />}
+          {(isBranchPaused(branch) || isBranchStopped(branch)) && <BranchPausedState />}
         </div>
       </div>
 
@@ -143,14 +142,14 @@ const Home: NextPageWithLayout = () => {
         <>
           <div className="py-16 border-b border-muted">
             <div className="mx-auto max-w-7xl space-y-16">
-              {(isBranchPaused(branch) || isBranchStopped(branch)) && <ProjectUsageSection />}
-              {(isBranchPaused(branch) || isBranchStopped(branch)) && <AdvisorWidget />}
+              {isBranchRunning(branch) && <ProjectUsageSection />}
+              {isBranchRunning(branch) && <AdvisorWidget />}
             </div>
           </div>
 
           <div className="bg-surface-100/5 py-16">
             <div className="mx-auto max-w-7xl space-y-16">
-              {(isBranchPaused(branch) || isBranchStopped(branch)) && (
+              {isBranchRunning(branch) && (
                 <>
                   <div className="space-y-8">
                     <h2 className="text-lg">Client libraries</h2>

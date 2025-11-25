@@ -155,10 +155,10 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     setTogglingId(branch.id)
 
     if (isStatusActive(branch.status)) {
-      pauseBranch.mutate({ orgSlug: slug!, projectRef: projectRef!, branch: branchKey })
+      pauseBranch.mutate({ orgRef: slug!, projectRef: projectRef!, branchRef: branchKey })
     } else {
       // STOPPED -> resume/start
-      resumeBranch.mutate({ orgSlug: slug!, projectRef: projectRef!, branch: branchKey })
+      resumeBranch.mutate({ orgRef: slug!, projectRef: projectRef!, branchRef: branchKey })
     }
   }
 
