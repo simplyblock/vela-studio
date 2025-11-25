@@ -18986,7 +18986,6 @@ export interface components {
         BranchStatus: {
             database: components["schemas"]["BranchServiceStatus"];
             storage: components["schemas"]["BranchServiceStatus"];
-            realtime: components["schemas"]["BranchServiceStatus"];
             meta: components["schemas"]["BranchServiceStatus"];
             rest: components["schemas"]["BranchServiceStatus"];
         };
@@ -19206,8 +19205,6 @@ export interface components {
              * @enum {string}
              */
             status: "PAUSING" | "PAUSED" | "STARTING" | "STARTED" | "MIGRATING" | "DELETING" | "ERROR" | "UNKNOWN";
-            /** Default Branch Id */
-            default_branch_id: string | null;
         };
         /** ProjectUpdate */
         ProjectUpdate: {

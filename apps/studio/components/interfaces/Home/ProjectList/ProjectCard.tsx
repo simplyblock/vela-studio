@@ -23,15 +23,14 @@ export interface ProjectCardProps {
 
 const ProjectCard = ({ project, githubIntegration }: ProjectCardProps) => {
   const { slug: orgRef } = useParams() as { slug: string }
-  const { name, id: projectRef, default_branch_id } = project
+  const { name, id: projectRef } = project
 
   const { data: branches, isLoading } = useBranchesQuery({ orgRef: orgRef, projectRef })
-  const mainBranch = branches?.find((branch) => branch.id === default_branch_id)
   const onlyBranch = branches?.length === 1 ? branches[0] : undefined
   const branchesCount = branches?.length ?? 0
 
   const hasBranches = branchesCount > 0
-  const selectedBranch = mainBranch ?? onlyBranch ?? undefined
+  const selectedBranch = onlyBranch ?? undefined
 
   const isBranchingEnabled = true
   const isGithubIntegrated = githubIntegration !== undefined

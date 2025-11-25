@@ -299,11 +299,6 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                         <div className="min-w-0">
                           <p className="text-sm text-foreground font-medium flex items-center gap-3">
                             <span className="truncate">{branch.name}</span>
-                            {project.default_branch_id == branch.id && (
-                              <span className="text-xs rounded bg-surface-300 px-1.5 py-0.5 text-foreground-light border border-default">
-                                default
-                              </span>
-                            )}
                           </p>
 
                           <p className="text-xs text-foreground-light font-mono break-all">{branch.id}</p>

@@ -5,9 +5,8 @@ import { useBranchesQuery } from './branches-query'
 export function useLastVisitedBranch(project: ProjectDetail | undefined) {
   const lastBranchByProject = `last-branch-${project?.id ?? 'unknown'}`
   const { data: branches, isLoading } = useBranchesQuery({orgRef: project?.organization_id, projectRef: project?.id})
-  const mainBranch = branches?.find(branch => branch.id === project?.default_branch_id)
   const onlyBranch = branches?.length === 1 ? branches[0] : undefined
-  const [lastUsedBranch] = useLocalStorageQuery<string>(lastBranchByProject, mainBranch?.id ?? onlyBranch?.id ?? '-')
+  const [lastUsedBranch] = useLocalStorageQuery<string>(lastBranchByProject, onlyBranch?.id ?? '-')
 
   if (isLoading) {
     return { branchId: undefined, isLoading: true }
@@ -15,5 +14,5 @@ export function useLastVisitedBranch(project: ProjectDetail | undefined) {
   if (lastUsedBranch !== '-') {
     return { branchId: lastUsedBranch, isLoading: false }
   }
-  return { branchId: mainBranch?.id ?? onlyBranch?.id, isLoading: false }
+  return { branchId: onlyBranch?.id, isLoading: false }
 }
