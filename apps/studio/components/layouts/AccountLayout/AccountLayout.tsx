@@ -50,11 +50,6 @@ const AccountLayout = ({ children, title }: PropsWithChildren<AccountLayoutProps
   ]
 
   const currentPath = router.pathname
-
-  useEffect(() => {
-    router.push('/org')
-  }, [router])
-
   return (
     <>
       <Head>
