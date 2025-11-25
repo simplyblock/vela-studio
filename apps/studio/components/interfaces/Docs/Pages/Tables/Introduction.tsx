@@ -51,7 +51,7 @@ const Introduction = ({ selectedLang }: IntroductionProps) => {
       <GeneratingTypes selectedLang={selectedLang} />
 
       <h2 className="doc-heading">
-        GraphQL <span className="lowercase">vs</span> Supabase
+        GraphQL <span className="lowercase">vs</span> Vela
       </h2>
       <div className="doc-section">
         <article className="code-column text-foreground">
@@ -61,7 +61,7 @@ const Introduction = ({ selectedLang }: IntroductionProps) => {
           </p>
           <p>
             The syntax is very similar. This example shows how you might achieve the same thing with
-            Apollo GraphQL and Supabase.
+            Apollo GraphQL and Vela.
             <br />
             <br />
           </p>
@@ -75,7 +75,7 @@ const Introduction = ({ selectedLang }: IntroductionProps) => {
         </article>
         <article className="code">
           <CodeSnippet selectedLang={selectedLang} snippet={localSnippets.withApollo()} />
-          <CodeSnippet selectedLang={selectedLang} snippet={localSnippets.withSupabase()} />
+          <CodeSnippet selectedLang={selectedLang} snippet={localSnippets.withVela()} />
         </article>
       </div>
     </>
@@ -118,12 +118,12 @@ const { loading, error, data } = useQuery(gql\`
 \`)`,
     },
   }),
-  withSupabase: () => ({
-    title: 'With Supabase',
+  withVela: () => ({
+    title: 'With Vela',
     bash: {
       language: 'js',
       code: `
-const { data, error } = await supabase
+const { data, error } = await client
   .from('dogs')
   .select(\`
       id, breed,
@@ -134,7 +134,7 @@ const { data, error } = await supabase
     js: {
       language: 'js',
       code: `
-const { data, error } = await supabase
+const { data, error } = await client
   .from('dogs')
   .select(\`
       id, breed,

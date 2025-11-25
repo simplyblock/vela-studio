@@ -27,7 +27,7 @@ const DocView = () => {
   const functionPath = 'rpc/'
   const DEFAULT_KEY = { name: 'hide', key: 'SUPABASE_KEY' }
 
-  const { slug: orgRef, ref: projectRef, page, resource, rpc } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef, page, resource, rpc } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const [selectedLang, setSelectedLang] = useState<any>('js')
   const [selectedApikey, setSelectedApiKey] = useState<any>(DEFAULT_KEY)
@@ -38,7 +38,7 @@ const DocView = () => {
     error: jsonSchemaError,
     isLoading,
     refetch,
-  } = useProjectJsonSchemaQuery({ orgRef, projectRef })
+  } = useProjectJsonSchemaQuery({ orgRef, projectRef, branchRef })
 
   const refreshDocs = async () => await refetch()
 

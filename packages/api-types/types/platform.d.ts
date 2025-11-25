@@ -2995,7 +2995,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/api/graphql': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/api/graphql': {
     parameters: {
       query?: never
       header?: never
@@ -3012,7 +3012,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/api/rest': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/api/rest': {
     parameters: {
       query?: never
       header?: never
@@ -18927,6 +18927,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }

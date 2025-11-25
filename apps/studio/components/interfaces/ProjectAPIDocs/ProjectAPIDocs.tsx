@@ -46,8 +46,8 @@ const ProjectAPIDocs = () => {
 
   const { anonKey } = getKeys(apiKeys)
   const apikey = showKeys
-    ? anonKey?.api_key ?? 'SUPABASE_CLIENT_ANON_KEY'
-    : 'SUPABASE_CLIENT_ANON_KEY'
+    ? anonKey?.api_key ?? 'VELA_CLIENT_ANON_KEY'
+    : 'VELA_CLIENT_ANON_KEY'
   const endpoint = `${branch?.database.service_endpoint_uri}/rest`
   return (
     <SidePanel

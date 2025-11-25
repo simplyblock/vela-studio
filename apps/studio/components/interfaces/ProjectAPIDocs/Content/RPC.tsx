@@ -11,14 +11,19 @@ import ResourceContent from '../ResourceContent'
 import type { ContentProps } from './Content.types'
 
 export const RPC = ({ language }: ContentProps) => {
-  const { slug: orgRef, ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const snap = useAppStateSnapshot()
 
   const { data: jsonSchema, refetch: refetchJsonSchema } = useProjectJsonSchemaQuery({
     orgRef,
     projectRef,
+    branchRef,
   })
-  const { data, refetch: refetchOpenAPISpec } = useOpenAPISpecQuery({ orgRef, projectRef })
+  const { data, refetch: refetchOpenAPISpec } = useOpenAPISpecQuery({
+    orgRef,
+    projectRef,
+    branchRef,
+  })
   const functions = data?.functions ?? []
 
   const rpcName = snap.activeDocsSection[1]

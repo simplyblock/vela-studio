@@ -19,7 +19,7 @@ function DocsLayout({ title, children }: { title: string; children: ReactElement
   const isPaused = selectedProject?.status === PROJECT_STATUS.PAUSED
 
   const { data, isLoading, error } = useOpenAPISpecQuery(
-    { orgRef: orgRef!, projectRef: projectRef },
+    { orgRef, projectRef, branchRef },
     { enabled: !isPaused }
   )
 
@@ -55,7 +55,9 @@ function DocsLayout({ title, children }: { title: string; children: ReactElement
         !hideMenu && (
           <ProductMenu
             page={getPage()}
-            menu={generateDocsMenu(orgRef!, projectRef!, branchRef!, tableNames, functionNames, { authEnabled })}
+            menu={generateDocsMenu(orgRef!, projectRef!, branchRef!, tableNames, functionNames, {
+              authEnabled,
+            })}
           />
         )
       }
