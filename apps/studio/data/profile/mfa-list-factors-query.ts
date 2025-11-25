@@ -7,7 +7,11 @@ export async function getMfaListFactors() {
 
   if (error) throw error
   return data*/
-  return {} as CustomMFAListFactorsData // FIXME: implement this
+  return {
+    all: [],
+    totp: [],
+    phone: [],
+  } as CustomMFAListFactorsData // FIXME: implement this
 }
 
 export type MFAFactor = Factor
