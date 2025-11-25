@@ -35,7 +35,9 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   // Find existing user by email
   const findUserResponse = await client.get('/users/{user_ref}/', {
     params: {
-      path: req.body.email,
+      path: {
+        user_ref: req.body.email
+      },
     },
   })
 
