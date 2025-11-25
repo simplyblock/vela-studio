@@ -40,11 +40,14 @@ const ProjectCard = ({ project, githubIntegration }: ProjectCardProps) => {
 
   // Where the card click goes
   const branchLink = useMemo(() => {
-    if (selectedBranch && selectedBranch.status === 'ACTIVE_HEALTHY') {
+    const availableBranch = selectedBranch && selectedBranch.status === 'ACTIVE_HEALTHY'
+    if (availableBranch) {
       return `/org/${orgRef}/project/${projectRef}/branch/${selectedBranch.id}`
+    } else if (!availableBranch && (branches?.length ?? 0) > 0) {
+      return `/org/${orgRef}/project/${projectRef}`
     }
     return `/new/${orgRef}/${projectRef}`
-  }, [selectedBranch, orgRef, projectRef])
+  }, [selectedBranch, orgRef, projectRef, branches])
 
   // Where the "View branches" button goes (project overview)
   const allBranchesHref = `/org/${orgRef}/project/${projectRef}`
