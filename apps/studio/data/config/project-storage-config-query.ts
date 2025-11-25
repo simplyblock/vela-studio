@@ -19,12 +19,13 @@ export async function getProjectStorageConfig(
   if (!branch) throw new Error('Branch is required')
 
   const { data, error } = await get(
-    '/platform/organizations/{slug}/projects/{ref}/config/storage',
+    '/platform/organizations/{slug}/projects/{ref}/branch/{branch}/config/storage',
     {
       params: {
         path: {
           slug: branch.organization_id,
           ref: branch.project_id,
+          branch: branch.id,
         },
       },
       signal,

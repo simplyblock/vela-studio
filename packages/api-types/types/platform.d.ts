@@ -3187,7 +3187,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/config/storage': {
+  '/platform/organizations/{slug}/projects/{ref}/branch/{branch}/config/storage': {
     parameters: {
       query?: never
       header?: never
@@ -19469,6 +19469,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }
@@ -19505,6 +19506,7 @@ export interface operations {
         /** @description Project ref */
         ref: string
         slug: string
+        branch: string
       }
       cookie?: never
     }

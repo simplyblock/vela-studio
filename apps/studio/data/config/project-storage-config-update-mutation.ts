@@ -19,12 +19,13 @@ export async function updateProjectStorageConfigUpdate({
   features,
 }: ProjectStorageConfigUpdateUpdateVariables) {
   const { data, error } = await patch(
-    `/platform/organizations/{slug}/projects/{ref}/config/storage`,
+    `/platform/organizations/{slug}/projects/{ref}/branch/{branch}/config/storage`,
     {
       params: {
         path: {
           slug: branch.organization_id,
           ref: branch.project_id,
+          branch: branch.id,
         },
       },
       body: { fileSizeLimit, features },
