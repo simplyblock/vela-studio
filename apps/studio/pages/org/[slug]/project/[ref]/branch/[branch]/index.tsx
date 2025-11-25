@@ -15,8 +15,7 @@ import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
-import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { PROJECT_STATUS } from 'lib/constants'
+import { isBranchPaused, isBranchRunning, isBranchStopped } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
 import { cn, Tabs_Shadcn_, TabsContent_Shadcn_, TabsList_Shadcn_, TabsTrigger_Shadcn_ } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
@@ -44,8 +43,6 @@ const Home: NextPageWithLayout = () => {
     return CLIENT_LIBRARIES.filter((library) => library.language === 'JavaScript')
   }, [showAllClientLibraries])
 
-  const isPaused = branch?.status === "PAUSED"
-
   const { data: tablesData, isLoading: isLoadingTables } = useTablesQuery({
     branch,
     schema: 'public',
@@ -70,7 +67,12 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <div className="w-full px-4">
-      <div className={cn('py-16 ', !isPaused && 'border-b border-muted ')}>
+      <div
+        className={cn(
+          'py-16 ',
+          !(isBranchPaused(branch) || isBranchStopped(branch)) && 'border-b border-muted '
+        )}
+      >
         <div className="mx-auto max-w-7xl flex flex-col gap-y-4">
           <div className="flex flex-col md:flex-row md:items-center gap-6 justify-between w-full">
             <div className="flex flex-col md:flex-row md:items-end gap-3 w-full">
@@ -79,7 +81,7 @@ const Home: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="flex items-center">
-              {project?.status === PROJECT_STATUS.STARTED && (
+              {isBranchRunning(branch) && (
                 <div className="flex items-center gap-x-6">
                   <div className="flex flex-col gap-y-1">
                     <Link
@@ -125,7 +127,7 @@ const Home: NextPageWithLayout = () => {
                   </div>
                 </div>
               )}
-              {project?.status === PROJECT_STATUS.STARTED && (
+              {isBranchRunning(branch) && (
                 <div className="ml-6 border-l flex items-center w-[145px] justify-end">
                   <ServiceStatus />
                 </div>
@@ -133,22 +135,22 @@ const Home: NextPageWithLayout = () => {
             </div>
           </div>
           <ProjectUpgradeFailedBanner />
-          {isPaused && <ProjectPausedState />}
+          {isBranchPaused(branch) && <ProjectPausedState />}
         </div>
       </div>
 
-      {!isPaused && (
+      {isBranchRunning(branch) && (
         <>
           <div className="py-16 border-b border-muted">
             <div className="mx-auto max-w-7xl space-y-16">
-              {project?.status !== PROJECT_STATUS.PAUSED && <ProjectUsageSection />}
-              {project?.status !== PROJECT_STATUS.PAUSED && <AdvisorWidget />}
+              {(isBranchPaused(branch) || isBranchStopped(branch)) && <ProjectUsageSection />}
+              {(isBranchPaused(branch) || isBranchStopped(branch)) && <AdvisorWidget />}
             </div>
           </div>
 
           <div className="bg-surface-100/5 py-16">
             <div className="mx-auto max-w-7xl space-y-16">
-              {project?.status !== PROJECT_STATUS.PAUSED && (
+              {(isBranchPaused(branch) || isBranchStopped(branch)) && (
                 <>
                   <div className="space-y-8">
                     <h2 className="text-lg">Client libraries</h2>

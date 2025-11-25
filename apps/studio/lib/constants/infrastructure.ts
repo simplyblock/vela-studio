@@ -1,4 +1,20 @@
 import { components } from 'data/vela/vela-schema'
+import { Branch } from '../../data/branches/branch-query'
+
+export function isBranchPaused(branch?: Branch): boolean {
+  if (!branch) return false;
+  return branch.status === 'PAUSING' || branch.status === 'PAUSED';
+}
+
+export function isBranchStopped(branch?: Branch): boolean {
+  if (!branch) return false;
+  return branch.status === 'STOPPING' || branch.status === 'STOPPED';
+}
+
+export function isBranchRunning(branch?: Branch): boolean {
+  if (!branch) return false;
+  return branch.status === 'ACTIVE_HEALTHY' || branch.status === 'ACTIVE_UNHEALTHY';
+}
 
 export const PROJECT_STATUS: {
   [key in components['schemas']['ProjectPublic']['status']]: components['schemas']['ProjectPublic']['status']
