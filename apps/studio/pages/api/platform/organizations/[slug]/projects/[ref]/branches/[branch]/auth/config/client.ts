@@ -21,7 +21,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!success) return
 
-  const realmClient = data.find(client => client.clientId === 'application-client')
+  const realmClient = data.find((client: any) => client.clientId === 'application-client')
   if (!realmClient) {
     return res.status(404).json({ message: 'Missing client in branch realm' })
   }

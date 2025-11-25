@@ -38,7 +38,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!flow_execution_success) return;
 
-  const totp_verification_requirement = flow_execution_data.find(step => step.providerId === 'auth-otp-form')?.requirement;
+  const totp_verification_requirement = flow_execution_data.find((step: any) => step.providerId === 'auth-otp-form')?.requirement;
   if (totp_verification_requirement !== 'ALTERNATIVE' && totp_verification_requirement !== 'DISABLED') return  // invalid state
   const totp_verification_enabled = totp_verification_requirement === 'ALTERNATIVE'
 
@@ -108,7 +108,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!flow_execution_success) return;
 
-  const flow_execution_step = flow_execution_data?.find(step => step.providerId === 'auth-otp-form')
+  const flow_execution_step = flow_execution_data?.find((step: any) => step.providerId === 'auth-otp-form')
   if (flow_execution_step?.requirement !== totp_verification_requirement) {
     const { success: totp_verification_update_success } = await client.putOrFail(res, flow_execution_path, {
       params: {

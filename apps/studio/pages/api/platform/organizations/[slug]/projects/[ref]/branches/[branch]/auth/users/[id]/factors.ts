@@ -21,7 +21,7 @@ const handleDelete = async (req: NextApiRequest, res: NextApiResponse) => {
   })
   if (!success) { return }
 
-  for (const credential of credentials.filter(cred => cred.type === 'otp')) {
+  for (const credential of credentials.filter((cred: any) => cred.type === 'otp')) {
     const { success } = await client.deleteOrFail(res, '/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/auth/users/{user-id}/credentials/{credentialId}', {
       params: {
         path: {
