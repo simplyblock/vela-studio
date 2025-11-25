@@ -142,7 +142,7 @@ const Home: NextPageWithLayout = () => {
         <>
           <div className="py-16 border-b border-muted">
             <div className="mx-auto max-w-7xl space-y-16">
-              {isBranchRunning(branch) && <ProjectUsageSection />}
+              {/*isBranchRunning(branch) && <ProjectUsageSection />*/}
               {isBranchRunning(branch) && <AdvisorWidget />}
             </div>
           </div>
