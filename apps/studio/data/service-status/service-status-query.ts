@@ -19,7 +19,7 @@ export async function getBranchServiceStatus(
   if (!branchRef) throw new Error('branchRef is required')
 
   const { data, error } = await get(
-    `/platform/organizations/{slug}/projects/{ref}/branch/{branch}/health`,
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/health`,
     {
       params: {
         path: {

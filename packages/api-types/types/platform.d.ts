@@ -3187,7 +3187,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/branch/{branch}/config/storage': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/config/storage': {
     parameters: {
       query?: never
       header?: never

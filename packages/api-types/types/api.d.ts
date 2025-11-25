@@ -1058,7 +1058,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/platform/organizations/{slug}/projects/{ref}/branch/{branch}/health': {
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/health': {
     parameters: {
       query?: never
       header?: never
