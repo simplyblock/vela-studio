@@ -76,7 +76,7 @@ export const BranchPausedState = () => {
               <div className="flex flex-col gap-y-2">
                 <div className="flex flex-col gap-y-1">
                   <p className="text-center">
-                    The project "{branch?.name ?? ''}" is currently paused.
+                    The branch "{branch?.name ?? ''}" is currently paused.
                   </p>
                   <p className="text-sm text-foreground-light text-center">
                     All of your branch's data is still intact, but your branch is inaccessible while
@@ -96,7 +96,6 @@ export const BranchPausedState = () => {
                 {isError && (
                   <AlertError error={branchError} subject="Failed to retrieve pause status" />
                 )}
-                {isSuccess && <PauseDisabledState />}
               </div>
 
               {isSuccess && !isRestoreDisabled && (
@@ -115,13 +114,13 @@ export const BranchPausedState = () => {
                       },
                     }}
                   >
-                    Resume project
+                    Resume branch
                   </ButtonTooltip>
                   <Button asChild type="default">
                     <Link
                       href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`}
                     >
-                      View project settings
+                      View branch settings
                     </Link>
                   </Button>
                 </div>
