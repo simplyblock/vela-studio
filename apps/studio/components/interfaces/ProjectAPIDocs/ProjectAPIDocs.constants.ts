@@ -17,9 +17,9 @@ export const DOCS_CONTENT = {
     js: (apikey?: string, endpoint?: string) => `
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = '${endpoint}'
-const supabaseKey = process.env.SUPABASE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)`,
+const velaUrl = '${endpoint}'
+const velaKey = process.env.VELA_KEY
+const client = createClient(velaUrl, velaKey)`,
     bash: () => `# No client library required for Bash.`,
   },
   clientApiKeys: {
@@ -28,11 +28,11 @@ const supabase = createClient(supabaseUrl, supabaseKey)`,
     title: `Client API Keys`,
     description: `Client keys allow "anonymous access" to your database, until the user has logged in. After logging in, the keys will switch to the user's own login token.
 
-In this documentation, we will refer to the key using the name \`SUPABASE_KEY\`. You can find the \`anon\` key in the [API settings](/project/[ref]/settings/api) page.`,
+In this documentation, we will refer to the key using the name \`VELA_KEY\`. You can find the \`anon\` key in the [API settings](/project/[ref]/settings/api) page.`,
     js: (apikey?: string, endpoint?: string) => `
-const SUPABASE_KEY = '${apikey}'
-const SUPABASE_URL = '${endpoint}'
-const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_KEY);`,
+const VELA_KEY = '${apikey}'
+const VELA_URL = '${endpoint}'
+const client = createClient(VELA_URL, process.env.VELA_KEY);`,
     bash: (apikey?: string, endpoint?: string) => `${apikey}`,
   },
   serviceApiKeys: {
@@ -43,9 +43,9 @@ const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_KEY);`,
 
 In this documentation, we refer to the key using the name \`SERVICE_KEY\`. You can find the \`service_role\` key above or in the [API settings](/project/[ref]/settings/api) page.`,
     js: (apikey?: string, endpoint?: string) => `
-const SUPABASE_KEY = '${apikey}'
-const SUPABASE_URL = 'https://${endpoint}'
-const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_KEY);`,
+const VELA_KEY = '${apikey}'
+const VELA_URL = 'https://${endpoint}'
+const client = createClient(VELA_URL, process.env.VELA_KEY);`,
     bash: (apikey?: string, endpoint?: string) => `${apikey}`,
   },
   // User Management
@@ -69,7 +69,7 @@ const supabase = createClient(SUPABASE_URL, process.env.SUPABASE_KEY);`,
 
   After they have signed up, all interactions using the Vela client will be performed as "that user".`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.signUp({
+const { data, error } = await client.auth.signUp({
   email: 'someone@email.com',
   password: 'some-secure-password'
 })`,
@@ -91,7 +91,7 @@ If an account is created, users can login to your app.
 
 After they have logged in, all interactions using the Vela JS client will be performed as "that user".`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.signInWithPassword({
+const { data, error } = await client.auth.signInWithPassword({
   email: 'someone@email.com',
   password: 'some-secure-password'
 })
@@ -115,7 +115,7 @@ Send a user a passwordless link which they can use to redeem an access_token.
 
 After they have clicked the link, all interactions using the Vela JS client will be performed as "that user".`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.signInWithOtp({
+const { data, error } = await client.auth.signInWithOtp({
   email: 'someone@email.com'
 })
     `,
@@ -139,7 +139,7 @@ The user will receive a mobile OTP via sms with which they can verify that they 
 
 You must enter your own twilio credentials on the auth settings page to enable sms confirmations.`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.signUp({
+const { data, error } = await client.auth.signUp({
   phone: '+13334445555',
   password: 'some-password'
 })
@@ -163,7 +163,7 @@ SMS OTPs work like magic links, except you have to provide an interface for the 
 
 You must enter your own twilio credentials on the auth settings page to enable SMS-based Logins.`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.signInWithOtp({
+const { data, error } = await client.auth.signInWithOtp({
   phone: '+13334445555'
 })
     `,
@@ -185,7 +185,7 @@ Once the user has received the OTP, have them enter it in a form and send it for
 
 You must enter your own twilio credentials on the auth settings page to enable SMS-based OTP verification.`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.verifyOtp({
+const { data, error } = await client.auth.verifyOtp({
   phone: '+13334445555',
   token: '123456',
   type: 'sms'
@@ -215,7 +215,7 @@ After they have logged in, all interactions using the Vela JS client will be per
 
 Generate your Client ID and secret from: [Google](https://console.developers.google.com/apis/credentials), [Github](https://github.com/settings/applications/new), [Gitlab](https://gitlab.com/oauth/applications), [Facebook](https://developers.facebook.com/apps), and [Bitbucket](https://support.atlassian.com/bitbucket-cloud/docs/use-oauth-on-bitbucket-cloud).`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.signInWithOAuth({
+const { data, error } = await client.auth.signInWithOAuth({
   provider: 'github'
 })
     `,
@@ -227,7 +227,7 @@ const { data, error } = await supabase.auth.signInWithOAuth({
     title: `Get user`,
     description: `Get the JSON object for the logged in user.`,
     js: (apikey?: string, endpoint?: string) => `
-const { data: { user } } = await supabase.auth.getUser()
+const { data: { user } } = await client.auth.getUser()
     `,
     bash: (apikey?: string, endpoint?: string) => `
 curl -X GET '${endpoint}/auth/v1/user' \\
@@ -241,7 +241,7 @@ curl -X GET '${endpoint}/auth/v1/user' \\
     title: `Forgot password / email`,
     description: `Sends the user a log in link via email. Once logged in you should direct the user to a new password form. And use "Update User" below to save the new password.`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+const { data, error } = await client.auth.resetPasswordForEmail(email)
     `,
     bash: (apikey?: string, endpoint?: string) => `
 curl -X POST '${endpoint}/auth/v1/recover' \\
@@ -258,7 +258,7 @@ curl -X POST '${endpoint}/auth/v1/recover' \\
     title: `Update User`,
     description: `Update the user with a new email or password. Each key (email, password, and data) is optional.`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.updateUser({
+const { data, error } = await client.auth.updateUser({
   email: "new@email.com",
   password: "new-password",
   data: { hello: 'world' }
@@ -284,7 +284,7 @@ curl -X PUT '${endpoint}/auth/v1/user' \\
     title: `Log out`,
     description: `After calling log out, all interactions using the Vela JS client will be "anonymous".`,
     js: (apikey?: string, endpoint?: string) => `
-const { error } = await supabase.auth.signOut()
+const { error } = await client.auth.signOut()
     `,
     bash: (apikey?: string, endpoint?: string) => `
 curl -X POST '${endpoint}/auth/v1/logout' \\
@@ -304,7 +304,7 @@ After they have clicked the link, all interactions using the Vela JS client will
 
 This endpoint requires you use the \`service_role_key\` when initializing the client, and should only be invoked from the server, never from the client.`,
     js: (apikey?: string, endpoint?: string) => `
-const { data, error } = await supabase.auth.api.inviteUserByEmail('someone@email.com')
+const { data, error } = await client.auth.api.inviteUserByEmail('someone@email.com')
     `,
     bash: (apikey?: string, endpoint?: string) => `
 curl -X POST '${endpoint}/auth/v1/invite' \\
@@ -346,9 +346,9 @@ Edge Functions are server-side TypeScript functions, distributed globally at the
 Follow the steps to prepare your Vela project on your local machine.
 
 - Install the Vela [CLI](https://vela.run/docs/guides/cli).
-- [Login to the CLI](https://vela.run/docs/reference/cli/usage#supabase-login) using the command: \`supabase login\`..
-- [Initialize Supabase](https://vela.run/docs/guides/getting-started/local-development#getting-started) inside your project using the command: \`supabase init\`..
-- [Link to your Remote Project](https://vela.run/docs/reference/cli/usage#supabase-link) using the command \`supabase link --project-ref [ref]\`..
+- [Login to the CLI](https://vela.run/docs/reference/cli/usage#supabase-login) using the command: \`client login\`..
+- [Initialize Supabase](https://vela.run/docs/guides/getting-started/local-development#getting-started) inside your project using the command: \`client init\`..
+- [Link to your Remote Project](https://vela.run/docs/reference/cli/usage#supabase-link) using the command \`client link --project-ref [ref]\`..
 - Setup your environment: Follow the steps [here](https://vela.run/docs/guides/functions/quickstart#setting-up-your-environment).
 `,
     js: undefined,
@@ -363,7 +363,7 @@ Create a Vela Edge Function locally via the Vela CLI.
 `,
     js: () => `// Create an edge function via the Vela CLI`,
     bash: () => `
-supabase functions new hello-world
+client functions new hello-world
 `,
   },
   deployEdgeFunction: {
@@ -374,7 +374,7 @@ supabase functions new hello-world
 Deploy a Vela Edge Function to your Vela project via the Vela CLI.
 `,
     js: () => `// Deploy an edge function via the Vela CLI`,
-    bash: () => `supabase functions deploy hello-world --project-ref [ref]
+    bash: () => `client functions deploy hello-world --project-ref [ref]
 `,
   },
   // Entities
@@ -407,7 +407,7 @@ You can generate types from your database either through the [Vela CLI](https://
     category: 'entities',
     title: 'GraphQL vs PostgREST',
     description: `
-If you have a GraphQL background, you might be wondering if you can fetch your data in a single round-trip. The answer is yes! The syntax is very similar. This example shows how you might achieve the same thing with Apollo GraphQL and Supabase.
+If you have a GraphQL background, you might be wondering if you can fetch your data in a single round-trip. The answer is yes! The syntax is very similar. This example shows how you might achieve the same thing with Apollo GraphQL and Vela.
 
 Still want GraphQL?
 If you still want to use GraphQL, you can. Vela provides you with a full Postgres database, so as long as your middleware can connect to the database then you can still use the tools you love. You can find the database connection details [in the settings](/project/[ref]/database/settings).
@@ -427,8 +427,8 @@ const { loading, error, data } = useQuery(gql\`
   }
     \`)
 
-// With Supabase
-const { data, error } = await supabase
+// With Vela
+const { data, error } = await client
   .from('dogs')
   .select(\`
       id, breed,
@@ -450,8 +450,8 @@ const { loading, error, data } = useQuery(gql\`
   }
     \`)
 
-// With Supabase
-const { data, error } = await supabase
+// With Vela
+const { data, error } = await client
   .from('dogs')
   .select(\`
       id, breed,
@@ -500,7 +500,7 @@ Creates an event handler that listens to changes.
 - Row level security is not applied to delete statements. When RLS is enabled and replica identity is set to full, only the primary key is sent to clients.
 `,
     js: () => `
-supabase
+client
   .channel('any')
   .on('broadcast', { event: 'cursor-pos' }, payload => {
     console.log('Cursor position received!', payload)
@@ -526,7 +526,7 @@ Unsubscribes and removes Realtime channel from Realtime client.
 
 Removing a channel is a great way to maintain the performance of your project's Realtime service as well as your database if you're listening to Postgres changes. Vela will automatically handle cleanup 30 seconds after a client is disconnected, but unused channels may cause degradation as more clients are simultaneously subscribed.
 `,
-    js: () => `supabase.removeChannel(myChannel)`,
+    js: () => `client.removeChannel(myChannel)`,
     bash: () => `# Realtime streams are only supported by our client libraries`,
   },
   unsubscribeChannels: {
@@ -538,7 +538,7 @@ Unsubscribes and removes all Realtime channels from Realtime client.
 
 Removing a channel is a great way to maintain the performance of your project's Realtime service as well as your database if you're listening to Postgres changes. Vela will automatically handle cleanup 30 seconds after a client is disconnected, but unused channels may cause degradation as more clients are simultaneously subscribed.
 `,
-    js: () => `supabase.removeChannels()`,
+    js: () => `client.removeChannels()`,
     bash: () => `# Realtime streams are only supported by our client libraries`,
   },
   retrieveAllChannels: {
@@ -548,7 +548,7 @@ Removing a channel is a great way to maintain the performance of your project's 
     description: `
 Returns all Realtime channels.
 `,
-    js: () => `const channels = supabase.getChannels()`,
+    js: () => `const channels = client.getChannels()`,
     bash: () => `# Realtime streams are only supported by our client libraries`,
   },
 }
@@ -610,7 +610,7 @@ export const DOCS_RESOURCE_CONTENT: {
   }
         `,
           js: `
-let { data, error } = await supabase
+let { data, error } = await client
   .rpc('${rpcName}'${jsParams})
 
 if (error) console.error(error)
@@ -645,7 +645,7 @@ curl '${endpoint}/rest/v1/${resourceId}?select=*' \\
 -H "Authorization: Bearer ${apikey}"
           `,
           js: `
-let { data: ${resourceId}, error } = await supabase
+let { data: ${resourceId}, error } = await client
   .from('${resourceId}')
   .select('*')
           `,
@@ -659,7 +659,7 @@ curl '${endpoint}/rest/v1/${resourceId}?select=some_column,other_column' \\
 -H "Authorization: Bearer ${apikey}"
           `,
           js: `
-let { data: ${resourceId}, error } = await supabase
+let { data: ${resourceId}, error } = await client
   .from('${resourceId}')
   .select('some_column,other_column')
   `,
@@ -673,7 +673,7 @@ curl '${endpoint}/rest/v1/${resourceId}?select=some_column,other_table(foreign_k
 -H "Authorization: Bearer ${apikey}"
           `,
           js: `
-let { data: ${resourceId}, error } = await supabase
+let { data: ${resourceId}, error } = await client
   .from('${resourceId}')
   .select(\`
     some_column,
@@ -693,7 +693,7 @@ curl '${endpoint}/rest/v1/${resourceId}?select=*' \\
 -H "Range: 0-9"
           `,
           js: `
-let { data: ${resourceId}, error } = await supabase
+let { data: ${resourceId}, error } = await client
   .from('${resourceId}')
   .select('*')
   .range(0, 9)
@@ -749,7 +749,7 @@ curl --get '${endpoint}/rest/v1/${resourceId}' \\
 -d "or=(some_column.eq.Some+value,other_column.eq.Other+value)"
         `,
           js: `
-let { data: ${resourceId}, error } = await supabase
+let { data: ${resourceId}, error } = await client
   .from('${resourceId}')
   .select("*")
 
@@ -809,7 +809,7 @@ curl -X POST '${endpoint}/rest/v1/${resourceId}' \\
 -d '{ "some_column": "someValue", "other_column": "otherValue" }'
           `,
           js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .from('${resourceId}')
   .insert([
     { some_column: 'someValue', other_column: 'otherValue' },
@@ -828,7 +828,7 @@ curl -X POST '${endpoint}/rest/v1/${resourceId}' \\
 -d '[{ "some_column": "someValue" }, { "other_column": "otherValue" }]'
           `,
           js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .from('${resourceId}')
   .insert([
     { some_column: 'someValue' },
@@ -849,7 +849,7 @@ curl -X POST '${endpoint}/rest/v1/${resourceId}' \\
 -d '{ "some_column": "someValue", "other_column": "otherValue" }'
           `,
           js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .from('${resourceId}')
   .upsert({ some_column: 'someValue' })
   .select()
@@ -890,7 +890,7 @@ curl -X PATCH '${endpoint}/rest/v1/${resourceId}?some_column=eq.someValue' \\
 -d '{ "other_column": "otherValue" }'
           `,
           js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .from('${resourceId}')
   .update({ other_column: 'otherValue' })
   .eq('some_column', 'someValue')
@@ -927,7 +927,7 @@ curl -X DELETE '${endpoint}/rest/v1/${resourceId}?some_column=eq.someValue' \\
 -H "Authorization: Bearer ${apikey}"
           `,
           js: `
-const { error } = await supabase
+const { error } = await client
   .from('${resourceId}')
   .delete()
   .eq('some_column', 'someValue')
@@ -951,7 +951,7 @@ Vela provides realtime functionality and broadcasts database changes to authoriz
           title: 'Subscribe to all events',
           bash: `# Realtime streams are only supported by our client libraries`,
           js: `
-const channels = supabase.channel('custom-all-channel')
+const channels = client.channel('custom-all-channel')
   .on(
     'postgres_changes',
     { event: '*', schema: 'public', table: '${resourceId}' },
@@ -966,7 +966,7 @@ const channels = supabase.channel('custom-all-channel')
           title: 'Subscribe to inserts',
           bash: `# Realtime streams are only supported by our client libraries`,
           js: `
-const channels = supabase.channel('custom-insert-channel')
+const channels = client.channel('custom-insert-channel')
   .on(
     'postgres_changes',
     { event: 'INSERT', schema: 'public', table: '${resourceId}' },
@@ -981,7 +981,7 @@ const channels = supabase.channel('custom-insert-channel')
           title: 'Subscribe to updates',
           bash: `# Realtime streams are only supported by our client libraries`,
           js: `
-const channels = supabase.channel('custom-update-channel')
+const channels = client.channel('custom-update-channel')
   .on(
     'postgres_changes',
     { event: 'UPDATE', schema: 'public', table: '${resourceId}' },
@@ -996,7 +996,7 @@ const channels = supabase.channel('custom-update-channel')
           title: 'Subscribe to deletes',
           bash: `# Realtime streams are only supported by our client libraries`,
           js: `
-const channels = supabase.channel('custom-delete-channel')
+const channels = client.channel('custom-delete-channel')
   .on(
     'postgres_changes',
     { event: 'DELETE', schema: 'public', table: '${resourceId}' },
@@ -1011,7 +1011,7 @@ const channels = supabase.channel('custom-delete-channel')
           title: 'Subscribe to specific rows',
           bash: `# Realtime streams are only supported by our client libraries`,
           js: `
-const channels = supabase.channel('custom-filter-channel')
+const channels = client.channel('custom-filter-channel')
   .on(
     'postgres_changes',
     { event: '*', schema: 'public', table: '${resourceId}', filter: 'some_column=eq.some_value' },
@@ -1049,7 +1049,7 @@ curl -X POST '${endpoint}/storage/object/${name}/folder/avatar1.png' \\
         `,
         js: `
 const avatarFile = event.target.files[0]
-const { data, error } = await supabase
+const { data, error } = await client
   .storage
   .from('${name}')
   .upload('folder/avatar1.png', avatarFile, {
@@ -1081,7 +1081,7 @@ curl -X DELETE '${endpoint}/storage/object/${name}' \\
 -d '{ "prefixes": ["file_name", "another_file_name"] }'
 `,
         js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .storage
   .from('${name}')
   .remove(['folder/avatar1.png'])
@@ -1109,7 +1109,7 @@ curl -X POST '${endpoint}/storage/object/list/${name}' \\
 -H "Authorization: Bearer ${apikey}" \\
 -d '{ "limit": 100, "offset": 0, "prefix": "", "sortBy": { "column": "name", "order": "asc" } }'`,
         js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .storage
   .from('${name}')
   .list('folder', {
@@ -1142,7 +1142,7 @@ curl -X GET '${endpoint}/storage/object/${name}/folder/avatar1.png' \\
 --output avatar1.png
 `,
         js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .storage
   .from('${name}')
   .download('folder/avatar1.png')
@@ -1171,7 +1171,7 @@ curl -X POST '${endpoint}/storage/object/sign/${name}/folder/avatar1.png' \\
 -d '{ "expiresIn": 60 }'
         `,
         js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .storage
   .from('${name}')
   .createSignedUrl('folder/avatar1.png', 60)
@@ -1204,7 +1204,7 @@ RLS policy permissions required:
 # You can construct the public URL by concatenating the bucket URL with the path to the asset
 # e.g ${endpoint}/storage/object/public/${name}/folder/avatar1.png`,
         js: `
-const { data } = supabase
+const { data } = client
   .storage
   .from('${name}')
   .getPublicUrl('folder/avatar1.png')
@@ -1235,7 +1235,7 @@ curl --request POST '${endpoint}/functions/v1/${name}' \\
 --data '{ "name": "Functions" }'
         `,
         js: `
-const { data, error } = await supabase
+const { data, error } = await client
   .functions
   .invoke('${name}', {
     body: { foo: 'bar' }

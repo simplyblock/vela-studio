@@ -7,6 +7,7 @@ import { openApiKeys } from './keys'
 export type OpenAPISpecVariables = {
   orgRef?: string
   projectRef?: string
+  branchRef?: string
 }
 
 export type OpenAPISpecResponse = {
@@ -16,21 +17,26 @@ export type OpenAPISpecResponse = {
 }
 
 export async function getOpenAPISpec(
-  { orgRef, projectRef }: OpenAPISpecVariables,
+  { orgRef, projectRef, branchRef }: OpenAPISpecVariables,
   signal?: AbortSignal
 ) {
   if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
+  if (!branchRef) throw new Error('branchRef is required')
 
-  const { data, error } = await get(`/platform/organizations/{slug}/projects/{ref}/api/rest`, {
-    params: {
-      path: {
-        slug: orgRef,
-        ref: projectRef,
+  const { data, error } = await get(
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/api/rest`,
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
       },
-    },
-    signal,
-  })
+      signal,
+    }
+  )
 
   if (error) handleError(error)
 
@@ -65,14 +71,18 @@ export type OpenAPISpecData = Awaited<OpenAPISpecResponse>
 export type OpenAPISpecError = ResponseError
 
 export const useOpenAPISpecQuery = <TData = OpenAPISpecData>(
-  { orgRef, projectRef }: OpenAPISpecVariables,
+  { orgRef, projectRef, branchRef }: OpenAPISpecVariables,
   { enabled = true, ...options }: UseQueryOptions<OpenAPISpecData, OpenAPISpecError, TData> = {}
 ) =>
   useQuery<OpenAPISpecData, OpenAPISpecError, TData>(
-    openApiKeys.apiSpec(orgRef, projectRef),
-    ({ signal }) => getOpenAPISpec({ orgRef, projectRef }, signal),
+    openApiKeys.apiSpec(orgRef, projectRef, branchRef),
+    ({ signal }) => getOpenAPISpec({ orgRef, projectRef, branchRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof projectRef !== 'undefined' &&
+        typeof orgRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       ...options,
     }
   )

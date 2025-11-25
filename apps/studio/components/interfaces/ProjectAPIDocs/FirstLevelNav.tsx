@@ -40,12 +40,12 @@ const FirstLevelNav = () => {
     return true
   })
 
-  const { data } = useOpenAPISpecQuery({ orgRef: orgRef, projectRef: projectRef })
+  const { data } = useOpenAPISpecQuery({ orgRef, projectRef, branchRef })
   const tables = data?.tables ?? []
   const functions = data?.functions ?? []
 
   const { data: buckets } = useBucketsQuery({ orgRef, projectRef, branchRef })
-  const { data: edgeFunctions } = useEdgeFunctionsQuery({ projectRef: projectRef })
+  const { data: edgeFunctions } = useEdgeFunctionsQuery({ projectRef })
 
   return (
     <>
@@ -165,7 +165,10 @@ const FirstLevelNav = () => {
           }
           onClick={() => snap.setShowProjectApiDocs(false)}
         >
-          <Link className="!justify-start" href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api/graphiql`}>
+          <Link
+            className="!justify-start"
+            href={`/org/${orgRef}/project/${projectRef}/branch/${branchRef}/api/graphiql`}
+          >
             GraphiQL
           </Link>
         </Button>

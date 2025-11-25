@@ -27,7 +27,7 @@ const SecondLevelNav = () => {
   const snap = useAppStateSnapshot()
   const [open, setOpen] = useState(false)
 
-  const { data } = useOpenAPISpecQuery({ orgRef: orgRef, projectRef })
+  const { data } = useOpenAPISpecQuery({ orgRef, projectRef, branchRef })
   const tables = data?.tables ?? []
   const functions = data?.functions ?? []
   const [section, resource] = snap.activeDocsSection

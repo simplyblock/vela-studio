@@ -22,7 +22,7 @@ export function constructHeaders(headers: { [prop: string]: any }) {
     )
     return {
       ...cleansedHeaders,
-      apiKey: `${process.env.READ_ONLY_API_KEY}`
+      apiKey: `${process.env.READ_ONLY_API_KEY}`,
     }
   } else {
     return {
@@ -63,4 +63,10 @@ export const toSnakeCase = (object) => {
   } else {
     return object
   }
+}
+
+export function joinPath(a: string, ...paths: string[]) {
+  if (a.endsWith('/')) a = a.substring(0, a.length - 1)
+  paths = paths.map((p) => (p.startsWith('/') ? p.substring(1) : p))
+  return [a, ...paths].join('/')
 }

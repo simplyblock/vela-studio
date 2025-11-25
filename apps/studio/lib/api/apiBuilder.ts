@@ -12,6 +12,7 @@ export interface ApiBuilder {
   put(handler: ApiHandler): ApiBuilder
   delete(handler: ApiHandler): ApiBuilder
   patch(handler: ApiHandler): ApiBuilder
+  head(handler: ApiHandler): ApiBuilder
 }
 
 export function apiBuilder(builder: (builder: ApiBuilder) => void): ApiHandler {
@@ -22,6 +23,7 @@ export function apiBuilder(builder: (builder: ApiBuilder) => void): ApiHandler {
     PUT?: ApiHandler
     DELETE?: ApiHandler
     PATCH?: ApiHandler
+    HEAD?: ApiHandler
   } = {}
 
   const apiBuilder: ApiBuilder = {
@@ -62,6 +64,13 @@ export function apiBuilder(builder: (builder: ApiBuilder) => void): ApiHandler {
         throw new Error('Only one PATCH handler can be defined')
       }
       handlers.PATCH = handler
+      return this
+    },
+    head(handler: ApiHandler): ApiBuilder {
+      if (handlers.HEAD) {
+        throw new Error('Only one HEAD handler can be defined')
+      }
+      handlers.HEAD = handler
       return this
     },
   }

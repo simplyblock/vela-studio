@@ -25,13 +25,13 @@ const Authentication = ({ selectedLang, showApiKey }: AuthenticationProps) => {
 
   // [Joshen] ShowApiKey should really be a boolean, its confusing
   const defaultApiKey =
-    showApiKey !== 'SUPABASE_KEY'
-      ? anonKey?.api_key ?? 'SUPABASE_CLIENT_API_KEY'
-      : 'SUPABASE_CLIENT_API_KEY'
+    showApiKey !== 'VELA_KEY'
+      ? anonKey?.api_key ?? 'VELA_CLIENT_API_KEY'
+      : 'VELA_CLIENT_API_KEY'
   const serviceApiKey =
-    showApiKey !== 'SUPABASE_KEY'
-      ? serviceKey?.api_key ?? 'SUPABASE_SERVICE_KEY'
-      : 'SUPABASE_SERVICE_KEY'
+    showApiKey !== 'VELA_KEY'
+      ? serviceKey?.api_key ?? 'VELA_SERVICE_KEY'
+      : 'VELA_SERVICE_KEY'
 
   return (
     <>
@@ -71,7 +71,7 @@ const Authentication = ({ selectedLang, showApiKey }: AuthenticationProps) => {
         <article className="code">
           <CodeSnippet
             selectedLang={selectedLang}
-            snippet={Snippets.authKey('CLIENT API KEY', 'SUPABASE_KEY', defaultApiKey)}
+            snippet={Snippets.authKey('CLIENT API KEY', 'VELA_KEY', defaultApiKey)}
           />
           <CodeSnippet
             selectedLang={selectedLang}

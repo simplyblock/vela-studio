@@ -7,6 +7,7 @@ import { docsKeys } from './keys'
 export type ProjectJsonSchemaVariables = {
   orgRef?: string
   projectRef?: string
+  branchRef?: string
 }
 
 type ProjectJsonSchemaMethod = {
@@ -72,21 +73,26 @@ export type ProjectJsonSchemaResponse = {
 }
 
 export async function getProjectJsonSchema(
-  { orgRef, projectRef }: ProjectJsonSchemaVariables,
+  { orgRef, projectRef, branchRef }: ProjectJsonSchemaVariables,
   signal?: AbortSignal
 ) {
   if (!orgRef) throw new Error('orgRef is required')
   if (!projectRef) throw new Error('projectRef is required')
+  if (!branchRef) throw new Error('branchRef is required')
 
-  const { data, error } = await get('/platform/organizations/{slug}/projects/{ref}/api/rest', {
-    params: {
-      path: {
-        slug: orgRef,
-        ref: projectRef,
+  const { data, error } = await get(
+    '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/api/rest',
+    {
+      params: {
+        path: {
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
+        },
       },
-    },
-    signal,
-  })
+      signal,
+    }
+  )
 
   if (error) handleError(error)
   return data as unknown as ProjectJsonSchemaResponse
@@ -96,17 +102,21 @@ export type ProjectJsonSchemaData = Awaited<ReturnType<typeof getProjectJsonSche
 export type ProjectJsonSchemaError = ResponseError
 
 export const useProjectJsonSchemaQuery = <TData = ProjectJsonSchemaData>(
-  { orgRef, projectRef }: ProjectJsonSchemaVariables,
+  { orgRef, projectRef, branchRef }: ProjectJsonSchemaVariables,
   {
     enabled = true,
     ...options
   }: UseQueryOptions<ProjectJsonSchemaData, ProjectJsonSchemaError, TData> = {}
 ) =>
   useQuery<ProjectJsonSchemaData, ProjectJsonSchemaError, TData>(
-    docsKeys.jsonSchema(orgRef, projectRef),
-    ({ signal }) => getProjectJsonSchema({ orgRef, projectRef }, signal),
+    docsKeys.jsonSchema(orgRef, projectRef, branchRef),
+    ({ signal }) => getProjectJsonSchema({ orgRef, projectRef, branchRef }, signal),
     {
-      enabled: enabled && typeof projectRef !== 'undefined' && typeof orgRef !== 'undefined',
+      enabled:
+        enabled &&
+        typeof projectRef !== 'undefined' &&
+        typeof orgRef !== 'undefined' &&
+        typeof branchRef !== 'undefined',
       ...options,
     }
   )
