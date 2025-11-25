@@ -30,6 +30,7 @@ jobs:
     steps:
       - name: Prepare
         run: |
+          ls -la 
           ./scripts/github_actions_free_disk_space.sh
           platform=${{ matrix.os }}/${{ matrix.arch }}
           echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
