@@ -11,10 +11,12 @@ import { resourcesKeys } from './keys'
 interface ProjectUsageVariables {
   orgRef?: string
   projectRef?: string
+  start?: string
+  end?: string
 }
 
 async function getProjectUsage(
-  { orgRef, projectRef }: ProjectUsageVariables,
+  { orgRef, projectRef, start, end }: ProjectUsageVariables,
   signal?: AbortSignal
 ) {
   if (!orgRef) throw new Error('Organization slug is required')
@@ -28,6 +30,10 @@ async function getProjectUsage(
           slug: orgRef,
           ref: projectRef,
         },
+        query: {
+          cycle_start: start,
+          cycle_end: end,
+        }
       },
       signal,
     }
@@ -49,7 +55,7 @@ export const useProjectUsageQuery = <TData = ProjectUsageData>(
 ) => {
   return useQuery<ProjectUsageData, ProjectUsageError, TData>({
     ...options,
-    queryKey: resourcesKeys.projectUsage(orgRef, projectRef),
+    queryKey: resourcesKeys.projectUsage(orgRef, projectRef), // FIXME: @Chris do we want to cache this?
     queryFn: async (context: QueryFunctionContext) =>
       getProjectUsage({ orgRef, projectRef }, context.signal),
     enabled: enabled && typeof orgRef !== 'undefined' && typeof projectRef !== 'undefined',

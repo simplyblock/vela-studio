@@ -10,9 +10,11 @@ import { resourcesKeys } from './keys'
 
 interface OrganizationUsageVariables {
   orgRef?: string
+  start?: string
+  end?: string
 }
 
-async function getOrganizationUsage({ orgRef }: OrganizationUsageVariables, signal?: AbortSignal) {
+async function getOrganizationUsage({ orgRef, start, end }: OrganizationUsageVariables, signal?: AbortSignal) {
   if (!orgRef) throw new Error('Organization slug is required')
 
   const { data, error } = await get('/platform/organizations/{slug}/resources/usage', {
@@ -20,6 +22,10 @@ async function getOrganizationUsage({ orgRef }: OrganizationUsageVariables, sign
       path: {
         slug: orgRef,
       },
+      query: {
+        cycle_start: start,
+        cycle_end: end
+      }
     },
     signal,
   })
@@ -43,7 +49,7 @@ export const useOrganizationUsageQuery = <TData = OrganizationUsageData>(
 ) => {
   return useQuery<OrganizationUsageData, OrganizationUsageError, TData>({
     ...options,
-    queryKey: resourcesKeys.organizationUsage(orgRef),
+    queryKey: resourcesKeys.organizationUsage(orgRef), // FIXME: @Chris do we want to cache this?
     queryFn: async (context: QueryFunctionContext) =>
       getOrganizationUsage({ orgRef }, context.signal),
     enabled: enabled && typeof orgRef !== 'undefined',
