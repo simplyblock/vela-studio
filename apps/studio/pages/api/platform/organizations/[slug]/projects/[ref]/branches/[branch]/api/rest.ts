@@ -8,7 +8,6 @@ import { joinPath } from 'lib/api/apiHelpers'
 const isInDocker = isDocker()
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  console.log("TEST POSTGREST")
   const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
   const branchEntity = await getBranchOrRefresh(slug, ref, branch, req, res)
 
@@ -20,6 +19,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     ? joinPath(branchEntity.database.service_endpoint_uri, '/rest/v1/')
     : 'http://rest:3000'
 
+  console.log(`TEST POSTGREST: ${postgrestEndpoint}, ${branchEntity.api_keys.service_role}`)
   const response = await fetch(postgrestEndpoint, {
     method: 'GET',
     headers: {
@@ -32,6 +32,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(data)
   }
 
+  console.log(response)
   return res.status(500).json({ error: { message: 'Internal Server Error' } })
 }
 
