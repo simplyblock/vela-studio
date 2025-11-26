@@ -17,7 +17,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const graphqlEndpoint = !isInDocker
-    ? joinPath(branchEntity.database.service_endpoint_uri, '/graphql/v1/')
+    ? joinPath(branchEntity.database.service_endpoint_uri, '/graphql/')
     : 'http://graphql:3000'
 
   const response = await fetch(graphqlEndpoint, {

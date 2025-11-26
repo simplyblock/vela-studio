@@ -16,7 +16,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const postgrestEndpoint = !isInDocker
-    ? joinPath(branchEntity.database.service_endpoint_uri, '/rest/v1/')
+    ? joinPath(branchEntity.database.service_endpoint_uri, '/rest/')
     : 'http://rest:3000'
 
   console.log(`TEST POSTGREST: ${postgrestEndpoint}, ${branchEntity.api_keys.service_role}`)
