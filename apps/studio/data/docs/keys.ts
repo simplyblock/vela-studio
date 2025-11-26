@@ -3,5 +3,5 @@ export const docsKeys = {
     orgSlug: string | undefined,
     projectRef: string | undefined,
     branchRef: string | undefined
-  ) => ['projects', orgSlug, projectRef, branchRef, 'docs'] as const,
+  ) => ['branches', orgSlug, projectRef, branchRef, 'docs'] as const,
 }

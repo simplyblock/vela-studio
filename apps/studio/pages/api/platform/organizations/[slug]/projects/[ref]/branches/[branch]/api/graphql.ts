@@ -1,31 +1,32 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import apiWrapper from 'lib/api/apiWrapper'
+import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
+import { getBranchOrRefresh } from 'lib/api/branchCaching'
+import { joinPath } from 'lib/api/apiHelpers'
+import { apiBuilder } from 'lib/api/apiBuilder'
+import { isDocker } from 'lib/docker'
 
-export default (req: NextApiRequest, res: NextApiResponse) => apiWrapper(req, res, handler)
-
-async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { method } = req
-
-  switch (method) {
-    case 'POST':
-      return handleGet(req, res)
-
-    default:
-      res.setHeader('Allow', ['POST'])
-      res.status(405).json({ data: null, error: { message: `Method ${method} Not Allowed` } })
-  }
-}
+const isInDocker = isDocker()
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const authorizationHeader = req.headers['x-graphql-authorization']
+  const { slug, ref, branch } = getPlatformQueryParams(req, 'slug', 'ref', 'branch')
+  const branchEntity = await getBranchOrRefresh(slug, ref, branch, req, res)
 
-  const response = await fetch(`${process.env.SUPABASE_URL}/graphql/v1`, {
+  if (!branchEntity) {
+    return res.status(404).json({ error: 'Branch not found' })
+  }
+
+  const graphqlEndpoint = !isInDocker
+    ? joinPath(branchEntity.database.service_endpoint_uri, '/graphql/v1/')
+    : 'http://graphql:3000'
+
+  const response = await fetch(graphqlEndpoint, {
     method: 'POST',
     headers: {
-      apikey: process.env.SUPABASE_SERVICE_KEY!,
+      apikey: branchEntity.api_keys.service_role!,
       Authorization:
         (Array.isArray(authorizationHeader) ? authorizationHeader[0] : authorizationHeader) ??
-        `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+        `Bearer ${branchEntity.api_keys.service_role!}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(req.body),
@@ -38,3 +39,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   return res.status(500).json({ error: { message: 'Internal Server Error' } })
 }
+
+const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet))
+
+export default apiHandler

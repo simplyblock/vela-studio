@@ -24,6 +24,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     method: 'GET',
     headers: {
       apikey: branchEntity.api_keys.service_role!,
+      Authorization: `Bearer ${branchEntity.api_keys.service_role!}`,
     },
   })
   if (response.ok) {

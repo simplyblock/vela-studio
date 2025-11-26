@@ -3,5 +3,5 @@ export const openApiKeys = {
     orgSlug: string | undefined,
     projectRef: string | undefined,
     branchRef: string | undefined
-  ) => ['projects', orgSlug, projectRef, branchRef, 'open-api-spec'] as const,
+  ) => ['branches', orgSlug, projectRef, branchRef, 'open-api-spec'] as const,
 }
