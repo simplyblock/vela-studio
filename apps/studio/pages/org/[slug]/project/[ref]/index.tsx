@@ -324,10 +324,9 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
 
                           <div>
                             <BranchResourceBadge
-                              // max_resources={(branch as any).max_resources}
-                              // used_resources={(branch as any).used_resources}
+                              max_resources={branch.max_resources}
+                              used_resources={branch.used_resources}
                               size={40}
-                              
                             />
                           </div>
                         </div>

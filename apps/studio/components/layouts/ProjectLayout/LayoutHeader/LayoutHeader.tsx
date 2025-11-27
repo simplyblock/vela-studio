@@ -5,7 +5,7 @@ import { ReactNode, useMemo, useState } from 'react'
 import { useParams } from 'common'
 import { Connect } from 'components/interfaces/Connect/Connect'
 import { UserDropdown } from 'components/interfaces/UserDropdown'
-import { InlineEditorButton } from 'components/layouts/AppLayout/InlineEditorButton'
+// import { InlineEditorButton } from 'components/layouts/AppLayout/InlineEditorButton'
 import { OrganizationDropdown } from 'components/layouts/AppLayout/OrganizationDropdown'
 import { ProjectDropdown } from 'components/layouts/AppLayout/ProjectDropdown'
 import { BranchDropdown } from 'components/layouts/AppLayout/BranchDropdown'
@@ -14,7 +14,7 @@ import { getResourcesExceededLimitsOrg } from 'components/ui/OveragesBanner/Over
 import { useOrgUsageQuery } from 'data/usage/org-usage-query'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
-import { useHotKey } from 'hooks/ui/useHotKey'
+// import { useHotKey } from 'hooks/ui/useHotKey'
 import { useAppStateSnapshot } from 'state/app-state'
 import { Badge, cn } from 'ui'
 import { BreadcrumbsView } from './BreadcrumbsView'
@@ -61,13 +61,13 @@ const LayoutHeader = ({
   const { setMobileMenuOpen } = useAppStateSnapshot()
 
   const [showEditorPanel, setShowEditorPanel] = useState(false)
-  useHotKey(
-    () => {
-      if (projectRef) setShowEditorPanel(!showEditorPanel)
-    },
-    'e',
-    [showEditorPanel, projectRef]
-  )
+  // useHotKey(
+  //   () => {
+  //     if (projectRef) setShowEditorPanel(!showEditorPanel)
+  //   },
+  //   'e',
+  //   [showEditorPanel, projectRef]
+  // )
 
   // We only want to query the org usage and check for possible over-ages for plans without usage billing enabled (free or pro with spend cap)
   const { data: orgUsage } = useOrgUsageQuery(
@@ -194,11 +194,11 @@ const LayoutHeader = ({
               <HelpPopover />
               <NotificationsPopoverV2 />
               <AnimatePresence initial={false}>
-                {!!projectRef && (
+                {/* {!!projectRef && (
                   <>
                     <InlineEditorButton onClick={() => setShowEditorPanel(true)} />
                   </>
-                )}
+                )} */}
               </AnimatePresence>
             </div>
             <UserDropdown />

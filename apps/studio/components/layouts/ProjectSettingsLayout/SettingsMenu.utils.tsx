@@ -44,14 +44,12 @@ export const generateSettingsMenu = (
           key: 'api-keys',
           url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/api-keys`,
           items: [],
-          label: 'NEW',
         },
         {
           name: 'JWT Keys',
           key: 'jwt',
           url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/jwt`,
           items: [],
-          label: 'NEW',
         }, // FIXME: potentially move above
       ],
     },

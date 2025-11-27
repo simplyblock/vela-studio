@@ -35,10 +35,10 @@ function OrganizationSettingsLayout({ children }: PropsWithChildren) {
       label: 'Security',
       href: `/org/${slug}/security`,
     },
-    {
-      label: 'SSO',
-      href: `/org/${slug}/sso`,
-    },
+    // {
+    //   label: 'SSO',
+    //   href: `/org/${slug}/sso`,
+    // },
 
     {
       label: 'Audit Logs',

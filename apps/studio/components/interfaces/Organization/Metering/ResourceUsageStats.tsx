@@ -1,13 +1,34 @@
+import { ReactNode } from 'react'
 import { StatsCard } from 'components/ui/StatsCard'
-
-import type { ResourceMetricDefinition } from './types'
 import { formatCompactNumber } from './utils'
 
-interface ResourceUsageStatsProps {
-  metrics: Array<ResourceMetricDefinition & { value: number }>
+export interface ResourceUsageMetric {
+  key: string
+  label: string
+  value: number
+  summarySuffix?: string
+  icon?: ReactNode
 }
 
-const ResourceUsageStats = ({ metrics }: ResourceUsageStatsProps) => {
+interface ResourceUsageStatsProps {
+  metrics: ResourceUsageMetric[]
+  loading?: boolean
+}
+
+const ResourceUsageStats = ({ metrics, loading }: ResourceUsageStatsProps) => {
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        <h3 className="text-base font-medium text-foreground">Resource usage summary</h3>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="h-24 rounded-md bg-surface-200 animate-pulse" />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
       <h3 className="text-base font-medium text-foreground">Resource usage summary</h3>
@@ -17,7 +38,9 @@ const ResourceUsageStats = ({ metrics }: ResourceUsageStatsProps) => {
             key={metric.key}
             title={metric.label}
             value={formatCompactNumber(metric.value)}
-            description={`Average monthly usage ${formatCompactNumber(metric.value)} ${metric.summarySuffix}`}
+            description={`Usage in selected period: ${formatCompactNumber(metric.value)}${
+              metric.summarySuffix ? ` ${metric.summarySuffix}` : ''
+            }`}
             icon={metric.icon}
           />
         ))}

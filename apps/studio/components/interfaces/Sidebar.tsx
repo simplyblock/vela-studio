@@ -415,7 +415,7 @@ const BranchSidebarLinks = () => {
           active={isUndefined(activeRoute) && !isUndefined(router.query.ref)}
           route={{
             key: 'branch-overview',
-            label: 'Branch overview',
+            label: 'Branch Overview',
             icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
             link: projectRef && `/org/${orgRef}/project/${projectRef}/branch/${branchRef}`,
             linkElement: (
@@ -540,16 +540,16 @@ const OrganizationLinks = () => {
   ]
 
   const navMenuItems = [
-    {
-      label: 'Integrations',
-      href: `/org/${slug}/integrations`,
-      key: 'integrations',
-      icon: <Blocks size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-    },
+    // {
+    //   label: 'Integrations',
+    //   href: `/org/${slug}/integrations`,
+    //   key: 'integrations',
+    //   icon: <Blocks size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+    // },
     {
       label: 'Metering',
       href: `/org/${slug}/metering`,
-      key: 'usage',
+      key: 'metering',
       icon: <ChartArea size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
     {
@@ -559,7 +559,7 @@ const OrganizationLinks = () => {
       icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
     {
-      label: 'Organization settings',
+      label: 'Organization Settings',
       href: `/org/${slug}/general`,
       key: 'settings',
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,

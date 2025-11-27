@@ -66,7 +66,7 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
   const loading = mutation.isLoading
 
   return (
-    <ScaffoldContainer>
+    <ScaffoldContainer className='space-y-10 p-4'>
       <div className="space-y-6 p-2">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Project backups</h1>
@@ -122,7 +122,10 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
           </div>
         </Card>
       </div>
-      <DeleteProjectPanel />
+      <div>
+         <DeleteProjectPanel />
+      </div>
+     
     </ScaffoldContainer>
   )
 }

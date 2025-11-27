@@ -406,7 +406,7 @@ const Backups = () => {
   }
 
   return (
-    <ScaffoldContainer>
+    <ScaffoldContainer className='p-6'>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Backups</h1>
