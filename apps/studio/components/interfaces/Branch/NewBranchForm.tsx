@@ -254,6 +254,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
       {
         orgRef: slug,
         projectRef: ref,
+        branchRef: branch,
         branchName: values.name,
         withConfig: branch ? values.withConfig : undefined,
         withData: branch ? values.withData : undefined,
