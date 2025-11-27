@@ -1,10 +1,9 @@
 // components/OrganizationResourcesPanel.tsx
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useOrganizationLimitsQuery } from 'data/resources/organization-limits-query'
 import { useOrganizationUsageQuery } from 'data/resources/organization-usage-query'
 import { cn } from 'ui'
 import { divideValue, formatResource } from '../Project/utils'
-
 
 type Props = {
   orgRef?: string
@@ -44,8 +43,22 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
     { orgRef },
     { enabled: !!orgRef }
   )
+
+  // Fix "last minute" window at mount time so the query key stays stable
+  const [timeRange] = useState(() => {
+    const now = Date.now()
+    return {
+      start: new Date(now - 60_000).toISOString(),
+      end: new Date(now).toISOString(),
+    }
+  })
+
   const { data: usage, isLoading: loadingUsage } = useOrganizationUsageQuery(
-    { orgRef },
+    {
+      orgRef,
+      start: timeRange.start,
+      end: timeRange.end,
+    },
     { enabled: !!orgRef }
   )
 
@@ -101,7 +114,8 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
       if (!Array.isArray(limits)) return { key: null, raw: null }
       for (const candidate of candidates) {
         const found = limits.find((l: OrgLimitItem) => l.resource === candidate)
-        if (found && typeof found.max_total === 'number') return { key: candidate, raw: found.max_total }
+        if (found && typeof found.max_total === 'number')
+          return { key: candidate, raw: found.max_total }
       }
       return { key: null, raw: null }
     }
@@ -165,20 +179,30 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h3 className="text-sm font-medium text-foreground">Organization usage</h3>
-          <p className="text-xs text-foreground-muted">Quota & usage across the organization</p>
+          <p className="text-xs text-foreground-muted">
+            Quota &amp; usage across the organization (last minute)
+          </p>
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="text-sm font-semibold">{loading ? '—' : mostUsed ? `${Math.round(mostUsed.pct ?? 0)}%` : '—'}</div>
-          <div className="text-xs text-foreground-muted">{loading ? 'Loading' : mostUsed ? mostUsed.label : 'No data'}</div>
+          <div className="text-sm font-semibold">
+            {loading ? '—' : mostUsed ? `${Math.round(mostUsed.pct ?? 0)}%` : '—'}
+          </div>
+          <div className="text-xs text-foreground-muted">
+            {loading ? 'Loading' : mostUsed ? mostUsed.label : 'No data'}
+          </div>
         </div>
       </div>
 
       <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {loading ? (
-          <div className="col-span-1 text-xs text-foreground-muted">Loading limits & usage…</div>
+          <div className="col-span-1 text-xs text-foreground-muted">
+            Loading limits &amp; usage…
+          </div>
         ) : rows.length === 0 ? (
-          <div className="col-span-1 text-xs text-foreground-muted">No resource information available.</div>
+          <div className="col-span-1 text-xs text-foreground-muted">
+            No resource information available.
+          </div>
         ) : (
           rows.map((r) => {
             const pct = r.pct ?? 0
@@ -193,13 +217,20 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
                 </div>
 
                 <div className="w-full h-2 rounded bg-surface-200 overflow-hidden">
-                  <div className={cn('h-full transition-all duration-200', r.colorClass)} style={{ width: `${pct}%` }} />
+                  <div
+                    className={cn('h-full transition-all duration-200', r.colorClass)}
+                    style={{ width: `${pct}%` }}
+                  />
                 </div>
 
                 {r.pct != null ? (
-                  <div className="text-xs text-foreground-muted mt-1">{Math.round(r.pct)}%</div>
+                  <div className="text-xs text-foreground-muted mt-1">
+                    {Math.round(r.pct)}%
+                  </div>
                 ) : (
-                  <div className="text-xs text-foreground-muted mt-1">Unlimited / not bounded</div>
+                  <div className="text-xs text-foreground-muted mt-1">
+                    Unlimited / not bounded
+                  </div>
                 )}
               </div>
             )

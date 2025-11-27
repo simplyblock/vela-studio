@@ -50,7 +50,7 @@ export const DeployEdgeFunctionButton = () => {
             <p>Write and deploy in the browser</p>
           </div>
         </DropdownMenuItem>
-        <Dialog>
+        {/* <Dialog>
           <DialogTrigger asChild>
             <DropdownMenuItem
               className="gap-4"
@@ -78,7 +78,7 @@ export const DeployEdgeFunctionButton = () => {
               <TerminalInstructions />
             </DialogSection>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       </DropdownMenuContent>
     </DropdownMenu>
   )

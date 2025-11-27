@@ -28,7 +28,7 @@ export const generateProjectRoutes = (orgRef: string, projectRef?: string): Rout
   return [
     {
       key: 'project-overview',
-      label: 'Project overview',
+      label: 'Project Overview',
       icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}`,
     },
@@ -46,10 +46,9 @@ export const generateProjectRoutes = (orgRef: string, projectRef?: string): Rout
     },
     {
       key: 'settings',
-      label: 'Project settings',
+      label: 'Project Settings',
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}/settings`,
-      // later you could add items: [...] if you split project settings internally
     },
   ]
 }
@@ -179,20 +178,20 @@ export const generateProductRoutes = (
           },
         ]
       : []),
-    ...(realtimeEnabled
-      ? [
-          {
-            key: 'realtime',
-            label: 'Realtime',
-            icon: <Realtime size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link:
-              projectRef &&
-              (isProjectBuilding
-                ? buildingUrl
-                : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/realtime/inspector`),
-          },
-        ]
-      : []),
+    // ...(realtimeEnabled
+    //   ? [
+    //       {
+    //         key: 'realtime',
+    //         label: 'Realtime',
+    //         icon: <Realtime size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+    //         link:
+    //           projectRef &&
+    //           (isProjectBuilding
+    //             ? buildingUrl
+    //             : `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/realtime/inspector`),
+    //       },
+    //     ]
+    //   : []),
   ]
 }
 
@@ -278,7 +277,7 @@ export const generateSettingsRoutes = (
   return [
     {
       key: 'branch-settings',
-      label: 'Branch settings', // renamed from "Project Settings"
+      label: 'Branch Settings', // renamed from "Project Settings"
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link:
         orgRef && projectRef && branchRef && `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/settings/general`,

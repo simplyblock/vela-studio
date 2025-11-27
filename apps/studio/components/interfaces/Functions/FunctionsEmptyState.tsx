@@ -63,7 +63,7 @@ export const FunctionsEmptyState = () => {
           </div>
 
           {/* CLI Option */}
-          <div className="p-8">
+          {/* <div className="p-8">
             <div className="flex items-center gap-2">
               <Terminal strokeWidth={1.5} size={20} />
               <h4 className="text-base text-foreground">Via CLI</h4>
@@ -97,7 +97,7 @@ export const FunctionsEmptyState = () => {
                 </DialogSection>
               </DialogContent>
             </Dialog>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
       <ScaffoldSectionTitle className="text-xl mb-4 mt-12">

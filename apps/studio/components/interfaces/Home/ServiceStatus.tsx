@@ -265,7 +265,7 @@ export const ServiceStatus = () => {
               <div className="mt-0.5">
                 <InfoIcon />
               </div>
-              Recently restored projects can take up to 5 minutes to become fully operational.
+              Recently restored branches can take up to 5 minutes to become fully operational.
             </div>
           </>
         )}

@@ -1,162 +1,164 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-
-import { Button, Listbox } from 'ui'
-import { ScaffoldContainer, ScaffoldTitle } from 'components/layouts/Scaffold'
-import { toast } from 'sonner'
+import { useParams } from 'common'
+import dayjs from 'dayjs'
 import { Download } from 'lucide-react'
+import { toast } from 'sonner'
 
-import BillingCycleCard from './BillingCycleCard'
-import BranchUsageTable from './BranchUsageTable'
+import { Button } from 'ui'
+import { ScaffoldContainer, ScaffoldTitle } from 'components/layouts/Scaffold'
+import { LogsDatePicker } from 'components/interfaces/Settings/Logs/Logs.DatePickers'
+import ResourceUsageStats, { ResourceUsageMetric } from './ResourceUsageStats'
 import ExportModal from './ExportModal'
-import ResourceUsageStats from './ResourceUsageStats'
-import {
-  BILLING_CYCLES,
-  EXPORT_OPTIONS,
-  RESOURCE_METRICS,
-} from './constants'
-import { buildUsageForCycle } from './utils'
-import type { ExportFormat, SortConfig, SortableColumn } from './types'
+import { EXPORT_OPTIONS } from './constants'
+import type { ExportFormat } from './types'
+import { useOrganizationUsageQuery } from 'data/resources/organization-usage-query'
 
-const DEFAULT_SORT: SortConfig = {
-  column: 'totalRuntime',
-  direction: 'desc',
+type DateRange = {
+  from: string
+  to: string
+  isHelper?: boolean
+  text?: string
 }
 
 const Metering = () => {
-  const [selectedCycleId, setSelectedCycleId] = useState(BILLING_CYCLES[0].id)
+  const { slug: orgRef } = useParams()
+
+  // Default: last month → now (UTC)
+  const now = dayjs().utc().set('millisecond', 0)
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: now.subtract(1, 'month').toISOString(),
+    to: now.toISOString(),
+  })
+
   const [exportModalOpen, setExportModalOpen] = useState(false)
   const [exportFormat, setExportFormat] = useState<ExportFormat>('excel')
-  const [sortConfig, setSortConfig] = useState<SortConfig>(DEFAULT_SORT)
-  const [page, setPage] = useState(0)
-  const [pageSize, setPageSize] = useState(10)
 
-  const selectedCycle = useMemo(
-    () => BILLING_CYCLES.find((cycle) => cycle.id === selectedCycleId) ?? BILLING_CYCLES[0],
-    [selectedCycleId]
+  const {
+    data: orgUsage,
+    isLoading: usageLoading,
+    isError: usageError,
+    error: usageErrorObj,
+  } = useOrganizationUsageQuery(
+    {
+      orgRef,
+      start: dateRange.from,
+      end: dateRange.to,
+    },
+    { enabled: !!orgRef }
   )
 
-  const cycleIndex = useMemo(
-    () => Math.max(BILLING_CYCLES.findIndex((cycle) => cycle.id === selectedCycleId), 0),
-    [selectedCycleId]
-  )
+  // orgUsage shape:
+  // {
+  //   milli_vcpu?: number | null
+  //   ram?: number | null
+  //   iops?: number | null
+  //   storage_size?: number | null
+  //   database_size?: number | null
+  // }
 
-  const resourceStats = useMemo(
-    () =>
-      RESOURCE_METRICS.map((metric) => ({
-        ...metric,
-        value: selectedCycle.metrics[metric.key],
-      })),
-    [selectedCycle]
-  )
+const resourceStats: ResourceUsageMetric[] = useMemo(
+  () => [
+    {
+      key: 'milli_vcpu',
+      label: 'vCPU',
+      value: orgUsage?.milli_vcpu ?? 0,
+    },
+    {
+      key: 'ram',
+      label: 'RAM',
+      value: orgUsage?.ram ?? 0,
+    },
+    {
+      key: 'database_size',
+      label: 'Database',
+      value: orgUsage?.database_size ?? 0,
+    },
+    {
+      key: 'storage_size',
+      label: 'Storage',
+      value: orgUsage?.storage_size ?? 0,
+    },
+    {
+      key: 'iops',
+      label: 'IOPS',
+      value: orgUsage?.iops ?? 0,
+    },
+  ],
+  [orgUsage]
+)
 
-  const branchUsage = useMemo(
-    () => buildUsageForCycle(selectedCycle, cycleIndex),
-    [selectedCycle, cycleIndex]
-  )
-
-  const sortedRows = useMemo(() => {
-    const rows = [...branchUsage]
-    const { column, direction } = sortConfig
-
-    return rows.sort((a, b) => {
-      const multiplier = direction === 'asc' ? 1 : -1
-      const valueA = a[column]
-      const valueB = b[column]
-
-      if (typeof valueA === 'number' && typeof valueB === 'number') {
-        return (valueA - valueB) * multiplier
-      }
-      // @ts-ignore
-      return valueA.localeCompare(valueB, undefined, { sensitivity: 'base' }) * multiplier
-    })
-  }, [branchUsage, sortConfig])
-
-  const pageCount = useMemo(
-    () => Math.max(1, Math.ceil(sortedRows.length / pageSize)),
-    [sortedRows.length, pageSize]
-  )
-
-  const paginatedRows = useMemo(
-    () => sortedRows.slice(page * pageSize, page * pageSize + pageSize),
-    [sortedRows, page, pageSize]
-  )
-
-  useEffect(() => {
-    setPage(0)
-  }, [selectedCycleId, pageSize, sortConfig])
-
-  useEffect(() => {
-    if (page >= pageCount) {
-      setPage(Math.max(pageCount - 1, 0))
-    }
-  }, [page, pageCount])
-
-  const handleSort = (column: SortableColumn) => {
-    setSortConfig((prev) => {
-      if (prev.column === column) {
-        return {
-          column,
-          direction: prev.direction === 'asc' ? 'desc' : 'asc',
-        }
-      }
-
-      return {
-        column,
-        direction: 'desc',
-      }
-    })
-  }
 
   const handleExport = () => {
-    toast.success(`Preparing ${selectedCycle.label} usage export (${exportFormat.toUpperCase()})`)
+    toast.success(
+      `Preparing usage export (${exportFormat.toUpperCase()}) for ${dayjs(dateRange.from).format(
+        'DD MMM YYYY'
+      )} → ${dayjs(dateRange.to).format('DD MMM YYYY')}`
+    )
     setExportModalOpen(false)
   }
+
+  useEffect(() => {
+    if (usageError && usageErrorObj) {
+      toast.error(`Failed to load usage: ${usageErrorObj.message}`)
+    }
+  }, [usageError, usageErrorObj])
 
   return (
     <ScaffoldContainer bottomPadding className="py-6">
       <div className="flex flex-col gap-8">
+        {/* Header */}
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <ScaffoldTitle className="text-2xl font-semibold text-foreground">Metering</ScaffoldTitle>
+            <ScaffoldTitle className="text-2xl font-semibold text-foreground">
+              Metering
+            </ScaffoldTitle>
             <p className="text-sm text-foreground-light">
-              Analyze resource consumption across projects, review billing cycles, and export usage snapshots.
+              Analyze organization-wide resource consumption over a custom date range and export usage
+              snapshots.
             </p>
           </div>
+
           <div className="flex flex-wrap items-center gap-3">
-            <Listbox
-              size="tiny"
-              value={selectedCycleId}
-              onChange={(value: string) => setSelectedCycleId(value)}
-              buttonClassName="w-[200px]"
+            <LogsDatePicker
+              hideWarnings
+              value={dateRange}
+              onSubmit={(value) => setDateRange(value)}
+              helpers={[
+                {
+                  text: 'Last 24 hours',
+                  calcFrom: () => dayjs().utc().subtract(1, 'day').toISOString(),
+                  calcTo: () => dayjs().utc().toISOString(),
+                },
+                {
+                  text: 'Last 7 days',
+                  calcFrom: () => dayjs().utc().subtract(7, 'day').toISOString(),
+                  calcTo: () => dayjs().utc().toISOString(),
+                },
+                {
+                  text: 'Last 30 days',
+                  calcFrom: () => dayjs().utc().subtract(30, 'day').toISOString(),
+                  calcTo: () => dayjs().utc().toISOString(),
+                },
+              ]}
+            />
+
+            <Button
+              size="small"
+              icon={<Download size={16} />}
+              type="default"
+              onClick={() => setExportModalOpen(true)}  
             >
-              {BILLING_CYCLES.map((cycle) => (
-                <Listbox.Option key={cycle.id} id={cycle.id} value={cycle.id} label={cycle.label}>
-                  {cycle.label}
-                </Listbox.Option>
-              ))}
-            </Listbox>
-            <Button size={"small"} icon={<Download size={16} />} type="default" onClick={() => setExportModalOpen(true)}>
               Export
             </Button>
           </div>
         </div>
 
-        <BillingCycleCard cycle={selectedCycle} exportFormat={exportFormat} />
+        {/* Stat cards fed directly from orgUsage */}
+        <ResourceUsageStats metrics={resourceStats} loading={usageLoading} />
 
-        <ResourceUsageStats metrics={resourceStats} />
-
-        <BranchUsageTable
-          rows={paginatedRows}
-          sortConfig={sortConfig}
-          onSort={handleSort}
-          page={page}
-          pageCount={pageCount}
-          pageSize={pageSize}
-          onPageChange={setPage}
-          onPageSizeChange={setPageSize}
-        />
+        {/* BranchUsageTable intentionally omitted until per-branch usage is available */}
       </div>
 
       <ExportModal

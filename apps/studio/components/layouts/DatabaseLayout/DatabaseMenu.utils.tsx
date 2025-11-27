@@ -63,12 +63,12 @@ export const generateDatabaseMenu = (
           url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/indexes`,
           items: [],
         },
-        {
-          name: 'Publications',
-          key: 'publications',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/publications`,
-          items: [],
-        },
+        // {
+        //   name: 'Publications',
+        //   key: 'publications',
+        //   url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/publications`,
+        //   items: [],
+        // },
         ...(showPgReplicate
           ? [
               {

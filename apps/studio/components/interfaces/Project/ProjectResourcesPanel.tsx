@@ -1,5 +1,5 @@
 // components/interfaces/Project/ProjectResourcesPanel.tsx
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useProjectLimitsQuery } from 'data/resources/project-limits-query'
 import { useProjectUsageQuery } from 'data/resources/project-usage-query'
 import { cn } from 'ui'
@@ -33,8 +33,22 @@ export default function ProjectResourcesPanel({ orgRef, projectRef }: Props) {
     { orgRef, projectRef },
     { enabled: !!orgRef && !!projectRef }
   )
+
+    const [timeRange] = useState(() => {
+    const now = Date.now()
+    return {
+      start: new Date(now - 60_000).toISOString(),
+      end: new Date(now).toISOString(),
+    }
+  })
+
   const { data: usageObj, isLoading: loadingUsage } = useProjectUsageQuery(
-    { orgRef, projectRef },
+    {
+      orgRef,
+      projectRef,
+      start: timeRange.start,
+      end: timeRange.end,
+    },
     { enabled: !!orgRef && !!projectRef }
   )
 

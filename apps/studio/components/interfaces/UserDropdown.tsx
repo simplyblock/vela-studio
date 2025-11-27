@@ -62,7 +62,7 @@ export function UserDropdown() {
           )}
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem className="flex gap-2" asChild>
             <Link
               href="/account/me"
@@ -81,7 +81,7 @@ export function UserDropdown() {
             Command menu
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-        </DropdownMenuGroup>
+        </DropdownMenuGroup> */}
         <DropdownMenuGroup>
           <DropdownMenuLabel>Theme</DropdownMenuLabel>
           <DropdownMenuRadioGroup
