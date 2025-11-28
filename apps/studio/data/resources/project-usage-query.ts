@@ -33,7 +33,7 @@ async function getProjectUsage(
         query: {
           cycle_start: start,
           cycle_end: end,
-        }
+        },
       },
       signal,
     }
@@ -47,7 +47,7 @@ export type ProjectUsageData = Awaited<ReturnType<typeof getProjectUsage>>
 export type ProjectUsageError = ResponseError
 
 export const useProjectUsageQuery = <TData = ProjectUsageData>(
-  { orgRef, projectRef }: ProjectUsageVariables,
+  { orgRef, projectRef, start, end }: ProjectUsageVariables,
   {
     enabled = true,
     ...options
@@ -57,7 +57,7 @@ export const useProjectUsageQuery = <TData = ProjectUsageData>(
     ...options,
     queryKey: resourcesKeys.projectUsage(orgRef, projectRef), // FIXME: @Chris do we want to cache this?
     queryFn: async (context: QueryFunctionContext) =>
-      getProjectUsage({ orgRef, projectRef }, context.signal),
+      getProjectUsage({ orgRef, projectRef, start, end }, context.signal),
     enabled: enabled && typeof orgRef !== 'undefined' && typeof projectRef !== 'undefined',
   })
 }
