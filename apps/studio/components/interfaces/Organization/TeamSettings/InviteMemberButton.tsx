@@ -67,12 +67,13 @@ export const InviteMemberButton = () => {
         return toast('User is already in this organization')
       }
     }
-    // TODO: need to either remove the roleId from this invitation OR add back the roleId select to this form
+    // TODO: extend this dialog with first and last name fields
     inviteMember(
       {
         slug,
         email: values.email.toLowerCase(),
-        roleId: '', // no role selection for now
+        firstName: "",
+        lastName: "",
       },
       {
         onSuccess: () => {

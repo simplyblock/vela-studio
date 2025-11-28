@@ -1,7 +1,5 @@
 import { useMutation, UseMutationOptions, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-
-import { components } from 'api-types'
 import { handleError, post } from 'data/fetchers'
 import { organizationKeys as organizationKeysV1 } from 'data/organizations/keys'
 import type { ResponseError } from 'types'
@@ -10,22 +8,27 @@ import { organizationKeys } from './keys'
 export type OrganizationCreateInvitationVariables = {
   slug: string
   email: string
-  roleId: string
-  projects?: string[]
+  firstName: string
+  lastName: string
 }
 
 export async function createOrganizationInvitation({
   slug,
   email,
-  roleId,
-  projects,
+  firstName,
+  lastName,
 }: OrganizationCreateInvitationVariables) {
-  const payload: components['schemas']['CreateInvitationBody'] = { email, role_id: roleId }
-  if (projects !== undefined) payload.role_scoped_projects = projects
-
   const { data, error } = await post('/platform/organizations/{slug}/members/invitations', {
-    params: { path: { slug } },
-    body: payload,
+    params: {
+      path: {
+        slug,
+      },
+    },
+    body: {
+      email,
+      first_name: firstName,
+      last_name: lastName,
+    },
   })
 
   if (error) handleError(error)

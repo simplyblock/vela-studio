@@ -14464,7 +14464,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'CreateInvitationBody'>
+        'application/json': VelaType<'UserParameters'>
       }
     }
     responses: {
