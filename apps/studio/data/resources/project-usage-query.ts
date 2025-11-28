@@ -56,6 +56,7 @@ export const useProjectUsageQuery = <TData = ProjectUsageData>(
   return useQuery<ProjectUsageData, ProjectUsageError, TData>({
     ...options,
     queryKey: resourcesKeys.projectUsage(orgRef, projectRef), // FIXME: @Chris do we want to cache this?
+    staleTime: 60000,
     queryFn: async (context: QueryFunctionContext) =>
       getProjectUsage({ orgRef, projectRef, start, end }, context.signal),
     enabled: enabled && typeof orgRef !== 'undefined' && typeof projectRef !== 'undefined',

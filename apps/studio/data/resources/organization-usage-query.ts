@@ -53,6 +53,7 @@ export const useOrganizationUsageQuery = <TData = OrganizationUsageData>(
   return useQuery<OrganizationUsageData, OrganizationUsageError, TData>({
     ...options,
     queryKey: resourcesKeys.organizationUsage(orgRef), // FIXME: @Chris do we want to cache this?
+    staleTime: 60000,
     queryFn: async (context: QueryFunctionContext) =>
       getOrganizationUsage({ orgRef, start, end }, context.signal),
     enabled: enabled && typeof orgRef !== 'undefined',
