@@ -76,7 +76,10 @@ export const OrganizationDropdown = () => {
               <CommandGroup_Shadcn_>
                 <ScrollArea className={(organizations || []).length > 7 ? 'h-[210px]' : ''}>
                   {organizations?.map((org) => {
-                    const href = !!routeSlug
+                    const pathname = router.pathname
+                    const isWizard = pathname.includes("/new")
+                    const hasProjectSegment = pathname.includes("[ref]")
+                    const href = !!routeSlug && !isWizard && !hasProjectSegment
                       ? router.pathname.replace('[slug]', org.id!)
                       : `/org/${org.id}`
 

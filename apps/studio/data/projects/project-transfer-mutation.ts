@@ -52,8 +52,8 @@ export const useProjectTransferMutation = ({
           queryClient.invalidateQueries(
             projectKeys.projectTransferPreview(projectRef, targetOrganizationSlug)
           ),
-          queryClient.invalidateQueries(projectKeys.detail(slug as string, projectRef)),
-          queryClient.invalidateQueries(projectKeys.list()),
+          queryClient.invalidateQueries(projectKeys.detail(slug, projectRef)),
+          queryClient.invalidateQueries(projectKeys.orgProjects(slug)),
         ])
         await onSuccess?.(data, variables, context)
       },

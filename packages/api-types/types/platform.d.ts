@@ -32,7 +32,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['ResourceController_getOrganizationUsage']
+    get: operations['ResourceController_getProjectUsage']
     put?: never
     post?: never
     delete?: never
@@ -14464,7 +14464,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': PlatformType<'CreateInvitationBody'>
+        'application/json': VelaType<'UserParameters'>
       }
     }
     responses: {
