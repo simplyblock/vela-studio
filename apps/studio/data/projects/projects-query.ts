@@ -48,7 +48,7 @@ export const useProjectsQuery = <TData = ProjectsData>({
   const { profile } = useProfile()
   const { slug } = getPathReferences()
   return useQuery<ProjectsData, ProjectsError, TData>(
-    projectKeys.list(),
+    projectKeys.orgProjects(slug),
     ({ signal }) => getProjects({ signal, orgRef: slug }),
     {
       enabled: enabled && profile !== undefined && typeof slug !== 'undefined',
@@ -60,7 +60,7 @@ export const useProjectsQuery = <TData = ProjectsData>({
 
 export function prefetchProjects(client: QueryClient, organization?: Organization | undefined) {
   if (typeof organization === 'undefined') return Promise.resolve()
-  return client.prefetchQuery(projectKeys.list(), ({ signal }) =>
+  return client.prefetchQuery(projectKeys.orgProjects(organization?.id), ({ signal }) =>
     getProjects({ signal, orgRef: organization?.id })
   )
 }
@@ -95,7 +95,7 @@ export function setProjectStatus(
   status: ProjectDetail['status']
 ) {
   client.setQueriesData<ProjectDetail[] | undefined>(
-    projectKeys.list(),
+    projectKeys.orgProjects(slug),
     (old) => {
       if (!old) return old
 

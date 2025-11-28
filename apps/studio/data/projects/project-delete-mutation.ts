@@ -41,7 +41,7 @@ export const useProjectDeleteMutation = ({
     (vars) => deleteProject(vars),
     {
       async onSuccess(data, variables, context) {
-        await queryClient.invalidateQueries(projectKeys.list())
+        await queryClient.invalidateQueries(projectKeys.orgProjects(variables.organizationSlug))
 
         if (variables.organizationSlug) {
           queryClient.invalidateQueries(

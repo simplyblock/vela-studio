@@ -32,7 +32,7 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['ResourceController_getOrganizationUsage']
+    get: operations['ResourceController_getProjectUsage']
     put?: never
     post?: never
     delete?: never

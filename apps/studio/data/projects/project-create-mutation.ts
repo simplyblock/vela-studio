@@ -55,8 +55,8 @@ export const useProjectCreateMutation = ({
     },
     {
       async onSuccess(data, variables, context) {
-        await queryClient.invalidateQueries(projectKeys.list()),
-          await onSuccess?.(data, variables, context)
+        await queryClient.invalidateQueries(projectKeys.orgProjects(variables.organizationSlug))
+        await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {
         if (onError === undefined) {

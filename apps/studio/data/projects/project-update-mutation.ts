@@ -49,8 +49,8 @@ export const useProjectUpdateMutation = ({
       async onSuccess(data, variables, context) {
         const { ref } = variables
         await Promise.all([
-          queryClient.invalidateQueries(projectKeys.list()),
-          queryClient.invalidateQueries(projectKeys.detail(slug as string, ref)),
+          queryClient.invalidateQueries(projectKeys.orgProjects(slug)),
+          queryClient.invalidateQueries(projectKeys.detail(slug, ref)),
         ])
         await onSuccess?.(data, variables, context)
       },
