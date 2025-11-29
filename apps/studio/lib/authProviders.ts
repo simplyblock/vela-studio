@@ -33,7 +33,15 @@ const knownAuthorizationUrls: { name: string; hostname: string; icon: string }[]
 ]
 
 export const changeableAuthProviderFields = [
-  'alias',
+  'clientId',
+  'issuer',
+  'authorizationUrl',
+  'tokenUrl',
+  'userInfoUrl',
+]
+
+export const creatableAuthProviderFields = [
+  'displayName',
   'clientId',
   'issuer',
   'authorizationUrl',
@@ -42,7 +50,7 @@ export const changeableAuthProviderFields = [
 ]
 
 export const authProviderFieldProperties: Record<string, AuthProviderField> = {
-  alias: {
+  displayName: {
     title: 'Auth Provider Name',
     description: 'The name of the auth provider configuration',
     type: 'string',

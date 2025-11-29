@@ -407,7 +407,7 @@ export interface paths {
     }
     get: operations['BranchAuthController_getProviders']
     put?: never
-    post?: never
+    post: operations['BranchAuthController_createProvider']
     delete?: never
     options?: never
     head?: never
@@ -4944,6 +4944,16 @@ export interface components {
       access?: {
         [key: string]: boolean
       }
+    }
+    AuthProviderCreateBody: {
+      alias?: string
+      displayName?: string
+      authorizationUrl?: string
+      clientId?: string
+      issuer?: string
+      tokenUrl?: string
+      userInfoUrl?: string
+      [key: string]: string
     }
     AuthProviderUpdateBody: {
       alias?: string
@@ -10369,6 +10379,44 @@ export interface operations {
       }
     }
   }
+  BranchAuthController_createProvider: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': PlatformType<'AuthProviderCreateBody'>
+      }
+    }
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to update GoTrue config hooks */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   BranchAuthController_updateProvider: {
     parameters: {
       query?: never
@@ -13288,7 +13336,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': (Omit<VelaType<'Organization'>, "environments"> & {
+          'application/json': (Omit<VelaType<'Organization'>, 'environments'> & {
             env_types?: string[]
           })[]
         }
@@ -13311,7 +13359,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': Omit<VelaType<'OrganizationCreate'>, "environments"> & {
+        'application/json': Omit<VelaType<'OrganizationCreate'>, 'environments'> & {
           env_types?: string[]
         }
       }
@@ -13407,7 +13455,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': Omit<VelaType<'OrganizationUpdate'>, "environments"> & {
+        'application/json': Omit<VelaType<'OrganizationUpdate'>, 'environments'> & {
           env_types?: string[]
         }
       }

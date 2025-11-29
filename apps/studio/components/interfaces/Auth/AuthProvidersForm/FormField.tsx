@@ -45,7 +45,7 @@ const FormField = ({
       if (!properties.show.matches.includes(formValues[properties.show.key])) {
         return null
       }
-    } else if (!formValues[properties.show.key]) {
+    } else if (formValues[properties.show.key] === undefined) {
       return null
     }
   }

@@ -4,21 +4,26 @@ import { toast } from 'sonner'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { authKeys } from './keys'
-import { components } from 'api-types'
-
-type AuthProviderCreateBody = components['schemas']['AuthProviderCreateBody']
 
 export type AuthProviderCreateVariables = {
-  orgId: string
-  projectId: string
-  branchId: string
-  create: AuthProviderCreateBody
+  orgRef: string
+  projectRef: string
+  branchRef: string
+  create: {
+    alias: string
+    authorizationUrl: string
+    clientId: string
+    displayName: string
+    issuer: string
+    tokenUrl: string
+    userInfoUrl: string
+  }
 }
 
 export async function createAuthProvider({
-  orgId,
-  projectId,
-  branchId,
+  orgRef,
+  projectRef,
+  branchRef,
   create,
 }: AuthProviderCreateVariables) {
   const { data, error } = await post(
@@ -26,9 +31,9 @@ export async function createAuthProvider({
     {
       params: {
         path: {
-          slug: orgId,
-          ref: projectId,
-          branch: branchId,
+          slug: orgRef,
+          ref: projectRef,
+          branch: branchRef,
         },
       },
       body: create,
@@ -54,8 +59,8 @@ export const useAuthProviderCreateMutation = ({
     (vars) => createAuthProvider(vars),
     {
       async onSuccess(data, variables, context) {
-        const { orgId, projectId, branchId } = variables
-        await queryClient.invalidateQueries(authKeys.authProviders(orgId, projectId, branchId))
+        const { orgRef, projectRef, branchRef } = variables
+        await queryClient.invalidateQueries(authKeys.authProviders(orgRef, projectRef, branchRef))
         await onSuccess?.(data, variables, context)
       },
       async onError(data, variables, context) {
