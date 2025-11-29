@@ -1,8 +1,7 @@
-import { ConnectionPooling, NetworkRestrictions } from 'components/interfaces/Settings/Database'
+import { ConnectionPooling } from 'components/interfaces/Settings/Database'
 import { DatabaseReadOnlyAlert } from 'components/interfaces/Settings/Database/DatabaseReadOnlyAlert'
 import ResetDbPassword from 'components/interfaces/Settings/Database/DatabaseSettings/ResetDbPassword'
 import { PoolingModesModal } from 'components/interfaces/Settings/Database/PoolingModesModal'
-import SSLConfiguration from 'components/interfaces/Settings/Database/SSLConfiguration'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import DatabaseLayout from 'components/layouts/DatabaseLayout/DatabaseLayout'
 import { ScaffoldContainer, ScaffoldHeader, ScaffoldTitle } from 'components/layouts/Scaffold'
@@ -24,8 +23,9 @@ const ProjectSettings: NextPageWithLayout = () => {
             <ConnectionPooling />
           </div>
 
+          { /* Disabled for now
           <SSLConfiguration />
-          <NetworkRestrictions />
+          <NetworkRestrictions /> */ }
         </div>
       </ScaffoldContainer>
       <PoolingModesModal />
