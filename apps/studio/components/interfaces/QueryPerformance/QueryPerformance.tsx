@@ -41,7 +41,7 @@ export const QueryPerformance = ({
   queryHitRate,
   queryPerformanceQuery,
 }: QueryPerformanceProps) => {
-  const { ref } = useParams()
+  const { ref, branch: branchRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
   const state = useDatabaseSelectorStateSnapshot()
 
@@ -123,8 +123,8 @@ export const QueryPerformance = ({
   ])
 
   useEffect(() => {
-    state.setSelectedDatabaseId(ref)
-  }, [ref])
+    state.setSelectedDatabaseId(branchRef)
+  }, [branchRef])
 
   return (
     <>

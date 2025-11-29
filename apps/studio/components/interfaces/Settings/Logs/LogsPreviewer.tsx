@@ -179,7 +179,7 @@ export const LogsPreviewer = ({
           query: { ...router.query, db: state.selectedDatabaseId },
         })
       } else {
-        state.setSelectedDatabaseId(projectRef)
+        state.setSelectedDatabaseId(branchRef)
       }
     }
   }, [db, isSuccess])

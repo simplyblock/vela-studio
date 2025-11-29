@@ -18,7 +18,7 @@ export type UtilityTabResultsProps = {
 
 const UtilityTabResults = forwardRef<HTMLDivElement, UtilityTabResultsProps>(
   ({ id, isExecuting }) => {
-    const { slug: orgSlug, ref } = useParams()
+    const { slug: orgSlug, ref, branch: branchRef } = useParams()
     const state = useDatabaseSelectorStateSnapshot()
     const snapV2 = useSqlEditorV2StateSnapshot()
     const [, setShowConnect] = useQueryState('showConnect', parseAsBoolean.withDefault(false))
@@ -122,7 +122,7 @@ const UtilityTabResults = forwardRef<HTMLDivElement, UtilityTabResultsProps>(
                   className="py-2"
                   type="default"
                   onClick={() => {
-                    state.setSelectedDatabaseId(ref)
+                    state.setSelectedDatabaseId(branchRef)
                     snapV2.resetResult(id)
                   }}
                 >

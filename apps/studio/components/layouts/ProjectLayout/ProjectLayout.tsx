@@ -244,7 +244,7 @@ interface ContentWrapperProps {
 
 const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapperProps) => {
   const router = useRouter()
-  const { ref } = useParams()
+  const { ref, branch: branchRef } = useParams()
   const state = useDatabaseSelectorStateSnapshot()
   const { data: selectedProject } = useSelectedProjectQuery()
 
@@ -270,8 +270,8 @@ const ContentWrapper = ({ isLoading, isBlocking = true, children }: ContentWrapp
   const isProjectOffline = selectedProject?.status === 'PAUSED'
 
   useEffect(() => {
-    if (ref) state.setSelectedDatabaseId(ref)
-  }, [ref])
+    if (branchRef) state.setSelectedDatabaseId(branchRef)
+  }, [branchRef])
 
   if (isBlocking && (isLoading || (requiresProjectDetails && selectedProject === undefined))) {
     return router.pathname.endsWith('[ref]') ? <LoadingState /> : <Loading />
