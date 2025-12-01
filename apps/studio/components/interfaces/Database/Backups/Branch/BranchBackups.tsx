@@ -200,15 +200,17 @@ const BranchBackups = () => {
                         Review available snapshots and create manual backups for this branch.
                       </p>
                     </div>
-                    <Button
-                      type="outline"
-                      onClick={handleCreateBackup}
-                      disabled={isCreating || !orgId || !projectId || !branchId}
-                      className="flex items-center gap-2"
-                    >
+                  <Button
+                    type="outline"
+                    onClick={handleCreateBackup}
+                    disabled={isCreating || !orgId || !projectId || !branchId}
+                  >
+                    <div className="flex flex-row items-center gap-2">
                       {isCreating && <Loader2 className="h-4 w-4 animate-spin" />}
-                      Start manual backup
-                    </Button>
+                      <span>Start manual backup</span>
+                    </div>
+                  </Button>
+
                   </CardHeader>
                   <CardContent>
                     {isLoading ? (
