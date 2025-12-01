@@ -6,7 +6,7 @@ import { PageLayout } from '../PageLayout/PageLayout'
 import AdvisorsLayout from './AdvisorsLayout'
 
 export const AdvisorRulesLayout = ({ children }: PropsWithChildren<{}>) => {
-  const { ref: orgRef, slug: projectRef, branch: branchRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   return (
     <DefaultLayout>
       <AdvisorsLayout>
