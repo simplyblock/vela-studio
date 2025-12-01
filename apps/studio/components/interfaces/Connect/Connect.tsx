@@ -191,13 +191,15 @@ export const Connect = () => {
   return (
     <Dialog open={showConnect} onOpenChange={(open) => setShowConnect(!open ? null : open)}>
       <DialogTrigger asChild>
-        <Button
-          type="default"
-          className="rounded-md bg-transparent border-2 border-[hsl(var(--brand-default))] text-black dark:text-white hover:bg-[#2a2a2a] hover:text-white hover:border-purple-500 dark:hover:bg-purple-900 dark:hover:border-purple-500"
-          icon={<Cable size={16} className="text-black dark:text-white" />}
-        >
-          <span>Connect</span>
-        </Button>
+      <Button
+        type="default"
+        className="font-medium border-2 shadow-sm"
+        icon={<Cable size={16} />}
+      >
+        Connect
+      </Button>
+
+
       </DialogTrigger>
       <DialogContent className={cn('sm:max-w-5xl p-0')} centered={false}>
         <DialogHeader className={DIALOG_PADDING_X}>

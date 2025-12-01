@@ -3,9 +3,7 @@
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { isUndefined } from 'lodash'
 import {
-  CalendarClock,
   ChartArea,
-  Blocks,
   CopyPlus,
   HardDrive,
   PanelLeftOpen,
@@ -111,11 +109,11 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
                   <TooltipTrigger asChild>
                     <DropdownMenuTrigger asChild>
                       <SidebarMenuButton
-                        className={cn(
-                          'justify-center hover:bg-brand-400 hover:text-white dark:hover:bg-brand-400 dark:hover:text-white',
-                          sidebarBehaviour === 'open' ? '!px-2' : ''
-                        )}
                         size="default"
+                        className={cn(
+                          'inline-flex h-8 w-8 items-center justify-center rounded-md',
+                          'hover:bg-brand-400 hover:text-white dark:hover:bg-brand-400 dark:hover:text-white'
+                        )}
                       >
                         {state === 'collapsed' ? (
                           <PanelLeftOpen size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />
@@ -125,10 +123,13 @@ export const Sidebar = ({ className, ...props }: SidebarProps) => {
                       </SidebarMenuButton>
                     </DropdownMenuTrigger>
                   </TooltipTrigger>
+
                   <TooltipContent side="right">
                     {state === 'collapsed' ? 'Extend Sidebar' : 'Collapse Sidebar'}
                   </TooltipContent>
                 </Tooltip>
+
+
                 <DropdownMenuContent side="top" align="start" className="w-40">
                   <DropdownMenuRadioGroup
                     value={sidebarBehaviour}

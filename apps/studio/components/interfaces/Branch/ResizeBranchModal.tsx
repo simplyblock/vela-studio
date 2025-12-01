@@ -16,7 +16,11 @@ import {
 } from 'ui'
 import { toast } from 'sonner'
 
-import { useBranchSliderResourceLimits, SliderSpecification, ResourceType } from 'data/resource-limits/branch-slider-resource-limits'
+import {
+  useBranchSliderResourceLimits,
+  SliderSpecification,
+  ResourceType,
+} from 'data/resource-limits/branch-slider-resource-limits'
 import { useBranchResizeMutation } from 'data/branches/branch-resize-mutation'
 
 type BranchMaxResources = {
@@ -32,6 +36,7 @@ type Props = {
   projectRef: string
   branchId: string
   branchMax: BranchMaxResources
+  ramUsageBytes: number // RAM usage as bytes (for “usage + 20%” rule)
   triggerClassName?: string
 }
 
@@ -50,11 +55,22 @@ type FormValues = {
  * - current values read from branchMax prop (no internal effective-limits query)
  * - displays current vs new values and submits changed API params
  */
-export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branchId, branchMax, triggerClassName }) => {
+export const BranchResizeModal: React.FC<Props> = ({
+  orgSlug,
+  projectRef,
+  branchId,
+  branchMax,
+  ramUsageBytes,
+  triggerClassName,
+}) => {
   const [open, setOpen] = useState(false)
 
   // slider specs (merged system + project limits)
-  const { isLoading: specsLoading, data: specs } = useBranchSliderResourceLimits(undefined, orgSlug, projectRef)
+  const { isLoading: specsLoading, data: specs } = useBranchSliderResourceLimits(
+    undefined,
+    orgSlug,
+    projectRef
+  )
 
   const resize = useBranchResizeMutation({
     onSuccess: () => {
@@ -88,15 +104,65 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
     }
   }, [specs])
 
+  const hasStorage =
+    !!sliderSpecs.storage_size && branchMax.storage_bytes !== null && branchMax.storage_bytes !== undefined
+
   // helper: convert API value (branchMax) -> display value using spec.divider
   const apiToDisplay = (rk: ResourceType, apiVal?: number | null) => {
     const s = sliderSpecs[rk]
     if (!s || apiVal == null) return undefined
-    // round/display as integer (UI shows integers for these specs)
-    return Math.round(apiVal / s.divider)
+    return apiVal / s.divider
   }
 
-  // initialize form values when modal opens (use branchMax when available, else spec.initial / min)
+  /**
+   * Effective minimum per resource type, applying downsizing rules:
+   *
+   * - milli_vcpu: can downsize to spec.min
+   * - iops:       can downsize to spec.min
+   * - ram:        can downsize to max(spec.min, ramUsage + 20%)
+   * - database_size: cannot downsize -> min = current
+   * - storage_size:  cannot downsize -> min = current (only if we have storage)
+   */
+  const getEffectiveMin = (rk: ResourceType, s: SliderSpecification): number => {
+    switch (rk) {
+      case 'ram': {
+        const usageBytes = ramUsageBytes ?? 0
+        const usageDisplay = usageBytes / s.divider
+        const lowerBound = usageDisplay * 1.2
+        return Math.min(s.max, Math.max(s.min, lowerBound))
+      }
+      case 'database_size': {
+        const currentDisplay = apiToDisplay('database_size', branchMax?.nvme_bytes ?? null)
+        if (currentDisplay == null) return s.min
+        return Math.min(s.max, Math.max(s.min, currentDisplay))
+      }
+      case 'storage_size': {
+        const currentDisplay = apiToDisplay('storage_size', branchMax?.storage_bytes ?? null)
+        if (currentDisplay == null) return s.min
+        return Math.min(s.max, Math.max(s.min, currentDisplay))
+      }
+      // milli_vcpu and iops can go all the way down to spec.min
+      case 'milli_vcpu':
+      case 'iops':
+      default:
+        return s.min
+    }
+  }
+
+  // handy RAM info for the explanation card
+  const ramInfo = useMemo(() => {
+    const s = sliderSpecs.ram
+    if (!s) return null
+    const usageDisplay = ramUsageBytes ? ramUsageBytes / s.divider : undefined
+    const minDisplay = getEffectiveMin('ram', s)
+    return {
+      usageDisplay,
+      minDisplay,
+      unit: s.unit,
+    }
+  }, [sliderSpecs, ramUsageBytes])
+
+  // initialize form values when modal opens (use branchMax when available, else spec.initial / effectiveMin)
   useEffect(() => {
     if (!open) return
     if (!specs) return
@@ -106,7 +172,9 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
     const pick = (rk: ResourceType) => {
       const s = sliderSpecs[rk]
       if (!s) return 0
-      // map branchMax keys to resource types
+
+      const effectiveMin = getEffectiveMin(rk, s)
+
       let apiCurrent: number | null = null
       switch (rk) {
         case 'milli_vcpu':
@@ -122,23 +190,34 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
           apiCurrent = branchMax?.nvme_bytes ?? null
           break
         case 'storage_size':
-          apiCurrent = branchMax?.storage_bytes ?? null
+          apiCurrent = hasStorage ? branchMax?.storage_bytes ?? null : null
           break
       }
-      if (apiCurrent != null) return Math.min(s.max, Math.max(s.min, Math.round(apiCurrent / s.divider)))
-      if (typeof s.initial === 'number') return Math.min(s.max, Math.max(s.min, Math.round(s.initial)))
-      return s.min
+
+      if (apiCurrent != null) {
+        const displayVal = apiCurrent / s.divider
+        return Math.min(s.max, Math.max(effectiveMin, displayVal))
+      }
+
+      if (typeof s.initial === 'number') {
+        const displayVal = s.initial
+        return Math.min(s.max, Math.max(effectiveMin, displayVal))
+      }
+
+      return effectiveMin
     }
 
     initial.milli_vcpu = pick('milli_vcpu')
     initial.ram = pick('ram')
     initial.iops = pick('iops')
     initial.database_size = pick('database_size')
-    initial.storage_size = pick('storage_size')
+    if (hasStorage) {
+      initial.storage_size = pick('storage_size')
+    }
 
     reset(initial as FormValues)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, specs, branchMax])
+  }, [open, specs, branchMax, ramUsageBytes, hasStorage])
 
   // build parameters: convert display -> API units using spec.divider, compare to branchMax and include only diffs
   const buildParameters = () => {
@@ -151,12 +230,17 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
       storage_size?: number | null
     } = {}
 
-    const cur = branchMax 
+    const cur = branchMax
 
-    const diffSet = (rk: ResourceType, displayVal: number | undefined, curApi: number | null | undefined, targetKey: keyof typeof params) => {
+    const diffSet = (
+      rk: ResourceType,
+      displayVal: number | undefined,
+      curApi: number | null | undefined,
+      targetKey: keyof typeof params
+    ) => {
       const s = sliderSpecs[rk]
       if (!s || displayVal == null) return
-      const apiVal = Math.round(displayVal * s.divider)
+      const apiVal = displayVal * s.divider
       if (curApi == null || apiVal !== curApi) params[targetKey] = apiVal
     }
 
@@ -164,7 +248,13 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
     diffSet('ram', values.ram, cur.ram_bytes, 'memory_bytes')
     diffSet('iops', values.iops, cur.iops, 'iops')
     diffSet('database_size', values.database_size, cur.nvme_bytes, 'database_size')
-    diffSet('storage_size', values.storage_size, cur.storage_bytes ?? null, 'storage_size')
+
+    // storage_size: if we *don't* have storage, we explicitly send null
+    if (!hasStorage) {
+      params.storage_size = null
+    } else {
+      diffSet('storage_size', values.storage_size, cur.storage_bytes ?? null, 'storage_size')
+    }
 
     return params
   }
@@ -186,15 +276,19 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
       return
     }
 
-    resize.mutate({ orgSlug, projectRef, branch: branchId, parameters: parameters as any }, {
-      onError: (err: any) => toast.error(err?.message ?? 'Failed to resize branch'),
-    })
+    resize.mutate(
+      { orgSlug, projectRef, branch: branchId, parameters: parameters as any },
+      {
+        onError: (err: any) => toast.error(err?.message ?? 'Failed to resize branch'),
+      }
+    )
   }
 
   // render a slider row with Current (from branchMax) and New values
   const renderSliderRow = (rk: ResourceType) => {
     const s = sliderSpecs[rk]
     if (!s) return null
+
     const currentDisplay = (() => {
       switch (rk) {
         case 'milli_vcpu':
@@ -206,13 +300,14 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
         case 'database_size':
           return apiToDisplay('database_size', branchMax?.nvme_bytes ?? null)
         case 'storage_size':
-          return apiToDisplay('storage_size', branchMax?.storage_bytes ?? null)
+          return hasStorage ? apiToDisplay('storage_size', branchMax?.storage_bytes ?? null) : undefined
         default:
           return undefined
       }
     })()
 
     const value = watch(rk as keyof FormValues) as number
+    const effectiveMin = getEffectiveMin(rk, s)
 
     return (
       <div key={rk} className="space-y-2">
@@ -220,10 +315,21 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
           <Label_Shadcn_ htmlFor={`resize-${rk}`}>{s.label ?? rk}</Label_Shadcn_>
           <div className="text-right">
             <div className="text-[11px] text-foreground-muted font-mono">
-              Current: <span className="inline-block w-20 text-right">{currentDisplay ?? '—'}</span> {s.unit}
+              Current:{' '}
+              <span className="inline-block w-20 text-right">
+                {currentDisplay ?? '—'}
+              </span>{' '}
+              {s.unit}
             </div>
             <div className="text-[11px] text-foreground-muted font-mono">
-              New: <span className="inline-block w-20 text-right">{Math.round(value)}</span> {s.unit}
+              New:{' '}
+              <span className="inline-block w-20 text-right">
+                {value}
+              </span>{' '}
+              {s.unit}
+            </div>
+            <div className="text-[10px] text-foreground-muted font-mono">
+              Min allowed: {effectiveMin} {s.unit}
             </div>
           </div>
         </div>
@@ -232,13 +338,16 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
 
         <Slider_Shadcn_
           id={`resize-${rk}`}
-          min={s.min}
+          min={effectiveMin}
           max={s.max}
           step={s.step}
-          value={[watch(rk as keyof FormValues) as number]}
+          value={[value]}
           onValueChange={(v) => {
             const [next] = v
-            setValue(rk as keyof FormValues, next, { shouldDirty: true, shouldValidate: false })
+            setValue(rk as keyof FormValues, next, {
+              shouldDirty: true,
+              shouldValidate: false,
+            })
           }}
           disabled={loading}
         />
@@ -265,29 +374,71 @@ export const BranchResizeModal: React.FC<Props> = ({ orgSlug, projectRef, branch
           <DialogSection padding="medium" className="space-y-6">
             {configMissing ? (
               <Card className="p-4">
-                <p className="text-sm text-foreground-muted">Unable to load slider configuration. Please try again later.</p>
+                <p className="text-sm text-foreground-muted">
+                  Unable to load slider configuration. Please try again later.
+                </p>
               </Card>
             ) : (
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-foreground">Database & compute</p>
-                <div className="grid gap-6 md:grid-cols-2">
-                  {renderSliderRow('milli_vcpu')}
-                  {renderSliderRow('ram')}
-                  {renderSliderRow('database_size')}
-                  {renderSliderRow('iops')}
-                  {renderSliderRow('storage_size')}
+              <>
+                {/* Explanation card: what is downsizeable and the RAM thresholds */}
+                <Card className="p-4 space-y-2">
+                  <p className="text-sm font-medium text-foreground">How resizing works</p>
+                  <ul className="list-disc pl-4 text-xs text-foreground-muted space-y-1">
+                    <li>CPU (vCPU) and IOPS can be resized up or down within their limits.</li>
+                    <li>
+                      RAM can only be decreased down to 120% of the current RAM usage to avoid
+                      over-aggressive downsizing.
+                    </li>
+                    <li>
+                      Database size
+                      {hasStorage && ' and file storage size'} can only be increased, not decreased.
+                    </li>
+                  </ul>
+                  {ramInfo && (
+                    <div className="mt-2 text-xs text-foreground-muted font-mono space-y-1">
+                      {ramInfo.usageDisplay !== undefined && (
+                        <div>
+                          Current RAM usage: {ramInfo.usageDisplay} {ramInfo.unit}
+                        </div>
+                      )}
+                      <div>
+                        Minimum allowed RAM after resize: {ramInfo.minDisplay} {ramInfo.unit}
+                      </div>
+                    </div>
+                  )}
+                </Card>
+
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-foreground">Database &amp; compute</p>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    {renderSliderRow('milli_vcpu')}
+                    {renderSliderRow('ram')}
+                    {renderSliderRow('database_size')}
+                    {renderSliderRow('iops')}
+                    {hasStorage && renderSliderRow('storage_size')}
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </DialogSection>
 
           <DialogSectionSeparator />
 
           <DialogFooter padding="small" className="gap-2">
-            <Button type="default" htmlType="button" onClick={() => setOpen(false)} disabled={loading}>
+            <Button
+              type="default"
+              htmlType="button"
+              onClick={() => setOpen(false)}
+              disabled={loading}
+            >
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit" loading={loading} disabled={loading || configMissing}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              disabled={loading || configMissing}
+            >
               Apply changes
             </Button>
           </DialogFooter>

@@ -1,10 +1,9 @@
 // components/interfaces/Project/ProjectResourcesBadge.tsx
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Tooltip, TooltipTrigger, TooltipContent, cn } from 'ui'
 import { useProjectLimitsQuery } from 'data/resources/project-limits-query'
 import { useProjectUsageQuery } from 'data/resources/project-usage-query'
 import { divideValue, formatResource } from './utils'
-
 
 type ProjectLimitsItem = {
   resource: 'milli_vcpu' | 'ram' | 'iops' | 'storage_size' | 'database_size'
@@ -12,41 +11,53 @@ type ProjectLimitsItem = {
   max_per_branch: number
 }
 
+type ProjectUsageShape = {
+  milli_vcpu?: number | null | undefined
+  ram?: number | null | undefined
+  iops?: number | null | undefined
+  storage_size?: number | null | undefined
+  database_size?: number | null | undefined
+}
+
 /**
- * Accepts either fetched data or will fetch itself if orgRef + projectRef are provided.
+ * Shows project resource usage for the last minute.
+ * Fetches its own limits + usage based on orgRef + projectRef.
  */
 export const ProjectResourcesBadge = ({
   orgRef,
   projectRef,
-  projectLimits,
-  projectUsage,
   size = 36,
 }: {
   orgRef?: string
   projectRef?: string
-  projectLimits?: ProjectLimitsItem[] | undefined
-  projectUsage?:
-    | {
-        milli_vcpu?: number | null | undefined
-        ram?: number | null | undefined
-        iops?: number | null | undefined
-        storage_size?: number | null | undefined
-        database_size?: number | null | undefined
-      }
-    | undefined
   size?: number
 }) => {
+  // Fix "last minute" window at mount time so the query key stays stable
+  const [timeRange] = useState(() => {
+    const now = Date.now()
+    return {
+      start: new Date(now - 60_000).toISOString(),
+      end: new Date(now).toISOString(),
+    }
+  })
+
   const limitsQuery = useProjectLimitsQuery(
     { orgRef: orgRef!, projectRef: projectRef! },
-    { enabled: !projectLimits && !!orgRef && !!projectRef }
-  )
-  const usageQuery = useProjectUsageQuery(
-    { orgRef: orgRef!, projectRef: projectRef! },
-    { enabled: !projectUsage && !!orgRef && !!projectRef }
+    { enabled: !!orgRef && !!projectRef }
   )
 
-  const limitsData: ProjectLimitsItem[] | undefined = projectLimits ?? (limitsQuery.data as any)
-  const usageData = projectUsage ?? (usageQuery.data as any)
+  const usageQuery = useProjectUsageQuery(
+    {
+      orgRef: orgRef!,
+      projectRef: projectRef!,
+      start: timeRange.start,
+      end: timeRange.end,
+    },
+    { enabled: !!orgRef && !!projectRef }
+  )
+
+  const limitsData = limitsQuery.data as ProjectLimitsItem[] | undefined
+  const usageData = usageQuery.data as ProjectUsageShape | undefined
 
   const rows = useMemo(() => {
     if (!limitsData && !usageData) return []
@@ -68,7 +79,7 @@ export const ProjectResourcesBadge = ({
     // milli_vcpu -> vCPU
     {
       const maxRaw = findMax('milli_vcpu')
-      const usedRaw = (usageData as any)?.milli_vcpu ?? null
+      const usedRaw = usageData?.milli_vcpu ?? null
       const max = divideValue('milli_vcpu', maxRaw)
       const used = divideValue('milli_vcpu', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
@@ -84,7 +95,7 @@ export const ProjectResourcesBadge = ({
     // ram -> GiB
     {
       const maxRaw = findMax('ram')
-      const usedRaw = (usageData as any)?.ram ?? null
+      const usedRaw = usageData?.ram ?? null
       const max = divideValue('ram', maxRaw)
       const used = divideValue('ram', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
@@ -100,7 +111,7 @@ export const ProjectResourcesBadge = ({
     // database_size -> GB
     {
       const maxRaw = findMax('database_size')
-      const usedRaw = (usageData as any)?.database_size ?? null
+      const usedRaw = usageData?.database_size ?? null
       const max = divideValue('database_size', maxRaw)
       const used = divideValue('database_size', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
@@ -116,7 +127,7 @@ export const ProjectResourcesBadge = ({
     // storage_size -> GB
     {
       const maxRaw = findMax('storage_size')
-      const usedRaw = (usageData as any)?.storage_size ?? null
+      const usedRaw = usageData?.storage_size ?? null
       const max = divideValue('storage_size', maxRaw)
       const used = divideValue('storage_size', usedRaw) ?? 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
@@ -132,7 +143,7 @@ export const ProjectResourcesBadge = ({
     // iops -> numeric
     {
       const maxRaw = findMax('iops')
-      const usedRaw = (usageData as any)?.iops ?? null
+      const usedRaw = usageData?.iops ?? null
       const max = typeof maxRaw === 'number' ? maxRaw : null
       const used = typeof usedRaw === 'number' ? usedRaw : 0
       const percent = max ? Math.max(0, Math.min(100, (used / max) * 100)) : 0
@@ -178,14 +189,16 @@ export const ProjectResourcesBadge = ({
     }
   }
 
-  const loading = (!projectLimits && limitsQuery.isLoading) || (!projectUsage && usageQuery.isLoading)
+  const loading = limitsQuery.isLoading || usageQuery.isLoading
   const empty = rows.length === 0 && !loading
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <button
-          aria-label={mostUsed ? `${mostUsed.label} usage ${Math.round(mostUsed.percent)}%` : 'No usage info'}
+          aria-label={
+            mostUsed ? `${mostUsed.label} usage ${Math.round(mostUsed.percent)}%` : 'No usage info'
+          }
           className="inline-flex items-center gap-2 p-0 bg-transparent border-0"
         >
           <div className="relative" style={{ width: size, height: size }}>
@@ -206,7 +219,10 @@ export const ProjectResourcesBadge = ({
               </g>
             </svg>
 
-            <div className="absolute inset-0 flex items-center justify-center font-medium" style={{ pointerEvents: 'none', fontSize: 10 }}>
+            <div
+              className="absolute inset-0 flex items-center justify-center font-medium"
+              style={{ pointerEvents: 'none', fontSize: 10 }}
+            >
               {loading ? '…' : empty ? '—' : `${Math.round(pct)}%`}
             </div>
           </div>
@@ -215,7 +231,9 @@ export const ProjectResourcesBadge = ({
 
       <TooltipContent side="top" align="center" className="min-w-[240px] p-3">
         <div className="space-y-2">
-          <div className="text-xs text-foreground-muted">Project resource usage</div>
+          <div className="text-xs text-foreground-muted">
+            Project resource usage (last minute)
+          </div>
 
           {loading ? (
             <div className="text-sm text-foreground-light">Loading usage…</div>
@@ -235,7 +253,10 @@ export const ProjectResourcesBadge = ({
                   </div>
 
                   <div className="w-full h-2 rounded bg-surface-200 overflow-hidden">
-                    <div style={{ width: `${percent}%` }} className={cn('h-full', resourceColor(r.key), 'transition-all duration-200')} />
+                    <div
+                      style={{ width: `${percent}%` }}
+                      className={cn('h-full', resourceColor(r.key), 'transition-all duration-200')}
+                    />
                   </div>
                 </div>
               )
