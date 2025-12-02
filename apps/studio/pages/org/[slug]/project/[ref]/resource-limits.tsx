@@ -144,10 +144,9 @@ const SliderField = ({
 
 const ResourceLimit: NextPageWithLayout = () => {
   const [timeRange] = useState(() => {
-    const now = Date.now()
+    const now = Date.now() - 60_000
     return {
-      start: new Date(now - 60_000).toISOString(),
-      end: new Date(now).toISOString(),
+      start: new Date(Math.floor(now / 60_000) * 60_000).toISOString(),
     }
   })
 
@@ -158,7 +157,6 @@ const ResourceLimit: NextPageWithLayout = () => {
     orgRef,
     projectRef,
     start: timeRange.start,
-    end: timeRange.end,
   })
 
   const { data: sliderSpecs, isLoading: sliderLoading } = useBranchSliderResourceLimits(

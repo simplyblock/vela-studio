@@ -46,10 +46,9 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
 
   // Fix "last minute" window at mount time so the query key stays stable
   const [timeRange] = useState(() => {
-    const now = Date.now()
+    const now = Date.now() - 60_000
     return {
-      start: new Date(now - 60_000).toISOString(),
-      end: new Date(now).toISOString(),
+      start: new Date(Math.floor(now / 60_000) * 60_000).toISOString(),
     }
   })
 
@@ -57,7 +56,6 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
     {
       orgRef,
       start: timeRange.start,
-      end: timeRange.end,
     },
     { enabled: !!orgRef }
   )
@@ -130,42 +128,44 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
       return { key: null, raw: null }
     }
 
-    return defs
-      .map((d) => {
-        const { key: maxKey, raw: maxRaw } = getLimitRaw(d.maxCandidates)
-        const { key: usedKey, raw: usedRaw } = getUsageRaw(d.usedCandidates)
+    return (
+      defs
+        .map((d) => {
+          const { key: maxKey, raw: maxRaw } = getLimitRaw(d.maxCandidates)
+          const { key: usedKey, raw: usedRaw } = getUsageRaw(d.usedCandidates)
 
-        // Prefer to use the same key for dividing/formatting if possible:
-        // prefer the maxKey (so percent uses same unit as limit); else use usedKey; else first candidate
-        const chosenKey = maxKey ?? usedKey ?? d.maxCandidates[0] ?? d.usedCandidates[0]
+          // Prefer to use the same key for dividing/formatting if possible:
+          // prefer the maxKey (so percent uses same unit as limit); else use usedKey; else first candidate
+          const chosenKey = maxKey ?? usedKey ?? d.maxCandidates[0] ?? d.usedCandidates[0]
 
-        const maxNum = typeof maxRaw === 'number' ? maxRaw : null
-        const usedNumRaw = typeof usedRaw === 'number' ? usedRaw : 0
+          const maxNum = typeof maxRaw === 'number' ? maxRaw : null
+          const usedNumRaw = typeof usedRaw === 'number' ? usedRaw : 0
 
-        // divide values using shared util to produce numbers in display units
-        const maxDisplayNumber = maxKey ? divideValue(chosenKey!, maxNum) : null
-        const usedDisplayNumber = divideValue(chosenKey!, usedNumRaw) ?? 0
+          // divide values using shared util to produce numbers in display units
+          const maxDisplayNumber = maxKey ? divideValue(chosenKey!, maxNum) : null
+          const usedDisplayNumber = divideValue(chosenKey!, usedNumRaw) ?? 0
 
-        const pct =
-          maxDisplayNumber != null && typeof maxDisplayNumber === 'number' && maxDisplayNumber > 0
-            ? Math.min(100, Math.max(0, (usedDisplayNumber / maxDisplayNumber) * 100))
-            : null
+          const pct =
+            maxDisplayNumber != null && typeof maxDisplayNumber === 'number' && maxDisplayNumber > 0
+              ? Math.min(100, Math.max(0, (usedDisplayNumber / maxDisplayNumber) * 100))
+              : null
 
-        return {
-          id: d.id,
-          label: d.label,
-          // keep raw numbers for logic if you need them later (original API numbers)
-          usedRaw: usedRaw == null ? null : usedNumRaw,
-          maxRaw: maxRaw == null ? null : maxNum,
-          // display strings come from shared formatter using the candidate key
-          usedDisplay: formatResource(chosenKey!, usedRaw),
-          maxDisplay: maxRaw == null ? 'unlimited' : formatResource(chosenKey!, maxRaw),
-          pct,
-          colorClass: d.colorClass,
-        }
-      })
-      // hide rows that are entirely empty (no max and no usage)
-      .filter((r) => r.usedRaw !== null || r.maxRaw !== null)
+          return {
+            id: d.id,
+            label: d.label,
+            // keep raw numbers for logic if you need them later (original API numbers)
+            usedRaw: usedRaw == null ? null : usedNumRaw,
+            maxRaw: maxRaw == null ? null : maxNum,
+            // display strings come from shared formatter using the candidate key
+            usedDisplay: formatResource(chosenKey!, usedRaw),
+            maxDisplay: maxRaw == null ? 'unlimited' : formatResource(chosenKey!, maxRaw),
+            pct,
+            colorClass: d.colorClass,
+          }
+        })
+        // hide rows that are entirely empty (no max and no usage)
+        .filter((r) => r.usedRaw !== null || r.maxRaw !== null)
+    )
   }, [limits, usage, defs])
 
   const mostUsed =
@@ -224,13 +224,9 @@ export default function OrganizationResourcesPanel({ orgRef }: Props) {
                 </div>
 
                 {r.pct != null ? (
-                  <div className="text-xs text-foreground-muted mt-1">
-                    {Math.round(r.pct)}%
-                  </div>
+                  <div className="text-xs text-foreground-muted mt-1">{Math.round(r.pct)}%</div>
                 ) : (
-                  <div className="text-xs text-foreground-muted mt-1">
-                    Unlimited / not bounded
-                  </div>
+                  <div className="text-xs text-foreground-muted mt-1">Unlimited / not bounded</div>
                 )}
               </div>
             )

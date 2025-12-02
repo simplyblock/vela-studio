@@ -35,10 +35,9 @@ export default function ProjectResourcesPanel({ orgRef, projectRef }: Props) {
   )
 
     const [timeRange] = useState(() => {
-    const now = Date.now()
+    const now = Date.now() - 60_000
     return {
-      start: new Date(now - 60_000).toISOString(),
-      end: new Date(now).toISOString(),
+      start: new Date(Math.floor(now / 60_000) * 60_000).toISOString(),
     }
   })
 
@@ -47,7 +46,6 @@ export default function ProjectResourcesPanel({ orgRef, projectRef }: Props) {
       orgRef,
       projectRef,
       start: timeRange.start,
-      end: timeRange.end,
     },
     { enabled: !!orgRef && !!projectRef }
   )

@@ -34,10 +34,9 @@ export const ProjectResourcesBadge = ({
 }) => {
   // Fix "last minute" window at mount time so the query key stays stable
   const [timeRange] = useState(() => {
-    const now = Date.now()
+    const now = Date.now() - 60_000
     return {
-      start: new Date(now - 60_000).toISOString(),
-      end: new Date(now).toISOString(),
+      start: new Date(Math.floor(now / 60_000) * 60_000).toISOString(),
     }
   })
 
@@ -51,7 +50,6 @@ export const ProjectResourcesBadge = ({
       orgRef: orgRef!,
       projectRef: projectRef!,
       start: timeRange.start,
-      end: timeRange.end,
     },
     { enabled: !!orgRef && !!projectRef }
   )
