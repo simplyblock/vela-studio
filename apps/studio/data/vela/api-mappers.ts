@@ -20,7 +20,7 @@ export function mapOrganization(organization: VelaOrganization): Organization {
   }
 }
 
-export function mapOrganizationMember(member: VelaMember): Member {
+export function mapOrganizationMember(member: VelaMember, roles?: string[]): Member {
   return {
     user_id: member.id,
     username: member.email,
@@ -31,7 +31,7 @@ export function mapOrganizationMember(member: VelaMember): Member {
     active: member.active,
     email_verified: member.email_verified,
     last_activity_at: member.last_activity_at ?? undefined,
-    role_ids: [],
+    role_ids: roles ?? [],
     metadata: {
       first_name: member.first_name,
       last_name: member.last_name,

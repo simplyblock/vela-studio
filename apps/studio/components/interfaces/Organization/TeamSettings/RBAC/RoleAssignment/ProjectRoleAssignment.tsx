@@ -71,7 +71,7 @@ export const ProjectRoleAssignment = () => {
 
   const roleAssignmentsMap: RoleAssignmentsMap = useMemo(() => {
     const map: RoleAssignmentsMap = {}
-    ;(roleAssignments?.links ?? []).forEach((link) => {
+    ;(roleAssignments ?? []).forEach((link) => {
       if (!map[link.role_id]) map[link.role_id] = []
       if (!map[link.role_id].includes(link.user_id)) {
         map[link.role_id].push(link.user_id)
