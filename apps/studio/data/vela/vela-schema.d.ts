@@ -19377,13 +19377,6 @@ export interface components {
             /** Links */
             links: components["schemas"]["RoleUserLinkPublic"][];
         };
-        /** RoleAssignmentsPublic */
-        RoleAssignmentsPublic: {
-            /** Count */
-            count: number;
-            /** Links */
-            links: components["schemas"]["RoleUserLinkPublic"][];
-        };
         /** RoleCreate */
         RoleCreate: {
             /** Name */
@@ -23314,7 +23307,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RoleAssignmentsPublic"];
+                    "application/json": components["schemas"]["RoleUserLinkPublic"][];
                 };
             };
             /** @description Validation Error */

@@ -15377,7 +15377,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': VelaType<'RoleAssignmentsPublic'>
+          'application/json': VelaType<'RoleUserLinkPublic'>[]
         }
       }
       403: {

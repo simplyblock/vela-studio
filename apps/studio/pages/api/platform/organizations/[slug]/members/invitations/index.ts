@@ -24,7 +24,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     response.data
       .filter((item) => typeof item !== 'string')
       .filter((item) => !item.email_verified)
-      .map(mapOrganizationMember)
+      .map(item => mapOrganizationMember(item))
   )
 }
 

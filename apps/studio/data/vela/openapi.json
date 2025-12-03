@@ -2840,7 +2840,11 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/RoleAssignmentsPublic" }
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/RoleUserLinkPublic" },
+                  "title": "Response List Role Assignments Organizations  Organization Id  Roles Role Assignments  Get"
+                }
               }
             }
           },
@@ -26402,19 +26406,6 @@
         "type": "object",
         "required": ["status", "count", "links"],
         "title": "RoleAssignmentPublic"
-      },
-      "RoleAssignmentsPublic": {
-        "properties": {
-          "count": { "type": "integer", "title": "Count" },
-          "links": {
-            "items": { "$ref": "#/components/schemas/RoleUserLinkPublic" },
-            "type": "array",
-            "title": "Links"
-          }
-        },
-        "type": "object",
-        "required": ["count", "links"],
-        "title": "RoleAssignmentsPublic"
       },
       "RoleCreate": {
         "properties": {
