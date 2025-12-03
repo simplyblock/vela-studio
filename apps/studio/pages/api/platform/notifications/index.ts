@@ -5,25 +5,8 @@ import { apiBuilder } from 'lib/api/apiBuilder'
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   return res.status(200).json({
     data: {
-      notifications: [
-        {
-          id: '',
-          project_id: '',
-          organization_id: '',
-          inserted_at: '',
-          notification_seen_at: null,
-          notification_status: 'new',
-          category: 'info',
-          meta: {
-            actions: [],
-            error_message: '',
-            org_slug: '',
-            project_ref: '',
-            priority: 'low',
-          },
-        },
-      ],
-      total_count: 1,
+      notifications: [],
+      total_count: 0,
     },
   })
 }
