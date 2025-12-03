@@ -3,12 +3,7 @@ import { apiBuilder } from 'lib/api/apiBuilder'
 
 // FIXME: Implementation missing
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
-  return res.status(200).json({
-    data: {
-      notifications: [],
-      total_count: 0,
-    },
-  })
+  return res.status(200).json([])
 }
 
 const handlePatch = async (req: NextApiRequest, res: NextApiResponse) => {
