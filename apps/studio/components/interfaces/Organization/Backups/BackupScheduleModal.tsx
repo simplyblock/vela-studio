@@ -24,6 +24,7 @@ import { useOrgBackupSchedulesQuery } from 'data/backups/org-backup-schedules-qu
 import { useUpdateOrgBackupScheduleMutation } from 'data/backups/org-update-backup-schedule-mutation'
 import { useDeleteOrgBackupScheduleMutation } from 'data/backups/org-delete-backup-schedule-mutation'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
+import { components } from '../../../../data/vela/vela-schema'
 
 const TIME_UNITS = [
   { label: 'Minutes', value: 'minutes', minutes: 1 },
@@ -49,13 +50,7 @@ const getMinimumEveryForUnit = (unit: TimeUnit) =>
 
 const getRowMinutes = (row: ScheduleRow) => row.every * unitMinutesLookup[row.unit]
 
-type ApiSchedule = {
-  backup_schedule_id: string
-  organization_id: string | null
-  branch_id: string | null
-  env_type: string | null
-  rows: { row_index: number; interval: number; unit: string; retention: number }[]
-}
+type ApiSchedule = components['schemas']['BackupSchedulePublic']
 
 const fromApiRowsToUi = (apiRows: ApiSchedule['rows']): ScheduleRow[] =>
   apiRows
@@ -368,8 +363,8 @@ const BackupScheduleModal = () => {
     if (!orgId || isSubmitting) return
 
     if (rows.length === 0) {
-      if (currentSchedule?.backup_schedule_id) {
-        await deleteSchedule({ orgId, scheduleId: currentSchedule.backup_schedule_id })
+      if (currentSchedule?.id) {
+        await deleteSchedule({ orgId, scheduleId: currentSchedule.id })
       } else {
         setError('Add at least one schedule.')
       }
@@ -388,7 +383,7 @@ const BackupScheduleModal = () => {
       schedule: {
         env_type,
         rows: apiRows,
-        id: currentSchedule?.backup_schedule_id,
+        id: currentSchedule?.id,
       },
     }
     console.log("body",body)

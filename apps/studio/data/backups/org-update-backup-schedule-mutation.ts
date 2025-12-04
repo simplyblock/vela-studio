@@ -29,6 +29,7 @@ export async function updateOrgBackupSchedule(
         },
       },
       body: {
+        schedule_id: schedule.id,
         env_type: schedule.env_type,
         rows: schedule.rows,
       },
