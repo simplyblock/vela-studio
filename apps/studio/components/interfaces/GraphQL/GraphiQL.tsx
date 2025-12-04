@@ -19,24 +19,21 @@ import {
   ToolbarButton,
   Tooltip,
   UnStyledButton,
-  VariableEditor,
   useCopyQuery,
   useDragResize,
-  useEditorContext,
-  useExecutionContext,
+  useGraphiQL,
   useMergeQuery,
-  usePluginContext,
   usePrettifyEditors,
-  useSchemaContext,
   useTheme,
+  VariableEditor,
 } from '@graphiql/react'
 import { Fetcher } from '@graphiql/toolkit'
 import { AlertTriangle, XIcon } from 'lucide-react'
-import { MouseEventHandler, useCallback, useEffect, useState } from 'react'
+import { MouseEventHandler, RefObject, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { LOCAL_STORAGE_KEYS } from 'common'
 import { useLocalStorage } from 'hooks/misc/useLocalStorage'
-import { AlertDescription_Shadcn_, AlertTitle_Shadcn_, Alert_Shadcn_, Button, cn } from 'ui'
+import { Alert_Shadcn_, AlertDescription_Shadcn_, AlertTitle_Shadcn_, Button, cn } from 'ui'
 import { RoleImpersonationSelector } from '../RoleImpersonationSelector'
 import styles from './graphiql.module.css'
 import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
@@ -66,15 +63,38 @@ interface GraphiQLInterfaceProps {
 }
 
 const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
-  const editorContext = useEditorContext({ nonNull: true })
-  const executionContext = useExecutionContext({ nonNull: true })
-  const schemaContext = useSchemaContext({ nonNull: true })
-  const pluginContext = usePluginContext()
+  const { schemaContext, pluginContext, editorContext, executionContext } = useGraphiQL(
+    (state) => ({
+      schemaContext: {
+        introspect: state.actions.introspect,
+        isFetching: state.isFetching,
+      },
+      pluginContext: {
+        plugins: state.plugins,
+        visiblePlugin: state.visiblePlugin,
+        setVisiblePlugin: state.actions.setVisiblePlugin,
+      },
+      editorContext: {
+        tabs: state.tabs,
+        activeTabIndex: state.activeTabIndex,
+        initialVariables: state.initialVariables,
+        initialHeaders: state.initialHeaders,
+        addTab: state.actions.addTab,
+        moveTab: state.actions.moveTab,
+        changeTab: state.actions.changeTab,
+        closeTab: state.actions.closeTab,
+      },
+      executionContext: {
+        isFetching: state.isFetching,
+        stop: state.actions.stop,
+      },
+    })
+  )
 
   const copy = useCopyQuery()
   const merge = useMergeQuery()
   const prettify = usePrettifyEditors()
-  const { can: canReadJWTSecret } = useCheckPermissions("branch:api:getkeys")
+  const { can: canReadJWTSecret } = useCheckPermissions('branch:api:getkeys')
 
   const [rlsBypassedWarningDismissed, setRlsBypassedWarningDismissed] = useLocalStorage(
     LOCAL_STORAGE_KEYS.GRAPHIQL_RLS_BYPASS_WARNING,
@@ -86,7 +106,7 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
     setTheme(theme)
   }, [theme])
 
-  const PluginContent = pluginContext?.visiblePlugin?.content
+  const PluginContent = useMemo(() => pluginContext?.visiblePlugin?.content, [pluginContext])
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
@@ -199,7 +219,7 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
       <div className={cn('graphiql-container', styles.graphiqlContainer)}>
         <div className="graphiql-main">
           <div
-            ref={pluginResize.firstRef}
+            ref={pluginResize.firstRef as RefObject<HTMLDivElement>}
             style={{ minWidth: '750px' }}
             className={cn('graphiql-sessions', styles.graphiqlSessions)}
           >
@@ -256,7 +276,7 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
               className={cn('graphiql-session', styles.graphiqlSession)}
               aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
             >
-              <div ref={editorResize.firstRef}>
+              <div ref={editorResize.firstRef as RefObject<HTMLDivElement>}>
                 <div
                   className={cn(
                     'graphiql-editors',
@@ -264,12 +284,12 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
                     hasSingleTab && 'full-height'
                   )}
                 >
-                  <div ref={editorToolsResize.firstRef}>
+                  <div ref={editorToolsResize.firstRef as RefObject<HTMLDivElement>}>
                     <section
                       className={cn('graphiql-query-editor text-sm', styles.graphiqlQueryEditor)}
                       aria-label="Query Editor"
                     >
-                      <QueryEditor onClickReference={onClickReference} />
+                      <QueryEditor onClick={onClickReference} />
                       <div className="graphiql-toolbar" role="toolbar" aria-label="Editor Commands">
                         <ExecuteButton />
                         {toolbar}
@@ -277,7 +297,7 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
                     </section>
                   </div>
 
-                  <div ref={editorToolsResize.dragBarRef}>
+                  <div ref={editorToolsResize.dragBarRef as RefObject<HTMLDivElement>}>
                     <div className="graphiql-editor-tools">
                       <UnStyledButton
                         type="button"
@@ -350,17 +370,17 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
                     </div>
                   </div>
 
-                  <div ref={editorToolsResize.secondRef}>
+                  <div ref={editorToolsResize.secondRef as RefObject<HTMLDivElement>}>
                     <section
                       className="graphiql-editor-tool text-sm"
                       aria-label={activeSecondaryEditor === 'variables' ? 'Variables' : 'Headers'}
                     >
                       <VariableEditor
-                        isHidden={activeSecondaryEditor !== 'variables'}
-                        onClickReference={onClickReference}
+                        hidden={activeSecondaryEditor !== 'variables'}
+                        onClick={onClickReference}
                       />
 
-                      <HeaderEditor isHidden={activeSecondaryEditor !== 'headers'} />
+                      <HeaderEditor hidden={activeSecondaryEditor !== 'headers'} />
 
                       {canReadJWTSecret && (
                         <div
@@ -379,10 +399,10 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
 
               <div
                 className={cn('graphiql-horizontal-drag-bar', styles.graphiqlHorizontalDragBar)}
-                ref={editorResize.dragBarRef}
+                ref={editorResize.dragBarRef as RefObject<HTMLDivElement>}
               />
 
-              <div ref={editorResize.secondRef}>
+              <div ref={editorResize.secondRef as RefObject<HTMLDivElement>}>
                 <div
                   className={cn(
                     'graphiql-response text-sm relative',
@@ -424,10 +444,13 @@ const GraphiQLInterface = ({ theme }: GraphiQLInterfaceProps) => {
             </div>
           </div>
           {pluginContext?.visiblePlugin && (
-            <div className="graphiql-horizontal-drag-bar" ref={pluginResize.dragBarRef} />
+            <div
+              className="graphiql-horizontal-drag-bar"
+              ref={pluginResize.dragBarRef as RefObject<HTMLDivElement>}
+            />
           )}
           <div
-            ref={pluginResize.secondRef}
+            ref={pluginResize.secondRef as RefObject<HTMLDivElement>}
             style={{
               // Make sure the container shrinks when containing long
               // non-breaking texts

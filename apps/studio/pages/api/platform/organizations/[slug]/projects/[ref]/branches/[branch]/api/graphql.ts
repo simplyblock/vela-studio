@@ -17,16 +17,16 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const graphqlEndpoint = !isInDocker
-    ? joinPath(branchEntity.database.service_endpoint_uri, '/graphql/')
-    : 'http://graphql:3000'
+    ? joinPath(branchEntity.database.service_endpoint_uri, '/graphql')
+    : 'http://rest:3000/rpc/graphql'
 
   const response = await fetch(graphqlEndpoint, {
     method: 'POST',
     headers: {
       apikey: branchEntity.api_keys.service_role!,
-      Authorization:
+      /*Authorization:
         (Array.isArray(authorizationHeader) ? authorizationHeader[0] : authorizationHeader) ??
-        `Bearer ${branchEntity.api_keys.service_role!}`,
+        `Bearer ${branchEntity.api_keys.service_role!}`,*/
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(req.body),
@@ -36,10 +36,10 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json(data)
   }
-
-  return res.status(500).json({ error: { message: 'Internal Server Error' } })
+  console.log(response)
+  return res.status(500).json({ error: { message: await response.text() } })
 }
 
-const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet))
+const apiHandler = apiBuilder((builder) => builder.useAuth().get(handleGet).post(handleGet))
 
 export default apiHandler
