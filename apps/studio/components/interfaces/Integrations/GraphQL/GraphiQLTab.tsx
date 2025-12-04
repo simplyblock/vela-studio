@@ -1,4 +1,4 @@
-import '@graphiql/react/dist/style.css'
+import '@graphiql/react/style.css'
 import { createGraphiQLFetcher, Fetcher } from '@graphiql/toolkit'
 import { useTheme } from 'next-themes'
 import { useMemo } from 'react'
@@ -17,9 +17,12 @@ import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
 export const GraphiQLTab = () => {
   const { resolvedTheme } = useTheme()
-  const { ref: projectRef } = useParams()
+  const { slug: orgRef, ref: projectRef, branch: branchRef } = useParams()
   const { data: branch } = useSelectedBranchQuery()
-  const currentTheme = resolvedTheme?.includes('dark') ? 'dark' : 'light'
+  const currentTheme = useMemo(
+    () => (resolvedTheme?.includes('dark') ? 'dark' : 'light'),
+    [resolvedTheme]
+  )
 
   const { data: accessToken } = useSessionAccessTokenQuery({ enabled: true })
 
@@ -34,7 +37,7 @@ export const GraphiQLTab = () => {
   const fetcher = useMemo(() => {
     const fetcherFn = createGraphiQLFetcher({
       // [Joshen] Opting to hard code /platform for local to match the routes, so that it's clear what's happening
-      url: `${API_URL}/projects/${projectRef}/api/graphql`,
+      url: `${API_URL}/platform/organizations/${orgRef}/projects/${projectRef}/branches/${branchRef}/api/graphql`,
       fetch,
     })
     const customFetcher: Fetcher = async (graphqlParams, opts) => {
@@ -72,9 +75,9 @@ export const GraphiQLTab = () => {
     }
 
     return customFetcher
-  }, [projectRef, getImpersonatedRoleState, jwtSecret, accessToken, serviceKey, secretKey?.api_key])
+  }, [orgRef, projectRef, branchRef, getImpersonatedRoleState, jwtSecret, accessToken, serviceKey, secretKey?.api_key])
 
-  if ((!accessToken) || !isFetched) {
+  if (!accessToken || !isFetched) {
     return <Loading />
   }
 
