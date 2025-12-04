@@ -17,18 +17,22 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const graphqlEndpoint = !isInDocker
-    ? joinPath(branchEntity.database.service_endpoint_uri, '/graphql')
+    ? joinPath(branchEntity.database.service_endpoint_uri, '/rpc/graphql')
     : 'http://rest:3000/rpc/graphql'
+
+  const headers: HeadersInit = {
+    apikey: branchEntity.api_keys.service_role!,
+    'Content-Type': 'application/json',
+  }
+  if (!isInDocker) {
+    headers.Authorization =
+      (Array.isArray(authorizationHeader) ? authorizationHeader[0] : authorizationHeader) ??
+      `Bearer ${branchEntity.api_keys.service_role!}`
+  }
 
   const response = await fetch(graphqlEndpoint, {
     method: 'POST',
-    headers: {
-      apikey: branchEntity.api_keys.service_role!,
-      /*Authorization:
-        (Array.isArray(authorizationHeader) ? authorizationHeader[0] : authorizationHeader) ??
-        `Bearer ${branchEntity.api_keys.service_role!}`,*/
-      'Content-Type': 'application/json',
-    },
+    headers,
     body: JSON.stringify(req.body),
   })
   if (response.ok) {

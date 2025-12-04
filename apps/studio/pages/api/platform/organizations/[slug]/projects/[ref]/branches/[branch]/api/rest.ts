@@ -19,13 +19,16 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     ? joinPath(branchEntity.database.service_endpoint_uri, '/rest/')
     : 'http://rest:3000'
 
-  console.log(`TEST POSTGREST: ${postgrestEndpoint}, ${branchEntity.api_keys.service_role}`)
+  const headers: HeadersInit = {
+    apikey: branchEntity.api_keys.service_role!,
+  }
+  if (!isInDocker) {
+    headers.Authorization = `Bearer ${branchEntity.api_keys.service_role!}`
+  }
+
   const response = await fetch(postgrestEndpoint, {
     method: 'GET',
-    headers: {
-      apikey: branchEntity.api_keys.service_role!,
-      Authorization: `Bearer ${branchEntity.api_keys.service_role!}`,
-    },
+    headers,
   })
   if (response.ok) {
     const data = await response.json()
