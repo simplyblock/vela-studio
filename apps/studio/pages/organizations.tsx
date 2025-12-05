@@ -38,7 +38,7 @@ const OrganizationsPage: NextPageWithLayout = () => {
       ? organizations
       : organizations?.filter(
           (x) => x.name.toLowerCase().includes(search) || x.id?.toLowerCase().includes(search)
-        )
+        ).slice().sort((a, b) => a.name.localeCompare(b.name))
 
   useEffect(() => {
     // If there are no organizations, force the user to create one

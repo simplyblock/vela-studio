@@ -1,4 +1,4 @@
-import { Box, Check, ChevronsUpDown, Plus } from 'lucide-react'
+import { Box, Check, ChevronDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -36,12 +36,8 @@ const ProjectLink = ({
 }) => {
   const router = useRouter()
   const { ref, slug } = useParams()
-  // const sanitizedRoute = sanitizeRoute(router.route, router.query)
 
-  // [Joshen] Temp while we're interim between v1 and v2 billing
-  // let href = sanitizedRoute?.replace('[ref]', project.id) ?? `/project/${project.id}`
-
-  let href = `/org/${slug}/project/${project.id}`
+  const href = `/org/${slug}/project/${project.id}`
 
   return (
     <CommandItem_Shadcn_
@@ -74,9 +70,6 @@ export const ProjectDropdown = () => {
   const projects = allProjects
     ?.filter((x) => x.organization_id === selectedOrganization?.id)
     .sort((a, b) => a.name.localeCompare(b.name))
-  // const selectedProject = isBranch
-  //   ? projects?.find((p) => p.ref === project?.parentRef)
-  //   : projects?.find((p) => p.ref === ref)
 
   const [open, setOpen] = useState(false)
 
@@ -93,13 +86,14 @@ export const ProjectDropdown = () => {
         <Box size={14} strokeWidth={1.5} className="text-foreground-lighter" />
         <span className="text-foreground max-w-32 lg:max-w-none truncate">{project?.name}</span>
       </Link>
+
       <Popover_Shadcn_ open={open} onOpenChange={setOpen} modal={false}>
         <PopoverTrigger_Shadcn_ asChild>
           <Button
             type="text"
             size="tiny"
             className={cn('px-1.5 py-4 [&_svg]:w-5 [&_svg]:h-5 ml-1')}
-            iconRight={<ChevronsUpDown strokeWidth={1.5} />}
+            iconRight={<ChevronDown strokeWidth={1.5} />}
           />
         </PopoverTrigger_Shadcn_>
         <PopoverContent_Shadcn_ className="p-0" side="bottom" align="start">
@@ -107,6 +101,8 @@ export const ProjectDropdown = () => {
             <CommandInput_Shadcn_ placeholder="Find project..." />
             <CommandList_Shadcn_>
               <CommandEmpty_Shadcn_>No projects found</CommandEmpty_Shadcn_>
+
+              {/* 1) LIST */}
               <CommandGroup_Shadcn_>
                 <ScrollArea className={(projects || []).length > 7 ? 'h-[210px]' : ''}>
                   {projects?.map((project) => (
@@ -114,6 +110,8 @@ export const ProjectDropdown = () => {
                   ))}
                 </ScrollArea>
               </CommandGroup_Shadcn_>
+
+              {/* 2) NEW PROJECT (optional) */}
               {projectCreationEnabled && (
                 <>
                   <CommandSeparator_Shadcn_ />
@@ -128,9 +126,7 @@ export const ProjectDropdown = () => {
                     >
                       <Link
                         href={`/new/${selectedOrganization?.id}`}
-                        onClick={() => {
-                          setOpen(false)
-                        }}
+                        onClick={() => setOpen(false)}
                         className="w-full flex items-center gap-2"
                       >
                         <Plus size={14} strokeWidth={1.5} />
@@ -140,6 +136,26 @@ export const ProjectDropdown = () => {
                   </CommandGroup_Shadcn_>
                 </>
               )}
+
+              {/* 3) ALL PROJECTS */}
+              <CommandSeparator_Shadcn_ />
+              <CommandGroup_Shadcn_>
+                <CommandItem_Shadcn_
+                  className="cursor-pointer w-full"
+                  onSelect={() => {
+                    setOpen(false)
+                    router.push(`/org/${selectedOrganization?.id}`)
+                  }}
+                  onClick={() => setOpen(false)}
+                >
+                  <Link
+                    href={`/org/${selectedOrganization?.id}`}
+                    className="w-full flex items-center gap-2"
+                  >
+                    <p>All Projects</p>
+                  </Link>
+                </CommandItem_Shadcn_>
+              </CommandGroup_Shadcn_>
             </CommandList_Shadcn_>
           </Command_Shadcn_>
         </PopoverContent_Shadcn_>

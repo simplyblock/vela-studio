@@ -112,12 +112,12 @@ export const generateDatabaseMenu = (
             : `/org/${slug}/project/${ref}/branch/${branchRef}/database/backups/scheduled`,
           items: [],
         },
-        {
-          name: 'Migrations',
-          key: 'migrations',
-          url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/migrations`,
-          items: [],
-        },
+        // {
+        //   name: 'Migrations',
+        //   key: 'migrations',
+        //   url: `/org/${slug}/project/${ref}/branch/${branchRef}/database/migrations`,
+        //   items: [],
+        // },
       ],
     },
   ]

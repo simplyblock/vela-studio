@@ -1,4 +1,4 @@
-import { AlertCircle, Check, ChevronsUpDown, Copy, GitBranch, ListTree, Plus, Shield } from 'lucide-react'
+import { AlertCircle, Check, ChevronDown, Copy, GitBranch, ListTree, Plus, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -118,7 +118,7 @@ export const BranchDropdown = () => {
                 type="text"
                 size="tiny"
                 className={cn('px-1.5 py-4 [&_svg]:w-5 [&_svg]:h-5 ml-1')}
-                iconRight={<ChevronsUpDown strokeWidth={1.5} />}
+                iconRight={<ChevronDown strokeWidth={1.5} />}
               />
             </PopoverTrigger_Shadcn_>
             <PopoverContent_Shadcn_ className="p-0" side="bottom" align="start">

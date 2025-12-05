@@ -163,7 +163,7 @@ export const ProjectResourcesBadge = ({
     return sorted[0]
   }, [rows])
 
-  const stroke = 8
+  const stroke = 4
   const radius = Math.max(4, (size - stroke) / 2)
   const circumference = 2 * Math.PI * radius
   const pct = mostUsed ? Math.max(0, Math.min(100, mostUsed.percent)) : 0

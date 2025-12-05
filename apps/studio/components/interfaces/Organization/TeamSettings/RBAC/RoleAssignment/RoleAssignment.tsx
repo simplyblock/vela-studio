@@ -26,6 +26,7 @@ import { useOrganizationRoleAssignmentsQuery } from 'data/organization-members/o
 import { useOrganizationMemberAssignRoleMutation } from 'data/organization-members/organization-member-role-assign-mutation'
 import { useOrganizationMemberUnassignRoleMutation } from 'data/organization-members/organization-member-role-unassign-mutation'
 import { Member, useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
+import { AssignMembersDialog } from './AssignMembersDialog'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
@@ -237,7 +238,7 @@ export const RoleAssignment = () => {
         </ScaffoldSectionContent>
       </ScaffoldFilterAndContent>
 
-      <Dialog
+      <AssignMembersDialog
         open={isAssignModalOpen}
         onOpenChange={(open) => {
           setIsAssignModalOpen(open)
@@ -246,65 +247,13 @@ export const RoleAssignment = () => {
             setPendingSelection([...currentlyAssigned])
           }
         }}
-      >
-        <DialogContent size="medium">
-          <DialogHeader className="border-b">
-            <DialogTitle>
-              {selectedRole ? `Assign members to ${selectedRole.name}` : 'Assign members'}
-            </DialogTitle>
-          </DialogHeader>
-
-          <DialogSection className="pt-4">
-            <ScrollArea className="max-h-[320px] pr-1">
-              <div className="flex flex-col gap-1">
-                {allMembers.map((member) => {
-                  const id = member.user_id
-                  if (!id) return null
-                  const isSelected = pendingSelection.includes(id)
-
-                  return (
-                    <div
-                      key={id}
-                      className="flex items-center justify-between gap-3 rounded-md border border-transparent px-3 py-2 transition hover:border-default hover:bg-surface-200"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Checkbox_Shadcn_
-                          id={`assign-${id}`}
-                          checked={isSelected}
-                          onCheckedChange={() => handleTogglePendingUser(id)}
-                        />
-                        <label htmlFor={`assign-${id}`} className="cursor-pointer select-none">
-                          <p className="text-sm font-medium text-foreground">
-                            {member.username || member.primary_email || id}
-                          </p>
-                          {member.primary_email && (
-                            <p className="text-xs text-foreground-light">
-                              {member.primary_email}
-                            </p>
-                          )}
-                        </label>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </ScrollArea>
-          </DialogSection>
-
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="default">Cancel</Button>
-            </DialogClose>
-            <Button
-              type="primary"
-              disabled={!selectedRole}
-              onClick={handleSaveAssignments}
-            >
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        title={selectedRole ? `Assign members to ${selectedRole.name}` : 'Assign members'}
+        members={allMembers}
+        selectedIds={pendingSelection}
+        onToggleMember={handleTogglePendingUser}
+        isSaveDisabled={!selectedRole}
+        onSave={handleSaveAssignments}
+      />
     </ScaffoldContainer>
   )
 }

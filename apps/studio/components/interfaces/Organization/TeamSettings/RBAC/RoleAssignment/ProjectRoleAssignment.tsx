@@ -33,6 +33,7 @@ import {
   DialogTitle,
   ScrollArea,
 } from 'ui'
+import { AssignMembersDialog } from './AssignMembersDialog'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
@@ -250,104 +251,63 @@ export const ProjectRoleAssignment = () => {
       </ScaffoldFilterAndContent>
 
       {/* Assignment modal */}
-      <Dialog open={isAssignModalOpen} onOpenChange={setIsAssignModalOpen}>
-        <DialogContent size="medium">
-          <DialogHeader className="border-b">
-            <DialogTitle>
-              {selectedRole ? `Assign ${selectedRole.name}` : 'Assign role'}
-            </DialogTitle>
-          </DialogHeader>
+      <AssignMembersDialog
+      open={isAssignModalOpen}
+      onOpenChange={setIsAssignModalOpen}
+      title={selectedRole ? `Assign ${selectedRole.name}` : 'Assign role'}
+      members={allMembers}
+      selectedIds={pendingSelection}
+      onToggleMember={handleTogglePendingUser}
+      isSaveDisabled={!selectedRole}
+      onSave={handleSaveAssignments}
+      scopeSlot={
+        selectedRole && selectedRole.role_type !== 'project' ? (
+          <div>
+            <p className="mb-2 text-xs uppercase font-medium text-foreground-muted">Scope</p>
 
-          <DialogSection className="pt-4 flex flex-col gap-6">
-            {/* Members list */}
-            <div>
-              <p className="mb-2 text-xs uppercase font-medium text-foreground-muted">Members</p>
-              <ScrollArea className="max-h-[220px] pr-1">
+            {/* environment */}
+            {selectedRole.role_type === 'environment' && (
+              <ScrollArea className="max-h-[160px] pr-1">
                 <div className="flex flex-col gap-1">
-                  {allMembers.map((m) => {
-                    const id = m.user_id
-                    const isSelected = pendingSelection.includes(id)
+                  {orgEnvTypes.map((env) => {
+                    const isChecked = selectedEnvTypes.includes(env)
                     return (
-                      <div
-                        key={id}
-                        className="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-surface-200 cursor-pointer"
-                      >
+                      <div key={env} className="flex items-center gap-3 px-3 py-2">
                         <Checkbox_Shadcn_
-                          checked={isSelected}
-                          onCheckedChange={() => handleTogglePendingUser(id)}
+                          checked={isChecked}
+                          onCheckedChange={() => handleToggleEnvType(env)}
                         />
-                        <div>
-                          <p className="text-sm">{m.username || m.primary_email || id}</p>
-                          {m.primary_email && (
-                            <p className="text-xs text-foreground-light">{m.primary_email}</p>
-                          )}
-                        </div>
+                        <span className="text-sm">{env}</span>
                       </div>
                     )
                   })}
                 </div>
               </ScrollArea>
-            </div>
-
-            {/* Scope – only for environment/branch, NOT for project */}
-            {selectedRole && selectedRole.role_type !== 'project' && (
-              <div>
-                <p className="mb-2 text-xs uppercase font-medium text-foreground-muted">Scope</p>
-
-                {/* environment */}
-                {selectedRole.role_type === 'environment' && (
-                  <ScrollArea className="max-h-[160px] pr-1">
-                    <div className="flex flex-col gap-1">
-                      {orgEnvTypes.map((env) => {
-                        const isChecked = selectedEnvTypes.includes(env)
-                        return (
-                          <div key={env} className="flex items-center gap-3 px-3 py-2">
-                            <Checkbox_Shadcn_
-                              checked={isChecked}
-                              onCheckedChange={() => handleToggleEnvType(env)}
-                            />
-                            <span className="text-sm">{env}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </ScrollArea>
-                )}
-
-                {/* branches */}
-                {selectedRole.role_type === 'branch' && (
-                  <ScrollArea className="max-h-[160px] pr-1">
-                    <div className="flex flex-col gap-1">
-                      {(branches || []).map((branch) => {
-                        const isChecked = selectedBranchIds.includes(branch.id)
-                        return (
-                          <div key={branch.id} className="flex items-center gap-3 px-3 py-2">
-                            <Checkbox_Shadcn_
-                              checked={isChecked}
-                              onCheckedChange={() => handleToggleBranch(branch.id)}
-                            />
-                            <span className="text-sm">{branch.name}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </ScrollArea>
-                )}
-              </div>
             )}
-          </DialogSection>
 
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="default">Cancel</Button>
-            </DialogClose>
-
-            <Button type="primary" disabled={!selectedRole} onClick={handleSaveAssignments}>
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            {/* branches */}
+            {selectedRole.role_type === 'branch' && (
+              <ScrollArea className="max-h-[160px] pr-1">
+                <div className="flex flex-col gap-1">
+                  {(branches || []).map((branch) => {
+                    const isChecked = selectedBranchIds.includes(branch.id)
+                    return (
+                      <div key={branch.id} className="flex items-center gap-3 px-3 py-2">
+                        <Checkbox_Shadcn_
+                          checked={isChecked}
+                          onCheckedChange={() => handleToggleBranch(branch.id)}
+                        />
+                        <span className="text-sm">{branch.name}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
+        ) : null
+      }
+    />
     </>
   )
 }

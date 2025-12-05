@@ -1,4 +1,4 @@
-import { HouseHeart, Check, ChevronsUpDown, Plus } from 'lucide-react'
+import { HouseHeart, Check, Plus, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -47,7 +47,7 @@ export const OrganizationDropdown = () => {
         href={slug ? `/org/${slug}` : '/organizations'}
         className="flex items-center gap-2 flex-shrink-0 text-sm"
       >
-  <HouseHeart size={14} strokeWidth={1.5} className="text-foreground-lighter" />
+        <HouseHeart size={14} strokeWidth={1.5} className="text-foreground-lighter" />
         <span
           className={cn(
             'max-w-32 lg:max-w-none truncate hidden md:block',
@@ -56,16 +56,14 @@ export const OrganizationDropdown = () => {
         >
           {orgName ?? 'Select an organization'}
         </span>
-        {/* {!!selectedOrganization && (
-          <Badge variant="default">{selectedOrganization?.plan.name}</Badge>
-        )} */}
       </Link>
+
       <Popover_Shadcn_ open={open} onOpenChange={setOpen} modal={false}>
         <PopoverTrigger_Shadcn_ asChild>
           <Button
             type="text"
             className={cn('px-1.5 py-4 [&_svg]:w-5 [&_svg]:h-5 ml-1')}
-            iconRight={<ChevronsUpDown strokeWidth={1.5} />}
+            iconRight={<ChevronDown strokeWidth={1.5} />}
           />
         </PopoverTrigger_Shadcn_>
         <PopoverContent_Shadcn_ className="p-0" side="bottom" align="start">
@@ -73,15 +71,18 @@ export const OrganizationDropdown = () => {
             <CommandInput_Shadcn_ placeholder="Find organization..." />
             <CommandList_Shadcn_>
               <CommandEmpty_Shadcn_>No organizations found</CommandEmpty_Shadcn_>
+
+              {/* 1) LIST */}
               <CommandGroup_Shadcn_>
                 <ScrollArea className={(organizations || []).length > 7 ? 'h-[210px]' : ''}>
                   {organizations?.map((org) => {
                     const pathname = router.pathname
-                    const isWizard = pathname.includes("/new")
-                    const hasProjectSegment = pathname.includes("[ref]")
-                    const href = !!routeSlug && !isWizard && !hasProjectSegment
-                      ? router.pathname.replace('[slug]', org.id!)
-                      : `/org/${org.id}`
+                    const isWizard = pathname.includes('/new')
+                    const hasProjectSegment = pathname.includes('[ref]')
+                    const href =
+                      !!routeSlug && !isWizard && !hasProjectSegment
+                        ? router.pathname.replace('[slug]', org.id!)
+                        : `/org/${org.id}`
 
                     return (
                       <CommandItem_Shadcn_
@@ -105,28 +106,15 @@ export const OrganizationDropdown = () => {
                   })}
                 </ScrollArea>
               </CommandGroup_Shadcn_>
-              <CommandSeparator_Shadcn_ />
-              <CommandGroup_Shadcn_>
-                <CommandItem_Shadcn_
-                  className="cursor-pointer w-full"
-                  onSelect={(e) => {
-                    setOpen(false)
-                    router.push(`/organizations`)
-                  }}
-                  onClick={() => setOpen(false)}
-                >
-                  <Link href="/organizations" className="flex items-center gap-2 w-full">
-                    <p>All Organizations</p>
-                  </Link>
-                </CommandItem_Shadcn_>
-              </CommandGroup_Shadcn_>
+
+              {/* 2) NEW (if enabled) */}
               {organizationCreationEnabled && (
                 <>
                   <CommandSeparator_Shadcn_ />
                   <CommandGroup_Shadcn_>
                     <CommandItem_Shadcn_
                       className="cursor-pointer w-full"
-                      onSelect={(e) => {
+                      onSelect={() => {
                         setOpen(false)
                         router.push(`/new`)
                       }}
@@ -140,6 +128,23 @@ export const OrganizationDropdown = () => {
                   </CommandGroup_Shadcn_>
                 </>
               )}
+
+              {/* 3) ALL */}
+              <CommandSeparator_Shadcn_ />
+              <CommandGroup_Shadcn_>
+                <CommandItem_Shadcn_
+                  className="cursor-pointer w-full"
+                  onSelect={() => {
+                    setOpen(false)
+                    router.push(`/organizations`)
+                  }}
+                  onClick={() => setOpen(false)}
+                >
+                  <Link href="/organizations" className="flex items-center gap-2 w-full">
+                    <p>All Organizations</p>
+                  </Link>
+                </CommandItem_Shadcn_>
+              </CommandGroup_Shadcn_>
             </CommandList_Shadcn_>
           </Command_Shadcn_>
         </PopoverContent_Shadcn_>

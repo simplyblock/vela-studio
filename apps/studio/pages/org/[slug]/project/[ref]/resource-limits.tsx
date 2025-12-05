@@ -390,6 +390,47 @@ const ResourceLimit: NextPageWithLayout = () => {
             isSaving && 'opacity-50 pointer-events-none'
           )}
         >
+                    {/* Project limits */}
+          <Card className="p-5 space-y-4">
+            <p className="font-medium text-sm text-foreground">Project limits</p>
+
+            {limitsLoading ? (
+              <p className="text-sm text-foreground-muted">Loading limits…</p>
+            ) : (
+              SLIDERS.map((slider) => {
+                const cfg = limitConfig[slider.key]
+                const usage = usageByKey[slider.key] ?? 0
+                const systemMax = systemMaxByKey[slider.key]
+                const projectMax = systemMax != null ? systemMax : cfg.max
+
+                return (
+                  <FormField_Shadcn_
+                    key={`proj-${slider.key}`}
+                    control={form.control}
+                    name={`project.${slider.key}`}
+                    render={() => (
+                      <SliderField
+                        name={`project.${slider.key}`}
+                        label={cfg.label}
+                        unit={cfg.unit}
+                        min={cfg.min}
+                        max={projectMax}
+                        step={cfg.step}
+                        usage={usage}
+                        current={defaults!.project[slider.key]}
+                        onCommit={commitProject(slider.key)}
+                        showUsage={true}
+                      />
+                    )}
+                  />
+                )
+              })
+            )}
+
+            <p className="text-[11px] leading-snug text-foreground-muted">
+              Global ceilings across all branches in this project.
+            </p>
+          </Card>
           {/* Per-branch */}
           <Card className="p-5 space-y-4">
             <p className="font-medium text-sm text-foreground">Sizing (per branch)</p>
@@ -432,47 +473,7 @@ const ResourceLimit: NextPageWithLayout = () => {
             </p>
           </Card>
 
-          {/* Project limits */}
-          <Card className="p-5 space-y-4">
-            <p className="font-medium text-sm text-foreground">Project limits</p>
 
-            {limitsLoading ? (
-              <p className="text-sm text-foreground-muted">Loading limits…</p>
-            ) : (
-              SLIDERS.map((slider) => {
-                const cfg = limitConfig[slider.key]
-                const usage = usageByKey[slider.key] ?? 0
-                const systemMax = systemMaxByKey[slider.key]
-                const projectMax = systemMax != null ? systemMax : cfg.max
-
-                return (
-                  <FormField_Shadcn_
-                    key={`proj-${slider.key}`}
-                    control={form.control}
-                    name={`project.${slider.key}`}
-                    render={() => (
-                      <SliderField
-                        name={`project.${slider.key}`}
-                        label={cfg.label}
-                        unit={cfg.unit}
-                        min={cfg.min}
-                        max={projectMax}
-                        step={cfg.step}
-                        usage={usage}
-                        current={defaults!.project[slider.key]}
-                        onCommit={commitProject(slider.key)}
-                        showUsage={true}
-                      />
-                    )}
-                  />
-                )
-              })
-            )}
-
-            <p className="text-[11px] leading-snug text-foreground-muted">
-              Global ceilings across all branches in this project.
-            </p>
-          </Card>
         </div>
 
         <div className="flex justify-end">

@@ -38,6 +38,7 @@ type Props = {
   branchMax: BranchMaxResources
   ramUsageBytes: number // RAM usage as bytes (for “usage + 20%” rule)
   triggerClassName?: string
+  isDisabled?: boolean
 }
 
 type FormValues = {
@@ -62,6 +63,7 @@ export const BranchResizeModal: React.FC<Props> = ({
   branchMax,
   ramUsageBytes,
   triggerClassName,
+  isDisabled
 }) => {
   const [open, setOpen] = useState(false)
 
@@ -360,7 +362,7 @@ export const BranchResizeModal: React.FC<Props> = ({
   return (
     <Dialog open={open} onOpenChange={(v) => setOpen(v)}>
       <DialogTrigger asChild>
-        <Button type="default" className={triggerClassName}>
+        <Button disabled={isDisabled} type="default" className={triggerClassName}>
           Resize branch
         </Button>
       </DialogTrigger>
