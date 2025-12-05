@@ -42,7 +42,8 @@ const CreateUserModal = ({ visible, setVisible }: CreateUserModalProps) => {
 
   const { mutate: createUser, isLoading: isCreatingUser } = useUserCreateMutation({
     onSuccess(res) {
-      toast.success(`Successfully created user: ${res.email}`)
+      console.log('User created successfully:', res)
+      toast.success(`Successfully created user ${res.email ?? ''}`)
       form.reset({ email: '', password: '', autoConfirmUser: true, forcePasswordUpdate: true })
       setVisible(false)
     },

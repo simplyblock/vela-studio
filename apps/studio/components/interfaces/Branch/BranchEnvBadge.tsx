@@ -41,18 +41,7 @@ export default function BranchEnvBadge({
 
   const colorClass = colorMap[key] ?? colorMap['default']
 
-  const labelMap: Record<string, string> = {
-    production: 'Production',
-    prod: 'Production',
-    staging: 'Staging',
-    test: 'Test',
-    testing: 'Test',
-    qa: 'Test',
-    development: 'Development',
-    dev: 'Development',
-  }
 
-  const displayLabel = labelMap[key] ?? (env ?? 'Unknown')
 
   const sizeClass =
     size === 'sm'
@@ -72,7 +61,7 @@ export default function BranchEnvBadge({
         className
       )}
     >
-      {displayLabel}
+      {key}
     </span>
   )
 }

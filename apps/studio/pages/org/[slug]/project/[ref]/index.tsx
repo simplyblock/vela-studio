@@ -27,6 +27,7 @@ import BranchStatusBadge from 'components/interfaces/Branch/BranchStatusBadge'
 import BranchEnvBadge from 'components/interfaces/Branch/BranchEnvBadge'
 import { BranchResourceBadge } from 'components/interfaces/Branch/BranchResourceBadge'
 import ProjectResourcesPanel from 'components/interfaces/Project/ProjectResourcesPanel'
+import { BranchCard } from 'components/interfaces/Branch/BranchCard'
 
 const ACTIVE_STATUSES = ['ACTIVE_HEALTHY', 'ACTIVE_UNHEALTHY','UNKNOWN']
 const STOPPED_STATUS = ['STOPPED']
@@ -91,6 +92,15 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
     { orgRef: slug, projectRef },
     { enabled: !!slug && !!projectRef, refetchInterval: 5000 }
   )
+
+  const sortedBranches = useMemo(
+  () =>
+    [...branches].sort((a, b) =>
+      (a.name ?? '').localeCompare(b.name ?? '', undefined, { sensitivity: 'base' })
+    ),
+  [branches]
+)
+
 
   // any resource warnings tied to this project
   const {
@@ -222,157 +232,20 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
             <EmptyBranchesState slug={slug} projectRef={projectRef} projectName={project.name} />
           ) : (
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {branches.map((branch: Branch) => {
-                const status = branch.status
-                const toggling = togglingId === branch.id
-                const deleting = deletingId === branch.id
-
-                // Action button variants
-                let ActionButton: React.ReactNode = null
-
-                if (isStatusTransitional(status)) {
-                  ActionButton = (
-                    <Button size="tiny" type="default" disabled>
-                      <span className="inline-flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full border border-muted animate-spin" />
-                        <span className="text-xs">Working…</span>
-                      </span>
-                    </Button>
-                  )
-                } else if (isStatusActive(status)) {
-                  ActionButton = (
-                    <Button
-                      size="tiny"
-                      type="default"
-                      onClick={() => onToggleBranch(branch)}
-                      disabled={toggling || deleting}
-                      loading={toggling}
-                      aria-label={`Stop branch ${branch.name ?? branch.id}`}
-                    >
-                      <span className="inline-flex items-center gap-1">
-                        <Pause size={14} /> Stop
-                      </span>
-                    </Button>
-                  )
-                } else if (isStatusStopped(status)) {
-                  ActionButton = (
-                    <Button
-                      size="tiny"
-                      type="default"
-                      onClick={() => onToggleBranch(branch)}
-                      disabled={toggling || deleting}
-                      loading={toggling}
-                      aria-label={`Start branch ${branch.name ?? branch.id}`}
-                    >
-                      <span className="inline-flex items-center gap-1">
-                        <Play size={14} /> Start
-                      </span>
-                    </Button>
-                  )
-                } else if (isStatusError(status)) {
-                  ActionButton = (
-                    <Button size="tiny" type="default" disabled className="text-yellow-600">
-                      <span className="inline-flex items-center gap-1">
-                        <AlertTriangle size={14} /> Issue
-                      </span>
-                    </Button>
-                  )
-                } else {
-                  // fallback: disabled
-                  ActionButton = (
-                    <Button size="tiny" type="default" disabled>
-                      N/A
-                    </Button>
-                  )
-                }
-
-                // Open allowed only when active
-                const openAllowed = isStatusActive(status)
-
-                return (
-                  <li
-                    key={branch.id}
-                    className={cn('rounded border border-default bg-surface-100 p-4 flex flex-col justify-between')}
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-sm text-foreground font-medium flex items-center gap-3">
-                            <span className="truncate">{branch.name}</span>
-                          </p>
-
-                          <p className="text-xs text-foreground-light font-mono break-all">{branch.id}</p>
-
-                          {branch.created_at && (
-                            <div className="text-xs text-foreground-lighter">
-                              Created{' '}
-                              <TimestampInfo
-                                utcTimestamp={branch.created_at}
-                                displayAs="local"
-                                labelFormat="DD MMM HH:mm"
-                                format="YYYY-MM-DD HH:mm:ss"
-                              />
-                            </div>
-                          )}
-                        </div>
-
-                        {/* right column: status badge + compact resource badge */}
-                        <div className="flex flex-col items-end ml-3 shrink-0 space-y-2">
-                          <div>
-                            <BranchStatusBadge status={branch.status} />
-                          </div>
-
-                          <div>
-                            <BranchResourceBadge
-                              max_resources={branch.max_resources}
-                              used_resources={branch.used_resources}
-                              size={40}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* env badge on its own row so it doesn't crowd name */}
-                      <div className="mt-1">
-                        <BranchEnvBadge env={(branch as any).env_type} size="sm" />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-2">
-                      {ActionButton}
-
-                      <Button
-                        size="tiny"
-                        type="default"
-                        className="text-redA-1100 hover:bg-redA-400"
-                        onClick={() =>
-                          setDeleteTarget({
-                            id: branch.id,
-                            name: branch.name ?? branch.id,
-                          })
-                        }
-                        disabled={toggling || deleting}
-                        aria-label={`Delete branch ${branch.name ?? branch.id}`}
-                      >
-                        <span className="inline-flex items-center gap-1">
-                          <Trash2 size={14} /> Delete
-                        </span>
-                      </Button>
-
-                      <ResizeBranchModal orgSlug={slug} projectRef={projectRef} branchId={branch.id} branchMax={branch.max_resources} triggerClassName="!ml-auto" ramUsageBytes={branch?.used_resources?.ram_bytes ?? 0} />
-                    </div>
-
-                    <div className="pt-3">
-                      <Button asChild size="tiny" type="default" block disabled={!openAllowed}>
-                        <Link href={`/org/${slug}/project/${projectRef}/branch/${branch.id}`}>
-                          Open branch
-                        </Link>
-                      </Button>
-                    </div>
-                  </li>
-                )
-              })}
+            {sortedBranches.map((branch: Branch) => (
+              <BranchCard
+                key={branch.id}
+                branch={branch}
+                orgSlug={slug}
+                projectRef={projectRef}
+                togglingId={togglingId}
+                deletingId={deletingId}
+                onToggleBranch={onToggleBranch}
+                onRequestDelete={(id, name) => setDeleteTarget({ id, name })}
+              />
+            ))}
             </ul>
+
           )}
         </section>
       </div>

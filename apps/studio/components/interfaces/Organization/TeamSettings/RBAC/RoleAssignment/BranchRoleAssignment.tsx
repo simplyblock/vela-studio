@@ -39,6 +39,7 @@ import {
   SelectGroup_Shadcn_,
   SelectItem_Shadcn_,
 } from 'ui'
+import { AssignMembersDialog } from './AssignMembersDialog'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
@@ -270,112 +271,70 @@ export const BranchRoleAssignment = () => {
       </ScaffoldFilterAndContent>
 
       {/* Assignment modal */}
-      <Dialog open={isAssignModalOpen} onOpenChange={setIsAssignModalOpen}>
-        <DialogContent size="medium">
-          <DialogHeader className="border-b">
-            <DialogTitle>
-              {selectedRole ? `Assign ${selectedRole.name}` : 'Assign branch role'}
-            </DialogTitle>
-          </DialogHeader>
+      <AssignMembersDialog
+      open={isAssignModalOpen}
+      onOpenChange={setIsAssignModalOpen}
+      title={selectedRole ? `Assign ${selectedRole.name}` : 'Assign branch role'}
+      members={allMembers}
+      selectedIds={pendingSelection}
+      onToggleMember={handleTogglePendingUser}
+      isSaveDisabled={!canSave}
+      onSave={handleSaveAssignments}
+      scopeSlot={
+        selectedRole && (
+          <div className="flex flex-col gap-4">
+            {/* Project selector */}
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] uppercase text-foreground-muted">Project</span>
+              <Select_Shadcn_
+                value={selectedProjectId}
+                onValueChange={(value) => {
+                  setSelectedProjectId(value)
+                  setSelectedBranchIds([])
+                }}
+              >
+                <SelectTrigger_Shadcn_ className="text-sm">
+                  {orgProjects.find((p) => p.id === selectedProjectId)?.name || 'Select a project'}
+                </SelectTrigger_Shadcn_>
+                <SelectContent_Shadcn_>
+                  <SelectGroup_Shadcn_>
+                    {orgProjects.map((project) => (
+                      <SelectItem_Shadcn_ key={project.id} value={project.id}>
+                        {project.name}
+                      </SelectItem_Shadcn_>
+                    ))}
+                  </SelectGroup_Shadcn_>
+                </SelectContent_Shadcn_>
+              </Select_Shadcn_>
+            </div>
 
-          <DialogSection className="pt-4 flex flex-col gap-6">
-            {/* Members list */}
-            <div>
-              <p className="mb-2 text-xs uppercase font-medium text-foreground-muted">Members</p>
-              <ScrollArea className="max-h-[220px] pr-1">
+            {/* Branches list */}
+            <div className="flex flex-col gap-1">
+              <span className="text-[11px] uppercase text-foreground-muted">Branches</span>
+              <ScrollArea className="max-h-[160px] pr-1">
                 <div className="flex flex-col gap-1">
-                  {allMembers.map((m) => {
-                    const id = m.user_id
-                    const isSelected = pendingSelection.includes(id)
+                  {(branches || []).map((branch) => {
+                    const isChecked = selectedBranchIds.includes(branch.id)
                     return (
                       <div
-                        key={id}
-                        className="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-surface-200 cursor-pointer"
+                        key={branch.id}
+                        className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-surface-200"
                       >
                         <Checkbox_Shadcn_
-                          checked={isSelected}
-                          onCheckedChange={() => handleTogglePendingUser(id)}
+                          checked={isChecked}
+                          onCheckedChange={() => handleToggleBranch(branch.id)}
                         />
-                        <div>
-                          <p className="text-sm">{m.username || m.primary_email || id}</p>
-                          {m.primary_email && (
-                            <p className="text-xs text-foreground-light">{m.primary_email}</p>
-                          )}
-                        </div>
+                        <span className="text-sm">{branch.name}</span>
                       </div>
                     )
                   })}
                 </div>
               </ScrollArea>
             </div>
-
-            {/* Scope: project + branches */}
-            {selectedRole && (
-              <div className="flex flex-col gap-4">
-                {/* Project selector */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-[11px] uppercase text-foreground-muted">Project</span>
-                  <Select_Shadcn_
-                    value={selectedProjectId}
-                    onValueChange={(value) => {
-                      setSelectedProjectId(value)
-                      setSelectedBranchIds([])
-                    }}
-                  >
-                    <SelectTrigger_Shadcn_ className="text-sm">
-                      {orgProjects.find((p) => p.id === selectedProjectId)?.name ||
-                        'Select a project'}
-                    </SelectTrigger_Shadcn_>
-                    <SelectContent_Shadcn_>
-                      <SelectGroup_Shadcn_>
-                        {orgProjects.map((project) => (
-                          <SelectItem_Shadcn_ key={project.id} value={project.id}>
-                            {project.name}
-                          </SelectItem_Shadcn_>
-                        ))}
-                      </SelectGroup_Shadcn_>
-                    </SelectContent_Shadcn_>
-                  </Select_Shadcn_>
-                </div>
-
-                {/* Branches list */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-[11px] uppercase text-foreground-muted">Branches</span>
-                  <ScrollArea className="max-h-[160px] pr-1">
-                    <div className="flex flex-col gap-1">
-                      {(branches || []).map((branch) => {
-                        const isChecked = selectedBranchIds.includes(branch.id)
-                        return (
-                          <div
-                            key={branch.id}
-                            className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-surface-200"
-                          >
-                            <Checkbox_Shadcn_
-                              checked={isChecked}
-                              onCheckedChange={() => handleToggleBranch(branch.id)}
-                            />
-                            <span className="text-sm">{branch.name}</span>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </ScrollArea>
-                </div>
-              </div>
-            )}
-          </DialogSection>
-
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="default">Cancel</Button>
-            </DialogClose>
-
-            <Button type="primary" disabled={!canSave} onClick={handleSaveAssignments}>
-              Save changes
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+        )
+      }
+    />
     </>
   )
 }

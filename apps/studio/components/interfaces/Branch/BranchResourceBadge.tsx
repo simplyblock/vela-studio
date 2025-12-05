@@ -88,7 +88,7 @@ export const BranchResourceBadge = ({
     return sorted[0]
   }, [rows])
 
-  const stroke = 8
+  const stroke = 4
   const radius = Math.max(3, (size - stroke) / 2)
   const circumference = 2 * Math.PI * radius
   const pct = mostUsed ? clamp(mostUsed.percent) : 0

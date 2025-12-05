@@ -616,6 +616,52 @@ const CreateProjectPage: NextPageWithLayout = () => {
 
             {/* Row 2: Per-branch / Project limits */}
             <section className="grid gap-10 xl:grid-cols-2">
+              {/* Project */}
+              <section className="rounded-lg border p-5 space-y-4">
+                <p className="font-medium text-sm text-foreground">Project limits</p>
+                {!limitConfig ? (
+                  <p className="text-sm text-foreground-muted">Loading limits…</p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-y-4">
+                    {sliderKeys.map((key) => {
+                      const cfg = limitConfig[key]!
+                      const value = (form.watch(`projectLimits.${key}`) ?? cfg.min) as number
+                      const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
+
+                        // Fetch server/form validation error for this field (project)
+                        const projectErrors = (form.formState.errors.projectLimits ?? {}) as Record<string, any>
+                        const errorMessage = projectErrors?.[key]?.message as string | undefined
+                      return (
+                        <SliderRow
+                          key={key}
+                          id={`project-limits-${key}`}
+                          label={cfg.label}
+                          value={value}
+                          min={cfg.min}
+                          max={cfg.max}
+                          step={cfg.step}
+                          unit={cfg.unit}
+                          disabled={storageDisabled}
+                          onChange={handleProjectChange(key)}
+                          error={errorMessage}
+                          helper={
+                            key === 'storage' && storageDisabled ? (
+                              <div className="mt-2">
+                                <Label_Shadcn_ className="text-xs text-muted-foreground">
+                                  Check “Include file storage” to enable the slider
+                                </Label_Shadcn_>
+                              </div>
+                            ) : null
+                          }
+                        />
+                      )
+                    })}
+                  </div>
+                )}
+                <p className="text-[11px] leading-snug text-foreground-muted">
+                  Global ceilings across all branches in this project.
+                </p>
+              </section>
               {/* Per-branch */}
               <section className="rounded-lg border p-5 space-y-4">
                 <p className="font-medium text-sm text-foreground">Sizing (per branch)</p>
@@ -663,52 +709,7 @@ const CreateProjectPage: NextPageWithLayout = () => {
                 </p>
               </section>
 
-              {/* Project */}
-              <section className="rounded-lg border p-5 space-y-4">
-                <p className="font-medium text-sm text-foreground">Project limits</p>
-                {!limitConfig ? (
-                  <p className="text-sm text-foreground-muted">Loading limits…</p>
-                ) : (
-                  <div className="grid grid-cols-1 gap-y-4">
-                    {sliderKeys.map((key) => {
-                      const cfg = limitConfig[key]!
-                      const value = (form.watch(`projectLimits.${key}`) ?? cfg.min) as number
-                      const storageDisabled = key === 'storage' && !form.watch('includeFileStorage')
-
-                        // Fetch server/form validation error for this field (project)
-                        const projectErrors = (form.formState.errors.projectLimits ?? {}) as Record<string, any>
-                        const errorMessage = projectErrors?.[key]?.message as string | undefined
-                      return (
-                        <SliderRow
-                          key={key}
-                          id={`project-limits-${key}`}
-                          label={cfg.label}
-                          value={value}
-                          min={cfg.min}
-                          max={cfg.max}
-                          step={cfg.step}
-                          unit={cfg.unit}
-                          disabled={storageDisabled}
-                          onChange={handleProjectChange(key)}
-                          error={errorMessage}
-                          helper={
-                            key === 'storage' && storageDisabled ? (
-                              <div className="mt-2">
-                                <Label_Shadcn_ className="text-xs text-muted-foreground">
-                                  Check “Include file storage” to enable the slider
-                                </Label_Shadcn_>
-                              </div>
-                            ) : null
-                          }
-                        />
-                      )
-                    })}
-                  </div>
-                )}
-                <p className="text-[11px] leading-snug text-foreground-muted">
-                  Global ceilings across all branches in this project.
-                </p>
-              </section>
+              
             </section>
 
             {/* Row 3: Availability & storage */}
