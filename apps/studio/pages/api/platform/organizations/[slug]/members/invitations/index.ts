@@ -3,6 +3,9 @@ import { apiBuilder } from 'lib/api/apiBuilder'
 import { getVelaClient, maybeHandleError, validStatusCodes } from 'data/vela/vela'
 import { getPlatformQueryParams } from 'lib/api/platformQueryParams'
 import { mapOrganizationMember } from 'data/vela/api-mappers'
+import { isDocker } from 'lib/docker'
+
+const isInDocker = isDocker()
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
   const { slug } = getPlatformQueryParams(req, 'slug')
@@ -53,6 +56,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
         email: req.body.email,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
+        send_mail: !isInDocker || !(req.body.send_mail !== undefined && !req.body.send_mail),
       },
     })
 
