@@ -51,12 +51,13 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!userId) {
     // Create a new user if not found
+    const sendMail = req.body.send_mail === undefined || req.body.send_mail
     const result = await client.postOrFail(res, '/users/', {
       body: {
         email: req.body.email,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
-        send_mail: !isInDocker || !(req.body.send_mail !== undefined && !req.body.send_mail),
+        send_mail: !isInDocker && sendMail
       },
     })
 
