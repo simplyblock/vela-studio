@@ -429,6 +429,71 @@
         }
       }
     },
+    "/organizations/{organization_id}/metering/": {
+      "get": {
+        "tags": ["organization", "organization"],
+        "summary": "Metering",
+        "operationId": "metering",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+              "title": "Start"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+              "title": "End"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Metering" },
+                  "title": "Response Metering Organizations  Organization Id  Metering  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/organizations/{organization_id}/projects/": {
       "get": {
         "tags": ["organization", "organization", "project"],
@@ -3135,7 +3200,9 @@
         "operationId": "add",
         "requestBody": {
           "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/UserParameters" } }
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserInviteParameters" }
+            }
           },
           "required": true
         },
@@ -25923,6 +25990,22 @@
         "required": ["status", "limit"],
         "title": "LimitResultPublic"
       },
+      "Metering": {
+        "properties": {
+          "organization_id": { "type": "string", "title": "Organization Id" },
+          "project_id": { "type": "string", "title": "Project Id" },
+          "branch_id": { "type": "string", "title": "Branch Id" },
+          "amount": { "type": "string", "title": "Amount" },
+          "type": {
+            "type": "string",
+            "enum": ["milli_vcpu", "ram", "iops", "storage_size", "database_size"],
+            "title": "Type"
+          }
+        },
+        "type": "object",
+        "required": ["organization_id", "project_id", "branch_id", "amount", "type"],
+        "title": "Metering"
+      },
       "Organization": {
         "properties": {
           "id": {
@@ -26814,12 +26897,18 @@
           },
           "interval": {
             "type": "integer",
+            "minimum": 1.0,
             "title": "Interval",
             "description": "Number of time units between automatic backups for this row."
           },
-          "unit": { "type": "string", "title": "Unit", "description": "Time unit for interval" },
+          "unit": {
+            "type": "string",
+            "title": "Unit",
+            "description": "Time unit for interval; allowed values are d, day, days, h, hour, hours, min, minute, minutes, w, week, weeks"
+          },
           "retention": {
             "type": "integer",
+            "minimum": 1.0,
             "title": "Retention",
             "description": "Maximum number of backups to retain for this row before pruning."
           }
@@ -26892,15 +26981,16 @@
         "required": ["id"],
         "title": "UserID"
       },
-      "UserParameters": {
+      "UserInviteParameters": {
         "properties": {
           "email": { "type": "string", "format": "email", "title": "Email" },
           "first_name": { "type": "string", "title": "First Name" },
-          "last_name": { "type": "string", "title": "Last Name" }
+          "last_name": { "type": "string", "title": "Last Name" },
+          "send_mail": { "type": "boolean", "title": "Send Mail", "default": true }
         },
         "type": "object",
         "required": ["email", "first_name", "last_name"],
-        "title": "UserParameters"
+        "title": "UserInviteParameters"
       },
       "UserPermissionPublic": {
         "properties": {

@@ -4,6 +4,9 @@ import { handleError, post } from 'data/fetchers'
 import { organizationKeys as organizationKeysV1 } from 'data/organizations/keys'
 import type { ResponseError } from 'types'
 import { organizationKeys } from './keys'
+import { isDocker } from '../../lib/docker'
+
+const isInDocker = isDocker()
 
 export type OrganizationCreateInvitationVariables = {
   slug: string
@@ -28,6 +31,7 @@ export async function createOrganizationInvitation({
       email,
       first_name: firstName,
       last_name: lastName,
+      send_mail: !isInDocker,
     },
   })
 

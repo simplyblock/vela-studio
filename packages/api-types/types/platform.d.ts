@@ -2732,6 +2732,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/loki': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Gets project's logs */
+    post: operations['LogsController_getLokiLogsViaPost']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/usage.api-counts': {
     parameters: {
       query?: never
@@ -5117,6 +5134,30 @@ export interface components {
           }
       result?: unknown[]
     }
+    LokiResponse: {
+      error?:
+        | string
+        | {
+            code: number
+            errors: {
+              domain: string
+              location: string
+              locationType: string
+              message: string
+              reason: string
+            }[]
+            message: string
+            status: string
+          }
+      data: {
+        result?: unknown[]
+        stats: {
+          summary: {
+            totalPostFilterLines: number
+          }
+        }
+      }
+    }
     ApproveAuthorizationResponse: {
       url: string
     }
@@ -6522,6 +6563,7 @@ export interface components {
     GetProjectLogsBody: {
       iso_timestamp_end?: string
       iso_timestamp_start?: string
+      query?: string
       sql?: string
     }
     GetPublicUrlBody: {
@@ -14512,7 +14554,7 @@ export interface operations {
     }
     requestBody: {
       content: {
-        'application/json': VelaType<'UserParameters'>
+        'application/json': VelaType<'UserInviteParameters'>
       }
     }
     responses: {
@@ -18107,6 +18149,46 @@ export interface operations {
         }
         content: {
           'application/json': PlatformType<'AnalyticsResponse'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get project's logs */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  LogsController_getLokiLogsViaPost: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        slug: string
+        ref: string
+        branch: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': PlatformType<'GetProjectLogsBody'>
+      }
+    }
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': PlatformType<'LokiResponse'>
         }
       }
       403: {

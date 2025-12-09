@@ -75,6 +75,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organizations/{organization_id}/metering/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Metering */
+        get: operations["metering"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/organizations/{organization_id}/projects/": {
         parameters: {
             query?: never;
@@ -19092,6 +19109,22 @@ export interface components {
             /** Limit */
             limit: string;
         };
+        /** Metering */
+        Metering: {
+            /** Organization Id */
+            organization_id: string;
+            /** Project Id */
+            project_id: string;
+            /** Branch Id */
+            branch_id: string;
+            /** Amount */
+            amount: string;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "milli_vcpu" | "ram" | "iops" | "storage_size" | "database_size";
+        };
         /** Organization */
         Organization: {
             /**
@@ -19547,7 +19580,7 @@ export interface components {
             interval: number;
             /**
              * Unit
-             * @description Time unit for interval
+             * @description Time unit for interval; allowed values are d, day, days, h, hour, hours, min, minute, minutes, w, week, weeks
              */
             unit: string;
             /**
@@ -19610,8 +19643,8 @@ export interface components {
              */
             id: string;
         };
-        /** UserParameters */
-        UserParameters: {
+        /** UserInviteParameters */
+        UserInviteParameters: {
             /**
              * Email
              * Format: email
@@ -19621,6 +19654,11 @@ export interface components {
             first_name: string;
             /** Last Name */
             last_name: string;
+            /**
+             * Send Mail
+             * @default true
+             */
+            send_mail?: boolean;
         };
         /** UserPermissionPublic */
         UserPermissionPublic: {
@@ -21566,6 +21604,40 @@ export interface operations {
             };
         };
     };
+    metering: {
+        parameters: {
+            query?: {
+                start?: string | null;
+                end?: string | null;
+            };
+            header?: never;
+            path: {
+                organization_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Metering"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     "organizations:projects:list": {
         parameters: {
             query?: never;
@@ -23474,7 +23546,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserParameters"];
+                "application/json": components["schemas"]["UserInviteParameters"];
             };
         };
         responses: {
