@@ -3,7 +3,10 @@
   "realm": "vela",
   "enabled": true,
   "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
   "verifyEmail": false,
+  "eventsEnabled": true,
+  "adminEventsEnabled": true,
   "users": [
     {
       "username": "testuser",
