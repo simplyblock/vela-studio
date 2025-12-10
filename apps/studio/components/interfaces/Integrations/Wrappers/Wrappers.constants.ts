@@ -9,7 +9,6 @@ export const WRAPPER_HANDLERS = {
   CLICK_HOUSE: 'click_house_fdw_handler',
   BIG_QUERY: 'big_query_fdw_handler',
   AIRTABLE: 'airtable_fdw_handler',
-  LOGFLARE: 'logflare_fdw_handler',
   AUTH0: 'auth0_fdw_handler',
   COGNITO: 'cognito_fdw_handler',
   MSSQL: 'mssql_fdw_handler',
@@ -1571,42 +1570,6 @@ export const WRAPPERS: WrapperMeta[] = [
           {
             name: 'table_id',
             label: 'Table ID',
-            editable: true,
-            required: true,
-            type: 'text',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: 'logflare_wrapper',
-    handlerName: WRAPPER_HANDLERS.LOGFLARE,
-    validatorName: 'logflare_fdw_validator',
-    icon: `${BASE_PATH}/img/icons/logflare-icon.svg`,
-    description: 'Log management and analytics service',
-    extensionName: 'logflareFdw',
-    label: 'Logflare',
-    docsUrl: 'https://vela.run/docs/guides/database/extensions/wrappers/logflare',
-    server: {
-      options: [
-        {
-          name: 'api_key_id',
-          label: 'API Key ID',
-          required: true,
-          encrypted: true,
-          secureEntry: true,
-        },
-      ],
-    },
-    tables: [
-      {
-        label: 'Logflare Table',
-        description: 'Map to a Logflare Table',
-        options: [
-          {
-            name: 'endpoint',
-            label: 'Endpoint',
             editable: true,
             required: true,
             type: 'text',

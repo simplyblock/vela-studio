@@ -2,8 +2,7 @@ const PUBLIC_URL = new URL(process.env.VELA_PLATFORM_EXT_BASE_URL || 'http://loc
 
 export const VELA_PLATFORM_URL = process.env.VELA_PLATFORM_URL
 
-// Use LOGFLARE_URL until analytics/v1/ routing is supported
-export const PROJECT_ANALYTICS_URL = `${process.env.LOGFLARE_URL}/api/`
+export const LOKI_URL = process.env.LOKI_URL
 
 export const PROJECT_REST_URL = `${PUBLIC_URL.origin}/rest/v1/`
 export const PROJECT_ENDPOINT = PUBLIC_URL.host

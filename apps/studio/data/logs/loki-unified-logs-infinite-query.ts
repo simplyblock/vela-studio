@@ -1,6 +1,4 @@
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query'
-
-import { getUnifiedLogsQuery } from 'components/interfaces/UnifiedLogs/UnifiedLogs.queries'
 import {
   PageParam,
   QuerySearchParamsType,
@@ -9,7 +7,65 @@ import { handleError, post } from 'data/fetchers'
 import { ResponseError } from 'types'
 import { logsKeys } from './keys'
 
-const LOGS_PAGE_LIMIT = 50
+const logNameMapping: { [key: string]: string } = {
+  storage: 'vela-storage',
+  'edge function': 'vela-edge-functions',
+  auth: 'vela-keycloak',
+  postgrest: 'vela-rest',
+  postgres: 'vela-db',
+}
+
+const getLogName = (logType: string) => logNameMapping[logType] || logType
+
+const getLogTypeQuery = (search: QuerySearchParamsType) => {
+  if (search.log_type && search.log_type.length > 0) {
+    const types = search.log_type.map((logType) => getLogName(logType)).join('|')
+    return `appname=~"${types}"`
+  }
+  return undefined
+}
+
+const getStatusQuery = (search: QuerySearchParamsType) => {
+  if (search.status && search.status.length > 0) {
+    const statuses = search.status.map((status) => `${status}`).join('|')
+    return `status=~"${statuses}"`
+  }
+  return undefined
+}
+
+const getMethodQuery = (search: QuerySearchParamsType) => {
+  if (search.method && search.method.length > 0) {
+    const methods = search.method.map((method) => `${method}`).join('|')
+    return `method=~"${methods}"`
+  }
+  return undefined
+}
+
+const getLevelQuery = (search: QuerySearchParamsType) => {
+  if (search.level && search.level.length > 0) {
+    const levels = search.level.map((level) => `${level}`).join('|')
+    return `level=~"${levels}"`
+  }
+  return undefined
+}
+
+// TODO @Chris: Move query building to BE (loki.ts)
+const getUnifiedLogsQuery = (search: QuerySearchParamsType, branchRef: string) => {
+  const typesQuery = getLogTypeQuery(search)
+  const statusQuery = getStatusQuery(search)
+  const methodQuery = getMethodQuery(search)
+  const levelQuery = getLevelQuery(search)
+
+  const queryParts = [typesQuery, statusQuery, methodQuery, levelQuery]
+    .filter((item) => item !== undefined)
+    .join(',')
+
+  const query = `{branch_id="${branchRef}"${queryParts.length > 0 ? ',' + queryParts : ''}} | json`
+  // TODO @Chris: Do we have more elements to add to the query?
+  return query
+}
+
+const LOGS_PAGE_LIMIT = 100
 type LogLevel = 'success' | 'warning' | 'error'
 
 export const UNIFIED_LOGS_QUERY_OPTIONS = {
@@ -38,7 +94,9 @@ export const getUnifiedLogsISOStartEnd = (
   let isoTimestampEnd: string
 
   if (search.date && search.date.length === 2) {
+    console.log(search.date)
     const parseDate = (d: string | Date) => (d instanceof Date ? d : new Date(d))
+    console.log(parseDate(search.date[0]))
     isoTimestampStart = parseDate(search.date[0]).toISOString()
     isoTimestampEnd = parseDate(search.date[1]).toISOString()
   } else {
@@ -62,51 +120,27 @@ export async function getUnifiedLogs(
   signal?: AbortSignal,
   headersInit?: HeadersInit
 ) {
-  if (typeof orgRef === 'undefined') throw new Error('orgRef is required for getUnifiedLogs')
-  if (typeof projectRef === 'undefined')
-    throw new Error('projectRef is required for getUnifiedLogs')
-  if (typeof branchRef === 'undefined') throw new Error('branchRef is required for getUnifiedLogs')
-
-  /**
-   * [Joshen] RE infinite loading pagination logic for unified logs, these all really should live in the API
-   * but for now we're doing these on the FE to move quickly while figuring out what data we need before we
-   * migrate this logic to the BE. Just thought to leave a small explanation on the logic here:
-   *
-   * We're leveraging on the log's timestamp to essentially fetch the next page
-   * Given that the logs are ordered descending (latest logs come first, and we're fetching older logs as we scroll down)
-   * Hence why the cursor is basically the last row's timestamp from the latest page
-   *
-   * iso_timestamp_start will always be the current timestamp
-   * iso_timestamp_end will default to the last hour for the first page, followed by the last row's timestamp from
-   * the previous page.
-   *
-   * However, just note that this isn't a perfect solution as there's always the edge case where by there's multiple rows
-   * with identical timestamps, hence why FE will need a de-duping logic (in UnifiedLogs.tsx) unless we can figure a cleaner
-   * solution when we move all this logic to the BE (e.g using composite columns for the cursor like timestamp + id)
-   *
-   */
-console.log('search', search)
+  if (typeof orgRef === 'undefined') throw new Error('orgRef is required')
+  if (typeof projectRef === 'undefined') throw new Error('projectRef is required')
+  if (typeof branchRef === 'undefined') throw new Error('branchRef is required')
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
-  const sql = `${getUnifiedLogsQuery(search)} ORDER BY timestamp DESC, id DESC LIMIT ${LOGS_PAGE_LIMIT}`
 
   const cursorValue = pageParam?.cursor
   const cursorDirection = pageParam?.direction
+
+  const query = getUnifiedLogsQuery(search, branchRef)
 
   let timestampStart: string
   let timestampEnd: string
 
   if (cursorDirection === 'prev') {
     // Live mode: fetch logs newer than the cursor
-    timestampStart = cursorValue
-      ? new Date(Number(cursorValue) / 1000).toISOString()
-      : isoTimestampStart
+    timestampStart = cursorValue ? new Date(Number(cursorValue)).toISOString() : isoTimestampStart
     timestampEnd = new Date().toISOString()
   } else if (cursorDirection === 'next') {
     // Regular pagination: fetch logs older than the cursor
     timestampStart = isoTimestampStart
-    timestampEnd = cursorValue
-      ? new Date(Number(cursorValue) / 1000).toISOString()
-      : isoTimestampEnd
+    timestampEnd = cursorValue ? new Date(Number(cursorValue)).toISOString() : isoTimestampEnd
   } else {
     timestampStart = isoTimestampStart
     timestampEnd = isoTimestampEnd
@@ -115,7 +149,7 @@ console.log('search', search)
   let headers = new Headers(headersInit)
 
   const { data, error } = await post(
-    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/loki`,
     {
       params: {
         path: {
@@ -124,7 +158,7 @@ console.log('search', search)
           branch: branchRef,
         },
       },
-      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: timestampEnd, sql },
+      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: timestampEnd, query },
       signal,
       headers,
     }
@@ -132,42 +166,45 @@ console.log('search', search)
 
   if (error) handleError(error)
 
-  const resultData = data?.result ?? []
+  const resultData = data?.data.result ?? []
 
-  const result = resultData.map((row: any) => {
-    // Create a date object for display purposes
-    const date = new Date(Number(row.timestamp) / 1000)
+  const result = resultData
+    .map((row: any, index: number) => {
+      // Create a date object for display purposes
+      const date = new Date(Number(row.values[0][0]) / 1000 / 1000)
 
-    return {
-      id: row.id,
-      date,
-      timestamp: row.timestamp,
-      level: row.level as LogLevel,
-      status: row.status || 200,
-      method: row.method,
-      host: row.host,
-      pathname: (row.url || '').replace(/^https?:\/\/[^\/]+/, '') || row.pathname || '',
-      event_message: row.event_message || row.body || '',
-      headers:
-        typeof row.headers === 'string' ? JSON.parse(row.headers || '{}') : row.headers || {},
-      regions: row.region ? [row.region] : [],
-      log_type: row.log_type || '',
-      latency: row.latency || 0,
-      log_count: row.log_count || null,
-      logs: row.logs || [],
-      auth_user: row.auth_user || null,
-    }
-  })
+      return {
+        id: row.stream?.metadata_id ?? index,
+        date,
+        timestamp: row.values[0][0],
+        level: row.stream.detected_level as LogLevel,
+        status: row.status || 200,
+        method: row.method,
+        host: row.host,
+        pathname: (row.url || '').replace(/^https?:\/\/[^\/]+/, '') || row.pathname || '',
+        event_message: row.stream.event_message || row.body || '',
+        headers:
+          typeof row.headers === 'string' ? JSON.parse(row.headers || '{}') : row.headers || {},
+        regions: row.region ? [row.region] : [],
+        log_type: !row.stream.level || row.stream.level === '<null>' ? '' : row.stream.level,
+        latency: row.latency || 0,
+        log_count: row.log_count || null,
+        logs: row.logs || [],
+        auth_user: row.auth_user || null,
+      }
+    })
+    .sort((a: any, b: any) => b.timestamp - a.timestamp)
 
-  const firstRow = result.length > 0 ? result[0] : null
-  const lastRow = result.length > 0 ? result[result.length - 1] : null
-  const hasMore = result.length >= LOGS_PAGE_LIMIT - 1
+  const firstRow = result.length > 0 ? result[result.length - 1] : null
+  const lastRow = result.length > 0 ? result[0] : null
+  const hasMore = (data?.data.stats.summary.totalPostFilterLines ?? 0) >= LOGS_PAGE_LIMIT - 1
 
-  const nextCursor = lastRow ? lastRow.timestamp : null
+  const nextCursor = lastRow ? lastRow.timestamp / 1000 / 1000 : null
   // FIXED: Always provide prevCursor like DataTableDemo does
   // This ensures live mode never breaks the infinite query chain
   // DataTableDemo uses milliseconds, but our timestamps are in microseconds
-  const prevCursor = result.length > 0 ? firstRow!.timestamp : new Date().getTime() * 1000
+  const prevCursor =
+    result.length > 0 ? firstRow!.timestamp / 1000 / 1000 : new Date().getTime() * 1000
 
   return {
     data: result,

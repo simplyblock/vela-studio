@@ -30,7 +30,7 @@ import { DataTableProvider } from 'components/ui/DataTable/providers/DataTablePr
 import { TimelineChart } from 'components/ui/DataTable/TimelineChart'
 import { useUnifiedLogsChartQuery } from 'data/logs/unified-logs-chart-query'
 import { useUnifiedLogsCountQuery } from 'data/logs/unified-logs-count-query'
-import { useUnifiedLogsInfiniteQuery } from 'data/logs/unified-logs-infinite-query'
+import { useUnifiedLogsInfiniteQuery } from 'data/logs/loki-unified-logs-infinite-query'
 import { useLocalStorageQuery } from 'hooks/misc/useLocalStorage'
 import {
   ChartConfig,
