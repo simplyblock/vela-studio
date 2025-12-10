@@ -30,13 +30,14 @@ transforms:
     inputs:
       - project_logs
     route:
-      kong: '.appname == "supabase-kong"'
-      auth: '.appname == "supabase-auth"'
-      rest: '.appname == "supabase-rest"'
-      realtime: '.appname == "supabase-realtime"'
-      storage: '.appname == "supabase-storage"'
-      functions: '.appname == "supabase-functions"'
-      db: '.appname == "supabase-db"'
+      kong: '.appname == "vela-kong"'
+      auth: '.appname == "vela-keycloak"'
+      rest: '.appname == "vela-rest"'
+      realtime: '.appname == "vela-realtime"'
+      storage: '.appname == "vela-storage"'
+      functions: '.appname == "vela-functions"'
+      db: '.appname == "vela-db"'
+      controller: '.appname == "vela-controller"'
   # Ignores non nginx errors since they are related with kong booting up
   kong_logs:
     type: remap
@@ -81,17 +82,28 @@ transforms:
       if err != null {
         abort
       }
-  # Gotrue logs are structured json strings which frontend parses directly. But we keep metadata for consistency.
+
   auth_logs:
     type: remap
     inputs:
       - router.auth
     source: |-
-      parsed, err = parse_json(.event_message)
+      parsed, err = parse_regex(.event_message, r'^(?P<time>\d+:\d+:\d+\.\d+) \[(?P<level>\w+)\] (?P<msg>.*)$')
       if err == null {
+          realm, err = parse_regex(.event_message, r'realmId="(?P<realm>[^"]+)"')
+          if err == null {
+              .metadata.branch_id = realm.realm
+          } else {
+              .metadata.branch_id = "default"
+          }
           .metadata.timestamp = parsed.time
           .metadata = merge!(.metadata, parsed)
+          .metadata.response.status_code = ""
+          .metadata.request.method = ""
+          .metadata.request.path = ""
+          .metadata.id = uuid_v7()
       }
+
   # PostgREST logs are structured so we separate timestamp from message using regex
   rest_logs:
     type: remap
@@ -101,7 +113,7 @@ transforms:
       parsed, err = parse_regex(.event_message, r'^(?P<time>.*): (?P<msg>.*)$')
       if err == null {
           .event_message = parsed.msg
-          .timestamp = to_timestamp!(parsed.time)
+          .timestamp = timestamp!(parsed.time)
           .metadata.host = .project
       }
   # Realtime logs are structured so we parse the severity level using regex (ignore time because it has no date)
@@ -154,93 +166,38 @@ transforms:
           .metadata.parsed.error_severity = "log"
       }
       .metadata.parsed.error_severity = upcase!(.metadata.parsed.error_severity)
+      .metadata.id = uuid_v7()
 
+  controller-remap:
+    type: remap
+    inputs:
+      - router.controller
+    source: |-
+      parsed, err = parse_regex(.event_message, r'.*(?P<level>INFO|NOTICE|WARNING|ERROR|LOG|FATAL|PANIC?):.*', numeric_groups: true)
+      if err != null || parsed == null {
+        .metadata.parsed.error_severity = "info"
+      }
+      .metadata.host = "vela-controller"
+      .metadata.level = parsed.level
+      .metadata.response.status_code = ""
+      .metadata.request.method = ""
+      .metadata.request.path = ""
+      .metadata.id = uuid_v7()
 sinks:
-  logflare_auth:
-    type: 'http'
+  loki_pg:
+    type: 'loki'
     inputs:
-      - auth_logs
-    encoding:
-      codec: 'json'
-    method: 'post'
-    request:
-      retry_max_duration_secs: 10
-      headers:
-        x-api-key: ${LOGFLARE_PUBLIC_ACCESS_TOKEN?LOGFLARE_PUBLIC_ACCESS_TOKEN is required}
-    uri: 'http://analytics:4000/api/logs?source_name=gotrue.logs.prod'
-  logflare_realtime:
-    type: 'http'
-    inputs:
-      - realtime_logs
-    encoding:
-      codec: 'json'
-    method: 'post'
-    request:
-      retry_max_duration_secs: 10
-      headers:
-        x-api-key: ${LOGFLARE_PUBLIC_ACCESS_TOKEN?LOGFLARE_PUBLIC_ACCESS_TOKEN is required}
-    uri: 'http://analytics:4000/api/logs?source_name=realtime.logs.prod'
-  logflare_rest:
-    type: 'http'
-    inputs:
-      - rest_logs
-    encoding:
-      codec: 'json'
-    method: 'post'
-    request:
-      retry_max_duration_secs: 10
-      headers:
-        x-api-key: ${LOGFLARE_PUBLIC_ACCESS_TOKEN?LOGFLARE_PUBLIC_ACCESS_TOKEN is required}
-    uri: 'http://analytics:4000/api/logs?source_name=postgREST.logs.prod'
-  logflare_db:
-    type: 'http'
-    inputs:
+      - controller-remap
       - db_logs
+      - auth_logs
+    endpoint: 'http://loki:3100'
+    labels:
+      branch_id: 'default'
+      level: '{{ .metadata.level }}'
+      appname: '{{ .appname }}'
+      status: '{{ .metadata.response.status_code }}'
+      method: '{{ .metadata.request.method }}'
+      path: '{{ .metadata.request.path }}'
+      message_id: '{{ .metadata.id }}'
     encoding:
-      codec: 'json'
-    method: 'post'
-    request:
-      retry_max_duration_secs: 10
-      headers:
-        x-api-key: ${LOGFLARE_PUBLIC_ACCESS_TOKEN?LOGFLARE_PUBLIC_ACCESS_TOKEN is required}
-    # We must route the sink through kong because ingesting logs before logflare is fully initialised will
-    # lead to broken queries from studio. This works by the assumption that containers are started in the
-    # following order: vector > db > logflare > kong
-    uri: 'http://kong:8000/analytics/v1/api/logs?source_name=postgres.logs'
-  logflare_functions:
-    type: 'http'
-    inputs:
-      - router.functions
-    encoding:
-      codec: 'json'
-    method: 'post'
-    request:
-      retry_max_duration_secs: 10
-      headers:
-        x-api-key: ${LOGFLARE_PUBLIC_ACCESS_TOKEN?LOGFLARE_PUBLIC_ACCESS_TOKEN is required}
-    uri: 'http://analytics:4000/api/logs?source_name=deno-relay-logs'
-  logflare_storage:
-    type: 'http'
-    inputs:
-      - storage_logs
-    encoding:
-      codec: 'json'
-    method: 'post'
-    request:
-      retry_max_duration_secs: 10
-      headers:
-        x-api-key: ${LOGFLARE_PUBLIC_ACCESS_TOKEN?LOGFLARE_PUBLIC_ACCESS_TOKEN is required}
-    uri: 'http://analytics:4000/api/logs?source_name=storage.logs.prod.2'
-  logflare_kong:
-    type: 'http'
-    inputs:
-      - kong_logs
-      - kong_err
-    encoding:
-      codec: 'json'
-    method: 'post'
-    request:
-      retry_max_duration_secs: 10
-      headers:
-        x-api-key: ${LOGFLARE_PUBLIC_ACCESS_TOKEN?LOGFLARE_PUBLIC_ACCESS_TOKEN is required}
-    uri: 'http://analytics:4000/api/logs?source_name=cloudflare.logs.prod'
+      codec: json
