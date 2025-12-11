@@ -248,6 +248,11 @@ export function useBranchPermissionQuery({
   }
 }
 
+export function useCheckPermissions(requiredPermission: undefined): {
+  can: boolean
+  isLoading: boolean
+  isSuccess: boolean
+}
 export function useCheckPermissions(requiredPermission: string): {
   can: boolean
   isLoading: boolean
@@ -258,12 +263,20 @@ export function useCheckPermissions(requiredPermission: Permission): {
   isLoading: boolean
   isSuccess: boolean
 }
-export function useCheckPermissions(requiredPermission: Permission | string): {
+export function useCheckPermissions(requiredPermission: Permission | string | undefined): {
   can: boolean
   isLoading: boolean
   isSuccess: boolean
 } {
   const { slug: orgId, ref: projectId, branch: branchId } = useParams()
+
+  if (typeof requiredPermission === 'undefined') {
+    return {
+      isLoading: false,
+      isSuccess: false,
+      can: true,
+    }
+  }
 
   if (typeof requiredPermission === 'string') {
     requiredPermission = transformToPermission(requiredPermission)
