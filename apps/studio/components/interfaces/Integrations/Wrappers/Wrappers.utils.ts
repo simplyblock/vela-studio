@@ -90,7 +90,6 @@ export const formatWrapperTables = (
         break
       case WRAPPER_HANDLERS.S3:
       case WRAPPER_HANDLERS.AIRTABLE:
-      case WRAPPER_HANDLERS.LOGFLARE:
       case WRAPPER_HANDLERS.BIG_QUERY:
       case WRAPPER_HANDLERS.CLICK_HOUSE:
         break

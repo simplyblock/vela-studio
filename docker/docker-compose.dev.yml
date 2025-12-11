@@ -46,8 +46,7 @@ services:
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
       AUTH_JWT_SECRET: ${JWT_SECRET}
 
-      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
-      LOGFLARE_URL: http://analytics:4000
+      LOKI_URL: http://vela-loki:3100
 
       VELA_PLATFORM_KEYCLOAK_ISSUER: 'http://localhost:8000/auth/realms/vela'
       VELA_PLATFORM_KEYCLOAK_CLIENT_ID: frontend
@@ -76,7 +75,7 @@ services:
       - ../vela-controller:/app
     command: 'bash -c "python -m venv /tmp/venv && source /tmp/venv/bin/activate && pip install -e . && uvicorn --host 0.0.0.0 --reload simplyblock.vela.api:app"'
     healthcheck:
-      test: ['CMD', 'curl', 'http://localhost:8000/health']
+      test: [ 'CMD', 'curl', 'http://localhost:8000/health' ]
       timeout: 5s
       interval: 5s
       retries: 3
@@ -93,8 +92,6 @@ services:
       VELA_CLOUDFLARE_DOMAIN_SUFFIX: 'example.com'
       VELA_KEYCLOAK_ADMIN_NAME: 'admin'
       VELA_KEYCLOAK_ADMIN_SECRET: 'admin'
-      VELA_LOGFLARE_URL: 'http://analytics:4000'
-      VELA_LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
       VELA_SYSTEM_LIMIT_MILLIS_VCPU: '100000'
       VELA_SYSTEM_LIMIT_RAM: '274877906944'
       VELA_SYSTEM_LIMIT_IOPS: '1000000000'
@@ -147,7 +144,7 @@ services:
     volumes:
       - ./volumes/auth/realm.json:/opt/keycloak/data/import/vela-realm.json:ro
     healthcheck:
-      test: ["CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/8080' || exit 1"]  # This should do a proper request, but the container doesn't ship curl, wget, or telnet and using bash builtins is nasty
+      test: [ "CMD-SHELL", "timeout 10 bash -c '</dev/tcp/localhost/8080' || exit 1" ]  # This should do a proper request, but the container doesn't ship curl, wget, or telnet and using bash builtins is nasty
       interval: 30s
       timeout: 10s
       retries: 5
@@ -158,7 +155,7 @@ services:
 
   rest:
     container_name: vela-rest
-    image: postgrest/postgrest:v12.2.12
+    image: postgrest/postgrest:v14.1
     restart: unless-stopped
     depends_on:
       db:
@@ -169,6 +166,7 @@ services:
     environment:
       PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
       PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS}
+      PGRST_DB_EXTRA_SEARCH_PATH: 'public,graphql_public'
       PGRST_DB_ANON_ROLE: anon
       PGRST_JWT_SECRET: ${JWT_SECRET}
       PGRST_DB_USE_LEGACY_GUCS: "false"
@@ -332,54 +330,6 @@ services:
         "/home/deno/functions/main"
       ]
 
-  analytics:
-    container_name: vela-analytics
-    image: supabase/logflare:1.23.0
-    restart: unless-stopped
-    ports:
-      - 4000:4000
-    # Uncomment to use Big Query backend for analytics
-    # volumes:
-    #   - type: bind
-    #     source: ${PWD}/gcloud.json
-    #     target: /opt/app/rel/logflare/bin/gcloud.json
-    #     read_only: true
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "http://localhost:4000/health"
-        ]
-      timeout: 5s
-      interval: 5s
-      retries: 10
-    depends_on:
-      db:
-        # Disable this if you are using an external Postgres database
-        condition: service_healthy
-    environment:
-      LOGFLARE_NODE_HOST: 127.0.0.1
-      DB_USERNAME: supabase_admin
-      DB_DATABASE: _supabase
-      DB_HOSTNAME: ${POSTGRES_HOST}
-      DB_PORT: ${POSTGRES_PORT}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_SCHEMA: _analytics
-      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
-      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${LOGFLARE_PRIVATE_ACCESS_TOKEN}
-      LOGFLARE_SINGLE_TENANT: "true"
-      LOGFLARE_SUPABASE_MODE: "true"
-      LOGFLARE_MIN_CLUSTER_SIZE: 1
-
-      # Comment variables to use Big Query backend for analytics
-      POSTGRES_BACKEND_URL: postgresql://supabase_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/_supabase
-      POSTGRES_BACKEND_SCHEMA: _analytics
-      LOGFLARE_FEATURE_FLAG_OVERRIDE: multibackend=true
-      # Uncomment to use Big Query backend for analytics
-      # GOOGLE_PROJECT_ID: ${GOOGLE_PROJECT_ID}
-      # GOOGLE_PROJECT_NUMBER: ${GOOGLE_PROJECT_NUMBER}
-
   # Comment out everything below this point if you are using an external Postgres database
   db:
     container_name: vela-db
@@ -408,12 +358,12 @@ services:
     healthcheck:
       test:
         [
-        "CMD",
-        "pg_isready",
-        "-U",
-        "postgres",
-        "-h",
-        "localhost"
+          "CMD",
+          "pg_isready",
+          "-U",
+          "postgres",
+          "-h",
+          "localhost"
         ]
       interval: 5s
       timeout: 5s
@@ -442,7 +392,7 @@ services:
 
   vector:
     container_name: vela-vector
-    image: timberio/vector:0.28.1-alpine
+    image: timberio/vector:0.51.1-alpine
     restart: unless-stopped
     volumes:
       - ./volumes/logs/vector.yml:/etc/vector/vector.yml:ro,z
@@ -461,7 +411,7 @@ services:
       interval: 5s
       retries: 3
     environment:
-      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${LOGFLARE_PUBLIC_ACCESS_TOKEN}
+      LOKI_URL: "${LOKI_URL}"
     command:
       [
         "--config",
@@ -523,6 +473,15 @@ services:
         "-c",
         "/app/bin/migrate && /app/bin/supavisor eval \"$$(cat /etc/pooler/pooler.exs)\" && /app/bin/server"
       ]
+
+  loki:
+    container_name: vela-loki
+    image: grafana/loki:3.6.2
+    restart: unless-stopped
+    ports:
+      - 3100:3100
+    volumes:
+      - ./volumes/loki/config:/mnt/config
 
 volumes:
   db-config:
