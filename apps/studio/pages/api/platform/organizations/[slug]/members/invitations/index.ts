@@ -27,7 +27,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     response.data
       .filter((item) => typeof item !== 'string')
       .filter((item) => !item.email_verified)
-      .map(item => mapOrganizationMember(item))
+      .map((item) => mapOrganizationMember(item))
   )
 }
 
@@ -39,7 +39,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const findUserResponse = await client.get('/users/{user_ref}/', {
     params: {
       path: {
-        user_ref: req.body.email
+        user_ref: req.body.email,
       },
     },
   })
@@ -48,6 +48,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const existingUser = findUserResponse.data
   let userId = existingUser?.id
+  let password = undefined
 
   if (!userId) {
     // Create a new user if not found
@@ -57,7 +58,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
         email: req.body.email,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
-        send_mail: !isInDocker && sendMail
+        send_mail: !isInDocker && sendMail,
       },
     })
 
@@ -66,10 +67,11 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // Store new user id
     userId = result.data[0].id
+    password = result.data[0].password
   }
 
   // Add user to an organization
-  return client.proxyPost(res, '/organizations/{organization_id}/members/', {
+  const resultMember = await client.postOrFail(res, '/organizations/{organization_id}/members/', {
     params: {
       path: {
         organization_id: slug,
@@ -78,6 +80,14 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
     body: {
       id: userId,
     },
+  })
+
+  // Error already handled by postOrFail
+  if (!resultMember.success) return
+
+  return res.status(200).json({
+    ...(resultMember.data as any),
+    password,
   })
 }
 
