@@ -54,7 +54,7 @@ services:
       VELA_PLATFORM_KEYCLOAK_AUTHORIZATION_ENDPOINT: http://localhost:8000/auth/realms/vela/protocol/openid-connect/auth
       VELA_PLATFORM_KEYCLOAK_TOKEN_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/token
       VELA_PLATFORM_KEYCLOAK_USERINFO_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/userinfo
-      VELA_PLATFORM_KEYCLOAK_LOGOUT_ENDPOINT: http://auth:8080/auth/protocol/openid-connect/logout
+      VELA_PLATFORM_KEYCLOAK_LOGOUT_ENDPOINT: http://localhost:8000/auth/realms/vela/protocol/openid-connect/logout
       VELA_PLATFORM_KEYCLOAK_JWKS_ENDPOINT: http://auth:8080/auth/realms/vela/protocol/openid-connect/certs
       VELA_PLATFORM_EXT_SIGN_IN_URL: http://localhost:8000/sign-in
       VELA_PLATFORM_EXT_BASE_URL: http://localhost:8000/

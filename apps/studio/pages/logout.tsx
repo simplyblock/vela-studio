@@ -5,14 +5,21 @@ import { toast } from 'sonner'
 import { Loading } from 'components/ui/Loading'
 import { useSignOut } from 'lib/auth'
 import { NextPageWithLayout } from 'types'
+import { useQueryClient } from '@tanstack/react-query'
+import { clearLocalStorage } from 'common'
 
 const LogoutPage: NextPageWithLayout = () => {
   const router = useRouter()
-  const signOut = useSignOut()
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     const logout = async () => {
-      await signOut()
+      // Clear local storage
+      clearLocalStorage()
+      // Clear Assistant IndexedDB
+      queryClient.clear()
+
+      // Successful and send back to sign-in
       toast('Successfully logged out')
       await router.push('/sign-in')
     }

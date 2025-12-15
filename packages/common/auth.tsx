@@ -1,8 +1,16 @@
 'use client'
 
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { clearLocalStorage } from './constants'
-import { useSession as useAuthSession, signOut as authSignOut, getSession } from 'next-auth/react'
+import { getSession, signOut as authSignOut, useSession as useAuthSession } from 'next-auth/react'
 import { Session } from './keycloak'
 import { AuthError } from '@supabase/auth-js'
 
@@ -26,7 +34,7 @@ export type AuthProviderProps = {}
 
 export const AuthProvider = ({ children }: PropsWithChildren<AuthProviderProps>) => {
   const { status, data: session } = useAuthSession({
-   required: false,
+    required: false,
   })
 
   const [state, setState] = useState<AuthState>({ session: null, error: null, isLoading: true })
@@ -38,7 +46,9 @@ export const AuthProvider = ({ children }: PropsWithChildren<AuthProviderProps>)
     const extendedSession = session as Session
 
     // Force relogin
-    const delta = extendedSession ? (extendedSession.expires_at - new Date().getTime() / 1000 - 30) : 0
+    const delta = extendedSession
+      ? extendedSession.expires_at - new Date().getTime() / 1000 - 30
+      : 0
     if (delta < 0) {
       return null
     }
@@ -67,7 +77,7 @@ export const AuthProvider = ({ children }: PropsWithChildren<AuthProviderProps>)
     let timeout: number | undefined
     if (state && state.session) {
       const expiresAt = state.session.expires_at
-      const delta = (expiresAt - new Date().getTime() / 1000 - 30)
+      const delta = expiresAt - new Date().getTime() / 1000 - 30
       if (delta < 0) {
         console.log('Session expired, refreshing...')
         let pathname = location.pathname
@@ -129,7 +139,28 @@ export const useIsMFAEnabled = () => {
   return user !== null && user.factors && user.factors.length > 1
 }
 
-export const signOut = async () => authSignOut()
+export const signOut = async (returnTo: string = '/logout') => {
+  const response = await fetch('/api/auth/logout', {
+    method: 'POST',
+  })
+
+  if (!response.ok) return
+
+  const res = await response.json()
+  if (res.error) {
+    return console.error(res.error)
+  }
+
+  const base = `${window.location.protocol}//${window.location.host}`
+
+  const url = new URL(res.logoutEndpoint)
+  url.searchParams.set("post_logout_redirect_uri", `${base}${returnTo}`)
+
+  console.log(url.toString())
+  await authSignOut({
+    callbackUrl: url.toString(),
+  })
+}
 
 export const logOut = async () => {
   clearLocalStorage()

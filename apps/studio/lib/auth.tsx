@@ -1,14 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query'
-import {
-  AuthProvider as AuthProviderInternal,
-  clearLocalStorage, signOut,
-  useAuthError,
-} from 'common'
 import { PropsWithChildren, useCallback, useEffect } from 'react'
 import { toast } from 'sonner'
 
 import { GOTRUE_ERRORS } from './constants'
 import { SessionProvider } from 'next-auth/react'
+import { AuthProvider as AuthProviderInternal, signOut, useAuthError } from 'common'
 
 const AuthErrorToaster = ({ children }: PropsWithChildren) => {
   const error = useAuthError()
@@ -43,13 +38,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 export { useAuth, useIsLoggedIn, useSession, useUser } from 'common'
 
 export function useSignOut() {
-  const queryClient = useQueryClient()
-
   return useCallback(async () => {
-    const result = await signOut()
-    clearLocalStorage()
-    // Clear Assistant IndexedDB
-    queryClient.clear()
-    return result
-  }, [queryClient])
+    // Run full sign out cycle
+    return await signOut()
+  }, [signOut])
 }

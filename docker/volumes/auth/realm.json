@@ -43,7 +43,10 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": true,
       "publicClient": true,
-      "protocol": "openid-connect"
+      "protocol": "openid-connect",
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:8000/logout##http://localhost:3000/logout"
+      }
     },
     {
       "clientId": "controller",
