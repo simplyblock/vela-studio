@@ -44,6 +44,7 @@ export interface User {
 export interface BaseAuthToken extends JWT {
   access_token: string
   refresh_token: string
+  id_token: string
   token_type: string
   expires_at: number
   expires_in: number
@@ -57,6 +58,7 @@ export interface AuthToken extends BaseAuthToken {
 export interface Session extends AuthSession {
   access_token: string
   refresh_token: string
+  id_token: string
   token_type: string
   expires_at: number
   expires_in: number
@@ -146,6 +148,7 @@ class ServerKeycloakManager implements KeycloakManager {
       refresh_token: account.refresh_token!,
       expires_at: account.expires_at || 0,
       token_type: this.#extractTokenType(token, account),
+      id_token: account.id_token!,
     }
   }
 
@@ -173,6 +176,7 @@ class ServerKeycloakManager implements KeycloakManager {
 
       const newToken = tokensOrError as {
         access_token: string
+        id_token: string
         expires_in: number
         refresh_token?: string
       }
@@ -185,6 +189,7 @@ class ServerKeycloakManager implements KeycloakManager {
         access_token: newToken.access_token,
         expires_at: expiresAt,
         refresh_token: newToken.refresh_token ? newToken.refresh_token : refreshToken,
+        id_token: newToken.id_token,
       }
     } catch (err) {
       console.error('Error refreshing access_token', err)
@@ -195,19 +200,6 @@ class ServerKeycloakManager implements KeycloakManager {
   }
 
   async #signOut(session: AuthSession, token: JWT): Promise<void> {
-    console.log('signOut')
-    const issuer = this.#config.issuer
-    if (issuer) {
-      try {
-        const logOutUrl = new URL(this.#config.logoutEndpoint)
-        logOutUrl.searchParams.set('id_token_hint', token.id_token as string)
-        await fetch(logOutUrl)
-      } catch (err) {
-        console.error('Error logging out from Keycloak', err)
-      }
-    } else {
-      console.warn('No issuer URL found, skipping log out on Keycloak.')
-    }
   }
 
   async #adjustJwt(
@@ -255,6 +247,7 @@ class ServerKeycloakManager implements KeycloakManager {
       token_type: authToken.token_type,
       expires_at: authToken.expires_at,
       user: authToken.user,
+      id_token: authToken.id_token,
     }
   }
 
