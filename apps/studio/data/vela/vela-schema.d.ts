@@ -19394,12 +19394,21 @@ export interface components {
         ResponseType: "empty" | "full";
         /** RoleAssignmentPayload */
         RoleAssignmentPayload: {
-            /** Project Ids */
-            project_ids?: string[] | null;
-            /** Branch Ids */
-            branch_ids?: string[] | null;
-            /** Env Types */
-            env_types?: string[] | null;
+            /**
+             * Project Ids
+             * @default []
+             */
+            project_ids?: string[];
+            /**
+             * Branch Ids
+             * @default []
+             */
+            branch_ids?: string[];
+            /**
+             * Env Types
+             * @default []
+             */
+            env_types?: string[];
         };
         /** RoleAssignmentPublic */
         RoleAssignmentPublic: {

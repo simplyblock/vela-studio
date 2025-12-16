@@ -26431,46 +26431,40 @@
       "RoleAssignmentPayload": {
         "properties": {
           "project_ids": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string",
-                  "maxLength": 26,
-                  "minLength": 26,
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "format": "ulid",
-                  "title": "ULID",
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"]
-                },
-                "type": "array"
-              },
-              { "type": "null" }
-            ],
-            "title": "Project Ids"
+            "items": {
+              "type": "string",
+              "maxLength": 26,
+              "minLength": 26,
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "format": "ulid",
+              "title": "ULID",
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"]
+            },
+            "type": "array",
+            "title": "Project Ids",
+            "default": []
           },
           "branch_ids": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string",
-                  "maxLength": 26,
-                  "minLength": 26,
-                  "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
-                  "format": "ulid",
-                  "title": "ULID",
-                  "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
-                  "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"]
-                },
-                "type": "array"
-              },
-              { "type": "null" }
-            ],
-            "title": "Branch Ids"
+            "items": {
+              "type": "string",
+              "maxLength": 26,
+              "minLength": 26,
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "format": "ulid",
+              "title": "ULID",
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"]
+            },
+            "type": "array",
+            "title": "Branch Ids",
+            "default": []
           },
           "env_types": {
-            "anyOf": [{ "items": { "type": "string" }, "type": "array" }, { "type": "null" }],
-            "title": "Env Types"
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Env Types",
+            "default": []
           }
         },
         "type": "object",

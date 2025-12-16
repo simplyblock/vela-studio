@@ -63,6 +63,7 @@ export const useOrganizationMemberUnassignRoleMutation = ({
         await Promise.all([
           queryClient.invalidateQueries(organizationKeys.roles(slug)),
           queryClient.invalidateQueries(organizationKeysV1.members(slug)),
+          queryClient.invalidateQueries(organizationKeys.role_assignments(slug)),
         ])
       }
 
