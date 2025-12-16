@@ -31,24 +31,29 @@ export const generateProjectRoutes = (orgRef: string, projectRef?: string): Rout
       label: 'Project Overview',
       icon: <Home size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}`,
+      // should we use env:projects:read permission here? 
+      // requiredPermission: 'org:projects:read',
     },
     {
       key: 'resource-limits',
       label: 'Resource Limits',
       icon: <Activity size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}/resource-limits`,
+      requiredPermission: "project:settings:read",
     },
     {
       key: 'projectRoleAssignment',
       label: 'Role Management',
       icon: <Shield size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}/projectRoleAssignment`,
+      requiredPermission: "project:role-assign:read",
     },
     {
       key: 'settings',
       label: 'Project Settings',
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: projectRef && `/org/${orgRef}/project/${projectRef}/settings`,
+      requiredPermission: "project:settings:read",
     },
   ]
 }

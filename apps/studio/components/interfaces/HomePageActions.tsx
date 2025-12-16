@@ -13,6 +13,7 @@ import {
   PopoverTrigger_Shadcn_,
   Popover_Shadcn_,
 } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface HomePageActionsProps {
   search: string
@@ -30,11 +31,13 @@ const HomePageActions = ({
   setFilterStatus,
 }: HomePageActionsProps) => {
   const { slug } = useParams()
-  const projectCreationEnabled = useIsFeatureEnabled('projects:create')
+  const {can,isLoading} = useCheckPermissions("org:projects:create")
+  console.log('HomePageActions - can:', can, 'isLoading:', isLoading);
+  // const projectCreationEnabled = useIsFeatureEnabled('projects:create')
 
   return (
     <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
-      {projectCreationEnabled && !hideNewProject && (
+      {can && !isLoading && !hideNewProject && (
         <Button asChild type="primary">
           <Link href={`/new/${slug}`}>New project</Link>
         </Button>

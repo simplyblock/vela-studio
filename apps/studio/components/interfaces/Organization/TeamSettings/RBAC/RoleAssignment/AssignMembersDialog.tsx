@@ -22,6 +22,7 @@ type AssignMembersDialogProps = {
   onToggleMember: (userId: string) => void
   onSave: () => void
   isSaveDisabled?: boolean
+  isSaving?: boolean 
   scopeSlot?: ReactNode
 }
 
@@ -34,9 +35,11 @@ export const AssignMembersDialog = ({
   onToggleMember,
   onSave,
   isSaveDisabled,
+  isSaving = false, 
   scopeSlot,
 }: AssignMembersDialogProps) => {
   const hasMembers = members.length > 0
+  const saveDisabled = Boolean(isSaveDisabled || isSaving)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -46,7 +49,6 @@ export const AssignMembersDialog = ({
         </DialogHeader>
 
         <DialogSection className="pt-4 flex flex-col gap-6">
-          {/* Members list / empty state */}
           <div>
             <p className="mb-2 text-xs uppercase font-medium text-foreground-muted">Members</p>
 
@@ -66,6 +68,7 @@ export const AssignMembersDialog = ({
                         <Checkbox_Shadcn_
                           checked={isSelected}
                           onCheckedChange={() => onToggleMember(id)}
+                          disabled={isSaving} 
                         />
                         <div>
                           <p className="text-sm">{m.username || m.primary_email || id}</p>
@@ -85,17 +88,23 @@ export const AssignMembersDialog = ({
             )}
           </div>
 
-          {/* Optional scope block (env types / branches / project selector) */}
           {scopeSlot}
         </DialogSection>
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button type="default">Cancel</Button>
+            <Button type="default" disabled={isSaving}>
+              Cancel
+            </Button>
           </DialogClose>
 
-          <Button type="primary" disabled={isSaveDisabled} onClick={onSave}>
-            Save changes
+          <Button
+            type="primary"
+            disabled={saveDisabled}
+            onClick={onSave}
+            loading={isSaving}
+          >
+            {isSaving ? 'Saving…' : 'Save changes'}
           </Button>
         </DialogFooter>
       </DialogContent>

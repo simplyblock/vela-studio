@@ -57,6 +57,8 @@ import {
 } from 'ui'
 import { useSelectedBranchQuery } from '../../data/branches/selected-branch-query'
 import { useSessionAccessTokenQuery } from '../../data/auth/session-access-token-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { Permission } from 'types'
 
 export const ICON_SIZE = 32
 export const ICON_STROKE_WIDTH = 1.5
@@ -217,17 +219,29 @@ export function SideBarNavLink({
   active,
   onClick,
   disabled,
+  requiredPermission,
   ...props
 }: {
   route: any
   active?: boolean
   disabled?: boolean
   onClick?: () => void
+  requiredPermission?: string 
 } & ComponentPropsWithoutRef<typeof SidebarMenuButton>) {
   const [sidebarBehaviour] = useLocalStorageQuery(
     LOCAL_STORAGE_KEYS.SIDEBAR_BEHAVIOR,
     DEFAULT_SIDEBAR_BEHAVIOR
   )
+
+  
+  const { can, isLoading,isSuccess } = useCheckPermissions(requiredPermission)
+
+  console.log('SidebarNavLink - can:', can, 'isLoading:', isLoading, 'requiredPermission:', requiredPermission,"isSuccess:",isSuccess);
+  // 🔒 Hide item if we know user cannot access it
+  if (!isLoading && !can) {
+    
+    return null
+  }
 
   const buttonProps = {
     disabled,
@@ -313,6 +327,7 @@ export const ProjectSidebarLinks = () => {
               activeRoute === route.key ||
               router.asPath.includes(route.key)
             }
+            requiredPermission={route.requiredPermission}
           />
         ))}
       </SidebarGroup>
@@ -367,31 +382,6 @@ const BranchSidebarLinks = () => {
     storage: storageEnabled,
     realtime: realtimeEnabled,
   })
-
-  // Static branch-specific links (minus Resource Limits,
-  // which moved to project scope)
-  // const branchLinks = [
-  //   {
-  //     key: 'database-backup-schedules',
-  //     label: 'Backup Schedules',
-  //     icon: <CalendarClock size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-  //     link:
-  //       projectRef &&
-  //       `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/scheduled`,
-  //     isActive: router.asPath.includes('/database/backups/scheduled'),
-  //   },
-  //   {
-  //     key: 'database-backups',
-  //     label: 'Backups',
-  //     icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-  //     link:
-  //       projectRef &&
-  //       `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/database/backups/pitr`,
-  //     isActive:
-  //       router.asPath.includes('/database/backups/pitr') ||
-  //       router.asPath.includes('/database/backups/restore-to-new-project'),
-  //   },
-  // ]
 
   const monitoringEndpoint = branch?.database?.monitoring_endpoint_uri ?? undefined
   const otherRoutes = generateOtherRoutes(
@@ -524,19 +514,21 @@ const OrganizationLinks = () => {
       label: 'Projects',
       href: `/org/${slug}`,
       key: 'projects',
-        icon: <PanelsTopLeft size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      icon: <PanelsTopLeft size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
     },
     {
       label: 'Environments',
       href: `/org/${slug}/env`,
       key: 'env',
       icon: <CopyPlus size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      requiredPermission: 'org:settings:read',
     },
       {
         label: 'User Management',
         href: `/org/${slug}/rbac`,
         key: 'rbac',
         icon: <ShieldUser size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+        requiredPermission: 'org:user:read',
       },
   ]
 
@@ -552,18 +544,21 @@ const OrganizationLinks = () => {
       href: `/org/${slug}/metering`,
       key: 'metering',
       icon: <ChartArea size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      requiredPermission: 'org:metering:read',
     },
     {
       label: 'Backups',
       href: `/org/${slug}/backups`,
       key: 'backups',
       icon: <HardDrive size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      requiredPermission: 'org:backup:read',
     },
     {
       label: 'Organization Settings',
       href: `/org/${slug}/general`,
       key: 'settings',
       icon: <Settings size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
+      requiredPermission: 'org:settings:read',
     },
   ]
 
@@ -602,6 +597,7 @@ const OrganizationLinks = () => {
             key={item.key}
             disabled={disableAccessMfa && item.key === 'rbac'}
             active={isActive(item.key, item.href)}
+            requiredPermission={item.requiredPermission}
             route={{
               label: item.label,
               link: item.href,
@@ -618,6 +614,7 @@ const OrganizationLinks = () => {
             key={item.key}
             disabled={disableAccessMfa}
             active={isActive(item.key, item.href)}
+            requiredPermission={item.requiredPermission} 
             route={{
               label: item.label,
               link: item.href,

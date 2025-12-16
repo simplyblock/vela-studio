@@ -25,6 +25,7 @@ import {
   PopoverTrigger_Shadcn_,
   ScrollArea,
 } from 'ui'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const ProjectLink = ({
   project,
@@ -65,7 +66,8 @@ export const ProjectDropdown = () => {
   const { data: allProjects, isLoading: isLoadingProjects } = useProjectsQuery()
   const { data: selectedOrganization } = useSelectedOrganizationQuery()
 
-  const projectCreationEnabled = useIsFeatureEnabled('projects:create')
+  const { can: projectCreationEnabled, isLoading: isPermissionsLoading,isSuccess: isPermissionsSuccess } = useCheckPermissions('org:projects:create')
+  // const projectCreationEnabled = useIsFeatureEnabled('projects:create')
 
   const projects = allProjects
     ?.filter((x) => x.organization_id === selectedOrganization?.id)
@@ -112,7 +114,7 @@ export const ProjectDropdown = () => {
               </CommandGroup_Shadcn_>
 
               {/* 2) NEW PROJECT (optional) */}
-              {projectCreationEnabled && (
+              {projectCreationEnabled && isPermissionsSuccess && (
                 <>
                   <CommandSeparator_Shadcn_ />
                   <CommandGroup_Shadcn_>
