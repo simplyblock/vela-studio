@@ -194,7 +194,7 @@ export function useProjectPermissionQuery({
   const {
     data: projects,
     isLoading: isProjectsLoading,
-    isSuccess: isProjectsSuccess,
+    isError: isProjectsError,
   } = useProjectsQuery()
 
   const { permissions, isLoading, isSuccess } = useFilteredPermissionsQuery(
@@ -204,13 +204,13 @@ export function useProjectPermissionQuery({
         (projects || []).some((project) => project.id === permission.project_id),
     },
     {
-      enabled: enabled && !isProjectsLoading && isProjectsLoading,
+      enabled: enabled && !isProjectsLoading && !isProjectsError,
       ...options,
     }
   )
   return {
     isLoading: isLoading || isProjectsLoading,
-    isSuccess: isSuccess && isProjectsSuccess,
+    isSuccess: isSuccess && !isProjectsError,
     permissions,
   }
 }
@@ -224,10 +224,12 @@ export function useBranchPermissionQuery({
   const {
     data: branches,
     isLoading: isBranchesLoading,
-    isSuccess: isBranchesSuccess,
+    isError: isBranchesError,
   } = useBranchesQuery({
     orgRef: orgId,
     projectRef: projectId,
+  }, {
+    enabled: enabled && !!orgId && !!projectId,
   })
 
   const { permissions, isLoading, isSuccess } = useFilteredPermissionsQuery(
@@ -237,13 +239,13 @@ export function useBranchPermissionQuery({
         (branches || []).some((branch) => branch.id === permission.branch_id),
     },
     {
-      enabled: enabled && !!orgId && !!projectId && !isBranchesLoading && isBranchesSuccess,
+      enabled: enabled && !!orgId && !!projectId && !isBranchesLoading && !isBranchesError,
       ...options,
     }
   )
   return {
     isLoading: isLoading || isBranchesLoading,
-    isSuccess: isSuccess && isBranchesSuccess,
+    isSuccess: isSuccess && !isBranchesError,
     permissions,
   }
 }
@@ -287,25 +289,33 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     permissions: organizationPermissions,
     isLoading: isOrganizationPermissionsLoading,
     isSuccess: isOrganizationPermissionsSuccess,
-  } = useOrganizationPermissionQuery()
+  } = useOrganizationPermissionQuery({
+    enabled: !!orgId
+  })
 
   const {
     permissions: environmentPermissions,
     isLoading: isEnvironmentPermissionsLoading,
     isSuccess: isEnvironmentPermissionsSuccess,
-  } = useProjectPermissionQuery()
+  } = useEnvironmentPermissionQuery({
+    enabled: !!orgId
+  })
 
   const {
     permissions: projectPermissions,
     isLoading: isProjectPermissionsLoading,
     isSuccess: isProjectPermissionsSuccess,
-  } = useProjectPermissionQuery()
+  } = useProjectPermissionQuery({
+    enabled: !!orgId
+  })
 
   const {
     permissions: branchPermissions,
     isLoading: isBranchPermissionsLoading,
     isSuccess: isBranchPermissionsSuccess,
-  } = useProjectPermissionQuery()
+  } = useBranchPermissionQuery({
+    enabled: !!orgId && !!projectId
+  })
 
   if (!isLoggedIn) {
     return {
