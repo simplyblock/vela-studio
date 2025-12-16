@@ -27,6 +27,7 @@ import { useOrganizationMemberAssignRoleMutation } from 'data/organization-membe
 import { useOrganizationMemberUnassignRoleMutation } from 'data/organization-members/organization-member-role-unassign-mutation'
 import { Member, useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { AssignMembersDialog } from './AssignMembersDialog'
+import { toast } from 'sonner'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
@@ -42,11 +43,13 @@ export const RoleAssignment = () => {
     useOrganizationRoleAssignmentsQuery({ slug })
   const { data: members, isLoading: isLoadingMembers } = useOrganizationMembersQuery({ slug })
 
-  const { mutate: assignRole } = useOrganizationMemberAssignRoleMutation()
-  const { mutate: unassignRole } = useOrganizationMemberUnassignRoleMutation()
+  const { mutateAsync: assignRole } = useOrganizationMemberAssignRoleMutation()
+  const { mutateAsync: unassignRole } = useOrganizationMemberUnassignRoleMutation()
+
+  
+const [isSaving, setIsSaving] = useState(false)
 
   const isLoading = isLoadingRoles || isLoadingRoleAssignments || isLoadingMembers
-  console.log({members})
   // Only org-level roles
   const orgRoles = useMemo(
     () => (roles || []).filter((role) => role.role_type === 'organization'),
@@ -111,34 +114,53 @@ export const RoleAssignment = () => {
     )
   }
 
-  const handleSaveAssignments = () => {
-    if (!selectedRoleId || !slug) return
+  const handleSaveAssignments = async () => {
+  if (!selectedRoleId || !slug) return
 
+  setIsSaving(true)
+  try {
     const currentAssigned = roleAssignmentsMap[selectedRoleId] ?? []
     const nextAssigned = pendingSelection
 
     const toAdd = nextAssigned.filter((id) => !currentAssigned.includes(id))
     const toRemove = currentAssigned.filter((id) => !nextAssigned.includes(id))
 
-    toAdd.forEach((userId) => {
-      assignRole({
-        slug,
-        userId,
-        roleId: selectedRoleId,
-        // org-level: no projects / branches / env_types
-      })
-    })
+    await Promise.all([
+  ...toAdd.map((userId) =>
+    assignRole(
+      { slug, userId, roleId: selectedRoleId },
+      {
+        onSuccess: (data) => {
+          console.log('assignRole success', { userId, roleId: selectedRoleId, data })
+        },
+        onError: (err) => {
+          console.error('assignRole failed', { userId, roleId: selectedRoleId, err })
+        },
+      }
+    )
+  ),
 
-    toRemove.forEach((userId) => {
-      unassignRole({
-        slug,
-        userId,
-        roleId: selectedRoleId,
-      })
-    })
+  ...toRemove.map((userId) =>
+    unassignRole(
+      { slug, userId, roleId: selectedRoleId },
+      {
+        onSuccess: (data) => {
+          console.log('unassignRole success', { userId, roleId: selectedRoleId, data })
+        },
+        onError: (err) => {
+          console.error('unassignRole failed', { userId, roleId: selectedRoleId, err })
+        },
+      }
+    )
+  ),
+])
+
 
     setIsAssignModalOpen(false)
+  } finally {
+    setIsSaving(false)
   }
+}
 
   const handleOpenAssignModal = () => {
     if (!selectedRoleId) return
@@ -247,6 +269,7 @@ export const RoleAssignment = () => {
             setPendingSelection([...currentlyAssigned])
           }
         }}
+        isSaving={isSaving}
         title={selectedRole ? `Assign members to ${selectedRole.name}` : 'Assign members'}
         members={allMembers}
         selectedIds={pendingSelection}

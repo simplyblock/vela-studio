@@ -8,6 +8,7 @@ export interface Route {
   disabled?: boolean
   linkElement?: ReactNode
   target?: string
+  requiredPermission?: string
 
   items?: any | Route[]
 }

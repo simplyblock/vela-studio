@@ -16,6 +16,11 @@ const badgeVariants = cva(
         secondary:
           'bg-secondary hover:bg-secondary/80 border-transparent text-secondary-foreground',
         outline: 'bg-transparent text border border-foreground-muted',
+        // Specific variants for Role Levels
+        organization: 'bg-brand text-brand-600 border border-brand-500',
+        environment: 'bg-emerald-100 text-emerald-700 border border-emerald-500',
+        project: 'bg-violet-200 text-violet-900 border border-violet-700',
+        branch: 'bg-amber-100 text-amber-700 border border-amber-500',
       },
       size: {
         small: 'px-2.5 py-0.5 text-xs',

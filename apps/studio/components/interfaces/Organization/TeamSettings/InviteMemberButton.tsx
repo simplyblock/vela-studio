@@ -44,13 +44,15 @@ export const InviteMemberButton = () => {
 
   const FormSchema = z.object({
     email: z.string().email('Must be a valid email address').min(1, 'Email is required'),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
   })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     mode: 'onBlur',
     reValidateMode: 'onBlur',
     resolver: zodResolver(FormSchema),
-    defaultValues: { email: '' },
+    defaultValues: { email: '',firstName: '', lastName: '' },
   })
 
   const onInviteMember = async (values: z.infer<typeof FormSchema>) => {
@@ -72,8 +74,8 @@ export const InviteMemberButton = () => {
       {
         slug,
         email: values.email.toLowerCase(),
-        firstName: "",
-        lastName: "",
+        firstName: values.firstName || "",
+        lastName: values.lastName || "",
       },
       {
         onSuccess: () => {
@@ -82,6 +84,8 @@ export const InviteMemberButton = () => {
 
           form.reset({
             email: '',
+            firstName: '',
+            lastName: '',
           })
         },
       }
@@ -91,6 +95,7 @@ export const InviteMemberButton = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
+        
         <ButtonTooltip
           type="primary"
           disabled={!canInviteMembers}
@@ -134,6 +139,40 @@ export const InviteMemberButton = () => {
                         autoComplete="off"
                         disabled={isInviting}
                         placeholder="Enter email address"
+                      />
+                    </FormControl_Shadcn_>
+                  </FormItemLayout>
+                )}
+              />
+               <FormField_Shadcn_
+                name="firstName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItemLayout label="First Name">
+                    <FormControl_Shadcn_>
+                      <Input_Shadcn_
+                        autoFocus
+                        {...field}
+                        autoComplete="off"
+                        disabled={isInviting}
+                        placeholder="Enter First Name"
+                      />
+                    </FormControl_Shadcn_>
+                  </FormItemLayout>
+                )}
+              />
+               <FormField_Shadcn_
+                name="lastName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItemLayout label="Last Name">
+                    <FormControl_Shadcn_>
+                      <Input_Shadcn_
+                        autoFocus
+                        {...field}
+                        autoComplete="off"
+                        disabled={isInviting}
+                        placeholder="Enter Last Name"
                       />
                     </FormControl_Shadcn_>
                   </FormItemLayout>
