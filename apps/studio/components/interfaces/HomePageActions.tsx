@@ -31,13 +31,12 @@ const HomePageActions = ({
   setFilterStatus,
 }: HomePageActionsProps) => {
   const { slug } = useParams()
-  const {can,isLoading} = useCheckPermissions("org:projects:create")
-  console.log('HomePageActions - can:', can, 'isLoading:', isLoading);
+  const { can } = useCheckPermissions("org:projects:create")
   // const projectCreationEnabled = useIsFeatureEnabled('projects:create')
 
   return (
     <div className="flex flex-col gap-2 md:gap-3 md:flex-row">
-      {can && !isLoading && !hideNewProject && (
+      {can && !hideNewProject && (
         <Button asChild type="primary">
           <Link href={`/new/${slug}`}>New project</Link>
         </Button>
