@@ -80,8 +80,7 @@ const [isSaving, setIsSaving] = useState(false)
     })
     return map
   }, [members,slug])
-  console.log({members})
-  console.log('membersById',membersById)
+
   const selectedRole = useMemo(
     () => orgRoles.find((role) => role.id === selectedRoleId) ?? null,
     [orgRoles, selectedRoleId]
@@ -129,28 +128,14 @@ const [isSaving, setIsSaving] = useState(false)
   ...toAdd.map((userId) =>
     assignRole(
       { slug, userId, roleId: selectedRoleId },
-      {
-        onSuccess: (data) => {
-          console.log('assignRole success', { userId, roleId: selectedRoleId, data })
-        },
-        onError: (err) => {
-          console.error('assignRole failed', { userId, roleId: selectedRoleId, err })
-        },
-      }
+
     )
   ),
 
   ...toRemove.map((userId) =>
     unassignRole(
       { slug, userId, roleId: selectedRoleId },
-      {
-        onSuccess: (data) => {
-          console.log('unassignRole success', { userId, roleId: selectedRoleId, data })
-        },
-        onError: (err) => {
-          console.error('unassignRole failed', { userId, roleId: selectedRoleId, err })
-        },
-      }
+
     )
   ),
 ])

@@ -68,7 +68,7 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
   const { data: availablePermissions, isLoading: isPermissionsLoading } =
     useAvailablePermissionsQuery()
 
-    console.log('availablePermissions', availablePermissions)
+
   const { mutate: updateRole, isLoading: isUpdating } = useOrganizationRoleUpdateMutation()
 
   const [selectedPermissions, setSelectedPermissions] = useState<RolePermission[]>(

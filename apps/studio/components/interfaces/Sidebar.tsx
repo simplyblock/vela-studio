@@ -236,8 +236,7 @@ export function SideBarNavLink({
   
   const { can, isLoading,isSuccess } = useCheckPermissions(requiredPermission)
 
-  console.log('SidebarNavLink - can:', can, 'isLoading:', isLoading, 'requiredPermission:', requiredPermission,"isSuccess:",isSuccess);
-  // 🔒 Hide item if we know user cannot access it
+  // Hide item if we know user cannot access it
   if (!isLoading && !can) {
     
     return null

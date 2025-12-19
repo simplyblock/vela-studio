@@ -357,7 +357,7 @@ const BackupScheduleModal = () => {
     }
     return null
   }, [maxBackupsAllowed])
-  console.log(currentSchedule)
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!orgId || isSubmitting) return
@@ -386,7 +386,7 @@ const BackupScheduleModal = () => {
         id: currentSchedule?.id,
       },
     }
-    console.log("body",body)
+
     await updateSchedule(body)
   }
 
