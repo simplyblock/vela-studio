@@ -395,11 +395,7 @@ const Backups = () => {
     })
 
     if (payload.mode === 'new-branch') {
-      console.log('Restore backup to new branch', {
-        backupId: restoreContext.backup.id,
-        project: payload.project,
-        branchName: payload.branchName,
-      })
+
     }
 
     setRestoreContext(null)
