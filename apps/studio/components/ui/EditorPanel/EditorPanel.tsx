@@ -47,6 +47,7 @@ import { ButtonTooltip } from '../ButtonTooltip'
 import { InlineLink } from '../InlineLink'
 import SqlWarningAdmonition from '../SqlWarningAdmonition'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
+import SqlMonacoEditor from 'components/interfaces/SQLEditor/SqlMonacoEditor'
 
 type Template = {
   name: string
@@ -303,6 +304,16 @@ export const EditorPanel = ({
         </SheetHeader>
 
         <div className="flex-1 overflow-hidden flex flex-col h-full">
+          <div className="flex-1 min-h-0">
+            <SqlMonacoEditor
+              value={currentValue}
+              onChange={handleChange}
+              onRun={onExecuteSql}
+              onClose={onClose}
+              autoFocus
+              language="pgsql"
+            />
+          </div>
           {error !== undefined && (
             <div className="shrink-0">
               <Admonition
