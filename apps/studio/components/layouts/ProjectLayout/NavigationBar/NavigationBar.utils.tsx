@@ -243,7 +243,7 @@ export const generateOtherRoutes = (
             key: 'grafana',
             label: 'Monitoring',
             icon: <SearchCheck size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
-            link: `${monitoringEndpoint}?jwt=${accessToken}`,
+            link: `${monitoringEndpoint}?auth_token=${accessToken}`,
             target: '_blank',
           },
         ]
