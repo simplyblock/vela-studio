@@ -7,7 +7,6 @@ import { PresetConfig, Presets, ReportFilterItem } from './Reports.types'
 export const LAYOUT_COLUMN_COUNT = 2
 
 export interface ReportsDatetimeHelper extends DatetimeHelper {
-  availableIn: PlanId[]
 }
 
 export enum REPORT_DATERANGE_HELPER_LABELS {
@@ -26,50 +25,42 @@ export const REPORTS_DATEPICKER_HELPERS: ReportsDatetimeHelper[] = [
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_10_MINUTES,
     calcFrom: () => dayjs().subtract(10, 'minute').toISOString(),
     calcTo: () => dayjs().toISOString(),
-    availableIn: ['free', 'pro', 'team', 'enterprise'],
   },
   {
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_30_MINUTES,
     calcFrom: () => dayjs().subtract(30, 'minute').toISOString(),
     calcTo: () => dayjs().toISOString(),
-    availableIn: ['free', 'pro', 'team', 'enterprise'],
   },
   {
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES,
     calcFrom: () => dayjs().subtract(1, 'hour').toISOString(),
     calcTo: () => dayjs().toISOString(),
     default: true,
-    availableIn: ['free', 'pro', 'team', 'enterprise'],
   },
   {
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_3_HOURS,
     calcFrom: () => dayjs().subtract(3, 'hour').toISOString(),
     calcTo: () => dayjs().toISOString(),
-    availableIn: ['free', 'pro', 'team', 'enterprise'],
   },
   {
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_24_HOURS,
     calcFrom: () => dayjs().subtract(1, 'day').toISOString(),
     calcTo: () => dayjs().toISOString(),
-    availableIn: ['free', 'pro', 'team', 'enterprise'],
   },
   {
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_7_DAYS,
     calcFrom: () => dayjs().subtract(7, 'day').toISOString(),
     calcTo: () => dayjs().toISOString(),
-    availableIn: ['pro', 'team', 'enterprise'],
   },
   {
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_14_DAYS,
     calcFrom: () => dayjs().subtract(14, 'day').toISOString(),
     calcTo: () => dayjs().toISOString(),
-    availableIn: ['team', 'enterprise'],
   },
   {
     text: REPORT_DATERANGE_HELPER_LABELS.LAST_28_DAYS,
     calcFrom: () => dayjs().subtract(28, 'day').toISOString(),
     calcTo: () => dayjs().toISOString(),
-    availableIn: ['team', 'enterprise'],
   },
 ]
 
