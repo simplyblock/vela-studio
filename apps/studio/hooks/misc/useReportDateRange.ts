@@ -8,13 +8,6 @@ import {
   REPORT_DATERANGE_HELPER_LABELS,
 } from 'components/interfaces/Reports/Reports.constants'
 
-export const DATERANGE_LIMITS: { [key: string]: number } = {
-  free: 1,
-  pro: 7,
-  team: 28,
-  enterprise: 90,
-}
-
 export interface ReportDateRange {
   period_start: { date: string; time_period: string }
   period_end: { date: string; time_period: string }
@@ -44,7 +37,6 @@ export const useReportDateRange = (
     | string
     | ReportsDatetimeHelper = REPORT_DATERANGE_HELPER_LABELS.LAST_60_MINUTES
 ) => {
-
   // Get filtered date picker helpers based on organization plan
   const datePickerHelpers: ReportsDatetimeHelper[] = useMemo(
     () =>
@@ -62,51 +54,6 @@ export const useReportDateRange = (
   const [helperTextValue, setHelperText] = useQueryState('helperText', stringWithDefault(''))
 
   const getDefaultHelper = useCallback(() => {
-    let targetHelper: ReportsDatetimeHelper | undefined
-
-    if (typeof defaultHelper === 'string') {
-      // Find helper by text (supports both enum values and direct strings)
-      targetHelper = REPORTS_DATEPICKER_HELPERS.find((helper) => helper.text === defaultHelper)
-    } else if (defaultHelper && typeof defaultHelper === 'object' && 'text' in defaultHelper) {
-      // Use the provided helper object directly
-      targetHelper = defaultHelper
-    }
-
-    // Check if the target helper is available for the current plan
-    if (targetHelper && targetHelper.availableIn?.includes('free')) {
-      return {
-        start: targetHelper.calcFrom(),
-        end: targetHelper.calcTo(),
-        helper: { isHelper: true, text: targetHelper.text },
-      }
-    }
-
-    // Fallback: look for default helper marked in REPORTS_DATEPICKER_HELPERS
-    const fallbackHelper = REPORTS_DATEPICKER_HELPERS.find(
-      (helper) => helper.default && helper.availableIn?.includes('free')
-    )
-
-    if (fallbackHelper) {
-      return {
-        start: fallbackHelper.calcFrom(),
-        end: fallbackHelper.calcTo(),
-        helper: { isHelper: true, text: fallbackHelper.text },
-      }
-    }
-
-    // Final fallback: use first available helper
-    const firstAvailable = REPORTS_DATEPICKER_HELPERS.find((helper) =>
-      helper.availableIn?.includes('free')
-    )
-
-    if (firstAvailable) {
-      return {
-        start: firstAvailable.calcFrom(),
-        end: firstAvailable.calcTo(),
-        helper: { isHelper: true, text: firstAvailable.text },
-      }
-    }
-
     // Ultimate fallback to manual date calculation (should rarely happen)
     const defaultStart = dayjs().subtract(1, 'hour').toISOString()
     const defaultEnd = dayjs().toISOString()
@@ -165,8 +112,7 @@ export const useReportDateRange = (
     if (timestampStartValue && timestampEndValue) {
       return helperTextValue || undefined
     }
-    // If no URL params, get default from helper
-    return getDefaultHelper().helper.text
+    return undefined
   }, [timestampStartValue, timestampEndValue, helperTextValue, getDefaultHelper])
 
   const handleIntervalGranularity = useCallback((from: string, to: string) => {

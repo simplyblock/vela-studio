@@ -230,14 +230,6 @@ export const LogsDatePicker = ({
     Math.abs(dayjs(startDate).diff(dayjs(endDate), 'days')) >
     LOGS_LARGE_DATE_RANGE_DAYS_THRESHOLD - 1
 
-  const showHelperBadge = (helper?: DatetimeHelper) => {
-    if (!helper) return false
-    if (!helper.availableIn?.length) return false
-
-    if (helper.availableIn.includes('free')) return false
-    return true
-  }
-
   return (
     <Popover_Shadcn_ open={open} onOpenChange={setOpen}>
       <PopoverTrigger_Shadcn_ asChild>
@@ -277,15 +269,6 @@ export const LogsDatePicker = ({
                 aria-disabled={helper.disabled}
               ></RadioGroupItem>
               {helper.text}
-              {showHelperBadge(helper) ? (
-                <Badge
-                  size="small"
-                  variant="outline"
-                  className="h-5 text-[10px] text-foreground-light capitalize"
-                >
-                  {helper.availableIn?.[0] || ''}
-                </Badge>
-              ) : null}
             </Label>
           ))}
         </RadioGroup>
