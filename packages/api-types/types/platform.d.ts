@@ -2097,6 +2097,23 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/platform/organizations/{slug}/metering': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Gets usage stats */
+    get: operations['OrgUsageController_getOrgMetering']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/platform/organizations/cloud-marketplace': {
     parameters: {
       query?: never
@@ -15687,6 +15704,44 @@ export interface operations {
         }
         content: {
           'application/json': PlatformType<'OrgUsageResponse'>
+        }
+      }
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Failed to get usage stats */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  OrgUsageController_getOrgMetering: {
+    parameters: {
+      query?: {
+        end?: string
+        start?: string
+      }
+      header?: never
+      path: {
+        /** @description Organization slug */
+        slug: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': VelaType<'Metering'>[]
         }
       }
       403: {
