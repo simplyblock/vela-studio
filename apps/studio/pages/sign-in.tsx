@@ -26,7 +26,7 @@ const SignInPage: NextPageWithLayout = () => {
         callbackUrl: getReturnToPath(),
         redirect: true
       })
-    }, 1000)
+    }, 0)
   }, [])
 
   return (
@@ -38,8 +38,8 @@ const SignInPage: NextPageWithLayout = () => {
 SignInPage.getLayout = (page) => (
   <AuthenticationLayout>
     <SignInLayout
-      heading="Welcome back"
-      subheading="We will send to the login page"
+      heading="Welcome"
+      subheading="We will send you to the login page"
     >
       {page}
     </SignInLayout>
