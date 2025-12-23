@@ -51,6 +51,7 @@ export function withAuth<T>(
 
     const isLoggedIn = Boolean(session)
     const isFinishedLoading = !isLoading && !isAALLoading
+    let requiresRedirect = false;
 
     const redirectToSignIn = useCallback(() => {
       console.log('redirectToSignIn')
@@ -106,9 +107,25 @@ export function withAuth<T>(
         }
         redirectToSignIn()
       }
-    }, [redirectToSignIn, shouldRedirect])
+      // Also redirect if session is expired
+      console.log(session?.expires_at)
+      if (isFinishedLoading && ((session?.expires_at ?? 0) <= (Date.now() / 1000))) {
+        requiresRedirect = true;
+        console.log("Redirecting immediately")
+        // Clear the timeout if it's still active and we are redirecting
+        if (timeoutIdRef.current) {
+          clearTimeout(timeoutIdRef.current)
+          timeoutIdRef.current = null
+        }
+        return redirectToSignIn()
+      }
+    }, [redirectToSignIn, shouldRedirect, session])
 
     const InnerComponent = WrappedComponent as any
+
+    if (!isFinishedLoading || requiresRedirect) {
+      return <></>
+    }
 
     return (
       <>
