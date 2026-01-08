@@ -24,6 +24,7 @@ import {
 } from 'data/resource-limits/branch-slider-resource-limits'
 import { useProjectUsageQuery } from 'data/resources/project-usage-query'
 import { useResourceLimitDefinitionsQuery } from 'data/resource-limits/resource-limit-definitions-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 /* ──────────────────────────────────────────────────────────────────
    Types & slider config
@@ -63,6 +64,7 @@ const SliderField = ({
   current,
   onCommit,
   showUsage = true,
+  readOnly = false,
 }: {
   name: `perBranch.${SliderKey}` | `project.${SliderKey}`
   label: string
@@ -74,6 +76,7 @@ const SliderField = ({
   current: number
   onCommit: (next: number) => void
   showUsage?: boolean
+  readOnly?: boolean
 }) => {
   const { field } = useController({ name })
   const value = field.value as number
@@ -121,13 +124,16 @@ const SliderField = ({
             step={step}
             value={[value]}
             onValueChange={(v) => {
+              if (readOnly) return
               field.onChange(v[0])
             }}
             onValueCommit={(v) => {
+              if (readOnly) return
               const next = v[0]
               onCommit(next)
             }}
             className="w-full"
+            disabled={readOnly}
           />
         </div>
         <div className="w-20 text-right text-[11px] text-foreground-muted font-mono">
@@ -143,6 +149,10 @@ const SliderField = ({
 ------------------------------------------------------------------- */
 
 const ResourceLimit: NextPageWithLayout = () => {
+
+  const {can: canWriteSettings,isSuccess: isWriteSettingsPermissionSuccess} = useCheckPermissions("project:settings:write")
+
+  const isReadOnly = isWriteSettingsPermissionSuccess ? !canWriteSettings : true
   const [timeRange] = useState(() => {
     const now = Date.now() - 60_000
     return {
@@ -373,6 +383,7 @@ const ResourceLimit: NextPageWithLayout = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault()
+          if (isReadOnly) return 
           handleSave()
         }}
         className="flex flex-col gap-8 p-16 w-full justify-center "
@@ -387,7 +398,7 @@ const ResourceLimit: NextPageWithLayout = () => {
         <div
           className={cn(
             'grid gap-12 xl:grid-cols-2',
-            isSaving && 'opacity-50 pointer-events-none'
+            (isSaving || isReadOnly) && 'opacity-50 pointer-events-none' 
           )}
         >
                     {/* Project limits */}
@@ -420,6 +431,7 @@ const ResourceLimit: NextPageWithLayout = () => {
                         current={defaults!.project[slider.key]}
                         onCommit={commitProject(slider.key)}
                         showUsage={true}
+                        readOnly={isReadOnly}
                       />
                     )}
                   />
@@ -461,6 +473,7 @@ const ResourceLimit: NextPageWithLayout = () => {
                         current={defaults!.perBranch[slider.key]}
                         onCommit={commitPerBranch(slider.key)}
                         showUsage={false}
+                        readOnly={isReadOnly}
                       />
                     )}
                   />
@@ -476,7 +489,8 @@ const ResourceLimit: NextPageWithLayout = () => {
 
         </div>
 
-        <div className="flex justify-end">
+        {!isReadOnly && (
+          <div className="flex justify-end">
           <Button
             type="primary"
             htmlType="submit"
@@ -485,7 +499,7 @@ const ResourceLimit: NextPageWithLayout = () => {
           >
             Save changes
           </Button>
-        </div>
+        </div>)}
       </form>
     </Form_Shadcn_>
   )

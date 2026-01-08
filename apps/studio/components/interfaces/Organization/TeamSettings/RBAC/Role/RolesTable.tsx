@@ -4,6 +4,7 @@ import { RoleLevelBadge } from './RoleLevelBadge'
 import { OrganizationRole } from 'types'
 import UpdateRoleButton from './RoleUpdateButton'
 import DeleteRoleButton from './RoleDeleteButton'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 interface RolesTableProps {
   roles: OrganizationRole[]
@@ -18,6 +19,7 @@ export const RolesTable = ({
   selectedRoleId,
   onSelectRole,
 }: RolesTableProps) => {
+  const { can: canEditRole, isSuccess: isPermissionsSuccess } = useCheckPermissions("org:role:admin")
   return (
     <div className="rounded-md border border-default max-h-[520px] overflow-hidden bg-surface-100">
       <ScrollArea className="h-[520px]">
@@ -86,13 +88,12 @@ export const RolesTable = ({
                     </TableCell>
 
                     <TableCell className="align-top">
-                      <div
-                        className="flex justify-end gap-1"
-                        onClick={(event) => event.stopPropagation()}
-                      >
+                      {isPermissionsSuccess && canEditRole && (
+                      <div className="flex items-center justify-end gap-2">
                         <UpdateRoleButton role={role} />
-                        <DeleteRoleButton role={role} />
+                        {role.is_deletable && <DeleteRoleButton role={role} />}
                       </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 )

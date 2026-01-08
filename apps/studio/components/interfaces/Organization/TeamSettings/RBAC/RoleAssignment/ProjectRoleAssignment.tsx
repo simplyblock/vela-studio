@@ -24,20 +24,17 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import {
   Button,
   Checkbox_Shadcn_,
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogSection,
-  DialogTitle,
   ScrollArea,
 } from 'ui'
 import { AssignMembersDialog } from './AssignMembersDialog'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
 export const ProjectRoleAssignment = () => {
+  const {can: canAssignRoles,isSuccess: isPermissionSuccess} = useCheckPermissions("project:role-assign:admin")
+
+  const isReadOnly = isPermissionSuccess ? !canAssignRoles : true
   const { slug, ref } = useParams()
 
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
@@ -160,6 +157,7 @@ export const ProjectRoleAssignment = () => {
 
   const handleOpenAssignModal = () => {
     if (!selectedRoleId || !selectedRole) return
+    if (isReadOnly) return
     const assigned = roleAssignmentsMap[selectedRoleId] ?? []
     setPendingSelection([...assigned])
     resetScope()
@@ -193,7 +191,8 @@ export const ProjectRoleAssignment = () => {
                   </p>
                 </div>
 
-                <Button
+                {!isReadOnly && (
+                  <Button
                   type="default"
                   size="small"
                   icon={<UserPlus size={14} />}
@@ -202,6 +201,7 @@ export const ProjectRoleAssignment = () => {
                 >
                   Assign role
                 </Button>
+                )}
               </div>
 
               <ScrollArea className="mt-4 flex-1">
@@ -224,13 +224,15 @@ export const ProjectRoleAssignment = () => {
                             )}
                           </div>
 
-                          <Button
+                          {!isReadOnly && (
+                            <Button
                             type="text"
                             size="tiny"
                             className="px-1"
                             icon={<X size={14} />}
                             onClick={() => handleRemoveMember(m.user_id)}
                           />
+                          )}
                         </div>
                       ))}
                     </div>

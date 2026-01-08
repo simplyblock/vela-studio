@@ -11,6 +11,7 @@ import {
   type RoleType,
 } from 'data/organizations/organization-role-update-mutation'
 import { useAvailablePermissionsQuery } from 'data/permissions/available-permissions-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const formatPermissionLabel = (permission: string) => {
   const [scope, ...rest] = permission.split(':')
@@ -56,13 +57,17 @@ interface RoleDetailsPanelProps {
 }
 
 export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
-  if (!role) {
+      if (!role) {
     return (
       <Card className="flex h-full min-h-[320px] items-center justify-center text-sm text-foreground-lighter">
         Select a role to preview its permissions.
       </Card>
     )
   }
+  const { can: canEditRole, isSuccess: isPermissionsSuccess } = useCheckPermissions("org:role:admin")
+
+  const isReadOnly = isPermissionsSuccess && !canEditRole
+
 
   const { slug } = useParams()
   const { data: availablePermissions, isLoading: isPermissionsLoading } =
@@ -72,9 +77,11 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
   const { mutate: updateRole, isLoading: isUpdating } = useOrganizationRoleUpdateMutation()
 
   const [selectedPermissions, setSelectedPermissions] = useState<RolePermission[]>(
-    (role.access_rights ?? []) as RolePermission[]
+    (role?.access_rights ?? []) as RolePermission[]
   )
   const [sortedPermissions, setSortedPermissions] = useState<RolePermission[]>([])
+
+
 
   // Map role_type -> permission prefix
   const prefixForRoleType: Record<RoleType, string> = {
@@ -188,6 +195,7 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
                 return (
                   <button
                     key={permission}
+                    disabled={isReadOnly}
                     type="button"
                     onClick={() => handleTogglePermission(permission, !checked)}
                     className={cn(
@@ -212,9 +220,11 @@ export const RoleDetailsPanel = ({ role }: RoleDetailsPanelProps) => {
         </div>
 
         <div className="mt-2 flex justify-end">
-          <Button size="tiny" type="default" onClick={handleSave} loading={isUpdating}>
+          {!isReadOnly && (
+            <Button size="tiny" type="default" onClick={handleSave} loading={isUpdating}>
             Save changes
-          </Button>
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

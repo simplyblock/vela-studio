@@ -26,6 +26,8 @@ import type { BackupRow, BranchBackup } from './types'
 type BackupsHistoryDialogProps = {
   target: BackupRow | null
   open: boolean
+  isAbleToDeleteBackup?:boolean
+  isAbleToCreateBranch?:boolean
   onClose: () => void
   onRestore: (backup: BranchBackup) => void
   onDeleteRequest: (backup: BranchBackup) => void
@@ -34,6 +36,8 @@ type BackupsHistoryDialogProps = {
 export const BackupsHistoryDialog = ({
   target,
   open,
+  isAbleToDeleteBackup,
+  isAbleToCreateBranch,
   onClose,
   onRestore,
   onDeleteRequest,
@@ -101,6 +105,7 @@ export const BackupsHistoryDialog = ({
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-end gap-1.5">
+                      {isAbleToCreateBranch && (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -112,6 +117,8 @@ export const BackupsHistoryDialog = ({
                         </TooltipTrigger>
                         <TooltipContent side="top">Restore</TooltipContent>
                       </Tooltip>
+                    )}
+                      {isAbleToDeleteBackup && (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -123,6 +130,7 @@ export const BackupsHistoryDialog = ({
                         </TooltipTrigger>
                         <TooltipContent side="top">Delete backup</TooltipContent>
                       </Tooltip>
+                    )}
                     </div>
                   </TableCell>
                 </TableRow>
