@@ -19,6 +19,7 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import { useOrganizationUpdateMutation } from 'data/organizations/organization-update-mutation'
 import { organizationKeys } from 'data/organizations/keys'
 import type { components } from 'data/api'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 type OrgDetail = components['schemas']['OrganizationSlugResponse']
 
@@ -33,6 +34,8 @@ const PRESET_COLOR: Record<(typeof PRESETS)[number], string> = {
 const hasSpaces = (s: string) => /\s/.test(s)
 
 const Environments = () => {
+  const {can: canEdit,isSuccess:isPermissionsSuccess} = useCheckPermissions("org:settings:admin");
+  const isReadOnly = isPermissionsSuccess && !canEdit;
   const queryClient = useQueryClient()
   const { data: org } = useSelectedOrganizationQuery()
 
@@ -171,17 +174,20 @@ const Environments = () => {
           <div className="flex flex-col gap-2 border-b border-border px-6 py-4">
             <div>
               <h2 className="text-base font-medium text-foreground">Environment types</h2>
+              {isReadOnly ? 
+              <p className="text-sm text-foreground-light">Current environment types in the organization</p> : 
               <p className="text-sm text-foreground-light">
                 Add, rename, or remove environment type labels. Examples: <em>production</em>,{' '}
                 <em>staging</em>, <em>preview</em>.
-              </p>
+              </p>}
             </div>
           </div>
 
           {/* Body */}
           <div className="px-6 py-5 space-y-6">
             {/* Presets */}
-            <div className="space-y-2">
+            {!isReadOnly && (
+              <div className="space-y-2">
               <p className="text-xs font-medium text-foreground">Quick add</p>
               <div className="flex flex-wrap gap-2">
                 {PRESETS.map((p) => (
@@ -198,6 +204,7 @@ const Environments = () => {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Existing list */}
             <div className="space-y-2">
@@ -221,7 +228,8 @@ const Environments = () => {
                             placeholder="e.g. production"
                             className={`h-8 text-sm ${isInvalid ? 'border-red-600 ring-1 ring-red-600' : ''}`}
                           />
-                          <Button
+                          {!isReadOnly && (
+                            <Button
                             type="default"
                             size="tiny"
                             className="text-red-600"
@@ -229,6 +237,7 @@ const Environments = () => {
                           >
                             Remove
                           </Button>
+                          )}
                         </div>
                         {isInvalid && <p className="text-[11px] text-red-600 pl-5">{reason}</p>}
                       </li>
@@ -239,7 +248,8 @@ const Environments = () => {
             </div>
 
             {/* Add new */}
-            <div className="flex items-center gap-2">
+            {!isReadOnly && (
+              <div className="flex items-center gap-2">
               <Input_Shadcn_
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -255,28 +265,33 @@ const Environments = () => {
                   }
                 }}
               />
+              
               <Button type="default" size="tiny" onClick={addItem}>
                 Add
               </Button>
+              
             </div>
+            )}
             {draft && hasSpaces(draft) && (
               <p className="text-[11px] text-red-600">No spaces allowed in environment names.</p>
             )}
 
-            {/* Footer actions */}
-            <div className="flex items-center gap-2 pt-2">
-              <Button type="default" onClick={onCancel} disabled={!isDirty || mutation.isLoading}>
-                Cancel
-              </Button>
-              <Button
-                type="primary"
-                onClick={onSave}
-                loading={mutation.isLoading}
-                disabled={!canSave || mutation.isLoading}
-              >
-                Save changes
-              </Button>
-            </div>
+            {!isReadOnly && (
+              <div className="flex items-center gap-2 pt-2">
+                <Button type="default" onClick={onCancel} disabled={!isDirty || mutation.isLoading}>
+                  Cancel
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={onSave}
+                  loading={mutation.isLoading}
+                  disabled={!canSave || mutation.isLoading}
+                >
+                  Save changes
+                </Button>
+              </div>
+            )}
+
 
             {!canSave && isDirty && (
               <p className="text-[11px] text-foreground-muted">

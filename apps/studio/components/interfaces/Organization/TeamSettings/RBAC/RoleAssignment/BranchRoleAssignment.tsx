@@ -25,13 +25,6 @@ import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization
 import {
   Button,
   Checkbox_Shadcn_,
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogSection,
-  DialogTitle,
   ScrollArea,
   Select_Shadcn_,
   SelectTrigger_Shadcn_,

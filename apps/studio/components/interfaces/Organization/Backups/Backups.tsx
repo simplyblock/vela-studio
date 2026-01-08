@@ -38,6 +38,8 @@ import { mapSchedulesByBranch, groupBackupsByBranch } from './utils'
 import { useDeleteBranchBackupMutation } from 'data/backups/branch-delete-backup-mutation'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import { getBranches } from 'data/branches/branches-query'
+import { permissionToString, useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { usePermissionsQuery } from 'data/permissions/permissions-query'
 
 type RestoreContext = {
   rowId: string
@@ -50,6 +52,32 @@ type environment = {
 }
 
 const Backups = () => {
+  const {can: canEditSchedule,isSuccess:isEditPermissionSuccess} = useCheckPermissions("org:backup:update")
+  const {can: canDeleteSchedule,isSuccess:isDeletePermissionSuccess} = useCheckPermissions("org:backup:delete")
+
+  const isAbleToEditSchedule = isEditPermissionSuccess && canEditSchedule
+  const isAbleToDeleteBackup = isDeletePermissionSuccess && canDeleteSchedule
+
+  const {data: userPermissions} = usePermissionsQuery()
+
+  // check if user has project:branches:create permission on any project in the organization
+  const hasCreateBranchPermission = useMemo(() => {
+    if (!userPermissions) return false
+    return userPermissions.some(permission => permissionToString(permission.permission) === 'project:branches:create')
+  }, [userPermissions])
+
+  // if user can create branches check which distinct project ids they have permission on
+  const creatableProjectIds = useMemo(() => {
+    if (!hasCreateBranchPermission || !userPermissions) return new Set<string>()
+    const projectIds = new Set<string>()
+    userPermissions.forEach(permission => {
+      if (permissionToString(permission.permission) === 'project:branches:create' && permission.project_id) {
+        projectIds.add(permission.project_id)
+      }
+    })
+    return projectIds
+  }, [hasCreateBranchPermission, userPermissions])
+
   const [disableTarget, setDisableTarget] = useState<BackupRow | null>(null)
   const [historyTarget, setHistoryTarget] = useState<BackupRow | null>(null)
   const [restoreContext, setRestoreContext] = useState<RestoreContext | null>(null)
@@ -275,18 +303,16 @@ const Backups = () => {
     })
   }, [branchFilter, environmentFilter, rows])
 
+  // filter by projects available for creating branches
   const projectOptions = useMemo(() => {
-    const map = new Map<string, string>()
-    if (allProjects) {
-      allProjects.forEach((project) => {
-        if (project.id && !map.has(project.id)) {
-          map.set(project.id, project.name || project.id)
-        }
-      })
-    }
-    
-    return Array.from(map.entries()).map(([value, label]) => ({ value, label }))
-  }, [allProjects]) 
+    if (!hasCreateBranchPermission) return []
+    return orgProjects
+      .filter((project) => creatableProjectIds.has(project.id))
+      .map((project) => ({
+        label: project.name,
+        value: project.id,
+      }))
+  }, [hasCreateBranchPermission, orgProjects, creatableProjectIds]) 
 
 
   const restoreRow = useMemo(
@@ -420,7 +446,9 @@ const Backups = () => {
                   Review schedules per project, adjust cadence, or initiate restores from historical backups.
                 </p>
               </div>
-              <BackupScheduleModal />
+              {isAbleToEditSchedule && (
+                <BackupScheduleModal />
+              )}
             </div>
 
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -488,6 +516,8 @@ const Backups = () => {
         target={historyTarget}
         open={historyTarget !== null}
         onClose={() => setHistoryTarget(null)}
+        isAbleToDeleteBackup={isAbleToDeleteBackup}
+        isAbleToCreateBranch={hasCreateBranchPermission}
         onRestore={(backup) => historyTarget && setRestoreContext({ rowId: historyTarget.id, backup })}
         onDeleteRequest={(backup) => historyTarget && setDeleteContext({ rowId: historyTarget.id, backup })}
       />

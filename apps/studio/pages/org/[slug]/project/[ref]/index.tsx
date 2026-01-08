@@ -1,7 +1,5 @@
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
-import { Play, Pause, Trash2, AlertTriangle } from 'lucide-react'
 import { useBranchPauseMutation } from 'data/branches/branch-pause-mutation'
 import { useBranchResumeMutation } from 'data/branches/branch-resume-mutation'
 import { useBranchDeleteMutation } from 'data/branches/branch-delete-mutation'
@@ -28,6 +26,7 @@ import BranchEnvBadge from 'components/interfaces/Branch/BranchEnvBadge'
 import { BranchResourceBadge } from 'components/interfaces/Branch/BranchResourceBadge'
 import ProjectResourcesPanel from 'components/interfaces/Project/ProjectResourcesPanel'
 import { BranchCard } from 'components/interfaces/Branch/BranchCard'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 const ACTIVE_STATUSES = ['ACTIVE_HEALTHY', 'ACTIVE_UNHEALTHY','UNKNOWN']
 const STOPPED_STATUS = ['STOPPED']
@@ -51,9 +50,17 @@ const isStatusError = (s?: string) =>
   !!s && ERROR_STATUSES.includes(s)
 
 const ProjectOverviewPage: NextPageWithLayout = () => {
-  const router = useRouter()
-  const { slug, ref: projectRef } = useParams() as { slug: string; ref?: string }
 
+  const { slug, ref: projectRef } = useParams() as { slug: string; ref?: string }
+  const { can: canCreateBranch, isSuccess: isCreateBranchPermissionSuccess } = useCheckPermissions("project:branches:create");
+  const { can: CanDeleteBranch,isSuccess: isDeleteBranchPermissionSuccess } = useCheckPermissions("project:branches:delete");
+  const { can: canResizeBranch, isSuccess: isResizeBranchPermissionSuccess } = useCheckPermissions("env:projects:admin");
+  const { can: canRestartBranch, isSuccess: isRestartBranchPermissionSuccess } = useCheckPermissions("project:branches:stop");
+
+  const isAbleToCreateBranches = isCreateBranchPermissionSuccess ? canCreateBranch : false;
+  const isAbleToDeleteBranches = isDeleteBranchPermissionSuccess ? CanDeleteBranch : false;
+  const isAbleToResizeBranches = isResizeBranchPermissionSuccess ? canResizeBranch : false;
+  const isAbleToRestartBranches = isRestartBranchPermissionSuccess ? canRestartBranch : false;
   // track which branch is being toggled/deleted (for button spinners/disable)
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -204,11 +211,13 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2 sm:items-start">
+            {isAbleToCreateBranches && (
+              <div className="flex flex-col sm:flex-row gap-2 sm:items-start">
               <Button asChild type={'primary'}>
                 <Link href={`/new/${slug}/${projectRef}/`}>Create Branch</Link>
               </Button>
             </div>
+            )}
           </div>
 
           <ProjectUpgradeFailedBanner />
@@ -240,6 +249,9 @@ const ProjectOverviewPage: NextPageWithLayout = () => {
                 projectRef={projectRef}
                 togglingId={togglingId}
                 deletingId={deletingId}
+                isAbleToDeleteBranches={isAbleToDeleteBranches}
+                isAbleToResizeBranches={isAbleToResizeBranches}
+                isAbleToRestartBranches={isAbleToRestartBranches}
                 onToggleBranch={onToggleBranch}
                 onRequestDelete={(id, name) => setDeleteTarget({ id, name })}
               />

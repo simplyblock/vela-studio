@@ -48,6 +48,10 @@ export function transformToPermission(permission: string): Permission {
   }
 }
 
+export function permissionToString(permission: Permission): string {
+  return `${permission.entity}:${permission.resource}:${permission.action}`
+}
+
 export function isOrganizationResourcePermission(permission: ResourcePermission): boolean {
   return typeof permission.organization_id === 'string'
 }
@@ -276,7 +280,6 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
 } {
 
   const isLoggedIn = useIsLoggedIn()
-  console.log('useCheckPermissions called with:', requiredPermission, 'isLoggedIn:', isLoggedIn);
   
   const { slug: orgId, ref: projectId, branch: branchId } = useParams()
 

@@ -24,6 +24,7 @@ import { useOrganizationRolesQuery } from 'data/organizations/organization-roles
 import { useOrganizationMemberDeleteMutation } from 'data/organizations/organization-member-delete-mutation'
 import { toast } from 'sonner'
 import ConfirmationModal from 'ui-patterns/Dialogs/ConfirmationModal'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 
 export interface MembersViewProps {
@@ -31,6 +32,7 @@ export interface MembersViewProps {
 }
 
 const MembersView = ({ searchString }: MembersViewProps) => {
+  const { can: canDeleteMember, isSuccess: isPermissionsSuccess } = useCheckPermissions("org:user:admin")
   const { slug } = useParams()
   const { profile } = useProfile()
 
@@ -191,7 +193,7 @@ const MembersView = ({ searchString }: MembersViewProps) => {
         </TableCell>
 
         <TableCell className="w-24 text-right">
-          {!isCurrentUser && (
+          {!isCurrentUser && isPermissionsSuccess && canDeleteMember && (
             <Button
               type="outline"
               size="tiny"

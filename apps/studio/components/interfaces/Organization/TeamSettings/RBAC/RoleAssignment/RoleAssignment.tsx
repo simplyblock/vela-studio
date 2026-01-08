@@ -13,13 +13,6 @@ import { getPathReferences } from 'data/vela/path-references'
 import {
   Button,
   Checkbox_Shadcn_,
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogSection,
-  DialogTitle,
   ScrollArea,
 } from 'ui'
 import { useOrganizationRoleAssignmentsQuery } from 'data/organization-members/organization-role-assignments-query'
@@ -27,41 +20,49 @@ import { useOrganizationMemberAssignRoleMutation } from 'data/organization-membe
 import { useOrganizationMemberUnassignRoleMutation } from 'data/organization-members/organization-member-role-unassign-mutation'
 import { Member, useOrganizationMembersQuery } from 'data/organizations/organization-members-query'
 import { AssignMembersDialog } from './AssignMembersDialog'
-import { toast } from 'sonner'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 
 type RoleAssignmentsMap = Record<string, string[]> // roleId -> userIds[]
 
 export const RoleAssignment = () => {
   const { slug } = getPathReferences()
+  const { can: canAssignRoles, isSuccess: isPermissionsSuccess } = useCheckPermissions("org:role-assign:admin")
+  const { data: organization } = useSelectedOrganizationQuery()
+
+  const isReadOnly = isPermissionsSuccess && !canAssignRoles;
 
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false)
   const [pendingSelection, setPendingSelection] = useState<string[]>([])
+
+  // Scope state for environment roles
+  const [selectedEnvTypes, setSelectedEnvTypes] = useState<string[]>([])
 
   const { data: roles, isLoading: isLoadingRoles } = useOrganizationRolesQuery({ slug })
   const { data: roleAssignments, isLoading: isLoadingRoleAssignments } =
     useOrganizationRoleAssignmentsQuery({ slug })
   const { data: members, isLoading: isLoadingMembers } = useOrganizationMembersQuery({ slug })
 
-  const { mutateAsync: assignRole } = useOrganizationMemberAssignRoleMutation()
-  const { mutateAsync: unassignRole } = useOrganizationMemberUnassignRoleMutation()
-
-  
-const [isSaving, setIsSaving] = useState(false)
+  const { mutate: assignRole } = useOrganizationMemberAssignRoleMutation()
+  const { mutate: unassignRole } = useOrganizationMemberUnassignRoleMutation()
 
   const isLoading = isLoadingRoles || isLoadingRoleAssignments || isLoadingMembers
-  // Only org-level roles
-  const orgRoles = useMemo(
-    () => (roles || []).filter((role) => role.role_type === 'organization'),
+  
+  // Include both organization and environment roles
+  const orgAndEnvRoles = useMemo(
+    () => (roles || []).filter((role) => 
+      role.role_type === 'organization' || role.role_type === 'environment'
+    ),
     [roles]
   )
 
-  // Map roleId -> [userId, ...] for org-level assignments (no project/branch/env)
+  // Map roleId -> [userId, ...] 
+  // Show ALL assignments for the selected role (including those with different scopes)
   const roleAssignmentsMap: RoleAssignmentsMap = useMemo(() => {
     const map: RoleAssignmentsMap = {}
 
     ;(roleAssignments ?? []).forEach((link) => {
-      if (link.project_id || link.branch_id || link.env_type) return
       if (!map[link.role_id]) map[link.role_id] = []
       if (!map[link.role_id].includes(link.user_id)) {
         map[link.role_id].push(link.user_id)
@@ -79,11 +80,11 @@ const [isSaving, setIsSaving] = useState(false)
       }
     })
     return map
-  }, [members,slug])
+  }, [members])
 
   const selectedRole = useMemo(
-    () => orgRoles.find((role) => role.id === selectedRoleId) ?? null,
-    [orgRoles, selectedRoleId]
+    () => orgAndEnvRoles.find((role) => role.id === selectedRoleId) ?? null,
+    [orgAndEnvRoles, selectedRoleId]
   )
 
   const assignedMembers = useMemo(() => {
@@ -95,62 +96,73 @@ const [isSaving, setIsSaving] = useState(false)
   }, [selectedRoleId, roleAssignmentsMap, membersById])
 
   const allMembers = members || []
+  const orgEnvTypes = organization?.env_types ?? []
 
   const handleRemoveMember = (userId: string) => {
-    if (!selectedRoleId || !slug) return
+    if (!selectedRoleId || !slug || !selectedRole) return
 
-    // Fire unassign mutation (org-level: only userId + roleId)
-    unassignRole({
-      slug,
-      userId,
+    unassignRole({ 
+      slug, 
+      userId, 
       roleId: selectedRoleId,
+
     })
   }
 
   const handleTogglePendingUser = (userId: string) => {
-    setPendingSelection((current) =>
-      current.includes(userId) ? current.filter((id) => id !== userId) : current.concat(userId)
+    setPendingSelection((p) =>
+      p.includes(userId) ? p.filter((id) => id !== userId) : p.concat(userId)
     )
   }
 
-  const handleSaveAssignments = async () => {
-  if (!selectedRoleId || !slug) return
-
-  setIsSaving(true)
-  try {
-    const currentAssigned = roleAssignmentsMap[selectedRoleId] ?? []
-    const nextAssigned = pendingSelection
-
-    const toAdd = nextAssigned.filter((id) => !currentAssigned.includes(id))
-    const toRemove = currentAssigned.filter((id) => !nextAssigned.includes(id))
-
-    await Promise.all([
-  ...toAdd.map((userId) =>
-    assignRole(
-      { slug, userId, roleId: selectedRoleId },
-
+  const handleToggleEnvType = (envType: string) => {
+    setSelectedEnvTypes((p) =>
+      p.includes(envType) ? p.filter((v) => v !== envType) : p.concat(envType)
     )
-  ),
+  }
 
-  ...toRemove.map((userId) =>
-    unassignRole(
-      { slug, userId, roleId: selectedRoleId },
+  const resetScope = () => {
+    setSelectedEnvTypes([])
+  }
 
-    )
-  ),
-])
+  const handleSaveAssignments = () => {
+    if (!selectedRoleId || !slug || !selectedRole) return
 
+    const current = roleAssignmentsMap[selectedRoleId] ?? []
+    const next = pendingSelection
+
+    const toAdd = next.filter((id) => !current.includes(id))
+    const toRemove = current.filter((id) => !next.includes(id))
+
+    toAdd.forEach((userId) => {
+      assignRole({
+        slug,
+        userId,
+        roleId: selectedRoleId,
+        // Pass env_types only for environment roles
+        env_types: selectedRole.role_type === 'environment' ? selectedEnvTypes : undefined,
+      })
+    })
+
+    toRemove.forEach((userId) => {
+      unassignRole({ 
+        slug, 
+        userId, 
+        roleId: selectedRoleId,
+      })
+    })
 
     setIsAssignModalOpen(false)
-  } finally {
-    setIsSaving(false)
+    resetScope()
   }
-}
 
   const handleOpenAssignModal = () => {
-    if (!selectedRoleId) return
-    const currentlyAssigned = roleAssignmentsMap[selectedRoleId] ?? []
-    setPendingSelection([...currentlyAssigned])
+    if (!selectedRoleId || !selectedRole) return
+    if (isReadOnly) return
+    
+    const assigned = roleAssignmentsMap[selectedRoleId] ?? []
+    setPendingSelection([...assigned])
+    resetScope()
     setIsAssignModalOpen(true)
   }
 
@@ -160,15 +172,22 @@ const [isSaving, setIsSaving] = useState(false)
 
       <ScaffoldFilterAndContent>
         <ScaffoldSectionContent className="w-full">
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-            <RolesTable
-              isRolesLoading={isLoading}
-              roles={orgRoles}
-              selectedRoleId={selectedRoleId}
-              onSelectRole={setSelectedRoleId}
-            />
+          {/* Fixed height grid */}
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] h-[520px]">
+            {/* Left: roles table */}
+            <div className="h-full rounded-md border border-default bg-surface-100">
+              <ScrollArea className="h-full">
+                <RolesTable
+                  isRolesLoading={isLoading}
+                  roles={orgAndEnvRoles}
+                  selectedRoleId={selectedRoleId}
+                  onSelectRole={setSelectedRoleId}
+                />
+              </ScrollArea>
+            </div>
 
-            <div className="flex h-full flex-col gap-4 rounded-md border border-default bg-surface-100 p-5">
+            {/* Right: assigned users */}
+            <div className="flex h-full flex-col rounded-md border border-default bg-surface-100 p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-medium text-foreground">
@@ -176,70 +195,68 @@ const [isSaving, setIsSaving] = useState(false)
                   </p>
                   <p className="text-xs text-foreground-light">
                     {selectedRole
-                      ? 'Manage who inherits the permissions granted by this role.'
+                      ? selectedRole.role_type === 'environment' 
+                        ? 'Environment roles apply to specific environment types'
+                        : 'Manage who inherits the permissions granted by this role.'
                       : 'Pick a role from the table to manage its assignments.'}
                   </p>
                 </div>
-                <Button
-                  type="default"
-                  size="small"
-                  icon={<UserPlus size={14} />}
-                  disabled={!selectedRole || isLoading}
-                  onClick={handleOpenAssignModal}
-                >
-                  Add members
-                </Button>
+                {!isReadOnly && (
+                  <Button
+                    type="default"
+                    size="small"
+                    icon={<UserPlus size={14} />}
+                    disabled={!selectedRole || isLoading}
+                    onClick={handleOpenAssignModal}
+                  >
+                    {selectedRole?.role_type === 'environment' ? 'Manage assignments' : 'Add members'}
+                  </Button>
+                )}
               </div>
 
-              {selectedRole ? (
-                assignedMembers.length > 0 ? (
-                  <div className="flex flex-col gap-2">
-                    {assignedMembers.map((member) => (
-                      <div
-                        key={member.user_id}
-                        className="flex items-center justify-between rounded border border-default bg-surface-200 px-3 py-2"
-                      >
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium text-foreground">
-                            {member.username || member.primary_email || member.user_id}
-                          </span>
-                          {member.primary_email && (
-                            <span className="text-xs text-foreground-light">
-                              {member.primary_email}
+              <ScrollArea className="mt-4 flex-1">
+                {selectedRole ? (
+                  assignedMembers.length > 0 ? (
+                    <div className="flex flex-col gap-2 pb-2">
+                      {assignedMembers.map((member) => (
+                        <div
+                          key={member.user_id}
+                          className="flex items-center justify-between rounded border border-default bg-surface-200 px-3 py-2"
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-foreground">
+                              {member.username || member.primary_email || member.user_id}
                             </span>
+                            {member.primary_email && (
+                              <span className="text-xs text-foreground-light">
+                                {member.primary_email}
+                              </span>
+                            )}
+                          </div>
+                          {!isReadOnly && (
+                            <Button
+                              type="text"
+                              size="tiny"
+                              className="px-1"
+                              icon={<X size={14} />}
+                              onClick={() => handleRemoveMember(member.user_id)}
+                              aria-label={`Remove ${member.username || member.primary_email}`}
+                            />
                           )}
                         </div>
-                        <Button
-                          type="text"
-                          size="tiny"
-                          className="px-1"
-                          icon={<X size={14} />}
-                          onClick={() => handleRemoveMember(member.user_id)}
-                          aria-label={`Remove ${member.username || member.primary_email}`}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-1 items-center justify-center rounded border border-dashed border-default py-12 text-center">
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-foreground">No members assigned yet</p>
-                      <p className="text-xs text-foreground-light">
-                        Use the add members button to assign team members to this role.
-                      </p>
+                      ))}
                     </div>
+                  ) : (
+                    <div className="flex h-full items-center justify-center border border-dashed border-default rounded py-10 text-sm text-foreground-light">
+                      No members assigned yet.
+                    </div>
+                  )
+                ) : (
+                  <div className="flex h-full items-center justify-center border border-dashed border-default rounded py-10 text-sm text-foreground-light">
+                    Select a role to view assignments.
                   </div>
-                )
-              ) : (
-                <div className="flex flex-1 items-center justify-center rounded border border-dashed border-default py-12 text-center">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-foreground">Select a role to continue</p>
-                    <p className="text-xs text-foreground-light">
-                      Choose a role from the table to view and edit its member assignments.
-                    </p>
-                  </div>
-                </div>
-              )}
+                )}
+              </ScrollArea>
             </div>
           </div>
         </ScaffoldSectionContent>
@@ -249,18 +266,39 @@ const [isSaving, setIsSaving] = useState(false)
         open={isAssignModalOpen}
         onOpenChange={(open) => {
           setIsAssignModalOpen(open)
-          if (open && selectedRoleId) {
-            const currentlyAssigned = roleAssignmentsMap[selectedRoleId] ?? []
-            setPendingSelection([...currentlyAssigned])
+          if (!open) {
+            resetScope()
           }
         }}
-        isSaving={isSaving}
-        title={selectedRole ? `Assign members to ${selectedRole.name}` : 'Assign members'}
+        title={selectedRole ? `Assign ${selectedRole.name}` : 'Assign role'}
         members={allMembers}
         selectedIds={pendingSelection}
         onToggleMember={handleTogglePendingUser}
-        isSaveDisabled={!selectedRole}
+        isSaveDisabled={!selectedRole || (selectedRole?.role_type === 'environment' && selectedEnvTypes.length === 0)}
         onSave={handleSaveAssignments}
+        scopeSlot={
+          selectedRole && selectedRole.role_type === 'environment' ? (
+            <div>
+              <p className="mb-2 text-xs uppercase font-medium text-foreground-muted">Environment Types</p>
+              <ScrollArea className="max-h-[160px] pr-1">
+                <div className="flex flex-col gap-1">
+                  {orgEnvTypes.map((env) => {
+                    const isChecked = selectedEnvTypes.includes(env)
+                    return (
+                      <div key={env} className="flex items-center gap-3 px-3 py-2">
+                        <Checkbox_Shadcn_
+                          checked={isChecked}
+                          onCheckedChange={() => handleToggleEnvType(env)}
+                        />
+                        <span className="text-sm">{env}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </ScrollArea>
+            </div>
+          ) : null
+        }
       />
     </ScaffoldContainer>
   )

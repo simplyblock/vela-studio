@@ -33,6 +33,9 @@ export type BranchCardProps = {
   projectRef: string
   togglingId: string | null
   deletingId: string | null
+  isAbleToDeleteBranches?: boolean;
+  isAbleToResizeBranches?: boolean;
+  isAbleToRestartBranches?: boolean;
   onToggleBranch: (branch: Branch) => void
   onRequestDelete: (id: string, name: string) => void
 }
@@ -43,6 +46,9 @@ export const BranchCard = ({
   projectRef,
   togglingId,
   deletingId,
+  isAbleToDeleteBranches = true,
+  isAbleToResizeBranches = true,
+  isAbleToRestartBranches = true,
   onToggleBranch,
   onRequestDelete,
 }: BranchCardProps) => {
@@ -160,9 +166,10 @@ export const BranchCard = ({
       </div>
 
       <div className="flex items-center gap-2 pt-2">
-        {ActionButton}
+        {isAbleToRestartBranches && ActionButton}
 
-        <Button
+        {isAbleToDeleteBranches && (
+          <Button
           size="tiny"
           type="default"
           className="text-redA-1100 hover:bg-redA-400"
@@ -174,8 +181,10 @@ export const BranchCard = ({
             <Trash2 size={14} /> Delete
           </span>
         </Button>
+        )}
 
-        <ResizeBranchModal
+        {isAbleToResizeBranches && (
+          <ResizeBranchModal
           isDisabled={!openAllowed}
           orgSlug={orgSlug}
           projectRef={projectRef}
@@ -184,6 +193,7 @@ export const BranchCard = ({
           triggerClassName="!ml-auto"
           ramUsageBytes={branch?.used_resources?.ram_bytes ?? 0}
         />
+        )}
       </div>
 
       <div className="pt-3">

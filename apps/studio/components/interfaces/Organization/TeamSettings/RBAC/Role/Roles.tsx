@@ -14,8 +14,10 @@ import { RolesTable } from './RolesTable'
 import { useOrganizationRolesQuery } from 'data/organizations/organization-roles-query'
 import RoleCreateButton from './RoleCreateButton'
 import { useParams } from 'common'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const Roles = () => {
+  const { can: canCreateRole, isSuccess: isPermissionsSuccess } = useCheckPermissions("org:role:admin")
   const [searchString, setSearchString] = useState('')
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null)
 
@@ -61,7 +63,7 @@ export const Roles = () => {
             placeholder="Filter roles"
           />
           <ScaffoldActionsGroup className="w-full md:w-auto">
-            <RoleCreateButton />
+            {isPermissionsSuccess && canCreateRole && <RoleCreateButton />}
           </ScaffoldActionsGroup>
         </ScaffoldActionsContainer>
 

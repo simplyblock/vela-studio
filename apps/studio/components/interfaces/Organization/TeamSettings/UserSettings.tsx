@@ -11,9 +11,11 @@ import {
 import { Input } from 'ui-patterns/DataInputs/Input'
 import { InviteMemberButton } from './InviteMemberButton'
 import MembersView from './MembersView'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 export const UserSettings = () => {
   const [searchString, setSearchString] = useState('')
+  const {can: canInviteMember, isSuccess:isPermissionsSuccess} = useCheckPermissions("org:user:admin")
 
   return (
     <ScaffoldContainer>
@@ -31,7 +33,7 @@ export const UserSettings = () => {
             placeholder="Filter members"
           />
           <ScaffoldActionsGroup className="w-full md:w-auto">
-            <InviteMemberButton />
+            {isPermissionsSuccess && canInviteMember && <InviteMemberButton />}
           </ScaffoldActionsGroup>
         </ScaffoldActionsContainer>
         <ScaffoldSectionContent className="w-full">

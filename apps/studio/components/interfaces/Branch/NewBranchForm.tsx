@@ -46,12 +46,12 @@ type EnvironmentType = {
 interface NewBranchFormProps {}
 
 const FormSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(1,"Branch name is required"),
   sourceBranchId: z.string().optional(),
   postgresVersion: z.string(),
   environmentType: z.string(),
-  databasePassword: z.string(),
-  databasePasswordStrength: z.number(),
+  databasePassword: z.string().min(1, "Password is required"),
+  databasePasswordStrength: z.number().min(3, "Password is too weak. Please use a stronger password"),
   enableStorageService: z.boolean(),
   enableHighAvailability: z.boolean(),
   readReplicas: z.number(),
@@ -441,24 +441,36 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
           )}
           <div className={`grid grid-cols-2 w-full ${sourceBranch ? 'mt-6' : ''}`}>
             <div className="space-y-1 pr-1">
-              <Label_Shadcn_
-                htmlFor="branch-name"
-                className="text-xs font-medium text-foreground whitespace-nowrap"
-              >
-                Branch name
-              </Label_Shadcn_>
-              <FormField_Shadcn_
-                control={form.control}
-                name="name"
-                render={({ field }) => (
+            <Label_Shadcn_
+              htmlFor="branch-name"
+              className="text-xs font-medium text-foreground whitespace-nowrap"
+            >
+              Branch name
+            </Label_Shadcn_>
+            <FormField_Shadcn_
+              control={form.control}
+              name="name"
+              render={({ field, fieldState }) => (
+                <>
                   <Input_Shadcn_
                     id="name"
                     placeholder="main"
-                    className="w-full h-9 text-sm"
+                    className={`w-full h-9 text-sm ${fieldState.error ? 'border-destructive' : ''}`}
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e)
+                      setTimeout(() => form.trigger('name'), 100)
+                    }}
+                    onBlur={() => form.trigger('name')}
                   />
-                )}
-              />
+                  {fieldState.error && (
+                    <p className="text-[11px] text-destructive font-medium mt-1">
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
 
               <p className="text-[11px] leading-snug text-foreground-muted">
                 This branch will be created with the settings below.
@@ -540,12 +552,17 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                 <FormField_Shadcn_
                   control={form.control}
                   name="databasePassword"
-                  render={({ field }) => {
+                  render={({ field, fieldState: passwordFieldState }) => {
                     const hasSpecialCharacters =
                       field.value.length > 0 && !field.value.match(SPECIAL_CHARS_REGEX)
+                    
+                    // Get the most relevant error to show
+                    const passwordStrengthError = form.formState.errors.databasePasswordStrength
+                    const errorToShow = passwordFieldState.error?.message || passwordStrengthError?.message
+                    const hasError = !!errorToShow
 
                     return (
-                      <>
+                      <div className="space-y-1">
                         <Label_Shadcn_
                           htmlFor="branch-password"
                           className="text-xs font-medium text-foreground whitespace-nowrap"
@@ -559,18 +576,25 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                             type={showPassword ? 'text' : 'password'}
                             autoComplete="new-password"
                             placeholder="Give a strong password"
-                            className="h-9 pr-10 text-sm"
+                            className={`h-9 pr-10 text-sm ${hasError ? 'border-destructive' : ''}`}
                             {...field}
-                            onChange={async (event) => {
+                            onChange={ (event) => {
                               field.onChange(event)
-                              form.trigger('databasePasswordStrength')
                               const value = event.target.value
                               if (value === '') {
-                                await form.setValue('databasePasswordStrength', 0)
-                                await form.trigger('databasePassword')
+                                form.setValue('databasePasswordStrength', 0)
+                                form.trigger('databasePassword')
+                                form.trigger('databasePasswordStrength')
                               } else {
-                                await delayedCheckPasswordStrength(value)
+                                delayedCheckPasswordStrength(value)
+                                setTimeout(() => {
+                                  form.trigger('databasePasswordStrength')
+                                }, 350)
                               }
+                            }}
+                            onBlur={() => {
+                              form.trigger('databasePassword')
+                              form.trigger('databasePasswordStrength')
                             }}
                           />
                           <button
@@ -582,6 +606,13 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                           </button>
                         </div>
+
+                        {/* Show error if exists */}
+                        {errorToShow && (
+                          <p className="text-[11px] text-destructive font-medium">
+                            {errorToShow}
+                          </p>
+                        )}
 
                         <div className="space-y-2">
                           {hasSpecialCharacters && <SpecialSymbolsCallout />}
@@ -595,7 +626,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                             />
                           </div>
                         </div>
-                      </>
+                      </div>
                     )
                   }}
                 />

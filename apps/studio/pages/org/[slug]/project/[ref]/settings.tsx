@@ -9,6 +9,7 @@ import { getPathReferences } from 'data/vela/path-references'
 import { useProjectUpdateMutation } from 'data/projects/project-update-mutation'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { DeleteProjectPanel } from 'components/interfaces/Settings/General/DeleteProjectPanel/DeleteProjectPanel'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
 
 /**
  * Page: Edit project's max_backups
@@ -17,6 +18,11 @@ import { DeleteProjectPanel } from 'components/interfaces/Settings/General/Delet
  * The shared mutation has a TODO to accept max_backups later.
  */
 const ProjectBackupsPage: NextPageWithLayout = () => {
+  const {can: canUpdateBackupsCount,isSuccess: isProjectPermissionSuccess} = useCheckPermissions("project:settings:write")
+  const {can: canDeleteProject, isSuccess: isDeletePermissionSuccess} = useCheckPermissions("env:projects:delete")
+
+  const isAbleToEditSettings = isProjectPermissionSuccess && canUpdateBackupsCount
+  const isAbleToDeleteProject = isDeletePermissionSuccess && canDeleteProject
   const { slug, ref } = getPathReferences()
 
   const { data: project } = useSelectedProjectQuery()
@@ -97,6 +103,7 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
                 type="number"
                 inputMode="numeric"
                 autoComplete="off"
+                disabled={!isAbleToEditSettings || loading}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
@@ -111,7 +118,8 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 pt-2">
+            {isAbleToEditSettings && (
+              <div className="flex items-center gap-2 pt-2">
               <Button type="default" onClick={onCancel} disabled={!isDirty || loading}>
                 Cancel
               </Button>
@@ -119,11 +127,12 @@ const ProjectBackupsPage: NextPageWithLayout = () => {
                 Save changes
               </Button>
             </div>
+            )}
           </div>
         </Card>
       </div>
       <div>
-         <DeleteProjectPanel />
+         {isAbleToDeleteProject && <DeleteProjectPanel /> }
       </div>
      
     </ScaffoldContainer>
