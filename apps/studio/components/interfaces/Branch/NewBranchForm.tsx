@@ -532,7 +532,8 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                       </Label_Shadcn_>
                       <Select_Shadcn_
                         disabled={availableVersions.length < 2 || !!branch}
-                        value={defaultVersion}
+                        value={field.value}
+                        onValueChange={(value) => form.setValue('postgresVersion', value)}
                       >
                         <SelectTrigger_Shadcn_>
                           <SelectValue_Shadcn_ placeholder="Select PostgreSQL version" />
@@ -540,11 +541,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                         <SelectContent_Shadcn_>
                           {availableVersions.map((version) => {
                             return (
-                              <SelectItem_Shadcn_
-                                key={version.value}
-                                value={version.value}
-                                onChange={field.onChange}
-                              >
+                              <SelectItem_Shadcn_ key={version.value} value={version.value}>
                                 {version.label}
                               </SelectItem_Shadcn_>
                             )

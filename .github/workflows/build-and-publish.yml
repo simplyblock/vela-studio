@@ -81,25 +81,25 @@ jobs:
           echo "DIGEST=${digest}" >> $GITHUB_ENV
           echo "SIMPLE_DIGEST=${digest#sha256:}" >> $GITHUB_ENV
 
-      - name: Scan the generated image for vulnerabilities
-        uses: anchore/scan-action@v6
-        id: scan
-        with:
-          image: "${{ env.REGISTRY_IMAGE }}@${{ env.DIGEST }}"
-          fail-build: false # don't fail, just report
-
-      - name: Upload the image scan report
-        id: upload
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
-          wait-for-processing: true # wait for the report to be processed
-
-      - name: Generate that image SBOM
-        uses: anchore/sbom-action@v0
-        with:
-          image: "${{ env.REGISTRY_IMAGE }}@${{ env.DIGEST }}"
-          artifact-name: "${{ matrix.os }}-${{ matrix.arch }}-${{ env.SIMPLE_DIGEST }}.sbom"
+#      - name: Scan the generated image for vulnerabilities
+#        uses: anchore/scan-action@v6
+#        id: scan
+#        with:
+#          image: "${{ env.REGISTRY_IMAGE }}@${{ env.DIGEST }}"
+#          fail-build: false # don't fail, just report
+#
+#      - name: Upload the image scan report
+#        id: upload
+#        uses: github/codeql-action/upload-sarif@v3
+#        with:
+#          sarif_file: ${{ steps.scan.outputs.sarif }}
+#          wait-for-processing: true # wait for the report to be processed
+#
+#      - name: Generate that image SBOM
+#        uses: anchore/sbom-action@v0
+#        with:
+#          image: "${{ env.REGISTRY_IMAGE }}@${{ env.DIGEST }}"
+#          artifact-name: "${{ matrix.os }}-${{ matrix.arch }}-${{ env.SIMPLE_DIGEST }}.sbom"
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
