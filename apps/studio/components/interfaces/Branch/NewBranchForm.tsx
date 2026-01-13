@@ -133,6 +133,11 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
     },
   })
 
+  useEffect(() => {
+    if (!sourceBranch) return
+    form.setValue('postgresVersion', sourceBranch.database.version)
+  }, [sourceBranch])
+
   const enableStorageService = form.watch('enableStorageService')
   useEffect(() => {
     if (!enableStorageService) form.setValue('resources.storage_size', 0)
@@ -526,7 +531,7 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                         Custom Postgres version
                       </Label_Shadcn_>
                       <Select_Shadcn_
-                        disabled={availableVersions.length < 2}
+                        disabled={availableVersions.length < 2 || !!branch}
                         value={defaultVersion}
                       >
                         <SelectTrigger_Shadcn_>
@@ -535,7 +540,11 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                         <SelectContent_Shadcn_>
                           {availableVersions.map((version) => {
                             return (
-                              <SelectItem_Shadcn_ key={version.value} value={version.value}>
+                              <SelectItem_Shadcn_
+                                key={version.value}
+                                value={version.value}
+                                onChange={field.onChange}
+                              >
                                 {version.label}
                               </SelectItem_Shadcn_>
                             )
