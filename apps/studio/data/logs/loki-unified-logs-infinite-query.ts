@@ -177,12 +177,15 @@ export async function getUnifiedLogs(
         id: row.stream?.metadata_id ?? index,
         date,
         timestamp: row.values[0][0],
-        level: row.stream.detected_level as LogLevel,
-        status: row.status || 200,
+        level: (row.stream.detected_level || row.stream.level) as LogLevel,
+        status: row.status || row.stream.metadata_response_status_code || '200',
         method: row.method,
         host: row.host,
-        pathname: (row.url || '').replace(/^https?:\/\/[^\/]+/, '') || row.pathname || '',
-        event_message: row.stream.event_message || row.body || '',
+        pathname:
+          (row.url || row.stream.metadata_request_path || '').replace(/^https?:\/\/[^\/]+/, '') ||
+          row.pathname ||
+          '',
+        event_message: row.stream.message || row.stream.event_message || row.body || '',
         headers:
           typeof row.headers === 'string' ? JSON.parse(row.headers || '{}') : row.headers || {},
         regions: row.region ? [row.region] : [],
