@@ -188,10 +188,10 @@ export async function getUnifiedLogs(
   const result = resultData
     .flatMap((row: any, index: number) => {
       // Create a date object for display purposes
-      return row.values.map((value: any) => {
+      return row.values.map((value: any, rowindex: number) => {
         const date = new Date(Number(value[0]) / 1000 / 1000)
         return {
-          id: row.stream?.metadata_id ?? index,
+          id: row.stream?.metadata_id ?? `${index}-${rowindex}`,
           date,
           timestamp: value[0],
           level: levelToLogLevel(row.stream.detected_level || row.stream.level),
