@@ -188,8 +188,8 @@ export async function getUnifiedLogs(
   const result = resultData
     .flatMap((row: any, index: number) => {
       // Create a date object for display purposes
-      const date = new Date(Number(row.values[0][0]) / 1000 / 1000)
       return row.values.map((value: any) => {
+        const date = new Date(Number(value[0]) / 1000 / 1000)
         return {
           id: row.stream?.metadata_id ?? index,
           date,
