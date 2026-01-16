@@ -79,10 +79,29 @@ export function generateDynamicColumns(data: ColumnSchema[]): {
         headerClassName: 'w-[130px]',
       },
     },
+    // LogLevel column - always visible
+    {
+      accessorKey: 'log_level',
+      header: '',
+      cell: ({ row }) => {
+        return row.getValue<ColumnSchema['log_level']>('log_level')
+      },
+      enableHiding: false,
+      enableResizing: false,
+      enableSorting: false,
+      filterFn: (row, columnId, filterValue) => true,
+      size: 48,
+      minSize: 48,
+      maxSize: 48,
+      meta: {
+        cellClassName: 'w-[32px]',
+        headerClassName: 'w-[32px]',
+      },
+    },
     // Log type column - always visible
     {
       accessorKey: 'log_type',
-      header: '',
+      header: 'LEVEL',
       cell: ({ row }) => {
         const logType = row.getValue<ColumnSchema['log_type']>('log_type')
         return (

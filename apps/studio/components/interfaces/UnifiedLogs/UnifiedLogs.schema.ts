@@ -10,6 +10,7 @@ import { LOG_TYPES, METHODS, REGIONS } from './UnifiedLogs.constants'
 export const columnSchema = z.object({
   id: z.string(),
   log_type: z.enum(LOG_TYPES),
+  log_level: z.string(),
   method: z.enum(METHODS),
   pathname: z.string(),
   level: z.enum(LEVELS),
@@ -30,6 +31,8 @@ export const columnFilterSchema = z.object({
     .transform((val) => val.split(ARRAY_DELIMITER))
     .pipe(z.enum(LEVELS).array())
     .optional(),
+  log_level: z
+    .string(),
   method: z
     .string()
     .transform((val) => val.split(ARRAY_DELIMITER))
