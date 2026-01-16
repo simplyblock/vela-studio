@@ -1,5 +1,6 @@
 import { useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query'
 import {
+  LogType,
   PageParam,
   QuerySearchParamsType,
 } from 'components/interfaces/UnifiedLogs/UnifiedLogs.types'
@@ -67,6 +68,22 @@ const getUnifiedLogsQuery = (search: QuerySearchParamsType, branchRef: string) =
 
 const LOGS_PAGE_LIMIT = 100
 type LogLevel = 'success' | 'warning' | 'error'
+
+const appnameToLogType = (appname: string): LogType => {
+  if (appname == 'vela-keycloak' || appname === 'auth') return 'auth'
+  if (appname === 'vela-storage' || appname === 'storage') return 'storage'
+  if (appname === 'vela-edge-functions' || appname === 'edge function') return 'edge function'
+  if (appname === 'vela-rest' || appname === 'postgrest') return 'postgrest'
+  if (appname === 'vela-db' || appname === 'postgres') return 'postgres'
+  return 'other'
+}
+
+const levelToLogLevel = (level: string): LogLevel => {
+  level = level.toLowerCase()
+  if (level === 'info' || level === 'log' || level === 'notice' || level === 'trace') return 'success'
+  if (level === 'warn' || level === 'warning') return 'warning'
+  return 'error'
+}
 
 export const UNIFIED_LOGS_QUERY_OPTIONS = {
   refetchOnWindowFocus: false,
@@ -169,32 +186,33 @@ export async function getUnifiedLogs(
   const resultData = data?.data.result ?? []
 
   const result = resultData
-    .map((row: any, index: number) => {
+    .flatMap((row: any, index: number) => {
       // Create a date object for display purposes
       const date = new Date(Number(row.values[0][0]) / 1000 / 1000)
-
-      return {
-        id: row.stream?.metadata_id ?? index,
-        date,
-        timestamp: row.values[0][0],
-        level: (row.stream.detected_level || row.stream.level) as LogLevel,
-        status: row.status || row.stream.metadata_response_status_code || '200',
-        method: row.method,
-        host: row.host,
-        pathname:
-          (row.url || row.stream.metadata_request_path || '').replace(/^https?:\/\/[^\/]+/, '') ||
-          row.pathname ||
-          '',
-        event_message: row.stream.message || row.stream.event_message || row.body || '',
-        headers:
-          typeof row.headers === 'string' ? JSON.parse(row.headers || '{}') : row.headers || {},
-        regions: row.region ? [row.region] : [],
-        log_type: !row.stream.level || row.stream.level === '<null>' ? '' : row.stream.level,
-        latency: row.latency || 0,
-        log_count: row.log_count || null,
-        logs: row.logs || [],
-        auth_user: row.auth_user || null,
-      }
+      return row.values.map((value: any) => {
+        return {
+          id: row.stream?.metadata_id ?? index,
+          date,
+          timestamp: value[0],
+          level: levelToLogLevel(row.stream.detected_level || row.stream.level),
+          status: row.status || row.stream.metadata_response_status_code || '200',
+          method: row.method,
+          host: row.host,
+          pathname:
+            (row.url || row.stream.metadata_request_path || '').replace(/^https?:\/\/[^\/]+/, '') ||
+            row.pathname ||
+            '',
+          event_message: row.stream.message || row.stream.event_message || row.body || '',
+          headers:
+            typeof row.headers === 'string' ? JSON.parse(row.headers || '{}') : row.headers || {},
+          regions: row.region ? [row.region] : [],
+          log_type: appnameToLogType(row.stream.appname),
+          latency: row.latency || 0,
+          log_count: row.log_count || null,
+          logs: row.logs || [],
+          auth_user: row.auth_user || null
+        }
+      })
     })
     .sort((a: any, b: any) => b.timestamp - a.timestamp)
 

@@ -3,6 +3,7 @@ import { BookHeart, Box, Cpu, Database, Globe } from 'lucide-react'
 import { Auth, EdgeFunctions, Storage } from 'icons'
 import { cn, Tooltip, TooltipContent, TooltipTrigger } from 'ui'
 import { type LOG_TYPES } from '../UnifiedLogs.constants'
+import Logs from 'icons/src/icons/logs'
 
 interface LogTypeIconProps {
   type: (typeof LOG_TYPES)[number]
@@ -32,7 +33,7 @@ export const LogTypeIcon = ({
     // supavisor: () => <Cpu size={size} strokeWidth={strokeWidth} className={className} />,
     // postgres_upgrade: () => <Cpu size={size} strokeWidth={strokeWidth} className={className} />,
     storage: () => <Storage size={size} strokeWidth={strokeWidth} className={className} />,
-
+    other: () => <Logs size={size} strokeWidth={strokeWidth} className={className} />,
     // cron: () => <Clock size={size} strokeWidth={strokeWidth} className={className} />,
   }
 
