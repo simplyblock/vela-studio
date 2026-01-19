@@ -56,13 +56,22 @@ Learn more at [vela.simplyblock.io](https://vela.simplyblock.io)
 Vela is built on open-source components, combining Postgres and modern infrastructure automation to provide a complete, self-hostable platform.
 
 - [Postgres](https://www.postgresql.org/) is a proven, object-relational database system known for reliability, feature depth, and performance.  
-- [Realtime] provides WebSocket-based subscriptions to Postgres inserts, updates, and deletes.  
+- [Realtime](https://github.com/supabase/realtime) provides WebSocket-based subscriptions to Postgres inserts, updates, and deletes.  
 - [PostgREST](http://postgrest.org/) turns your PostgreSQL database directly into a RESTful API.  
-- [Keycloak] centralized authentication and identity provider, shared globally across all organizations and projects
-- [Storage](https://github.com/simplyblock/sbcli) distributed copy-on-write high-perfromance block storage layer.
-- [pg_graphql] exposes a GraphQL API directly from your Postgres schema.  
+- [Keycloak](https://github.com/keycloak/keycloak) centralized authentication and identity provider, shared globally across all organizations and projects
+- [Storage](https://github.com/simplyblock/sbcli) distributed copy-on-write high-performance block storage layer.
+- [pg_graphql](https://github.com/supabase/pg_graphql) exposes a GraphQL API directly from your Postgres schema.  
 - [postgres-meta](https://github.com/supabase/postgres-meta) provides administrative APIs to manage Postgres objects such as tables and roles.  
 - [Kong](https://github.com/Kong/kong) serves as a cloud-native API gateway for routing and access control.  
+
+### Vela Components
+
+Vela consists of a number of Simplyblock-managed open-source components:
+
+- [Vela Studio](https://github.com/simplyblock/vela): The web interface for managing organizations, projects, branches.
+- [Vela Controller](https://github.com/simplyblock/vela-controller): The orchestrator component which manages the lifecycle of databases and functions.
+- [Vela OS](https://github.com/simplyblock/vela-os): The operating system component which is used in the branch virtual machines, running the branch services.
+- [Autoscaling](https://github.com/simplyblock/autoscaling): The Vela fork of Neon's autoscaling component which managed Qemu virtual machines in Kubernetes.
 
 ---
 
