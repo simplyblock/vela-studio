@@ -14,6 +14,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.PRIVATE_REPO_PAT }}
-          repository: simplyblock/vela
+          repository: simplyblock/vela-controller
           event-type: update-vela-studio
           client-payload: '{"sha": "${{ github.event.workflow_run.head_sha }}"}'
