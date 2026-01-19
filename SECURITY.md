@@ -1,1 +1,1 @@
-apps/docs/public/.well-known/security.txt
+https://simplyblock.io/.well-known/security.txt
