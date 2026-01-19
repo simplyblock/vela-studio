@@ -1,8 +1,13 @@
 import KeycloakProvider, { KeycloakProfile } from 'next-auth/providers/keycloak'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
-import NextAuth, { Account, AuthOptions, getServerSession, Profile } from 'next-auth'
+import NextAuth, {
+  Account,
+  AuthOptions,
+  getServerSession,
+  Profile,
+  Session as AuthSession,
+} from 'next-auth'
 import { JWT } from 'next-auth/jwt'
-import { Session as AuthSession } from 'next-auth'
 import { OAuthUserConfig } from 'next-auth/providers/oauth'
 
 export const DEFAULT_FALLBACK_PATH = '/org'
@@ -199,8 +204,7 @@ class ServerKeycloakManager implements KeycloakManager {
     }
   }
 
-  async #signOut(session: AuthSession, token: JWT): Promise<void> {
-  }
+  async #signOut(session: AuthSession, token: JWT): Promise<void> {}
 
   async #adjustJwt(
     token: JWT,
@@ -225,7 +229,7 @@ class ServerKeycloakManager implements KeycloakManager {
       user: {
         id: freeProfile.sub,
         email: freeProfile.email,
-        factors: trigger === 'signIn' ? (freeProfile.amr ?? []) : (baseToken.factors ?? []),
+        factors: trigger === 'signIn' ? freeProfile.amr ?? [] : baseToken.factors ?? [],
         user_metadata: {
           full_name: freeProfile.name,
           preferred_username: freeProfile.preferred_username,
