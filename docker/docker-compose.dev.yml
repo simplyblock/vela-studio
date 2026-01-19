@@ -29,7 +29,7 @@ services:
       interval: 5s
       retries: 3
     depends_on:
-      analytics:
+      db:
         condition: service_healthy
     volumes:
       - '../apps:/app/apps'
@@ -68,7 +68,7 @@ services:
       context: ../vela-controller/
       dockerfile: containers/Containerfile
     depends_on:
-      analytics:
+      db:
         condition: service_healthy
     volumes:
       - ~/.kube/config:/root/.kube/config:ro
@@ -84,12 +84,13 @@ services:
       VELA_ROOT_PATH: '/vela'
       VELA_JWT_SECRET: 'http://auth:8080/auth/realms/vela/protocol/openid-connect/certs'
       VELA_POSTGRES_URL: 'postgresql+asyncpg://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}'
-      VELA_PGMETA_CRYPTO_KEY: SAMPLE_KEY
+      VELA_PGMETA_CRYPTO_KEY: 'secret'
       VELA_KEYCLOAK_URL: 'http://auth:8080/auth/'
-      VELA_CLOUDFLARE_API_TOKEN: 'your_cloudflare_api_token'
-      VELA_CLOUDFLARE_ZONE_ID: 'your_cloudflare_zone_id'
-      VELA_CLOUDFLARE_BRANCH_REF_CNAME: 'branch-ref.staging.vela.run'
-      VELA_CLOUDFLARE_DOMAIN_SUFFIX: 'example.com'
+      VELA_CLOUDFLARE__API_TOKEN: 'your_cloudflare_api_token'
+      VELA_CLOUDFLARE__ZONE_ID: 'your_cloudflare_zone_id'
+      VELA_CLOUDFLARE__BRANCH_REF: 'branch-ref.staging.vela.run'
+      VELA_CLOUDFLARE__BRANCH_DB_REF: 'example.com'
+      VELA_CLOUDFLARE__DOMAIN_SUFFIX: 'example.com'
       VELA_KEYCLOAK_ADMIN_NAME: 'admin'
       VELA_KEYCLOAK_ADMIN_SECRET: 'admin'
       VELA_SYSTEM_LIMIT_MILLIS_VCPU: '100000'
@@ -109,7 +110,7 @@ services:
       # https://github.com/supabase/supabase/issues/12661
       - ./volumes/api/kong.yml:/home/kong/temp.yml:ro,z
     depends_on:
-      analytics:
+      db:
         condition: service_healthy
     environment:
       KONG_DATABASE: "off"
@@ -161,8 +162,6 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
     environment:
       PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
       PGRST_DB_SCHEMAS: ${PGRST_DB_SCHEMAS}
@@ -185,8 +184,6 @@ services:
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
-        condition: service_healthy
-      analytics:
         condition: service_healthy
     healthcheck:
       test:
@@ -296,8 +293,6 @@ services:
       db:
         # Disable this if you are using an external Postgres database
         condition: service_healthy
-      analytics:
-        condition: service_healthy
     environment:
       PG_META_PORT: 8080
       PG_META_DB_HOST: ${POSTGRES_HOST}
@@ -313,7 +308,7 @@ services:
     volumes:
       - ./volumes/functions:/home/deno/functions:Z
     depends_on:
-      analytics:
+      db:
         condition: service_healthy
     environment:
       JWT_SECRET: ${JWT_SECRET}
@@ -446,8 +441,6 @@ services:
       retries: 5
     depends_on:
       db:
-        condition: service_healthy
-      analytics:
         condition: service_healthy
     environment:
       PORT: 4000
