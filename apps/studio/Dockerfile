@@ -34,7 +34,7 @@ WORKDIR /app
 FROM base AS turbo
 COPY . .
 
-RUN pnpm dlx turbo@2.5.8 prune studio --docker
+RUN pnpm dlx turbo@2.6.3 prune studio --docker
 
 # Install dev dependencies (only if needed)
 FROM base AS deps
