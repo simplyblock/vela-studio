@@ -294,8 +294,26 @@ export interface paths {
         /** Organizations:Projects:Branch:Apikeys */
         get: operations["organizations:projects:branch:apikeys"];
         put?: never;
-        post?: never;
+        /** Organizations:Projects:Branch:Apikeys:Create */
+        post: operations["organizations:projects:branch:apikeys:create"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/apikeys/{api_key_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Organizations:Projects:Branch:Apikeys:Delete */
+        delete: operations["organizations:projects:branch:apikeys:delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -18633,10 +18651,27 @@ export interface components {
             /** Metadata */
             metadata: (string | null)[];
         };
+        /** ApiKeyCreate */
+        ApiKeyCreate: {
+            /** Name */
+            name: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "anon" | "service_role";
+            /** Description */
+            description?: string | null;
+        };
         /** ApiKeyDetails */
         ApiKeyDetails: {
             /** Name */
             name: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "anon" | "service_role";
             /** Api Key */
             api_key: string;
             /** Id */
@@ -18834,6 +18869,11 @@ export interface components {
             source?: components["schemas"]["BranchSourceParameters"] | null;
             deployment?: components["schemas"]["DeploymentParameters"] | null;
             restore?: components["schemas"]["BranchRestoreParameters"] | null;
+            /**
+             * Pitr Enabled
+             * @default false
+             */
+            pitr_enabled?: boolean;
         };
         /** BranchPasswordReset */
         BranchPasswordReset: {
@@ -18966,6 +19006,8 @@ export interface components {
         BranchServiceStatus: "ACTIVE_HEALTHY" | "STOPPED" | "STARTING" | "ACTIVE_UNHEALTHY" | "CREATING" | "DELETING" | "UPDATING" | "RESTARTING" | "STOPPING" | "PAUSING" | "PAUSED" | "RESUMING" | "UNKNOWN" | "ERROR";
         /** BranchSourceDeploymentParameters */
         BranchSourceDeploymentParameters: {
+            /** Database Password */
+            database_password?: string | null;
             /** Database Size */
             database_size?: number | null;
             /** Storage Size */
@@ -19081,9 +19123,9 @@ export interface components {
             iops: number;
             /**
              * Database Image Tag
-             * @constant
+             * @enum {string}
              */
-            database_image_tag: "15.1.0.147";
+            database_image_tag: "15.1.0.147" | "18.1-velaos";
             /**
              * Enable File Storage
              * @default true
@@ -22690,6 +22732,138 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ApiKeyDetails"][];
                 };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:apikeys:create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApiKeyCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiKeyDetails"];
+                };
+            };
+            /** @description Not authenticated */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPError"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    "organizations:projects:branch:apikeys:delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                api_key_id: string;
+                organization_id: string;
+                project_id: string;
+                branch_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Not authenticated */
             401: {

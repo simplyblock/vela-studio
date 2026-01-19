@@ -2063,6 +2063,204 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": ["organization", "organization", "project", "project", "branch", "branch"],
+        "summary": "Organizations:Projects:Branch:Apikeys:Create",
+        "operationId": "organizations:projects:branch:apikeys:create",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/ApiKeyCreate" } }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ApiKeyDetails" } }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organizations/{organization_id}/projects/{project_id}/branches/{branch_id}/apikeys/{api_key_id}": {
+      "delete": {
+        "tags": ["organization", "organization", "project", "project", "branch", "branch"],
+        "summary": "Organizations:Projects:Branch:Apikeys:Delete",
+        "operationId": "organizations:projects:branch:apikeys:delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "api_key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Api Key Id"
+            }
+          },
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Organization Id"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Project Id"
+            }
+          },
+          {
+            "name": "branch_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "ulid",
+              "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$",
+              "minLength": 26,
+              "maxLength": 26,
+              "description": "A ULID (Universally Unique Lexicographically Sortable Identifier)",
+              "examples": ["01ARZ3NDEKTSV4RRFFQ69G5FAV", "01H945P9C3K2QJ8F7N6M4R2E8V"],
+              "title": "Branch Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Successful Response" },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/HTTPError" } }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
       }
     },
     "/organizations/{organization_id}/projects/{project_id}/": {
@@ -25134,9 +25332,23 @@
         "required": ["id", "type", "metadata"],
         "title": "Actor"
       },
+      "ApiKeyCreate": {
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "pattern": "^[^\\x00]*$", "title": "Name" },
+          "role": { "type": "string", "enum": ["anon", "service_role"], "title": "Role" },
+          "description": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Description"
+          }
+        },
+        "type": "object",
+        "required": ["name", "role"],
+        "title": "ApiKeyCreate"
+      },
       "ApiKeyDetails": {
         "properties": {
           "name": { "type": "string", "title": "Name" },
+          "role": { "type": "string", "enum": ["anon", "service_role"], "title": "Role" },
           "api_key": { "type": "string", "title": "Api Key" },
           "id": { "type": "string", "title": "Id" },
           "hash": { "type": "string", "title": "Hash" },
@@ -25144,7 +25356,7 @@
           "description": { "type": "string", "title": "Description" }
         },
         "type": "object",
-        "required": ["name", "api_key", "id", "hash", "prefix", "description"],
+        "required": ["name", "role", "api_key", "id", "hash", "prefix", "description"],
         "title": "ApiKeyDetails"
       },
       "AuditLog": {
@@ -25473,7 +25685,8 @@
               { "$ref": "#/components/schemas/BranchRestoreParameters" },
               { "type": "null" }
             ]
-          }
+          },
+          "pitr_enabled": { "type": "boolean", "title": "Pitr Enabled", "default": false }
         },
         "type": "object",
         "required": ["name"],
@@ -25704,6 +25917,13 @@
       },
       "BranchSourceDeploymentParameters": {
         "properties": {
+          "database_password": {
+            "anyOf": [
+              { "type": "string", "maxLength": 128, "minLength": 8, "pattern": "^[^\\x00]*$" },
+              { "type": "null" }
+            ],
+            "title": "Database Password"
+          },
           "database_size": {
             "anyOf": [
               {
@@ -25939,7 +26159,7 @@
           "iops": { "type": "integer", "maximum": 100000.0, "minimum": 100.0, "title": "Iops" },
           "database_image_tag": {
             "type": "string",
-            "const": "15.1.0.147",
+            "enum": ["15.1.0.147", "18.1-velaos"],
             "title": "Database Image Tag"
           },
           "enable_file_storage": {

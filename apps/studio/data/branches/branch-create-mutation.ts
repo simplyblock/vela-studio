@@ -64,6 +64,7 @@ export async function createBranch({
     config_copy: withConfig,
     data_copy: withData,
     deployment_parameters: providesDeployment ? {
+      database_password: deployment?.database_password,
       milli_vcpu: deployment?.milli_vcpu,
       memory_bytes: deployment?.memory_bytes,
       iops: deployment?.iops,

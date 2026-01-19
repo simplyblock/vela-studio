@@ -553,91 +553,89 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                 }}
               />
             </div>
-            {!sourceBranch && (
-              <div className="space-y-1 pl-1">
-                <FormField_Shadcn_
-                  control={form.control}
-                  name="databasePassword"
-                  render={({ field, fieldState: passwordFieldState }) => {
-                    const hasSpecialCharacters =
-                      field.value.length > 0 && !field.value.match(SPECIAL_CHARS_REGEX)
-                    
-                    // Get the most relevant error to show
-                    const passwordStrengthError = form.formState.errors.databasePasswordStrength
-                    const errorToShow = passwordFieldState.error?.message || passwordStrengthError?.message
-                    const hasError = !!errorToShow
+            <div className="space-y-1 pl-1">
+              <FormField_Shadcn_
+                control={form.control}
+                name="databasePassword"
+                render={({ field, fieldState: passwordFieldState }) => {
+                  const hasSpecialCharacters =
+                    field.value.length > 0 && !field.value.match(SPECIAL_CHARS_REGEX)
 
-                    return (
-                      <div className="space-y-1">
-                        <Label_Shadcn_
-                          htmlFor="branch-password"
-                          className="text-xs font-medium text-foreground whitespace-nowrap"
-                        >
-                          Postgres password
-                        </Label_Shadcn_>
+                  // Get the most relevant error to show
+                  const passwordStrengthError = form.formState.errors.databasePasswordStrength
+                  const errorToShow = passwordFieldState.error?.message || passwordStrengthError?.message
+                  const hasError = !!errorToShow
 
-                        <div className="relative">
-                          <Input_Shadcn_
-                            id="branch-password"
-                            type={showPassword ? 'text' : 'password'}
-                            autoComplete="new-password"
-                            placeholder="Give a strong password"
-                            className={`h-9 pr-10 text-sm ${hasError ? 'border-destructive' : ''}`}
-                            {...field}
-                            onChange={ (event) => {
-                              field.onChange(event)
-                              const value = event.target.value
-                              if (value === '') {
-                                form.setValue('databasePasswordStrength', 0)
-                                form.trigger('databasePassword')
-                                form.trigger('databasePasswordStrength')
-                              } else {
-                                delayedCheckPasswordStrength(value)
-                                setTimeout(() => {
-                                  form.trigger('databasePasswordStrength')
-                                }, 350)
-                              }
-                            }}
-                            onBlur={() => {
+                  return (
+                    <div className="space-y-1">
+                      <Label_Shadcn_
+                        htmlFor="branch-password"
+                        className="text-xs font-medium text-foreground whitespace-nowrap"
+                      >
+                        Postgres password
+                      </Label_Shadcn_>
+
+                      <div className="relative">
+                        <Input_Shadcn_
+                          id="branch-password"
+                          type={showPassword ? 'text' : 'password'}
+                          autoComplete="new-password"
+                          placeholder="Give a strong password"
+                          className={`h-9 pr-10 text-sm ${hasError ? 'border-destructive' : ''}`}
+                          {...field}
+                          onChange={ (event) => {
+                            field.onChange(event)
+                            const value = event.target.value
+                            if (value === '') {
+                              form.setValue('databasePasswordStrength', 0)
                               form.trigger('databasePassword')
                               form.trigger('databasePasswordStrength')
-                            }}
+                            } else {
+                              delayedCheckPasswordStrength(value)
+                              setTimeout(() => {
+                                form.trigger('databasePasswordStrength')
+                              }, 350)
+                            }
+                          }}
+                          onBlur={() => {
+                            form.trigger('databasePassword')
+                            form.trigger('databasePasswordStrength')
+                          }}
+                        />
+                        <button
+                          type="button"
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          className="absolute inset-y-0 right-2 flex items-center text-foreground-muted"
+                          onClick={() => setShowPassword((prev) => !prev)}
+                        >
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+
+                      {/* Show error if exists */}
+                      {errorToShow && (
+                        <p className="text-[11px] text-destructive font-medium">
+                          {errorToShow}
+                        </p>
+                      )}
+
+                      <div className="space-y-2">
+                        {hasSpecialCharacters && <SpecialSymbolsCallout />}
+
+                        <div className="text-[11px] leading-snug text-foreground-muted">
+                          <PasswordStrengthBar
+                            generateStrongPassword={generatePassword}
+                            passwordStrengthScore={form.getValues('databasePasswordStrength')}
+                            password={field.value}
+                            passwordStrengthMessage={passwordStrengthMessage}
                           />
-                          <button
-                            type="button"
-                            aria-label={showPassword ? 'Hide password' : 'Show password'}
-                            className="absolute inset-y-0 right-2 flex items-center text-foreground-muted"
-                            onClick={() => setShowPassword((prev) => !prev)}
-                          >
-                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                          </button>
-                        </div>
-
-                        {/* Show error if exists */}
-                        {errorToShow && (
-                          <p className="text-[11px] text-destructive font-medium">
-                            {errorToShow}
-                          </p>
-                        )}
-
-                        <div className="space-y-2">
-                          {hasSpecialCharacters && <SpecialSymbolsCallout />}
-
-                          <div className="text-[11px] leading-snug text-foreground-muted">
-                            <PasswordStrengthBar
-                              generateStrongPassword={generatePassword}
-                              passwordStrengthScore={form.getValues('databasePasswordStrength')}
-                              password={field.value}
-                              passwordStrengthMessage={passwordStrengthMessage}
-                            />
-                          </div>
                         </div>
                       </div>
-                    )
-                  }}
-                />
-              </div>
-            )}
+                    </div>
+                  )
+                }}
+              />
+            </div>
           </div>
           <div className="mt-4 grid grid-cols-1 w-full">
             <section className="rounded-lg border p-5 space-y-6">
