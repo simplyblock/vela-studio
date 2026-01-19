@@ -37,6 +37,7 @@ transforms:
       storage: '.appname == "vela-storage"'
       functions: '.appname == "vela-functions"'
       db: '.appname == "vela-db"'
+      meta: '.appname == "vela-meta"'
       controller: '.appname == "vela-controller"'
   # Ignores non nginx errors since they are related with kong booting up
   kong_logs:
@@ -97,7 +98,7 @@ transforms:
               .metadata.branch_id = "default"
           }
           .metadata.timestamp = parsed.time
-          .metadata = merge!(.metadata, parsed)
+          .metadata = merge(.metadata, parsed)
           .metadata.response.status_code = ""
           .metadata.request.method = ""
           .metadata.request.path = ""
@@ -110,62 +111,69 @@ transforms:
     inputs:
       - router.rest
     source: |-
-      parsed, err = parse_regex(.event_message, r'^(?P<time>.*): (?P<msg>.*)$')
-      if err == null {
-          .event_message = parsed.msg
-          .timestamp = timestamp!(parsed.time)
-          .metadata.host = .project
+      .appname = "vela-rest"
+      .metadata.id = uuid_v7()
+      parsed, err = parse_regex(.message, r'^(?P<time>.*): (?P<msg>.*)$')
+      if err == null && parsed != null {
+        .message = parsed.msg
+        .timestamp = parse_timestamp!(parsed.time, format: "%d/%b/%Y:%H:%M:%S %z")
       }
+
   # Realtime logs are structured so we parse the severity level using regex (ignore time because it has no date)
   realtime_logs:
     type: remap
     inputs:
       - router.realtime
     source: |-
+      .appname = "vela-realtime"
       .metadata.project = del(.project)
       .metadata.external_id = .metadata.project
       parsed, err = parse_regex(.event_message, r'^(?P<time>\d+:\d+:\d+\.\d+) \[(?P<level>\w+)\] (?P<msg>.*)$')
       if err == null {
-          .event_message = parsed.msg
-          .metadata.level = parsed.level
+        .event_message = parsed.msg
+        .metadata.level = parsed.level
       }
+
   # Storage logs may contain json objects so we parse them for completeness
   storage_logs:
     type: remap
     inputs:
       - router.storage
     source: |-
+      .appname = "vela-storage"
       .metadata.project = del(.project)
       .metadata.tenantId = .metadata.project
       parsed, err = parse_json(.event_message)
       if err == null {
-          .event_message = parsed.msg
-          .metadata.level = parsed.level
-          .metadata.timestamp = parsed.time
-          .metadata.context[0].host = parsed.hostname
-          .metadata.context[0].pid = parsed.pid
+        .event_message = parsed.msg
+        .metadata.level = parsed.level
+        .metadata.timestamp = parsed.time
+        .metadata.context[0].host = parsed.hostname
+        .metadata.context[0].pid = parsed.pid
       }
+
   # Postgres logs some messages to stderr which we map to warning severity level
   db_logs:
     type: remap
     inputs:
       - router.db
     source: |-
+      .appname = "vela-db"
       .metadata.host = "db-default"
       .metadata.parsed.timestamp = .timestamp
 
       parsed, err = parse_regex(.event_message, r'.*(?P<level>INFO|NOTICE|WARNING|ERROR|LOG|FATAL|PANIC?):.*', numeric_groups: true)
 
       if err != null || parsed == null {
-        .metadata.parsed.error_severity = "info"
+        .metadata.error_severity = "info"
       }
-      if parsed != null {
-       .metadata.parsed.error_severity = parsed.level
+      if parsed != null && parsed.level != null {
+        .metadata.error_severity = parsed.level
       }
-      if .metadata.parsed.error_severity == "info" {
-          .metadata.parsed.error_severity = "log"
+      if .metadata.error_severity == "info" {
+        .metadata.error_severity = "log"
       }
-      .metadata.parsed.error_severity = upcase!(.metadata.parsed.error_severity)
+      .metadata.error_severity = upcase!(.metadata.error_severity)
       .metadata.id = uuid_v7()
 
   controller-remap:
@@ -183,12 +191,46 @@ transforms:
       .metadata.request.method = ""
       .metadata.request.path = ""
       .metadata.id = uuid_v7()
+
+  meta_remap:
+    type: remap
+    inputs:
+      - router.meta
+    source: |-
+      .appname = "vela-meta"
+      .metadata.id = uuid_v7()
+      parsed, err = parse_json(.message)
+      if err == null && parsed != null {
+        .metadata.level = parsed.level
+        .metadata.hostname = parsed.hostname
+        .message = parsed.msg
+        ts, ts_err = parse_timestamp(.time, format: "%+")
+        if ts_err == null {
+          .timestamp = ts
+        } else {
+          .timestamp = now()
+        }
+      }
+
 sinks:
+  basic_sink:
+    type: 'loki'
+    inputs:
+      - db_logs
+      - meta_remap
+    endpoint: 'http://loki:3100'
+    labels:
+      branch_id: 'default'
+      message_id: '{{ .metadata.id }}'
+      level: '{{ .metadata.level }}'
+      appname: '{{ .appname }}'
+      service: '{{ .appname }}'
+    encoding:
+      codec: json
   loki_pg:
     type: 'loki'
     inputs:
       - controller-remap
-      - db_logs
       - auth_logs
     endpoint: 'http://loki:3100'
     labels:
