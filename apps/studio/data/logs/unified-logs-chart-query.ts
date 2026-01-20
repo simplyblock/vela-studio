@@ -1,10 +1,10 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-
-import { getLogsChartQuery } from 'components/interfaces/UnifiedLogs/UnifiedLogs.queries'
 import { handleError, post } from 'data/fetchers'
 import { ExecuteSqlError } from 'data/sql/execute-sql-query'
 import { logsKeys } from './keys'
 import { UNIFIED_LOGS_QUERY_OPTIONS, UnifiedLogsVariables } from './unified-logs-infinite-query'
+import { getUnifiedLogsChartsQuery } from './query-builder'
+import { getUnifiedLogsISOStartEnd } from './loki-unified-logs-infinite-query'
 
 export async function getUnifiedLogsChart(
   { orgRef, projectRef, branchRef, search }: UnifiedLogsVariables,
@@ -21,33 +21,15 @@ export async function getUnifiedLogsChart(
     throw new Error('branchRef is required for getUnifiedLogsChart')
   }
 
-  // Use a default date range (last hour) if no date range is selected
-  let dateStart: string
-  let dateEnd: string
-  let startTime: Date
-  let endTime: Date
-
-  if (search.date && search.date.length === 2) {
-    const parseDate = (d: string | Date) => (d instanceof Date ? d : new Date(d))
-    startTime = parseDate(search.date[0])
-    endTime = parseDate(search.date[1])
-    dateStart = startTime.toISOString()
-    dateEnd = endTime.toISOString()
-  } else {
-    // Default to last hour
-    endTime = new Date()
-    startTime = new Date(endTime.getTime() - 60 * 60 * 1000)
-    dateStart = startTime.toISOString()
-    dateEnd = endTime.toISOString()
-  }
+  const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
 
   // Get SQL query from utility function (with dynamic bucketing)
-  const sql = getLogsChartQuery(search)
+  const query = getUnifiedLogsChartsQuery(search, '01KFD9FNCF6T60QWK5B54ZE66M')
 
   let headers = new Headers(headersInit)
 
   const { data, error } = await post(
-    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/loki`,
     {
       params: {
         path: {
@@ -56,7 +38,7 @@ export async function getUnifiedLogsChart(
           branch: branchRef,
         },
       },
-      body: { sql, iso_timestamp_start: dateStart, iso_timestamp_end: dateEnd },
+      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, query },
       signal,
       headers,
     }
@@ -81,37 +63,54 @@ export async function getUnifiedLogsChart(
     }
   >()
 
-  if (data?.result) {
-    data.result.forEach((row: any) => {
-      // The API returns timestamps in microseconds (needs to be converted to milliseconds for JS Date)
-      const microseconds = Number(row.time_bucket)
-      const milliseconds = Math.floor(microseconds / 1000)
+  if (data?.data?.result) {
+    const timestamps = [
+      ...new Set(
+        data.data.result.flatMap((metric: any) => metric.values.map((row: any) => row[0] as Number))
+      ),
+    ].sort((a, b) => a - b)
 
-      // Create chart data point
+    const success = data.data.result.find((metric: any) => metric.metric.severity === 'success') as
+      | any
+      | undefined
+    const warning = data.data.result.find((metric: any) => metric.metric.severity === 'warning') as
+      | any
+      | undefined
+    const error = data.data.result.find((metric: any) => metric.metric.severity === 'error') as
+      | any
+      | undefined
+
+    const entries = timestamps.map((timestamp: number) => {
       const dataPoint = {
-        timestamp: milliseconds, // Convert to milliseconds for the chart
-        success: Number(row.success) || 0,
-        warning: Number(row.warning) || 0,
-        error: Number(row.error) || 0,
+        timestamp: timestamp * 1000,
+        success: 0,
+        warning: 0,
+        error: 0,
       }
-
-      // Filter levels if needed
-      const levelFilter = search.level
-      if (levelFilter && levelFilter.length > 0) {
-        // Reset levels not in the filter
-        if (!levelFilter.includes('success')) dataPoint.success = 0
-        if (!levelFilter.includes('warning')) dataPoint.warning = 0
-        if (!levelFilter.includes('error')) dataPoint.error = 0
+      if (success) {
+        const point = success.values.find((row: any) => row[0] === timestamp)
+        if (point) dataPoint.success = parseInt(point[1])
       }
+      if (warning) {
+        const point = warning.values.find((row: any) => row[0] === timestamp)
+        if (point) dataPoint.warning = parseInt(point[1])
+      }
+      if (error) {
+        const point = error.values.find((row: any) => row[0] === timestamp)
+        if (point) dataPoint.error = parseInt(point[1])
+      }
+      return dataPoint
+    })
 
-      dataByTimestamp.set(milliseconds, dataPoint)
+    entries.forEach((entry) => {
+      dataByTimestamp.set(entry.timestamp, entry)
     })
   }
 
   // Determine bucket size based on the truncation level in the SQL query
   // We need to fill in missing data points
-  const startTimeMs = startTime.getTime()
-  const endTimeMs = endTime.getTime()
+  const startTimeMs = new Date(isoTimestampStart).getTime()
+  const endTimeMs = new Date(isoTimestampEnd).getTime()
 
   // Calculate appropriate bucket size from the time range
   const timeRangeHours = (endTimeMs - startTimeMs) / (1000 * 60 * 60)

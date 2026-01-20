@@ -7,64 +7,7 @@ import {
 import { handleError, post } from 'data/fetchers'
 import { ResponseError } from 'types'
 import { logsKeys } from './keys'
-
-const logNameMapping: { [key: string]: string } = {
-  storage: 'vela-storage',
-  'edge function': 'vela-edge-functions',
-  auth: 'vela-keycloak',
-  postgrest: 'vela-rest',
-  postgres: 'vela-db',
-}
-
-const getLogName = (logType: string) => logNameMapping[logType] || logType
-
-const getLogTypeQuery = (search: QuerySearchParamsType) => {
-  if (search.log_type && search.log_type.length > 0) {
-    const types = search.log_type.map((logType) => getLogName(logType)).join('|')
-    return `appname=~"${types}"`
-  }
-  return undefined
-}
-
-const getStatusQuery = (search: QuerySearchParamsType) => {
-  if (search.status && search.status.length > 0) {
-    const statuses = search.status.map((status) => `${status}`).join('|')
-    return `status=~"${statuses}"`
-  }
-  return undefined
-}
-
-const getMethodQuery = (search: QuerySearchParamsType) => {
-  if (search.method && search.method.length > 0) {
-    const methods = search.method.map((method) => `${method}`).join('|')
-    return `method=~"${methods}"`
-  }
-  return undefined
-}
-
-const getLevelQuery = (search: QuerySearchParamsType) => {
-  if (search.level && search.level.length > 0) {
-    const levels = search.level.map((level) => `${level}`).join('|')
-    return `level=~"${levels}"`
-  }
-  return undefined
-}
-
-// TODO @Chris: Move query building to BE (loki.ts)
-const getUnifiedLogsQuery = (search: QuerySearchParamsType, branchRef: string) => {
-  const typesQuery = getLogTypeQuery(search)
-  const statusQuery = getStatusQuery(search)
-  const methodQuery = getMethodQuery(search)
-  const levelQuery = getLevelQuery(search)
-
-  const queryParts = [typesQuery, statusQuery, methodQuery, levelQuery]
-    .filter((item) => item !== undefined)
-    .join(',')
-
-  const query = `{branch_id="${branchRef}"${queryParts.length > 0 ? ',' + queryParts : ''}} | json`
-  // TODO @Chris: Do we have more elements to add to the query?
-  return query
-}
+import { getUnifiedLogsQuery } from './query-builder'
 
 const LOGS_PAGE_LIMIT = 100
 type LogLevel = 'success' | 'warning' | 'error'
@@ -147,7 +90,7 @@ export async function getUnifiedLogs(
   const cursorValue = pageParam?.cursor
   const cursorDirection = pageParam?.direction
 
-  const query = getUnifiedLogsQuery(search, branchRef)
+  const query = getUnifiedLogsQuery(search, '01KFD9FNCF6T60QWK5B54ZE66M')
 
   let timestampStart: string
   let timestampEnd: string
@@ -159,7 +102,7 @@ export async function getUnifiedLogs(
   } else if (cursorDirection === 'next') {
     // Regular pagination: fetch logs older than the cursor
     timestampStart = isoTimestampStart
-    timestampEnd = cursorValue ? new Date(Number(cursorValue)).toISOString() : isoTimestampEnd
+    timestampEnd = cursorValue ? new Date(Number(cursorValue)).toISOString(): isoTimestampEnd
   } else {
     timestampStart = isoTimestampStart
     timestampEnd = isoTimestampEnd
@@ -195,7 +138,7 @@ export async function getUnifiedLogs(
         return {
           id: row.stream?.message_id ?? `${index}-${rowindex}`,
           date,
-          timestamp: value[0],
+          timestamp: value[0] !== undefined ? parseInt(value[0]) / 1000 / 1000 : undefined,
           level: levelToLogLevel(
             row.stream.level || row.stream.detected_level || 'LOG',
             row.stream.severity
@@ -223,16 +166,16 @@ export async function getUnifiedLogs(
     })
     .sort((a: any, b: any) => b.timestamp - a.timestamp)
 
-  const firstRow = result.length > 0 ? result[result.length - 1] : null
-  const lastRow = result.length > 0 ? result[0] : null
+  const firstRow = result.length > 0 ? result[0] : null
+  const lastRow = result.length > 0 ? result[result.length - 1] : null
   const hasMore = (data?.data.stats.summary.totalPostFilterLines ?? 0) >= LOGS_PAGE_LIMIT - 1
 
-  const nextCursor = lastRow ? lastRow.timestamp / 1000 / 1000 : null
+  const nextCursor = lastRow ? lastRow.timestamp  : null
   // FIXED: Always provide prevCursor like DataTableDemo does
   // This ensures live mode never breaks the infinite query chain
   // DataTableDemo uses milliseconds, but our timestamps are in microseconds
   const prevCursor =
-    result.length > 0 ? firstRow!.timestamp / 1000 / 1000 : new Date().getTime() * 1000
+    result.length > 0 ? firstRow!.timestamp : new Date().getTime()
 
   return {
     data: result,

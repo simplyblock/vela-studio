@@ -1,6 +1,4 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-
-import { getLogsCountQuery } from 'components/interfaces/UnifiedLogs/UnifiedLogs.queries'
 import { FacetMetadataSchema } from 'components/interfaces/UnifiedLogs/UnifiedLogs.schema'
 import { handleError, post } from 'data/fetchers'
 import { ExecuteSqlError } from 'data/sql/execute-sql-query'
@@ -10,10 +8,12 @@ import {
   UNIFIED_LOGS_QUERY_OPTIONS,
   UnifiedLogsVariables,
 } from './unified-logs-infinite-query'
+import { getUnifiedLogsCountsQuery } from './query-builder'
 
 export async function getUnifiedLogsCount(
   { orgRef, projectRef, branchRef, search }: UnifiedLogsVariables,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  headersInit?: HeadersInit
 ) {
   if (typeof orgRef === 'undefined') {
     throw new Error('orgRef is required for getUnifiedLogsCount')
@@ -25,11 +25,14 @@ export async function getUnifiedLogsCount(
     throw new Error('branchRef is required for getUnifiedLogsCount')
   }
 
-  const sql = getLogsCountQuery(search)
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
 
+  const query = getUnifiedLogsCountsQuery(search, '01KFD9FNCF6T60QWK5B54ZE66M')
+
+  let headers = new Headers(headersInit)
+
   const { data, error } = await post(
-    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/loki`,
     {
       params: {
         path: {
@@ -38,8 +41,14 @@ export async function getUnifiedLogsCount(
           branch: branchRef,
         },
       },
-      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
+      body: {
+        iso_timestamp_start: isoTimestampStart,
+        iso_timestamp_end: isoTimestampEnd,
+        query,
+        instant: true,
+      },
       signal,
+      headers,
     }
   )
 
@@ -51,8 +60,11 @@ export async function getUnifiedLogsCount(
   let totalRowCount = 0
 
   // Group by dimension
-  if (data?.result) {
-    data.result.forEach((row: any) => {
+  if (data?.data?.result) {
+    const result = data.data.result[0] as any | undefined
+    totalRowCount = result.value && result.value.length > 1 ? parseInt(result.value[1]) : 0
+
+    data.data.result.forEach((row: any) => {
       const dimension = row.dimension
       const value = row.value
       const count = Number(row.count || 0)

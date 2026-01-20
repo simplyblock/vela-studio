@@ -51,6 +51,28 @@ export const getUnifiedLogsISOStartEnd = (
   return { isoTimestampStart, isoTimestampEnd }
 }
 
+export const getUnifiedLogsStartEnd = (
+  search: QuerySearchParamsType,
+  endHoursFromNow: number = 1
+) => {
+  // Extract date range from search or use default (last hour)
+  let start: number
+  let end: number
+
+  if (search.date && search.date.length === 2) {
+    const parseDate = (d: string | Date) => (d instanceof Date ? d : new Date(d))
+    start = parseDate(search.date[0]).getTime()
+    end = parseDate(search.date[1]).getTime()
+  } else {
+    const now = new Date()
+    end = now.getTime()
+    const nHoursAgo = new Date(now.getTime() - 60 * 60 * (endHoursFromNow * 1000))
+    start = nHoursAgo.getTime()
+  }
+
+  return { start, end }
+}
+
 export async function getUnifiedLogs(
   {
     orgRef,

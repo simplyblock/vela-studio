@@ -1,9 +1,8 @@
 import { Search } from 'lucide-react'
 import { useState } from 'react'
 
-import { Checkbox_Shadcn_ as Checkbox, cn, Label_Shadcn_ as Label, Skeleton } from 'ui'
+import { Checkbox_Shadcn_ as Checkbox, cn, Label_Shadcn_ as Label } from 'ui'
 import type { DataTableCheckboxFilterField } from '../DataTable.types'
-import { formatCompactNumber } from '../DataTable.utils'
 import { InputWithAddons } from '../primitives/InputWithAddons'
 import { useDataTable } from '../providers/DataTableProvider'
 import { DataTableFilterCheckboxLoader } from './DataTableFilterCheckboxLoader'
@@ -15,13 +14,11 @@ export function DataTableFilterCheckbox<TData>({
 }: DataTableCheckboxFilterField<TData>) {
   const value = _value as string
   const [inputValue, setInputValue] = useState('')
-  const { table, columnFilters, isLoading, isLoadingCounts, getFacetedUniqueValues } =
-    useDataTable()
+  const { table, columnFilters, isLoading } = useDataTable()
 
   const column = table.getColumn(value)
   // REMINDER: avoid using column?.getFilterValue()
   const filterValue = columnFilters.find((i) => i.id === value)?.value
-  const facetedValue = getFacetedUniqueValues?.(table, value) || column?.getFacetedUniqueValues()
 
   const Component = component
 
@@ -101,15 +98,6 @@ export function DataTableFilterCheckbox<TData>({
                         <span className="truncate font-normal block">{option.label}</span>
                       )}
                     </div>
-                    <span className="flex-shrink-0 flex items-center justify-center font-mono text-xs">
-                      {isLoadingCounts ? (
-                        <Skeleton className="h-4 w-4" />
-                      ) : facetedValue?.has(option.value) ? (
-                        formatCompactNumber(facetedValue.get(option.value) || 0)
-                      ) : ['log_type', 'method', 'level'].includes(value) ? (
-                        '0'
-                      ) : null}
-                    </span>
                     <button
                       type="button"
                       onClick={() => column?.setFilterValue([option.value])}

@@ -36,7 +36,7 @@ export const filterFields = [
       )
     },
   },
-  {
+  /*{
     label: 'Status',
     value: 'status',
     type: 'checkbox',
@@ -61,7 +61,7 @@ export const filterFields = [
         </div>
       )
     },
-  },
+  },*/
   {
     label: 'Level',
     value: 'level',
@@ -98,7 +98,7 @@ export const filterFields = [
       )
     },
   },
-  {
+  /*{
     label: 'Pathname',
     value: 'pathname',
     type: 'checkbox',
@@ -113,7 +113,7 @@ export const filterFields = [
         </span>
       )
     },
-  },
+  },*/
 ] satisfies DataTableFilterField<ColumnSchema>[]
 
 export const sheetFields = [
