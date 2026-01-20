@@ -258,7 +258,7 @@ class ServerKeycloakManager implements KeycloakManager {
   #buildAuthOptions(): AuthOptions {
     return {
       secret: this.#config.secret,
-      debug: true,
+      debug: false,
       logger: {
         debug: console.log,
         error: console.log,
