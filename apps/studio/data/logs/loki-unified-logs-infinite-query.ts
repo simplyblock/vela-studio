@@ -90,7 +90,7 @@ export async function getUnifiedLogs(
   const cursorValue = pageParam?.cursor
   const cursorDirection = pageParam?.direction
 
-  const query = getUnifiedLogsQuery(search, '01KFD9FNCF6T60QWK5B54ZE66M')
+  const query = getUnifiedLogsQuery(search, branchRef)
 
   let timestampStart: string
   let timestampEnd: string

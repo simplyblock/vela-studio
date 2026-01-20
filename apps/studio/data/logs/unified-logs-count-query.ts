@@ -27,7 +27,7 @@ export async function getUnifiedLogsCount(
 
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
 
-  const query = getUnifiedLogsCountsQuery(search, '01KFD9FNCF6T60QWK5B54ZE66M')
+  const query = getUnifiedLogsCountsQuery(search, branchRef)
 
   let headers = new Headers(headersInit)
 

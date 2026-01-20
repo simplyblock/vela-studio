@@ -24,7 +24,7 @@ export async function getUnifiedLogsChart(
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search)
 
   // Get SQL query from utility function (with dynamic bucketing)
-  const query = getUnifiedLogsChartsQuery(search, '01KFD9FNCF6T60QWK5B54ZE66M')
+  const query = getUnifiedLogsChartsQuery(search, branchRef)
 
   let headers = new Headers(headersInit)
 
