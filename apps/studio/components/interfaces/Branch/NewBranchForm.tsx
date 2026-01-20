@@ -673,13 +673,14 @@ const NewBranchForm = ({}: NewBranchFormProps) => {
                             <Checkbox_Shadcn_
                               id="enable-high-availability"
                               checked={field.value}
+                              disabled={true}
                               onCheckedChange={(checked) => field.onChange(checked === true)}
                             />
                             <Label_Shadcn_
                               htmlFor="enable-high-availability"
                               className="text-foreground text-xs font-medium leading-tight whitespace-nowrap"
                             >
-                              Enable high availability
+                              Enable high availability (coming soon)
                             </Label_Shadcn_>
                           </>
                         )}
