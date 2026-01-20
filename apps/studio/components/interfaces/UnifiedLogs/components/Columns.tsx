@@ -82,9 +82,28 @@ export function generateDynamicColumns(data: ColumnSchema[]): {
     // LogLevel column - always visible
     {
       accessorKey: 'log_level',
-      header: '',
+      header: 'LEVEL',
       cell: ({ row }) => {
         return row.getValue<ColumnSchema['log_level']>('log_level')
+      },
+      enableHiding: false,
+      enableResizing: false,
+      enableSorting: false,
+      filterFn: (row, columnId, filterValue) => true,
+      size: 48,
+      minSize: 48,
+      maxSize: 48,
+      meta: {
+        cellClassName: 'w-[32px]',
+        headerClassName: 'w-[32px]',
+      },
+    },
+    // LogLevel column - always visible
+    {
+      accessorKey: 'service',
+      header: 'SERVICE',
+      cell: ({ row }) => {
+        return row.getValue<ColumnSchema['service']>('service')
       },
       enableHiding: false,
       enableResizing: false,
@@ -101,7 +120,7 @@ export function generateDynamicColumns(data: ColumnSchema[]): {
     // Log type column - always visible
     {
       accessorKey: 'log_type',
-      header: 'LEVEL',
+      header: 'TYPE',
       cell: ({ row }) => {
         const logType = row.getValue<ColumnSchema['log_type']>('log_type')
         return (
@@ -125,7 +144,7 @@ export function generateDynamicColumns(data: ColumnSchema[]): {
     // Status column - always visible
     {
       accessorKey: 'status',
-      header: '',
+      header: 'STATUS',
       cell: ({ row }) => {
         const value = row.getValue<ColumnSchema['status']>('status')
         return (

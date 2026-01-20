@@ -21,6 +21,7 @@ export const columnSchema = z.object({
   log_count: z.number().optional(), // used to count function logs for a given execution_id
   logs: z.array(z.any()).optional(), // array of function logs
   auth_user: z.string().optional(),
+  service: z.string(),
 })
 
 export type ColumnSchema = z.infer<typeof columnSchema>
@@ -55,6 +56,7 @@ export const columnFilterSchema = z.object({
     .pipe(z.coerce.date().array())
     .optional(),
   auth_user: z.string().optional(),
+  service: z.string(),
 })
 
 export type ColumnFilterSchema = z.infer<typeof columnFilterSchema>

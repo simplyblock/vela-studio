@@ -78,9 +78,11 @@ const appnameToLogType = (appname: string): LogType => {
   return 'other'
 }
 
-const levelToLogLevel = (level: string): LogLevel => {
+const levelToLogLevel = (level: string, severity?: string): LogLevel => {
+  if (severity) return severity as LogLevel
   level = level.toLowerCase()
-  if (level === 'info' || level === 'log' || level === 'notice' || level === 'trace') return 'success'
+  if (level === 'info' || level === 'log' || level === 'notice' || level === 'trace')
+    return 'success'
   if (level === 'warn' || level === 'warning') return 'warning'
   return 'error'
 }
@@ -191,11 +193,14 @@ export async function getUnifiedLogs(
       return row.values.map((value: any, rowindex: number) => {
         const date = new Date(Number(value[0]) / 1000 / 1000)
         return {
-          id: row.stream?.metadata_id ?? `${index}-${rowindex}`,
+          id: row.stream?.message_id ?? `${index}-${rowindex}`,
           date,
           timestamp: value[0],
-          level: levelToLogLevel(row.stream.level || row.stream.detected_level || 'LOG'),
-          log_level: (row.stream.level || row.stream.detected_level || 'LOG').touppercase(),
+          level: levelToLogLevel(
+            row.stream.level || row.stream.detected_level || 'LOG',
+            row.stream.severity
+          ),
+          log_level: (row.stream.level || row.stream.detected_level || 'LOG').toUpperCase(),
           status: row.status || row.stream.metadata_response_status_code || '200',
           method: row.method,
           host: row.host,
@@ -211,7 +216,8 @@ export async function getUnifiedLogs(
           latency: row.latency || 0,
           log_count: row.log_count || null,
           logs: row.logs || [],
-          auth_user: row.auth_user || null
+          auth_user: row.auth_user || null,
+          service: row.stream.appname || 'unknown',
         }
       })
     })
