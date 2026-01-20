@@ -201,7 +201,7 @@ export async function getUnifiedLogs(
             row.stream.severity
           ),
           log_level: (row.stream.level || row.stream.detected_level || 'LOG').toUpperCase(),
-          status: row.status || row.stream.metadata_response_status_code || '200',
+          status: row.status || row.stream.metadata_response_status_code || '',
           method: row.method,
           host: row.host,
           pathname:
