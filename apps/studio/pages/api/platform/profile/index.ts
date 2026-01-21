@@ -17,7 +17,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
     primary_email: session.user.email!,
     first_name: session.user.user_metadata?.given_name!,
     last_name: session.user.user_metadata?.family_name!,
-    disabled_features: ['realtime:all', ],
+    disabled_features: ['realtime:all', 'project_edge_function:all'],
     mobile: '',
   }
   return res.status(200).json(response)
