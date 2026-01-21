@@ -348,8 +348,7 @@
     "link": "/guides/database/extensions/pgjwt",
     "github_url": "https://github.com/michelp/pgjwt",
     "product": null,
-    "product_url": null,
-    "deprecated": ["Postgres 17"]
+    "product_url": null
   },
   {
     "name": "pgroonga",
@@ -548,8 +547,7 @@
     "link": "/guides/database/extensions/timescaledb",
     "github_url": null,
     "product": null,
-    "product_url": null,
-    "deprecated": ["Postgres 17"]
+    "product_url": null
   },
   {
     "name": "tsm_system_rows",
