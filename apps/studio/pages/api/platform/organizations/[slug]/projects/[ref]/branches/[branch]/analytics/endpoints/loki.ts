@@ -8,6 +8,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
   const { body } = req
 
   const instant = body.instant ?? false
+  const limit = Math.min(body.limit ?? 100, 1000)
 
   if (instant) {
     const response = await fetch(`${LOKI_URL}/loki/api/v1/query`, {
@@ -38,6 +39,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
       end: body.iso_timestamp_end,
       query: body.query,
       direction: 'backward',
+      limit,
     }),
   })
 
