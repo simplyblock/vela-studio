@@ -20,9 +20,7 @@ const handlePut = async (req: NextApiRequest, res: NextApiResponse) => {
           branch_id: branch,
         },
       },
-      body: {
-        name: req.body,
-      },
+      body: req.body,
     }
   )
 }
