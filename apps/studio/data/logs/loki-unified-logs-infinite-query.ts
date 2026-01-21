@@ -12,7 +12,7 @@ import { getUnifiedLogsQuery } from './query-builder'
 const LOGS_PAGE_LIMIT = 100
 type LogLevel = 'success' | 'warning' | 'error'
 
-const appnameToLogType = (appname: string): LogType => {
+export function appnameToLogType(appname: string): LogType {
   if (appname == 'vela-keycloak' || appname === 'auth') return 'auth'
   if (appname === 'vela-storage' || appname === 'storage') return 'storage'
   if (appname === 'vela-edge-functions' || appname === 'edge function') return 'edge-function'
@@ -23,7 +23,7 @@ const appnameToLogType = (appname: string): LogType => {
   return 'other'
 }
 
-const levelToLogLevel = (level: string, severity?: string): LogLevel => {
+export function levelToLogLevel(level: string, severity?: string): LogLevel {
   if (severity) return severity as LogLevel
   level = level.toLowerCase()
   if (level === 'info' || level === 'log' || level === 'notice' || level === 'trace')
@@ -104,7 +104,7 @@ export async function getUnifiedLogs(
   } else if (cursorDirection === 'next') {
     // Regular pagination: fetch logs older than the cursor
     timestampStart = isoTimestampStart
-    timestampEnd = cursorValue ? new Date(Number(cursorValue)).toISOString(): isoTimestampEnd
+    timestampEnd = cursorValue ? new Date(Number(cursorValue)).toISOString() : isoTimestampEnd
   } else {
     timestampStart = isoTimestampStart
     timestampEnd = isoTimestampEnd
@@ -122,7 +122,7 @@ export async function getUnifiedLogs(
           branch: branchRef,
         },
       },
-      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: timestampEnd, query },
+      body: { iso_timestamp_start: timestampStart, iso_timestamp_end: timestampEnd, query },
       signal,
       headers,
     }
@@ -147,18 +147,20 @@ export async function getUnifiedLogs(
           ),
           log_level: (row.stream.level || row.stream.detected_level || 'LOG').toUpperCase(),
           status: row.status || row.stream.metadata_response_status_code || '',
-          method: row.method,
-          host: row.host,
+          method: row.stream.method,
+          host: row.stream.host,
           pathname:
             (row.url || row.stream.metadata_request_path || '').replace(/^https?:\/\/[^\/]+/, '') ||
             row.pathname ||
             '',
           event_message: row.stream.message || row.stream.event_message || row.body || '',
           headers:
-            typeof row.headers === 'string' ? JSON.parse(row.headers || '{}') : row.headers || {},
+            typeof row.stream.headers === 'string'
+              ? JSON.parse(row.stream.headers || '{}')
+              : row.stream.headers || {},
           regions: row.region ? [row.region] : [],
           log_type: appnameToLogType(row.stream.appname),
-          latency: row.latency || 0,
+          latency: row.stream.latency || 0,
           log_count: row.log_count || null,
           logs: row.logs || [],
           auth_user: row.auth_user || null,
@@ -172,12 +174,11 @@ export async function getUnifiedLogs(
   const lastRow = result.length > 0 ? result[result.length - 1] : null
   const hasMore = (data?.data.stats.summary.totalPostFilterLines ?? 0) >= LOGS_PAGE_LIMIT - 1
 
-  const nextCursor = lastRow ? lastRow.timestamp  : null
+  const nextCursor = lastRow ? lastRow.timestamp : null
   // FIXED: Always provide prevCursor like DataTableDemo does
   // This ensures live mode never breaks the infinite query chain
   // DataTableDemo uses milliseconds, but our timestamps are in microseconds
-  const prevCursor =
-    result.length > 0 ? firstRow!.timestamp : new Date().getTime()
+  const prevCursor = result.length > 0 ? firstRow!.timestamp : new Date().getTime()
 
   return {
     data: result,

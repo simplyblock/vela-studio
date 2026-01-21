@@ -1,11 +1,15 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { getUnifiedLogsQuery } from 'components/interfaces/UnifiedLogs/UnifiedLogs.queries'
 import { QuerySearchParamsType } from 'components/interfaces/UnifiedLogs/UnifiedLogs.types'
 import { handleError, post } from 'data/fetchers'
 import type { ResponseError } from 'types'
-import { getUnifiedLogsISOStartEnd } from './unified-logs-infinite-query'
+import {
+  appnameToLogType,
+  getUnifiedLogsISOStartEnd,
+  levelToLogLevel,
+} from './loki-unified-logs-infinite-query'
+import { getUnifiedLogsQuery } from './query-builder'
 
 export type getUnifiedLogsVariables = {
   orgRef: string
@@ -25,18 +29,17 @@ export async function retrieveUnifiedLogs({
   limit,
   hoursAgo,
 }: getUnifiedLogsVariables) {
-  if (typeof orgRef === 'undefined')
-    throw new Error('orgRef is required for retrieveUnifiedLogs')
+  if (typeof orgRef === 'undefined') throw new Error('orgRef is required for retrieveUnifiedLogs')
   if (typeof projectRef === 'undefined')
     throw new Error('projectRef is required for retrieveUnifiedLogs')
   if (typeof branchRef === 'undefined')
     throw new Error('branchRef is required for retrieveUnifiedLogs')
 
   const { isoTimestampStart, isoTimestampEnd } = getUnifiedLogsISOStartEnd(search, hoursAgo)
-  const sql = `${getUnifiedLogsQuery(search)} ORDER BY timestamp DESC, id DESC LIMIT ${limit}`
+  const query = getUnifiedLogsQuery(search, branchRef)
 
   const { data, error } = await post(
-    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/logs.all`,
+    `/platform/organizations/{slug}/projects/{ref}/branches/{branch}/analytics/endpoints/loki`,
     {
       params: {
         path: {
@@ -45,35 +48,52 @@ export async function retrieveUnifiedLogs({
           branch: branchRef,
         },
       },
-      body: { iso_timestamp_start: isoTimestampStart, iso_timestamp_end: isoTimestampEnd, sql },
+      body: {
+        iso_timestamp_start: isoTimestampStart,
+        iso_timestamp_end: isoTimestampEnd,
+        query,
+        limit,
+      },
     }
   )
 
   if (error) handleError(error)
 
-  const resultData = data?.result ?? []
+  const resultData = data?.data.result ?? []
 
-  const result = resultData.map((row: any) => {
-    const date = new Date(Number(row.timestamp) / 1000)
-    return {
-      id: row.id,
-      date,
-      timestamp: row.timestamp,
-      level: row.level,
-      status: row.status || 200,
-      method: row.method,
-      host: row.host,
-      pathname: (row.url || '').replace(/^https?:\/\/[^\/]+/, '') || row.pathname || '',
-      event_message: row.event_message || row.body || '',
-      headers:
-        typeof row.headers === 'string' ? JSON.parse(row.headers || '{}') : row.headers || {},
-      regions: row.region ? [row.region] : [],
-      log_type: row.log_type || '',
-      latency: row.latency || 0,
-      log_count: row.log_count || null,
-      logs: row.logs || [],
-      auth_user: row.auth_user || null,
-    }
+  const result = resultData.flatMap((row: any, index: number) => {
+    return row.values.map((value: any, rowindex: number) => {
+      const date = new Date(Number(value[0]) / 1000 / 1000)
+      return {
+        id: row.stream.message_id ?? `${index}-${rowindex}`,
+        date,
+        timestamp: value[0] !== undefined ? parseInt(value[0]) / 1000 / 1000 : undefined,
+        level: levelToLogLevel(
+          row.stream.level || row.stream.detected_level || 'LOG',
+          row.stream.severity
+        ),
+        log_level: (row.stream.level || row.stream.detected_level || 'LOG').toUpperCase(),
+        status: row.status || row.stream.metadata_response_status_code || '',
+        method: row.stream.method,
+        host: row.stream.host,
+        pathname:
+          (row.url || row.stream.metadata_request_path || '').replace(/^https?:\/\/[^\/]+/, '') ||
+          row.pathname ||
+          '',
+        event_message: row.stream.message || row.stream.event_message || row.body || '',
+        headers:
+          typeof row.stream.headers === 'string'
+            ? JSON.parse(row.stream.headers || '{}')
+            : row.stream.headers || {},
+        regions: row.region ? [row.region] : [],
+        log_type: appnameToLogType(row.stream.appname),
+        latency: row.stream.latency || 0,
+        log_count: row.log_count || null,
+        logs: row.logs || [],
+        auth_user: row.auth_user || null,
+        service: row.stream.appname || 'unknown',
+      }
+    })
   })
 
   return result
