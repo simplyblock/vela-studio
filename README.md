@@ -77,11 +77,12 @@ Vela consists of a number of Simplyblock-managed open-source components:
 
 ## Screenshots
 <p align="left">
+<img src="img/screenshot-vela-project-overview.png" alt="Projects">
 <img src="img/screenshot-backups.png" alt="Backups Schedule">
-<img src="img/screenshot-edge-functions.png" alt="Edge Functions">
-<img src="img/screenshot-projects.png" alt="Projects">
-<img src="img/screenshot-schema-visualizer.png" alt="Schema Visualizer">
-<img src="img/screenshots-table-editor.png" alt="Table Editor">
+<img src="img/screenshot-logviewer.png" alt="Log Viewer">
+<img src="img/screenshot-table-visualization.png" alt="Schema Visualizer">
+<img src="img/screenshot-query-performance.png" alt="Query Performance">
+<img src="img/screenshot-role-manager.png" alt="Role Management">
 </p>
 
 ## Getting Started
