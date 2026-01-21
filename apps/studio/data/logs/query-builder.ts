@@ -2,11 +2,13 @@ import { QuerySearchParamsType } from '../../components/interfaces/UnifiedLogs/U
 import { getUnifiedLogsStartEnd } from './unified-logs-infinite-query'
 
 const logNameMapping: { [key: string]: string } = {
-  storage: 'vela-storage',
-  'edge function': 'vela-edge-functions',
-  auth: 'vela-keycloak',
-  postgrest: 'vela-rest',
-  postgres: 'vela-db',
+  storage: 'storage|vela-storage',
+  'edge function': 'edge-function|vela-edge-functions',
+  auth: 'vela-keycloak|vela-auth',
+  postgrest: 'postgrest|vela-rest',
+  postgres: 'postgres|vela-db',
+  pgmeta: 'pgmeta|vela-meta',
+  pgexporter: 'pgexporter|postgres_exporter',
 }
 
 const getLogName = (logType: string) => logNameMapping[logType] || logType

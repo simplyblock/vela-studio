@@ -15,9 +15,11 @@ type LogLevel = 'success' | 'warning' | 'error'
 const appnameToLogType = (appname: string): LogType => {
   if (appname == 'vela-keycloak' || appname === 'auth') return 'auth'
   if (appname === 'vela-storage' || appname === 'storage') return 'storage'
-  if (appname === 'vela-edge-functions' || appname === 'edge function') return 'edge function'
+  if (appname === 'vela-edge-functions' || appname === 'edge function') return 'edge-function'
   if (appname === 'vela-rest' || appname === 'postgrest') return 'postgrest'
   if (appname === 'vela-db' || appname === 'postgres') return 'postgres'
+  if (appname === 'postgres_exporter') return 'pgexporter'
+  if (appname === 'vela-meta') return 'pgmeta'
   return 'other'
 }
 

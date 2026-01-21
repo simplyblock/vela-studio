@@ -35,7 +35,7 @@ export const CHART_CONFIG = {
 
 export const REGIONS = ['ams', 'fra', 'gru', 'hkg', 'iad', 'syd'] as const
 export const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] as const
-export const LOG_TYPES = ['postgres', 'postgrest', 'auth', 'storage', 'edge function', 'other'] as const
+export const LOG_TYPES = ['postgres', 'postgrest', 'auth', 'storage', 'edge-function', 'pgexporter', 'pgmeta', 'other'] as const
 
 const parseAsSort = createParser({
   parse(queryValue: string) {

@@ -18,6 +18,8 @@ import {
 
 // Service flow types - subset of LOG_TYPES that support service flows
 export const SERVICE_FLOW_TYPES = [
+  'pgexporter',
+  'pgmeta',
   'postgrest',
   'auth',
   'edge-function',
