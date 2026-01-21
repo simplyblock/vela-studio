@@ -39,7 +39,7 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
       end: body.iso_timestamp_end,
       query: body.query,
       direction: 'backward',
-      limit,
+      limit: `${limit}`,
     }),
   })
 
