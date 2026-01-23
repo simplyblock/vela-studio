@@ -15,7 +15,8 @@ type LogLevel = 'success' | 'warning' | 'error'
 export function appnameToLogType(appname: string): LogType {
   if (appname == 'vela-keycloak' || appname === 'auth') return 'auth'
   if (appname === 'vela-storage' || appname === 'storage') return 'storage'
-  if (appname === 'vela-edge-functions' || appname === 'edge function') return 'edge-function'
+  // Ebrahim: removed edge-function for now until we have logs for it
+  // if (appname === 'vela-edge-functions' || appname === 'edge function') return 'edge-function'
   if (appname === 'vela-rest' || appname === 'postgrest') return 'postgrest'
   if (appname === 'vela-db' || appname === 'postgres') return 'postgres'
   if (appname === 'postgres_exporter') return 'pgexporter'
