@@ -23,7 +23,7 @@ export const LogTypeIcon = ({
     // edge: () => <Globe size={size} strokeWidth={strokeWidth} className={className} />,
     postgrest: () => <BookHeart size={size} strokeWidth={strokeWidth} className={className} />,
     auth: () => <Auth size={size} strokeWidth={strokeWidth} className={className} />,
-    'edge function': () => (
+    'edge-function': () => (
       <EdgeFunctions size={size} strokeWidth={strokeWidth} className={className} />
     ),
     postgres: () => <Database size={size} strokeWidth={strokeWidth} className={className} />,
@@ -34,7 +34,9 @@ export const LogTypeIcon = ({
     // postgres_upgrade: () => <Cpu size={size} strokeWidth={strokeWidth} className={className} />,
     storage: () => <Storage size={size} strokeWidth={strokeWidth} className={className} />,
     other: () => <Logs size={size} strokeWidth={strokeWidth} className={className} />,
-    // cron: () => <Clock size={size} strokeWidth={strokeWidth} className={className} />,
+    // Ebrahim: needed to add those since without them the build would throw an error can replace them with proper icons later on if required 
+    pgexporter: () => <Logs size={size} strokeWidth={strokeWidth} className={className} />,
+    pgmeta: () => <Logs size={size} strokeWidth={strokeWidth} className={className} />
   }
 
   const IconComponent =

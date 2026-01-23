@@ -44,8 +44,8 @@ export function ServiceFlowPanel({
   const [activeTab, setActiveTab] = useState('service-flow')
 
   const logType = selectedRow?.log_type
-  const serviceFlowType: ServiceFlowType | undefined =
-    logType === 'edge function' ? 'edge-function' : (logType as ServiceFlowType)
+const serviceFlowType: ServiceFlowType | undefined =
+  logType === 'edge-function' ? 'edge-function' : (logType as ServiceFlowType);
   const shouldShowServiceFlow = !!serviceFlowType
 
   // Query the logs API directly
