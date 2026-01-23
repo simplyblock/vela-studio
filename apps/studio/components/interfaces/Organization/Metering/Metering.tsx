@@ -14,7 +14,8 @@ import ExportModal from './ExportModal'
 import { EXPORT_OPTIONS } from './constants'
 import type { ExportFormat } from './types'
 import { useOrganizationUsageQuery } from 'data/resources/organization-usage-query'
-
+import { useOrganizationMeteringQuery } from 'data/resources/organization-metering-query'
+import PerBranchUsageTable from './PerBranchUsageTable'
 type DateRange = {
   from: string
   to: string
@@ -48,6 +49,17 @@ const Metering = () => {
     },
     { enabled: !!orgRef }
   )
+
+  const {
+    data: perBranchUsage, 
+    isLoading: perBranchUsageLoading,
+    isError:perBranchUsageError,
+    error:perBranchUsageErrorObj
+  } = useOrganizationMeteringQuery({
+    orgRef,
+    start: dateRange.from,
+    end: dateRange.to
+  })  
 
   // orgUsage shape:
   // {
@@ -158,7 +170,11 @@ const resourceStats: ResourceUsageMetric[] = useMemo(
         {/* Stat cards fed directly from orgUsage */}
         <ResourceUsageStats metrics={resourceStats} loading={usageLoading} />
 
-        {/* BranchUsageTable intentionally omitted until per-branch usage is available */}
+        <PerBranchUsageTable
+          orgRef={orgRef}
+          perBranchUsage={perBranchUsage}
+          loading={perBranchUsageLoading}
+        />
       </div>
 
       <ExportModal
