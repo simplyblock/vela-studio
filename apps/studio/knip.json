@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "pages/**/!(*.test|*.spec|*.stories).{ts,tsx}",
+    "state/**/!(*.test|*.spec|*.stories).{ts,tsx}",
+    "styles/**/!(*.test|*.spec|*.stories).{ts,tsx}",
+    "types/**/!(*.test|*.spec|*.stories).{ts,tsx}",
+    "csp.ts",
+    "instrumentation-client.ts",
+    "next.config.js",
+    "postcss.config.js",
+    "proxy.ts",
+    "tailwind.config.ts",
+    "vitest.config.ts"
+  ],
+  "project": ["**/*.{ts,tsx}", "scripts/**/*.ts"],
+  "ignore": ["**/*.d.ts"]
+}
