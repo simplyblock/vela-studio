@@ -11,7 +11,6 @@
     "build:llms": "tsx --tsconfig ./tsconfig.scripts.json ./scripts/build-llms-txt.ts",
     "start": "next start",
     "lint": "next lint",
-    "lint:mdx": "supa-mdx-lint content --config ../../supa-mdx-lint.config.toml",
     "content:build": "contentlayer2 build",
     "clean": "rimraf node_modules .next .turbo"
   },
@@ -47,7 +46,6 @@
     "@radix-ui/react-tooltip": "*",
     "@react-router/fs-routes": "^7.4.0",
     "@supabase/postgrest-js": "*",
-    "@supabase/supa-mdx-lint": "0.2.6-alpha",
     "@tanstack/react-query": "^5.83.0",
     "axios": "^1.10.0",
     "class-variance-authority": "*",

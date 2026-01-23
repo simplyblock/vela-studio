@@ -99,7 +99,7 @@ export const OrganizationDetailsForm = () => {
             />
           </CardContent>
           <CardContent>
-            <FormItemLayout label="Organization slug" layout="flex-row-reverse">
+            <FormItemLayout label="Organization id" layout="flex-row-reverse">
               <PrePostTab
                 postTab={
                   <CopyButton type="text" iconOnly text={selectedOrganization?.id ?? ''} />
