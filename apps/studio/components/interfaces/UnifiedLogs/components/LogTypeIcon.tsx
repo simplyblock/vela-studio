@@ -23,9 +23,9 @@ export const LogTypeIcon = ({
     // edge: () => <Globe size={size} strokeWidth={strokeWidth} className={className} />,
     postgrest: () => <BookHeart size={size} strokeWidth={strokeWidth} className={className} />,
     auth: () => <Auth size={size} strokeWidth={strokeWidth} className={className} />,
-    'edge-function': () => (
-      <EdgeFunctions size={size} strokeWidth={strokeWidth} className={className} />
-    ),
+    // 'edge-function': () => (
+    //   <EdgeFunctions size={size} strokeWidth={strokeWidth} className={className} />
+    // ),
     postgres: () => <Database size={size} strokeWidth={strokeWidth} className={className} />,
     // function_events: () => (
     //   <EdgeFunctions size={size} strokeWidth={strokeWidth} className={className} />

@@ -35,7 +35,8 @@ export const CHART_CONFIG = {
 
 export const REGIONS = ['ams', 'fra', 'gru', 'hkg', 'iad', 'syd'] as const
 export const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] as const
-export const LOG_TYPES = ['postgres', 'postgrest', 'auth', 'storage', 'edge-function', 'pgexporter', 'pgmeta', 'other'] as const
+// Ebrahim: removed edge-function for now until we have logs for it
+export const LOG_TYPES = ['postgres', 'postgrest', 'auth', 'storage', 'pgexporter', 'pgmeta', 'other'] as const
 
 const parseAsSort = createParser({
   parse(queryValue: string) {

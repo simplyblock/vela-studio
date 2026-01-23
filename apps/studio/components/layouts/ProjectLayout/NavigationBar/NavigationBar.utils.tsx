@@ -169,7 +169,8 @@ export const generateProductRoutes = (
           },
         ]
       : []),
-    ...(edgeFunctionsEnabled
+      //Ebrahim: default to false for now until we have feature flag for Edge functions
+    ...(false
       ? [
           {
             key: 'functions',

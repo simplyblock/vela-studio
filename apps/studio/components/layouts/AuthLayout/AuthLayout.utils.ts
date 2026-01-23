@@ -44,19 +44,19 @@ export const generateAuthMenu = (
           url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/sessions`,
           items: [],
         },
-        {
-          name: 'Rate Limits',
-          key: 'rate-limits',
-          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/rate-limits`,
-          items: [],
-        },
-        {
-          name: 'Emails',
-          key: 'emails',
-          pages: ['templates', 'smtp'],
-          url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/templates`,
-          items: [],
-        },
+        // {
+        //   name: 'Rate Limits',
+        //   key: 'rate-limits',
+        //   url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/rate-limits`,
+        //   items: [],
+        // },
+        // {
+        //   name: 'Emails',
+        //   key: 'emails',
+        //   pages: ['templates', 'smtp'],
+        //   url: `/org/${orgRef}/project/${projectRef}/branch/${branchRef}/auth/templates`,
+        //   items: [],
+        // },
         {
           name: 'Multi-Factor',
           key: 'mfa',
