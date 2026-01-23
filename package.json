@@ -51,7 +51,7 @@
     "sass": "^1.72.0",
     "supabase": "^1.151.1",
     "supports-color": "^8.0.0",
-    "turbo": "2.3.3",
+    "turbo": "2.7.5",
     "typescript": "~5.5.0"
   },
   "repository": {
