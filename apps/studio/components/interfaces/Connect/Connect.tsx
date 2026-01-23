@@ -1,11 +1,10 @@
 import { useParams } from 'common'
-import { Cable, ExternalLink, Plug } from 'lucide-react'
+import { Cable, ExternalLink } from 'lucide-react'
 import { parseAsBoolean, useQueryState } from 'nuqs'
 import { useMemo, useState } from 'react'
 
 import { DatabaseConnectionString } from 'components/interfaces/Connect/DatabaseConnectionString'
 import { ButtonTooltip } from 'components/ui/ButtonTooltip'
-import Panel from 'components/ui/Panel'
 import { getKeys, useAPIKeysQuery } from 'data/api-keys/api-keys-query'
 import { useProjectSettingsV2Query } from 'data/config/project-settings-v2-query'
 import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'

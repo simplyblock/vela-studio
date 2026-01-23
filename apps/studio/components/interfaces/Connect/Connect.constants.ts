@@ -344,8 +344,8 @@ export const ORMS: ConnectionType[] = [
 
 export const CONNECTION_TYPES = [
   { key: 'direct', label: 'Connection String', obj: [] },
-  { key: 'frameworks', label: 'App Frameworks', obj: FRAMEWORKS },
-  { key: 'mobiles', label: 'Mobile Frameworks', obj: MOBILES },
+  //{ key: 'frameworks', label: 'App Frameworks', obj: FRAMEWORKS },
+  //{ key: 'mobiles', label: 'Mobile Frameworks', obj: MOBILES },
   { key: 'orms', label: 'ORMs', obj: ORMS },
 ]
 
