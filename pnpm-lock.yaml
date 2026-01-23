@@ -144,6 +144,9 @@ importers:
       '@std/path':
         specifier: npm:@jsr/std__path@^1.0.8
         version: '@jsr/std__path@1.1.2'
+      '@supabase/pg-meta':
+        specifier: workspace:*
+        version: link:../../packages/pg-meta
       '@supabase/realtime-js':
         specifier: 'catalog:'
         version: 2.11.3
@@ -177,9 +180,15 @@ importers:
       cacheables:
         specifier: ^2.0.0
         version: 2.0.0
+      common:
+        specifier: workspace:*
+        version: link:../../packages/common
       common-tags:
         specifier: ^1.8.2
         version: 1.8.2
+      config:
+        specifier: workspace:*
+        version: link:../../packages/config
       cron-parser:
         specifier: ^4.9.0
         version: 4.9.0
@@ -207,6 +216,9 @@ importers:
       http-status:
         specifier: ^2.1.0
         version: 2.1.0
+      icons:
+        specifier: workspace:*
+        version: link:../../packages/icons
       ip-num:
         specifier: ^1.5.1
         version: 1.5.1
@@ -236,7 +248,7 @@ importers:
         version: 16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4)
       next-auth:
         specifier: '*'
-        version: 4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -330,6 +342,9 @@ importers:
       remark-gfm:
         specifier: ^3.0.1
         version: 3.0.1(supports-color@8.1.1)
+      shared-data:
+        specifier: workspace:*
+        version: link:../../packages/shared-data
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -339,6 +354,12 @@ importers:
       tus-js-client:
         specifier: ^4.1.0
         version: 4.1.0
+      ui:
+        specifier: workspace:*
+        version: link:../../packages/ui
+      ui-patterns:
+        specifier: workspace:*
+        version: link:../../packages/ui-patterns
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -609,7 +630,7 @@ importers:
         version: 16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4)
       next-auth:
         specifier: '*'
-        version: 4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-contentlayer2:
         specifier: 0.5.8
         version: 0.5.8(contentlayer2@0.5.8(esbuild@0.25.12)(markdown-wasm@1.2.0)(supports-color@8.1.1))(esbuild@0.25.12)(markdown-wasm@1.2.0)(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)
@@ -811,7 +832,7 @@ importers:
         version: 16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4)
       next-auth:
         specifier: '*'
-        version: 4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -24461,7 +24482,7 @@ snapshots:
   neo-async@2.6.2:
     optional: true
 
-  next-auth@4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next-auth@4.24.13(next@16.0.7(@babel/core@7.26.10(supports-color@8.1.1))(@opentelemetry/api@1.9.0)(@playwright/test@1.53.0)(babel-plugin-macros@3.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.77.4))(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.28.4
       '@panva/hkdf': 1.2.1
