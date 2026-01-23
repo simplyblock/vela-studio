@@ -1,7 +1,7 @@
 // components/interfaces/Branch/BranchResourceBadge.tsx
 import React, { useMemo } from 'react'
 import { Tooltip, TooltipTrigger, TooltipContent, cn } from 'ui'
-import { formatForUnit, getDivider } from './utils'
+import { formatForUnit } from './utils'
 
 type ResourceNumbers = {
   milli_vcpu?: number | null

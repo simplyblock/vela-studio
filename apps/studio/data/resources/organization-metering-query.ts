@@ -40,7 +40,7 @@ async function getOrganizationUsage(
 export type OrganizationUsageData = Awaited<ReturnType<typeof getOrganizationUsage>>
 export type OrganizationUsageError = ResponseError
 
-export const useOrganizationUsageQuery = <TData = OrganizationUsageData>(
+export const useOrganizationMeteringQuery = <TData = OrganizationUsageData>(
   { orgRef, start, end }: OrganizationUsageVariables,
   {
     enabled = true,
