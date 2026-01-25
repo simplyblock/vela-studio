@@ -141,7 +141,7 @@ class ServerKeycloakManager implements KeycloakManager {
     }
 
     if (!account) {
-      console.log(`No account for ${token.sub ?? 'unknown'}, returning token as is...`)
+      // Account is only set if this is a login. Otherwise, it'll have the previously created token.
       return token as any
     }
 
