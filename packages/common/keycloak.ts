@@ -135,13 +135,13 @@ class ServerKeycloakManager implements KeycloakManager {
 
   async #maybeRefreshToken(token: JWT, account: Account | null): Promise<BaseAuthToken> {
     const expiresAt = this.#extractTokenExpiry(token, account)
-    console.log(`maybeRefreshToken for: ${token.sub ?? 'unknown'} - ${expiresAt}`)
     if (expiresAt && Date.now() / 1000 > expiresAt - 30) {
       // Token will expire in less than 30 seconds, we'll refresh it now
       return await this.#refreshToken(token, account)
     }
 
     if (!account) {
+      console.log(`No account for ${token.sub ?? 'unknown'}, returning token as is...`)
       return token as any
     }
 
@@ -179,6 +179,7 @@ class ServerKeycloakManager implements KeycloakManager {
       const tokensOrError = await response.json()
       if (!response.ok) throw tokensOrError
 
+      console.log(`Successfully refreshed access token for: ${token.sub ?? 'unknown'}`)
       const newToken = tokensOrError as {
         access_token: string
         id_token: string
@@ -259,11 +260,6 @@ class ServerKeycloakManager implements KeycloakManager {
     return {
       secret: this.#config.secret,
       debug: false,
-      logger: {
-        debug: console.log,
-        error: console.log,
-        warn: console.log,
-      },
       events: {
         signOut: ({ session, token }) => {
           return this.#signOut(session, token)
