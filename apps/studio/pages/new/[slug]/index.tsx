@@ -630,7 +630,9 @@ const CreateProjectPage: NextPageWithLayout = () => {
 
                         // Fetch server/form validation error for this field (project)
                         const projectErrors = (form.formState.errors.projectLimits ?? {}) as Record<string, any>
-                        const errorMessage = projectErrors?.[key]?.message as string | undefined
+                        const rawError = projectErrors?.[key]?.message as string | undefined
+                        const errorMessage = rawError && cfg ? formatLimitError(rawError, cfg) : rawError
+
                       return (
                         <SliderRow
                           key={key}
@@ -676,7 +678,11 @@ const CreateProjectPage: NextPageWithLayout = () => {
 
                       // Fetch server/form validation error for this field (per-branch)
                       const perBranchErrors = (form.formState.errors.perBranchLimits ?? {}) as Record<string, any>
-                      const errorMessage = perBranchErrors?.[key]?.message as string | undefined
+                      const rawError = perBranchErrors?.[key]?.message as string | undefined
+                      const errorMessage =
+                        rawError && cfg
+                          ? formatLimitError(rawError, cfg)
+                          : rawError
                       return (
                         <SliderRow
                           key={key}
@@ -845,6 +851,27 @@ const CreateProjectPage: NextPageWithLayout = () => {
     </Form_Shadcn_>
   )
 }
+
+function formatLimitError(
+  message: string,
+  cfg: { divider: number; unit: string }
+): string {
+  // grab all large integers in the message
+  const numbers = message.match(/\d+/g)
+  if (!numbers) return message
+
+  let i = 0
+  return message.replace(/\d+/g, (raw) => {
+    const value = Number(raw) / cfg.divider
+
+    // nice formatting: integers stay clean, decimals get trimmed
+    const formatted =
+      value % 1 === 0 ? value.toString() : value.toFixed(2)
+
+    return `${formatted} ${cfg.unit}`
+  })
+}
+
 
 /* ------------------------------------------------------------------ */
 /* Layout wrappers                                                     */
