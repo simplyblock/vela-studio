@@ -30,7 +30,12 @@ export type SidePanel =
 
 export type ConfirmationDialog =
   | { type: 'table'; isDeleteWithCascade: boolean }
-  | { type: 'column'; column: PostgresColumn; isDeleteWithCascade: boolean }
+  | {
+      type: 'column';
+      column: PostgresColumn;
+      isDeleteWithCascade: boolean;
+      callback?: () => void
+  }
   // [Joshen] Just FYI callback, numRows, allRowsSelected is a temp workaround so that
   // DeleteConfirmationDialog can trigger dispatch methods after the successful deletion of rows.
   // Once we deprecate react tracked and move things to valtio, we can remove this.
@@ -127,10 +132,10 @@ export const createTableEditorState = () => {
         sidePanel: { type: 'column', column },
       }
     },
-    onDeleteColumn: (column: PostgresColumn) => {
+    onDeleteColumn: (column: PostgresColumn, callback?: () => void) => {
       state.ui = {
         open: 'confirmation-dialog',
-        confirmationDialog: { type: 'column', column, isDeleteWithCascade: false },
+        confirmationDialog: { type: 'column', column, isDeleteWithCascade: false, callback },
       }
     },
 

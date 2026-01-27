@@ -49,7 +49,10 @@ const ColumnMenu = ({ column, isEncrypted }: ColumnMenuProps) => {
   function onDeleteColumn() {
     const pgColumn = snap.originalTable.columns.find((c) => c.name === column.name)
     if (pgColumn) {
-      tableEditorSnap.onDeleteColumn(pgColumn)
+      tableEditorSnap.onDeleteColumn(pgColumn, () => {
+        if (!columnKey) return
+        removeSort(columnKey);
+      });
     }
   }
 
