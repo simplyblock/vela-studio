@@ -108,7 +108,6 @@ export function withAuth<T>(
         redirectToSignIn()
       }
       // Also redirect if session is expired
-      console.log(session?.expires_at)
       if (isFinishedLoading && ((session?.expires_at ?? 0) <= (Date.now() / 1000))) {
         requiresRedirect = true;
         console.log("Redirecting immediately")
