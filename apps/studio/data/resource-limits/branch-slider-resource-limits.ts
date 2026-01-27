@@ -79,11 +79,10 @@ const vcpuLimit = (
 
   const maxResources = source?.max_resources
 
-  console.log(max_per_branch, max)
   const maxMillis = Math.min(max_per_branch, max)
   const minMillis = min
 
-  const test = {
+  return {
     min: minMillis / step,
     max: maxMillis / step,
     step: 1,
@@ -91,8 +90,6 @@ const vcpuLimit = (
     divider: step,
     initial: (maxResources?.iops ?? minMillis) / step,
   }
-  console.log(test)
-  return test
 }
 
 const memoryLimit = (
