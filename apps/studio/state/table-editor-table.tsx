@@ -32,7 +32,7 @@ export const createTableEditorTableState = ({
   onExpandJSONEditor: (column: string, row: SupaRow) => void
   onExpandTextEditor: (column: string, row: SupaRow) => void
 }) => {
-  console.trace("createTableEditorTableState")
+  //console.trace("createTableEditorTableState")
 
   const table = parseSupaTable(originalTable)
 
@@ -236,7 +236,6 @@ export const TableEditorTableStateContextProvider = ({
 
 // FIXME: @Chris @Ebrahim: This needs to be fixed correctly by figuring out where the context is missing
 export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof useSnapshot>[1]) => {
-  console.trace("useTableEditorTableStateSnapshot")
   const state = useContext(TableEditorTableStateContext)
 
   const fallbackRef = useRef<TableEditorTableState | null>(null)
@@ -247,7 +246,7 @@ export const useTableEditorTableStateSnapshot = (options?: Parameters<typeof use
   const snap = useSnapshot((state ?? fallbackRef.current) as any, options) as TableEditorTableState
 
   if (state == null) {
-    console.warn('TableEditorTableStateContext is undefined — using fallback proxy snapshot.')
+    console.trace('TableEditorTableStateContext is undefined — using fallback proxy snapshot.')
   }
   return snap
 }

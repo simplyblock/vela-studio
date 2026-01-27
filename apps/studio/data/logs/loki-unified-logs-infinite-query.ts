@@ -59,9 +59,7 @@ export const getUnifiedLogsISOStartEnd = (
   let isoTimestampEnd: string
 
   if (search.date && search.date.length === 2) {
-    console.log(search.date)
     const parseDate = (d: string | Date) => (d instanceof Date ? d : new Date(d))
-    console.log(parseDate(search.date[0]))
     isoTimestampStart = parseDate(search.date[0]).toISOString()
     isoTimestampEnd = parseDate(search.date[1]).toISOString()
   } else {
