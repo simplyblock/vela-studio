@@ -16,10 +16,11 @@ export function formatSortURLParams(tableName: string, sort?: string[]): Sort[] 
   if (Array.isArray(sort)) {
     return compact(
       sort.map((s) => {
-        const [column, order] = s.split(':')
+        const [entity, order] = s.split(':')
+        const [table, column] = entity.split('.')
         // Reject any possible malformed sort param
         if (!column || !order) return undefined
-        else return { table: tableName, column, ascending: order === 'asc' }
+        else return { table, column, ascending: order === 'asc' }
       })
     )
   }
@@ -27,7 +28,7 @@ export function formatSortURLParams(tableName: string, sort?: string[]): Sort[] 
 }
 
 export function sortsToUrlParams(sorts: Sort[]) {
-  return sorts.map((sort) => `${sort.column}:${sort.ascending ? 'asc' : 'desc'}`)
+  return sorts.map((sort) => `${sort.table}.${sort.column}:${sort.ascending ? 'asc' : 'desc'}`)
 }
 
 export function formatFilterURLParams(filter?: string[]): Filter[] {
@@ -127,7 +128,7 @@ export function loadTableEditorStateFromLocalStorage(
   tableName: string,
   schema?: string | null
 ): SavedState | undefined {
-  console.trace('loadTableEditorStateFromLocalStorage')
+  //console.trace('loadTableEditorStateFromLocalStorage')
 
   const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branchId)
   const jsonStr = localStorage.getItem(storageKey)
@@ -152,7 +153,7 @@ export function saveTableEditorStateToLocalStorage({
   sorts?: string[]
   filters?: string[]
 }) {
-  console.trace('saveTableEditorStateToLocalStorage')
+  //console.trace('saveTableEditorStateToLocalStorage')
 
   const storageKey = getStorageKey(STORAGE_KEY_PREFIX, branchId)
   const savedStr = localStorage.getItem(storageKey)
