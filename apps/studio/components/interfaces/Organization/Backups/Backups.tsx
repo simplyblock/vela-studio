@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import BackupScheduleModal from 'components/interfaces/Organization/Backups/BackupScheduleModal'
 import { ScaffoldContainer } from 'components/layouts/Scaffold'
 import {
+  Button,
   Card,
   Dialog,
   DialogContent,
@@ -12,12 +13,11 @@ import {
   DialogHeader,
   DialogTitle,
   Input_Shadcn_,
+  Select_Shadcn_,
   SelectContent_Shadcn_,
   SelectItem_Shadcn_,
   SelectTrigger_Shadcn_,
   SelectValue_Shadcn_,
-  Select_Shadcn_,
-  Button,
 } from 'ui'
 
 import AlertError from 'components/ui/AlertError'
@@ -34,12 +34,12 @@ import { useOrgBackupSchedulesQuery } from 'data/backups/org-backup-schedules-qu
 import { useParams } from 'common'
 import { useSelectedOrganizationQuery } from 'hooks/misc/useSelectedOrganization'
 import { useOrgBackupQuery } from 'data/backups/org-backups-query'
-import { mapSchedulesByBranch, groupBackupsByBranch } from './utils'
+import { groupBackupsByBranch, mapSchedulesByBranch } from './utils'
 import { useDeleteBranchBackupMutation } from 'data/backups/branch-delete-backup-mutation'
 import { useProjectsQuery } from 'data/projects/projects-query'
 import { getBranches } from 'data/branches/branches-query'
-import { permissionToString, useCheckPermissions } from 'hooks/misc/useCheckPermissions'
-import { usePermissionsQuery } from 'data/permissions/permissions-query'
+import { useCheckPermissions } from 'hooks/misc/useCheckPermissions'
+import { useProjectsByPermissionsQuery } from 'data/permissions/projects-by-permissions-query'
 
 type RestoreContext = {
   rowId: string
@@ -47,63 +47,54 @@ type RestoreContext = {
 }
 
 type environment = {
-    label: string;
-    value: string;
+  label: string
+  value: string
 }
 
 const Backups = () => {
-  const {can: canEditSchedule,isSuccess:isEditPermissionSuccess} = useCheckPermissions("org:backup:update")
-  const {can: canDeleteSchedule,isSuccess:isDeletePermissionSuccess} = useCheckPermissions("org:backup:delete")
+  const { can: canEditSchedule, isSuccess: isEditPermissionSuccess } =
+    useCheckPermissions('org:backup:update')
+  const { can: canDeleteSchedule, isSuccess: isDeletePermissionSuccess } =
+    useCheckPermissions('org:backup:delete')
+  const { can: canCreateBranchPermission } = useCheckPermissions('project:branches:create')
 
   const isAbleToEditSchedule = isEditPermissionSuccess && canEditSchedule
   const isAbleToDeleteBackup = isDeletePermissionSuccess && canDeleteSchedule
 
-  const {data: userPermissions} = usePermissionsQuery()
-
-  // check if user has project:branches:create permission on any project in the organization
-  const hasCreateBranchPermission = useMemo(() => {
-    if (!userPermissions) return false
-    return userPermissions.some(permission => permissionToString(permission.permission) === 'project:branches:create')
-  }, [userPermissions])
-
-  // if user can create branches check which distinct project ids they have permission on
-  const creatableProjectIds = useMemo(() => {
-    if (!hasCreateBranchPermission || !userPermissions) return new Set<string>()
-    const projectIds = new Set<string>()
-    userPermissions.forEach(permission => {
-      if (permissionToString(permission.permission) === 'project:branches:create' && permission.project_id) {
-        projectIds.add(permission.project_id)
-      }
-    })
-    return projectIds
-  }, [hasCreateBranchPermission, userPermissions])
+  // filter by projects available for creating branches
+  const { data: targetProjects } = useProjectsByPermissionsQuery('project:branches:create')
+  const projectOptions = useMemo(() => {
+    return targetProjects
+      .filter((project) => project.organization_id === orgId)
+      .map((project) => ({
+        label: project.name,
+        value: project.id,
+      }))
+  }, [targetProjects])
 
   const [disableTarget, setDisableTarget] = useState<BackupRow | null>(null)
   const [historyTarget, setHistoryTarget] = useState<BackupRow | null>(null)
   const [restoreContext, setRestoreContext] = useState<RestoreContext | null>(null)
   const [deleteContext, setDeleteContext] = useState<RestoreContext | null>(null)
 
- 
-  const {data:org} = useSelectedOrganizationQuery()
-  let environments:environment[] = [{ label: 'All environments', value: 'all' },]
+  const { data: org } = useSelectedOrganizationQuery()
+  let environments: environment[] = [{ label: 'All environments', value: 'all' }]
   if (org) {
-    const envTypes: string[] = org.env_types ?? [];
+    const envTypes: string[] = org.env_types ?? []
 
     environments = [
       { label: 'All environments', value: 'all' },
-      ...envTypes.map(type => ({
+      ...envTypes.map((type) => ({
         label: type,
-        value: type
-      }))
-    ];
+        value: type,
+      })),
+    ]
   }
-  
+
   const [environmentFilter, setEnvironmentFilter] = useState<string>('all')
   const [branchFilter, setBranchFilter] = useState<string>('')
- 
 
   const { slug: orgId } = useParams()
-
 
   const {
     data: schedules,
@@ -123,14 +114,17 @@ const Backups = () => {
 
   const { data: allProjects } = useProjectsQuery()
 
-  const { mutateAsync: deleteBranchBackup, isLoading: isDeletingBackup } = useDeleteBranchBackupMutation({
-    onSuccess: () => {
-      toast.success('Backup deleted')
-    },
-  })
+  const { mutateAsync: deleteBranchBackup, isLoading: isDeletingBackup } =
+    useDeleteBranchBackupMutation({
+      onSuccess: () => {
+        toast.success('Backup deleted')
+      },
+    })
 
   const [rows, setRows] = useState<BackupRow[]>([])
-  const [branchInfoMap, setBranchInfoMap] = useState<Map<string, { name: string; projectRef: string }>>(new Map())
+  const [branchInfoMap, setBranchInfoMap] = useState<
+    Map<string, { name: string; projectRef: string }>
+  >(new Map())
 
   const normalizedSchedules = useMemo(
     () => (Array.isArray(schedules) ? schedules : schedules ? [schedules] : []),
@@ -146,7 +140,10 @@ const Backups = () => {
     () => mapSchedulesByBranch(normalizedSchedules),
     [normalizedSchedules]
   )
-  const backupsByBranch = useMemo(() => groupBackupsByBranch(normalizedBackups), [normalizedBackups])
+  const backupsByBranch = useMemo(
+    () => groupBackupsByBranch(normalizedBackups),
+    [normalizedBackups]
+  )
 
   const orgProjects = useMemo(
     () => (allProjects ?? []).filter((project) => project.organization_id === org?.id),
@@ -229,7 +226,7 @@ const Backups = () => {
 
       const schedule = scheduleEntry?.schedule ?? []
       const environment = (scheduleEntry?.env as BackupEnvironment) ?? 'development'
-      
+
       const toTimestamp = (value: string | null) => {
         if (!value) return 0
         const parsed = Date.parse(value)
@@ -250,7 +247,9 @@ const Backups = () => {
 
       const branchInfo = branchInfoMap.get(branchId)
       const projectRef = backupEntry?.projectId ?? branchInfo?.projectRef ?? ''
-      const projectName = projectRef ? projectNameMap.get(projectRef) ?? projectRef : 'Unknown project'
+      const projectName = projectRef
+        ? projectNameMap.get(projectRef) ?? projectRef
+        : 'Unknown project'
       const branchName = branchInfo?.name ?? branchId
 
       next.push({
@@ -302,18 +301,6 @@ const Backups = () => {
       return matchesEnvironment && matchesBranch
     })
   }, [branchFilter, environmentFilter, rows])
-
-  // filter by projects available for creating branches
-  const projectOptions = useMemo(() => {
-    if (!hasCreateBranchPermission) return []
-    return orgProjects
-      .filter((project) => creatableProjectIds.has(project.id))
-      .map((project) => ({
-        label: project.name,
-        value: project.id,
-      }))
-  }, [hasCreateBranchPermission, orgProjects, creatableProjectIds]) 
-
 
   const restoreRow = useMemo(
     () => rows.find((row) => row.id === restoreContext?.rowId) ?? null,
@@ -397,7 +384,11 @@ const Backups = () => {
     }
   }
 
-  const handleRestoreConfirm = (payload: { mode: 'same-branch' | 'new-branch'; project?: string; branchName?: string }) => {
+  const handleRestoreConfirm = (payload: {
+    mode: 'same-branch' | 'new-branch'
+    project?: string
+    branchName?: string
+  }) => {
     if (!restoreContext) return
 
     setRows((prev) => {
@@ -421,19 +412,19 @@ const Backups = () => {
     })
 
     if (payload.mode === 'new-branch') {
-
     }
 
     setRestoreContext(null)
   }
 
   return (
-    <ScaffoldContainer className='p-6'>
+    <ScaffoldContainer className="p-6">
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-semibold text-foreground">Backups</h1>
           <p className="text-sm text-foreground-light">
-            Monitor automated backups across projects, update schedules, and restore branches as needed.
+            Monitor automated backups across projects, update schedules, and restore branches as
+            needed.
           </p>
         </div>
 
@@ -441,19 +432,25 @@ const Backups = () => {
           <div className="flex flex-col gap-4 border-b border-border px-6 py-4">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="text-base font-medium text-foreground">Automated backup schedules</h2>
+                <h2 className="text-base font-medium text-foreground">
+                  Automated backup schedules
+                </h2>
                 <p className="text-sm text-foreground-light">
-                  Review schedules per project, adjust cadence, or initiate restores from historical backups.
+                  Review schedules per project, adjust cadence, or initiate restores from historical
+                  backups.
                 </p>
               </div>
-              {isAbleToEditSchedule && (
-                <BackupScheduleModal />
-              )}
+              {isAbleToEditSchedule && <BackupScheduleModal />}
             </div>
 
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Select_Shadcn_ value={environmentFilter} onValueChange={(value) => setEnvironmentFilter(value as BackupEnvironment | 'all')}>
+                <Select_Shadcn_
+                  value={environmentFilter}
+                  onValueChange={(value) =>
+                    setEnvironmentFilter(value as BackupEnvironment | 'all')
+                  }
+                >
                   <SelectTrigger_Shadcn_ className="w-full sm:w-[220px]">
                     <SelectValue_Shadcn_ />
                   </SelectTrigger_Shadcn_>
@@ -517,9 +514,13 @@ const Backups = () => {
         open={historyTarget !== null}
         onClose={() => setHistoryTarget(null)}
         isAbleToDeleteBackup={isAbleToDeleteBackup}
-        isAbleToCreateBranch={hasCreateBranchPermission}
-        onRestore={(backup) => historyTarget && setRestoreContext({ rowId: historyTarget.id, backup })}
-        onDeleteRequest={(backup) => historyTarget && setDeleteContext({ rowId: historyTarget.id, backup })}
+        isAbleToCreateBranch={canCreateBranchPermission}
+        onRestore={(backup) =>
+          historyTarget && setRestoreContext({ rowId: historyTarget.id, backup })
+        }
+        onDeleteRequest={(backup) =>
+          historyTarget && setDeleteContext({ rowId: historyTarget.id, backup })
+        }
       />
 
       <RestoreBackupDialog
@@ -531,8 +532,11 @@ const Backups = () => {
         onConfirm={handleRestoreConfirm}
       />
 
-      <Dialog open={deleteContext !== null} onOpenChange={(nextOpen) => !nextOpen && setDeleteContext(null)}>
-        <DialogContent size={"xlarge"}>
+      <Dialog
+        open={deleteContext !== null}
+        onOpenChange={(nextOpen) => !nextOpen && setDeleteContext(null)}
+      >
+        <DialogContent size={'xlarge'}>
           <DialogHeader>
             <DialogTitle>Delete backup</DialogTitle>
             <DialogDescription>

@@ -16,7 +16,10 @@ import { useSelectedProjectQuery } from 'hooks/misc/useSelectedProject'
 import { useParams } from 'common'
 import { formatBytes } from 'lib/helpers'
 import { RestoreBackupDialog } from 'components/interfaces/Organization/Backups/RestoreBackupDialog'
-import type { BackupRow, BranchBackup as OrgBranchBackup } from 'components/interfaces/Organization/Backups/types'
+import type {
+  BackupRow,
+  BranchBackup as OrgBranchBackup,
+} from 'components/interfaces/Organization/Backups/types'
 import {
   Badge,
   Button,
@@ -38,6 +41,7 @@ import {
   TableRow,
 } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
+import { useProjectsByPermissionsQuery } from 'data/permissions/projects-by-permissions-query'
 
 type NormalizedBackup = {
   id: string
@@ -55,9 +59,7 @@ const normalizeBackups = (data: any): NormalizedBackup[] => {
   return backups
     .map((item) => {
       const createdAt =
-        (item?.created_at as string | undefined) ??
-        (item?.createdAt as string | undefined) ??
-        null
+        (item?.created_at as string | undefined) ?? (item?.createdAt as string | undefined) ?? null
 
       return {
         id: String(item?.id ?? ''),
@@ -66,14 +68,9 @@ const normalizeBackups = (data: any): NormalizedBackup[] => {
           (item?.size_bytes as number | undefined) ??
           (item?.sizeBytes as number | undefined) ??
           null,
-        status:
-          (item?.status as string | undefined) ??
-          (item?.state as string | undefined) ??
-          null,
+        status: (item?.status as string | undefined) ?? (item?.state as string | undefined) ?? null,
         rowIndex:
-          (item?.row_index as number | undefined) ??
-          (item?.rowIndex as number | undefined) ??
-          null,
+          (item?.row_index as number | undefined) ?? (item?.rowIndex as number | undefined) ?? null,
       }
     })
     .filter((item) => item.id.length > 0)
@@ -88,25 +85,27 @@ const BranchBackups = () => {
   const { slug: orgId, ref: projectId, branch: branchId } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
-  const {
-    data,
-    error,
-    isError,
-    isLoading,
-    isFetching,
-  } = useBranchBackupQuery(
+  const { data, error, isError, isLoading, isFetching } = useBranchBackupQuery(
     { orgId, projectId, branchId },
     { enabled: Boolean(orgId && projectId && branchId) }
   )
+
+  // filter by projects available for creating branches
+  const { data: targetProjects } = useProjectsByPermissionsQuery('project:branches:create')
+  const projectOptions = useMemo(() => {
+    return targetProjects
+      .filter((project) => project.organization_id === orgId)
+      .map((project) => ({
+        label: project.name,
+        value: project.id,
+      }))
+  }, [targetProjects])
 
   const backups = useMemo(() => normalizeBackups(data), [data])
   const [restoreTarget, setRestoreTarget] = useState<NormalizedBackup | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<NormalizedBackup | null>(null)
 
-  const {
-    mutate: triggerManual,
-    isLoading: isCreating,
-  } = useManualBranchBackupMutation({
+  const { mutate: triggerManual, isLoading: isCreating } = useManualBranchBackupMutation({
     onSuccess: () => {
       toast.success('Manual backup started')
     },
@@ -123,16 +122,6 @@ const BranchBackups = () => {
     if (!orgId || !projectId || !branchId) return
     triggerManual({ orgId, projectId, branchId })
   }
-
-  const projectOptions = useMemo(() => {
-    if (!project?.id) return []
-    return [
-      {
-        label: project.name ?? project.id,
-        value: project.id,
-      },
-    ]
-  }, [project])
 
   const restoreRow: BackupRow | null = useMemo(() => {
     if (!restoreTarget) return null
@@ -164,7 +153,11 @@ const BranchBackups = () => {
     } as OrgBranchBackup
   }, [restoreTarget])
 
-  const handleRestoreConfirm = (payload: { mode: 'same-branch' | 'new-branch'; project?: string; branchName?: string }) => {
+  const handleRestoreConfirm = (payload: {
+    mode: 'same-branch' | 'new-branch'
+    project?: string
+    branchName?: string
+  }) => {
     if (!restoreTarget) return
     toast.success('Restore request submitted')
     setRestoreTarget(null)
@@ -200,17 +193,16 @@ const BranchBackups = () => {
                         Review available snapshots and create manual backups for this branch.
                       </p>
                     </div>
-                  <Button
-                    type="outline"
-                    onClick={handleCreateBackup}
-                    disabled={isCreating || !orgId || !projectId || !branchId}
-                  >
-                    <div className="flex flex-row items-center gap-2">
-                      {isCreating && <Loader2 className="h-4 w-4 animate-spin" />}
-                      <span>Start manual backup</span>
-                    </div>
-                  </Button>
-
+                    <Button
+                      type="outline"
+                      onClick={handleCreateBackup}
+                      disabled={isCreating || !orgId || !projectId || !branchId}
+                    >
+                      <div className="flex flex-row items-center gap-2">
+                        {isCreating && <Loader2 className="h-4 w-4 animate-spin" />}
+                        <span>Start manual backup</span>
+                      </div>
+                    </Button>
                   </CardHeader>
                   <CardContent>
                     {isLoading ? (
@@ -245,13 +237,20 @@ const BranchBackups = () => {
                                     )}
                                   </TableCell>
                                   <TableCell>
-                                    <span className="font-mono text-xs text-foreground" title={backup.id}>
+                                    <span
+                                      className="font-mono text-xs text-foreground"
+                                      title={backup.id}
+                                    >
                                       {backup.id}
                                     </span>
                                   </TableCell>
                                   <TableCell>
                                     {normalizedStatus ? (
-                                      <Badge variant={normalizedStatus === 'completed' ? 'default' : 'outline'}>
+                                      <Badge
+                                        variant={
+                                          normalizedStatus === 'completed' ? 'default' : 'outline'
+                                        }
+                                      >
                                         {normalizedStatus}
                                       </Badge>
                                     ) : (
@@ -307,7 +306,10 @@ const BranchBackups = () => {
         onCancel={() => setRestoreTarget(null)}
         onConfirm={handleRestoreConfirm}
       />
-      <Dialog open={deleteTarget !== null} onOpenChange={(nextOpen) => !nextOpen && !isDeleting && setDeleteTarget(null)}>
+      <Dialog
+        open={deleteTarget !== null}
+        onOpenChange={(nextOpen) => !nextOpen && !isDeleting && setDeleteTarget(null)}
+      >
         <DialogContent size="xlarge">
           <DialogHeader>
             <DialogTitle>Delete backup</DialogTitle>
