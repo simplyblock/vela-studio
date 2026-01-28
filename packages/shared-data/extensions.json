@@ -138,7 +138,7 @@
     "name": "hypopg",
     "comment": "Hypothetical indexes for PostgreSQL",
     "tags": ["Admin", "Index"],
-    "link": "/guides/database/extensions/hypopg",
+    "link": "/extensions/hypopg",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -147,7 +147,7 @@
     "name": "http",
     "comment": "HTTP client for PostgreSQL, allows web page retrieval inside the database.",
     "tags": ["Utility"],
-    "link": "/guides/database/extensions/http",
+    "link": "/extensions/http",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -174,7 +174,7 @@
     "name": "index_advisor",
     "comment": "optimize query performance with automatic index recommendation",
     "tags": ["Utility"],
-    "link": "/guides/database/extensions/index_advisor",
+    "link": "/extensions/index_advisor",
     "github_url": "https://github.com/supabase/index_advisor",
     "product": "Index Advisor Report",
     "product_url": "/project/{ref}/advisors/query-performance"
@@ -228,9 +228,9 @@
     "name": "pg_cron",
     "comment": "Job scheduler for PostgreSQL",
     "tags": ["Utility"],
-    "link": "/guides/database/extensions/pg_cron",
+    "link": "/extensions/pg_cron",
     "github_url": "https://github.com/citusdata/pg_cron",
-    "product": "Supabase Cron",
+    "product": "Cron",
     "product_url": "/project/{ref}/integrations/cron"
   },
   {
@@ -246,7 +246,7 @@
     "name": "pg_graphql",
     "comment": "pg_graphql: GraphQL support",
     "tags": ["Utility"],
-    "link": "/guides/database/extensions/pg_graphql",
+    "link": "/extensions/pg_graphql",
     "github_url": "https://github.com/supabase/pg_graphql",
     "product": "GraphiQL",
     "product_url": "/project/{ref}/api/graphiql"
@@ -255,7 +255,7 @@
     "name": "pg_hashids",
     "comment": "pg_hashids",
     "tags": ["Utility"],
-    "link": "/guides/database/extensions/pg_hashids",
+    "link": "/extensions/pg_hashids",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -264,7 +264,7 @@
     "name": "pg_jsonschema",
     "comment": "pg_jsonschema",
     "tags": ["Utility"],
-    "link": "/guides/database/extensions/pg_jsonschema",
+    "link": "/extensions/pg_jsonschema",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -273,7 +273,7 @@
     "name": "pg_net",
     "comment": "Async HTTP",
     "tags": ["Utility", "Notifications"],
-    "link": "/guides/database/extensions/pg_net",
+    "link": "/extensions/pg_net",
     "github_url": "https://github.com/supabase/pg_net",
     "product": "Database Webhooks",
     "product_url": "/project/{ref}/database/hooks"
@@ -291,7 +291,7 @@
     "name": "pg_stat_statements",
     "comment": "track execution statistics of all SQL statements executed",
     "tags": ["Admin", "Utility"],
-    "link": "/guides/database/extensions/pg_stat_statements",
+    "link": "/extensions/pg_stat_statements",
     "github_url": null,
     "product": "Query Performance",
     "product_url": "/project/{ref}/advisors/query-performance"
@@ -318,7 +318,7 @@
     "name": "pgaudit",
     "comment": "provides auditing functionality",
     "tags": ["Audit", "Utility"],
-    "link": "/guides/database/extensions/pgaudit",
+    "link": "/extensions/pgaudit",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -345,7 +345,7 @@
     "name": "pgjwt",
     "comment": "JSON Web Token API for Postgresql",
     "tags": ["Utility", "Cryptography"],
-    "link": "/guides/database/extensions/pgjwt",
+    "link": "/extensions/pgjwt",
     "github_url": "https://github.com/michelp/pgjwt",
     "product": null,
     "product_url": null
@@ -354,7 +354,7 @@
     "name": "pgroonga",
     "comment": "Super fast and all languages supported full text search index based on Groonga",
     "tags": ["Search"],
-    "link": "/guides/database/extensions/pgroonga",
+    "link": "/extensions/pgroonga",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -372,7 +372,7 @@
     "name": "pgrouting",
     "comment": "pgRouting Extension",
     "tags": ["Geo", "Utility"],
-    "link": "/guides/database/extensions/pgrouting",
+    "link": "/extensions/pgrouting",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -390,9 +390,9 @@
     "name": "pgsodium",
     "comment": "Postgres extension for libsodium functions",
     "tags": ["Utility", "Cryptography"],
-    "link": "/guides/database/extensions/pgsodium",
+    "link": "/extensions/pgsodium",
     "github_url": "https://github.com/michelp/pgsodium",
-    "product": "Supabase Vault",
+    "product": "Vault",
     "product_url": "/project/{ref}/settings/vault/secrets"
   },
   {
@@ -408,7 +408,7 @@
     "name": "pgtap",
     "comment": "Unit testing for PostgreSQL",
     "tags": ["Utility", "Testing"],
-    "link": "/guides/database/extensions/pgtap",
+    "link": "/extensions/pgtap",
     "github_url": null,
     "product": null
   },
@@ -419,8 +419,7 @@
     "link": "https://github.com/plv8/plv8/blob/master/doc/plv8.md#coffeescript-extension",
     "github_url": null,
     "product": null,
-    "product_url": null,
-    "deprecated": ["Postgres 17"]
+    "product_url": null
   },
   {
     "name": "pljava",
@@ -437,8 +436,7 @@
     "link": "https://github.com/plv8/plv8/blob/master/doc/plv8.md#livescript-extension",
     "github_url": null,
     "product": null,
-    "product_url": null,
-    "deprecated": ["Postgres 17"]
+    "product_url": null
   },
   {
     "name": "plpgsql",
@@ -453,7 +451,7 @@
     "name": "plpgsql_check",
     "comment": "extended check for plpgsql functions",
     "tags": ["Utility", "Testing"],
-    "link": "/guides/database/extensions/plpgsql_check",
+    "link": "/extensions/plpgsql_check",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -462,7 +460,7 @@
     "name": "plv8",
     "comment": "PL/JavaScript (v8) trusted procedural language",
     "tags": ["Language"],
-    "link": "/guides/database/extensions/plv8",
+    "link": "/extensions/plv8",
     "github_url": null,
     "product": null,
     "product_url": null,
@@ -472,7 +470,7 @@
     "name": "postgis",
     "comment": "PostGIS geometry and geography spatial types and functions",
     "tags": ["Geo"],
-    "link": "/guides/database/extensions/postgis",
+    "link": "/extensions/postgis",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -481,7 +479,7 @@
     "name": "postgres_fdw",
     "comment": "foreign-data wrapper for remote PostgreSQL servers",
     "tags": ["Admin"],
-    "link": "/guides/database/extensions/postgres_fdw",
+    "link": "/extensions/postgres_fdw",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -499,7 +497,7 @@
     "name": "rum",
     "comment": "GIN-like index for text search",
     "tags": ["Index", "Search"],
-    "link": "/guides/database/extensions/rum",
+    "link": "/extensions/rum",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -544,7 +542,7 @@
     "name": "timescaledb",
     "comment": "Enables scalable inserts and complex queries for time-series data",
     "tags": ["Time Series", "Data Type", "Utility"],
-    "link": "/guides/database/extensions/timescaledb",
+    "link": "/extensions/timescaledb",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -579,7 +577,7 @@
     "name": "uuid-ossp",
     "comment": "generate universally unique identifiers (UUIDs)",
     "tags": ["Utility", "Data Type"],
-    "link": "/guides/database/extensions/uuid-ossp",
+    "link": "/extensions/uuid-ossp",
     "github_url": null,
     "product": null,
     "product_url": null
@@ -588,24 +586,24 @@
     "name": "vector",
     "comment": "vector data type with similarity search",
     "tags": ["AI", "Data Type", "Search"],
-    "link": "/guides/database/extensions/pgvector",
+    "link": "/extensions/pgvector",
     "github_url": "https://github.com/pgvector/pgvector",
-    "product": "Supabase Vector",
+    "product": "PG Vector",
     "product_url": null
   },
   {
     "name": "pg_repack",
     "comment": "Optimize physical storage and remove bloat from tables and indexes",
     "tags": ["Admin", "Utility"],
-    "link": "/guides/database/extensions/pg_repack"
+    "link": "/extensions/pg_repack"
   },
   {
     "name": "wrappers",
-    "comment": "Foreign data wrappers developed by Supabase",
+    "comment": "Additional foreign data wrappers",
     "tags": ["Admin", "Utility"],
-    "link": "/guides/database/extensions/wrappers/overview",
+    "link": "/extensions/wrappers/overview",
     "github_url": "https://github.com/supabase/wrappers",
-    "product": "Supabase Wrappers",
+    "product": "Wrappers",
     "product_url": "/project/{ref}/database/wrappers"
   }
 ]

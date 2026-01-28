@@ -31,8 +31,8 @@ const ExtensionRow = ({ extension }: ExtensionRowProps) => {
   const disabled = !canUpdateExtensions
 
   const extensionMeta = extensions.find((item) => item.name === extension.name)
-  const docsUrl = extensionMeta?.link.startsWith('/guides')
-    ? `https://vela.run/docs${extensionMeta?.link}`
+  const docsUrl = extensionMeta?.link.startsWith('/extensions')
+    ? `https://docs.vela.run/latest/${extensionMeta?.link}`
     : extensionMeta?.link ?? undefined
 
   const { mutate: disableExtension, isLoading: isDisabling } = useDatabaseExtensionDisableMutation({
