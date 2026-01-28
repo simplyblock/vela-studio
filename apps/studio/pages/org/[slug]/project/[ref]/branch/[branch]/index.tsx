@@ -2,22 +2,23 @@ import Link from 'next/link'
 import { useMemo } from 'react'
 
 import { useParams } from 'common'
-import { ClientLibrary, ExampleProject } from 'components/interfaces/Home'
+// import { ClientLibrary, ExampleProject } from 'components/interfaces/Home'
 import { AdvisorWidget } from 'components/interfaces/Home/AdvisorWidget'
-import { CLIENT_LIBRARIES, EXAMPLE_PROJECTS } from 'components/interfaces/Home/Home.constants'
-import { ProjectUsageSection } from 'components/interfaces/Home/ProjectUsageSection'
+// import { CLIENT_LIBRARIES, EXAMPLE_PROJECTS } from 'components/interfaces/Home/Home.constants'
+// import { ProjectUsageSection } from 'components/interfaces/Home/ProjectUsageSection'
 import { ServiceStatus } from 'components/interfaces/Home/ServiceStatus'
 import DefaultLayout from 'components/layouts/DefaultLayout'
 import { BranchPausedState } from 'components/layouts/BranchLayout/PausedState/BranchPausedState'
 import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectLayout'
-import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBanner'
+// import { ProjectUpgradeFailedBanner } from 'components/ui/ProjectUpgradeFailedBanner'
 import { useEdgeFunctionsQuery } from 'data/edge-functions/edge-functions-query'
 import { useReadReplicasQuery } from 'data/read-replicas/replicas-query'
 import { useTablesQuery } from 'data/tables/tables-query'
 import { useIsFeatureEnabled } from 'hooks/misc/useIsFeatureEnabled'
 import { isBranchPaused, isBranchRunning, isBranchStopped } from 'lib/constants'
 import type { NextPageWithLayout } from 'types'
-import { cn, Tabs_Shadcn_, TabsContent_Shadcn_, TabsList_Shadcn_, TabsTrigger_Shadcn_ } from 'ui'
+import { cn } from 'ui'
+// import { Tabs_Shadcn_, TabsContent_Shadcn_, TabsList_Shadcn_, TabsTrigger_Shadcn_ } from 'ui'
 import ShimmeringLoader from 'ui-patterns/ShimmeringLoader'
 import { useSelectedBranchQuery } from 'data/branches/selected-branch-query'
 
@@ -26,22 +27,22 @@ const Home: NextPageWithLayout = () => {
   const { data: branch } = useSelectedBranchQuery()
   const { ref, slug, branch: branchRef } = useParams()
 
-  const {
-    projectHomepageShowAllClientLibraries: showAllClientLibraries,
-    projectHomepageShowInstanceSize: showInstanceSize,
-    projectHomepageShowExamples: showExamples,
-  } = useIsFeatureEnabled([
-    'project_homepage:show_all_client_libraries',
-    'project_homepage:show_instance_size',
-    'project_homepage:show_examples',
-  ])
+  // const {
+  //   projectHomepageShowAllClientLibraries: showAllClientLibraries,
+  //   projectHomepageShowInstanceSize: showInstanceSize,
+  //   projectHomepageShowExamples: showExamples,
+  // } = useIsFeatureEnabled([
+  //   'project_homepage:show_all_client_libraries',
+  //   'project_homepage:show_instance_size',
+  //   'project_homepage:show_examples',
+  // ])
 
-  const clientLibraries = useMemo(() => {
-    if (showAllClientLibraries) {
-      return CLIENT_LIBRARIES
-    }
-    return CLIENT_LIBRARIES.filter((library) => library.language === 'JavaScript')
-  }, [showAllClientLibraries])
+  // const clientLibraries = useMemo(() => {
+  //   if (showAllClientLibraries) {
+  //     return CLIENT_LIBRARIES
+  //   }
+  //   return CLIENT_LIBRARIES.filter((library) => library.language === 'JavaScript')
+  // }, [showAllClientLibraries])
 
   const { data: tablesData, isLoading: isLoadingTables } = useTablesQuery({
     branch,
@@ -146,7 +147,7 @@ const Home: NextPageWithLayout = () => {
               {isBranchRunning(branch) && <AdvisorWidget />}
             </div>
           </div>
-
+          {/* 
           <div className="bg-surface-100/5 py-16">
             <div className="mx-auto max-w-7xl space-y-16">
               {isBranchRunning(branch) && (
@@ -196,6 +197,7 @@ const Home: NextPageWithLayout = () => {
               )}
             </div>
           </div>
+          */}
         </>
       )}
     </div>
