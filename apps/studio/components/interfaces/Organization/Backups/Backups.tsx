@@ -58,19 +58,22 @@ const Backups = () => {
     useCheckPermissions('org:backup:delete')
   const { can: canCreateBranchPermission } = useCheckPermissions('project:branches:create')
 
+  const { slug: orgId } = useParams()
+
   const isAbleToEditSchedule = isEditPermissionSuccess && canEditSchedule
   const isAbleToDeleteBackup = isDeletePermissionSuccess && canDeleteSchedule
 
   // filter by projects available for creating branches
   const { data: targetProjects } = useProjectsByPermissionsQuery('project:branches:create')
   const projectOptions = useMemo(() => {
+    if (!orgId || !targetProjects) return []
     return targetProjects
       .filter((project) => project.organization_id === orgId)
       .map((project) => ({
         label: project.name,
         value: project.id,
       }))
-  }, [targetProjects])
+  }, [targetProjects, orgId])
 
   const [disableTarget, setDisableTarget] = useState<BackupRow | null>(null)
   const [historyTarget, setHistoryTarget] = useState<BackupRow | null>(null)
@@ -93,8 +96,6 @@ const Backups = () => {
 
   const [environmentFilter, setEnvironmentFilter] = useState<string>('all')
   const [branchFilter, setBranchFilter] = useState<string>('')
-
-  const { slug: orgId } = useParams()
 
   const {
     data: schedules,
