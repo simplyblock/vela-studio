@@ -93,7 +93,7 @@ export const generateDocsMenu = (
         {
           name: 'Guides',
           key: 'guides',
-          url: `https://vela.run/docs`,
+          url: `https://docs.vela.run`,
           icon: <Book size={14} strokeWidth={2} />,
           items: [],
           isExternal: true,
@@ -101,7 +101,7 @@ export const generateDocsMenu = (
         {
           name: 'API Reference',
           key: 'api-reference',
-          url: `https://vela.run/docs/guides/api`,
+          url: `https://docs.vela.run/builder/api`,
           icon: <BookOpen size={14} strokeWidth={2} />,
           items: [],
           isExternal: true,
