@@ -41,13 +41,13 @@ export const RestoreBackupDialog = ({
   onCancel,
   onConfirm,
 }: RestoreBackupDialogProps) => {
-  const [mode, setMode] = useState<RestoreMode>('same-branch')
+  const [mode, setMode] = useState<RestoreMode>('new-branch')
   const [selectedProject, setSelectedProject] = useState<string | undefined>(undefined)
   const [branchName, setBranchName] = useState<string>('')
 
   useEffect(() => {
     if (!open) return
-    setMode('same-branch')
+    setMode('new-branch')
     setSelectedProject(undefined)
     setBranchName(`Restored ${row?.branchName ?? ''}`)
   }, [open, row])
