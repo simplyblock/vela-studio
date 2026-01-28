@@ -42,6 +42,8 @@ import {
 } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
 import { useProjectsByPermissionsQuery } from 'data/permissions/projects-by-permissions-query'
+import { useBranchCreateMutation } from 'data/branches/branch-create-mutation'
+import { useRouter } from 'next/router'
 
 type NormalizedBackup = {
   id: string
@@ -82,6 +84,8 @@ const normalizeBackups = (data: any): NormalizedBackup[] => {
 }
 
 const BranchBackups = () => {
+  const router = useRouter()
+
   const { slug: orgId, ref: projectId, branch: branchId } = useParams()
   const { data: project } = useSelectedProjectQuery()
 
@@ -118,6 +122,14 @@ const BranchBackups = () => {
     },
   })
 
+  const { mutateAsync: restoreBackup, isLoading: isRestoring } = useBranchCreateMutation({
+    onSuccess: () => {
+      toast.success('Restore request submitted')
+      setRestoreTarget(null)
+      router.push(`/orgs/${orgId}/projects/${projectId}`)
+    },
+  })
+
   const handleCreateBackup = () => {
     if (!orgId || !projectId || !branchId) return
     triggerManual({ orgId, projectId, branchId })
@@ -143,7 +155,7 @@ const BranchBackups = () => {
     } as BackupRow
   }, [restoreTarget, branchId, project, projectId])
 
-  const restoreBackup: OrgBranchBackup | null = useMemo(() => {
+  const backupToRestore: OrgBranchBackup | null = useMemo(() => {
     if (!restoreTarget) return null
     return {
       id: restoreTarget.id,
@@ -159,8 +171,14 @@ const BranchBackups = () => {
     branchName?: string
   }) => {
     if (!restoreTarget) return
-    toast.success('Restore request submitted')
-    setRestoreTarget(null)
+    if (!orgId || !projectId) return
+    return restoreBackup({
+      orgRef: orgId,
+      projectRef: projectId,
+      backupRef: restoreTarget.id,
+      branchName: payload.branchName!,
+      withConfig: true,
+    })
   }
 
   const handleDeleteConfirm = async () => {
@@ -300,7 +318,7 @@ const BranchBackups = () => {
       </ScaffoldSection>
       <RestoreBackupDialog
         row={restoreRow}
-        backup={restoreBackup}
+        backup={backupToRestore}
         open={restoreTarget !== null}
         projectOptions={projectOptions}
         onCancel={() => setRestoreTarget(null)}
