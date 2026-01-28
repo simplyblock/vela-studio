@@ -605,5 +605,11 @@
     "github_url": "https://github.com/supabase/wrappers",
     "product": "Wrappers",
     "product_url": "/project/{ref}/database/wrappers"
+  },
+  {
+    "name": "ip4r",
+    "comment": "Range types for IPv4 and IPv6 addresses",
+    "tags": ["Data Type"],
+    "github_url": "https://github.com/RhodiumToad/ip4r"
   }
 ]
