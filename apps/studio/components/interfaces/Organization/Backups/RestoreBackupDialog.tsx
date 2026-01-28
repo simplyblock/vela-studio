@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatBytes } from 'lib/helpers'
 import {
   Button,
@@ -12,11 +12,11 @@ import {
   Label_Shadcn_,
   RadioGroupStacked,
   RadioGroupStackedItem,
+  Select_Shadcn_,
   SelectContent_Shadcn_,
   SelectItem_Shadcn_,
   SelectTrigger_Shadcn_,
   SelectValue_Shadcn_,
-  Select_Shadcn_,
 } from 'ui'
 
 import { formatBackupDate } from './utils'
@@ -49,13 +49,8 @@ export const RestoreBackupDialog = ({
     if (!open) return
     setMode('same-branch')
     setSelectedProject(undefined)
-    setBranchName(row?.branchName ?? '')
+    setBranchName(`Restored ${row?.branchName ?? ''}`)
   }, [open, row])
-
-  const filteredProjectOptions = useMemo(() => {
-    // excluding the same project 
-    return projectOptions.filter((option) => option.value !== row?.projectId)
-  }, [projectOptions, row?.projectId])
 
   const canConfirm =
     mode === 'same-branch' ||
@@ -63,7 +58,7 @@ export const RestoreBackupDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel()}>
-      <DialogContent size={"xlarge"}>
+      <DialogContent size={'xlarge'}>
         <DialogHeader>
           <DialogTitle>Restore backup</DialogTitle>
           <DialogDescription>
@@ -78,7 +73,9 @@ export const RestoreBackupDialog = ({
             <div className="rounded-md border border-dashed border-border p-3 text-sm text-foreground-light">
               <p>
                 Backup captured on{' '}
-                <span className="font-medium text-foreground">{formatBackupDate(backup.createdAt)}</span>
+                <span className="font-medium text-foreground">
+                  {formatBackupDate(backup.createdAt)}
+                </span>
               </p>
               <p>
                 Source branch:{' '}
@@ -92,7 +89,10 @@ export const RestoreBackupDialog = ({
               <Label_Shadcn_ className="text-xs text-foreground-light uppercase tracking-wide">
                 Restore target
               </Label_Shadcn_>
-              <RadioGroupStacked value={mode} onValueChange={(value) => setMode(value as RestoreMode)}>
+              <RadioGroupStacked
+                value={mode}
+                onValueChange={(value) => setMode(value as RestoreMode)}
+              >
                 <RadioGroupStackedItem value="same-branch" label="Restore to current branch">
                   <p className="text-sm text-foreground-light">
                     Apply the backup to <strong>{row.branchName}</strong> within{' '}
@@ -101,7 +101,8 @@ export const RestoreBackupDialog = ({
                 </RadioGroupStackedItem>
                 <RadioGroupStackedItem value="new-branch" label="Restore to a new branch">
                   <p className="text-sm text-foreground-light">
-                    Choose another project and branch name to create a new environment from this backup.
+                    Choose another project and branch name to create a new environment from this
+                    backup.
                   </p>
                 </RadioGroupStackedItem>
               </RadioGroupStacked>
@@ -110,7 +111,9 @@ export const RestoreBackupDialog = ({
             {mode === 'new-branch' && (
               <div className="grid grid-cols-1 gap-4 p-2">
                 <div>
-                  <Label_Shadcn_ className="text-xs text-foreground-light">Target project</Label_Shadcn_>
+                  <Label_Shadcn_ className="text-xs text-foreground-light">
+                    Target project
+                  </Label_Shadcn_>
                   <Select_Shadcn_
                     value={selectedProject}
                     onValueChange={(value) => setSelectedProject(value)}
@@ -119,7 +122,7 @@ export const RestoreBackupDialog = ({
                       <SelectValue_Shadcn_ placeholder="Select project" />
                     </SelectTrigger_Shadcn_>
                     <SelectContent_Shadcn_>
-                      {filteredProjectOptions.map((option) => (
+                      {projectOptions.map((option) => (
                         <SelectItem_Shadcn_ key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem_Shadcn_>
@@ -129,7 +132,9 @@ export const RestoreBackupDialog = ({
                 </div>
 
                 <div>
-                  <Label_Shadcn_ className="text-xs text-foreground-light">New branch name</Label_Shadcn_>
+                  <Label_Shadcn_ className="text-xs text-foreground-light">
+                    New branch name
+                  </Label_Shadcn_>
                   <Input_Shadcn_
                     value={branchName}
                     placeholder="Enter branch name"
