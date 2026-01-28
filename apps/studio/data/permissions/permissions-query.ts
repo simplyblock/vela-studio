@@ -4,7 +4,7 @@ import { useIsLoggedIn } from 'common'
 import { get, handleError } from 'data/fetchers'
 import type { ResponseError } from 'types'
 import { permissionKeys } from './keys'
-import { transformToPermission } from '../../hooks/misc/useCheckPermissions'
+import { transformToPermission } from 'hooks/misc/useCheckPermissions'
 
 export async function getPermissions(signal?: AbortSignal) {
   const { data, error } = await get('/platform/profile/permissions', { signal })

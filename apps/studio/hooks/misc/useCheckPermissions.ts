@@ -10,10 +10,16 @@ import { useProjectDetailQuery } from 'data/projects/project-detail-query'
 import { Permission, ResourcePermission, Role } from 'types'
 import { getPathReferences } from 'data/vela/path-references'
 import { UseQueryOptions } from '@tanstack/react-query'
-import { useProjectsQuery } from '../../data/projects/projects-query'
-import { useBranchesQuery } from '../../data/branches/branches-query'
+import { useProjectsQuery } from 'data/projects/projects-query'
+import { useBranchesQuery } from 'data/branches/branches-query'
+import { useMemo } from 'react'
 
-function hasPermission(required: Permission, userPermissions: ResourcePermission[]): boolean {
+export const organizationOwnerPermission = transformToPermission('org:owner:admin')
+
+export function hasPermission(
+  required: Permission,
+  ...userPermissions: ResourcePermission[]
+): boolean {
   for (const userPermission of userPermissions) {
     // Organization admins have all permissions
     if (
@@ -229,12 +235,15 @@ export function useBranchPermissionQuery({
     data: branches,
     isLoading: isBranchesLoading,
     isError: isBranchesError,
-  } = useBranchesQuery({
-    orgRef: orgId,
-    projectRef: projectId,
-  }, {
-    enabled: enabled && !!orgId && !!projectId,
-  })
+  } = useBranchesQuery(
+    {
+      orgRef: orgId,
+      projectRef: projectId,
+    },
+    {
+      enabled: enabled && !!orgId && !!projectId,
+    }
+  )
 
   const { permissions, isLoading, isSuccess } = useFilteredPermissionsQuery(
     {
@@ -254,10 +263,11 @@ export function useBranchPermissionQuery({
   }
 }
 
-
-export function useCheckPermissions(
-  requiredPermission: string | undefined
-): { can: boolean; isLoading: boolean; isSuccess: boolean }
+export function useCheckPermissions(requiredPermission: string | undefined): {
+  can: boolean
+  isLoading: boolean
+  isSuccess: boolean
+}
 export function useCheckPermissions(requiredPermission: undefined): {
   can: boolean
   isLoading: boolean
@@ -278,9 +288,8 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
   isLoading: boolean
   isSuccess: boolean
 } {
-
   const isLoggedIn = useIsLoggedIn()
-  
+
   const { slug: orgId, ref: projectId, branch: branchId } = useParams()
 
   const {
@@ -288,7 +297,7 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     isLoading: isOrganizationPermissionsLoading,
     isSuccess: isOrganizationPermissionsSuccess,
   } = useOrganizationPermissionQuery({
-    enabled: !!orgId
+    enabled: !!orgId,
   })
 
   const {
@@ -296,7 +305,7 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     isLoading: isEnvironmentPermissionsLoading,
     isSuccess: isEnvironmentPermissionsSuccess,
   } = useEnvironmentPermissionQuery({
-    enabled: !!orgId
+    enabled: !!orgId,
   })
 
   const {
@@ -304,7 +313,7 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     isLoading: isProjectPermissionsLoading,
     isSuccess: isProjectPermissionsSuccess,
   } = useProjectPermissionQuery({
-    enabled: !!orgId
+    enabled: !!orgId,
   })
 
   const {
@@ -312,7 +321,7 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     isLoading: isBranchPermissionsLoading,
     isSuccess: isBranchPermissionsSuccess,
   } = useBranchPermissionQuery({
-    enabled: !!orgId && !!projectId
+    enabled: !!orgId && !!projectId,
   })
 
   if (!isLoggedIn) {
@@ -323,7 +332,7 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     }
   }
 
-    if (typeof requiredPermission === 'undefined') {
+  if (typeof requiredPermission === 'undefined') {
     return {
       isLoading: false,
       isSuccess: false,
@@ -335,8 +344,6 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     requiredPermission = transformToPermission(requiredPermission)
   }
 
-  
-
   const permissions = [
     ...organizationPermissions,
     ...(isEnvironmentPermission(requiredPermission) ? environmentPermissions : []),
@@ -344,7 +351,7 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
     ...(isBranchPermission(requiredPermission) ? branchPermissions : []),
   ]
 
-  const can = hasPermission(requiredPermission, permissions)
+  const can = hasPermission(requiredPermission, ...permissions)
   return {
     isLoading:
       isOrganizationPermissionsLoading ||
@@ -357,5 +364,19 @@ export function useCheckPermissions(requiredPermission: Permission | string | un
       isProjectPermissionsSuccess &&
       isBranchPermissionsSuccess,
     can,
+  }
+}
+
+export function useIsOrganizationOwner() {
+  const { permissions, isLoading } = useOrganizationPermissionQuery()
+
+  const isOrganizationOwner = useMemo(
+    () => hasPermission(organizationOwnerPermission, ...(permissions ?? [])),
+    [permissions]
+  )
+
+  return {
+    isLoading,
+    isOrganizationOwner,
   }
 }

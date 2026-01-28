@@ -41,9 +41,7 @@ import {
   TableRow,
 } from 'ui'
 import { TimestampInfo } from 'ui-patterns'
-import { permissionToString } from 'hooks/misc/useCheckPermissions'
-import { usePermissionsQuery } from 'data/permissions/permissions-query'
-import { useProjectsQuery } from '../../../../../data/projects/projects-query'
+import { useProjectsByPermissionsQuery } from 'data/permissions/projects-by-permissions-query'
 
 type NormalizedBackup = {
   id: string
@@ -92,48 +90,16 @@ const BranchBackups = () => {
     { enabled: Boolean(orgId && projectId && branchId) }
   )
 
-  const { data: allProjects } = useProjectsQuery()
-
-  const orgProjects = useMemo(
-    () => (allProjects ?? []).filter((project) => project.organization_id === orgId),
-    [allProjects, orgId]
-  )
-
-  const { data: userPermissions } = usePermissionsQuery()
-
-  // check if user has project:branches:create permission on any project in the organization
-  const hasCreateBranchPermission = useMemo(() => {
-    if (!userPermissions) return false
-    return userPermissions.some(
-      (permission) => permissionToString(permission.permission) === 'project:branches:create'
-    )
-  }, [userPermissions])
-
-  // if user can create branches check which distinct project ids they have permission on
-  const creatableProjectIds = useMemo(() => {
-    if (!hasCreateBranchPermission || !userPermissions) return new Set<string>()
-    const projectIds = new Set<string>()
-    userPermissions.forEach((permission) => {
-      if (
-        permissionToString(permission.permission) === 'project:branches:create' &&
-        permission.project_id
-      ) {
-        projectIds.add(permission.project_id)
-      }
-    })
-    return projectIds
-  }, [hasCreateBranchPermission, userPermissions])
-
   // filter by projects available for creating branches
+  const { data: targetProjects } = useProjectsByPermissionsQuery('project:branches:create')
   const projectOptions = useMemo(() => {
-    if (!hasCreateBranchPermission) return []
-    return orgProjects
-      .filter((project) => creatableProjectIds.has(project.id))
+    return targetProjects
+      .filter((project) => project.organization_id === orgId)
       .map((project) => ({
         label: project.name,
         value: project.id,
       }))
-  }, [hasCreateBranchPermission, orgProjects, creatableProjectIds])
+  }, [targetProjects])
 
   const backups = useMemo(() => normalizeBackups(data), [data])
   const [restoreTarget, setRestoreTarget] = useState<NormalizedBackup | null>(null)
