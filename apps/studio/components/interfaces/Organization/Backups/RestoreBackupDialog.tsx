@@ -94,7 +94,7 @@ export const RestoreBackupDialog = ({
                 onValueChange={(value) => setMode(value as RestoreMode)}
               >
                 { /** FIXME: @Ebrahim @Chris Disabled for now, as the backend cannot do it **/ }
-                <RadioGroupStackedItem value="same-branch" label="Restore to current branch" disabled={true}>
+                <RadioGroupStackedItem value="same-branch" label="Restore to current branch (coming soon)" disabled={true}>
                   <p className="text-sm text-foreground-light">
                     Apply the backup to <strong>{row.branchName}</strong> within{' '}
                     <strong>{row.projectName}</strong>.
