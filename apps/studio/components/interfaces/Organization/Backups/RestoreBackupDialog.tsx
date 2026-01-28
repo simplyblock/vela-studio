@@ -44,6 +44,7 @@ export const RestoreBackupDialog = ({
   const [mode, setMode] = useState<RestoreMode>('new-branch')
   const [selectedProject, setSelectedProject] = useState<string | undefined>(undefined)
   const [branchName, setBranchName] = useState<string>('')
+  const [isRestoring, setIsRestoring] = useState(false)
 
   useEffect(() => {
     if (!open) return
@@ -93,8 +94,12 @@ export const RestoreBackupDialog = ({
                 value={mode}
                 onValueChange={(value) => setMode(value as RestoreMode)}
               >
-                { /** FIXME: @Ebrahim @Chris Disabled for now, as the backend cannot do it **/ }
-                <RadioGroupStackedItem value="same-branch" label="Restore to current branch (coming soon)" disabled={true}>
+                {/** FIXME: @Ebrahim @Chris Disabled for now, as the backend cannot do it **/}
+                <RadioGroupStackedItem
+                  value="same-branch"
+                  label="Restore to current branch (coming soon)"
+                  disabled={true}
+                >
                   <p className="text-sm text-foreground-light">
                     Apply the backup to <strong>{row.branchName}</strong> within{' '}
                     <strong>{row.projectName}</strong>.
@@ -154,14 +159,15 @@ export const RestoreBackupDialog = ({
           </Button>
           <Button
             type="primary"
-            disabled={!canConfirm || !row || !backup}
-            onClick={() =>
+            disabled={!canConfirm || !row || !backup || isRestoring}
+            onClick={() => {
+              setIsRestoring(true)
               onConfirm({
                 mode,
                 project: mode === 'new-branch' ? selectedProject : undefined,
                 branchName: mode === 'new-branch' ? branchName.trim() : undefined,
               })
-            }
+            }}
           >
             Restore backup
           </Button>
