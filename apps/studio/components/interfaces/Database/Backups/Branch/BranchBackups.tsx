@@ -126,7 +126,7 @@ const BranchBackups = () => {
     onSuccess: () => {
       toast.success('Restore request submitted')
       setRestoreTarget(null)
-      router.push(`/orgs/${orgId}/projects/${projectId}`)
+      router.push(`/org/${orgId}/project/${projectId}`)
     },
   })
 
