@@ -17,19 +17,7 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (maybeHandleError(res, response, validStatusCodes(200, 404))) return
   if (response.response.status === 404) return res.json([])
-
-  return res.json(
-    response.data?.map((backup) => {
-      return {
-        id: backup.id,
-        organization_id: slug,
-        project_id: ref,
-        branch_id: backup.branch_id,
-        row_index: backup.row_index,
-        created_at: backup.created_at,
-      }
-    }) || []
-  )
+  return res.json(response.data)
 }
 
 const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
