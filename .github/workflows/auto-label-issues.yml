@@ -3,28 +3,6 @@ on:
   issues:
     types: [opened, reopened]
 jobs:
-  check-external:
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-    - name: Check if organization member
-      id: is-org-member
-      uses: JamesSingleton/is-organization-member@1.0.0
-      with:
-        organization: ${{ github.repository_owner }}
-        username: ${{ github.event.issue.user.login }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: label-member
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_REPO: ${{ github.repository }}
-        NUMBER: ${{ github.event.issue.number }}
-      run: |
-        if [ ${{ steps.is-org-member.outputs.result }} == "false" ]; then
-          echo "User is outside of organization, labeling external"
-          gh issue edit "$NUMBER" --add-label "external-issue"
-        fi
   triage-new:
     runs-on: ubuntu-latest
     permissions:
